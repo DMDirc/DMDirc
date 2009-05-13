@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.Window;
@@ -39,7 +39,7 @@ import net.miginfocom.layout.PlatformDefaults;
  * Node label.
  */
 public class NodeLabel extends JLabel implements SelectionListener,
-        NotificationListener, IconChangeListener {
+        NotificationListener, FrameInfoListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

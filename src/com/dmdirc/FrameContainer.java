@@ -24,7 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
@@ -55,6 +55,9 @@ public abstract class FrameContainer {
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
+
+    /** The name of this container. */
+    private String name;
     
     /** The config manager for this container. */
     private final ConfigManager config;
@@ -66,10 +69,13 @@ public abstract class FrameContainer {
      * Instantiate new frame container.
      * 
      * @param icon The icon to use for this container
+     * @param name The name of this container
      * @param config The config manager for this container
+     * @since 0.6.3m2
      */
-    public FrameContainer(final String icon, final ConfigManager config) {
+    public FrameContainer(final String icon, final String name, final ConfigManager config) {
         this.config = config;
+        this.name = name;
         
         setIcon(icon);
     }
@@ -81,13 +87,37 @@ public abstract class FrameContainer {
      */
     public abstract Window getFrame();
 
-    /**
-     * Returns a string identifier for this object/its frame.
-     *
-     * @return String identifier
-     */
+    /** {@inheritDoc} */
     @Override
-    public abstract String toString();
+    public String toString() {
+        return name;
+    }
+
+    /**
+     * Retrieves the name of this container.
+     *
+     * @return This container's name
+     * @since 0.6.3m2
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Changes the name of this container, and notifies any
+     * {@link FrameInfoListener}s of the change.
+     *
+     * @param name The new name for this frame.
+     */
+    protected void setName(final String name) {
+        this.name = name;
+
+        synchronized (listeners) {
+            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+                //listener.
+            }
+        }
+    }
 
     /**
      * Closes this container (and it's associated frame).
@@ -128,7 +158,7 @@ public abstract class FrameContainer {
         final Icon newIcon = getIcon();
         
         synchronized (listeners) {
-            for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
+            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
                 listener.iconChanged(getFrame(), newIcon);
             }
         }
@@ -339,24 +369,24 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds an icon change listener for this frame container.
+     * Adds a frame info listener for this frame container.
      *
      * @param listener The listener to be added
      */
-    public void addIconChangeListener(final IconChangeListener listener) {
+    public void addFrameInfoListener(final FrameInfoListener listener) {
         synchronized (listeners) {
-            listeners.add(IconChangeListener.class, listener);
+            listeners.add(FrameInfoListener.class, listener);
         }
     }
 
     /**
-     * Removes an icon change listener from this frame container.
+     * Removes a frame info listener from this frame container.
      *
      * @param listener The listener to be removed
      */
-    public void removeIconChangeListener(final IconChangeListener listener) {
+    public void removeFrameInfoListener(final FrameInfoListener listener) {
         synchronized (listeners) {
-            listeners.remove(IconChangeListener.class, listener);
+            listeners.remove(FrameInfoListener.class, listener);
         }
     }
     

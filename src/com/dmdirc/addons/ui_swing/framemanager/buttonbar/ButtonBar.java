@@ -25,7 +25,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -62,7 +62,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class ButtonBar implements FrameManager, ActionListener,
         ComponentListener, Serializable, NotificationListener,
-        SelectionListener, IconChangeListener {
+        SelectionListener, FrameInfoListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -181,7 +181,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         relayout();
         window.addNotificationListener(this);
         window.addSelectionListener(this);
-        window.addIconChangeListener(this);
+        window.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
@@ -191,7 +191,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
         relayout();
         window.removeNotificationListener(this);
-        window.removeIconChangeListener(this);
+        window.removeFrameInfoListener(this);
         window.removeSelectionListener(this);
     }
 
@@ -204,7 +204,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         relayout();
         window.addNotificationListener(this);
         window.addSelectionListener(this);
-        window.addIconChangeListener(this);
+        window.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
@@ -214,7 +214,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
         relayout();
         window.removeNotificationListener(this);
-        window.removeIconChangeListener(this);
+        window.removeFrameInfoListener(this);
         window.removeSelectionListener(this);
     }
 

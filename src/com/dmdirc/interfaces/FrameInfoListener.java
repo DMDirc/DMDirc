@@ -30,11 +30,12 @@ import javax.swing.Icon;
 
 /**
  * Defines the methods that should be implemented by classes which wish to
- * receive information about frame icon changes.
+ * receive information about frame icon or title changes.
  *
+ * @since 0.6.3m2
  * @author Chris
  */
-public interface IconChangeListener extends EventListener {
+public interface FrameInfoListener extends EventListener {
 
     /**
      * Called when a window's icon is changed.

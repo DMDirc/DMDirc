@@ -192,7 +192,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile,
             final List<String> autochannels, final ParserFactory factory) {
-        super("server-disconnected", new ConfigManager("", "", server));
+        super("server-disconnected", server, new ConfigManager("", "", server));
 
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -857,15 +857,6 @@ public class Server extends WritableFrameContainer implements Serializable {
     }
 
     /**
-     * Retrieves the name of this server.
-     *
-     * @return The name of this server
-     */
-    public String getName() {
-        return serverInfo.getHost();
-    }
-
-    /**
      * Retrieves the name of this server's network. The network name is
      * determined using the following rules:
      *
@@ -1092,16 +1083,6 @@ public class Server extends WritableFrameContainer implements Serializable {
     public boolean isValidChannelName(final String channelName) {
         return hasChannel(channelName)
                 || (parser != null && parser.isValidChannelName(channelName));
-    }
-
-    /**
-     * Returns this server's name.
-     *
-     * @return A string representation of this server (i.e., its name)
-     */
-    @Override
-    public String toString() {
-        return getName();
     }
 
     /**

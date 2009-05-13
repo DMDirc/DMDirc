@@ -106,8 +106,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			}
 	}
 
-	/** The window title. */
-	protected final String title;
 	/** The Window we're using. */
 	protected InputWindow myWindow = null;
 	/** The dcc plugin that owns this frame */
@@ -135,8 +133,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 * @param icon The icon to use
 	 */
 	public DCCFrame(final DCCPlugin plugin, final String title, final String icon ,final boolean defaultWindow) {
-		super(icon, IdentityManager.getGlobalConfig());
-		this.title = title;
+		super(icon, title, IdentityManager.getGlobalConfig());
 		this.plugin = plugin;
 
 		if (defaultWindow) {
@@ -190,16 +187,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 */
 	public Container getContentPane() {
 		return ((TextFrame)getFrame()).getContentPane();
-	}
-	
-	/**
-	 * Returns a string identifier for this object/its frame.
-	 *
-	 * @return String identifier
-	 */
-	@Override
-	public String toString() {
-		return title;
 	}
 	
 	/**

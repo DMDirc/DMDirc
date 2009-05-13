@@ -36,9 +36,6 @@ import com.dmdirc.ui.interfaces.Window;
  */
 public class HistoryWindow extends FrameContainer {
     
-    /** The title of our window. */
-    private final String title;
-       
     /** The window we're using. */
     private Window window;
     
@@ -53,10 +50,10 @@ public class HistoryWindow extends FrameContainer {
      * @param parent The window this history window was opened from
      * @param numLines The number of lines to show
      */
-    public HistoryWindow(final String title, final ReverseFileReader reader, 
+    public HistoryWindow(final String title, final ReverseFileReader reader,
             final Window parent, final int numLines) {
-        super("raw", parent.getConfigManager());
-        this.title = title;
+        super("raw", title, parent.getConfigManager());
+
         this.parent = parent;
         
         window = Main.getUI().getWindow(this);
@@ -73,12 +70,6 @@ public class HistoryWindow extends FrameContainer {
     @Override
     public Window getFrame() {
         return window;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return title;
     }
     
     /** {@inheritDoc} */

@@ -36,10 +36,12 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * Creates a new MessageTarget.
      * 
      * @param icon The icon to use for this target
+     * @param name The name of this target
      * @param config The config manager to use for this target
+     * @since 0.6.3m2
      */
-    public MessageTarget(final String icon, final ConfigManager config) {
-        super(icon, config);
+    public MessageTarget(final String icon, final String name, final ConfigManager config) {
+        super(icon, name, config);
     }
 
     /**

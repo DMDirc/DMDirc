@@ -80,7 +80,7 @@ public final class Query extends MessageTarget implements
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
-        super("query", newServer.getConfigManager());
+        super("query", ClientInfo.parseHost(newHost), newServer.getConfigManager());
 
         this.server = newServer;
         this.host = newHost;
@@ -333,16 +333,6 @@ public final class Query extends MessageTarget implements
         // 7: Remove any references to the window and parents
         window = null;
         server = null;
-    }
-
-    /**
-     * Returns this query's name.
-     *
-     * @return A string representation of this query (i.e., the user's name)
-     */
-    @Override
-    public String toString() {
-        return ClientInfo.parseHost(host);
     }
 
     /**

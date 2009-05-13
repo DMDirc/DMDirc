@@ -50,7 +50,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon", IdentityManager.getGlobalConfig());
+        super("icon", "Global", IdentityManager.getGlobalConfig());
 
         tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -73,13 +73,7 @@ public class GlobalWindow extends WritableFrameContainer {
     public InputWindow getFrame() {
         return window;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "Global";
-    }
-
+    
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {

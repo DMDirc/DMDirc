@@ -48,7 +48,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
@@ -156,7 +156,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
         setFrameIcon(owner.getIcon());
-        owner.addIconChangeListener(new IconChangeListener() {
+        owner.addFrameInfoListener(new FrameInfoListener() {
 
             /** {@inheritDoc} */
             @Override

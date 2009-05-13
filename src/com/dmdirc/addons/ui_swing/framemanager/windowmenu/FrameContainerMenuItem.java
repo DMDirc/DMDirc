@@ -23,7 +23,7 @@
 package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Font;
@@ -36,7 +36,7 @@ import javax.swing.SwingUtilities;
 /**
  * Action representing a frame.
  */
-public class FrameContainerMenuItem extends JMenuItem implements IconChangeListener,
+public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListener,
         ActionListener {
 
     /**
@@ -59,7 +59,7 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
         this.frame = frame;
 
         addActionListener(this);
-        frame.addIconChangeListener(this);
+        frame.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
