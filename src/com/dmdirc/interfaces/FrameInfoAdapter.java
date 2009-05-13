@@ -34,7 +34,7 @@ public class FrameInfoAdapter implements FrameInfoListener {
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         // Do nothing
     }
 

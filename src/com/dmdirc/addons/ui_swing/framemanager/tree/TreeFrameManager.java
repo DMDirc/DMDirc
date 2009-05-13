@@ -342,7 +342,7 @@ public final class TreeFrameManager implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */

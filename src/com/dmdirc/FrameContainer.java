@@ -33,8 +33,6 @@ import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
 
-import javax.swing.Icon;
-
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
@@ -155,22 +153,20 @@ public abstract class FrameContainer {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        final Icon newIcon = getIcon();
-        
         synchronized (listeners) {
             for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.iconChanged(getFrame(), newIcon);
+                listener.iconChanged(getFrame(), icon);
             }
         }
     }
 
     /**
-     * Retrieves the icon used by this container's window.
+     * Retrieves the name of the icon used by this container's window.
      *
      * @return This container's icon
      */
-    public final Icon getIcon() {
-        return IconManager.getIconManager().getIcon(icon);
+    public final String getIcon() {
+        return icon;
     }
 
     /**

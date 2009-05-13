@@ -28,6 +28,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
@@ -46,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -151,7 +151,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
      * @param source The Container to get title/icon info from
      */
     private void addButton(final FrameContainer source) {
-        final JToggleButton button = new JToggleButton(source.toString(), source.getIcon());
+        final JToggleButton button = new JToggleButton(source.toString(),
+                IconManager.getIconManager().getIcon(source.getIcon()));
 
         button.addActionListener(this);
         button.setHorizontalAlignment(SwingConstants.LEFT);
@@ -313,8 +314,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
-        buttons.get(window.getContainer()).setIcon(icon);
+    public void iconChanged(final Window window, final String icon) {
+        buttons.get(window.getContainer()).setIcon(IconManager.getIconManager().getIcon(icon));
     }
 
 

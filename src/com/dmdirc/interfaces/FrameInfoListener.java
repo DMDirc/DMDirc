@@ -26,8 +26,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.util.EventListener;
 
-import javax.swing.Icon;
-
 /**
  * Defines the methods that should be implemented by classes which wish to
  * receive information about frame icon or title changes.
@@ -43,7 +41,7 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose icon changed
      * @param icon The new icon for the window
      */
-    void iconChanged(final Window window, final Icon icon);
+    void iconChanged(final Window window, final String icon);
 
     /**
      * Called when a window's name is changed.

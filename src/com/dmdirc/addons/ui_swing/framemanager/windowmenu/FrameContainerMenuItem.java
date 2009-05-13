@@ -24,12 +24,12 @@ package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.FrameInfoListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
@@ -54,7 +54,7 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
      * @param frame Wrapped frame
      */
     public FrameContainerMenuItem(final FrameContainer frame) {
-        super(frame.toString(), frame.getIcon());
+        super(frame.toString(), IconManager.getIconManager().getIcon(frame.getIcon()));
 
         this.frame = frame;
 
@@ -64,7 +64,7 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -72,7 +72,7 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
             public void run() {
                 if ((frame != null && window != null) &&
                         frame.equals(window.getContainer())) {
-                    setIcon(icon);
+                    setIcon(IconManager.getIconManager().getIcon(icon));
                 }
             }
         });
