@@ -114,7 +114,7 @@ public abstract class FrameContainer {
 
         synchronized (listeners) {
             for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                //listener.
+                listener.nameChanged(getFrame(), name);
             }
         }
     }

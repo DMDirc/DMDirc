@@ -125,6 +125,14 @@ public class NodeLabel extends JLabel implements SelectionListener,
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        if (equals(window)) {
+            setText(name);
+        }
+    }
+
     /** 
      * Sets the rollover state for the node.
      * 
@@ -180,4 +188,5 @@ public class NodeLabel extends JLabel implements SelectionListener,
         
         return window.hashCode();
     }
+
 }

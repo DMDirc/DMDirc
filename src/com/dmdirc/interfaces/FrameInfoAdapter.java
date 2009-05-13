@@ -23,34 +23,25 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.ui.interfaces.Window;
-
-import java.util.EventListener;
-
 import javax.swing.Icon;
 
 /**
- * Defines the methods that should be implemented by classes which wish to
- * receive information about frame icon or title changes.
+ * An adapter for {@link FrameInfoListener}.
  *
- * @since 0.6.3m2
- * @author Chris
+ * @author chris
  */
-public interface FrameInfoListener extends EventListener {
+public class FrameInfoAdapter implements FrameInfoListener {
 
-    /**
-     * Called when a window's icon is changed.
-     *
-     * @param window The window whose icon changed
-     * @param icon The new icon for the window
-     */
-    void iconChanged(final Window window, final Icon icon);
+    /** {@inheritDoc} */
+    @Override
+    public void iconChanged(final Window window, final Icon icon) {
+        // Do nothing
+    }
 
-    /**
-     * Called when a window's name is changed.
-     *
-     * @param window The window whose name changed
-     * @param name The new name for the window
-     */
-    void nameChanged(final Window window, final String name);
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        // Do nothing
+    }
 
 }

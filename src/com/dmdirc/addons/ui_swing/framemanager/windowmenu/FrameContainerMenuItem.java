@@ -78,6 +78,22 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
         });
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if ((frame != null && window != null) &&
+                        frame.equals(window.getContainer())) {
+                    setText(name);
+                }
+            }
+        });
+    }
+
     /** 
      * {@inheritDoc}
      * 

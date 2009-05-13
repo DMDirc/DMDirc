@@ -361,4 +361,26 @@ public final class TreeFrameManager implements FrameManager,
             }
         });
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (nodes) {
+                    final TreeViewNode node = nodes.get(window.getContainer());
+                    if (node != null) {
+                        final NodeLabel label = node.getLabel();
+                        if (label != null) {
+                            label.nameChanged(window, name);
+                            tree.repaint();
+                        }
+                    }
+                }
+            }
+        });
+    }
 }
