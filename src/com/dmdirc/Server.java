@@ -283,6 +283,10 @@ public class Server extends WritableFrameContainer implements Serializable {
                         + "is still connected.\n\nMy state:" + getState());
             }
 
+            if (!server.equals(getName())) {
+                setName(server);
+            }
+
             myState.transition(ServerState.CONNECTING);
 
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);

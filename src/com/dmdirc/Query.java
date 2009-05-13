@@ -278,6 +278,8 @@ public final class Query extends MessageTarget implements
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             updateTitle();
+
+            setName(cClient.getNickname());
         }
     }
 
