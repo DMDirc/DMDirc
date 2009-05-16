@@ -23,7 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
 import java.util.LinkedHashMap;

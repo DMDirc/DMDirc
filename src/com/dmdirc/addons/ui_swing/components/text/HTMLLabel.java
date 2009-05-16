@@ -20,24 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.components;
+package com.dmdirc.addons.ui_swing.components.text;
 
 import java.awt.Font;
-import java.awt.Insets;
 
-import javax.swing.JTextPane;
+import javax.swing.JEditorPane;
 import javax.swing.UIManager;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.plaf.basic.BasicTextPaneUI;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 /**
- * Dyamnic text label.
+ * Dyamnic text label with hyperlink support.
  */
-public class TextLabel extends JTextPane {
+public class HTMLLabel extends JEditorPane {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -45,14 +40,12 @@ public class TextLabel extends JTextPane {
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Simple attribute set. */
-    private SimpleAttributeSet sas;
 
     /**
      * Creates a new instance of TextLabel.
      */
-    public TextLabel() {
-        this(null, true);
+    public HTMLLabel() {
+        this(null);
     }
 
     /**
@@ -60,51 +53,23 @@ public class TextLabel extends JTextPane {
      *
      * @param text Text to display
      */
-    public TextLabel(final String text) {
-        this(text, true);
-    }
-
-    /**
-     * Creates a new instance of TextLabel.
-     *
-     * @param text Text to display
-     * @param justified Justify the text?
-     */
-    public TextLabel(final String text, final boolean justified) {
-        super(new DefaultStyledDocument());
-        setEditorKit(new HTMLEditorKit());
+    public HTMLLabel(final String text) {
+        super("text/html", text);
 
         final Font font = UIManager.getFont("Label.font");
         ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
                 "{ font-family: " + font.getFamily() + "; " + "font-size: " +
                 font.getSize() + "pt; }");
 
+        init();
+    }
 
+    /** Initialiases the component. */
+    private void init() {
+        setUI(new BasicTextPaneUI());
         setOpaque(false);
         setEditable(false);
         setHighlighter(null);
-        setMargin(new Insets(0, 0, 0, 0));
-
-        sas = new SimpleAttributeSet();
-        if (justified) {
-            StyleConstants.setAlignment(sas, StyleConstants.ALIGN_JUSTIFIED);
-        }
-
-        setText(text);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public StyledDocument getDocument() {
-        return (StyledDocument) super.getDocument();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setText(final String t) {
-        super.setText(t);
-        if (t != null && !t.isEmpty()) {
-            getDocument().setParagraphAttributes(0, t.length(), sas, false);
-        }
+        setFont(UIManager.getFont("TextField.font"));
     }
 }

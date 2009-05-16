@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.wizard.firstrun;
 
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import net.miginfocom.swing.MigLayout;
 

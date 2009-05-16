@@ -26,7 +26,7 @@ import com.dmdirc.config.prefs.validator.ConditionRuleValidator;
 import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.ConditionTreeFactory;
 import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
 import java.awt.event.ActionEvent;

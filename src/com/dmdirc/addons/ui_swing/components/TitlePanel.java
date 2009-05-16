@@ -23,11 +23,13 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import net.miginfocom.swing.MigLayout;
@@ -82,8 +84,6 @@ public class TitlePanel extends JPanel {
                 getSize() * 1.5)));
 
         add(title, "grow, push");
-        setOpaque(true);
-        setBackground(Color.WHITE);
         setBorder(border);
     }
 

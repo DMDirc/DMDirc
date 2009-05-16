@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.substitutions;
 
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.util.List;
 

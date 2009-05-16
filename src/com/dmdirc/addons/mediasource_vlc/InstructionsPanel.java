@@ -23,7 +23,7 @@
 package com.dmdirc.addons.mediasource_vlc;
 
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import javax.swing.JPanel;
 

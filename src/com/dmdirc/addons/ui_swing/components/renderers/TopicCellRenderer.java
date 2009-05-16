@@ -23,7 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.renderers;
 
 import com.dmdirc.Topic;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.awt.Component;
 import java.awt.Dimension;

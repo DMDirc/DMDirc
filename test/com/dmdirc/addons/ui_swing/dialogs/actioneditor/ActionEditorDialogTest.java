@@ -33,7 +33,7 @@ import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.harness.ui.JRadioButtonByTextMatcher;
 
 import com.dmdirc.addons.ui_swing.components.ImageButton;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import java.awt.Component;
 
 import java.util.regex.Matcher;

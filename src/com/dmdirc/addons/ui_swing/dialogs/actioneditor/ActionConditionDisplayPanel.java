@@ -27,7 +27,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.addons.ui_swing.components.ImageButton;
 import com.dmdirc.addons.ui_swing.components.ImageToggleButton;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.event.ActionEvent;

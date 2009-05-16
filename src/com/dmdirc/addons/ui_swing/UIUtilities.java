@@ -241,8 +241,10 @@ public final class UIUtilities {
         final String uiname = UIManager.getLookAndFeel().getClass().getName();
         final String windows =
                 "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+        final String nimbus = "sun.swing.plaf.nimbus.NimbusLookAndFeel";
 
-        return !(windows.equals(uiname) || Apple.isAppleUI());
+        return !(windows.equals(uiname) || Apple.isAppleUI() || nimbus.equals(
+                uiname));
     }
     
     /**

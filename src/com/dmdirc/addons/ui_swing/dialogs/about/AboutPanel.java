@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.about;
 
-import com.dmdirc.addons.ui_swing.components.HTMLLabel;
+import com.dmdirc.addons.ui_swing.components.text.HTMLLabel;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.util.URLHandler;
 

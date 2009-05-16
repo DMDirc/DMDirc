@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.url;
 
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
 import com.dmdirc.util.URLHandler;

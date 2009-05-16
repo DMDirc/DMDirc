@@ -27,7 +27,7 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.TitlePanel;
 import com.dmdirc.addons.ui_swing.components.ToolTipPanel;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationDisplay;
@@ -37,6 +37,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.awt.Window;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -114,7 +115,7 @@ public class CategoryPanel extends JPanel {
         super(new MigLayout("fillx, wrap, ins 0"));
         this.parent = parent;
 
-        panels = new HashMap<PreferencesCategory, JPanel>();
+        panels = Collections.synchronizedMap(new HashMap<PreferencesCategory, JPanel>());
 
         loading = new JPanel(new MigLayout("fillx"));
         loading.add(new TextLabel("Loading..."));
@@ -139,6 +140,24 @@ public class CategoryPanel extends JPanel {
         add(tooltip, "pushx, growx, h 65!");
 
         setCategory(category);
+    }
+
+    /**
+     * Returns this categrory panel's parent window.
+     *
+     * @return Parent window
+     */
+    protected Window getParentWindow() {
+        return parent;
+    }
+
+    /**
+     * Returns the tooltip panel for this category panel.
+     *
+     * @return Tooltip panel
+     */
+    protected ToolTipPanel getToolTipPanel() {
+        return tooltip;
     }
 
     /**
@@ -297,7 +316,7 @@ public class CategoryPanel extends JPanel {
      * Retrieves the title label for the specified setting.
      *
      * @param setting The setting whose label is being requested
-     * @return A JLabel with the appropriate text and tooltip
+     * @return A TextLabel with the appropriate text and tooltip
      */
     private TextLabel getLabel(final PreferencesSetting setting) {
         final TextLabel label = new TextLabel(setting.getTitle() + ": ", false);
