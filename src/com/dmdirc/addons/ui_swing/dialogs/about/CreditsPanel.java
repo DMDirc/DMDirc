@@ -76,6 +76,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Testers:</h1>"
                 + "<ul style='list-style-type: circle; margin-top: 0px;'>"
                 + "<li><a href=\"http://www.pling.org.uk\">Chris 'laser' Northwood</a></li>"
+                + "<li><a href=\"\">Simon 'Demented-Idiot' Mott</a></li>"
                 + "</ul>"
                 + "</html>");
         about.addHyperlinkListener(this);

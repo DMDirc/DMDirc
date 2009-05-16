@@ -231,6 +231,22 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
     /** {@inheritDoc} */
     @Override
+    public void setVisible(final boolean isVisible) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (isVisible) {
+                    open();
+                } else {
+                    TextFrame.super.setVisible(isVisible);
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void open() {
         final boolean pref = frameParent.getConfigManager().
                 getOptionBool("ui", "maximisewindows");
@@ -238,7 +254,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
             @Override
             public void run() {
-                setVisible(true);
+                TextFrame.super.setVisible(true);
                 try {
                     setSelected(true);
                 } catch (PropertyVetoException ex) {

@@ -27,11 +27,11 @@ import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.IconManager;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -63,6 +63,9 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
     /** Label map. */
     private Map<PreferencesCategory, JLabel> labelMap;
     
+    /**
+     * Instantiates a new prefs list cell renderer.
+     */
     public PreferencesListCellRenderer() {
         labelMap = new HashMap<PreferencesCategory, JLabel>();
     }
@@ -94,7 +97,7 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
                     label.setIcon(get());
                     list.repaint();
                 } catch (InterruptedException ex) {
-                    //Ignore
+                    Logger.appError(ErrorLevel.LOW, "Unable to set icon for prefs cell", ex);
                 } catch (ExecutionException ex) {
                     Logger.appError(ErrorLevel.LOW, ex.getMessage(), ex);
                 }

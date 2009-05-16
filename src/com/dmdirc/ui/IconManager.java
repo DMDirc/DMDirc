@@ -101,7 +101,7 @@ public final class IconManager implements ConfigChangeListener {
                 try {
                     SwingUtilities.invokeAndWait(runnable);
                 } catch (InterruptedException ex) {
-                    Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+                    Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
                 } catch (InvocationTargetException ex) {
                     Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
                 }
