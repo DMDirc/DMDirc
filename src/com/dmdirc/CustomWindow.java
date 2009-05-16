@@ -65,7 +65,7 @@ public class CustomWindow extends FrameContainer {
 
         WindowManager.addWindow(parent, window);
 
-        window.setVisible(true);
+        window.open();
     }
 
     /**
@@ -85,7 +85,7 @@ public class CustomWindow extends FrameContainer {
 
         WindowManager.addWindow(window);
 
-        window.setVisible(true);
+        window.open();
     }
 
     /** {@inheritDoc} */

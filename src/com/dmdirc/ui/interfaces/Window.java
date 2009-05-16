@@ -26,8 +26,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 
-import java.beans.PropertyVetoException;
-
 /**
  * The Window interface specifies common methods that should be implemented
  * by all windows. It is assumed that all windows have a main text area.
