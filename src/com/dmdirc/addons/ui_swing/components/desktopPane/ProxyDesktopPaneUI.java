@@ -26,11 +26,11 @@ package com.dmdirc.addons.ui_swing.components.desktopPane;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.DesktopPaneUI;
 
 /**
@@ -40,6 +40,8 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
 
     private DesktopPaneUI ui;
     private DMDircDesktopPane desktopPane;
+    private InputMap inputMap;
+    private ActionMap actionMap;
 
     /**
      * Creates a new proxying desktop pane ui.
@@ -51,20 +53,19 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
                               final DMDircDesktopPane desktopPane) {
         this.ui = ui;
         this.desktopPane = desktopPane;
+        initInputActionMap();
     }
 
-    /** @inheritDoc} */
-    @Override
-    public void installUI(final JComponent c) {
-        ui.installUI(c);
+    private void initInputActionMap() {
+        inputMap = new InputMap();
+        actionMap = new ActionMap();
 
-        InputMap inputMap =
-                 SwingUtilities.getUIInputMap(desktopPane,
-                                              JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
                      "selectPreviousFrame");
+        inputMap.put(KeyStroke.getKeyStroke("shift pressed TAB"),
+                     "selectNextFrame");
 
-        SwingUtilities.getUIActionMap(desktopPane).put("selectNextFrame", new AbstractAction("selectNextFrame") {
+        actionMap.put("selectNextFrame", new AbstractAction("selectNextFrame") {
 
             private static final long serialVersionUID = 1;
 
@@ -74,10 +75,7 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
                 desktopPane.scrollDown();
             }
         });
-
-        SwingUtilities.getUIActionMap(desktopPane).
-                put("selectPreviousFrame",
-                    new AbstractAction("selectPreviousFrame") {
+        actionMap.put("selectPreviousFrame", new AbstractAction("selectPreviousFrame") {
 
             private static final long serialVersionUID = 1;
 
@@ -87,6 +85,16 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
                 desktopPane.scrollUp();
             }
         });
+    }
+
+    /** @inheritDoc} */
+    @Override
+    public void installUI(final JComponent c) {
+        ui.installUI(c);
+        c.setInputMap(JDesktopPane.WHEN_IN_FOCUSED_WINDOW, null);
+        c.setInputMap(JDesktopPane.WHEN_FOCUSED, null);
+        c.setInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, inputMap);
+        c.setActionMap(actionMap);
     }
 
     /** @inheritDoc} */
