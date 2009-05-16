@@ -27,8 +27,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
-import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.addons.ui_swing.components.renderers.ProfileListCellRenderer;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.dialogs.NewServerDialog;
 
 import java.awt.Dialog.ModalityType;

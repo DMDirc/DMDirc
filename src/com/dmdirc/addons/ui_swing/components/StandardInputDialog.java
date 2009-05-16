@@ -26,6 +26,7 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.awt.Component;
 import java.awt.Window;
@@ -204,6 +205,7 @@ public abstract class StandardInputDialog extends StandardDialog {
     /**
      * Displays the input dialog.
      */
+    @Override
     public final void display() {
         display(getParent());
     }
