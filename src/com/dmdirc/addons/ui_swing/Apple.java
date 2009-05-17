@@ -217,20 +217,15 @@ public final class Apple implements InvocationHandler, ActionListener {
 		if (!isApple()) { return; }
 		
 		// Set some Apple OS X related stuff from http://tinyurl.com/6xwuld
-		final String aaText = System.getProperty("swing.aatext").equalsIgnoreCase("true") ? "on" : "off";
-		
-		if (IdentityManager.getGlobalConfig().getOptionBool("ui", "antialias")) {
-			System.setProperty("apple.awt.antialiasing", "on");
-		} else {
-			System.setProperty("apple.awt.antialiasing", "off");
-		}
-		
+		final String aaText = IdentityManager.getGlobalConfig().getOptionBool("ui", "antialias") ? "on" : "off";
+
+		System.setProperty("apple.awt.antialiasing", aaText);
 		System.setProperty("apple.awt.textantialiasing", aaText);
 		System.setProperty("apple.awt.showGrowBox", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "DMDirc");
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
 		System.setProperty("com.apple.mrj.application.live-resize", "true");
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "DMDirc");
 	}
 	
 	/**

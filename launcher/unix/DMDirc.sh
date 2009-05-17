@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="10"
+LAUNCHERVERSION="11"
 
 params=""
 
@@ -450,7 +450,7 @@ if [ -e "${jar}" ]; then
 		APPLEOPTS="${APPLEOPTS} -Djava.library.path=${jarDir}"
 		#APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.growbox.intrudes=false"
 		#APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.live-resize=true"
-		#APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"
+		APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"
 		#APPLEOPTS="${APPLEOPTS} -Dapple.awt.showGrowBox=true"
 		#APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
 	fi;
