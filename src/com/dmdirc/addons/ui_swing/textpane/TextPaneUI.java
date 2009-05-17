@@ -22,11 +22,12 @@
 
 package com.dmdirc.addons.ui_swing.textpane;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 
 /**
@@ -37,7 +38,11 @@ public class TextPaneUI extends ComponentUI {
     /** {@inheritDoc} */
     @Override
     public void installUI(final JComponent c) {
-        c.setBorder(UIManager.getBorder("TextField.border"));
+        Border border = UIManager.getBorder("TextField.border");
+        if (border == null) {
+            border = BorderFactory.createEtchedBorder();
+        }
+        c.setBorder(border);
     }
 
     /** {@inheritDoc} */

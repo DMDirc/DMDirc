@@ -405,9 +405,7 @@ public final class SwingController extends Plugin implements UIController {
         if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
             PlatformDefaults.setPlatform(PlatformDefaults.WINDOWS_XP);
         }
-
-        Toolkit.getDefaultToolkit().getSystemEventQueue().
-                push(new DMDircEventQueue(this));
+        
         //Toolkit.getDefaultToolkit().getSystemEventQueue().
         //        push(new TracingEventQueue());
     }
@@ -534,6 +532,9 @@ public final class SwingController extends Plugin implements UIController {
                     "Swing UI can't be run in a headless environment");
         }
 
+        Toolkit.getDefaultToolkit().getSystemEventQueue().
+                push(new DMDircEventQueue(this));
+        
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */

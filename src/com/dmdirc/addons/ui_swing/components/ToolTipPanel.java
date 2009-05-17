@@ -25,7 +25,6 @@ package com.dmdirc.addons.ui_swing.components;
  */
 
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -35,7 +34,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
@@ -70,8 +68,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
         this.defaultHelp = defaultHelp;
         this.tooltips = new HashMap<JComponent, String>();
 
-        setOpaque(UIUtilities.getTabbedPaneOpaque());
-        setBackground(UIManager.getColor("Label.background"));
+        setBackground(Color.WHITE);
         setBorder(BorderFactory.createEtchedBorder());
 
         tooltip = new TextLabel();
