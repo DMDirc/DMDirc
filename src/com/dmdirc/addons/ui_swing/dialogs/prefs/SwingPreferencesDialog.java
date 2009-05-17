@@ -44,6 +44,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -167,6 +168,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tabList.setCellRenderer(new PreferencesListCellRenderer());
         tabList.addListSelectionListener(this);
         new ListScroller(tabList);
+        final JScrollPane tabListScrollPane = new JScrollPane(tabList);
+        tabListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -189,7 +192,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getCancelButton().addActionListener(this);
 
         setLayout(new MigLayout("pack"));
-        add(tabList, "w 150!, hmax 545, growy, pushy");
+        add(tabListScrollPane, "w 150!, hmax 545, growy, pushy");
         add(mainPanel, "wrap, w 480!, pushy, growy, pushy");
         add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
