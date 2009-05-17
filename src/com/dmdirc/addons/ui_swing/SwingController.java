@@ -417,8 +417,8 @@ public final class SwingController extends Plugin implements UIController {
             PlatformDefaults.setPlatform(PlatformDefaults.WINDOWS_XP);
         }
         
-        Toolkit.getDefaultToolkit().getSystemEventQueue().
-                push(new TracingEventQueue());
+        //Toolkit.getDefaultToolkit().getSystemEventQueue().
+        //        push(new TracingEventQueue());
     }
 
     /** {@inheritDoc} */
