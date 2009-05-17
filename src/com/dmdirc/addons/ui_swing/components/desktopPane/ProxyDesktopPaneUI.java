@@ -62,7 +62,7 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
 
         inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
                      "selectPreviousFrame");
-        inputMap.put(KeyStroke.getKeyStroke("shift pressed TAB"),
+        inputMap.put(KeyStroke.getKeyStroke("ctrl pressed TAB"),
                      "selectNextFrame");
 
         actionMap.put("selectNextFrame", new AbstractAction("selectNextFrame") {

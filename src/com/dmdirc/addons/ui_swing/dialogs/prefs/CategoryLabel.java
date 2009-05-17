@@ -34,7 +34,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import net.miginfocom.layout.PlatformDefaults;
 
@@ -106,8 +105,6 @@ public class CategoryLabel extends JLabel {
                     Color.GRAY),
                     getBorder()));
         }
-
-
     }
 
     /**
