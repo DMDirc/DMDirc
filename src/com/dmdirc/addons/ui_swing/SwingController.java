@@ -54,6 +54,7 @@ import com.dmdirc.addons.ui_swing.components.themepanel.ThemePanel;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.addons.ui_swing.dialogs.url.URLDialog;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.addons.ui_swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.addons.ui_swing.wizard.firstrun.SwingFirstRunWizard;
@@ -96,6 +97,8 @@ public final class SwingController extends Plugin implements UIController {
     private final List<java.awt.Window> windows;
     /** Waiting on mainframe creation. */
     private AtomicBoolean mainFrameCreated = new AtomicBoolean(false);
+    /** Error dialog. */
+    private ErrorListDialog errorDialog;
 
     /** Instantiates a new SwingController. */
     public SwingController() {
@@ -313,6 +316,14 @@ public final class SwingController extends Plugin implements UIController {
                     setObject(me.getExtendedState());
                 }
             });
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    SwingUtilities.updateComponentTreeUI(errorDialog);
+                }
+            });
             for (final java.awt.Window window : getTopLevelWindows()) {
                 UIUtilities.invokeLater(new Runnable() {
 
@@ -485,6 +496,13 @@ public final class SwingController extends Plugin implements UIController {
         });
     }
 
+    /**
+     * Shows the error dialog.
+     */
+    public void showErrorDialog() {
+        errorDialog.display();
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getUserInput(final String prompt) {
@@ -544,6 +562,7 @@ public final class SwingController extends Plugin implements UIController {
                 me = new MainFrame(SwingController.this);
                 mainFrameCreated.set(true);
                 statusBar = me.getStatusBar();
+                errorDialog = new ErrorListDialog(me);
             }
         });
 
@@ -552,6 +571,7 @@ public final class SwingController extends Plugin implements UIController {
                     "Main frame not created. Unable to continue.");
         }
 
+        System.out.println("setting the ui");
         Main.setUI(this);
     }
 

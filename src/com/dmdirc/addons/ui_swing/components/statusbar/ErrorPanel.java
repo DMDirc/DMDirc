@@ -23,6 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
 import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorListener;
@@ -74,22 +75,23 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     private final JMenuItem dismiss;
     /** Show menu item. */
     private final JMenuItem show;
-    /** Error dialog. */
-    private final ErrorListDialog errorDialog;
+    /** Swing controller. */
+    private SwingController controller;
 
     /**
      * Creates a new ErrorPanel for the speicified status bar.
      *
+     * @param controller Swing controller
      * @param mainFrame Main frame
      * @param statusBar Status bar  
      */
-    public ErrorPanel(final MainFrame mainFrame, final SwingStatusBar statusBar) {
+    public ErrorPanel(final SwingController controller,
+            final MainFrame mainFrame, final SwingStatusBar statusBar) {
         super(new JLabel());
 
+        this.controller = controller;
         this.mainFrame = mainFrame;
         this.statusBar = statusBar;
-
-        errorDialog = new ErrorListDialog(mainFrame, statusBar);
         
         menu = new JPopupMenu();
         dismiss = new JMenuItem("Clear All");
@@ -219,7 +221,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     public void mouseClicked(final MouseEvent mouseEvent) {
         super.mouseClicked(mouseEvent);
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            errorDialog.display();
+            controller.showErrorDialog();
         }
         checkMouseEvent(mouseEvent);
     }
@@ -243,7 +245,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == show) {
-            errorDialog.display();
+            controller.showErrorDialog();
         } else {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrors();

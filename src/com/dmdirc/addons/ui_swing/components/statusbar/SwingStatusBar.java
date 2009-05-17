@@ -73,7 +73,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
         this.mainFrame = mainFrame;
 
         messageLabel = new MessageLabel();
-        errorPanel = new ErrorPanel(mainFrame, this);
+        errorPanel = new ErrorPanel(controller, mainFrame, this);
         updateLabel = new UpdaterLabel(mainFrame);
         inviteLabel = new InviteLabel(mainFrame);
 

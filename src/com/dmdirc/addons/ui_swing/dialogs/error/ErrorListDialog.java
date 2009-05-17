@@ -39,9 +39,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
@@ -71,10 +71,6 @@ public final class ErrorListDialog extends StandardDialog implements
     private JButton deleteButton;
     /** Delete all button. */
     private JButton deleteAllButton;
-    /** Swing Controller. */
-    private MainFrame mainFrame;
-    /** Status bar. */
-    private SwingStatusBar statusBar;
     /** Selected row. */
     private int selectedRow = -1;
     /** Row being deleted. */
@@ -84,14 +80,9 @@ public final class ErrorListDialog extends StandardDialog implements
      * Creates a new instance of ErrorListDialog. 
      * 
      * @param mainFrame Main frame
-     * @param statusBar Status bar
      */
-    public ErrorListDialog(final MainFrame mainFrame,
-            final SwingStatusBar statusBar) {
+    public ErrorListDialog(final MainFrame mainFrame) {
         super(mainFrame, ModalityType.MODELESS);
-
-        this.mainFrame = mainFrame;
-        this.statusBar = statusBar;
 
         setTitle("DMDirc: Error list");
 
