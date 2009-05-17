@@ -77,66 +77,9 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
             final boolean cellHasFocus) {
         final PreferencesCategory cat = (PreferencesCategory) value;
         if (!labelMap.containsKey(cat)) {
-            labelMap.put(cat, new JLabel());
+            labelMap.put(cat, new CategoryLabel(list, cat, index));
         }
         final JLabel label = labelMap.get(cat);
-        label.setText(cat.getTitle());
-        
-        new LoggingSwingWorker<Icon, Void>() {
-
-            /** {@inheritDoc} */
-            @Override
-            protected Icon doInBackground() throws Exception {
-                return IconManager.getIconManager().getIcon(cat.getIcon());
-            }
-
-            /** {@inheritDoc} */
-            @Override
-            protected void done() {
-                try {
-                    label.setIcon(get());
-                    list.repaint();
-                } catch (InterruptedException ex) {
-                    Logger.appError(ErrorLevel.LOW, "Unable to set icon for prefs cell", ex);
-                } catch (ExecutionException ex) {
-                    Logger.appError(ErrorLevel.LOW, ex.getMessage(), ex);
-                }
-                
-            }
-        }.execute();
-
-        int level = 0;
-        PreferencesCategory temp = cat;
-        while (temp.getParent() != null) {
-            temp = temp.getParent();
-            level++;
-        }
-
-        label.setPreferredSize(new Dimension(100000, Math.max(16,
-                getFont().getSize()) + padding));
-        label.setBorder(BorderFactory.createEmptyBorder(padding / 2, padding + level * 18, padding / 2,
-                padding));
-        label.setBackground(list.getBackground());
-        label.setForeground(list.getForeground());
-        label.setOpaque(true);
-        label.setToolTipText(null);
-
-        if (cat.getPath().equals(cat.getTitle())) {
-            boolean hasChildren = false;
-            for (PreferencesCategory child : cat.getSubcats()) {
-                if (!child.isInline()) {
-                    hasChildren = true;
-                    break;
-                }
-            }
-
-            hasChildren = hasChildren || index + 1 == list.getModel().getSize();
-
-            label.setBackground(Color.LIGHT_GRAY);
-            label.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(1, 0, hasChildren ? 1 : 0, 0, Color.GRAY),
-                    getBorder()));
-        }
 
         if (isSelected) {
             label.setFont(getFont().deriveFont(Font.BOLD));

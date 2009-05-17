@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.addons.ui_swing.components.frames.ServerFrame;
@@ -85,9 +86,8 @@ import net.miginfocom.layout.PlatformDefaults;
 public final class SwingController extends Plugin implements UIController {
 
     /** Logger to use. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(SwingController.class.getName());
-
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(SwingController.class.getName());
     /** Singleton instance of MainFrame. */
     private MainFrame me;
     /** Status bar. */
@@ -205,7 +205,8 @@ public final class SwingController extends Plugin implements UIController {
             @Override
             public void run() {
                 LOGGER.finest("getInputWindow(): run");
-                setObject(new CustomInputFrame(owner, commandParser, SwingController.this));
+                setObject(new CustomInputFrame(owner, commandParser,
+                        SwingController.this));
                 LOGGER.finest("getInputWindow(): object set: " + getObject());
             }
         });
@@ -302,7 +303,8 @@ public final class SwingController extends Plugin implements UIController {
      */
     void updateLookAndFeel() {
         try {
-            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel")));
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
+                    getGlobalConfig().getOption("ui", "lookandfeel")));
             final int state = UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
 
                 /** {@inheritDoc} */
@@ -385,7 +387,8 @@ public final class SwingController extends Plugin implements UIController {
 
         try {
             UIUtilities.initUISettings();
-            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel")));
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
+                    getGlobalConfig().getOption("ui", "lookandfeel")));
 
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
@@ -405,6 +408,8 @@ public final class SwingController extends Plugin implements UIController {
 
         Toolkit.getDefaultToolkit().getSystemEventQueue().
                 push(new DMDircEventQueue(this));
+        //Toolkit.getDefaultToolkit().getSystemEventQueue().
+        //        push(new TracingEventQueue());
     }
 
     /** {@inheritDoc} */
@@ -525,8 +530,10 @@ public final class SwingController extends Plugin implements UIController {
     @Override
     public void onLoad() {
         if (GraphicsEnvironment.isHeadless()) {
-            throw new IllegalStateException("Swing UI can't be run in a headless environment");
+            throw new IllegalStateException(
+                    "Swing UI can't be run in a headless environment");
         }
+
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -539,8 +546,9 @@ public final class SwingController extends Plugin implements UIController {
             }
         });
 
-        if(!mainFrameCreated.get()) {
-            throw new IllegalStateException("Main frame not created. Unable to continue.");
+        if (!mainFrameCreated.get()) {
+            throw new IllegalStateException(
+                    "Main frame not created. Unable to continue.");
         }
 
         Main.setUI(this);

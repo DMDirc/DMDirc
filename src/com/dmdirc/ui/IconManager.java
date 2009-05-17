@@ -24,20 +24,16 @@ package com.dmdirc.ui;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.URLBuilder;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
 /**
  * The icon manager provides a standard way to access icons for use in DMDirc.
@@ -86,26 +82,8 @@ public final class IconManager implements ConfigChangeListener {
         final URL iconURL = getIconURL(type);
         final Image iconImage = Toolkit.getDefaultToolkit().getImage(iconURL);
         final Image scaledIconImage = getScaledImage(iconImage, 16, 16);
-        final Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                icons.put(type, new ImageIcon(scaledIconImage));
-            }
-        };
-        final ImageIcon icon;
         if (!icons.containsKey(type)) {
-            if (SwingUtilities.isEventDispatchThread()) {
-                runnable.run();
-            } else {
-                try {
-                    SwingUtilities.invokeAndWait(runnable);
-                } catch (InterruptedException ex) {
-                    Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
-                } catch (InvocationTargetException ex) {
-                    Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
-                }
-            }
+            icons.put(type, new ImageIcon(scaledIconImage));
         }
         return icons.get(type);
     }
