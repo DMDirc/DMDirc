@@ -571,7 +571,6 @@ public final class SwingController extends Plugin implements UIController {
                     "Main frame not created. Unable to continue.");
         }
 
-        System.out.println("setting the ui");
         Main.setUI(this);
     }
 
