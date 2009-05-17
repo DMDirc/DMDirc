@@ -385,4 +385,14 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     public void setTransferHandler(final TransferHandler newHandler) {
         textField.setTransferHandler(newHandler);
     }
+
+    /**
+     * Returns the validator used by this text field.
+     * 
+     * @since 0.6.3m1
+     * @return This field's validator
+     */
+    public Validator<String> getValidator() {
+        return validator;
+    }
 }
