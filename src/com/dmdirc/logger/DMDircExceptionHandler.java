@@ -25,13 +25,14 @@ package com.dmdirc.logger;
 /**
  * Passes uncaught exceptions to the logger.
  */
-public final class DMDircExceptionHandler implements Thread.UncaughtExceptionHandler {
-    
+public final class DMDircExceptionHandler implements
+        Thread.UncaughtExceptionHandler {
+
     /** Instantiates the Exception handler. */
     public DMDircExceptionHandler() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     public void uncaughtException(final Thread t, final Throwable e) {
         Logger.appError(ErrorLevel.HIGH, e.toString(), e);
