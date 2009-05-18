@@ -283,7 +283,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                             CoreActionType.CLIENT_FRAME_CHANGED,
                             null, getContainer());
                     setIcon(false);
-                    setVisible(true);
+                    TextFrame.super.setVisible(true);
                     setSelected(true);
                 } catch (PropertyVetoException ex) {
                     //Ignore
