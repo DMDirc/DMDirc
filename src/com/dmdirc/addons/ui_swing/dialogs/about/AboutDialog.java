@@ -28,8 +28,11 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -65,6 +68,17 @@ public final class AboutDialog extends StandardDialog implements
     private AboutDialog(final Window parentWindow) {
         super(parentWindow, ModalityType.MODELESS);
         initComponents();
+        final ActionListener enterListener = new ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent) {
+                getOkButton().doClick();
+            }
+        };
+        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        getRootPane().registerKeyboardAction(enterListener, enter,
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     /** 

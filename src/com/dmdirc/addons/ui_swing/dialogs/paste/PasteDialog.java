@@ -200,6 +200,18 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         textField.getInputMap(JComponent.WHEN_FOCUSED).put(
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.getCtrlDownMask()),
                 "ctrlEnterAction");
+
+        final ActionListener enterListener = new ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent) {
+                getOkButton().doClick();
+            }
+        };
+        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        getRootPane().registerKeyboardAction(enterListener, enter,
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     /**
