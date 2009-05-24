@@ -48,8 +48,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -68,7 +66,7 @@ import net.miginfocom.swing.MigLayout;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        MainWindow, ConfigChangeListener, FrameManager, PropertyChangeListener {
+        MainWindow, ConfigChangeListener, FrameManager {
 
     /** Logger to use. */
     private static final java.util.logging.Logger LOGGER =
@@ -586,9 +584,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 
                 // Add the frame
                 desktopPane.add(frame, index);
-
-                frame.addPropertyChangeListener("title", MainFrame.this);
-                frame.addPropertyChangeListener("maximum", MainFrame.this);
             }
         });
     }
@@ -608,9 +603,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 }
 
                 desktopPane.remove(frame);
-
-                frame.removePropertyChangeListener("title", MainFrame.this);
-                frame.removePropertyChangeListener("maximum", MainFrame.this);
             }
         });
     }
@@ -627,14 +619,5 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
         delWindow(window);
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource().equals(getActiveFrame()) &&
-                "title".equals(evt.getPropertyName())) {
-            setTitle((String) evt.getNewValue());
-        }
     }
 }
