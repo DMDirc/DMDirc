@@ -395,8 +395,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        setTitle("DMDirc");
-
         pack();
     }
 
