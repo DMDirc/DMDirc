@@ -347,9 +347,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                     }
                 }
             }
+            mainFrame.setTitle(((Window) evt.getSource()).getTitle());
         }
-        mainFrame.setMaximised(maximised);
-        mainFrame.setTitle(((Window) evt.getSource()).getTitle());
         changing.set(false);
     }
 }

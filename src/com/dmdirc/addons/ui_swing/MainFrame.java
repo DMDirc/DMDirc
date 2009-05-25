@@ -212,20 +212,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setMaximised(final boolean max) {
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                maximised = max;
-            }
-        });
+        //Ignore
     }
 
     /** {@inheritDoc}. */
     @Override
     public void setTitle(final String title) {
-        if (maximised) {
+        if (getActiveFrame() != null && getActiveFrame().isMaximum()) {
             super.setTitle(getTitlePrefix() + " - " + title);
         } else {
             super.setTitle(getTitlePrefix());
@@ -251,7 +244,12 @@ public final class MainFrame extends JFrame implements WindowListener,
             /** {@inheritDoc}. */
             @Override
             public void run() {
-                setObject(maximised);
+                final Window window = getActiveFrame();
+                if (window == null) {
+                    setObject(false);
+                } else {
+                    setObject(getActiveFrame().isMaximum());
+                }
             }
         });
     }

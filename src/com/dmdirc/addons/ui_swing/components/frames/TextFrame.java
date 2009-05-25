@@ -150,11 +150,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             final SwingController controller) {
         super();
         this.controller = controller;
+        frameParent = owner;
 
         final ConfigManager config = owner.getConfigManager();
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
-        frameParent = owner;
         setFrameIcon(owner.getIcon());
         owner.addIconChangeListener(new IconChangeListener() {
 
@@ -236,7 +236,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
             @Override
             public void run() {
-                if (isVisible) {
+                if (isVisible() && isVisible) {
                     open();
                 } else {
                     TextFrame.super.setVisible(isVisible);
@@ -248,21 +248,27 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        final boolean pref = frameParent.getConfigManager().
-                getOptionBool("ui", "maximisewindows");
+        final boolean pref = frameParent.getConfigManager().getOptionBool("ui",
+                    "maximisewindows");
         UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                TextFrame.super.setVisible(true);
+                if (!isVisible()) {
+                    TextFrame.super.setVisible(true);
+                }
                 try {
-                    setSelected(true);
+                    if (!isSelected()) {
+                        setSelected(true);
+                    }
                 } catch (PropertyVetoException ex) {
                     //Ignore
                 }
                 try {
                     if (pref || controller.getMainFrame().getMaximised()) {
-                        setMaximum(true);
+                        if (!isMaximum()) {
+                            setMaximum(true);
+                        }
                     }
                 } catch (PropertyVetoException ex) {
                     //Ignore
@@ -279,12 +285,18 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 try {
-                    ActionManager.processEvent(
+                    if (isIcon()) {
+                        setIcon(false);
+                    }
+                    if (!isVisible()) {
+                        TextFrame.super.setVisible(true);
+                    }
+                    if (!isSelected()) {
+                        ActionManager.processEvent(
                             CoreActionType.CLIENT_FRAME_CHANGED,
                             null, getContainer());
-                    setIcon(false);
-                    TextFrame.super.setVisible(true);
-                    setSelected(true);
+                        setSelected(true);
+                    }
                 } catch (PropertyVetoException ex) {
                     //Ignore
                 }
@@ -306,7 +318,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 closing = true;
 
                 try {
-                    setClosed(true);
+                    if (!isClosed()) {
+                        setClosed(true);
+                    }
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to close frame");
                 }
@@ -323,7 +337,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 try {
-                    setIcon(true);
+                    if (!isIcon()) {
+                        setIcon(true);
+                    }
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
@@ -350,7 +366,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
                     maximiseRestoreInProgress.set(true);
                     LOGGER.finest("maximise(): About to set icon");
-                    setIcon(false);
+                    if (isIcon()) {
+                        setIcon(false);
+                    }
                     LOGGER.finest("maximise(): About to set maximum");
                     setMaximum(true);
                     LOGGER.finest("maximise(): Done?");
@@ -379,7 +397,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     }
 
                     maximiseRestoreInProgress.set(true);
-                    setIcon(false);
+                    if (isIcon()) {
+                        setIcon(false);
+                    }
                     setMaximum(false);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
