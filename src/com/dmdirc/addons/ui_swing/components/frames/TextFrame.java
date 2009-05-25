@@ -258,17 +258,17 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     TextFrame.super.setVisible(true);
                 }
                 try {
-                    if (!isSelected()) {
-                        setSelected(true);
+                    if (pref || controller.getMainFrame().getMaximised()) {
+                        if (!isMaximum()) {
+                            setMaximum(true);
+                        }
                     }
                 } catch (PropertyVetoException ex) {
                     //Ignore
                 }
                 try {
-                    if (pref || controller.getMainFrame().getMaximised()) {
-                        if (!isMaximum()) {
-                            setMaximum(true);
-                        }
+                    if (!isSelected()) {
+                        setSelected(true);
                     }
                 } catch (PropertyVetoException ex) {
                     //Ignore
