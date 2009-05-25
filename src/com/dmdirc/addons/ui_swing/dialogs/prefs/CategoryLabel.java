@@ -143,8 +143,7 @@ public class CategoryLabel extends JLabel {
             try {
                 label.setIcon(get());
             } catch (InterruptedException ex) {
-                Logger.appError(ErrorLevel.LOW,
-                        "Unable to set icon for prefs cell", ex);
+                //Ignore
             } catch (ExecutionException ex) {
                 Logger.appError(ErrorLevel.LOW, ex.getMessage(), ex);
             }

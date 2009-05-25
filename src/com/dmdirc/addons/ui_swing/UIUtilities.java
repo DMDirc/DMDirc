@@ -173,7 +173,7 @@ public final class UIUtilities {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (InterruptedException ex) {
-                Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
+            //Ignore
             } catch (InvocationTargetException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
             }
@@ -194,7 +194,7 @@ public final class UIUtilities {
             try {
                 SwingUtilities.invokeAndWait(returnable);
             } catch (InterruptedException ex) {
-                Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
+                //Ignore
             } catch (InvocationTargetException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
             }            
