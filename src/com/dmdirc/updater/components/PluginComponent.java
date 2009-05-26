@@ -93,11 +93,11 @@ public class PluginComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws Throwable {
         final File target = new File(plugin.getFullFilename());
         
-        if (plugin.isUnloadable() && target.exists()) {
+        if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
             target.delete();
         }
         
-        if (!plugin.isUnloadable() || !new File(path).renameTo(target)) {
+        if ((!plugin.isUnloadable() && plugin.isLoaded()) || !new File(path).renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getFullFilename() + ".update");
             
