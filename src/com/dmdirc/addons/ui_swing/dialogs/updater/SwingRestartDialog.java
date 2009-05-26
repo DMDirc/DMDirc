@@ -80,6 +80,8 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
         
         getOkButton().addActionListener(this);  
         getCancelButton().addActionListener(this);
+
+        setResizable(false);
     }
     
     /** Layout Components. */
