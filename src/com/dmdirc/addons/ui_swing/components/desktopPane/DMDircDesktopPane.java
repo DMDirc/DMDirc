@@ -320,24 +320,35 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        LOGGER.finer("Property change: name: " + evt.getPropertyName() +
-                " value: " + evt.getOldValue() + "->" + evt.getNewValue());
-
-        if (!"maximum".equals(evt.getPropertyName())) {
-            return;
+        if ("title".equals(evt.getPropertyName())) {
+            handleTitleEvent((Window) evt.getSource(), 
+                    ((Window) evt.getSource()).getTitle());
+        } else if ("maximum".equals(evt.getPropertyName())) {
+            handleMaximiseEvent((Boolean) evt.getNewValue(),
+                    ((Window) evt.getSource()).getTitle());
         }
+    }
+
+    private void handleTitleEvent(final Window window, final String title) {
+        if (maximised && (window == selectedWindow)) {
+            mainFrame.setTitle(title);
+        }
+    }
+    
+    private void handleMaximiseEvent(final boolean isMaximised,
+            final String title) {
         if (changing.get()) {
             return;
         }
         changing.set(true);
-        maximised = (Boolean) evt.getNewValue();
+        maximised = isMaximised;
         if (!UIUtilities.isWindowsUI()) {
             Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
             stack.addAll(Arrays.asList(getAllFrames()));
 
             while (!stack.empty()) {
                 JInternalFrame frame = stack.pop();
-                if (maximised) {
+                if (isMaximised) {
                     if (!frame.isMaximum()) {
                         ((Window) frame).maximise();
                     }
@@ -350,7 +361,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             if (selectedWindow != null) {
                 selectedWindow.activateFrame();
             }
-            mainFrame.setTitle(((Window) evt.getSource()).getTitle());
+            mainFrame.setTitle(title);
         }
         changing.set(false);
     }
