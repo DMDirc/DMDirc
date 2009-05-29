@@ -147,6 +147,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     protected void setScrollBarMax(final int linesAllowed) {
         final int lines = document.getNumLines() - 1;
+        final int currentLine = scrollBar.getValue();
+        final int allowedDeviation = lines - linesAllowed;
 
         if (lines == 0) {
             canvas.repaint();
@@ -154,9 +156,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         scrollBar.setMaximum(lines);
 
-        if (!scrollBar.getValueIsAdjusting() && scrollBar.getValue() ==
-                lines -
-                linesAllowed) {
+        boolean setToMax = currentLine == allowedDeviation;
+        if (allowedDeviation == -1) {
+            setToMax = true;
+        }
+
+        if (!scrollBar.getValueIsAdjusting() && setToMax) {
             setScrollBarPosition(lines);
         }
     }
