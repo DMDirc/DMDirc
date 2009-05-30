@@ -71,6 +71,7 @@ public final class IdentityManager {
     public static void load() {
         identities.clear();
         managers.clear();
+        globalconfig = null;
 
         loadVersion();
         loadDefaults();
