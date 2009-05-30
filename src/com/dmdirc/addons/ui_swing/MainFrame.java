@@ -77,8 +77,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
-    /** Whether the internal frames are maximised or not. */
-    private boolean maximised;
     /** The main application icon. */
     private ImageIcon imageIcon;
     /** The frame manager that's being used. */
