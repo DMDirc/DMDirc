@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Allows the user to join channels.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public final class JoinChannelCommand extends ServerCommand implements

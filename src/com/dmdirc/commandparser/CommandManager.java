@@ -97,7 +97,7 @@ public final class CommandManager {
      * 
      * @param command The command to be registered
      * @param info The information about the command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public static void registerCommand(final Command command, final CommandInfo info) {
         registerCommand(info, command, true);
@@ -110,7 +110,7 @@ public final class CommandManager {
      * @param <T> The type of object that's being registered
      * @param command An object that extends {@link Command} and implements
      * {@link CommandInfo} to be registered.
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public static <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
@@ -120,7 +120,7 @@ public final class CommandManager {
      * Unregisters a command with the command manager.
      * 
      * @param info The information object for the command that should be unregistered
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public static void unregisterCommand(final CommandInfo info) {
         registerCommand(info, commands.get(info), false);
@@ -133,7 +133,7 @@ public final class CommandManager {
      * @param command The command to be (un)registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
@@ -156,7 +156,7 @@ public final class CommandManager {
      * @param info The command information object
      * @param command The command to be reigstered
      * @param parsers The parsers to register the command with
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final List<? extends CommandParser> myParsers, final boolean register) {
@@ -176,7 +176,7 @@ public final class CommandManager {
      * @param command The command to be registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     private static void registerCommandName(final CommandInfo command,
             final boolean register) {
@@ -311,7 +311,7 @@ public final class CommandManager {
      * Loads all commands of the specified types into the specified parser.
      *
      * @see CommandType#getComponentTypes()
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param parser The {@link CommandParser} to load commands in to
      * @param supertypes The types of commands that should be loaded
      */
@@ -386,7 +386,7 @@ public final class CommandManager {
      * 
      * @param type The type of command to list
      * @return A map of commands
-     * @since 0.6.3
+     * @since 0.6.3m1
      */    
     public static Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
@@ -399,7 +399,7 @@ public final class CommandManager {
      * @param type The type of command to list, or null for all types
      * @param name The name of the command to look for, or null for any name
      * @return A map of {@link CommandInfo}s and their associated {@link Command}.
-     * @since 0.6.3
+     * @since 0.6.3m1
      */    
     private static Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {

@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * Indicates that the specified argument is a source of data for fakable
  * arguments.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 @Retention(RetentionPolicy.RUNTIME)

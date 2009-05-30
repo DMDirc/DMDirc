@@ -39,7 +39,7 @@ public interface ValidatingCommand {
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return A validation response indicating the validity of the arguments
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     ValidationResponse validateArguments(InputWindow origin, CommandArguments arguments);
 

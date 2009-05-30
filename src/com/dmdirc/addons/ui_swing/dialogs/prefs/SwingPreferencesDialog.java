@@ -67,7 +67,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /**
      * The maximum height clients may use if they don't want to scroll.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public static int CLIENT_HEIGHT = 375;
     /** Previously instantiated instance of SwingPreferencesDialog. */
@@ -253,7 +253,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /**
      * {@inheritDoc}
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     @Override
     public void valueChanged(final ListSelectionEvent e) {

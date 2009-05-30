@@ -334,7 +334,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * Pastes the specified content into the input area.
      *
      * @param clipboard The contents of the clipboard to be pasted
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void doPaste(final String clipboard) {
         String[] clipboardLines;

@@ -77,7 +77,7 @@ public enum CommandType {
      * both CHAT and CHANNEL queues). Note that for obvious reasons there is
      * no recursion done on the values returned here.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return An array of types which this type should be registered as.
      */
     public CommandType[] getComponentTypes() {

@@ -29,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
  * Used to indicate that a callback interface can be called for specified
  * objects (hosts/channels/etc).
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 @Retention(RetentionPolicy.RUNTIME)

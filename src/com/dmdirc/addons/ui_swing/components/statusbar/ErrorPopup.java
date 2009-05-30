@@ -39,7 +39,7 @@ import javax.swing.JSeparator;
 /**
  * Shows a breakdown of errors that have occured.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class ErrorPopup extends StatusbarPopupWindow {

@@ -81,7 +81,7 @@ public enum ServerState {
     /**
      * Creates a new instance of ServerState.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param transitions The names of the states to which a transition is
      * allowed from this state
      */
@@ -93,7 +93,7 @@ public enum ServerState {
      * Determines whether a transition from this state to the specified state
      * would be legal.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param state The state that is being transitioned to
      * @return True if the transition is allowed, false otherwise.
      */
@@ -105,6 +105,7 @@ public enum ServerState {
      * Determines where the current state is a disconnected one.
      *
      * @return True if the state is one of the disconnected states, false otherwise
+     * @since 0.6.3m1
      */
     public boolean isDisconnected() {
         return this == ServerState.DISCONNECTED || this == ServerState.TRANSIENTLY_DISCONNECTED;

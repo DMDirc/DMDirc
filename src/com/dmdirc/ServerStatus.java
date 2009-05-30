@@ -28,7 +28,7 @@ import com.dmdirc.util.RollingList;
  * Describes the status of a server and manages transitions between different
  * states.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class ServerStatus {

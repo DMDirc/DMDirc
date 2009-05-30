@@ -117,7 +117,7 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
     /**
      * Initialises the specified category.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param category The category that is being initialised
      * @param panel The panel to which we're adding its contents
      * @param path The textual path of this category
@@ -235,7 +235,7 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
     /**
      * Adds the specified category to the preferences dialog.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param category The category to be added
      * @param namePrefix Category name prefix
      */

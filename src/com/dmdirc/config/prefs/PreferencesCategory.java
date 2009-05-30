@@ -82,7 +82,7 @@ public class PreferencesCategory {
     /**
      * Creates a new preferences category that contains settings.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param title The title of this preferences category
      * @param description The description of this category
      * @param icon The icon to use for this category
@@ -107,7 +107,7 @@ public class PreferencesCategory {
     /**
      * Creates a new preferences category that contains an object.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param title The title of this preferences category
      * @param description The description of this category
      * @param icon The icon to use for this category
@@ -230,7 +230,7 @@ public class PreferencesCategory {
      * Retrieves the icon to use for this category.
      *
      * @return This category's icon
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public String getIcon() {
         return icon;
@@ -262,7 +262,7 @@ public class PreferencesCategory {
      * hierarchy, separated by '→' characters.
      *
      * @return This category's path
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public String getPath() {
         return (parent == null ? "" : parent.getPath() + " → ") + getTitle();
@@ -272,7 +272,7 @@ public class PreferencesCategory {
      * Sets this category's parent.
      *
      * @param parent The parent of this category
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public void setParent(final PreferencesCategory parent) {
         this.parent = parent;
@@ -282,7 +282,7 @@ public class PreferencesCategory {
      * Retrieves the parent of this category.
      *
      * @return This category's parent, or null if it's an orphan
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public PreferencesCategory getParent() {
         return parent;

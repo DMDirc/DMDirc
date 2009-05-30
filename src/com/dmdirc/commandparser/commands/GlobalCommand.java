@@ -42,7 +42,7 @@ public abstract class GlobalCommand extends Command implements CommandInfo {
      * @param origin The window in which the command was typed
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public abstract void execute(InputWindow origin, boolean isSilent, CommandArguments args);
 

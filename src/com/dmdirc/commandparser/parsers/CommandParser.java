@@ -83,7 +83,7 @@ public abstract class CommandParser implements Serializable {
     /**
      * Registers the specified command with this parser.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @param command Command to be registered
      * @param info The information the command should be registered with
      */
@@ -95,7 +95,7 @@ public abstract class CommandParser implements Serializable {
      * Unregisters the specified command with this parser.
      *
      * @param info Command information to be unregistered
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public final void unregisterCommand(final CommandInfo info) {
         commands.remove(info.getName().toLowerCase());
@@ -104,7 +104,7 @@ public abstract class CommandParser implements Serializable {
     /**
      * Retrieves a map of commands known by this command parser.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return A map of commands known to this parser
      */
     public Map<String, Command> getCommands() {
@@ -226,7 +226,7 @@ public abstract class CommandParser implements Serializable {
      * @param isSilent Whether the command is being silenced or not
      * @param command The command to be executed
      * @param args The arguments to the command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected abstract void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final CommandArguments args);
@@ -238,7 +238,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @param origin The window in which the command was typed
      * @param args The arguments passed to the command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void handleInvalidCommand(final InputWindow origin,
             final CommandArguments args) {

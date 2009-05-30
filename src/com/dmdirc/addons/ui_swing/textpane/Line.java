@@ -112,7 +112,7 @@ public class Line {
      *
      * @return Line at the specified number or null
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public String getStyledText() {
         StringBuilder lineText = new StringBuilder();

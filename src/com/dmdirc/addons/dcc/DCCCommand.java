@@ -122,7 +122,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 	 * @param server The server instance that this command is being executed on
 	 * @param isSilent Whether this command is silenced or not
 	 * @param filename The file to send
-     * @since 0.6.3
+     * @since 0.6.3m1
 	 */
 	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String filename) {
 		// New thread to ask the user what file to send

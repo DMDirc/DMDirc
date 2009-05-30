@@ -354,7 +354,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * Get the current socket State.
 	 *
-     * @since 0.6.3
+     * @since 0.6.3m1
 	 * @return Current {@link SocketState}
 	 */
 	public SocketState getSocketState() { return currentSocketState; }

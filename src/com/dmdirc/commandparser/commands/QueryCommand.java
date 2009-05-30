@@ -44,7 +44,7 @@ public abstract class QueryCommand extends Command implements CommandInfo {
      * @param query The query object that the commadparser is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public abstract void execute(InputWindow origin, Server server, Query query,
             boolean isSilent, CommandArguments args);

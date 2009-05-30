@@ -241,7 +241,7 @@ public final class Styliser {
      *
      * @param string The string to be smilified
      * @return A copy of the string with smilies marked up
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public static String doSmilies(final String string) {
         // TODO: read types from config. Check if they're enabled.

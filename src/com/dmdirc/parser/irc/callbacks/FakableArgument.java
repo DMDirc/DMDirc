@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a specific argument may be faked.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 @Retention(RetentionPolicy.RUNTIME)

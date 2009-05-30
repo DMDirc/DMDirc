@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * 'arguments' are the same but exclude the first word, which will normally be
  * the command name.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class CommandArguments {

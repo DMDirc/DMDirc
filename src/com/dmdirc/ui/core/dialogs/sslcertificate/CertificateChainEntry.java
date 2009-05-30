@@ -25,7 +25,7 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
 /**
  * Represents one certificate within a chain.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class CertificateChainEntry {

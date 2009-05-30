@@ -120,7 +120,7 @@ public interface Window {
     /**
      * Restores this window.
      * 
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     void restore();
     
@@ -128,14 +128,14 @@ public interface Window {
     /** 
      * Maximises this window.
      * 
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     void maximise();
     
     /**
      * Toggles Maximise State.
      * 
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     void toggleMaximise();
     

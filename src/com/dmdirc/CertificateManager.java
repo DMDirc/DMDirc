@@ -63,7 +63,7 @@ import net.miginfocom.Base64;
  * Manages storage and validation of certificates used when connecting to
  * SSL servers.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class CertificateManager implements X509TrustManager {

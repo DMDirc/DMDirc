@@ -271,7 +271,7 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param domain The domain of the option that's changed
      * @param key The key of the option that's changed
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     private void fireSettingChange(final String domain, final String key) {
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
@@ -297,7 +297,7 @@ public class Identity extends ConfigSource implements Serializable,
      * storing nicknames (profile.nickname + profile.altnicks) to the new
      * method (profile.nicknames), and performs the migration if needed.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void migrateProfile() {
         if (hasOption(PROFILE_DOMAIN, "nickname")) {
@@ -609,7 +609,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @return A new identity containing the specified properties
      * @throws IOException If the file cannot be created
      * @throws InvalidIdentityFileException If the settings are invalid
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected static Identity createIdentity(final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {

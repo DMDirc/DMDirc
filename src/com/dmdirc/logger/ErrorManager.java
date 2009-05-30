@@ -112,7 +112,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      *
      * @param level The severity of the error
      * @param message The error message
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message) {
         addError(level, message, new String[0], false);
@@ -125,7 +125,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * @param message The error message
      * @param exception The exception that caused this error
      * @param appError Whether or not this is an application error
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
             final Throwable exception, final boolean appError) {
@@ -139,7 +139,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * @param message The error message
      * @param details The details of the exception
      * @param appError Whether or not this is an application error
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
             final String[] details, final boolean appError) {
@@ -154,7 +154,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * @param details The details of the exception
      * @param appError Whether or not this is an application error
      * @param canReport Whether or not this error can be reported
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
             final String[] details, final boolean appError, final boolean canReport) {
@@ -210,7 +210,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * @param message The error message
      * @param details The details of the exception
      * @param appError Whether or not this is an application error
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return A corresponding ProgramError
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
@@ -224,7 +224,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * willing to report.
      *
      * @param exception The exception to test
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return True if the exception may be reported, false otherwise
      */
     protected boolean isValidError(final Throwable exception) {
@@ -247,7 +247,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * Converts an exception into a string array.
      *
      * @param throwable Exception to convert
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return Exception string array
      */
     protected String[] getTrace(final Throwable throwable) {
@@ -317,7 +317,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
     /**
      * Deletes all errors from the manager.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public void deleteAll() {
         synchronized (errors) {

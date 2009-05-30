@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 /**
  * Shows information about received invites.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class InvitePopup extends StatusbarPopupWindow {

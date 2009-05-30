@@ -26,7 +26,7 @@ package com.dmdirc.updater;
  * Describes a version of a component, either as an integer or as a String which
  * corresponds to the output of `git-describe --tags`.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class Version implements Comparable<Version> {

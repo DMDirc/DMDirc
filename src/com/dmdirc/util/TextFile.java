@@ -89,7 +89,7 @@ public class TextFile {
      *
      * @param file The file to read
      * @param charset The charset to read the file in
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public TextFile(final File file, final Charset charset) {
         this.file = file;
@@ -102,7 +102,7 @@ public class TextFile {
      *
      * @param is The input stream to read from
      * @param charset The charset to read the file in
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public TextFile(final InputStream is, final Charset charset) {
         this.is = is;

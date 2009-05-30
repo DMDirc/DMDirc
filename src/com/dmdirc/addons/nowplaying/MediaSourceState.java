@@ -26,7 +26,7 @@ package com.dmdirc.addons.nowplaying;
  * The state of a media source.
  *
  * @author Shane McCormack
- * @since 0.6.3
+ * @since 0.6.3m1
  */
 public enum MediaSourceState {
 	/** Media Source is closed. */

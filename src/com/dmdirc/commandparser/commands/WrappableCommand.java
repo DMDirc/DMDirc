@@ -40,7 +40,7 @@ public interface WrappableCommand {
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return The number of lines that the arguments will result in
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     int getLineCount(InputWindow origin, CommandArguments arguments);
 

@@ -45,7 +45,7 @@ public abstract class ChatCommand extends Command implements CommandInfo {
      * @param target The target of this command
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public abstract void execute(InputWindow origin, Server server, MessageTarget target,
             boolean isSilent, CommandArguments args);

@@ -25,7 +25,7 @@ package com.dmdirc.parser.irc;
 /**
  * An enumeration of possible states of an IRC Parser's socket.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public enum SocketState {

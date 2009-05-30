@@ -983,7 +983,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * on the object returned by this method will almost certainly cause
      * problems.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return This server's status object.
      */
     public ServerStatus getStatus() {

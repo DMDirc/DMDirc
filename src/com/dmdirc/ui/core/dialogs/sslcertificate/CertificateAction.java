@@ -25,7 +25,7 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
 /**
  * Describes an action that can be performed on an invalid certificate.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public enum CertificateAction {

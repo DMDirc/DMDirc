@@ -46,7 +46,7 @@ import javax.swing.SwingUtilities;
 /**
  * Shows error status in the status bar.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, ActionListener {

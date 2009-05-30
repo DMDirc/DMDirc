@@ -60,7 +60,7 @@ public class CallbackObject {
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
      * @param type The type of callback to use
-     * @since 0.6.3
+     * @since 0.6.3m1
 	 */
 	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
             final Class<? extends ICallbackInterface> type) {

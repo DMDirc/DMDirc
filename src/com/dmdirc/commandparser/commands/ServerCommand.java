@@ -43,7 +43,7 @@ public abstract class ServerCommand extends Command implements CommandInfo {
      * @param server The server instance that this command is being executed on
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public abstract void execute(InputWindow origin, Server server,
             boolean isSilent, CommandArguments args);

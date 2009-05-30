@@ -57,7 +57,7 @@ public interface UpdateComponent {
      * Retrieves the currently installed version of this component.
      * 
      * @return This component's current version
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     Version getVersion();
     

@@ -41,7 +41,7 @@ public interface ExternalCommand {
      * @param channel The name of the channel the command is being executed for
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     void execute(InputWindow origin, Server server, String channel,
             boolean isSilent, CommandArguments args);

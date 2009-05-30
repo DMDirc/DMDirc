@@ -98,7 +98,7 @@ public final class IconManager implements ConfigChangeListener {
      * 
      * @return The icon that should be used for the specified type
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public Icon getScaledIcon(final String type, final int width, final int height) {
         return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).

@@ -82,7 +82,7 @@ public abstract class EventHandler implements ICallbackInterface {
     /**
      * Retrieves the server belonging to this EventHandler's owner.
      *
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return This EventHandler's expected server
      */
     protected abstract Server getServer();

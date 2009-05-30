@@ -41,7 +41,7 @@ import net.miginfocom.swing.MigLayout;
  * A popup window which is shown above a status bar component to provide more
  * detailed information.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public abstract class StatusbarPopupWindow extends StandardDialog {

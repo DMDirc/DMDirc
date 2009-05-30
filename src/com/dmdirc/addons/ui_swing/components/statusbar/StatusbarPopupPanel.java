@@ -42,7 +42,7 @@ import net.miginfocom.swing.MigLayout;
  * A panel shown in the status bar which displays a {@link StatusbarPopupWindow}
  * when the user mouses over it.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  * @author chris
  */
 public abstract class StatusbarPopupPanel extends JPanel

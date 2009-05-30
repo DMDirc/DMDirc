@@ -59,7 +59,7 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return True iff the option exists and is not empty, false otherwise
      */
     public boolean hasOptionString(final String domain, final String option) {
@@ -71,7 +71,7 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return True iff the option exists and is parsable as an integer,
      * false otherwise.
      */
@@ -93,7 +93,7 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return True iff the option exists and is parsable as a char,
      * false otherwise.
      */
@@ -106,7 +106,7 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @since 0.6.3
+     * @since 0.6.3m1
      * @return True iff the option exists and is parsable as a colour,
      * false otherwise.
      */
@@ -133,7 +133,7 @@ public abstract class ConfigSource {
      * @param fallbacks An ordered array of further domains and options
      * (in pairs) to try if the specified domain/option isn't found
      * @return The colour representation of the option
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     public Color getOptionColour(final String domain, final String option,
             final String ... fallbacks) {

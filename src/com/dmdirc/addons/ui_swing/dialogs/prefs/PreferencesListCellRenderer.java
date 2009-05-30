@@ -47,7 +47,7 @@ import net.miginfocom.layout.PlatformDefaults;
 /**
  * Prefs dialog list cell renderer.
  *
- * @since 0.6.3
+ * @since 0.6.3m1
  */
 public class PreferencesListCellRenderer extends JLabel implements ListCellRenderer {
 

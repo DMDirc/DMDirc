@@ -33,7 +33,7 @@ public interface MediaSource {
      * Get the state of this media source
      *
      * @return State for this media source.
-     * @since 0.6.3
+     * @since 0.6.3m1
      */
     MediaSourceState getState();
     
