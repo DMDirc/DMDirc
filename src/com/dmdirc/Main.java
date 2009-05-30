@@ -99,6 +99,8 @@ public final class Main {
         // Enable finer debugging for specific components like so:
         //java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
 
+        IdentityManager.loadVersion();
+
         final CommandLineParser clp = new CommandLineParser(args);
         
         IdentityManager.load();

@@ -245,7 +245,7 @@ public final class IdentityManager {
     }
 
     /** Loads the version information. */
-    private static void loadVersion() {
+    public static void loadVersion() {
         try {
             addIdentity(new Identity(Main.class.getResourceAsStream("version.config"), false));
         } catch (IOException ex) {
