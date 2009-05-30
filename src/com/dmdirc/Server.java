@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.net.ssl.TrustManager;
 
 /**
@@ -65,6 +66,10 @@ import javax.net.ssl.TrustManager;
  * @author chris
  */
 public class Server extends WritableFrameContainer implements Serializable {
+
+    // <editor-fold defaultstate="collapsed" desc="Properties">
+
+    // <editor-fold defaultstate="collapsed" desc="Static">
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -79,6 +84,10 @@ public class Server extends WritableFrameContainer implements Serializable {
     private static final String DOMAIN_PROFILE = "profile".intern();
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server".intern();
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Instance">
 
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
@@ -131,6 +140,12 @@ public class Server extends WritableFrameContainer implements Serializable {
 
     /** The parser factory to use. */
     private final ParserFactory parserFactory;
+
+    // </editor-fold>
+    
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Constructors">
 
     /**
      * Creates a new instance of Server. Does not auto-join any channels, and
@@ -221,7 +236,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         connect(server, port, password, ssl, profile);
     }
 
-    // ------------------------ CONNECTION, DISCONNECTION AND RECONNECTION -----
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Connection, disconnection & reconnection">
 
     /**
      * Connects to a new server with the specified details.
@@ -240,7 +257,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             final boolean ssl, final Identity profile) {
         assert profile != null;
 
-        synchronized (this) {
+        synchronized (myState) {
             switch (myState.getState()) {
                 case RECONNECT_WAIT:
                     reconnectTimer.cancel();
@@ -303,12 +320,21 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING) {
                 return;
             }
 
             disconnect(reason);
+
+            while (!myState.getState().isDisconnected()) {
+                try {
+                    myState.wait();
+                } catch (InterruptedException ex) {
+                    return;
+                }
+            }
+            
             connect(serverInfo.getHost(), serverInfo.getPort(),
                     serverInfo.getPassword(), serverInfo.getSSL(), profile);
         }
@@ -334,7 +360,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
-        synchronized (this) {
+        synchronized (myState) {
             switch (myState.getState()) {
             case CLOSING:
             case DISCONNECTING:
@@ -379,7 +405,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() != ServerState.TRANSIENTLY_DISCONNECTED) {
                 throw new IllegalStateException("doDelayedReconnect when not "
                         + "transiently disconnected\n\nState: " + myState);
@@ -394,7 +420,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             reconnectTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    synchronized (Server.this) {
+                    synchronized (myState) {
                         if (myState.getState() == ServerState.RECONNECT_WAIT) {
                             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
                             reconnect();
@@ -408,7 +434,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
     }
 
-    // ------------------------------------------------- CHILDREN HANDLING -----
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Child windows">
 
     /**
      * Determines whether the server knows of the specified channel.
@@ -538,7 +566,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param chan channel to add
      */
     public void addChannel(final ChannelInfo chan) {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't join channels while the server is closing
                 return;
@@ -563,7 +591,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param host host of the remote client being queried
      */
     public void addQuery(final String host) {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't open queries while the server is closing
                 return;
@@ -633,7 +661,36 @@ public class Server extends WritableFrameContainer implements Serializable {
         return res;
     }
 
-    // --------------------------------------------- MISCELLANEOUS METHODS -----
+    /**
+     * Closes all open channel windows associated with this server.
+     */
+    private void closeChannels() {
+        for (Channel channel : new ArrayList<Channel>(channels.values())) {
+            channel.close();
+        }
+    }
+
+    /**
+     * Clears the nicklist of all open channels.
+     */
+    private void clearChannels() {
+        for (Channel channel : channels.values()) {
+            channel.resetWindow();
+        }
+    }
+
+    /**
+     * Closes all open query windows associated with this server.
+     */
+    private void closeQueries() {
+        for (Query query : new ArrayList<Query>(queries)) {
+            query.close();
+        }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Miscellaneous methods">
 
     /**
      * Construsts a {@link ServerInfo} object for the specified details.
@@ -749,7 +806,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param channel The channel to be joined
      */
     public void join(final String channel) {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CONNECTED) {
                 removeInvites(channel);
 
@@ -768,7 +825,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        synchronized (this) {
+        synchronized (myState) {
             if (parser != null && myState.getState() == ServerState.CONNECTED) {
                 parser.sendLine(window.getTranscoder().encode(line));
             }
@@ -936,7 +993,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
-        synchronized (this) {
+        synchronized (myState) {
             // 1: Make the window non-visible
             window.setVisible(false);
 
@@ -969,33 +1026,6 @@ public class Server extends WritableFrameContainer implements Serializable {
         // 7: Remove any references to the window and parents
         window = null; //NOPMD
         parser = null; //NOPMD
-    }
-
-    /**
-     * Closes all open channel windows associated with this server.
-     */
-    private void closeChannels() {
-        for (Channel channel : new ArrayList<Channel>(channels.values())) {
-            channel.close();
-        }
-    }
-
-    /**
-     * Clears the nicklist of all open channels.
-     */
-    private void clearChannels() {
-        for (Channel channel : channels.values()) {
-            channel.resetWindow();
-        }
-    }
-
-    /**
-     * Closes all open query windows associated with this server.
-     */
-    private void closeQueries() {
-        for (Query query : new ArrayList<Query>(queries)) {
-            query.close();
-        }
     }
 
     /**
@@ -1098,16 +1128,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
     }
 
-    /**
-     * Retusnt the list of invites for this server.
-     *
-     * @return Invite list
-     */
-    public List<Invite> getInvites() {
-        return invites;
-    }
+    // </editor-fold>
 
-    // -------------------------------------------------- PARSER CALLBACKS -----
+    // <editor-fold defaultstate="collapsed" desc="Parser callbacks">
 
     /**
      * Called when the server says that the nickname we're trying to use is
@@ -1188,7 +1211,7 @@ public class Server extends WritableFrameContainer implements Serializable {
 
         eventHandler.unregisterCallbacks();
 
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
@@ -1235,7 +1258,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
-        synchronized (this) {
+        synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTING) {
                 // Do nothing
@@ -1307,13 +1330,13 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     @Precondition("State is CONNECTING")
     public void onPost005() {
-        if (myState.getState() != ServerState.CONNECTING) {
-            // Shouldn't happen
-            throw new IllegalStateException("Received onPost005 while not "
-                    + "connecting\n\n" + myState.getTransitionHistory());
-        }
-
-        synchronized (this) {
+        synchronized (myState) {
+            if (myState.getState() != ServerState.CONNECTING) {
+                // Shouldn't happen
+                throw new IllegalStateException("Received onPost005 while not "
+                        + "connecting\n\n" + myState.getTransitionHistory());
+            }
+        
             if (myState.getState() != ServerState.CONNECTING) {
                 // We've transitioned while waiting for the lock. Just abort.
                 return;
@@ -1397,7 +1420,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
     }
 
-    // ---------------------------------------------- IGNORE LIST HANDLING -----
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Ignore lists">
 
     /**
      * Retrieves this server's ignore list.
@@ -1424,7 +1449,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
     }
 
-    // ------------------------------------------------- IDENTITY WRAPPERS -----
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Identity handling">
 
     /**
      * Retrieves the identity for this server.
@@ -1444,7 +1471,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         return IdentityManager.getNetworkConfig(getNetwork());
     }
 
-    // --------------------------------------------------- INVITE HANDLING -----
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Invite handling">
 
     /**
      * Adds an invite listener to this server.
@@ -1530,7 +1559,18 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
     }
 
-    // ----------------------------------------------- AWAY STATE HANDLING -----
+    /**
+     * Retusnt the list of invites for this server.
+     *
+     * @return Invite list
+     */
+    public List<Invite> getInvites() {
+        return invites;
+    }
+
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Away state handling">
 
     /**
      * Adds an away state lisener to this server.
@@ -1579,5 +1619,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             }
         }
     }
+
+    // </editor-fold>
 
 }

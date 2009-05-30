@@ -156,7 +156,7 @@ public class ActionSubstitutor {
             final Server server = ((FrameContainer) args[0]).getServer();
         
             if (server != null) {
-                synchronized (server) {
+                synchronized (server.getState()) {
                     if (!server.getState().equals(ServerState.CONNECTED)) {
                         return;
                     }

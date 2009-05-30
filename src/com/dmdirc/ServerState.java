@@ -100,4 +100,13 @@ public enum ServerState {
     public boolean canTransitionTo(final ServerState state) {
         return transitions.contains(state.name());
     }
+
+    /**
+     * Determines where the current state is a disconnected one.
+     *
+     * @return True if the state is one of the disconnected states, false otherwise
+     */
+    public boolean isDisconnected() {
+        return this == ServerState.DISCONNECTED || this == ServerState.TRANSIENTLY_DISCONNECTED;
+    }
 }

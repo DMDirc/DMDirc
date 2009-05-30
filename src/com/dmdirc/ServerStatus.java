@@ -49,6 +49,10 @@ public class ServerStatus {
 
         if (state.canTransitionTo(newState)) {
             state = newState;
+
+            synchronized (this) {
+                notifyAll();
+            }
         } else {
             throw new IllegalArgumentException("Illegal server state "
                     + "transition\n\n" + getTransitionHistory());
