@@ -111,10 +111,13 @@ public class ActionSubstitutor {
             if (args[i] != null) {
                 for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
                     final String needle = "${" + i + "." + comp.toString() + "}";
-                    final Object replacement = comp.get(args[i]);
 
-                    if (replacement != null) {
-                        doReplacement(target, needle, replacement.toString());
+                    if (target.indexOf(needle) > -1) {
+                        final Object replacement = comp.get(args[i]);
+
+                        if (replacement != null) {
+                            doReplacement(target, needle, replacement.toString());
+                        }
                     }
                 }
             }
@@ -163,10 +166,13 @@ public class ActionSubstitutor {
                     
                     for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
                         final String key = "${" + comp.toString() + "}";
-                        final Object res = comp.get(((FrameContainer) args[0]).getServer());
 
-                        if (res != null) {
-                            doReplacement(target, key, res.toString());
+                        if (target.indexOf(key) > -1) {
+                            final Object res = comp.get(((FrameContainer) args[0]).getServer());
+
+                            if (res != null) {
+                                doReplacement(target, key, res.toString());
+                            }
                         }
                     }
                 }
@@ -201,7 +207,8 @@ public class ActionSubstitutor {
      * @return True if word substitutions are supported, false otherwise.
      */
     public boolean usesWordSubstitutions() {
-        return type.getType().getArgTypes().length > 2 && type.getType().getArgTypes()[2] == String[].class;
+        return type.getType().getArgTypes().length > 2
+                && type.getType().getArgTypes()[2] == String[].class;
     }
     
     /**
