@@ -24,7 +24,6 @@ package com.dmdirc.addons.ui_swing.dialogs.error;
 
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
-import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
@@ -91,6 +90,8 @@ public final class ErrorListDialog extends StandardDialog implements
         initComponents();
         layoutComponents();
         initListeners();
+
+        selectedRow = table.getSelectedRow();
 
         pack();
     }
