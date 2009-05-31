@@ -70,7 +70,11 @@ public final class URLBuilder {
      */
     public static URL buildJarURL(final String jarFile, final String path) {
         try {
-            return new URL("jar:" + buildURL(jarFile) + "!/" + path);            
+            String url = "jar:" + buildURL(jarFile) + "!/" + path;
+            if (url.startsWith("jar:file://")) {
+                url = "jar:file:/" + url.substring(11);
+            }
+            return new URL(url);
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to build jar URL", ex);
             return null;
