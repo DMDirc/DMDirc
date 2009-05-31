@@ -343,36 +343,42 @@ public class Identity extends ConfigSource implements Serializable,
      * @param option The name of the option
      * @param value The new value for the option
      */
-    public synchronized void setOption(final String domain, final String option,
+    public void setOption(final String domain, final String option,
             final String value) {
-        final String oldValue = getOption(domain, option);
-        LOGGER.finer(getName() + ": setting " + domain + "." + option + " to " + value);
+        String oldValue;
 
-        if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
-            // If we're the global config, don't set useless settings that are
-            // covered by global defaults.
+        synchronized (this) {
+            oldValue = getOption(domain, option);
+            LOGGER.finer(getName() + ": setting " + domain + "." + option + " to " + value);
 
-            if (globalConfig == null) {
-                globalConfig = new ConfigManager("", "", "");
-            }
+            if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
+                // If we're the global config, don't set useless settings that are
+                // covered by global defaults.
 
-            globalConfig.removeIdentity(this);
+                if (globalConfig == null) {
+                    globalConfig = new ConfigManager("", "", "");
+                }
 
-            if (globalConfig.hasOption(domain, option)
-                    && globalConfig.getOption(domain, option).equals(value)) {
-                if (oldValue == null) {
-                    return;
-                } else {
-                    unsetOption(domain, option);
-                    return;
+                globalConfig.removeIdentity(this);
+
+                if (globalConfig.hasOption(domain, option)
+                        && globalConfig.getOption(domain, option).equals(value)) {
+                    if (oldValue == null) {
+                        return;
+                    } else {
+                        unsetOption(domain, option);
+                        return;
+                    }
                 }
             }
         }
 
         if ((oldValue == null && value != null)
                 || (oldValue != null && !oldValue.equals(value))) {
-            file.getKeyDomain(domain).put(option, value);
-            needSave = true;
+            synchronized (this) {
+                file.getKeyDomain(domain).put(option, value);
+                needSave = true;
+            }
 
             fireSettingChange(domain, option);
         }
