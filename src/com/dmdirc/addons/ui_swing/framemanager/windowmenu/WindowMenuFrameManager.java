@@ -31,6 +31,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.interfaces.FrameListener;
 
+import com.dmdirc.addons.ui_swing.components.MenuScroller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
@@ -116,6 +117,8 @@ public final class WindowMenuFrameManager extends JMenu implements
 
         itemCount = getMenuComponentCount();
         checkToggleState();
+
+        MenuScroller.setScrollerFor(this, 20);
     }
 
     /**
