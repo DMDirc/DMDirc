@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -71,7 +72,7 @@ public final class ErrorListDialog extends StandardDialog implements
     /** Delete all button. */
     private JButton deleteAllButton;
     /** Selected row. */
-    private int selectedRow = -1;
+    private final AtomicInteger selectedRow = new AtomicInteger(-1);
     /** Row being deleted. */
     private boolean rowBeingDeleted = false;
 
@@ -91,7 +92,7 @@ public final class ErrorListDialog extends StandardDialog implements
         layoutComponents();
         initListeners();
 
-        selectedRow = table.getSelectedRow();
+        selectedRow.set(table.getSelectedRow());
 
         pack();
     }
@@ -184,11 +185,14 @@ public final class ErrorListDialog extends StandardDialog implements
                 deleteButton.setEnabled(false);
                 sendButton.setEnabled(false);
             }
-            if (rowBeingDeleted) {
-                table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-                rowBeingDeleted = false;
+            synchronized (selectedRow) {
+                if (rowBeingDeleted) {
+                    table.getSelectionModel().setSelectionInterval(selectedRow.
+                            get(), selectedRow.get());
+                    rowBeingDeleted = false;
+                }
+                selectedRow.set(localRow);
             }
-            selectedRow = localRow;
         }
     }
 
@@ -202,14 +206,16 @@ public final class ErrorListDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             setVisible(false);
         } else if (e.getSource() == deleteButton) {
-            synchronized (tableModel) {
+            synchronized (selectedRow) {
                 ErrorManager.getErrorManager().deleteError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(selectedRow)));
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
             }
         } else if (e.getSource() == sendButton) {
-            synchronized (tableModel) {
+            synchronized (selectedRow) {
                 ErrorManager.getErrorManager().sendError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(selectedRow)));
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
             }
         } else if (e.getSource() == deleteAllButton) {
             ErrorManager.getErrorManager().deleteAll();
@@ -225,16 +231,22 @@ public final class ErrorListDialog extends StandardDialog implements
     public void tableChanged(final TableModelEvent e) {
         switch (e.getType()) {
             case TableModelEvent.DELETE:
-                if (selectedRow >= tableModel.getRowCount()) {
-                    selectedRow = tableModel.getRowCount() - 1;
+                synchronized (selectedRow) {
+                    if (selectedRow.get() >= tableModel.getRowCount()) {
+                        selectedRow.set(tableModel.getRowCount() - 1);
+                    }
+                    table.getSelectionModel().setSelectionInterval(selectedRow.
+                            get(),
+                            selectedRow.get());
+                    rowBeingDeleted = true;
                 }
-                table.getSelectionModel().setSelectionInterval(selectedRow,
-                        selectedRow);
-                rowBeingDeleted = true;
                 break;
             case TableModelEvent.INSERT:
-                table.getSelectionModel().setSelectionInterval(selectedRow,
-                        selectedRow);
+                synchronized (selectedRow) {
+                    table.getSelectionModel().setSelectionInterval(selectedRow.
+                            get(),
+                            selectedRow.get());
+                }
                 break;
             case TableModelEvent.UPDATE:
                 final int errorRow = e.getFirstRow();
