@@ -1351,8 +1351,6 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             converter = parser.getIRCStringConverter();
 
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {
                     chan.join();
@@ -1365,6 +1363,8 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             checkModeAliases();
         }
+
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
     }
 
     /**
