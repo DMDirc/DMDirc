@@ -29,6 +29,7 @@ import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
@@ -148,86 +149,93 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        boolean useAlternate = false;
+        UIUtilities.invokeLater(new Runnable() {
 
-        for (Object obj : arguments) {
-            if (obj instanceof FrameContainer && ((FrameContainer) obj).getServer() != null) {
-                useAlternate = ((FrameContainer) obj).getServer().getConfigManager()
-                        .getOptionBool(getDomain(), "usealternate");
-                break;
+            @Override
+            public void run() {
+                boolean useAlternate = false;
+
+                for (Object obj : arguments) {
+                    if (obj instanceof FrameContainer
+                            && ((FrameContainer) obj).getConfigManager() != null) {
+                        useAlternate = ((FrameContainer) obj).getConfigManager()
+                                .getOptionBool(getDomain(), "usealternate");
+                        break;
+                    }
+                }
+
+                if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
+                    final Window active = Main.getUI().getActiveWindow();
+                    final String value = formatTime(arguments[1]);
+
+                    getHistory(((Server) arguments[0])).add((Long) arguments[1]);
+                    pings.put(((Server) arguments[0]), value);
+
+                    if (((Server) arguments[0]).ownsFrame(active)) {
+                        panel.setText(value);
+                    }
+
+                    panel.refreshDialog();
+                } else if (!useAlternate && type.equals(CoreActionType.SERVER_NOPING)) {
+                    final Window active = Main.getUI().getActiveWindow();
+                    final String value = formatTime(arguments[1]) + "+";
+
+                    pings.put(((Server) arguments[0]), value);
+
+                    if (((Server) arguments[0]).ownsFrame(active)) {
+                        panel.setText(value);
+                    }
+
+                    panel.refreshDialog();
+                } else if (type.equals(CoreActionType.SERVER_DISCONNECTED)) {
+                    final Window active = Main.getUI().getActiveWindow();
+
+                    if (((Server) arguments[0]).ownsFrame(active)) {
+                        panel.setText("Not connected");
+                        pings.remove(arguments[0]);
+                    }
+
+                    panel.refreshDialog();
+                } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
+                    final FrameContainer source = (FrameContainer) arguments[0];
+                    if (source.getServer() == null) {
+                        panel.setText("Unknown");
+                    } else if (source.getServer().getState() != ServerState.CONNECTED) {
+                        panel.setText("Not connected");
+                    } else {
+                        panel.setText(getTime(source.getServer()));
+                    }
+
+                    panel.refreshDialog();
+                } else if (useAlternate && type.equals(CoreActionType.SERVER_PINGSENT)) {
+                    ((Server) arguments[0]).getParser().sendLine("LAGCHECK_" + new Date().getTime());
+                } else if (useAlternate && type.equals(CoreActionType.SERVER_NUMERIC)
+                        && ((Integer) arguments[1]).intValue() == 421
+                        && ((String[]) arguments[2])[3].startsWith("LAGCHECK_")) {
+                    try {
+                        final long sent = Long.parseLong(((String[]) arguments[2])[3].substring(9));
+                        final Long duration = Long.valueOf(new Date().getTime() - sent);
+                        final String value = formatTime(duration);
+                        final Window active = Main.getUI().getActiveWindow();
+
+                        pings.put((Server) arguments[0], value);
+                        getHistory(((Server) arguments[0])).add(duration);
+
+                        if (((Server) arguments[0]).ownsFrame(active)) {
+                            panel.setText(value);
+                        }
+                    } catch (NumberFormatException ex) {
+                        pings.remove((Server) arguments[0]);
+                    }
+
+                    if (format != null) {
+                        format.delete(0, format.length());
+                    }
+
+                    panel.refreshDialog();
+                }
             }
-        }
-
-        if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
-            final Window active = Main.getUI().getActiveWindow();
-            final String value = formatTime(arguments[1]);
-
-            getHistory(((Server) arguments[0])).add((Long) arguments[1]);
-            pings.put(((Server) arguments[0]), value);
-            
-            if (((Server) arguments[0]).ownsFrame(active)) {
-                panel.setText(value);
-            }
-
-            panel.refreshDialog();
-        } else if (!useAlternate && type.equals(CoreActionType.SERVER_NOPING)) {
-            final Window active = Main.getUI().getActiveWindow();
-            final String value = formatTime(arguments[1]) + "+";
-            
-            pings.put(((Server) arguments[0]), value);
-            
-            if (((Server) arguments[0]).ownsFrame(active)) {
-                panel.setText(value);
-            }
-
-            panel.refreshDialog();
-        } else if (type.equals(CoreActionType.SERVER_DISCONNECTED)) {
-            final Window active = Main.getUI().getActiveWindow();
-            
-            if (((Server) arguments[0]).ownsFrame(active)) {
-                panel.setText("Not connected");
-                pings.remove(arguments[0]);
-            }
-
-            panel.refreshDialog();
-        } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
-            final FrameContainer source = (FrameContainer) arguments[0];
-            if (source.getServer() == null) {
-                panel.setText("Unknown");
-            } else if (source.getServer().getState() != ServerState.CONNECTED) {
-                panel.setText("Not connected");
-            } else {
-                panel.setText(getTime(source.getServer()));
-            }
-
-            panel.refreshDialog();
-        } else if (useAlternate && type.equals(CoreActionType.SERVER_PINGSENT)) {
-            ((Server) arguments[0]).getParser().sendLine("LAGCHECK_" + new Date().getTime());
-        } else if (useAlternate && type.equals(CoreActionType.SERVER_NUMERIC)
-                && ((Integer) arguments[1]).intValue() == 421
-                && ((String[]) arguments[2])[3].startsWith("LAGCHECK_")) {            
-            try {
-                final long sent = Long.parseLong(((String[]) arguments[2])[3].substring(9));
-                final Long duration = Long.valueOf(new Date().getTime() - sent);
-                final String value = formatTime(duration);
-                final Window active = Main.getUI().getActiveWindow();
-                
-                pings.put((Server) arguments[0], value);
-                getHistory(((Server) arguments[0])).add(duration);
-                
-                if (((Server) arguments[0]).ownsFrame(active)) {
-                    panel.setText(value);
-                }                
-            } catch (NumberFormatException ex) {
-                pings.remove((Server) arguments[0]);
-            }
-
-            if (format != null) {
-                format.delete(0, format.length());
-            }
-
-            panel.refreshDialog();
-        }
+        });
     }
 
     /**
