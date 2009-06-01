@@ -109,7 +109,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         posOptions.put("ontop", "Place new windows on top of existing window");
         
         category.addSetting(new PreferencesSetting(getDomain(), "newbehaviour",
-                "New window policy:", "What to do when an OSD Window "
+                "New window policy", "What to do when an OSD Window "
                 + "is opened when there are other, existing windows open", posOptions));
 
         category.addChangeListener(this);
