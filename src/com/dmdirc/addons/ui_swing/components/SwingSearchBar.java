@@ -231,7 +231,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine()) 
                 || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine())) 
                 && JOptionPane.showConfirmDialog(parentWindow,
-                "Do you want to continue searching from the " + (up ? "end" : "beginning"),
+                "Do you want to continue searching from the " + (up ? "end" : "beginning") + "?",
                 "No more results", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {
             // It's wrapped, and they don't want to continue searching
