@@ -67,15 +67,50 @@ public class Version implements Comparable<Version> {
             final String myParts[] = this.strVersion.split("-");
             final String thParts[] = o.strVersion.split("-");
 
-            final String myFirstParts[] = myParts[0].split("\\.");
-            final String thFirstParts[] = thParts[0].split("\\.");
+            final String myFirstParts[] = myParts[0].split("\\.|(?=a|b|rc|m)");
+            final String thFirstParts[] = thParts[0].split("\\.|(?=a|b|rc|m)");
 
             for (int i = 0; i < Math.max(myFirstParts.length, thFirstParts.length); i++) {
-                final int myInt = myFirstParts.length > i ? Integer.parseInt(myFirstParts[i]) : 0;
-                final int thInt = thFirstParts.length > i ? Integer.parseInt(thFirstParts[i]) : 0;
+                final boolean myExists = myFirstParts.length > i;
+                final boolean thExists = thFirstParts.length > i;
 
-                if (myInt != thInt) {
+                final boolean myIsInt = myExists && myFirstParts[i].matches("[0-9]+");
+                final boolean thIsInt = thExists && thFirstParts[i].matches("[0-9]+");
+
+                final int myInt = myIsInt ? Integer.parseInt(myFirstParts[i]) : 0;
+                final int thInt = thIsInt ? Integer.parseInt(thFirstParts[i]) : 0;
+
+                // Please consult handwritten truth table in the care of
+                // Chris for an explanation of what the hell is going on here.
+                // If there's a bug in this code it should probably be
+                // rewritten.
+                if ((!myExists && !thExists)
+                        || (myIsInt && thIsInt && myInt == thInt)
+                        || (myExists && thExists && !myIsInt && !thIsInt
+                        && myFirstParts[i].equals(thFirstParts[i]))) {
+                    continue;
+                } else if ((!thExists && myIsInt)
+                        || (thExists && !thIsInt && (!myExists || myIsInt))) {
+                    return +1;
+                } else if ((thIsInt && !myExists)
+                        || (myExists && !myIsInt && (!thExists || thIsInt))) {
+                    return -1;
+                } else if (thIsInt && myIsInt) {
                     return myInt - thInt;
+                } else {
+                    final String myLetterParts[] = myFirstParts[i].split("(?=[0-9])", 2);
+                    final String thLetterParts[] = thFirstParts[i].split("(?=[0-9])", 2);
+
+                    if (myLetterParts[0].equals(thLetterParts[0])) {
+                        return Integer.parseInt(myLetterParts[1])
+                                - Integer.parseInt(thLetterParts[1]);
+                    } else if (myLetterParts[0].equals("m")
+                            || thLetterParts[0].equals("rc")
+                            || (myLetterParts[0].equals("a") && thLetterParts[0].equals("b"))) {
+                        return -1;
+                    } else {
+                        return +1;
+                    }
                 }
             }
 

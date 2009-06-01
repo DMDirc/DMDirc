@@ -62,6 +62,13 @@ public class VersionTest {
             {new Version("0.6-149-gaaaaaaa"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
             {new Version("0.6-149-gaaaaaaa"), new Version("0.6.3-149-gaaaaaaa"), 0, Integer.MIN_VALUE},
             {new Version("0.6.3"), new Version("0.6.3-149-gaaaaaaa"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3a1"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3b1"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3rc1"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3m1"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3m1b1"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3m1a1"), new Version("0.6.3m1b1"), 0, Integer.MIN_VALUE},
+            {new Version("0.6.3m1a1"), new Version("0.6.3m1a1-149-gaaaaaaa"), 0, Integer.MIN_VALUE},
             {new Version("0.6.3-148-gaaaaaaa"), new Version("0.6.3-149-gaaaaaaa"), 0, Integer.MIN_VALUE},
             {new Version("0.6.3-148-gaaaaaaa"), new Version("0.6.3-148-gaaaaaaa"), 1, -1},
         });
