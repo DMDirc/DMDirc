@@ -31,6 +31,8 @@ import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
+import com.dmdirc.config.prefs.validator.CommandNameValidator;
+import com.dmdirc.config.prefs.validator.ValidatorChain;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -72,7 +74,8 @@ public final class AliasPanel extends JPanel implements ActionListener {
     public AliasPanel() {
         super();
 
-        command = new ValidatingJTextField(new FileNameValidator());
+        command = new ValidatingJTextField(new ValidatorChain<String>(
+                new CommandNameValidator(), new FileNameValidator()));
         command.setEnabled(false);
 
         argumentComponent = new JComboBox(new CoreActionComparison[]{null,
