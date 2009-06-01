@@ -51,7 +51,7 @@ showHelp() {
 	echo "The following command line arguments are known:"
 	echo "---------------------"
 	echo "-h, --help                Help information"
-	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b aswell)"
+	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b as well)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file (otherwise use the existing file from dist/)"

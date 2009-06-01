@@ -178,7 +178,7 @@ begin
 		Reg.Free;
 		
 		if (FileExists(profileDir+'\dmdirc.config')) then begin
-			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+') '+#13#10+'Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+') '+#13#10+'Do you want to delete it as well?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
 				KillDir(profileDir);
 			end;
 		end;

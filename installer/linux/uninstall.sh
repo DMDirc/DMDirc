@@ -165,7 +165,7 @@ rm -Rfv ${INSTALL_LOCATION}
 PROFILEDIR="${HOME}/.DMDirc"
 
 if [ -e ${PROFILEDIR}/dmdirc.config ]; then
-	questiondialog "Uninstaller" "A DMDirc profile has been detected (${PROFILEDIR}) Do you want to delete it aswell?"
+	questiondialog "Uninstaller" "A DMDirc profile has been detected (${PROFILEDIR}) Do you want to delete it as well?"
 	if [ $? -eq 0 ]; then
 		rm -Rfv "${PROFILEDIR}"
 	fi
