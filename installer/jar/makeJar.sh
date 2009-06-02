@@ -28,10 +28,6 @@ FILENAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${FILENAME}.jar"
 
-# Channel to use for builds
-# TODO: Should be specified on command line somehow
-CHANNEL="STABLE"
-
 # Are we a git working copy, or SVN?
 if [ -e ".svn" ]; then
 	isSVN=1
@@ -60,6 +56,7 @@ showHelp() {
 	echo "-e, --extra <tag>         Tag to add to final name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
+	echo "-c   --channel [channel]  Channel to pass to ant (if not passed, 'NONE', if passed without a value, 'STABLE')"
 	echo "---------------------"
 	exit 0;
 }
@@ -82,6 +79,7 @@ jarfile=""
 jre=""
 jrename="jre" # Filename for JRE without the .bin
 TAGGED=""
+CHANNEL="NONE"
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -132,6 +130,16 @@ while test -n "$1"; do
 				TAGGED=${TAGGED%%-*}
 			fi;
 			;;
+		--channel|-c)
+			shift
+			PASSEDPARAM=`echo "${1}" | grep ^-`
+			if [ "${PASSEDPARAM}" == "" ]; then
+				shift;
+				CHANNEL=${PASSEDPARAM}
+			else
+				CHANNEL="STABLE";
+			fi;
+			;;
 	esac
 	shift
 done
@@ -171,7 +179,7 @@ if [ "" = "${jarfile}" ]; then
 				svn update
 			fi;
 		fi
-		ant -Dchannel=${channel} clean jar
+		ant -Dchannel=${CHANNEL} clean jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
 			exit 1;

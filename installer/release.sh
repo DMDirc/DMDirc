@@ -47,6 +47,7 @@ showHelp() {
 	echo "-h,  --help                         Help information"
 	echo "-o,  --opt <options>                Additional options to pass to the make*Installer.sh files"
 	echo "     --upload                       Try to upload to google code when done (Only works on tags)"
+	echo "-c   --channel [channel]            Channel to pass to ant (if not passed, 'NONE', if passed without a value, 'STABLE')"
 	echo "---------------------"
 	exit 0;
 }
@@ -62,6 +63,7 @@ BUILDTARGET=""
 UPLOAD="0"
 TAG="0"
 TAGGED=""
+CHANNEL=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -122,6 +124,16 @@ while test -n "$1"; do
 				TAGGED="-t ${1} "
 			else
 				TAGGED="-t "
+			fi;
+			;;
+		--channel|-c)
+			shift
+			PASSEDPARAM=`echo "${1}" | grep ^-`
+			if [ "${PASSEDPARAM}" == "" ]; then
+				shift;
+				CHANNEL="-c \"${PASSEDPARAM}\" ";
+			else
+				CHANNEL="-c STABLE ";
 			fi;
 			;;
 	esac
