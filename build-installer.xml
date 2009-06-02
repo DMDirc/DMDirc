@@ -57,10 +57,10 @@
     <target name="installer" depends="-installer-nobuild, -installer-build"
             description="Build the installer." />
 
-    <target name="installer_stable" depends="-installer-nobuild, -installer-build-stable"
+    <target name="installer-stable" depends="-installer-nobuild, -installer-build-stable"
             description="Build the installer for a stable release." />
 
-    <target name="installer_unstable" depends="-installer-nobuild, -installer-build-unstable"
+    <target name="installer-unstable" depends="-installer-nobuild, -installer-build-unstable"
             description="Build the installer for an unstable release." />
 
 
