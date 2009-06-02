@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.TreeMap;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -69,6 +70,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private final JSeparator separator;
     /** Active window. */
     private Window activeWindow;
+    /** Enabled menu items? */
+    private final AtomicBoolean enabledMenuItems = new AtomicBoolean(false);
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -107,14 +110,12 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         closeMenuItem.setActionCommand("Close");
         closeMenuItem.addActionListener(this);
         add(closeMenuItem);
-
-        checkToggleState();
-
+        
         separator = new JPopupMenu.Separator();
         add(separator);
 
         itemCount = getMenuComponentCount();
-        checkMenuItems();
+        checkToggleState();
     }
 
     /**
@@ -122,11 +123,11 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * appropriately.
      */
     private void checkMenuItems() {
-        final boolean enable = (getMenuComponentCount() > itemCount);
-        separator.setVisible(enable);
-        closeMenuItem.setEnabled(enable);
-        toggleStateMenuItem.setEnabled(enable);
-        minimiseMenuItem.setEnabled(enable);
+        enabledMenuItems.set((getMenuComponentCount() > itemCount));
+        separator.setVisible(enabledMenuItems.get());
+        closeMenuItem.setEnabled(enabledMenuItems.get());
+        toggleStateMenuItem.setEnabled(enabledMenuItems.get());
+        minimiseMenuItem.setEnabled(enabledMenuItems.get());
     }
 
     /** {@inheritDoc} */
@@ -194,8 +195,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
                     add(mi, getIndex(window));
+                    checkMenuItems();
                 }
-                checkMenuItems();
             }
         });
     }
@@ -223,8 +224,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                         window.removeSelectionListener(
                                 WindowMenuFrameManager.this);
                     }
+                    checkMenuItems();
                 }
-                checkMenuItems();
             }
         });
     }
@@ -236,12 +237,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("ToggleState")) {
-            activeWindow.toggleMaximise();
-        } else if (e.getActionCommand().equals("Minimise")) {
-            activeWindow.minimise();
-        } else if (e.getActionCommand().equals("Close")) {
-            activeWindow.close();
+        if (enabledMenuItems.get()) {
+            if (e.getActionCommand().equals("ToggleState")) {
+                activeWindow.toggleMaximise();
+            } else if (e.getActionCommand().equals("Minimise")) {
+                activeWindow.minimise();
+            } else if (e.getActionCommand().equals("Close")) {
+                activeWindow.close();
+            }
         }
     }
 
@@ -265,11 +268,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * Checks and sets the state of the toggle menu item.
      */
     private void checkToggleState() {
-        if (activeWindow == null) {
-            toggleStateMenuItem.setEnabled(false);
-            closeMenuItem.setEnabled(false);
-            minimiseMenuItem.setEnabled(false);
-        } else {
+        checkMenuItems();
+        if (activeWindow != null) {
             toggleStateMenuItem.setEnabled(true);
             closeMenuItem.setEnabled(true);
             minimiseMenuItem.setEnabled(true);
