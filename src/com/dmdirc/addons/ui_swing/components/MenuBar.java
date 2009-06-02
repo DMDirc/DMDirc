@@ -23,6 +23,7 @@
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.ServerManager;
+import com.dmdirc.ServerState;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.Apple;
 import com.dmdirc.addons.ui_swing.MainFrame;
@@ -304,12 +305,17 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         final Window activeWindow = controller.getActiveWindow();
 
         ssd.setEnabled(activeWindow != null && activeWindow.getContainer().
-                getServer() != null);
-        csd.setEnabled(activeWindow instanceof ChannelFrame);
+                getServer() != null && activeWindow.getContainer().
+                getServer().getState() == ServerState.CONNECTED);
+        csd.setEnabled(activeWindow instanceof ChannelFrame && activeWindow.getContainer().
+                getServer() != null && activeWindow.getContainer().
+                getServer().getState() == ServerState.CONNECTED);
         disconnect.setEnabled(activeWindow != null && activeWindow.getContainer().
-                getServer() != null);
+                getServer() != null && activeWindow.getContainer().
+                getServer().getState() == ServerState.CONNECTED);
         join.setEnabled(activeWindow != null && activeWindow.getContainer().
-                getServer() != null);
+                getServer() != null && activeWindow.getContainer().
+                getServer().getState() == ServerState.CONNECTED);
     }
 
     /** {@inheritDoc} */
