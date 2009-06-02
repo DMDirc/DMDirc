@@ -891,6 +891,24 @@ public class Server extends WritableFrameContainer implements Serializable {
     }
 
     /**
+     * Determines whether this server is currently connected to the specified
+     * network.
+     *
+     * @param target The network to check for
+     * @return True if this server is connected to the network, false otherwise
+     * @since 0.6.3m1rc3
+     */
+    public boolean isNetwork(String target) {
+        synchronized (myState) {
+            if (parser == null) {
+                return false;
+            } else {
+                return getNetwork().equalsIgnoreCase(target);
+            }
+        }
+    }
+
+    /**
      * Calculates a network name from the specified server name. This method
      * implements parts 2-4 of the procedure documented at getNetwork().
      *

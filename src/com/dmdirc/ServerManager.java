@@ -169,7 +169,7 @@ public final class ServerManager {
 
         synchronized (servers) {
             for (Server server : servers) {
-                if (server.getNetwork().equalsIgnoreCase(network)) {
+                if (server.isNetwork(network)) {
                     res.add(server);
                 }
             }

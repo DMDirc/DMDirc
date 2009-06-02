@@ -144,9 +144,9 @@ public class ServerManagerTest {
         final Server serverB = mock(Server.class);
         final Server serverC = mock(Server.class);
 
-        when(serverA.getNetwork()).thenReturn("Net1");
-        when(serverB.getNetwork()).thenReturn("Net2");
-        when(serverC.getNetwork()).thenReturn("Net2");
+        when(serverA.isNetwork("Net1")).thenReturn(true);
+        when(serverB.isNetwork("Net2")).thenReturn(true);
+        when(serverC.isNetwork("Net2")).thenReturn(true);
         
         final ServerManager sm = ServerManager.getServerManager();
 
@@ -193,7 +193,7 @@ public class ServerManagerTest {
     @Test
     public void testDevChatWithChannel() {
         final Server serverA = mock(Server.class);
-        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.isNetwork("Quakenet")).thenReturn(true);
         when(serverA.hasChannel("#DMDirc")).thenReturn(true);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
@@ -206,7 +206,7 @@ public class ServerManagerTest {
     @Test
     public void testDevChatWithoutChannel() {
         final Server serverA = mock(Server.class);
-        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.isNetwork("Quakenet")).thenReturn(true);
         when(serverA.hasChannel("#DMDirc")).thenReturn(false);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
@@ -219,7 +219,7 @@ public class ServerManagerTest {
     @Test
     public void testDevChatNoServers() {
         final Server serverA = mock(Server.class);
-        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.isNetwork("Quakenet")).thenReturn(true);
         when(serverA.getState()).thenReturn(ServerState.DISCONNECTING);
 
         final Server serverB = mock(Server.class);
