@@ -186,13 +186,18 @@ while test -n "$1"; do
 			;;
 		--tag|-t)
 			shift
-			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
-			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
-			if [ "" = "${CHECKTAG}" ]; then
-				echo "Specified tag ("${1}") is invalid."
-				exit 1;
+			if [ ${isSVN} -eq 1 ]; then
+				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+				if [ "" = "${CHECKTAG}" ]; then
+					echo "Specified tag ("${1}") is invalid."
+					exit 1;
+				fi;
+				TAGGED="${1}"
+			else
+				TAGGED=`git describe --tags`
+				TAGGED=${TAGGED%%-*}
 			fi;
-			TAGGED="${1}"
 			;;
 	esac
 	shift

@@ -33,7 +33,7 @@ showHelp() {
 	if [ ${isSVN} -eq 1 ]; then
 		echo "-b,  --branch                       <release> is a branch"
 	else
-		echo "-t,  --tag <release>                This is a tagged release"
+		echo "-t,  --tag                          This is a tagged release"
 	fi;
 	echo "     --jar <file>                   Use <file> instead of compiling a jar."
 	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
@@ -112,13 +112,17 @@ while test -n "$1"; do
 			;;
 		--tag|-t)
 			shift
-			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
-			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
-			if [ "" = "${CHECKTAG}" ]; then
-				echo "Specified tag ("${1}") is invalid."
-				exit 1;
+			if [ ${isSVN} -eq 1 ]; then
+				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+				if [ "" = "${CHECKTAG}" ]; then
+					echo "Specified tag ("${1}") is invalid."
+					exit 1;
+				fi;
+				TAGGED="-t ${1} "
+			else
+				TAGGED="-t "
 			fi;
-			TAGGED="-t ${1} "
 			;;
 	esac
 	shift
