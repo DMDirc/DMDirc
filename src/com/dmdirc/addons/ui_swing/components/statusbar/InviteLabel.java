@@ -176,8 +176,6 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
         } else {
             refreshDialog();
             setVisible(true);
-            setToolTipText(inviteList.get(activeServer).size() +
-                    " pending invites.");
         }
     }
 
