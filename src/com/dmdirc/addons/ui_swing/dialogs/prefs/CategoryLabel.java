@@ -59,10 +59,11 @@ public class CategoryLabel extends JLabel {
      * 
      * @param parentList
      * @param category
+     * @param numCats
      * @param index 
      */
     public CategoryLabel(final JList parentList,
-            final PreferencesCategory category, final int index) {
+            final PreferencesCategory category, final int numCats, final int index) {
         this.parentList = parentList;
         this.category = category;
         this.index = index;
@@ -96,8 +97,7 @@ public class CategoryLabel extends JLabel {
                 }
             }
 
-            hasChildren = hasChildren || index + 1 == parentList.getModel().
-                    getSize();
+            hasChildren = hasChildren || index + 1 == numCats;
 
             setBackground(Color.LIGHT_GRAY);
             setBorder(BorderFactory.createCompoundBorder(

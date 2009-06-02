@@ -22,27 +22,17 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
-import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.config.prefs.PreferencesCategory;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.IconManager;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * Prefs dialog list cell renderer.
@@ -57,17 +47,19 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Panel gap. */
-    private final int padding
-            = (int) (1.5 * PlatformDefaults.getUnitValueX("related").getValue());
+    /** Number of categories shown. */
+    private final int numCats;
     /** Label map. */
     private Map<PreferencesCategory, JLabel> labelMap;
     
     /**
      * Instantiates a new prefs list cell renderer.
+     *
+     * @param numCats Number of categories in the list
      */
-    public PreferencesListCellRenderer() {
+    public PreferencesListCellRenderer(final int numCats) {
         labelMap = new HashMap<PreferencesCategory, JLabel>();
+        this.numCats = numCats;
     }
 
     /** {@inheritDoc} */
@@ -77,7 +69,7 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
             final boolean cellHasFocus) {
         final PreferencesCategory cat = (PreferencesCategory) value;
         if (!labelMap.containsKey(cat)) {
-            labelMap.put(cat, new CategoryLabel(list, cat, index));
+            labelMap.put(cat, new CategoryLabel(list, cat, numCats, index));
         }
         final JLabel label = labelMap.get(cat);
 

@@ -36,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -126,6 +127,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         ((DefaultListModel) tabList.getModel()).clear();
         mainPanel.setCategory(null);
+
+        final int count = countCategories(manager.getCategories());
+        tabList.setCellRenderer(new PreferencesListCellRenderer(count));
+
         addCategories(manager.getCategories());
     }
 
@@ -165,7 +170,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         tabList = new JList(new DefaultListModel());
         tabList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tabList.setCellRenderer(new PreferencesListCellRenderer());
         tabList.addListSelectionListener(this);
         new ListScroller(tabList);
         final JScrollPane tabListScrollPane = new JScrollPane(tabList);
@@ -220,6 +224,25 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
         });
         mainPanel.setWaiting(false);
+    }
+
+    /**
+     * Counts the number of categories that will be displayed in the list panel.
+     *
+     * @param categories The collection of categories to inspect
+     * @return The number of those categories (including children) that will be displayed
+     * @since 0.6.3m1rc3
+     */
+    protected int countCategories(final Collection<PreferencesCategory> categories) {
+        int count = 0;
+
+        for (PreferencesCategory cat : categories) {
+            if (!cat.isInline()) {
+                count += 1 + countCategories(cat.getSubcats());
+            }
+        }
+
+        return count;
     }
 
     /**
