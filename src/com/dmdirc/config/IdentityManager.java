@@ -71,7 +71,11 @@ public final class IdentityManager {
     public static void load() {
         identities.clear();
         managers.clear();
-        globalconfig = null;
+        
+        if (globalconfig != null) {
+            // May have been created earlier
+            managers.add(globalconfig);
+        }
 
         loadVersion();
         loadDefaults();
