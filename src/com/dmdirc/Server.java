@@ -253,6 +253,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         "The IRC Parser is null or not connected",
         "The specified profile is not null"
     })
+    @SuppressWarnings("fallthrough")
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
         assert profile != null;
@@ -267,12 +268,16 @@ public class Server extends WritableFrameContainer implements Serializable {
                     return;
                 case CONNECTED:
                 case CONNECTING:
-                    addLine("serverConnectInProgress");
                     disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
-                    return;
                 case DISCONNECTING:
-                    addLine("serverDisconnectInProgress");
-                    return;
+                    while (!myState.getState().isDisconnected()) {
+                        try {
+                            myState.wait();
+                        } catch (InterruptedException ex) {
+                            return;
+                        }
+                    }
+                    break;
                 default:
                     // Do nothing
                     break;
@@ -326,14 +331,6 @@ public class Server extends WritableFrameContainer implements Serializable {
             }
 
             disconnect(reason);
-
-            while (!myState.getState().isDisconnected()) {
-                try {
-                    myState.wait();
-                } catch (InterruptedException ex) {
-                    return;
-                }
-            }
             
             connect(serverInfo.getHost(), serverInfo.getPort(),
                     serverInfo.getPassword(), serverInfo.getSSL(), profile);
