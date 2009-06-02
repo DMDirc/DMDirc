@@ -255,6 +255,9 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 window.removeSelectionListener(DMDircDesktopPane.this);
                 ((TextFrame) window.getFrame()).removePropertyChangeListener(
                         DMDircDesktopPane.this);
+                if (getAllFrames().length == 0) {
+                    mainFrame.setTitle(null);
+                }
             }
         });
     }
@@ -332,6 +335,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     private void handleTitleEvent(final Window window, final String title) {
         if (maximised && (window == selectedWindow)) {
             mainFrame.setTitle(title);
+        } else if (!maximised) {
+            mainFrame.setTitle(null);
         }
     }
     
@@ -361,7 +366,11 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             if (selectedWindow != null) {
                 selectedWindow.activateFrame();
             }
+        }
+        if (!isMaximised) {
             mainFrame.setTitle(title);
+        } else {
+            mainFrame.setTitle(null);
         }
         changing.set(false);
     }

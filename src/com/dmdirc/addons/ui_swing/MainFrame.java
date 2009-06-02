@@ -218,7 +218,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setTitle(final String title) {
-        if (getActiveFrame() != null && getActiveFrame().isMaximum()) {
+        if (title != null && getActiveFrame() != null && getActiveFrame().isMaximum()) {
             super.setTitle(getTitlePrefix() + " - " + title);
         } else {
             super.setTitle(getTitlePrefix());
@@ -593,10 +593,6 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             public void run() {
                 final JInternalFrame frame = (JInternalFrame) window.getFrame();
-
-                if (desktopPane.getAllFrames().length == 1) {
-                    setTitle(getTitlePrefix());
-                }
 
                 desktopPane.remove(frame);
             }

@@ -71,6 +71,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     private Alias alias;
 
     /** Creates a new instance of AliasPanel. */
+    @SuppressWarnings("unchecked")
     public AliasPanel() {
         super();
 
