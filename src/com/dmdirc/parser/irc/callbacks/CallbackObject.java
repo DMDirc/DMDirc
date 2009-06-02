@@ -75,10 +75,9 @@ public class CallbackObject {
 	 * @param eMethod OBject to callback to.
 	 */
 	protected final void addCallback(final ICallbackInterface eMethod) {
-		for (int i = 0; i < callbackInfo.size(); i++) {
-			if (eMethod.equals(callbackInfo.get(i))) { return; }
-		}
-		callbackInfo.add(eMethod);
+		if (!callbackInfo.contains(eMethod)) {
+            callbackInfo.add(eMethod);
+        }
 	}
 	
 	/**
@@ -87,9 +86,7 @@ public class CallbackObject {
 	 * @param eMethod Object that was being called back to.
 	 */
 	protected final void delCallback(final ICallbackInterface eMethod) {
-		for (int i = 0; i < callbackInfo.size(); i++) {
-			if (eMethod.equals(callbackInfo.get(i))) { callbackInfo.remove(i); break; }
-		}
+        callbackInfo.remove(eMethod);
 	}
 	
 	/**
