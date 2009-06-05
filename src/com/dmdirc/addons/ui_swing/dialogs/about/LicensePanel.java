@@ -23,22 +23,19 @@
 package com.dmdirc.addons.ui_swing.dialogs.about;
 
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.addons.ui_swing.components.GenericListModel;
+import com.dmdirc.addons.ui_swing.components.ListScroller;
 
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import javax.swing.JEditorPane;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -47,7 +44,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * License panel.
  */
-public final class LicensePanel extends JPanel {
+public final class LicensePanel extends JPanel implements ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,109 +54,74 @@ public final class LicensePanel extends JPanel {
     private static final long serialVersionUID = 3;
     /** License scroll pane. */
     private JScrollPane scrollPane;
+    /** License list model */
+    private GenericListModel<License> listModel;
+    /** License textpane. */
+    private JEditorPane license;
+    /** License list. */
+    private JList list;
 
     /** Creates a new instance of LicensePanel. */
     public LicensePanel() {
         super();
 
-        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
+        addListeners();
+        layoutComponents();
+
+        list.setSelectedIndex(0);
+    }
+
+    /**
+     * Adds the listeners to the components.
+     */
+    private void addListeners() {
+        list.addListSelectionListener(this);
+    }
+
+    /**
+     *  Lays out the components.
+     */
+    private void layoutComponents() {
+        setLayout(new MigLayout("ins rel, fill"));
+        add(new JScrollPane(list), "growy, pushy, w 150!");
+        add(scrollPane, "grow, push");
     }
 
     /** Initialises the components. */
     private void initComponents() {
-        final JEditorPane license;
-        final ResourceManager rm = ResourceManager.getResourceManager();
-
+        setOpaque(UIUtilities.getTabbedPaneOpaque());
+        listModel = new GenericListModel<License>();
+        list = new JList(listModel);
+        new ListScroller(list);
+        new LicenseLoader(listModel).execute();
         license = new JEditorPane();
         license.setEditorKit(new HTMLEditorKit());
         final Font font = UIManager.getFont("Label.font");
         ((HTMLDocument) license.getDocument()).getStyleSheet().addRule("body " +
                 "{ font-family: " + font.getFamily() + "; " + "font-size: " +
                 font.getSize() + "pt; }");
-
-        final StringBuilder licenseText = new StringBuilder();
-        licenseText.append("<html>");
-
-        if (rm == null) {
-            licenseText.append("Error loading licenses.");
-        } else {
-            final Map<String, InputStream> licenses =
-                    new TreeMap<String, InputStream>(rm.
-                    getResourcesStartingWithAsInputStreams(
-                    "com/dmdirc/licenses/"));
-            licenseText.append("Below are the licenses used in various " +
-                    "components of DMDirc: <br><ul>");
-            for (Entry<String, InputStream> entry : licenses.entrySet()) {
-                final String licenseString = entry.getKey().substring(entry.
-                        getKey().
-                        lastIndexOf('/') + 1);
-                if (licenseString.length() > 1) {
-                    licenseText.append("<li>");
-                    licenseText.append(licenseString);
-                    licenseText.append("</li>");
-                }
-            }
-            licenseText.append("</ul>");
-            for (Entry<String, InputStream> entry : licenses.entrySet()) {
-                final String licenseString = entry.getKey().substring(entry.
-                        getKey().
-                        lastIndexOf('/') + 1);
-                if (licenseString.length() > 1) {
-                    licenseText.append("<h1>");
-                    licenseText.append(licenseString.substring(0,
-                            licenseString.lastIndexOf(" - ")));
-                    licenseText.append("</h1>");
-                    licenseText.append(
-                            readInputStream(entry.getValue()).replaceAll("\n",
-                            "<br>"));
-                }
-            }
-        }
-        licenseText.append("</html>");
-        license.setText(licenseText.toString());
         license.setEditable(false);
-
         scrollPane = new JScrollPane(license);
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                scrollPane.getVerticalScrollBar().setValue(0);
-            }
-        });
-
-        setLayout(new MigLayout("ins rel, fill"));
-        add(scrollPane, "grow, push");
     }
 
-    /**
-     * Converts an input stream into a string.
-     * 
-     * @param stream Stream to convert
-     * 
-     * @return Contents of the input stream
-     */
-    private String readInputStream(final InputStream stream) {
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(final ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (e.getSource() == null) {
+                license.setText(null);
+            } else {
+                license.setText(listModel.get(list.getSelectedIndex()).getBody());
+                SwingUtilities.invokeLater(new Runnable() {
 
-        String line;
-        final BufferedReader input =
-                new BufferedReader(new InputStreamReader(stream));
-        final StringBuilder text = new StringBuilder();
-
-        try {
-            line = input.readLine();
-            while (line != null) {
-                text.append(line);
-                text.append("<br>");
-                line = input.readLine();
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        scrollPane.getVerticalScrollBar().setValue(0);
+                    }
+                });
             }
-        } catch (IOException ex) {
-            //Ignore
         }
-
-        return text.toString();
-
     }
 }
