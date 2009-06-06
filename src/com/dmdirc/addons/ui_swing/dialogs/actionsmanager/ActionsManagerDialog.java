@@ -457,6 +457,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
+        if (groups.getSelectedValue() == null) {
+            return;
+        }
         if (type.equals(CoreActionType.ACTION_CREATED) ||
                 type.equals(CoreActionType.ACTION_UPDATED)) {
             final Action action = (Action) arguments[0];
