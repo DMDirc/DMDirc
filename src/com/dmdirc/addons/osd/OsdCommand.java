@@ -54,6 +54,19 @@ public final class OsdCommand extends GlobalCommand implements IntelligentComman
         CommandManager.registerCommand(this);
     }
     
+
+    /**
+     * Used to show a notification using this plugin.
+     *
+     * @param title Title of dialog if applicable
+     * @param message Message to show
+     * @return True if the notification was shown.
+     */
+    public boolean showOSD(final String title, final String message) {
+        new OsdWindow(Styliser.stipControlCodes(message), false, plugin);
+        return true;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
@@ -62,7 +75,7 @@ public final class OsdCommand extends GlobalCommand implements IntelligentComman
                 && "--close".equalsIgnoreCase(args.getArguments()[0])) {
             OsdWindow.closeAll();
         } else {
-            new OsdWindow(Styliser.stipControlCodes(args.getArgumentsAsString()), false, plugin);
+            showOSD("", args.getArgumentsAsString());
         }
     }
     

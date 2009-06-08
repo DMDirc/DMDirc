@@ -50,11 +50,23 @@ public final class PopupCommand extends ServerCommand {
         CommandManager.registerCommand(this);
     }
 
+    /**
+     * Used to show a notification using this plugin.
+     *
+     * @param title Title of dialog if applicable
+     * @param message Message to show
+     * @return True if the notification was shown.
+     */
+    public boolean showPopup(final String title, final String message) {
+        parent.notify(title, message);
+        return true;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
-        parent.notify("DMDirc", args.getArgumentsAsString());
+        showPopup("DMDirc", args.getArgumentsAsString());
     }
 
     /** {@inheritDoc} */
