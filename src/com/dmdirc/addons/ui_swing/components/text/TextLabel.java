@@ -80,7 +80,7 @@ public class TextLabel extends JTextPane {
         ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
                 "{ font-family: " + font.getFamily() + "; " + "font-size: " +
                 font.getSize() + "pt; }");
-
+        ((HTMLDocument) getDocument()).getStyleSheet().addRule("p { margin: 0; }");
 
         setOpaque(false);
         setEditable(false);

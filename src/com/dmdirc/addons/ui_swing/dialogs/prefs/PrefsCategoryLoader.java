@@ -177,7 +177,10 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
         final TextLabel label = getLabel(setting);
 
         JComponent option = PrefsComponentFactory.getComponent(setting);
-        option.setToolTipText(setting.getHelptext());
+        option.setToolTipText(null);
+        categoryPanel.getToolTipPanel().registerTooltipHandler(label);
+        categoryPanel.getToolTipPanel().registerTooltipHandler(option,
+                setting.getHelptext());
 
         if (option instanceof DurationDisplay) {
             ((DurationDisplay) option).setWindow(categoryPanel.getParentWindow());
@@ -190,9 +193,6 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
 
         panel.add(label, "align label, wmax 40%");
         panel.add(option, "growx, pushx, w 60%");
-
-        categoryPanel.getToolTipPanel().registerTooltipHandler(label);
-        categoryPanel.getToolTipPanel().registerTooltipHandler(option);
     }
 
     /**

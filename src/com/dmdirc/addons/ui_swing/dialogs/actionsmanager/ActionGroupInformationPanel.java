@@ -92,7 +92,7 @@ public final class ActionGroupInformationPanel extends JPanel {
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3, debug"));
 
         add(infoLabel, "span 2, growx, pushx");
         add(authorLabel, "");
@@ -114,7 +114,7 @@ public final class ActionGroupInformationPanel extends JPanel {
             author.setText("");
             version.setText("");
         } else {
-            infoLabel.setText(group.getDescription());
+            infoLabel.setText("<html><body><p>" + group.getDescription() + "</p></body></html>");
             author.setText(group.getAuthor());
             version.setText(Integer.toString(group.getVersion()));
 

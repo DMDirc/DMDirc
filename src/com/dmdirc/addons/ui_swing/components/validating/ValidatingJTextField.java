@@ -29,6 +29,7 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
 import java.awt.Font;
 import java.awt.event.KeyListener;
 
+import java.awt.event.MouseListener;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -370,6 +371,18 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     public synchronized void removeKeyListener(final KeyListener l) {
         textField.removeKeyListener(l);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void addMouseListener(final MouseListener l) {
+        textField.addMouseListener(l);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void removeMouseListener(final MouseListener l) {
+        textField.removeMouseListener(l);
+    }
     
     /**
      * Sets the drag enabled property on the textfield.
@@ -390,9 +403,21 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * Returns the validator used by this text field.
      * 
      * @since 0.6.3m1
+     * 
      * @return This field's validator
      */
     public Validator<String> getValidator() {
         return validator;
+    }
+
+    /**
+     * Returns the text field used by this validating text field.
+     *
+     * @since 0.6.3m1
+     *
+     * @return This field's text field
+     */
+    public JTextField getTextField() {
+        return textField;
     }
 }
