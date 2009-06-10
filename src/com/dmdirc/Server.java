@@ -1220,6 +1220,17 @@ public class Server extends WritableFrameContainer implements Serializable {
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
+        if (Thread.holdsLock(myState)) {
+            new Thread(new Runnable() {
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    onSocketClosed();
+                }
+            }, "Socket closed deferred thread").start();
+            return;
+        }
+        
         handleNotification("socketClosed", getName());
 
         ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
