@@ -22,8 +22,8 @@
 package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
+import com.dmdirc.addons.ui_swing.components.text.OldTextLabel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -43,7 +43,7 @@ public final class ActionGroupInformationPanel extends JPanel {
     /** Action group. */
     private ActionGroup group;
     /** Description field. */
-    private TextLabel infoLabel;
+    private OldTextLabel infoLabel;
     /** Version label label. */
     private JLabel versionLabel;
     /** Version label. */
@@ -72,7 +72,7 @@ public final class ActionGroupInformationPanel extends JPanel {
      * Initialises the components.
      */
     private void initComponents() {
-        infoLabel = new TextLabel();
+        infoLabel = new OldTextLabel();
         versionLabel = new JLabel("Version: ");
         version = new JLabel();
         authorLabel = new JLabel("Author: ");
@@ -92,7 +92,7 @@ public final class ActionGroupInformationPanel extends JPanel {
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, hidemode 3, debug"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
         add(infoLabel, "span 2, growx, pushx");
         add(authorLabel, "");
@@ -114,7 +114,7 @@ public final class ActionGroupInformationPanel extends JPanel {
             author.setText("");
             version.setText("");
         } else {
-            infoLabel.setText("<html><body><p>" + group.getDescription() + "</p></body></html>");
+            infoLabel.setText(group.getDescription());
             author.setText(group.getAuthor());
             version.setText(Integer.toString(group.getVersion()));
 
