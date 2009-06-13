@@ -32,6 +32,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
@@ -60,6 +61,8 @@ public final class LicensePanel extends JPanel implements ListSelectionListener 
     private JEditorPane license;
     /** License list. */
     private JList list;
+    /** Selected index. */
+    private int selectedIndex;
 
     /** Creates a new instance of LicensePanel. */
     public LicensePanel() {
@@ -93,6 +96,7 @@ public final class LicensePanel extends JPanel implements ListSelectionListener 
         setOpaque(UIUtilities.getTabbedPaneOpaque());
         listModel = new GenericListModel<License>();
         list = new JList(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         new ListScroller(list);
         new LicenseLoader(listModel).execute();
         license = new JEditorPane();
@@ -109,8 +113,8 @@ public final class LicensePanel extends JPanel implements ListSelectionListener 
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            if (e.getSource() == null) {
-                license.setText(null);
+            if (list.getSelectedIndex() == -1) {
+                list.setSelectedIndex(selectedIndex);
             } else {
                 license.setText(listModel.get(list.getSelectedIndex()).getBody());
                 SwingUtilities.invokeLater(new Runnable() {
@@ -122,6 +126,7 @@ public final class LicensePanel extends JPanel implements ListSelectionListener 
                     }
                 });
             }
+            selectedIndex = list.getSelectedIndex();
         }
     }
 }
