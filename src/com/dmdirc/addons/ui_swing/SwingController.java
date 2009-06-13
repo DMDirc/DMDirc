@@ -416,9 +416,6 @@ public final class SwingController extends Plugin implements UIController {
         if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
             PlatformDefaults.setPlatform(PlatformDefaults.WINDOWS_XP);
         }
-        
-        //Toolkit.getDefaultToolkit().getSystemEventQueue().
-        //        push(new TracingEventQueue());
     }
 
     /** {@inheritDoc} */
@@ -552,8 +549,6 @@ public final class SwingController extends Plugin implements UIController {
 
         Toolkit.getDefaultToolkit().getSystemEventQueue().
                 push(new DMDircEventQueue(this));
-        Toolkit.getDefaultToolkit().getSystemEventQueue().
-                push(new TracingEventQueue());
         
         UIUtilities.invokeAndWait(new Runnable() {
 

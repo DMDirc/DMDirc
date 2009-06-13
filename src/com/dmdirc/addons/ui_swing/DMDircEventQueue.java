@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.actions.ActionManager;
@@ -27,6 +28,7 @@ import com.dmdirc.addons.ui_swing.actions.CopyAction;
 import com.dmdirc.addons.ui_swing.actions.CutAction;
 import com.dmdirc.addons.ui_swing.actions.PasteAction;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -43,12 +45,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 /**
- * Custom event queue to add commong functionality to certain components.
+ * Custom event queue to add common functionality to certain components and 
+ * monitor the EDT for long running tasks.  The monitoring code was taken from
+ * TracingEventQueue by Kirill Grouchnikov (http://today.java.net/lpt/a/433).
  */
-public final class DMDircEventQueue extends EventQueue {
-    
+public final class DMDircEventQueue extends EventQueue implements
+        ConfigChangeListener {
+
     /** Swing Controller. */
     private SwingController controller;
+    /** Tracing thread. */
+    private TracingEventQueueThread tracingThread;
 
     /** 
      * Instantiates the DMDircEventQueue. 
@@ -57,14 +64,22 @@ public final class DMDircEventQueue extends EventQueue {
      */
     public DMDircEventQueue(final SwingController controller) {
         super();
-        
+
         this.controller = controller;
+        checkTracing();
+        //TODO add config listener
     }
 
     /** {@inheritDoc} */
     @Override
     protected void dispatchEvent(final AWTEvent event) {
-        super.dispatchEvent(event);
+        if (tracingThread == null) {
+            super.dispatchEvent(event);
+        } else {
+            this.tracingThread.eventDispatched(event);
+            super.dispatchEvent(event);
+            this.tracingThread.eventProcessed(event);
+        }
 
         if (event instanceof MouseEvent) {
             handleMouseEvent((MouseEvent) event);
@@ -72,6 +87,17 @@ public final class DMDircEventQueue extends EventQueue {
             handleKeyEvent((KeyEvent) event);
         } else if (event instanceof WindowEvent) {
             handleWindowEvent((WindowEvent) event);
+        }
+    }
+
+    private void checkTracing() {
+        //TODO check value
+        final boolean tracing = false;
+        if (tracing) {
+            this.tracingThread = new TracingEventQueueThread(500);
+            this.tracingThread.start();
+        } else {
+            tracingThread = null;
         }
     }
 
@@ -194,5 +220,11 @@ public final class DMDircEventQueue extends EventQueue {
                 }
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        checkTracing();
     }
 }
