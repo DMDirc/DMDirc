@@ -28,6 +28,7 @@ import com.dmdirc.addons.ui_swing.actions.CopyAction;
 import com.dmdirc.addons.ui_swing.actions.CutAction;
 import com.dmdirc.addons.ui_swing.actions.PasteAction;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import java.awt.AWTEvent;
 import java.awt.Component;
@@ -67,7 +68,8 @@ public final class DMDircEventQueue extends EventQueue implements
 
         this.controller = controller;
         checkTracing();
-        //TODO add config listener
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(), "debugEDT", this);
     }
 
     /** {@inheritDoc} */
@@ -91,8 +93,8 @@ public final class DMDircEventQueue extends EventQueue implements
     }
 
     private void checkTracing() {
-        //TODO check value
-        final boolean tracing = false;
+        final boolean tracing = IdentityManager.getAddonIdentity().
+                getOptionBool(controller.getDomain(), "debugEDT");
         if (tracing) {
             this.tracingThread = new TracingEventQueueThread(500);
             this.tracingThread.start();
