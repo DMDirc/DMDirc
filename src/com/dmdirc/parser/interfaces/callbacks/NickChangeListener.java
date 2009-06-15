@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 
 /**
  * Called when we or another user change nickname.
@@ -39,5 +39,5 @@ public interface NickChangeListener extends CallbackInterface {
 	 * @param sOldNick Nickname before change
 	 * @see com.dmdirc.parser.irc.ProcessNick#callNickChanged
 	 */
-	void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
+	void onNickChanged(Parser tParser, ClientInfo cClient, String sOldNick);
 }

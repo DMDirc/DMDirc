@@ -22,13 +22,14 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when we go away, or come back.
  */
 public interface AwayStateListener extends CallbackInterface {
-	/**
+
+    /**
 	 * Called when we go away, or come back.
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
@@ -36,5 +37,5 @@ public interface AwayStateListener extends CallbackInterface {
 	 * @param reason Best guess at away reason
 	 * @see com.dmdirc.parser.irc.ProcessAway#callAwayState
 	 */
-	void onAwayState(IRCParser tParser, boolean currentState, String reason);
+	void onAwayState(Parser tParser, boolean currentState, String reason);
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
@@ -40,5 +40,5 @@ public interface WallDesyncListener extends CallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessWallops#callWallDesync
 	 */
-	void onWallDesync(IRCParser tParser, String sMessage, String sHost);
+	void onWallDesync(Parser tParser, String sMessage, String sHost);
 }

@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 
 /**
@@ -34,5 +35,5 @@ public interface SocketCloseListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see IRCParser#callSocketClosed
 	 */
-	void onSocketClosed(IRCParser tParser);
+	void onSocketClosed(Parser tParser);
 }

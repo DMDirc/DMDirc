@@ -25,6 +25,7 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.SocketState;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
@@ -132,7 +133,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	
 	/** {@inheritDoc} */
     @Override
-	public void onSocketClosed(final IRCParser tParser) {
+	public void onSocketClosed(final Parser tParser) {
 		// Remove our reference to the parser (and its reference to us)
 		parser.getCallbackManager().delAllCallback(this);
 		parser = null;

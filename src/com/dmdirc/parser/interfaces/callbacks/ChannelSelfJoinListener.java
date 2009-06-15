@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
 
 /** 
  * Called When we join a channel.
@@ -38,5 +38,5 @@ public interface ChannelSelfJoinListener extends CallbackInterface {
 	 * @param cChannel Channel Object
 	 * @see com.dmdirc.parser.irc.ProcessJoin#callChannelSelfJoin
 	 */
-	void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);
+	void onChannelSelfJoin(Parser tParser, ChannelInfo cChannel);
 }

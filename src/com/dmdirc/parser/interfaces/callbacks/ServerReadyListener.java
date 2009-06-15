@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called after 001.
@@ -34,5 +34,5 @@ public interface ServerReadyListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see com.dmdirc.parser.irc.Process001#callServerReady
 	 */
-	void onServerReady(IRCParser tParser);
+	void onServerReady(Parser tParser);
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used when the MOTD Starts.
@@ -35,5 +35,5 @@ public interface MotdStartListener extends CallbackInterface {
 	 * @param sData Incomming Line.
 	 * @see com.dmdirc.parser.irc.ProcessMOTD#callMOTDStart
 	 */
-	void onMOTDStart(IRCParser tParser, String sData);
+	void onMOTDStart(Parser tParser, String sData);
 }

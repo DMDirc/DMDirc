@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used to give ServerError.
@@ -35,5 +35,5 @@ public interface ServerErrorListener extends CallbackInterface {
 	 * @param sMessage Error Information
 	 * @see com.dmdirc.parser.irc.IRCParser#callServerError
 	 */
-	void onServerError(IRCParser tParser, String sMessage);
+	void onServerError(Parser tParser, String sMessage);
 }

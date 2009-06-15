@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
@@ -39,5 +39,5 @@ public interface OtherAwayStateListener extends CallbackInterface {
 	 * @param state Away State (true if away, false if here)
 	 * @see com.dmdirc.parser.irc.ProcessAway#callAwayStateOther
 	 */
-	void onAwayStateOther(IRCParser tParser, ClientInfo client, boolean state);
+	void onAwayStateOther(Parser tParser, ClientInfo client, boolean state);
 }

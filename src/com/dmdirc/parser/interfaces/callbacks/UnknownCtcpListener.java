@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
@@ -42,5 +42,5 @@ public interface UnknownCtcpListener extends CallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callUnknownCTCP
 	 */
-	void onUnknownCTCP(IRCParser tParser, String sType, String sMessage, String sTarget, String sHost);
+	void onUnknownCTCP(Parser tParser, String sType, String sMessage, String sTarget, String sHost);
 }

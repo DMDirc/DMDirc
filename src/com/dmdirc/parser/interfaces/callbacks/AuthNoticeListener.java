@@ -22,18 +22,19 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used on every incomming line before 001.
  */
 public interface AuthNoticeListener extends CallbackInterface {
-	/**
+
+    /**
 	 * Called on every incomming line before 001.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
 	 * @see com.dmdirc.parser.irc.ProcessNoticeAuth#callNoticeAuth
 	 */
-	void onNoticeAuth(IRCParser tParser, String sData);
+	void onNoticeAuth(Parser tParser, String sData);
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
@@ -43,5 +43,5 @@ public interface PrivateCtcpReplyListener extends CallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callPrivateCTCPReply
 	 */
-	void onPrivateCTCPReply(IRCParser tParser, String sType, String sMessage, String sHost);
+	void onPrivateCTCPReply(Parser tParser, String sType, String sMessage, String sHost);
 }

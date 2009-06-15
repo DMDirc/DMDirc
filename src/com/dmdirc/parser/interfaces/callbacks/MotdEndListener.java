@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when "End of MOTD" or "No MOTD" is received.
@@ -36,5 +36,5 @@ public interface MotdEndListener extends CallbackInterface {
 	 * @param sData The contents of the line (incase of language changes or so)
 	 * @see com.dmdirc.parser.irc.ProcessMOTD#callMOTDEnd
 	 */
-	void onMOTDEnd(IRCParser tParser, boolean noMOTD, String sData);
+	void onMOTDEnd(Parser tParser, boolean noMOTD, String sData);
 }

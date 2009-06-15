@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 /** 
  * Called When we, or another client quits IRC (Called once in total).
  * This is called BEFORE client has been removed from the channel.
@@ -38,5 +38,5 @@ public interface QuitListener extends CallbackInterface {
 	 * @param sReason Reason for quitting (may be "")
 	 * @see com.dmdirc.parser.irc.ProcessQuit#callQuit
 	 */
-	void onQuit(IRCParser tParser, ClientInfo cClient, String sReason);
+	void onQuit(Parser tParser, ClientInfo cClient, String sReason);
 }

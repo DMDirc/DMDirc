@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used to give Debug Information.
@@ -36,5 +36,5 @@ public interface DebugInfoListener extends CallbackInterface {
 	 * @param sData Debugging Information
 	 * @see com.dmdirc.parser.irc.IRCParser#callDebugInfo
 	 */
-	void onDebugInfo(IRCParser tParser, int nLevel, String sData);
+	void onDebugInfo(Parser tParser, int nLevel, String sData);
 }

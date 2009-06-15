@@ -24,7 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
@@ -93,7 +93,7 @@ public abstract class EventHandler implements CallbackInterface {
      * 
      * @param parser The parser to check
      */
-    protected void checkParser(final IRCParser parser) {
+    protected void checkParser(final Parser parser) {
         if (parser != getServer().getParser()) {
             parser.disconnect("Shouldn't be in use");
             throw new IllegalArgumentException("Event called from a parser that's not in use (#"

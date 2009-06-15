@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used when a raw 464 is recieved.
@@ -34,5 +34,5 @@ public interface PasswordRequiredListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see com.dmdirc.parser.irc.Process004005#callPasswordRequired
 	 */
-	void onPasswordRequired(IRCParser tParser);
+	void onPasswordRequired(Parser tParser);
 }

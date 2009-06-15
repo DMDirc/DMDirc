@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -47,7 +47,7 @@ public interface ChannelUserModeChangeListener extends CallbackInterface {
 	 * @param sMode String representing mode change (ie +o)
 	 * @see com.dmdirc.parser.irc.ProcessMode#callChannelUserModeChanged
 	 */
-	void onChannelUserModeChanged(@FakableSource IRCParser tParser,
+	void onChannelUserModeChanged(@FakableSource Parser tParser,
             @FakableSource ChannelInfo cChannel,
             ChannelClientInfo cChangedClient,
             @FakableArgument ChannelClientInfo cSetByClient,

@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ParserError;
 
 /**
@@ -36,5 +36,5 @@ public interface ConnectErrorListener extends CallbackInterface {
 	 * @param errorInfo ParserError object representing the error.
 	 * @see com.dmdirc.parser.irc.IRCParser#callConnectError
 	 */
-	void onConnectError(IRCParser tParser, ParserError errorInfo);
+	void onConnectError(Parser tParser, ParserError errorInfo);
 }

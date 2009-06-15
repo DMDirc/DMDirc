@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
@@ -68,7 +69,7 @@ import javax.net.ssl.X509TrustManager;
  *
  * @author Shane Mc Cormack
  */
-public class IRCParser implements Runnable {
+public class IRCParser implements Parser, Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -1681,18 +1682,15 @@ public class IRCParser implements Runnable {
 			sendString("QUIT :" + sReason);
 		}
 	}
-	/**
-	 * Disconnect from server.
-	 * This method will quit and automatically close the socket without waiting for
-	 * the server.
-	 *
-	 * @param sReason Reason for quitting.
-	 */
-	public void disconnect(final String sReason) {
-		if (currentSocketState == SocketState.OPEN) {
-			currentSocketState = SocketState.CLOSING;
-			if (got001) { quit(sReason); }
-		}
+    
+	/** {@inheritDoc} */
+    @Override
+	public void disconnect(final String message) {
+                if (currentSocketState == SocketState.OPEN) {
+                        currentSocketState = SocketState.CLOSING;
+                        if (got001) { quit(message); }
+                }
+
 		try {
 			if (socket != null) { socket.close(); }
 		} catch (IOException e) {

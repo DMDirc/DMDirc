@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 
 /** 
  * Called when user modes are changed.
@@ -42,5 +42,5 @@ public interface UserModeChangeListener extends CallbackInterface {
 	 * @param sModes The modes set.
 	 * @see com.dmdirc.parser.irc.ProcessMode#callUserModeChanged
 	 */
-	void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy, String sModes);
+	void onUserModeChanged(Parser tParser, ClientInfo cClient, String sSetBy, String sModes);
 }

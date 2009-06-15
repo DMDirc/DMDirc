@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
@@ -117,13 +118,13 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
 
     /** {@inheritDoc} */
     @Override
-    public void onDataIn(final IRCParser tParser, final String sData) {
+    public void onDataIn(final Parser tParser, final String sData) {
         addLine("rawIn", sData);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onDataOut(final IRCParser tParser, final String sData,
+    public void onDataOut(final Parser tParser, final String sData,
             final boolean bFromParser) {
         addLine("rawOut", sData);
     }

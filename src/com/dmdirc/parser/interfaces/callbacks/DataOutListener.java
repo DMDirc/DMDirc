@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called on every incomming line BEFORE being sent.
@@ -36,5 +36,5 @@ public interface DataOutListener extends CallbackInterface {
 	 * @param bFromParser True if parser sent the data, false if sent using .sendLine
 	 * @see com.dmdirc.parser.irc.IRCParser#callDataOut
 	 */
-	void onDataOut(IRCParser tParser, String sData, boolean bFromParser);
+	void onDataOut(Parser tParser, String sData, boolean bFromParser);
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when a person sends an action not aimed specifically at you or a channel (ie $*).
@@ -41,5 +41,5 @@ public interface UnknownActionListener extends CallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callUnknownAction
 	 */
-	void onUnknownAction(IRCParser tParser, String sMessage, String sTarget, String sHost);
+	void onUnknownAction(Parser tParser, String sMessage, String sTarget, String sHost);
 }

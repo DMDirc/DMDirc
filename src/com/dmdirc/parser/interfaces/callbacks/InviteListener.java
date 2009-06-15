@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when we are invited to a channel.
@@ -36,5 +36,5 @@ public interface InviteListener extends CallbackInterface {
 	 * @param channel Channel we were invited to
 	 * @see com.dmdirc.parser.irc.ProcessInvite#callInvite
 	 */
-	void onInvite(IRCParser tParser, String userHost, String channel);
+	void onInvite(Parser tParser, String userHost, String channel);
 }

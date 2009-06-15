@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used on every incomming line BEFORE parsing.
@@ -35,5 +35,5 @@ public interface DataInListener extends CallbackInterface {
 	 * @param sData Incomming Line.
 	 * @see com.dmdirc.parser.irc.IRCParser#callDataIn
 	 */
-	void onDataIn(IRCParser tParser, String sData);
+	void onDataIn(Parser tParser, String sData);
 }

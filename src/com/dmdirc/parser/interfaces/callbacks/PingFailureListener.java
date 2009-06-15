@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when a Ping Failed.
@@ -34,5 +34,5 @@ public interface PingFailureListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see IRCParser#callPingFailed
 	 */
-	void onPingFailed(IRCParser tParser);
+	void onPingFailed(Parser tParser);
 }

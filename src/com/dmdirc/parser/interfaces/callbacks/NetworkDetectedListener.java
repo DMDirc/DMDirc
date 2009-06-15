@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used when the Network=blah 005 token is recieved.
@@ -38,5 +38,5 @@ public interface NetworkDetectedListener extends CallbackInterface {
 	 * @param ircdType The Guessed type of the ircd based on the name.
 	 * @see com.dmdirc.parser.irc.Process004005#callGotNetwork
 	 */
-	void onGotNetwork(IRCParser tParser, String networkName, String ircdVersion, String ircdType);
+	void onGotNetwork(Parser tParser, String networkName, String ircdVersion, String ircdType);
 }

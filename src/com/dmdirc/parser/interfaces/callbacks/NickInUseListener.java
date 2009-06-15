@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when requested nickname is in use.
@@ -35,5 +35,5 @@ public interface NickInUseListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see com.dmdirc.parser.irc.ProcessNickInUse#callNickInUse
 	 */
-	void onNickInUse(IRCParser tParser, String nickname);
+	void onNickInUse(Parser tParser, String nickname);
 }

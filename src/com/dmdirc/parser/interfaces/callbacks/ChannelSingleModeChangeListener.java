@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -47,7 +47,7 @@ public interface ChannelSingleModeChangeListener extends CallbackInterface {
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sModes String parsed (ie "+m" or "+k moo"
 	 */
-	void onChannelSingleModeChanged(@FakableSource IRCParser tParser,
+	void onChannelSingleModeChanged(@FakableSource Parser tParser,
             @FakableSource ChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
             @FakableSource String sHost,

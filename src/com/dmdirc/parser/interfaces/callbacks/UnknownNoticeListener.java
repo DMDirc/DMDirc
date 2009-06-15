@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when a person sends a notice not aimed specifically at you or a channel (ie $*).
@@ -41,5 +41,5 @@ public interface UnknownNoticeListener extends CallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callUnknownNotice
 	 */
-	void onUnknownNotice(IRCParser tParser, String sMessage, String sTarget, String sHost);
+	void onUnknownNotice(Parser tParser, String sMessage, String sTarget, String sHost);
 }

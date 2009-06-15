@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -36,7 +36,8 @@ import com.dmdirc.parser.irc.callbacks.SpecificCallback;
  */
 @SpecificCallback
 public interface ChannelActionListener extends CallbackInterface {
-	/**
+
+    /**
 	 * Called when a person does an action in a channel.
 	 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server, or not on the channel.
@@ -49,7 +50,7 @@ public interface ChannelActionListener extends CallbackInterface {
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callChannelAction
 	 */
 	void onChannelAction(
-            @FakableSource IRCParser tParser,
+            @FakableSource Parser tParser,
             @FakableSource ChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
             String sMessage,

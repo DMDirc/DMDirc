@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Interface Used to give numeric Information.
@@ -36,5 +36,5 @@ public interface NumericListener extends CallbackInterface {
 	 * @param token IRC Tokenised line
 	 * @see com.dmdirc.parser.irc.ProcessingManager#callNumeric
 	 */
-	void onNumeric(IRCParser tParser, int numeric, String[] token);
+	void onNumeric(Parser tParser, int numeric, String[] token);
 }

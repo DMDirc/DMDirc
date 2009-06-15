@@ -28,8 +28,8 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
@@ -197,7 +197,7 @@ public final class Query extends MessageTarget implements
      * @param remoteHost remote user host
      */
     @Override
-    public void onPrivateMessage(final IRCParser parser, final String message,
+    public void onPrivateMessage(final Parser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(remoteHost);
 
@@ -216,7 +216,7 @@ public final class Query extends MessageTarget implements
      * @param remoteHost remote host
      */
     @Override
-    public void onPrivateAction(final IRCParser parser, final String message,
+    public void onPrivateAction(final Parser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(host);
 
@@ -254,7 +254,7 @@ public final class Query extends MessageTarget implements
 
     /** {@inheritDoc} */
     @Override
-    public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
+    public void onNickChanged(final Parser tParser, final ClientInfo cClient,
             final String sOldNick) {
         if (sOldNick.equals(ClientInfo.parseHost(host))) {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
@@ -287,7 +287,7 @@ public final class Query extends MessageTarget implements
 
     /** {@inheritDoc} */
     @Override
-    public void onQuit(final IRCParser tParser, final ClientInfo cClient,
+    public void onQuit(final Parser tParser, final ClientInfo cClient,
             final String sReason) {
         if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
             final StringBuffer format = new StringBuffer(sReason.isEmpty()

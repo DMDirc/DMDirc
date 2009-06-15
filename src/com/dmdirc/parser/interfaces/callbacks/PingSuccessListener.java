@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 
 /**
  * Called when a Ping was a Success.
@@ -34,5 +34,5 @@ public interface PingSuccessListener extends CallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see IRCParser#callPingSuccess
 	 */
-	void onPingSuccess(IRCParser tParser);
+	void onPingSuccess(Parser tParser);
 }
