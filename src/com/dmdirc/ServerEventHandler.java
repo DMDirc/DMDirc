@@ -364,7 +364,8 @@ public final class ServerEventHandler extends EventHandler
                 && owner.getState() != ServerState.CONNECTING
                 && owner.getState() != ServerState.DISCONNECTING) {
             throw new IllegalArgumentException("Event called from a parser that " +
-                    "shouldn't be in use.\nCurrent state: " + owner.getState());
+                    "shouldn't be in use.\nState history:\n"
+                    + owner.getStatus().getTransitionHistory());
         }
     }
 
