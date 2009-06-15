@@ -27,7 +27,7 @@ import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.SocketState;
-import com.dmdirc.parser.irc.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +45,7 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Shane 'Dataforce' McCormack
  */
-public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, ISocketClosed {
+public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, SocketCloseListener {
 	/** The DCCSend object we are a window for */
 	private final DCCSend dcc;
 	

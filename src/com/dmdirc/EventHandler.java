@@ -27,14 +27,14 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 /**
  * Abstracts some behaviour used by Event Handlers.
  * 
  * @author chris
  */
-public abstract class EventHandler implements ICallbackInterface {
+public abstract class EventHandler implements CallbackInterface {
     
     /** The prefix indicating that the interface is a parser callback. */
     private static final String CALLBACK_PREFIX = "com.dmdirc.parser.irc.callbacks.interfaces.I";

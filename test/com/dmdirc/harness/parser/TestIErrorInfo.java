@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IErrorInfo;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 
-public class TestIErrorInfo implements IErrorInfo {
+public class TestIErrorInfo implements ErrorInfoListener {
 
     public boolean error = false;
 

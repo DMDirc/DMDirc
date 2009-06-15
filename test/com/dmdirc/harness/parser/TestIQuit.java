@@ -23,10 +23,10 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 
-public class TestIQuit implements IChannelQuit, IQuit {
+public class TestIQuit implements ChannelQuitListener, QuitListener {
 
     public ChannelInfo channel;
 

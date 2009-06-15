@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateAction;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 
-public class TestIPrivateAction implements IPrivateAction {
+public class TestIPrivateAction implements PrivateActionListener {
 
     public String message, host;
 

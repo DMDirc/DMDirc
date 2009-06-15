@@ -32,7 +32,7 @@ import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.*;
+import com.dmdirc.parser.interfaces.callbacks.*;
 
 /**
  * Handles parser events for a Server object.
@@ -40,13 +40,13 @@ import com.dmdirc.parser.irc.callbacks.interfaces.*;
  * @author chris
  */
 public final class ServerEventHandler extends EventHandler
-        implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
-        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, ISocketClosed,
-        IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
-        IPingSuccess, IAwayState, IConnectError, INickInUse, IPost005,
-        INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite, IWallop,
-        IWalluser, IWallDesync, INickChanged, IServerError, IPingSent,
-        IUserModeDiscovered {
+        implements ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
+        ErrorInfoListener, PrivateCtcpListener, PrivateCtcpReplyListener, SocketCloseListener,
+        PrivateNoticeListener, MotdStartListener, MotdLineListener, MotdEndListener, NumericListener, PingFailureListener,
+        PingSuccessListener, AwayStateListener, ConnectErrorListener, NickInUseListener, Post005Listener,
+        AuthNoticeListener, UnknownNoticeListener, UserModeChangeListener, InviteListener, WallopListener,
+        WalluserListener, WallDesyncListener, NickChangeListener, ServerErrorListener, PingSentListener,
+        UserModeDiscoveryListener {
 
     /** The server instance that owns this event handler. */
     private final Server owner;

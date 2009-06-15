@@ -24,7 +24,7 @@ package com.dmdirc.parser.irc.callbacks;
 
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
-import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -44,10 +44,10 @@ import java.util.Map;
 public class CallbackObject {
 
     /** The type of callback that this object is operating with. */
-    protected final Class<? extends ICallbackInterface> type;
+    protected final Class<? extends CallbackInterface> type;
 
 	/** Arraylist for storing callback information related to the callback. */
-	protected final List<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
+	protected final List<CallbackInterface> callbackInfo = new ArrayList<CallbackInterface>();
 	
 	/** Reference to the IRCParser that owns this callback. */
 	protected IRCParser myParser;
@@ -63,7 +63,7 @@ public class CallbackObject {
      * @since 0.6.3m1
 	 */
 	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
-            final Class<? extends ICallbackInterface> type) {
+            final Class<? extends CallbackInterface> type) {
 		this.myParser = parser;
 		this.myManager = manager;
         this.type = type;
@@ -74,7 +74,7 @@ public class CallbackObject {
 	 *
 	 * @param eMethod OBject to callback to.
 	 */
-	protected final void addCallback(final ICallbackInterface eMethod) {
+	protected final void addCallback(final CallbackInterface eMethod) {
 		if (!callbackInfo.contains(eMethod)) {
             callbackInfo.add(eMethod);
         }
@@ -85,7 +85,7 @@ public class CallbackObject {
 	 *
 	 * @param eMethod Object that was being called back to.
 	 */
-	protected final void delCallback(final ICallbackInterface eMethod) {
+	protected final void delCallback(final CallbackInterface eMethod) {
         callbackInfo.remove(eMethod);
 	}
 	
@@ -104,14 +104,14 @@ public class CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
-	public void add(final ICallbackInterface eMethod) { addCallback(eMethod); }
+	public void add(final CallbackInterface eMethod) { addCallback(eMethod); }
 	
 	/**
 	 * Remove a callback.
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
-	public void del(final ICallbackInterface eMethod) { delCallback(eMethod); }
+	public void del(final CallbackInterface eMethod) { delCallback(eMethod); }
 	
 	/**
 	 * Get the name for this callback.
@@ -147,7 +147,7 @@ public class CallbackObject {
             createFakeArgs(newArgs);
         }
 
-		for (ICallbackInterface iface : new ArrayList<ICallbackInterface>(callbackInfo)) {
+		for (CallbackInterface iface : new ArrayList<CallbackInterface>(callbackInfo)) {
 			try {
                 type.getMethods()[0].invoke(iface, newArgs);
 			} catch (Exception e) {

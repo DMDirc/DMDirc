@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateCTCP;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
 
-public class TestIPrivateCTCP implements IPrivateCTCP {
+public class TestIPrivateCTCP implements PrivateCtcpListener {
 
     public String type, message, host;
 

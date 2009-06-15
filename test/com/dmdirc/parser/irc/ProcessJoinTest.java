@@ -25,7 +25,7 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestIChannelSelfJoin;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelJoin;
+import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -54,7 +54,7 @@ public class ProcessJoinTest {
     @Test
     public void testOtherJoinChannel() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final IChannelJoin test = mock(IChannelJoin.class);
+        final ChannelJoinListener test = mock(ChannelJoinListener.class);
 
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("onChannelJoin", test);

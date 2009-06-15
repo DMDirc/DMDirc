@@ -22,14 +22,14 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
-import java.util.Hashtable;
-
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
-import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
+
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * CallbackObjectSpecific.
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class CallbackObjectSpecific extends CallbackObject {
 	
 	/** Hashtable for storing specific information for callback. */	
-	protected volatile Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
+	protected volatile Hashtable<CallbackInterface, String> specificData = new Hashtable<CallbackInterface, String>();
 	
 	/**
 	 * Create a new instance of the Callback Object.
@@ -51,7 +51,7 @@ public class CallbackObjectSpecific extends CallbackObject {
      * @since 0.6.3m1
 	 */
 	public CallbackObjectSpecific(final IRCParser parser,
-            final CallbackManager manager, final Class<? extends ICallbackInterface> type) {
+            final CallbackManager manager, final Class<? extends CallbackInterface> type) {
         super(parser, manager, type);
     }
 	
@@ -62,7 +62,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param cChannel ChannelInfo object for the channel to test
 	 * @return true if channel given matches the specifics for the method given
 	 */
-	protected boolean isValidChan(final ICallbackInterface eMethod, final ChannelInfo cChannel) {
+	protected boolean isValidChan(final CallbackInterface eMethod, final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
 			if (!myParser.getIRCStringConverter().equalsIgnoreCase(cChannel.getName(), specificData.get(eMethod))) { return false; }
 		}
@@ -76,7 +76,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param sHost Hostname of user that sent the query
 	 * @return true if host given matches the specifics for the method given
 	 */
-	protected boolean isValidUser(final ICallbackInterface eMethod, final String sHost) {
+	protected boolean isValidUser(final CallbackInterface eMethod, final String sHost) {
 		final String nickname = ClientInfo.parseHost(sHost);
 		if (specificData.containsKey(eMethod)) {
 			if (!myParser.getIRCStringConverter().equalsIgnoreCase(nickname, specificData.get(eMethod))) { return false; }
@@ -92,7 +92,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param eMethod Object to callback to.
 	 */
     @Override
-	public void add(final ICallbackInterface eMethod) {
+	public void add(final CallbackInterface eMethod) {
 		addCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
@@ -103,7 +103,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param eMethod Object to callback to.
 	 * @param specificTarget Target that must match for callback to be called.
 	 */
-	public void add(final ICallbackInterface eMethod, final String specificTarget) {
+	public void add(final CallbackInterface eMethod, final String specificTarget) {
 		add(eMethod);
 		if (!specificTarget.isEmpty()) {
 			specificData.put(eMethod, specificTarget);
@@ -116,7 +116,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param eMethod Object to remove callback to.
 	 */
     @Override
-	public void del(final ICallbackInterface eMethod) {
+	public void del(final CallbackInterface eMethod) {
 		delCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
@@ -140,7 +140,7 @@ public class CallbackObjectSpecific extends CallbackObject {
             createFakeArgs(newArgs);
         }
 
-		for (ICallbackInterface iface :new ArrayList<ICallbackInterface>(callbackInfo)) {
+		for (CallbackInterface iface :new ArrayList<CallbackInterface>(callbackInfo)) {
             if (type.isAnnotationPresent(SpecificCallback.class) &&
                     ((args[0] instanceof ClientInfo
                         && !isValidUser(iface, ((ClientInfo) args[0]).getHost()))

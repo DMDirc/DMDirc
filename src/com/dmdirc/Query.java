@@ -32,10 +32,10 @@ import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.INickChanged;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateAction;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -52,7 +52,7 @@ import java.io.Serializable;
  * @author chris
  */
 public final class Query extends MessageTarget implements
-        IPrivateAction, IPrivateMessage, INickChanged, IQuit, Serializable {
+        PrivateActionListener, PrivateMessageListener, NickChangeListener, QuitListener, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class

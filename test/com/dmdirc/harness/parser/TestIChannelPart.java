@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelPart;
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 
-public class TestIChannelPart implements IChannelPart {
+public class TestIChannelPart implements ChannelPartListener {
 
     public ChannelInfo channel;
 

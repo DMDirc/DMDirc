@@ -30,7 +30,7 @@ import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.*;
+import com.dmdirc.parser.interfaces.callbacks.*;
 
 /**
  * Handles events for channel objects.
@@ -38,10 +38,10 @@ import com.dmdirc.parser.irc.callbacks.interfaces.*;
  * @author chris
  */
 public final class ChannelEventHandler extends EventHandler implements
-        IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
-        IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        IChannelCTCP, IAwayStateOther, IChannelNotice {
+        ChannelMessageListener, ChannelNamesListener, ChannelTopicListener, ChannelJoinListener,
+        ChannelPartListener, ChannelKickListener, ChannelQuitListener, ChannelActionListener,
+        ChannelNickChangeListener, ChannelModeChangeListener, ChannelUserModeChangeListener,
+        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener {
 
     /** The channel that owns this event handler. */
     private final Channel owner;

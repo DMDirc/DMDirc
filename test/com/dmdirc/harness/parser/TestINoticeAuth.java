@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.INoticeAuth;
+import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
 
-public class TestINoticeAuth implements INoticeAuth {
+public class TestINoticeAuth implements AuthNoticeListener {
 
     public String message = null;
 

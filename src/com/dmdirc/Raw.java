@@ -26,8 +26,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IDataIn;
-import com.dmdirc.parser.irc.callbacks.interfaces.IDataOut;
+import com.dmdirc.parser.interfaces.callbacks.DataInListener;
+import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -38,8 +38,8 @@ import java.io.Serializable;
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends WritableFrameContainer implements IDataIn,
-        IDataOut, Serializable {
+public final class Raw extends WritableFrameContainer implements DataInListener,
+        DataOutListener, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class

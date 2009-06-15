@@ -32,10 +32,10 @@ import com.dmdirc.harness.parser.TestIPost005;
 import com.dmdirc.harness.parser.TestIPrivateMessage;
 import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IAwayState;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelKick;
+import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
 
-import com.dmdirc.parser.irc.callbacks.interfaces.IErrorInfo;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class IRCParserTest {
 
         try {
             final IRCParser myParser = new IRCParser();
-            myParser.getCallbackManager().addCallback("non-existant", mock(IAwayState.class));
+            myParser.getCallbackManager().addCallback("non-existant", mock(AwayStateListener.class));
         } catch (CallbackNotFoundException ex) {
             res = true;
         }
@@ -66,7 +66,7 @@ public class IRCParserTest {
     @Test
     public void testIssue1674() {
         // parser nick change error with dual 001
-        final IErrorInfo error = mock(IErrorInfo.class);
+        final ErrorInfoListener error = mock(ErrorInfoListener.class);
 
         final TestParser myParser = new TestParser();
         myParser.getCallbackManager().addCallback("onErrorInfo", error);
@@ -455,7 +455,7 @@ public class IRCParserTest {
     @Test
     public void testKick() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final IChannelKick ick = mock(IChannelKick.class);
+        final ChannelKickListener ick = mock(ChannelKickListener.class);
         parser.injectConnectionStrings();
 
         parser.injectLine(":nick JOIN #D");

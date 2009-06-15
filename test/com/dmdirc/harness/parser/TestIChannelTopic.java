@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelTopic;
+import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 
-public class TestIChannelTopic implements IChannelTopic {
+public class TestIChannelTopic implements ChannelTopicListener {
 
     public boolean triggered;
 

@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IServerError;
+import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 
-public class TestIServerError implements IServerError {
+public class TestIServerError implements ServerErrorListener {
 
     public String message = null;
 

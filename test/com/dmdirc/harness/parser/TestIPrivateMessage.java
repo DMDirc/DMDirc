@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 
-public class TestIPrivateMessage implements IPrivateMessage {
+public class TestIPrivateMessage implements PrivateMessageListener {
 
     public String host, message;
 
