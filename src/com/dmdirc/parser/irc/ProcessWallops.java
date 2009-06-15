@@ -22,6 +22,10 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
+import com.dmdirc.parser.interfaces.callbacks.WallopListener;
+import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
+
 /**
  * Process a WALLOPS Message.
  */
@@ -62,7 +66,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWallop(final String message, final String host) {
-		return getCallbackManager().getCallbackType("OnWallop").call(message, host);
+		return getCallbackManager().getCallbackType(WallopListener.class).call(message, host);
 	}
 	
 	/**
@@ -74,7 +78,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWalluser(final String message, final String host) {
-		return getCallbackManager().getCallbackType("OnWalluser").call(message, host);
+		return getCallbackManager().getCallbackType(WalluserListener.class).call(message, host);
 	}
 	
 	/**
@@ -86,7 +90,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWallDesync(final String message, final String host) {
-		return getCallbackManager().getCallbackType("OnWallDesync").call(message, host);
+		return getCallbackManager().getCallbackType(WallDesyncListener.class).call(message, host);
 	}
 	
 	

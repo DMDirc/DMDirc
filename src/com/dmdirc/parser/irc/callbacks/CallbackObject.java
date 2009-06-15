@@ -26,6 +26,7 @@ import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -96,7 +97,7 @@ public class CallbackObject {
 	 * @return true if error call succeeded, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
-		return myManager.getCallbackType("OnErrorInfo").call(errorInfo);
+		return myManager.getCallbackType(ErrorInfoListener.class).call(errorInfo);
 	}
 	
 	/**
@@ -112,23 +113,17 @@ public class CallbackObject {
 	 * @param eMethod Object to remove callback to.
 	 */
 	public void del(final CallbackInterface eMethod) { delCallback(eMethod); }
-	
-	/**
-	 * Get the name for this callback.
-	 *
-	 * @return Name of callback
-	 */
-	public String getName() {
-		return "On" + type.getSimpleName().substring(1); // Trim the 'I'
-	}
-	
-	/**
-	 * Get the name for this callback in lowercase.
-	 *
-	 * @return Name of callback, in lowercase
-	 */
-	public final String getLowerName() { return this.getName().toLowerCase(); }
 
+    /**
+     * Retrieves the type of callback that this callback object is for.
+     *
+     * @return This object's type
+     * @since 0.6.3m2
+     */
+    public Class<? extends CallbackInterface> getType() {
+        return type;
+    }
+	
     /**
      * Actually calls this callback. The specified arguments must match those
      * specified in the callback's interface, or an error will be raised.

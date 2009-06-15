@@ -36,7 +36,7 @@ public class ProcessNamesTest {
         final TestParser parser = new TestParser();
         final TestIErrorInfo test = new TestIErrorInfo();
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("OnErrorInfo", test);
+        parser.getCallbackManager().addCallback(ErrorInfoListener.class, test);
         
         parser.injectLine(":server 366 nick #nonexistant :End of /NAMES list.");
         

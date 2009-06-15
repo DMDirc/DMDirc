@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.ChannelListModeListener;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -227,7 +228,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
-		return getCallbackManager().getCallbackType("OnChannelGotListModes").call(cChannel);
+		return getCallbackManager().getCallbackType(ChannelListModeListener.class).call(cChannel);
 	}
 	
 	/**

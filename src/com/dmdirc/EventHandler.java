@@ -36,21 +36,18 @@ import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
  */
 public abstract class EventHandler implements CallbackInterface {
     
-    /** The prefix indicating that the interface is a parser callback. */
-    private static final String CALLBACK_PREFIX = "com.dmdirc.parser.irc.callbacks.interfaces.I";
-    
     /**
      * Registers all callbacks that this event handler implements with the
      * owner's parser.
      */
+    @SuppressWarnings("unchecked")
     public void registerCallbacks() {
         final CallbackManager cbm = getServer().getParser().getCallbackManager();
         
         try {
             for (Class iface : this.getClass().getInterfaces()) {
-                if (iface.getName().startsWith(CALLBACK_PREFIX)) {
-                    addCallback(cbm, "on"
-                            + iface.getName().substring(CALLBACK_PREFIX.length()));
+                if (CallbackInterface.class.isAssignableFrom(iface)) {
+                    addCallback(cbm, iface);
                 }
             }
         } catch (CallbackNotFoundException exception) {
@@ -71,13 +68,15 @@ public abstract class EventHandler implements CallbackInterface {
     /**
      * Adds a callback to this event handler.
      * 
+     * @param <T> The type of callback to be added
      * @param cbm The callback manager to use
-     * @param name The name of the callback to be added
+     * @param type The type of the callback to be added
      * @throws com.dmdirc.parser.irc.callbacks.CallbackNotFoundException
      * if the specified callback isn't found
      */
-    protected abstract void addCallback(CallbackManager cbm, String name) 
-            throws CallbackNotFoundException;
+    @SuppressWarnings("unchecked")
+    protected abstract <T extends CallbackInterface> void addCallback(
+            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException;
     
     /**
      * Retrieves the server belonging to this EventHandler's owner.

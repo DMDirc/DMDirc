@@ -22,6 +22,10 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelOtherAwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
+
 /**
  * Process a /who reply.
  */
@@ -88,7 +92,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return getCallbackManager().getCallbackType("OnAwayState").call(currentState, reason);
+		return getCallbackManager().getCallbackType(AwayStateListener.class).call(currentState, reason);
 	}
 	
 	/**
@@ -100,7 +104,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayStateOther(final ClientInfo client, final boolean state) {
-		return getCallbackManager().getCallbackType("OnAwayStateOther").call(client, state);
+		return getCallbackManager().getCallbackType(OtherAwayStateListener.class).call(client, state);
 	}
 	
 	/**
@@ -113,7 +117,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelAwayStateOther(final ChannelInfo channel, final ChannelClientInfo channelClient, final boolean state) {
-		return getCallbackManager().getCallbackType("OnChannelAwayStateOther").call(channel, channelClient, state);
+		return getCallbackManager().getCallbackType(ChannelOtherAwayStateListener.class).call(channel, channelClient, state);
 	}
 	
 	/**

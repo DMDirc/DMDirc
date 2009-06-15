@@ -31,11 +31,19 @@ import com.dmdirc.harness.parser.TestIServerError;
 import com.dmdirc.harness.parser.TestIPost005;
 import com.dmdirc.harness.parser.TestIPrivateMessage;
 import com.dmdirc.harness.parser.TestIPrivateAction;
+import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
 
+import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.interfaces.callbacks.NumericListener;
+import com.dmdirc.parser.interfaces.callbacks.Post005Listener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +63,7 @@ public class IRCParserTest {
 
         try {
             final IRCParser myParser = new IRCParser();
-            myParser.getCallbackManager().addCallback("non-existant", mock(AwayStateListener.class));
+            myParser.getCallbackManager().addCallback(null, mock(AwayStateListener.class));
         } catch (CallbackNotFoundException ex) {
             res = true;
         }
@@ -69,7 +77,7 @@ public class IRCParserTest {
         final ErrorInfoListener error = mock(ErrorInfoListener.class);
 
         final TestParser myParser = new TestParser();
-        myParser.getCallbackManager().addCallback("onErrorInfo", error);
+        myParser.getCallbackManager().addCallback(ErrorInfoListener.class, error);
         myParser.injectConnectionStrings();
         myParser.nick = "nick2";
         myParser.injectConnectionStrings();
@@ -86,7 +94,7 @@ public class IRCParserTest {
         si.setUseSocks(true);
         
         final IRCParser myParser = new IRCParser(si);
-        myParser.getCallbackManager().addCallback("onConnectError", tice);
+        myParser.getCallbackManager().addCallback(ConnectErrorListener.class, tice);
         myParser.setBindIP("0.0.0.0");
         myParser.run();
         
@@ -168,7 +176,7 @@ public class IRCParserTest {
         final TestIServerError test = new TestIServerError();
 
         final TestParser parser = new TestParser();
-        parser.getCallbackManager().addCallback("onServerError", test);
+        parser.getCallbackManager().addCallback(ServerErrorListener.class, test);
         parser.injectLine("ERROR :You smell of cheese");
 
         assertNotNull(test.message);
@@ -180,7 +188,7 @@ public class IRCParserTest {
     public void testAuthNotices() throws CallbackNotFoundException {
         final TestINoticeAuth test = new TestINoticeAuth();
         final TestParser parser = new TestParser();
-        parser.getCallbackManager().addCallback("onNoticeAuth", test);
+        parser.getCallbackManager().addCallback(AuthNoticeListener.class, test);
         parser.sendConnectionStrings();
         parser.injectLine("NOTICE AUTH :Random auth notice?");
 
@@ -199,7 +207,7 @@ public class IRCParserTest {
     public void testPre001NickChange() throws CallbackNotFoundException {
         final TestINoticeAuth test = new TestINoticeAuth();
         final TestParser parser = new TestParser();
-        parser.getCallbackManager().addCallback("onNoticeAuth", test);
+        parser.getCallbackManager().addCallback(AuthNoticeListener.class, test);
         parser.sendConnectionStrings();
         parser.injectLine(":chris!@ NICK :user2");
 
@@ -210,7 +218,7 @@ public class IRCParserTest {
     public void testNumeric() throws CallbackNotFoundException {
         final TestINumeric test = new TestINumeric();
         final TestParser parser = new TestParser();
-        parser.getCallbackManager().addCallback("onNumeric", test);
+        parser.getCallbackManager().addCallback(NumericListener.class, test);
 
         parser.injectLine(":server 001 nick :Hi there, nick");
 
@@ -223,7 +231,7 @@ public class IRCParserTest {
     public void testPost005() throws CallbackNotFoundException {
         final TestIPost005 test = new TestIPost005();
         final TestParser parser = new TestParser();
-        parser.getCallbackManager().addCallback("onPost005", test);
+        parser.getCallbackManager().addCallback(Post005Listener.class, test);
 
         final String[] strings = {
             "NOTICE AUTH :Blah, blah",
@@ -354,9 +362,9 @@ public class IRCParserTest {
 
         parser.injectConnectionStrings();
 
-        parser.getCallbackManager().addCallback("onPrivateMessage", ipmtest);
-        parser.getCallbackManager().addCallback("onPrivateAction", ipatest);
-        parser.getCallbackManager().addCallback("onPrivateCTCP", ipctest);
+        parser.getCallbackManager().addCallback(PrivateMessageListener.class, ipmtest);
+        parser.getCallbackManager().addCallback(PrivateActionListener.class, ipatest);
+        parser.getCallbackManager().addCallback(PrivateCtcpListener.class, ipctest);
 
         parser.injectLine(":a!b@c PRIVMSG nick :Hello!");
         assertNotNull(ipmtest.host);
@@ -459,7 +467,7 @@ public class IRCParserTest {
         parser.injectConnectionStrings();
 
         parser.injectLine(":nick JOIN #D");
-        parser.getCallbackManager().addCallback("onChannelKick", ick, "#D");
+        parser.getCallbackManager().addCallback(ChannelKickListener.class, ick, "#D");
         parser.injectLine(":bar!me@moo KICK #D nick :Bye!");
 
         verify(ick).onChannelKick(same(parser), (ChannelInfo) anyObject(),
@@ -481,7 +489,7 @@ public class IRCParserTest {
     public void testIllegalPort1() {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 0, ""));
         final TestIConnectError tiei = new TestIConnectError();
-        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.getCallbackManager().addCallback(ConnectErrorListener.class, tiei);
         tp.runSuper();
         assertTrue(tiei.error);
     }
@@ -490,7 +498,7 @@ public class IRCParserTest {
     public void testIllegalPort2() {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 1, ""));
         final TestIConnectError tiei = new TestIConnectError();
-        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.getCallbackManager().addCallback(ConnectErrorListener.class, tiei);
         tp.runSuper();
         assertTrue(tiei.error);
     }    
@@ -499,7 +507,7 @@ public class IRCParserTest {
     public void testIllegalPort3() {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 65570, ""));
         final TestIConnectError tiei = new TestIConnectError();
-        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.getCallbackManager().addCallback(ConnectErrorListener.class, tiei);
         tp.runSuper();
         assertTrue(tiei.error);
     }

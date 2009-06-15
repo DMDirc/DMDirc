@@ -27,8 +27,6 @@ import com.dmdirc.harness.parser.TestIChannelPart;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 
 import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
-import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,7 +43,7 @@ public class ProcessPartTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
         final TestIChannelPart test = new TestIChannelPart();
-        parser.getCallbackManager().addCallback("OnChannelPart", test);
+        parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         
@@ -73,7 +71,7 @@ public class ProcessPartTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
         final TestIChannelPart test = new TestIChannelPart();
-        parser.getCallbackManager().addCallback("OnChannelPart", test);
+        parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         

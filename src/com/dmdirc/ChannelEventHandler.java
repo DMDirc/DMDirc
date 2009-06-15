@@ -58,13 +58,14 @@ public final class ChannelEventHandler extends EventHandler implements
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
-    protected void addCallback(final CallbackManager cbm, final String name)
-            throws CallbackNotFoundException {
-        if ("onAwayStateOther".equals(name)) {
-            cbm.addCallback(name, this);
+    protected <T extends CallbackInterface> void addCallback(
+            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException {
+        if (OtherAwayStateListener.class.equals(type)) {
+            cbm.addCallback(type, (T) this);
         } else {
-            cbm.addCallback(name, this, owner.getChannelInfo().getName());
+            cbm.addCallback(type, (T) this, owner.getChannelInfo().getName());
         }
     }
 

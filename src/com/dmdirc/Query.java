@@ -243,10 +243,10 @@ public final class Query extends MessageTarget implements
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
 
         try {
-            callbackManager.addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
-            callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
-            callbackManager.addCallback("onQuit", this);
-            callbackManager.addCallback("onNickChanged", this);
+            callbackManager.addCallback(PrivateActionListener.class, this, ClientInfo.parseHost(host));
+            callbackManager.addCallback(PrivateMessageListener.class, this, ClientInfo.parseHost(host));
+            callbackManager.addCallback(QuitListener.class, this);
+            callbackManager.addCallback(NickChangeListener.class, this);
         } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
         }
@@ -259,12 +259,12 @@ public final class Query extends MessageTarget implements
         if (sOldNick.equals(ClientInfo.parseHost(host))) {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
 
-            callbackManager.delCallback("onPrivateAction", this);
-            callbackManager.delCallback("onPrivateMessage", this);
+            callbackManager.delCallback(PrivateActionListener.class, this);
+            callbackManager.delCallback(PrivateMessageListener.class, this);
 
             try {
-                callbackManager.addCallback("onPrivateAction", this, cClient.getNickname());
-                callbackManager.addCallback("onPrivateMessage", this, cClient.getNickname());
+                callbackManager.addCallback(PrivateActionListener.class, this, cClient.getNickname());
+                callbackManager.addCallback(PrivateMessageListener.class, this, cClient.getNickname());
             } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }

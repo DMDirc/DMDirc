@@ -22,6 +22,12 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNonUserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelSingleModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.UserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
 import com.dmdirc.parser.irc.callbacks.CallbackObject;
 import java.util.Calendar;
 
@@ -91,8 +97,8 @@ public class ProcessMode extends IRCProcessor {
 		CallbackObject cbNonUser = null;
 
 		if (!sParam.equals("324")) {
-			cbSingle = getCallbackManager().getCallbackType("OnChannelSingleModeChanged");
-			cbNonUser = getCallbackManager().getCallbackType("OnChannelNonUserModeChanged");
+			cbSingle = getCallbackManager().getCallbackType(ChannelSingleModeChangeListener.class);
+			cbNonUser = getCallbackManager().getCallbackType(ChannelNonUserModeChangeListener.class);
 		}
 		
 		iChannel = getChannelInfo(sChannelName);
@@ -274,7 +280,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
-		return getCallbackManager().getCallbackType("OnChannelModeChanged").call(cChannel, cChannelClient, sHost, sModes);
+		return getCallbackManager().getCallbackType(ChannelModeChangeListener.class).call(cChannel, cChannelClient, sHost, sModes);
 	}
 	
 	/**
@@ -289,7 +295,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
-		return getCallbackManager().getCallbackType("OnChannelUserModeChanged").call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
+		return getCallbackManager().getCallbackType(ChannelUserModeChangeListener.class).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
 	}
 	
 	/**
@@ -302,7 +308,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby, String sModes) {
-		return getCallbackManager().getCallbackType("OnUserModeChanged").call(cClient, sSetby, sModes);
+		return getCallbackManager().getCallbackType(UserModeChangeListener.class).call(cClient, sSetby, sModes);
 	}
 	
 	/**
@@ -314,7 +320,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUserModeDiscovered(ClientInfo cClient, String sModes) {
-		return getCallbackManager().getCallbackType("OnUserModeDiscovered").call(cClient, sModes);
+		return getCallbackManager().getCallbackType(UserModeDiscoveryListener.class).call(cClient, sModes);
 	}	
 	
 	/**

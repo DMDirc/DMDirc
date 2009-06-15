@@ -35,7 +35,7 @@ public class ProcessWhoTest {
         final TestParser parser = new TestParser();
         final AwayStateListener test = mock(AwayStateListener.class);
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("OnAwayState", test);
+        parser.getCallbackManager().addCallback(AwayStateListener.class, test);
 
         parser.injectLine(":nick JOIN #DMDirc_testing");
 

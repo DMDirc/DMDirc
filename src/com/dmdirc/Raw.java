@@ -77,8 +77,8 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
      */
     public void registerCallbacks() {
         try {
-            server.getParser().getCallbackManager().addCallback("OnDataIn", this);
-            server.getParser().getCallbackManager().addCallback("OnDataOut", this);
+            server.getParser().getCallbackManager().addCallback(DataInListener.class, this);
+            server.getParser().getCallbackManager().addCallback(DataOutListener.class, this);
         } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
         }

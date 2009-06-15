@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
+
 /**
  * Process a channel part.
  */
@@ -84,7 +86,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return getCallbackManager().getCallbackType("OnChannelPart").call(cChannel, cChannelClient, sReason);
+		return getCallbackManager().getCallbackType(ChannelPartListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**

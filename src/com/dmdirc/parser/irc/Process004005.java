@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.NetworkDetectedListener;
+
 /**
  * Process ISUPPORT lines.
  */
@@ -132,7 +134,7 @@ public class Process004005 extends IRCProcessor {
 		final String ircdVersion = myParser.getIRCD(false);
 		final String ircdType = myParser.getIRCD(true);
 		
-		return getCallbackManager().getCallbackType("OnGotNetwork").call(networkName, ircdVersion, ircdType);
+		return getCallbackManager().getCallbackType(NetworkDetectedListener.class).call(networkName, ircdVersion, ircdType);
 	}
 	
 	/**

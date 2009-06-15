@@ -98,7 +98,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
         this.myPlugin = plugin;
         
 		if (parser != null) {
-			parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
+			parser.getCallbackManager().addNonCriticalCallback(SocketCloseListener.class, this);
 		}
 		dcc.setHandler(this);
 

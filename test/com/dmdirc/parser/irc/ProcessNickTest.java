@@ -25,6 +25,8 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestINickChanged;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,7 +38,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestINickChanged tinc = new TestINickChanged();
 
-        parser.getCallbackManager().addCallback("OnNickChanged", tinc);
+        parser.getCallbackManager().addCallback(NickChangeListener.class, tinc);
         
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
@@ -80,7 +82,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestIErrorInfo info = new TestIErrorInfo();
         
-        parser.getCallbackManager().addCallback("OnErrorInfo", info);
+        parser.getCallbackManager().addCallback(ErrorInfoListener.class, info);
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser @+nick2 nick3");
@@ -96,7 +98,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestINickChanged tinc = new TestINickChanged();
         
-        parser.getCallbackManager().addCallback("OnNickChanged", tinc);
+        parser.getCallbackManager().addCallback(NickChangeListener.class, tinc);
         
         parser.injectConnectionStrings();
         parser.injectLine(":random!lu@ser NICK rand");

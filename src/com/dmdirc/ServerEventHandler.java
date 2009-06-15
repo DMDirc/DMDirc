@@ -64,9 +64,10 @@ public final class ServerEventHandler extends EventHandler
 
     /** {@inheritDoc} */
     @Override
-    protected void addCallback(final CallbackManager cbm, final String name)
-            throws CallbackNotFoundException {
-        cbm.addCallback(name, this);
+    @SuppressWarnings("unchecked")
+    protected <T extends CallbackInterface> void addCallback(
+            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException {
+        cbm.addCallback(type, (T) this);
     }
 
     /** {@inheritDoc} */

@@ -22,6 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
+
 /**
  * Process a channel join.
  */
@@ -106,7 +109,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelJoin(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
-		return getCallbackManager().getCallbackType("OnChannelJoin").call(cChannel, cChannelClient);
+		return getCallbackManager().getCallbackType(ChannelJoinListener.class).call(cChannel, cChannelClient);
 	}
 	
 	/**
@@ -117,7 +120,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelSelfJoin(final ChannelInfo cChannel) {
-		return  getCallbackManager().getCallbackType("OnChannelSelfJoin").call(cChannel);
+		return  getCallbackManager().getCallbackType(ChannelSelfJoinListener.class).call(cChannel);
 	}
 	
 	/**

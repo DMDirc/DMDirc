@@ -36,7 +36,7 @@ public class ProcessTopicTest {
         final TestParser parser = new TestParser();
         final TestIChannelTopic test = new TestIChannelTopic();
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("OnChannelTopic", test);
+        parser.getCallbackManager().addCallback(ChannelTopicListener.class, test);
         
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 332 nick #DMDirc_testing :This be a topic");
@@ -60,7 +60,7 @@ public class ProcessTopicTest {
         parser.injectLine(":server 332 nick #DMDirc_testing :This be a topic");
         parser.injectLine(":server 333 nick #DMDirc_testing Q 1207350306");
         
-        parser.getCallbackManager().addCallback("OnChannelTopic", test);
+        parser.getCallbackManager().addCallback(ChannelTopicListener.class, test);
         
         parser.injectLine(":foobar TOPIC #DMDirc_testing :New topic here");
         
