@@ -22,11 +22,11 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
-
 import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -50,20 +50,20 @@ public class CallbackObject {
 	/** Arraylist for storing callback information related to the callback. */
 	protected final List<CallbackInterface> callbackInfo = new ArrayList<CallbackInterface>();
 	
-	/** Reference to the IRCParser that owns this callback. */
-	protected IRCParser myParser;
+	/** Reference to the Parser that owns this callback. */
+	protected Parser myParser;
 	/** Reference to the CallbackManager in charge of this callback. */
 	protected CallbackManager myManager;
 	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
-	 * @param parser IRCParser That owns this callback
+	 * @param parser Parser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
      * @param type The type of callback to use
      * @since 0.6.3m1
 	 */
-	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
+	protected CallbackObject(final Parser parser, final CallbackManager manager,
             final Class<? extends CallbackInterface> type) {
 		this.myParser = parser;
 		this.myManager = manager;

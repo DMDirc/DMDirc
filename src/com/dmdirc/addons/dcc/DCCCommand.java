@@ -32,7 +32,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -72,7 +72,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 		if (args.getArguments().length > 1) {
 			final String type = args.getArguments()[0];
 			final String target = args.getArguments()[1];
-			final IRCParser parser = server.getParser();
+			final Parser parser = server.getParser();
 			final String myNickname = parser.getMyNickname();
 				
 			if (parser.isValidChannelName(target) || parser.getIRCStringConverter().equalsIgnoreCase(target, myNickname)) {
@@ -150,7 +150,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 						JOptionPane.showMessageDialog(null, "Invalid file specified", "DCC Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					final IRCParser parser = server.getParser();
+					final Parser parser = server.getParser();
 					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "send.blocksize"));
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.forceturbo"));
 					send.setType(DCCSend.TransferType.SEND);

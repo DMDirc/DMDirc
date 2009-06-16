@@ -23,7 +23,6 @@
 package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.addons.ui_swing.components.ParamModePanel;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
@@ -186,7 +185,7 @@ public final class ChannelModesPane extends JPanel {
      */
     public void setChangedBooleanModes() {
         boolean changed = false;
-        final IRCParser parser = channel.getServer().getParser();
+        final Parser parser = channel.getServer().getParser();
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
         final String paramModes =

@@ -38,10 +38,10 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -780,7 +780,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		if (target.getContainer() instanceof Channel) {
 			component = ((Channel) target.getContainer()).getChannelInfo();
 		} else if (target.getContainer() instanceof Query) {
-			final IRCParser parser = ((Query) target.getContainer()).getServer().getParser();
+			final Parser parser = ((Query) target.getContainer()).getServer().getParser();
 			component = parser.getClientInfo(((Query) target.getContainer()).getHost());
 			if (component == null) {
 				component = new ClientInfo(parser, ((Query) target.getContainer()).getHost()).setFake(true);

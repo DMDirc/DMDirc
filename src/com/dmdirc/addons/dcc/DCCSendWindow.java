@@ -26,7 +26,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.SocketState;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 
@@ -81,7 +80,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
     private final DCCPlugin myPlugin;
 	
 	/** IRC Parser that caused this send */
-	private IRCParser parser = null;
+	private Parser parser = null;
 	
 	/**
 	 * Creates a new instance of DCCSendWindow with a given DCCSend object.
@@ -92,7 +91,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param targetNick Nickname of target
 	 * @param parser The IRC parser that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final IRCParser parser) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Parser parser) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.parser = parser;

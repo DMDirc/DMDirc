@@ -52,4 +52,13 @@ public interface Parser extends Runnable {
      */
     void setBindIP(String ip);
 
+    /**
+     * Determines the maximimum length a message of the specified type may be.
+     *
+     * @param type Type of message (eg PRIVMSG)
+     * @param target Target of message (eg channel name)
+     * @return The maximum length of the message
+     */
+    int getMaxLength(final String type, final String target);
+
 }

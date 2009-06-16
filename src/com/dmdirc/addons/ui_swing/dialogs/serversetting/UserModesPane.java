@@ -24,8 +24,8 @@ package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import com.dmdirc.parser.irc.IRCParser;
 
+import com.dmdirc.parser.interfaces.Parser;
 import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
@@ -77,7 +77,7 @@ public final class UserModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final IRCParser parser = server.getParser();
+        final Parser parser = server.getParser();
 
         final String userModes = parser.getUserModeString();
         final String ourUserModes = parser.getMyself().getUserModeStr();
@@ -143,7 +143,7 @@ public final class UserModesPane extends JPanel {
             return;
         }
         boolean changed = false;
-        final IRCParser parser = server.getParser();
+        final Parser parser = server.getParser();
         final String userModes = parser.getUserModeString();
         final String ourUserModes = parser.getMyself().getUserModeStr();
 

@@ -41,8 +41,8 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
 
@@ -116,7 +116,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param sendFilename The name of the file which is being received
 	 * @param token Token used in reverse dcc.
 	 */
-	public void saveFile(final String nickname, final DCCSend send, final IRCParser parser, final boolean reverse, final String sendFilename, final String token) {
+	public void saveFile(final String nickname, final DCCSend send, final Parser parser, final boolean reverse, final String sendFilename, final String token) {
 		// New thread to ask the user where to save in to stop us locking the UI
 		final Thread dccThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
@@ -508,10 +508,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	/**
 	 * Get the IP Address we should send as our listening IP.
 	 *
-	 * @param parser IRCParser the IRC Parser where this dcc is initiated
+	 * @param parser Parser the IRC Parser where this dcc is initiated
 	 * @return The IP Address we should send as our listening IP.
 	 */
-	public String getListenIP(final IRCParser parser) {
+	public String getListenIP(final Parser parser) {
 		final String configIP = IdentityManager.getGlobalConfig().getOption(getDomain(), "firewall.ip");
 		if (!configIP.isEmpty()) {
 			return configIP;

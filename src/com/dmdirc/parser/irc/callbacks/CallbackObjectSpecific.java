@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
@@ -45,12 +45,12 @@ public class CallbackObjectSpecific extends CallbackObject {
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
-	 * @param parser IRCParser That owns this callback
+	 * @param parser Parser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
      * @param type The type of callback to use
      * @since 0.6.3m1
 	 */
-	public CallbackObjectSpecific(final IRCParser parser,
+	public CallbackObjectSpecific(final Parser parser,
             final CallbackManager manager, final Class<? extends CallbackInterface> type) {
         super(parser, manager, type);
     }

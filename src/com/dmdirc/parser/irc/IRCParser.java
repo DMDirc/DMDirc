@@ -1509,13 +1509,8 @@ class IRCParser implements Parser, Runnable {
 		sThinkNickname = sNewNickName;
 	}
 
-	/**
-	 * Get the max length a message can be.
-	 *
-	 * @param sType Type of message (ie PRIVMSG)
-	 * @param sTarget Target for message (eg #DMDirc)
-	 * @return Max Length message should be.
-	 */
+    /** {@inheritDoc} */
+    @Override
 	public int getMaxLength(final String sType, final String sTarget) {
 		// If my host is "nick!user@host" and we are sending "#Channel"
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
