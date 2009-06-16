@@ -34,9 +34,9 @@ import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ParserError;
@@ -94,8 +94,8 @@ public class Server extends WritableFrameContainer implements Serializable {
     /** Open query windows on the server. */
     private final List<Query> queries = new ArrayList<Query>();
 
-    /** The IRC Parser instance handling this server. */
-    private transient IRCParser parser;
+    /** The Parser instance handling this server. */
+    private transient Parser parser;
     /** The IRC Parser Thread. */
     private transient Thread parserThread;
     /** The raw frame used for this server instance. */
@@ -728,12 +728,12 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @return A configured IRC parser.
      */
-    private IRCParser buildParser() {
+    private Parser buildParser() {
         final CertificateManager certManager = new CertificateManager(serverInfo.getHost(),
                 getConfigManager());
 
         final MyInfo myInfo = buildMyInfo();
-        final IRCParser myParser = parserFactory.getParser(myInfo, serverInfo);
+        final Parser myParser = parserFactory.getParser(myInfo, serverInfo);
         myParser.setTrustManager(new TrustManager[]{certManager});
         myParser.setKeyManagers(certManager.getKeyManager());
         myParser.setRemoveAfterCallback(true);
@@ -846,7 +846,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @return IRCParser this connection's parser
      */
-    public IRCParser getParser() {
+    public Parser getParser() {
         return parser;
     }
 

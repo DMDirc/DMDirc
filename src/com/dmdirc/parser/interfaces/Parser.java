@@ -28,14 +28,28 @@ package com.dmdirc.parser.interfaces;
  *
  * @author chris
  */
-public interface Parser {
+public interface Parser extends Runnable {
 
-	/**
-	 * Disconnect from server. This method will quit and automatically close the
+    /**
+     * Disconnect from server. This method will quit and automatically close the
      * socket without waiting for the server.
-	 *
-	 * @param message Reason for quitting.
-	 */
+     *
+     * @param message Reason for quitting.
+     */
     void disconnect(String message);
+
+    /**
+     * Join a Channel.
+     *
+     * @param channel Name of channel to join
+     */
+    void joinChannel(String channel);
+
+    /**
+     * Set the current Value of bindIP.
+     *
+     * @param ip New value to set bindIP
+     */
+    void setBindIP(String ip);
 
 }

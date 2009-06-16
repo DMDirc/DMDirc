@@ -69,7 +69,7 @@ import javax.net.ssl.X509TrustManager;
  *
  * @author Shane Mc Cormack
  */
-public class IRCParser implements Parser, Runnable {
+class IRCParser implements Parser, Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -298,12 +298,9 @@ public class IRCParser implements Parser, Runnable {
 	 */
 	public String getBindIP() { return bindIP; }
 
-	/**
-	 * Set the current Value of bindIP.
-	 *
-	 * @param newValue New value to set bindIP
-	 */
-	public void setBindIP(final String newValue) { bindIP = newValue; }
+    /** {@inheritDoc} */
+    @Override
+	public void setBindIP(final String ip) { bindIP = ip; }
 
 	/**
 	 * Get the current Value of createFake.
@@ -1416,11 +1413,8 @@ public class IRCParser implements Parser, Runnable {
 	 */
 	public boolean isReady() { return got001; }
 
-	/**
-	 * Join a Channel.
-	 *
-	 * @param sChannelName Name of channel to join
-	 */
+    /** {@inheritDoc} */
+    @Override
 	public void joinChannel(final String sChannelName) {
 		joinChannel(sChannelName, "", true);
 	}
