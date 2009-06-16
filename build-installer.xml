@@ -21,7 +21,8 @@
     <target name="-installer-build-stable" if="has.bash">
         <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
-            <arg value="-c -t"/>
+            <arg value="-t"/>
+            <arg value="-c"/>
         </exec>
 
         <condition property="installer.success">
@@ -37,7 +38,9 @@
     <target name="-installer-build-unstable" if="has.bash">
         <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
-            <arg value="-c UNSTABLE -t"/>
+            <arg value="-t"/>
+            <arg value="-c"/>
+            <arg value="UNSTABLE"/>
         </exec>
 
         <condition property="installer.success">
