@@ -918,7 +918,7 @@ public class IRCParser implements Runnable {
 	 * @param fromParser is this line from the parser? (used for callDataOut)
 	 */
 	protected void doSendString(final String line, final boolean fromParser) {
-		if (out == null) { return; }
+		if (out == null || getSocketState() != SocketState.OPEN) { return; }
 		callDataOut(line, fromParser);
 		out.printf("%s\r\n", line);
 		final String[] newLine = tokeniseLine(line);
@@ -1872,17 +1872,15 @@ public class IRCParser implements Runnable {
 	 * @param timer The timer that called this.
 	 */
 	protected void pingTimerTask(final Timer timer) {
-        if (getPingNeeded()) {
+		if (getPingNeeded()) {
 			if (!callPingFailed()) {
-
-                pingTimerSem.acquireUninterruptibly();
-                
-                if (pingTimer != null && pingTimer.equals(timer)) {
-                    pingTimer.cancel();
-                }
-
-                pingTimerSem.release();
-                
+				pingTimerSem.acquireUninterruptibly();
+				
+				if (pingTimer != null && pingTimer.equals(timer)) {
+					pingTimer.cancel();
+				}
+				pingTimerSem.release();
+				
 				disconnect("Server not responding.");
 			}
 		} else {
