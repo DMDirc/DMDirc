@@ -192,17 +192,19 @@ elif [ ! -e "${jarfile}" ]; then
 	exit 1;
 fi;
 
-echo "Copying jar (${jarfile}).."
+echo "Copying jar (${jarfile} -> ${RUNNAME}).."
 cp ${jarfile} ${RUNNAME}
 
-echo "Adding plugins to jar"
-ln -sf ${jarPath}"/plugins"
-pluginList=""
-for plugin in ${plugins}; do
-	pluginList=${pluginList}" plugins/${plugin}"
-done
-jar -uvf "${RUNNAME}" ${pluginList}
-rm -Rf plugins;
+if [ "${plugins}" != "" ]; then
+	echo "Adding plugins to jar"
+	ln -sf ${jarPath}"/plugins"
+	pluginList=""
+	for plugin in ${plugins}; do
+		pluginList=${pluginList}" plugins/${plugin}"
+	done
+	jar -uvf "${RUNNAME}" ${pluginList}
+	rm -Rf plugins;
+fi;
 doRename=0
 if [ "${isRelease}" != "" ]; then
 	doRename=1

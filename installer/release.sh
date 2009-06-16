@@ -48,6 +48,7 @@ showHelp() {
 	echo "-o,  --opt <options>                Additional options to pass to the make*Installer.sh files"
 	echo "     --upload                       Try to upload to google code when done (Only works on tags)"
 	echo "-c   --channel [channel]            Channel to pass to ant (if not passed, 'NONE', if passed without a value, 'STABLE')"
+	echo "     --compile                      Recompile the .jar file (otherwise use the existing file from dist/)"
 	echo "---------------------"
 	exit 0;
 }
@@ -64,6 +65,7 @@ UPLOAD="0"
 TAG="0"
 TAGGED=""
 CHANNEL=""
+compileJar=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -112,6 +114,9 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="-b "
 			;;
+		--compile)
+			compileJar="--compile "
+			;;
 		--tag|-t)
 			if [ ${isSVN} -eq 1 ]; then
 				shift
@@ -125,16 +130,19 @@ while test -n "$1"; do
 			else
 				TAGGED="-t "
 			fi;
+			# Always recompile if tagging
+			compileJar="--compile "
 			;;
 		--channel|-c)
-			shift
-			PASSEDPARAM=`echo "${1}" | grep -v ^-`
+			PASSEDPARAM=`echo "${2}" | grep -v ^-`
 			if [ "${PASSEDPARAM}" != "" ]; then
-				shift;
+				shift
 				CHANNEL="--channel \"${PASSEDPARAM}\" ";
 			else
 				CHANNEL="--channel STABLE ";
 			fi;
+			# Always recompile if passing a channel
+			compileJar="--compile "
 			;;
 	esac
 	shift
@@ -252,7 +260,7 @@ if [ "" = "${FULLJAR}" ]; then
 	echo "Building Release Jar"
 	echo "================================================================"
 	cd jar
-	./makeJar.sh ${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
+	./makeJar.sh ${compileJar}${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
 	RESULT=${?}
 	cd ${THISDIR}
 
