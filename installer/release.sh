@@ -252,8 +252,7 @@ if [ "" = "${FULLJAR}" ]; then
 	echo "Building Release Jar"
 	echo "================================================================"
 	cd jar
-	echo ./makeJar.sh ${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
-	exit 1;
+	./makeJar.sh ${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
 	RESULT=${?}
 	cd ${THISDIR}
 

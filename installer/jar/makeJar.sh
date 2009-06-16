@@ -179,7 +179,7 @@ if [ "" = "${jarfile}" ]; then
 				svn update
 			fi;
 		fi
-		echo ant -Dchannel=${CHANNEL} clean jar
+		ant -Dchannel=${CHANNEL} clean jar
 		exit 1;
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
