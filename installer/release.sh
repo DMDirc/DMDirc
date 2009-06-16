@@ -113,8 +113,8 @@ while test -n "$1"; do
 			BRANCH="-b "
 			;;
 		--tag|-t)
-			shift
 			if [ ${isSVN} -eq 1 ]; then
+				shift
 				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
 				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
 				if [ "" = "${CHECKTAG}" ]; then
@@ -128,12 +128,12 @@ while test -n "$1"; do
 			;;
 		--channel|-c)
 			shift
-			PASSEDPARAM=`echo "${1}" | grep ^-`
-			if [ "${PASSEDPARAM}" == "" ]; then
+			PASSEDPARAM=`echo "${1}" | grep -v ^-`
+			if [ "${PASSEDPARAM}" != "" ]; then
 				shift;
-				CHANNEL="-c \"${PASSEDPARAM}\" ";
+				CHANNEL="--channel \"${PASSEDPARAM}\" ";
 			else
-				CHANNEL="-c STABLE ";
+				CHANNEL="--channel STABLE ";
 			fi;
 			;;
 	esac
@@ -252,7 +252,8 @@ if [ "" = "${FULLJAR}" ]; then
 	echo "Building Release Jar"
 	echo "================================================================"
 	cd jar
-	./makeJar.sh ${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
+	echo ./makeJar.sh ${CHANNEL}${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
+	exit 1;
 	RESULT=${?}
 	cd ${THISDIR}
 

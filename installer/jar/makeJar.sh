@@ -56,7 +56,7 @@ showHelp() {
 	echo "-e, --extra <tag>         Tag to add to final name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
-	echo "-c   --channel [channel]  Channel to pass to ant (if not passed, 'NONE', if passed without a value, 'STABLE')"
+	echo "    --channel [channel]  Channel to pass to ant (if not passed, 'NONE', if passed without a value, 'STABLE')"
 	echo "---------------------"
 	exit 0;
 }
@@ -130,7 +130,7 @@ while test -n "$1"; do
 				TAGGED=${TAGGED%%-*}
 			fi;
 			;;
-		--channel|-c)
+		--channel)
 			shift
 			PASSEDPARAM=`echo "${1}" | grep ^-`
 			if [ "${PASSEDPARAM}" == "" ]; then
@@ -179,7 +179,8 @@ if [ "" = "${jarfile}" ]; then
 				svn update
 			fi;
 		fi
-		ant -Dchannel=${CHANNEL} clean jar
+		echo ant -Dchannel=${CHANNEL} clean jar
+		exit 1;
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
 			exit 1;
