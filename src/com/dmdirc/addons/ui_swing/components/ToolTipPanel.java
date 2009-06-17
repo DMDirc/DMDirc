@@ -99,7 +99,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
             return;
         }
         tooltip.setText(text);
-        if (tooltip.getDocument() == null) {
+        if (tooltip.getDocument() == null || text == null) {
             return;
         }
         SimpleAttributeSet sas = new SimpleAttributeSet();
