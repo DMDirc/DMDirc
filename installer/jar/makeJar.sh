@@ -131,11 +131,10 @@ while test -n "$1"; do
 			fi;
 			;;
 		--channel)
-			shift
-			PASSEDPARAM=`echo "${1}" | grep ^-`
-			if [ "${PASSEDPARAM}" == "" ]; then
-				shift;
-				CHANNEL=${PASSEDPARAM}
+			PASSEDPARAM=`echo "${2}" | grep -v ^-`
+			if [ "${PASSEDPARAM}" != "" ]; then
+				shift
+				CHANNEL=${PASSEDPARAM};
 			else
 				CHANNEL="STABLE";
 			fi;

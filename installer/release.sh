@@ -134,10 +134,10 @@ while test -n "$1"; do
 			compileJar="--compile "
 			;;
 		--channel|-c)
-			PASSEDPARAM=`echo "${2}" | grep -v ^-`
+			PASSEDPARAM=`echo "${2}" | grep -v ^- | grep -v " "`
 			if [ "${PASSEDPARAM}" != "" ]; then
 				shift
-				CHANNEL="--channel \"${PASSEDPARAM}\" ";
+				CHANNEL="--channel ${PASSEDPARAM} ";
 			else
 				CHANNEL="--channel STABLE ";
 			fi;
