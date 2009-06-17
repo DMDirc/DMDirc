@@ -39,6 +39,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -276,7 +277,8 @@ public final class TreeFrameManager implements FrameManager,
     @Override
     public void selectionChanged(final Window window) {
         synchronized (nodes) {
-            for (TreeViewNode treeNode : nodes.values()) {
+            final Collection<TreeViewNode> collection = nodes.values();
+            for (TreeViewNode treeNode : collection) {
                 final NodeLabel label = treeNode.getLabel();
                 label.selectionChanged(window);
             }
