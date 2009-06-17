@@ -323,11 +323,14 @@ else
 	NUM="${TAGGED}"
 fi;
 
+
+
 # Version Numbers
 if [ "" = "${NUM}" ]; then
 	MAJORVER="0"
 	MINORVER="0"
 	RELEASE="0"
+	EXTRAVER="0"
 	TEXTVER="${isRelease}"
 	PRIVATE="1"
 	USER=`whoami`
@@ -336,13 +339,15 @@ if [ "" = "${NUM}" ]; then
 else
 	MAJORVER=${NUM%%.*}
 	SUBVER=${NUM#*.}
+	EXTRAVER="0"
 	DOT=`expr index "${SUBVER}" .`
 	if [ "${DOT}" = "0" ]; then
 		MINORVER=${SUBVER}
 		RELEASE="0"
 	else
 		MINORVER=${SUBVER%%.*}
-		RELEASE=${SUBVER##*.}
+		END=${SUBVER##*.}
+		RELEASE=${END##*[^0-9]}
 	fi
 	TEXTVER=$NUM
 	PRIVATE="0"
@@ -357,7 +362,7 @@ fi;
 
 echo "1 VERSIONINFO" > version.rc.1
 echo "FILEVERSION 1, 0, 0, 0" >> version.rc.1
-echo "PRODUCTVERSION ${MAJORVER}, ${MINORVER}, ${RELEASE}, 0" >> version.rc.1
+echo "PRODUCTVERSION ${MAJORVER}, ${MINORVER}, ${RELEASE}, ${EXTRAVER}" >> version.rc.1
 if [ "${PRIVATE}" = "1" ]; then
 	if [ "${COMPILER_IS_BROKEN}" = "0" ]; then
 		echo "FILEFLAGSMASK 0x000A" >> version.rc.1
