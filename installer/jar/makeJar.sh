@@ -180,7 +180,6 @@ if [ "" = "${jarfile}" ]; then
 			fi;
 		fi
 		ant -Dchannel=${CHANNEL} clean jar
-		exit 1;
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
 			exit 1;
