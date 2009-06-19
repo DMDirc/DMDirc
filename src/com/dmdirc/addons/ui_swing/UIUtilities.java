@@ -31,6 +31,7 @@ import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
@@ -338,13 +339,13 @@ public final class UIUtilities {
      * @since 0.6.3m1
      */
     public static void resetScrollPane(final JScrollPane scrollPane) {
-        UIUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                scrollPane.getVerticalScrollBar().setValue(0);
                 scrollPane.getHorizontalScrollBar().setValue(0);
+                scrollPane.getVerticalScrollBar().setValue(0);
             }
         });
     }
