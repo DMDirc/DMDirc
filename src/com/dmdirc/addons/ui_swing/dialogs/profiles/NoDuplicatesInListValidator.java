@@ -35,6 +35,8 @@ public class NoDuplicatesInListValidator implements Validator<String> {
 
     /** List to validate. */
     private DefaultListModel model;
+    /** Case sensitive. */
+    private boolean caseSensitive;
 
     /**
      * Creates a new validator.
@@ -42,13 +44,26 @@ public class NoDuplicatesInListValidator implements Validator<String> {
      * @param model Model to validate
      */
     public NoDuplicatesInListValidator(final DefaultListModel model) {
+        this(true, model);
+    }
+
+    /**
+     * Creates a new validator.
+     *
+     * @param caseSensitive Case sensitive check?
+     * @param model Model to validate
+     */
+    public NoDuplicatesInListValidator(final boolean caseSensitive,
+            final DefaultListModel model) {
         this.model = model;
+        this.caseSensitive = caseSensitive;
     }
 
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (model.contains(object)) {
+        final String string = caseSensitive ? object : object.toLowerCase();
+        if (model.contains(string)) {
             return new ValidationResponse("Value is a duplicate");
         } else {
             return new ValidationResponse();

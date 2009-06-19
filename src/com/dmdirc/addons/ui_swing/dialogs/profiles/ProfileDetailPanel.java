@@ -103,7 +103,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         this.nicknameModel = new DefaultListModel();
 
         validator = new ValidatorChain(new NoDuplicatesInListValidator(
-                nicknameModel), new NicknameValidator());
+                false, nicknameModel), new NicknameValidator());
         initMainComponents();
         layoutComponents();
 
