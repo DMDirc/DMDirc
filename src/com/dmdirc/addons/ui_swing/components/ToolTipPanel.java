@@ -25,7 +25,7 @@ package com.dmdirc.addons.ui_swing.components;
  */
 
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
-import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
+
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -39,6 +39,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.jxlayer.JXLayer;
 
 /**
  * Panel to display toolstips of a component.
@@ -125,12 +127,12 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      */
     public void registerTooltipHandler(final JComponent component,
             final String tooltipText) {
-        tooltips.put(component, tooltipText);
-        if (component instanceof ValidatingJTextField) {
-            ((ValidatingJTextField) component).getTextField().addMouseListener(
-                    this);
+        if (component instanceof JXLayer) {
+            tooltips.put(((JXLayer) component).getGlassPane(), tooltipText);
+            ((JXLayer) component).getGlassPane().addMouseListener(this);
         } else {
-          component.addMouseListener(this);
+            tooltips.put(component, tooltipText);
+            component.addMouseListener(this);
         }
     }
 

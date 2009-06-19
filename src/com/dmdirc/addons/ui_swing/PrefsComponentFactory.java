@@ -49,6 +49,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jdesktop.jxlayer.JXLayer;
+
 /**
  * Provides methods for constructing a JComponent from a PreferencesSetting.
  */
@@ -105,7 +107,7 @@ public final class PrefsComponentFactory {
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
                 getSize()));
 
-        return option;
+        return new JXLayer<JComponent>(option);
     }
 
     /**

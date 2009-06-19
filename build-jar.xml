@@ -11,6 +11,9 @@
         <jar destfile="plugins/ui_swing.jar" compress="${jar.compress}" keepcompression="true" update="true">
             <zipfileset src="${file.reference.miglayout.jar}" includes="net/miginfocom/layout/**,net/miginfocom/swing/**"/>
         </jar>
+        <jar destfile="plugins/ui_swing.jar" compress="${jar.compress}" keepcompression="true" update="true">
+            <zipfileset src="${file.reference.jxlayer.jar}" includes="org/jdesktop/jxlayer/**"/>
+        </jar>
     </target>
 
 </project>
