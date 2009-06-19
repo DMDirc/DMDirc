@@ -117,14 +117,7 @@ public final class LicensePanel extends JPanel implements ListSelectionListener 
                 list.setSelectedIndex(selectedIndex);
             } else {
                 license.setText(listModel.get(list.getSelectedIndex()).getBody());
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        scrollPane.getVerticalScrollBar().setValue(0);
-                    }
-                });
+                UIUtilities.resetScrollPane(scrollPane);
             }
             selectedIndex = list.getSelectedIndex();
         }

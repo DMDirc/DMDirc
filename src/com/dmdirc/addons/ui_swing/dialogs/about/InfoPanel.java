@@ -79,14 +79,7 @@ public final class InfoPanel extends JPanel {
         infoPane.setEditable(false);
         scrollPane.setViewportView(infoPane);
 
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                scrollPane.getVerticalScrollBar().setValue(0);
-            }
-        });
+        UIUtilities.resetScrollPane(scrollPane);
 
         setLayout(new MigLayout("ins rel, fill"));
         add(scrollPane, "grow, push, wrap");

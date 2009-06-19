@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.actioneditor;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 
 import java.util.Comparator;
@@ -52,6 +53,8 @@ public class ActionResponsePanel extends JPanel {
     private JTextArea response;
     /** Formatter combo box. */
     private JComboBox formatter;
+    /** Response scrollpane. */
+    private JScrollPane scrollPane;
 
     /** Instantiates the panel. */
     public ActionResponsePanel() {
@@ -65,14 +68,17 @@ public class ActionResponsePanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         response = new JTextArea();
+        scrollPane = new JScrollPane(response);
         response.setRows(4);
         formatter = new JComboBox(new DefaultComboBoxModel());
 
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
 
-        final TreeSet<String> formatters = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        formatters.addAll(IdentityManager.getGlobalConfig().getOptions("formatter").keySet());
+        final TreeSet<String> formatters = new TreeSet<String>(
+                String.CASE_INSENSITIVE_ORDER);
+        formatters.addAll(IdentityManager.getGlobalConfig().getOptions(
+                "formatter").keySet());
 
         for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
@@ -89,11 +95,11 @@ public class ActionResponsePanel extends JPanel {
         setLayout(new MigLayout("fill, wrap 1"));
 
         add(new JLabel("Execute these commands: "));
-        add(new JScrollPane(response), "grow, push");
+        add(scrollPane, "grow, push");
         add(new JLabel("Alter the event's formatter"));
         add(formatter, "growx, pushx");
     }
-    
+
     /**
      * Sets the response.
      * 
@@ -109,6 +115,8 @@ public class ActionResponsePanel extends JPanel {
         if (sb.length() > 0) {
             this.response.setText(sb.substring(0, sb.length() - 1));
         }
+
+        UIUtilities.resetScrollPane(scrollPane);
     }
 
     /**

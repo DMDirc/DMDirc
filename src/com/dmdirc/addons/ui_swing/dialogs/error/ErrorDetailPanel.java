@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
@@ -162,14 +163,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
                     //Ignore
                 }
                 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollPane.getVerticalScrollBar().setValue(0);
-                    }
-                }
-                
-                );
+                UIUtilities.resetScrollPane(scrollPane);
             }
         });
     }

@@ -25,6 +25,7 @@ import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
@@ -250,13 +251,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
                 for (AddonInfo info : newInfos) {
                     ((DefaultListModel) list.getModel()).addElement(info);
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        scrollPane.getVerticalScrollBar().setValue(0);
-                    }
-                });
+                UIUtilities.resetScrollPane(scrollPane);
             }
         }.execute();
     }

@@ -36,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -127,7 +128,8 @@ public final class UIUtilities {
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
         UIManager.put("SplitPane.border", BorderFactory.createEmptyBorder());
-        UIManager.put("SplitPane.dividerSize", (int) PlatformDefaults.getPanelInsets(0).getValue());
+        UIManager.put("SplitPane.dividerSize", (int) PlatformDefaults.
+                getPanelInsets(0).getValue());
         UIManager.put("TreeUI", "javax.swing.plaf.metal.MetalTreeUI");
         PlatformDefaults.setDefaultRowAlignmentBaseline(false);
     }
@@ -173,7 +175,7 @@ public final class UIUtilities {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (InterruptedException ex) {
-            //Ignore
+                //Ignore
             } catch (InvocationTargetException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
             }
@@ -197,9 +199,9 @@ public final class UIUtilities {
                 //Ignore
             } catch (InvocationTargetException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
-            }            
+            }
         }
-        
+
         return returnable.getObject();
     }
 
@@ -246,7 +248,7 @@ public final class UIUtilities {
         return !(windows.equals(uiname) || Apple.isAppleUI() || nimbus.equals(
                 uiname));
     }
-    
+
     /**
      * Get the DOWN_MASK for the command/ctrl key.
      * 
@@ -256,7 +258,7 @@ public final class UIUtilities {
     public static int getCtrlDownMask() {
         return Apple.isAppleUI() ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
     }
-    
+
     /**
      * Get the MASK for the command/ctrl key.
      * 
@@ -266,7 +268,7 @@ public final class UIUtilities {
     public static int getCtrlMask() {
         return Apple.isAppleUI() ? KeyEvent.META_MASK : KeyEvent.CTRL_MASK;
     }
-    
+
     /**
      * Check if the command/ctrl key is pressed down.
      * 
@@ -277,7 +279,7 @@ public final class UIUtilities {
     public static boolean isCtrlDown(final KeyEvent e) {
         return Apple.isAppleUI() ? e.isMetaDown() : e.isControlDown();
     }
-    
+
     /**
      * Clips a string if its longer than the specified width.
      * 
@@ -287,7 +289,7 @@ public final class UIUtilities {
      * 
      * @return String (clipped if required)
      */
-    public static String clipStringifNeeded(final JComponent component, 
+    public static String clipStringifNeeded(final JComponent component,
             final String string, final int avaiableWidth) {
         if ((string == null) || (string.equals(""))) {
             return "";
@@ -295,11 +297,12 @@ public final class UIUtilities {
         final FontMetrics fm = component.getFontMetrics(component.getFont());
         final int width = SwingUtilities.computeStringWidth(fm, string);
         if (width > avaiableWidth) {
-             return clipString(component, string, avaiableWidth);
-         }
+            return clipString(component, string, avaiableWidth);
+        }
         return string;
     }
-     /**
+
+    /**
      * Clips the passed string .
      * 
      * @param component Component containing string
@@ -308,7 +311,7 @@ public final class UIUtilities {
      * 
      * @return String (clipped if required)
      */
-    public static String clipString(final JComponent component, 
+    public static String clipString(final JComponent component,
             final String string, final int avaiableWidth) {
         if ((string == null) || (string.equals(""))) {
             return "";
@@ -316,15 +319,33 @@ public final class UIUtilities {
         final FontMetrics fm = component.getFontMetrics(component.getFont());
         final String clipString = "...";
         int width = SwingUtilities.computeStringWidth(fm, clipString);
-        
-         int nChars = 0;
-         for(int max = string.length(); nChars < max; nChars++) {
-             width += fm.charWidth(string.charAt(nChars));
-             if (width > avaiableWidth) {
-                 break;
-             }
-         }
-         return string.substring(0, nChars) + clipString;
+
+        int nChars = 0;
+        for (int max = string.length(); nChars < max; nChars++) {
+            width += fm.charWidth(string.charAt(nChars));
+            if (width > avaiableWidth) {
+                break;
+            }
+        }
+        return string.substring(0, nChars) + clipString;
     }
 
+    /**
+     * Resets the scroll pane to 0,0.
+     *
+     * @param scrollPane Scrollpane to reset
+     *
+     * @since 0.6.3m1
+     */
+    public static void resetScrollPane(final JScrollPane scrollPane) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                scrollPane.getVerticalScrollBar().setValue(0);
+                scrollPane.getHorizontalScrollBar().setValue(0);
+            }
+        });
+    }
 }
