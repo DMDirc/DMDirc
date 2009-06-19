@@ -266,7 +266,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
             final StandardInputDialog dialog = new StandardInputDialog(
                     ProfileManagerDialog.getProfileManagerDialog(mainFrame),
                     ModalityType.DOCUMENT_MODAL, "Edit Nickname",
-                    "Please enter the new nickname", new NicknameValidator()) {
+                    "Please enter the new nickname", validator) {
 
                 /**
                  * A version number for this class. It should be changed whenever the class
