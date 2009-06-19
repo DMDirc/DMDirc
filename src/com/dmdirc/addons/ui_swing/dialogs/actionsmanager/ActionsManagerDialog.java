@@ -33,6 +33,7 @@ import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
+import com.dmdirc.addons.ui_swing.components.SortedListModel;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.ActionGroupListCellRenderer;
@@ -154,7 +155,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         orderButtons(new JButton(), new JButton());
         infoLabel = new TextLabel("Actions allow you to make DMDirc" +
                 " intelligently respond to various events.");
-        groups = new JList(new DefaultListModel());
+        groups = new JList(new SortedListModel<ActionGroup>(new ActionGroupNameComparator()));
         actions = new ActionsGroupPanel(this, null);
         info = new ActionGroupInformationPanel(null);
         settings = new HashMap<ActionGroup, ActionGroupSettingsPanel>();
