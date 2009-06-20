@@ -106,6 +106,7 @@ public final class ErrorListDialog extends StandardDialog implements
         table = new ErrorTable(tableModel, scrollPane);
 
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
+        scrollPane.setMinimumSize(new Dimension(150, 100));
 
         scrollPane.setViewportView(table);
 
