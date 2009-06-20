@@ -58,6 +58,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import javax.swing.event.InternalFrameEvent;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
@@ -463,5 +464,16 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         if (getContainer() != null && getContainer().getServer() != null) {
             getContainer().getServer().removeAwayStateListener(this);
         }
+    }
+
+    /**
+     * Activates the input field on frame focus. {@inheritDoc}
+     *
+     * @param event Internal frame event
+     */
+    @Override
+    public void internalFrameActivated(final InternalFrameEvent event) {
+        super.internalFrameActivated(event);
+        getInputField().requestFocusInWindow();
     }
 }
