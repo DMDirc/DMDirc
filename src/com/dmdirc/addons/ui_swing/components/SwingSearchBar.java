@@ -120,6 +120,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
 
         nextButton.setText("Later");
         prevButton.setText("Earlier");
+        nextButton.setEnabled(false);
+        prevButton.setEnabled(false);
         caseCheck.setText("Case sensitive");
 
         line = -1;
@@ -143,6 +145,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         nextButton.addActionListener(this);
         prevButton.addActionListener(this);
         caseCheck.addActionListener(this);
+        searchBox.getDocument().addDocumentListener(this);
     }
 
     /**
@@ -323,12 +326,16 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void insertUpdate(final DocumentEvent e) {
         searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+        nextButton.setEnabled(!searchBox.getText().isEmpty());
+        prevButton.setEnabled(!searchBox.getText().isEmpty());
     }
 
     /** {@inheritDoc}. */
     @Override
     public void removeUpdate(final DocumentEvent e) {
         searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+        nextButton.setEnabled(!searchBox.getText().isEmpty());
+        prevButton.setEnabled(!searchBox.getText().isEmpty());
     }
 
     /** {@inheritDoc}. */
