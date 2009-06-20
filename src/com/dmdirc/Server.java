@@ -828,7 +828,9 @@ public class Server extends WritableFrameContainer implements Serializable {
     public void sendLine(final String line) {
         synchronized (myState) {
             if (parser != null && myState.getState() == ServerState.CONNECTED) {
-                parser.sendLine(window.getTranscoder().encode(line));
+                if (!line.isEmpty()) {
+                    parser.sendLine(window.getTranscoder().encode(line));
+                }
             }
         }
     }

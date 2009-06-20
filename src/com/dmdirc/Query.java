@@ -139,15 +139,17 @@ public final class Query extends MessageTarget implements
         final ClientInfo client = server.getParser().getMyself();
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
-            server.getParser().sendMessage(ClientInfo.parseHost(host),
-                    part);
+            if (!part.isEmpty()) {
+                server.getParser().sendMessage(ClientInfo.parseHost(host),
+                        part);
 
-            final StringBuffer buff = new StringBuffer("querySelfMessage");
+                final StringBuffer buff = new StringBuffer("querySelfMessage");
 
-            ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
+                ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
 
-            addLine(buff, client.getNickname(), client.getIdent(),
-                    client.getHost(), part);
+                addLine(buff, client.getNickname(), client.getIdent(),
+                        client.getHost(), part);
+            }
         }
     }
 

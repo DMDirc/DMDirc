@@ -100,8 +100,10 @@ public class GlobalWindow extends WritableFrameContainer {
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        GlobalCommandParser.getGlobalCommandParser().parseCommand(window,
-                CommandManager.getCommandChar() + line);
+        if (!line.isEmpty()) {
+            GlobalCommandParser.getGlobalCommandParser().parseCommand(window,
+                    CommandManager.getCommandChar() + line);
+        }
     }
 
     /** {@inheritDoc} */

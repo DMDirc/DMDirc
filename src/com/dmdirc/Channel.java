@@ -168,15 +168,17 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
-            final StringBuffer buff = new StringBuffer("channelSelfMessage");
+            if (!part.isEmpty()) {
+                final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
-            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
-                    this, channelInfo.getUser(me), part);
+                ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
+                        this, channelInfo.getUser(me), part);
 
-            addLine(buff, details[0], details[1], details[2], details[3],
-                    part, channelInfo);
+                addLine(buff, details[0], details[1], details[2], details[3],
+                        part, channelInfo);
 
-            channelInfo.sendMessage(part);
+                channelInfo.sendMessage(part);
+            }
         }
     }
 
