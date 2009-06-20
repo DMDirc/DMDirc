@@ -34,6 +34,7 @@ import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
 
+import com.dmdirc.updater.components.LauncherComponent;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

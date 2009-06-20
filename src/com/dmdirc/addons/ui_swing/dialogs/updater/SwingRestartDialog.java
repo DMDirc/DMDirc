@@ -26,6 +26,7 @@ import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
+import com.dmdirc.updater.components.LauncherComponent;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,7 +75,15 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     /** Initialise components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        info = new TextLabel("Your client needs to be restarted to finish updating.");
+        if (LauncherComponent.isUsingLauncher()) {
+            info = new TextLabel("Your client needs to be restarted to " +
+                    "finish updating.");
+        } else {
+            info = new TextLabel("Your client needs to be restarted to " +
+                    "finish updating, but as you do not seem to be using " +
+                    "the launcher you will have to restart the client " +
+                    "manually, do you wish to close the client?");
+        }
         getOkButton().setText("Now");
         getCancelButton().setText("Later");
         
