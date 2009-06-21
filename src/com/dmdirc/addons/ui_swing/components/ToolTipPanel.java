@@ -23,7 +23,6 @@ package com.dmdirc.addons.ui_swing.components;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.awt.Color;
@@ -41,6 +40,8 @@ import javax.swing.text.StyleConstants;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.jxlayer.JXLayer;
+import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
+import org.jdesktop.jxlayer.plaf.LayerUI;
 
 /**
  * Panel to display toolstips of a component.
@@ -88,7 +89,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas, true);
         tooltip.getDocument().setParagraphAttributes(0, defaultHelp.length(),
-                                                     sas, true);
+                sas, true);
     }
 
     /**
@@ -125,13 +126,31 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      * @param component Component to register
      * @param tooltipText Tooltip text for the component
      */
+    @SuppressWarnings("unchecked")
     public void registerTooltipHandler(final JComponent component,
             final String tooltipText) {
+        tooltips.put(component, tooltipText);
         if (component instanceof JXLayer) {
-            tooltips.put(((JXLayer) component).getGlassPane(), tooltipText);
-            ((JXLayer) component).getGlassPane().addMouseListener(this);
+            final LayerUI<JComponent> layerUI = new AbstractLayerUI<JComponent>() {
+
+                private static final long serialVersionUID =
+                        -8698248993206174390L;
+
+                /** {@inheritDoc} */
+                @Override
+                protected void processMouseEvent(MouseEvent e,
+                        JXLayer<? extends JComponent> comp) {
+                    if (e.getID() == MouseEvent.MOUSE_ENTERED) {
+                        setText(tooltips.get(comp));
+                    } else if (e.getID() == MouseEvent.MOUSE_EXITED && comp.
+                            getMousePosition() == null) {
+                        reset();
+                    }
+                    super.processMouseEvent(e, comp);
+                }
+            };
+            ((JXLayer<JComponent>) component).setUI(layerUI);
         } else {
-            tooltips.put(component, tooltipText);
             component.addMouseListener(this);
         }
     }
@@ -143,7 +162,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
-        // Not used
+        //Not used
     }
 
     /**
@@ -153,7 +172,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      */
     @Override
     public void mousePressed(final MouseEvent e) {
-        // Not used
+        //Not used
     }
 
     /**
@@ -163,7 +182,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      */
     @Override
     public void mouseReleased(final MouseEvent e) {
-        // Not used
+        //Not used
     }
 
     /**
