@@ -66,7 +66,12 @@ public class IRCDocumentSearcher {
      */
     private LinePosition getEndPosition() {
         final int documentSize = document.getNumLines() - 1;
-        final int lineLength = document.getLine(documentSize).getLength();
+        final int lineLength;
+        if (documentSize >= 0) {
+            lineLength = document.getLine(documentSize).getLength();
+        } else {
+            lineLength = 0;
+        }
 
         return new LinePosition(documentSize, lineLength, documentSize,
                 lineLength);
