@@ -32,6 +32,8 @@ public enum PreferencesType {
     TEXT,
     /** A free-form integer preference. */
     INTEGER,
+    /** A optional free-form integer preference. */
+    OPTIONALINTEGER,
     /** A boolean preference. */
     BOOLEAN,
     /** A colour preference. */

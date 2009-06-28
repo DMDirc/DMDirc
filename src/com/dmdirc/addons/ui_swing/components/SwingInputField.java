@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.components.colours.ColourPickerDialog;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;

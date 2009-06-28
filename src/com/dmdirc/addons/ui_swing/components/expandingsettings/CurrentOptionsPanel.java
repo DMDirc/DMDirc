@@ -23,7 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.expandingsettings;
 
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.addons.ui_swing.components.ColourChooser;
+import com.dmdirc.addons.ui_swing.components.colours.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.ImageButton;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel.OptionType;
 import com.dmdirc.addons.ui_swing.UIUtilities;
