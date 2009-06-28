@@ -310,7 +310,7 @@ for updatedir in ${REVERTLIST}; do
 	${SVN} revert ${updatedir}/*
 done;
 
-if [ "1" = "${UPLOAD}" -a "1" = "${TAG}" ]; then
+if [ "1" = "${UPLOAD}" -a "" != "${TAGGED}" ]; then
 	echo "================================================================"
 	echo "Uploading to GoogleCode"
 	echo "================================================================"
@@ -318,7 +318,7 @@ if [ "1" = "${UPLOAD}" -a "1" = "${TAG}" ]; then
 	cd gcode
 	sh uploads_release.sh -v ${VERSION}
 else
-	echo "Not uploading to GoogleCode"
+	echo "Not uploading to GoogleCode (Only tagged releases can be uploaded)"
 fi;
 
 echo "================================================================"

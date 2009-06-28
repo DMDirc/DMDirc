@@ -18,11 +18,14 @@
         <echo message=""/>
     </target>
 
+
     <target name="-installer-build-stable" if="has.bash">
         <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
             <arg value="-t"/>
             <arg value="-c"/>
+            <arg value="STABLE"/>
+            <arg value="--upload"/>
         </exec>
 
         <condition property="installer.success">
