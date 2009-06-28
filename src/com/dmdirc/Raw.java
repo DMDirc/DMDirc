@@ -60,7 +60,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
-        super("raw", newServer.getConfigManager());
+        super("raw", "Raw", newServer.getConfigManager());
 
         this.server = newServer;
 
@@ -126,12 +126,6 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
         addLine("rawOut", sData);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "Raw";
     }
 
     /** {@inheritDoc} */

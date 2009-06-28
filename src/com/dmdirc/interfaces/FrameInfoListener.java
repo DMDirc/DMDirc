@@ -20,40 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces;
 
-import javax.swing.JComponent;
+import com.dmdirc.ui.interfaces.Window;
+
+import java.util.EventListener;
 
 /**
- * A frame manager is a widget that allows the user to navigate between the
- * various frames that will be open at any one time.
- * 
- * @author chris
+ * Defines the methods that should be implemented by classes which wish to
+ * receive information about frame icon or title changes.
+ *
+ * @since 0.6.3m2
+ * @author Chris
  */
-public interface FrameManager extends FrameListener {
-    
+public interface FrameInfoListener extends EventListener {
+
     /**
-     * Sets the parent component of this frame manager. The frame manager
-     * should render itself within the parent.
-     * 
-     * @param parent The parent control
+     * Called when a window's icon is changed.
+     *
+     * @param window The window whose icon changed
+     * @param icon The new icon for the window
      */
-    void setParent(JComponent parent);
-    
+    void iconChanged(final Window window, final String icon);
+
     /**
-     * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen).
-     * 
-     * @return True iff the frame manager can be positioned vertically
+     * Called when a window's name is changed.
+     *
+     * @param window The window whose name changed
+     * @param name The new name for the window
      */
-    boolean canPositionVertically();
-    
-    /**
-     * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen).
-     * 
-     * @return True iff the frame manager can be positioned horizontally
-     */
-    boolean canPositionHorizontally();
+    void nameChanged(final Window window, final String name);
 
 }

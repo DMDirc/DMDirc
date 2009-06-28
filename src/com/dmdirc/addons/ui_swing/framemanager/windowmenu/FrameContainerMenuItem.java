@@ -23,20 +23,20 @@
 package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 /**
  * Action representing a frame.
  */
-public class FrameContainerMenuItem extends JMenuItem implements IconChangeListener,
+public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListener,
         ActionListener {
 
     /**
@@ -54,17 +54,17 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
      * @param frame Wrapped frame
      */
     public FrameContainerMenuItem(final FrameContainer frame) {
-        super(frame.toString(), frame.getIcon());
+        super(frame.toString(), IconManager.getIconManager().getIcon(frame.getIcon()));
 
         this.frame = frame;
 
         addActionListener(this);
-        frame.addIconChangeListener(this);
+        frame.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -72,7 +72,23 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
             public void run() {
                 if ((frame != null && window != null) &&
                         frame.equals(window.getContainer())) {
-                    setIcon(icon);
+                    setIcon(IconManager.getIconManager().getIcon(icon));
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if ((frame != null && window != null) &&
+                        frame.equals(window.getContainer())) {
+                    setText(name);
                 }
             }
         });

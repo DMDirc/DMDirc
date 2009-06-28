@@ -27,7 +27,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.FrameListener;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.MapList;
 
@@ -50,10 +50,10 @@ public class WindowManager {
     /** A map of parent windows to their children. */
     private final static MapList<Window, Window> childWindows
             = new MapList<Window, Window>();
-
-    /** A list of frame managers. */
-    private final static List<FrameManager> frameManagers
-            = new ArrayList<FrameManager>();
+    
+    /** A list of frame listeners. */
+    private final static List<FrameListener> frameListeners
+            = new ArrayList<FrameListener>();
     
     /** A list of selection listeners. */
     private final static List<SelectionListener> selListeners
@@ -71,35 +71,35 @@ public class WindowManager {
     }
 
     /**
-     * Registers a FrameManager with the WindowManager.
+     * Registers a FrameListener with the WindowManager.
      *
-     * @param frameManager The frame manager to be registered
+     * @param frameListener The frame listener to be registered
      */
     @Precondition({
-        "The specified FrameManager is not null",
-        "The specified FrameManager has not already been added"
+        "The specified FrameListener is not null",
+        "The specified FrameListener has not already been added"
     })
-    public static void addFrameManager(final FrameManager frameManager) {
-        Logger.assertTrue(frameManager != null);
-        Logger.assertTrue(!frameManagers.contains(frameManager));
+    public static void addFrameListener(final FrameListener frameListener) {
+        Logger.assertTrue(frameListener != null);
+        Logger.assertTrue(!frameListeners.contains(frameListener));
 
-        frameManagers.add(frameManager);
+        frameListeners.add(frameListener);
     }
 
     /**
-     * Unregisters a FrameManager with the WindowManager.
+     * Unregisters a FrameListener with the WindowManager.
      *
-     * @param frameManager The frame manager to be removed
+     * @param frameListener The frame listener to be removed
      */
     @Precondition({
-        "The specified FrameManager is not null",
-        "The specified FrameManager has already been added and not removed"
+        "The specified FrameListener is not null",
+        "The specified FrameListener has already been added and not removed"
     })
-    public static void removeFrameManager(final FrameManager frameManager) {
-        Logger.assertTrue(frameManager != null);
-        Logger.assertTrue(frameManagers.contains(frameManager));
+    public static void removeFrameListener(final FrameListener frameListener) {
+        Logger.assertTrue(frameListener != null);
+        Logger.assertTrue(frameListeners.contains(frameListener));
 
-        frameManagers.remove(frameManager);
+        frameListeners.remove(frameListener);
     }
     
     /**
@@ -330,8 +330,8 @@ public class WindowManager {
      * @param window The window that was added
      */
     private static void fireAddWindow(final Window window) {
-        for (FrameManager manager : frameManagers) {
-            manager.addWindow(window.getContainer());
+        for (FrameListener listener : frameListeners) {
+            listener.addWindow(window.getContainer());
         }
     }
 
@@ -342,8 +342,8 @@ public class WindowManager {
      * @param child The new child window that was added
      */
     private static void fireAddWindow(final Window parent, final Window child) {
-        for (FrameManager manager : frameManagers) {
-            manager.addWindow(parent.getContainer(), child.getContainer());
+        for (FrameListener listener : frameListeners) {
+            listener.addWindow(parent.getContainer(), child.getContainer());
         }
     }
 
@@ -353,8 +353,8 @@ public class WindowManager {
      * @param window The window that was removed
      */
     private static void fireDeleteWindow(final Window window) {
-        for (FrameManager manager : frameManagers) {
-            manager.delWindow(window.getContainer());
+        for (FrameListener listener : frameListeners) {
+            listener.delWindow(window.getContainer());
         }
     }
 
@@ -365,8 +365,8 @@ public class WindowManager {
      * @param child The child window that was removed
      */
     private static void fireDeleteWindow(final Window parent, final Window child) {
-        for (FrameManager manager : frameManagers) {
-            manager.delWindow(parent.getContainer(), child.getContainer());
+        for (FrameListener listener : frameListeners) {
+            listener.delWindow(parent.getContainer(), child.getContainer());
         }
     }
         

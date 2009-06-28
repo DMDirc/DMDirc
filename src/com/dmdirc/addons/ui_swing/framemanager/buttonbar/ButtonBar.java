@@ -23,14 +23,15 @@ package com.dmdirc.addons.ui_swing.framemanager.buttonbar;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.util.MapList;
 
 import java.awt.Color;
@@ -46,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -62,7 +62,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class ButtonBar implements FrameManager, ActionListener,
         ComponentListener, Serializable, NotificationListener,
-        SelectionListener, IconChangeListener {
+        SelectionListener, FrameInfoListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -151,7 +151,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
      * @param source The Container to get title/icon info from
      */
     private void addButton(final FrameContainer source) {
-        final JToggleButton button = new JToggleButton(source.toString(), source.getIcon());
+        final JToggleButton button = new JToggleButton(source.toString(),
+                IconManager.getIconManager().getIcon(source.getIcon()));
 
         button.addActionListener(this);
         button.setHorizontalAlignment(SwingConstants.LEFT);
@@ -181,7 +182,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         relayout();
         window.addNotificationListener(this);
         window.addSelectionListener(this);
-        window.addIconChangeListener(this);
+        window.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
@@ -191,7 +192,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
         relayout();
         window.removeNotificationListener(this);
-        window.removeIconChangeListener(this);
+        window.removeFrameInfoListener(this);
         window.removeSelectionListener(this);
     }
 
@@ -204,7 +205,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         relayout();
         window.addNotificationListener(this);
         window.addSelectionListener(this);
-        window.addIconChangeListener(this);
+        window.addFrameInfoListener(this);
     }
 
     /** {@inheritDoc} */
@@ -214,7 +215,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
         relayout();
         window.removeNotificationListener(this);
-        window.removeIconChangeListener(this);
+        window.removeFrameInfoListener(this);
         window.removeSelectionListener(this);
     }
 
@@ -313,7 +314,14 @@ public final class ButtonBar implements FrameManager, ActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
-        buttons.get(window.getContainer()).setIcon(icon);
+    public void iconChanged(final Window window, final String icon) {
+        buttons.get(window.getContainer()).setIcon(IconManager.getIconManager().getIcon(icon));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        buttons.get(window.getContainer()).setText(name);
     }
 }

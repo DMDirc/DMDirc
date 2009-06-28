@@ -102,7 +102,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
-        super("channel", new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
+        super("channel", newChannelInfo.getName(),
+                new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
                 newServer.getName(), newChannelInfo.getName()));
 
         channelInfo = newChannelInfo;
@@ -467,16 +468,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public List<Topic> getTopics() {
         return topics.getList();
-    }
-
-    /**
-     * Returns this channel's name.
-     *
-     * @return A string representation of this channel (i.e., its name)
-     */
-    @Override
-    public String toString() {
-        return channelInfo.getName();
     }
 
     /** {@inheritDoc} */

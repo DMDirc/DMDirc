@@ -22,15 +22,15 @@
 
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import net.miginfocom.layout.PlatformDefaults;
@@ -39,7 +39,7 @@ import net.miginfocom.layout.PlatformDefaults;
  * Node label.
  */
 public class NodeLabel extends JLabel implements SelectionListener,
-        NotificationListener, IconChangeListener {
+        NotificationListener, FrameInfoListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -81,7 +81,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
 
         setOpaque(true);
         setToolTipText(null);
-        setIcon(window.getContainer().getIcon());
+        setIcon(IconManager.getIconManager().getIcon(window.getContainer().getIcon()));
         setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
 
         setPreferredSize(new Dimension(100000, getFont().getSize() +
@@ -119,9 +119,17 @@ public class NodeLabel extends JLabel implements SelectionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         if (equals(window)) {
-            setIcon(icon);
+            setIcon(IconManager.getIconManager().getIcon(icon));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        if (equals(window)) {
+            setText(name);
         }
     }
 
@@ -180,4 +188,5 @@ public class NodeLabel extends JLabel implements SelectionListener,
         
         return window.hashCode();
     }
+
 }

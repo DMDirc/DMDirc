@@ -22,8 +22,12 @@
 
 package com.dmdirc.addons.ui_swing;
 
+import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
+import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.desktopPane.DMDircDesktopPane;
+import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
+import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
@@ -37,11 +41,8 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.components.MenuBar;
-import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
-import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
-import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.CoreUIUtils;
+import com.dmdirc.ui.interfaces.FrameListener;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
@@ -50,7 +51,6 @@ import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -66,7 +66,7 @@ import net.miginfocom.swing.MigLayout;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        MainWindow, ConfigChangeListener, FrameManager {
+        MainWindow, ConfigChangeListener, FrameListener {
 
     /** Logger to use. */
     private static final java.util.logging.Logger LOGGER =
@@ -77,8 +77,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
-    /** Whether the internal frames are maximised or not. */
-    private boolean maximised;
     /** The main application icon. */
     private ImageIcon imageIcon;
     /** The frame manager that's being used. */
@@ -361,10 +359,10 @@ public final class MainFrame extends JFrame implements WindowListener,
                 }
 
 
-                WindowManager.addFrameManager(mainFrameManager);
+                WindowManager.addFrameListener(mainFrameManager);
                 mainFrameManager.setParent(frameManagerPanel);
 
-                WindowManager.addFrameManager(MainFrame.this);
+                WindowManager.addFrameListener(MainFrame.this);
             }
         });
     }
@@ -531,24 +529,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                     "icon"));
             setIconImage(imageIcon.getImage());
         }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void setParent(final JComponent parent) {
-        //Ignore
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean canPositionVertically() {
-        return true;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean canPositionHorizontally() {
-        return true;
     }
 
     /** {@inheritDoc}. */

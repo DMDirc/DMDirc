@@ -22,38 +22,44 @@
 
 package com.dmdirc.ui.interfaces;
 
-import javax.swing.JComponent;
+import com.dmdirc.FrameContainer;
 
 /**
- * A frame manager is a widget that allows the user to navigate between the
- * various frames that will be open at any one time.
- * 
+ * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager}
+ * to receive events pertaining to frames.
+ *
  * @author chris
  */
-public interface FrameManager extends FrameListener {
-    
+public interface FrameListener {
+
     /**
-     * Sets the parent component of this frame manager. The frame manager
-     * should render itself within the parent.
-     * 
-     * @param parent The parent control
+     * Adds a window to this frame manager.
+     *
+     * @param window The server to be added
      */
-    void setParent(JComponent parent);
-    
+    void addWindow(FrameContainer window);
+
     /**
-     * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen).
-     * 
-     * @return True iff the frame manager can be positioned vertically
+     * Removes a window from this frame manager.
+     *
+     * @param window The server to be removed
      */
-    boolean canPositionVertically();
-    
+    void delWindow(FrameContainer window);
+
     /**
-     * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen).
-     * 
-     * @return True iff the frame manager can be positioned horizontally
+     * Adds a new window to this frame manager.
+     *
+     * @param parent The parent to which the window belongs, or null
+     * @param window The custom window to be added
      */
-    boolean canPositionHorizontally();
+    void addWindow(FrameContainer parent, FrameContainer window);
+
+    /**
+     * Removes a window from this frame manager.
+     *
+     * @param parent The parent to which the window belongs, or null
+     * @param window The custom window to be removed
+     */
+    void delWindow(FrameContainer parent, FrameContainer window);
 
 }

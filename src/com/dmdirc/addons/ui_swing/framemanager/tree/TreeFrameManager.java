@@ -24,7 +24,7 @@ package com.dmdirc.addons.ui_swing.framemanager.tree;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -62,7 +62,7 @@ import net.miginfocom.swing.MigLayout;
 public final class TreeFrameManager implements FrameManager,
         AdjustmentListener, Serializable,
         ConfigChangeListener, SelectionListener,
-        NotificationListener, IconChangeListener {
+        NotificationListener, FrameInfoListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -170,7 +170,7 @@ public final class TreeFrameManager implements FrameManager,
                 }
                 nodes.remove(window);
                 window.removeSelectionListener(TreeFrameManager.this);
-                window.removeIconChangeListener(TreeFrameManager.this);
+                window.removeFrameInfoListener(TreeFrameManager.this);
                 window.removeNotificationListener(TreeFrameManager.this);
             }
         });
@@ -205,7 +205,7 @@ public final class TreeFrameManager implements FrameManager,
                     tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
                 }
                 window.addSelectionListener(TreeFrameManager.this);
-                window.addIconChangeListener(TreeFrameManager.this);
+                window.addFrameInfoListener(TreeFrameManager.this);
                 window.addNotificationListener(TreeFrameManager.this);
             }
         });
@@ -344,7 +344,7 @@ public final class TreeFrameManager implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final Icon icon) {
+    public void iconChanged(final Window window, final String icon) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -356,6 +356,28 @@ public final class TreeFrameManager implements FrameManager,
                         final NodeLabel label = node.getLabel();
                         if (label != null) {
                             label.iconChanged(window, icon);
+                            tree.repaint();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void nameChanged(final Window window, final String name) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (nodes) {
+                    final TreeViewNode node = nodes.get(window.getContainer());
+                    if (node != null) {
+                        final NodeLabel label = node.getLabel();
+                        if (label != null) {
+                            label.nameChanged(window, name);
                             tree.repaint();
                         }
                     }

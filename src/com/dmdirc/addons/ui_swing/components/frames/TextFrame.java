@@ -48,9 +48,10 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.FrameInfoAdapter;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -77,7 +78,6 @@ import java.util.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -155,13 +155,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         final ConfigManager config = owner.getConfigManager();
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
-        setFrameIcon(owner.getIcon());
-        owner.addIconChangeListener(new IconChangeListener() {
+
+        setFrameIcon(IconManager.getIconManager().getIcon(owner.getIcon()));
+
+        owner.addFrameInfoListener(new FrameInfoAdapter() {
 
             /** {@inheritDoc} */
             @Override
-            public void iconChanged(final Window window, final Icon icon) {
-                setFrameIcon(icon);
+            public void iconChanged(final Window window, final String icon) {
+                setFrameIcon(IconManager.getIconManager().getIcon(icon));
             }
         });
 

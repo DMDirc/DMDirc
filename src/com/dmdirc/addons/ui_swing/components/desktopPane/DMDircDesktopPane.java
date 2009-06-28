@@ -24,18 +24,18 @@ package com.dmdirc.addons.ui_swing.components.desktopPane;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.addons.ui_swing.MainFrame;
-import com.dmdirc.interfaces.SelectionListener;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.FrameManager;
-import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
 import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewModel;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewNode;
+import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.interfaces.FrameListener;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Color;
@@ -60,7 +60,7 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * DMDirc Extentions to JDesktopPane.
  */
-public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
+public class DMDircDesktopPane extends JDesktopPane implements FrameListener,
         SelectionListener, PropertyChangeListener {
 
     /** Logger to use. */
@@ -124,7 +124,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             }
         };
 
-        WindowManager.addFrameManager(this);
+        WindowManager.addFrameListener(this);
     }
 
     /** {@inheritDoc} */
@@ -183,24 +183,6 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 setObject(selectedWindow);
             }
         });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setParent(final JComponent parent) {
-        //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionVertically() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionHorizontally() {
-        return true;
     }
 
     /** {@inheritDoc} */

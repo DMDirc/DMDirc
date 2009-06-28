@@ -23,20 +23,20 @@ package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.ui.interfaces.FrameListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.TreeMap;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -48,8 +48,8 @@ import javax.swing.event.MenuListener;
 /**
  * Manages the window menu window list.
  */
-public final class WindowMenuFrameManager extends JMenu implements FrameManager,
-        ActionListener, SelectionListener, MenuListener {
+public final class WindowMenuFrameManager extends JMenu implements
+        FrameListener, ActionListener, SelectionListener, MenuListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -84,7 +84,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
         setText("Window");
         setMnemonic('w');
-        WindowManager.addFrameManager(this);
+        WindowManager.addFrameListener(this);
         addMenuListener(this);
 
         minimiseMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
@@ -128,24 +128,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         closeMenuItem.setEnabled(enabledMenuItems.get());
         toggleStateMenuItem.setEnabled(enabledMenuItems.get());
         minimiseMenuItem.setEnabled(enabledMenuItems.get());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setParent(final JComponent parent) {
-        //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionVertically() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionHorizontally() {
-        return true;
     }
 
     /** {@inheritDoc} */

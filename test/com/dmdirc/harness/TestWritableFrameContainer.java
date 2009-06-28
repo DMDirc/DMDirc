@@ -35,7 +35,7 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength, final ConfigManager cm) {
-        super("raw", cm);
+        super("raw", "Raw", cm);
 
         this.lineLength = lineLength;
     }
@@ -54,10 +54,6 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     public int getMaxLineLength() {
         return lineLength;
-    }
-
-    public String toString() {
-        return "window";
     }
 
     public void windowClosing() {
