@@ -126,6 +126,7 @@ public class ProcessMode extends IRCProcessor {
 					// (de) OP/Voice someone
 					if (sModestr.length <= nParam) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
+						return;
 					}
 					sModeParam = sModestr[nParam++];
 					nValue = myParser.hPrefixModes.get(cMode);
