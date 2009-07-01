@@ -27,6 +27,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.irc.ChannelClientInfo;
@@ -139,6 +140,22 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "nickname"; }
+    },
+
+    /** Returns the name of the server. */
+    SERVER_PROFILE {
+        /** {@inheritDoc} */
+        @Override
+        public Object get(final Object argument) { return ((Server) argument).getProfile(); }
+        /** {@inheritDoc} */
+        @Override
+        public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
+        @Override
+        public Class getType() { return Identity.class; }
+        /** {@inheritDoc} */
+        @Override
+        public String getName() { return "profile"; }
     },
     
     /** Returns the name of the channel. */
@@ -497,6 +514,22 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
+    },
+
+    /** Returns the name of an identity. */
+    IDENTITY_NAME {
+        /** {@inheritDoc} */
+        @Override
+        public Object get(final Object argument) { return ((Identity) argument).getName(); }
+        /** {@inheritDoc} */
+        @Override
+        public Class appliesTo() { return Identity.class; }
+        /** {@inheritDoc} */
+        @Override
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        @Override
+        public String getName() { return "name"; }
     };
         
 }

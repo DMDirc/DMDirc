@@ -23,6 +23,7 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
@@ -67,13 +68,38 @@ public class PerformWrapper extends ActionGroup {
     public void add(final Action action) {
         if (action.getTriggers().length == 1
                 && action.getTriggers()[0] == CoreActionType.SERVER_CONNECTED
-                && action.getConditions().size() == 1
-                && (action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NETWORK
-                || action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NAME)) {
+                && checkConditions(action.getConditions())) {
             super.add(action);
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid perform action: " + action.getName());
         }
+    }
+
+    /**
+     * Checks that the specified conditions are valid for a perform action.
+     *
+     * @param conditions The conditions to be checked
+     * @since 0.6.3m2
+     * @return True if the conditions are valid, false otherwise
+     */
+    protected boolean checkConditions(final List<ActionCondition> conditions) {
+        boolean target = false, profile = false;
+
+        for (ActionCondition condition : conditions) {
+            if ((condition.getComponent() == CoreActionComponent.SERVER_NETWORK
+                    || condition.getComponent() == CoreActionComponent.SERVER_NAME)
+                    && !target) {
+                target = true;
+            } else if (condition.getComponent() instanceof ActionComponentChain
+                    && "SERVER_IDENTITY.IDENTITY_NAME".equals(condition.getComponent().toString())
+                    && !profile) {
+                profile = true;
+            } else {
+                return false;
+            }
+        }
+
+        return target || profile;
     }
     
     /**
