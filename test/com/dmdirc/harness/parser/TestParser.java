@@ -46,8 +46,9 @@ public class TestParser extends IRCParser {
     }
 
     @Override
-    protected void doSendString(String line, boolean fromParser) {
+    protected boolean doSendString(String line, boolean fromParser) {
         sentLines.add(line);
+        return true;
     }
     
     public String[] getLine(int index) {
