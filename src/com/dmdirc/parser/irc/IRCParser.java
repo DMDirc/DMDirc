@@ -901,24 +901,27 @@ public class IRCParser implements Runnable {
 	 * Send a line to the server.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
+	 * @return True if line was sent, else false.
 	 */
-	public void sendLine(final String line) { doSendString(line, false); }
+	public boolean sendLine(final String line) { return doSendString(line, false); }
 
 	/**
 	 * Send a line to the server and add proper line ending.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
+	 * @return True if line was sent, else false.
 	 */
-	protected void sendString(final String line) { doSendString(line, true); }
+	protected boolean sendString(final String line) { return doSendString(line, true); }
 
 	/**
 	 * Send a line to the server and add proper line ending.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 * @param fromParser is this line from the parser? (used for callDataOut)
+	 * @return True if line was sent, else false.
 	 */
-	protected void doSendString(final String line, final boolean fromParser) {
-		if (out == null || getSocketState() != SocketState.OPEN) { return; }
+	protected boolean doSendString(final String line, final boolean fromParser) {
+		if (out == null || getSocketState() != SocketState.OPEN) { return false; }
 		callDataOut(line, fromParser);
 		out.printf("%s\r\n", line);
 		final String[] newLine = tokeniseLine(line);
@@ -947,6 +950,8 @@ public class IRCParser implements Runnable {
 				}
 			}
 		}
+		
+		return true;
 	}
 
 	/**
@@ -1889,9 +1894,10 @@ public class IRCParser implements Runnable {
 				pingTime = System.currentTimeMillis();
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
-				callPingSent();
 				lastPingValue = String.valueOf(System.currentTimeMillis());
-				sendLine("PING " + lastPingValue);
+				if (sendLine("PING " + lastPingValue)) {
+					callPingSent();
+				}
 			}
 		}
 	}
