@@ -551,10 +551,10 @@ public class IRCParser implements Runnable {
 		if (post005) { return false; }
 		post005 = true;
 		
-		if (!myParser.h005Info.containsKey("CHANTYPES")) { parseChanPrefix(); }
-		if (!myParser.h005Info.containsKey("PREFIX")) { parsePrefixModes(); }
-		if (!myParser.h005Info.containsKey("USERMODES")) { parseUserModes(); }
-		if (!myParser.h005Info.containsKey("CHANMODES")) { parseChanModes(); }
+		if (!h005Info.containsKey("CHANTYPES")) { parseChanPrefix(); }
+		if (!h005Info.containsKey("PREFIX")) { parsePrefixModes(); }
+		if (!h005Info.containsKey("USERMODES")) { parseUserModes(); }
+		if (!h005Info.containsKey("CHANMODES")) { parseChanModes(); }
 
 		return getCallbackManager().getCallbackType("OnPost005").call();
 	}
