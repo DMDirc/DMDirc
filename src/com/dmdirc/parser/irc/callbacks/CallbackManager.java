@@ -42,6 +42,7 @@ public final class CallbackManager {
         IChannelGotListModes.class, IChannelGotNames.class, IChannelJoin.class,
         IChannelKick.class, IChannelMessage.class, IChannelModeChanged.class,
         IChannelNickChanged.class, IChannelNonUserModeChanged.class,
+        IChannelModeMessage.class, IChannelModeNotice.class,
         IChannelNotice.class, IChannelPart.class, IChannelQuit.class,
         IChannelSelfJoin.class, IChannelSingleModeChanged.class,
         IChannelTopic.class, IChannelUserModeChanged.class, IConnectError.class,

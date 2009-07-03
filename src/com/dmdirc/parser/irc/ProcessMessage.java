@@ -132,10 +132,21 @@ public class ProcessMessage extends IRCProcessor {
 		// OnUnknown* Callbacks are fired if the target was neither of the above
 		// Actions and CTCPs are send as PRIVMSGS
 		// CTCPReplies are sent as Notices
-		if (isValidChannelName(token[2])) {
-			iChannel = getChannelInfo(token[2]);
+		
+		// Check if we have a Mode Prefix for channel targets.
+		// Non-Channel messages still use the whole token, even if the first char
+		// is a prefix.
+		// CTCP and CTCPReplies that are aimed at a channel with a prefix are
+		// handled as if the prefix wasn't used. This can be changed in the future
+		// if desired.
+		final char modePrefix = token[2].charAt(1);
+		final boolean hasModePrefix =  (myParser.hPrefixMap.containsKey(modePrefix) && !myParser.hPrefixModes.containsKey(modePrefix));
+		final String targetName = (hasModePrefix) ? token[2].substring(1) : token[2];
+		
+		if (isValidChannelName(targetName)) {
+			iChannel = getChannelInfo(targetName);
 			if (iChannel == null) {
-				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+token[2]+") that I am not on.", myParser.getLastLine()));
+				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+targetName+") that I am not on.", myParser.getLastLine()));
 				return;
 			}
 			if (iClient != null) { iChannelClient = iChannel.getUser(iClient); }
@@ -143,6 +154,8 @@ public class ProcessMessage extends IRCProcessor {
 				if (!isAction) {
 					if (isCTCP) {
 						callChannelCTCP(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
+					} else if (hasModePrefix) {
+						callChannelModeMessage(modePrefix, iChannel, iChannelClient, sMessage, token[0]);
 					} else {
 						callChannelMessage(iChannel, iChannelClient, sMessage, token[0]);
 					}
@@ -152,6 +165,8 @@ public class ProcessMessage extends IRCProcessor {
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
 					callChannelCTCPReply(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
+				} else if (hasModePrefix) {
+					callChannelModeNotice(modePrefix, iChannel, iChannelClient, sMessage, token[0]);
 				} else {
 					callChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
 				}
@@ -266,6 +281,36 @@ public class ProcessMessage extends IRCProcessor {
 	 */
 	protected boolean callChannelNotice(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType("OnChannelNotice").call(cChannel, cChannelClient, sMessage, sHost);
+	}
+	
+	/**
+	 * Callback to all objects implementing the ChannelModeNotice Callback.
+	 *
+	 * @see com.dmdirc.parser.irc.callbacks.interfaces.IChannelModeNotice
+	 * @param prefix Prefix that was used to send this notice.
+	 * @param cChannel Channel where the notice was sent to
+	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
+	 * @param sMessage notice contents
+	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callChannelModeNotice(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+		return getCallbackManager().getCallbackType("OnChannelModeNotice").call(prefix, cChannel, cChannelClient, sMessage, sHost);
+	}
+	
+	/**
+	 * Callback to all objects implementing the ChannelModeMessage Callback.
+	 *
+	 * @see com.dmdirc.parser.irc.callbacks.interfaces.IChannelModeMessage
+	 * @param prefix Prefix that was used to send this notice.
+	 * @param cChannel Channel where the notice was sent to
+	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
+	 * @param sMessage message contents
+	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callChannelModeMessage(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+		return getCallbackManager().getCallbackType("OnChannelModeMessage").call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
