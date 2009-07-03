@@ -56,7 +56,7 @@ public class Info {
     public static String getJavaVersion() {
         return System.getProperty("java.vm.name", "unknown") + " " +
                 System.getProperty("java.version", "unknown") +
-                " [" + System.getProperty("java.vm.vendor", "uknown") + "]";
+                " [" + System.getProperty("java.vm.vendor", "unknown") + "]";
     }
 
     /**

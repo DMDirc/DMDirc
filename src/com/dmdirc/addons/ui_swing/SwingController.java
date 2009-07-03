@@ -568,7 +568,7 @@ public final class SwingController extends Plugin implements UIController {
                     "Main frame not created. Unable to continue.");
         }
 
-        if (System.getProperty("java.vm.name", "uknown").contains("OpenJDK")) {
+        if (System.getProperty("java.vm.name", "unknown").contains("OpenJDK")) {
             JOptionPane.showMessageDialog(null, "OpenJDK has known graphical " +
                     "issues and as such is unsupported by DMDirc.  Please " +
                     "consider using the official JRE.", "Unsupported JRE",
