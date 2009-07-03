@@ -91,10 +91,12 @@ public class IRCParser implements Runnable {
 	/**	Server Info requested by user. */
 	public ServerInfo server = new ServerInfo();
 
+	/** Should PINGs be sent to the server to check if its alive? */
+	private boolean checkServerPing = true;
 	/** Timer for server ping. */
 	private Timer pingTimer = null;
-    /** Semaphore for access to pingTimer. */
-    private Semaphore pingTimerSem = new Semaphore(1);
+	/** Semaphore for access to pingTimer. */
+	private Semaphore pingTimerSem = new Semaphore(1);
 	/** Length of time to wait between ping stuff. */
 	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
@@ -586,12 +588,7 @@ public class IRCParser implements Runnable {
 		lastLine = "";
 		cMyself = new ClientInfo(this, "myself").setFake(true);
 
-        pingTimerSem.acquireUninterruptibly();
-		if (pingTimer != null) {
-			pingTimer.cancel();
-			pingTimer = null;
-		}
-        pingTimerSem.release();
+		stopPingTimer();
 
 		currentSocketState = SocketState.CLOSED;
 		// Char Mapping
@@ -1803,6 +1800,28 @@ public class IRCParser implements Runnable {
 		}
 	}
 
+	/**
+	 * Get the value of checkServerPing.
+	 *
+	 * @return value of checkServerPing.
+	 * @see setCheckServerPing
+	 */
+	public boolean getCheckServerPing() { return checkServerPing; }
+
+	/**
+	 * Set the value of checkServerPing.
+	 *
+	 * @param newValue New value to use.
+	 * @see setCheckServerPing
+	 */
+	public void setCheckServerPing(final boolean newValue) {
+		checkServerPing = newValue;
+		if (checkServerPing) {
+			startPingTimer();
+		} else {
+			stopPingTimer();
+		}
+	}
 
 	/**
 	 * Get the time used for the ping Timer.
@@ -1863,7 +1882,7 @@ public class IRCParser implements Runnable {
 	 * Start the pingTimer.
 	 */
 	protected void startPingTimer() {
-        pingTimerSem.acquireUninterruptibly();
+		pingTimerSem.acquireUninterruptibly();
 
 		setPingNeeded(false);
 		if (pingTimer != null) { pingTimer.cancel(); }
@@ -1871,7 +1890,19 @@ public class IRCParser implements Runnable {
 		pingTimer.schedule(new PingTimer(this, pingTimer), 0, pingTimerLength);
 		pingCountDown = 1;
 
-        pingTimerSem.release();
+		pingTimerSem.release();
+	}
+	
+	/**
+	 * Stop the pingTimer.
+	 */
+	protected void stopPingTimer() {
+		pingTimerSem.acquireUninterruptibly();
+		if (pingTimer != null) {
+			pingTimer.cancel();
+			pingTimer = null;
+		}
+		pingTimerSem.release();
 	}
 
 	/**
@@ -1882,6 +1913,15 @@ public class IRCParser implements Runnable {
 	 * @param timer The timer that called this.
 	 */
 	protected void pingTimerTask(final Timer timer) {
+		if (!getCheckServerPing()) {
+			pingTimerSem.acquireUninterruptibly();
+			if (pingTimer != null && pingTimer.equals(timer)) {
+				pingTimer.cancel();
+			}
+			pingTimerSem.release();
+			
+			return;
+		}
 		if (getPingNeeded()) {
 			if (!callPingFailed()) {
 				pingTimerSem.acquireUninterruptibly();
