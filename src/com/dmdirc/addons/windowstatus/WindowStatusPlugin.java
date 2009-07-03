@@ -37,6 +37,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
@@ -53,7 +54,7 @@ import java.util.Map.Entry;
  *
  * @author Shane 'Dataforce' McCormack
  */
-public final class WindowStatusPlugin extends Plugin implements ActionListener {
+public final class WindowStatusPlugin extends Plugin implements ActionListener, ConfigChangeListener {
 
 	/** The panel we use in the status bar. */
 	private final WindowStatusPanel panel = new WindowStatusPanel();
@@ -66,9 +67,10 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	/**
 	 * Called when the plugin is loaded.
 	 */
-    @Override
+	@Override
 	public void onLoad() {
 		Main.getUI().getStatusBar().addComponent(panel);
+		IdentityManager.getGlobalConfig().addChangeListener(getDomain(), this);
 		updateStatus();
 
 		ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
@@ -77,7 +79,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	/**
 	 * Called when this plugin is unloaded.
 	 */
-    @Override
+	@Override
 	public void onUnload() {
 		Main.getUI().getStatusBar().removeComponent(panel);
 		ActionManager.removeListener(this);
@@ -90,11 +92,11 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-        @Override
+	@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
 			updateStatus((FrameContainer) arguments[0]);
-        }
+		}
 	}
 
 	/**
@@ -165,7 +167,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 			for (Entry<Long, Integer> entry : types.entrySet()) {
 				if (isFirst) { isFirst = false; } else { textString.append(' '); }
 				textString.append(names.get(entry.getKey()));
-                textString.append(entry.getValue());
+				textString.append(entry.getValue());
 			}
 
 			textString.append(')');
@@ -179,7 +181,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 					final String realname = client.getRealName();
 					if (!realname.isEmpty()) {
 						textString.append(" - ");
-                        textString.append(client.getRealName());
+						textString.append(client.getRealName());
 					}
 				}
 			}
@@ -190,21 +192,27 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	}
 
 	/** {@inheritDoc} */
-        @Override
+	@Override
 	public void showConfig(final PreferencesManager manager) {
-                final PreferencesCategory category
-                        = new PreferencesCategory("Window status", "");
-
-                category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        getDomain(), "channel.shownone", "Show 'none' count",
-                        "Should the count for users with no state be shown?"));
-                category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                        getDomain(), "channel.noneprefix", "'None' count prefix",
-                        "The Prefix to use when showing the 'none' count"));
-                category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        getDomain(), "client.showname", "Show real name",
-                        "Should the realname for clients be shown if known?"));
-
+		final PreferencesCategory category
+		        = new PreferencesCategory("Window status", "");
+		
+		category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		        getDomain(), "channel.shownone", "Show 'none' count",
+		        "Should the count for users with no state be shown?"));
+		category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+		        getDomain(), "channel.noneprefix", "'None' count prefix",
+		        "The Prefix to use when showing the 'none' count"));
+		category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		        getDomain(), "client.showname", "Show real name",
+		        "Should the realname for clients be shown if known?"));
+		
 		manager.getCategory("Plugins").addSubCategory(category);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void configChanged(final String domain, final String key) {
+		updateStatus();
 	}
 }
