@@ -1015,7 +1015,7 @@ public class IRCParser implements Runnable {
 				if (got001) {
 					// Freenode sends a random notice in a stupid place, others might do aswell
 					// These shouldn't cause post005 to be fired, so handle them here.
-					if (token[0].equalsIgnoreCase("NOTICE")) {
+					if (token[0].equalsIgnoreCase("NOTICE") || (token.length > 2 && token[2].equalsIgnoreCase("NOTICE"))) {
 						try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
 						return;
 					}
