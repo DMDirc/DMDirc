@@ -142,8 +142,8 @@ public class ChannelInfo {
 		final boolean isOpped = me.getImportantModeValue() > voiceValue;
 		
 		int modecount = 1;
-		if (!isUnreal) {
-			try { 
+		if (!isUnreal && myParser.h005Info.containsKey("MODES")) {
+			try {
 				modecount = Integer.parseInt(myParser.h005Info.get("MODES"));
 			} catch (NumberFormatException e) { /* use default modecount */}
 		}
