@@ -51,18 +51,21 @@ public class Process004005 extends IRCProcessor {
 			myParser.parseUserModes();
 		} else if (sParam.equals("005")) {
 			// 005
-			String[] Bits = null;
-			String sKey = null, sValue = null;
 			for (int i = 3; i < token.length ; i++) {
-				Bits = token[i].split("=",2);
-				sKey = Bits[0].toUpperCase();
-				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
+				String[] Bits = token[i].split("=",2);
+				final boolean isNegation = (Bits[0].charAt(0) == '-');
+				final String sKey = (isNegation) ? Bits[0].toUpperCase() : Bits[0].substring(1).toUpperCase();
+				final String sValue = (Bits.length == 2) ? Bits[1] : "";
 				callDebugInfo(IRCParser.DEBUG_INFO, "%s => %s",sKey,sValue);
-				myParser.h005Info.put(sKey,sValue);
-				if (sKey.equals("NETWORK")) {
+				if (isNegation) {
+					myParser.h005Info.remove(sKey);
+				} else {
+					myParser.h005Info.put(sKey,sValue);
+				}
+				if (sKey.equals("NETWORK") && !isNegation) {
 					myParser.sNetworkName = sValue;
 					callGotNetwork();
-				} else if (sKey.equals("CASEMAPPING")) {
+				} else if (sKey.equals("CASEMAPPING") && !isNegation) {
 					byte limit = (byte)4;
 					if (sValue.equalsIgnoreCase("strict-rfc1459")) {
 						limit = (byte)3;
@@ -74,9 +77,9 @@ public class Process004005 extends IRCProcessor {
 					final boolean limitChanged = (myParser.getIRCStringConverter().getLimit() != limit);
 					myParser.updateCharArrays(limit);
 					if (limitChanged && myParser.knownClients() == 1) {
-							// This means that the casemapping is not rfc1459
-							// We have only added ourselves so far (from 001)
-							// We can fix the hashtable easily.
+						// This means that the casemapping is not rfc1459
+						// We have only added ourselves so far (from 001)
+						// We can fix the hashtable easily.
 						myParser.removeClient(myParser.getMyself());
 						myParser.addClient(myParser.getMyself());
 					}
@@ -89,13 +92,13 @@ public class Process004005 extends IRCProcessor {
 				} else if (sKey.equals("LISTMODE")) {
 					// Support for potential future decent mode listing in the protocol
 					// 
-					// See my proposal: http://shane.dmdirc.com/listmodes.php
+					// See my proposal: http://shanemcc.co.uk/irc/#listmode
 					// Add listmode handler
 					String[] handles = new String[2];
 					handles[0] = sValue; // List mode item
-					sValue = ""+(Integer.parseInt(sValue) + 1);
-					myParser.h005Info.put("LISTMODEEND", sValue);
-					handles[1] = sValue; // List mode end
+					final String endValue = ""+(Integer.parseInt(sValue) + 1);
+					myParser.h005Info.put("LISTMODEEND", endValue);
+					handles[1] = endValue; // List mode end
 					// Add listmode handlers
 					try {
 						myParser.getProcessingManager().addProcessor(handles, myParser.getProcessingManager().getProcessor("__LISTMODE__"));
