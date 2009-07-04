@@ -38,6 +38,8 @@ public enum ErrorFixedStatus {
     UNREPORTED("Unreported"),
     /** Client too old. */
     TOOOLD("Client too old - please update"),
+    /** Duplicate bug exists in list. @since 0.6.3m2 */
+    DUPLICATE("Duplicate bug exists in list"),
     /** Unknown state. */
     UNKNOWN("Unknown status");
     

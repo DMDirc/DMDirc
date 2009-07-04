@@ -31,8 +31,8 @@ import com.dmdirc.logger.ProgramError;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
