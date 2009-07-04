@@ -48,6 +48,7 @@ public enum ErrorLevel {
      * Instantiates the enum. 
      *
      * @param value toString value
+     * @param icon Error level icon
      */
     ErrorLevel(final String value, final Icon icon) {
         this.value = value;

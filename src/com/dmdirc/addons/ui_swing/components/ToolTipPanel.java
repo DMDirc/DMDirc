@@ -23,6 +23,7 @@ package com.dmdirc.addons.ui_swing.components;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.awt.Color;
@@ -149,7 +150,14 @@ public class ToolTipPanel extends JPanel implements MouseListener {
                     super.processMouseEvent(e, comp);
                 }
             };
-            ((JXLayer<JComponent>) component).setUI(layerUI);
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    ((JXLayer<JComponent>) component).setUI(layerUI);
+                }
+            });
         } else {
             component.addMouseListener(this);
         }
