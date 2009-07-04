@@ -54,7 +54,7 @@ public class Process004005 extends IRCProcessor {
 			for (int i = 3; i < token.length ; i++) {
 				String[] Bits = token[i].split("=",2);
 				final boolean isNegation = (Bits[0].charAt(0) == '-');
-				final String sKey = (isNegation) ? Bits[0].toUpperCase() : Bits[0].substring(1).toUpperCase();
+				final String sKey = (isNegation) ? Bits[0].substring(1).toUpperCase() : Bits[0].toUpperCase();
 				final String sValue = (Bits.length == 2) ? Bits[1] : "";
 				callDebugInfo(IRCParser.DEBUG_INFO, "%s => %s",sKey,sValue);
 				if (isNegation) {
