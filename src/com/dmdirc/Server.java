@@ -110,7 +110,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     private transient Identity profile;
 
     /** The current state of this server. */
-    private final ServerStatus myState = new ServerStatus();
+    private final ServerStatus myState = new ServerStatus(this);
 
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;

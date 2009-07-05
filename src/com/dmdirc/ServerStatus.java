@@ -22,7 +22,10 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.util.RollingList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describes the status of a server and manages transitions between different
@@ -33,11 +36,27 @@ import com.dmdirc.util.RollingList;
  */
 public class ServerStatus {
 
+    /** The server to which this status belongs. */
+    protected final Server server;
+
     /** The current state of the server. */
     protected ServerState state = ServerState.DISCONNECTED;
 
     /** A history of transactions for debugging purposes. */
     protected RollingList<String> history = new RollingList<String>(10);
+
+    /** A list of known parser hashcodes. */
+    protected final List<Integer> parsers = new ArrayList<Integer>();
+
+    /**
+     * Creates a new ServerStatus instance for the specified server.
+     *
+     * @param server The server to which this status belongs
+     * @since 0.6.3m2
+     */
+    public ServerStatus(final Server server) {
+        this.server = server;
+    }
 
     /**
      * Transitions the status of this object to the specified state.
@@ -86,7 +105,9 @@ public class ServerStatus {
         builder.append(Thread.currentThread().getStackTrace()[3].toString());
         builder.append(" [");
         builder.append(Thread.currentThread().getName());
-        builder.append(']');
+        builder.append("] (parser #");
+        builder.append(getParserID(server.getParser()));
+        builder.append(')');
 
         history.add(builder.toString());
     }
@@ -110,6 +131,33 @@ public class ServerStatus {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Returns a unique, ID for the specified parser. Each parser that has been
+     * seen to be used by this server is given a sequential id.
+     *
+     * @param parser The parser whose ID is being requested
+     * @return A unique ID for the specified parser, or 0 if the parser is null
+     */
+    public int getParserID(final IRCParser parser) {
+        if (parser == null) {
+            return 0;
+        }
+
+        final int hashcode = parser.hashCode();
+        int offset;
+        
+        synchronized (parsers) {
+            offset = parsers.indexOf(hashcode);
+
+            if (offset == -1) {
+                parsers.add(hashcode);
+                offset = parsers.indexOf(hashcode);
+            }
+        }
+
+        return 1 + offset;
     }
 
 }
