@@ -23,6 +23,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
+import com.dmdirc.addons.ui_swing.Apple;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
@@ -191,7 +192,11 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
                     getParentWindow());
         }
 
-        panel.add(label, "align label, wmax 40%");
+        if (Apple.isAppleUI()) {
+            panel.add(label, "align right, wmax 40%");
+        } else {
+            panel.add(label, "align left, wmax 40%");
+        }
         panel.add(option, "growx, pushx, w 60%");
     }
 
