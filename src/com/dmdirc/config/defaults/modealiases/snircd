@@ -10,6 +10,7 @@ identity:
   ircd=snircd
 
 server:
+  modeA=Admin password
   modeD=Auditorium mode
   moded=Auditorium mode
   enablemodec=true
@@ -20,6 +21,7 @@ server:
   modeu=No quit mesages
   enablemodeu=true
   modeT=No multi-target messages
+  modeU=User password
 
   umodeg=Receive debug information
   umodeI=Hide idle time

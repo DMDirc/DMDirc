@@ -10,14 +10,14 @@ identity:
   ircd=ircu
 
 server:
+  modeA=Admin password
   modeC=No channel CTCPs
   enablemodeC=true
   modeD=Auditorium mode
   moded=Auditorium mode
   modeS=Strip all colours
   modeT=No multi-target messages
-  modeA=Admin pass
-  modeU=User pass
+  modeU=User password
 
   umodeg=Receive debug information
   umodek=Services operator
