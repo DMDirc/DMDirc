@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.RollingList;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +140,7 @@ public class ServerStatus {
      * @param parser The parser whose ID is being requested
      * @return A unique ID for the specified parser, or 0 if the parser is null
      */
-    public int getParserID(final IRCParser parser) {
+    public int getParserID(final Parser parser) {
         if (parser == null) {
             return 0;
         }

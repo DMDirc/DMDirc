@@ -31,4 +31,11 @@ package com.dmdirc.parser.interfaces;
  */
 public interface ChannelInfo {
 
+    /**
+     * Returns the name of this channel.
+     *
+     * @return The name of this channel
+     */
+    String getName();
+
 }

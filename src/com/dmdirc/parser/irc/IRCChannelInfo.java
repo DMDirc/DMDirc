@@ -244,13 +244,11 @@ public class IRCChannelInfo implements ChannelInfo {
 	 */
 	public boolean isAddingNames() { return bAddingNames; }
 	
-	/**
-	 * Get the name of this channel object.
-	 *
-	 * @return Channel name.
-	 */	
+	/** {@inheritDoc} */
+        @Override
 	public String getName() { return sName; }
-	/**
+
+        /**
 	 * Get the number of users known on this channel.
 	 *
 	 * @return Channel user count.
