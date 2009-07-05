@@ -24,9 +24,8 @@
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
 import com.dmdirc.addons.ui_swing.components.PackingTable;
-
-import com.dmdirc.addons.ui_swing.components.renderers.DateCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.ErrorLevelIconCellRenderer;
+
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
@@ -65,8 +64,6 @@ public class ErrorTable extends PackingTable {
     public TableCellRenderer getCellRenderer(final int row,
             final int column) {
         switch (column) {
-            case 1:
-                return new DateCellRenderer();
             case 2:
                 return new ErrorLevelIconCellRenderer();
             default:

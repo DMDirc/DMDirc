@@ -29,7 +29,6 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -45,7 +44,7 @@ public final class ErrorTableModel extends AbstractTableModel implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     /** Data list. */
     private final List<ProgramError> errors;
 
@@ -100,7 +99,7 @@ public final class ErrorTableModel extends AbstractTableModel implements
             case 0:
                 return "ID";
             case 1:
-                return "Time";
+                return "Count";
             case 2:
                 return "Severity";
             case 3:
@@ -119,7 +118,7 @@ public final class ErrorTableModel extends AbstractTableModel implements
             case 0:
                 return Integer.class;
             case 1:
-                return Date.class;
+                return Integer.class;
             case 2:
                 return ErrorLevel.class;
             case 3:
@@ -145,7 +144,7 @@ public final class ErrorTableModel extends AbstractTableModel implements
                 case 0:
                     return errors.get(rowIndex).getID();
                 case 1:
-                    return errors.get(rowIndex).getDate();
+                    return errors.get(rowIndex).getCount();
                 case 2:
                     return errors.get(rowIndex).getLevel();
                 case 3:

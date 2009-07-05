@@ -33,6 +33,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -40,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Stores a program error.
@@ -71,8 +74,14 @@ public final class ProgramError implements Serializable {
     /** Error trace. */
     private final String[] trace;
     
-    /** Date/time error occurred. */
-    private final Date date;
+    /** Date/time error first occurred. */
+    private final Date firstDate;
+
+    /** Date/time error last occurred. */
+    private Date lastDate;
+
+    /** Number of occurrences. */
+    private AtomicInteger count;
     
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
@@ -116,7 +125,9 @@ public final class ProgramError implements Serializable {
         this.level = level;
         this.message = message;
         this.trace = Arrays.copyOf(trace, trace.length);
-        this.date = (Date) date.clone();
+        this.firstDate = (Date) date.clone();
+        this.lastDate = (Date) date.clone();
+        this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
         this.fixedStatus = ErrorFixedStatus.UNKNOWN;
     }
@@ -154,7 +165,25 @@ public final class ProgramError implements Serializable {
      * @return Error time
      */
     public Date getDate() {
-        return (Date) date.clone();
+        return (Date) firstDate.clone();
+    }
+
+    /**
+     * Returns the number of times this error has occurred.
+     *
+     * @return Error count
+     */
+    public int getCount() {
+        return count.get();
+    }
+
+    /**
+     * Returns the last time this error occurred.
+     *
+     * @return Last occurrence
+     */
+    public Date getLastDate() {
+        return (Date) lastDate.clone();
     }
     
     /**
@@ -375,6 +404,40 @@ public final class ProgramError implements Serializable {
         }
 
         return trace[0];
+    }
+
+    /**
+     * Updates the last date this error occurred.
+     */
+    public void updateLastDate() {
+        updateLastDate(new Date());
+    }
+
+    /**
+     * Updates the last date this error occurred.
+     *
+     * @param date Date error occurred
+     */
+    public void updateLastDate(final Date date) {
+        lastDate = date;
+        count.getAndIncrement();
+        ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+
+        synchronized (this) {
+            notifyAll();
+        }
+    }
+
+    /**
+     * Retruns a human readable string describing the number of times
+     * this error occurred and when these occurrences were.
+     *
+     * @return Occurrences description
+     */
+    public String occurrencesString() {
+        final DateFormat format = new SimpleDateFormat("MM/dd hh:mm aa");
+        return count.get() + " occurrences between " + format.format(getDate())
+                + " and " + format.format(getLastDate());
     }
     
     /** {@inheritDoc} */

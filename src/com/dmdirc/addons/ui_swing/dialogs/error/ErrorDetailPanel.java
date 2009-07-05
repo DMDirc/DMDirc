@@ -114,7 +114,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
         errorStatus = new JTextField();
         details = new JTextArea();
         scrollPane = new JScrollPane(details);
-        
+
         id.setEditable(false);
         date.setEditable(false);
         level.setEditable(false);
@@ -144,7 +144,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
                 }
                 
                 id.setText(String.valueOf(error.getID()));
-                date.setText(error.getDate().toString());
+                date.setText(error.occurrencesString());
                 level.setText(error.getLevel().toString());
                 reportStatus.setText(error.getReportStatus().toString());
                 errorStatus.setText(error.getFixedStatus().toString());
@@ -206,6 +206,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
         if (this.error != null && this.error.equals(error)) {
             reportStatus.setText(error.getReportStatus().toString());
             errorStatus.setText(error.getFixedStatus().toString());
+            date.setText(this.error.occurrencesString());
         }
     }
 

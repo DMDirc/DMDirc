@@ -160,10 +160,8 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             final String[] details, final boolean appError, final boolean canReport) {
         final ProgramError error = getError(level, message, details, appError);
 
-        if (addError(error) && canReport) {
-            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
-        } else if (!canReport || (appError && !error.isValidSource())) {
+        final boolean dupe = addError(error);
+        if (!canReport || (appError && !error.isValidSource())) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.INVALID);
         } else if (!appError) {
@@ -177,10 +175,12 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             error.save();
         }
 
-        if (level == ErrorLevel.FATAL) {
-            fireFatalError(error);
-        } else {
-            fireErrorAdded(error);
+        if (!dupe) {
+            if (level == ErrorLevel.FATAL) {
+                fireFatalError(error);
+            } else {
+                fireErrorAdded(error);
+            }
         }
     }
 
@@ -193,14 +193,18 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * otherwise
      */
     protected boolean addError(final ProgramError error) {
-        boolean res = false;
+        int index;
 
         synchronized (errors) {
-            res = errors.contains(error);
-            errors.add(error);
+            index = errors.indexOf(error);
+            if (index == -1) {
+                errors.add(error);
+            } else {
+                errors.get(index).updateLastDate();
+            }
         }
 
-        return res;
+        return index > -1;
     }
 
     /**
