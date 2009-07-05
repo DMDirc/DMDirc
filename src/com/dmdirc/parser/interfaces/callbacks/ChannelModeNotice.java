@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.callbacks.interfaces;
+package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -36,7 +36,7 @@ import com.dmdirc.parser.irc.callbacks.SpecificCallback;
  * cChannelClient is null if user is a server, or not on the channel.
  */
 @SpecificCallback
-public interface IChannelModeNotice extends ICallbackInterface {
+public interface ChannelModeNotice extends CallbackInterface {
 	/**
 	 * Called when a person sends a notice to a channel.
 	 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
@@ -49,7 +49,7 @@ public interface IChannelModeNotice extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callChannelModeNotice
 	 */
-	void onChannelModeNotice(@FakableSource IRCParser tParser,
+	void onChannelModeNotice(@FakableSource Parser tParser,
             char prefix,
             @FakableSource ChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
