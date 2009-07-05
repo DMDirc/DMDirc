@@ -1759,7 +1759,8 @@ public class IRCParser implements Runnable {
 			if (getType) {
 				// This ilst is vaugly based on http://searchirc.com/ircd-versions,
 				// but keeping groups of ircd's together (ie hybrid-based, ircu-based)
-				if (version.matches("(?i).*unreal.*")) { return "unreal"; }
+				if (version.matches("(?i).*unreal[^4-9].*")) { return "unreal"; }
+				else if (version.matches("(?i).*unreal[4-9].*")) { return "unreal4"; }
 				else if (version.matches("(?i).*bahamut.*")) { return "bahamut"; }
 				else if (version.matches("(?i).*nefarious.*")) { return "nefarious"; }
 				else if (version.matches("(?i).*asuka.*")) { return "asuka"; }
