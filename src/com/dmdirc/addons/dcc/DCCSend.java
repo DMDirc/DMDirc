@@ -333,6 +333,10 @@ public class DCCSend extends DCC {
 		if (handler != null) {
 			handler.socketClosed(this);
 		}
+		// Try to delete empty files.
+		if (transferType == TransferType.RECEIVE && transferFile.length() == 0) {
+			transferFile.delete();
+		}
 		synchronized (SENDS) {
 			SENDS.remove(this);
 		}
