@@ -42,11 +42,13 @@ public class Process004005 extends IRCProcessor {
 				myParser.h005Info.put("004IRCD",token[4]);
 				myParser.h005Info.put("USERMODES",token[5]);
 				myParser.h005Info.put("USERCHANMODES",token[6]);
+				if (token.length > 7) { myParser.h005Info.put("USERCHANPARAMMODES",token[7]); } // INSPIRCD includes an extra param
 			} else {
 				final String[] bits = token[3].split(" ");
 				myParser.h005Info.put("004IRCD",bits[1]);
 				myParser.h005Info.put("USERMODES",bits[2]);
 				myParser.h005Info.put("USERCHANMODES",bits[3]);
+				if (token.length > 4) { myParser.h005Info.put("USERCHANPARAMMODES",bits[4]); } // INSPIRCD includes an extra param
 			}
 			myParser.parseUserModes();
 		} else if (sParam.equals("005")) {
