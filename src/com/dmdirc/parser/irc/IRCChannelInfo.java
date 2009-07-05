@@ -546,7 +546,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
 	public List<ChannelListModeItem> getListModeParam(final Character cMode) {
-		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
+		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
 			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
@@ -700,15 +700,12 @@ public class IRCChannelInfo implements ChannelInfo {
 		lModeQueue.clear();
 	}
 	
-	/**
-	 * Send a private message to the channel.
-	 *
-	 * @param sMessage Message to send
-	 */
-	public void sendMessage(final String sMessage) { 
-		if (sMessage.isEmpty()) { return; }
+	/** {@inheritDoc} */
+        @Override
+	public void sendMessage(final String message) {
+		if (message.isEmpty()) { return; }
 		
-		myParser.sendString("PRIVMSG " + sName + " :" + sMessage);	
+		myParser.sendString("PRIVMSG " + sName + " :" + message);
 	}
 	
 	/**

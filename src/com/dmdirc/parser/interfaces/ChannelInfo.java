@@ -38,4 +38,11 @@ public interface ChannelInfo {
      */
     String getName();
 
+    /**
+     * Sends the specified message to this channel.
+     *
+     * @param message The message to be sent
+     */
+    void sendMessage(final String message);
+
 }

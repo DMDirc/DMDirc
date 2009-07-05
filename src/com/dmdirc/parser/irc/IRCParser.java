@@ -1412,9 +1412,9 @@ class IRCParser implements Parser, Runnable {
 
     /** {@inheritDoc} */
     @Override
-	public void joinChannel(final String sChannelName) {
-		joinChannel(sChannelName, "", true);
-	}
+    public void joinChannel(final String channel) {
+        joinChannel(channel, "", true);
+    }
 
 	/**
 	 * Join a Channel.
@@ -1428,15 +1428,11 @@ class IRCParser implements Parser, Runnable {
 		joinChannel(sChannelName, "", autoPrefix);
 	}
 
-	/**
-	 * Join a Channel with a key.
-	 *
-	 * @param sChannelName Name of channel to join
-	 * @param sKey Key to use to try and join the channel
-	 */
-	public void joinChannel(final String sChannelName, final String sKey) {
-		joinChannel(sChannelName, sKey, true);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void joinChannel(final String channel, final String key) {
+        joinChannel(channel, key, true);
+    }
 
 	/**
 	 * Join a Channel with a key.

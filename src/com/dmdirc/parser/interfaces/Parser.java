@@ -40,11 +40,19 @@ public interface Parser extends Runnable {
     void disconnect(String message);
 
     /**
-     * Join a Channel.
+     * Join a channel with no key.
      *
      * @param channel Name of channel to join
      */
     void joinChannel(String channel);
+
+    /**
+     * Joins a channel with the specified key.
+     *
+     * @param channel Name of channel to join
+     * @param key The key required to join the channel
+     */
+    void joinChannel(String channel, String key);
 
     /**
      * Retrieves a channel information object for the specified channel.
