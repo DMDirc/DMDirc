@@ -782,7 +782,7 @@ public class IRCParser implements Runnable {
 					}
 					resetState();
 					break;
-				} else {
+				} else if (currentSocketState != SocketState.CLOSING) {
 					processLine(lastLine);
 				}
 			} catch (IOException e) {
@@ -1678,7 +1678,10 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void disconnect(final String sReason) {
-		if (currentSocketState == SocketState.OPEN && got001) { quit(sReason); }
+		if (currentSocketState == SocketState.OPEN) {
+			currentSocketState = SocketState.CLOSING;
+			if (got001) { quit(sReason); }
+		}
 		try {
 			if (socket != null) { socket.close(); }
 		} catch (IOException e) {
