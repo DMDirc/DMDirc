@@ -143,6 +143,16 @@ public final class TabCompleter implements Serializable {
      */
     public void addEntry(final TabCompletionType type, final String entry) {
         entries.add(type, entry);
+
+        if (type == TabCompletionType.COMMAND
+                && entry.startsWith(String.valueOf(CommandManager.getCommandChar()))
+                && !entry.startsWith(String.valueOf(CommandManager.getCommandChar())
+                + CommandManager.getSilenceChar())) {
+            // If we're adding a command name that doesn't include the silence
+            // character, also add a version with the silence char
+            addEntry(type, entry.substring(0, 1) + CommandManager.getSilenceChar()
+                    + entry.substring(1));
+        }
     }
     
     /**

@@ -206,16 +206,16 @@ public class Server extends WritableFrameContainer implements Serializable {
 
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_SERVER));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+        
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         updateIcon();
 
         window.open();
-
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_SERVER));
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
 
         this.autochannels = autochannels;
         this.parserFactory = factory;
