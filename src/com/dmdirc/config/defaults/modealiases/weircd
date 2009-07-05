@@ -1,0 +1,14 @@
+# WeIRCd IRCd mode aliases
+
+keysections:
+  identity
+  server
+
+identity:
+  name=WeIRCd mode aliases
+  ircd=weircd
+
+server:
+  umodeB=Bot
+  umodeS=Network Service
+  moder=Registered
