@@ -24,6 +24,7 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
@@ -213,8 +214,7 @@ public final class TabCompleter implements Serializable {
             targets.include(TabCompletionType.COMMAND);
             return targets;
         } else {
-            return TabCompleter.getIntelligentResults(previousArgs.subList(offset,
-                    previousArgs.size()));
+            return getIntelligentResults(previousArgs.subList(offset, previousArgs.size()));
         }        
     }
     
@@ -232,13 +232,25 @@ public final class TabCompleter implements Serializable {
         
         final String signature = args.get(0).substring(1);
         final Map.Entry<CommandInfo, Command> command = CommandManager.getCommand(signature);
-        
-        if (command != null && command.getValue() instanceof IntelligentCommand) {
-            return ((IntelligentCommand) command.getValue()).getSuggestions(args.size() - 1,
-                    args.subList(1, args.size()));
-        } else {
-            return null;
-        }        
+
+        AdditionalTabTargets targets = null;
+
+        if (command != null) {
+            if (command.getValue() instanceof IntelligentCommand) {
+                targets = ((IntelligentCommand) command.getValue())
+                        .getSuggestions(args.size() - 1, args.subList(1, args.size()));
+            }
+
+            if (command.getValue() instanceof ChannelCommand) {
+                if (targets == null) {
+                    targets = new AdditionalTabTargets();
+                }
+
+                targets.include(TabCompletionType.CHANNEL);
+            }
+        }
+
+        return targets;
     }
     
     /**
