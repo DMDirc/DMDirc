@@ -294,8 +294,6 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             myState.transition(ServerState.CONNECTING);
 
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
-
             getConfigManager().migrate("", "", server);
 
             serverInfo = buildServerInfo(server, port, password, ssl);
@@ -321,6 +319,8 @@ public class Server extends WritableFrameContainer implements Serializable {
                 Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
             }
         }
+
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
     }
 
     /**
