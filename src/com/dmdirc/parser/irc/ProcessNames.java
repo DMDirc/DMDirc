@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
 
 /**
@@ -39,7 +40,7 @@ public class ProcessNames extends IRCProcessor {
 		ChannelInfo iChannel;
 		if (sParam.equals("366")) {
 			// End of names
-			iChannel = getChannelInfo(token[3]);
+			iChannel = getChannel(token[3]);
 			if (iChannel == null) { return; }
 			
 			iChannel.setAddingNames(false);
@@ -56,7 +57,7 @@ public class ProcessNames extends IRCProcessor {
 			ClientInfo iClient;
 			ChannelClientInfo iChannelClient;
 			
-			iChannel = getChannelInfo(token[4]);
+			iChannel = getChannel(token[4]);
 		
 			if (iChannel == null) { return; }
 			
@@ -107,7 +108,7 @@ public class ProcessNames extends IRCProcessor {
 	 * @param cChannel Channel which the names reply is for
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelGotNames(ChannelInfo cChannel) {
+	protected boolean callChannelGotNames(IRCChannelInfo cChannel) {
 		return getCallbackManager().getCallbackType(ChannelNamesListener.class).call(cChannel);
 	}
 	

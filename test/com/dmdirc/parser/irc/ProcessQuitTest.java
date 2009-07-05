@@ -49,12 +49,12 @@ public class ProcessQuitTest {
         final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback(ChannelQuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing2").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);
@@ -82,12 +82,12 @@ public class ProcessQuitTest {
         final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback(QuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing2").getChannelClients().size());
         
         assertNotNull(test.client);
         assertNotNull(test.reason);
@@ -110,11 +110,11 @@ public class ProcessQuitTest {
         final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback(QuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.client);
         assertNotNull(test.reason);

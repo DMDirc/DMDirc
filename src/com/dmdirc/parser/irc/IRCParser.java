@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
@@ -206,7 +207,7 @@ class IRCParser implements Parser, Runnable {
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
 	private final Map<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	private final Map<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
+	private final Map<String, IRCChannelInfo> hChannelList = new Hashtable<String, IRCChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
 	private ClientInfo cMyself = new ClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
@@ -895,16 +896,12 @@ class IRCParser implements Parser, Runnable {
 		else { return new ClientInfo(this, sHost).setFake(true); }
 	}
 
-	/**
-	 * Get the ChannelInfo object for a channel.
-	 *
-	 * @param sWhat This is the name of the channel.
-	 * @return ChannelInfo Object for the channel, or null
-	 */
-	public ChannelInfo getChannelInfo(String sWhat) {
+	/** {@inheritDoc} */
+        @Override
+	public ChannelInfo getChannel(String channel) {
 		synchronized (hChannelList) {
-			sWhat = getIRCStringConverter().toLowerCase(sWhat);
-			if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
+			channel = getIRCStringConverter().toLowerCase(channel);
+			if (hChannelList.containsKey(channel)) { return hChannelList.get(channel); } else { return null; }
 		}
 	}
 
@@ -943,7 +940,7 @@ class IRCParser implements Parser, Runnable {
 			// as the ircd will only reply once.
 			final LinkedList<Character> foundModes = new LinkedList<Character>();
 
-			final ChannelInfo channel = getChannelInfo(newLine[1]);
+			final ChannelInfo channel = getChannel(newLine[1]);
 			if (channel != null) {
 				final Queue<Character> listModeQueue = channel.getListModeQueue();
 				for (int i = 0; i < newLine[2].length() ; ++i) {
@@ -1484,7 +1481,7 @@ class IRCParser implements Parser, Runnable {
 	 * @param sReason Reason for leaving (Nothing sent if sReason is "")
 	 */
 	public void partChannel(final String sChannelName, final String sReason) {
-		if (getChannelInfo(sChannelName) == null) { return; }
+		if (getChannel(sChannelName) == null) { return; }
 		if (sReason.isEmpty()) {
 			sendString("PART " + sChannelName);
 		} else {
@@ -1709,7 +1706,7 @@ class IRCParser implements Parser, Runnable {
 		// Check its not ourself (PM recieved before 005)
 		if (getIRCStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
 		// Check if we are already on this channel
-		if (getChannelInfo(sChannelName) != null) { return true; }
+		if (getChannel(sChannelName) != null) { return true; }
 		// Check if we know of any valid chan prefixes
 		if (hChanPrefix.isEmpty()) {
 			// We don't. Lets check against RFC2811-Specified channel types
@@ -2082,7 +2079,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to add
 	 */
-	public void addChannel(final ChannelInfo channel) {
+	public void addChannel(final IRCChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.put(getIRCStringConverter().toLowerCase(channel.getName()), channel);
 		}
@@ -2093,7 +2090,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to remove
 	 */
-	public void removeChannel(final ChannelInfo channel) {
+	public void removeChannel(final IRCChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.remove(getIRCStringConverter().toLowerCase(channel.getName()));
 		}
@@ -2115,7 +2112,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @return Known channels as a collection
 	 */
-	public Collection<ChannelInfo> getChannels() {
+	public Collection<IRCChannelInfo> getChannels() {
 		synchronized (hChannelList) {
 			return hChannelList.values();
 		}

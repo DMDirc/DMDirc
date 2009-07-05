@@ -51,7 +51,7 @@ public class ProcessNickTest {
         assertEquals(1, parser.getClientInfo("LUSER").getChannelClients().size());
 
         ChannelClientInfo cci = parser.getClientInfo("LUSER").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
         assertSame(cci.getClient(), tinc.client);
@@ -73,7 +73,7 @@ public class ProcessNickTest {
         assertEquals(1, parser.getClientInfo("foobar").getChannelClients().size());
 
         ChannelClientInfo cci = parser.getClientInfo("foobar").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
     }    
     

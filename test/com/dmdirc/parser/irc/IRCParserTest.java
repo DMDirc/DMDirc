@@ -404,7 +404,7 @@ public class IRCParserTest {
         parser.injectLine(":server " + numeric2 + " nick #D :End of Channel Something List");
 
         final List<ChannelListModeItem> items
-                = parser.getChannelInfo("#D").getListModeParam(mode);
+                = parser.getChannel("#D").getListModeParam(mode);
 
         assertEquals(3, items.size());
         boolean gotOne = false, gotTwo = false, gotThree = false;
@@ -470,7 +470,7 @@ public class IRCParserTest {
         parser.getCallbackManager().addCallback(ChannelKickListener.class, ick, "#D");
         parser.injectLine(":bar!me@moo KICK #D nick :Bye!");
 
-        verify(ick).onChannelKick(same(parser), (ChannelInfo) anyObject(),
+        verify(ick).onChannelKick(same(parser), (IRCChannelInfo) anyObject(),
                 (ChannelClientInfo) anyObject(), (ChannelClientInfo) anyObject(),
                 anyString(), anyString());
     }

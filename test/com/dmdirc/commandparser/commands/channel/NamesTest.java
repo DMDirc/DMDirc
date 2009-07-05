@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 
 import org.junit.Before;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class NamesTest {
 
     private final Names command = new Names();
-    private ChannelInfo channelinfo;
+    private IRCChannelInfo channelinfo;
     private Channel channel;
     private Server server;
     private IRCParser parser;
@@ -54,7 +54,7 @@ public class NamesTest {
         parser = mock(IRCParser.class);
         server = mock(Server.class);
         channel = mock(Channel.class);
-        channelinfo = mock(ChannelInfo.class);
+        channelinfo = mock(IRCChannelInfo.class);
 
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);

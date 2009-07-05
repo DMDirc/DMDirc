@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNonUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelSingleModeChangeListener;
@@ -101,7 +102,7 @@ public class ProcessMode extends IRCProcessor {
 			cbNonUser = getCallbackManager().getCallbackType(ChannelNonUserModeChangeListener.class);
 		}
 		
-		iChannel = getChannelInfo(sChannelName);
+		iChannel = getChannel(sChannelName);
 		if (iChannel == null) { 
 			// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on.", myParser.getLastLine()));
 			// iChannel = new ChannelInfo(myParser, sChannelName);
@@ -279,7 +280,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sModes Exact String parsed
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+	protected boolean callChannelModeChanged(IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
 		return getCallbackManager().getCallbackType(ChannelModeChangeListener.class).call(cChannel, cChannelClient, sHost, sModes);
 	}
 	
@@ -294,7 +295,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
+	protected boolean callChannelUserModeChanged(IRCChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
 		return getCallbackManager().getCallbackType(ChannelUserModeChangeListener.class).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
 	}
 	

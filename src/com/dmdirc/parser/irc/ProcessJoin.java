@@ -40,7 +40,7 @@ public class ProcessJoin extends IRCProcessor {
 	public void process(final String sParam, final String[] token) {
 		if (sParam.equals("329")) {
 			if (token.length < 5) { return; }
-			ChannelInfo iChannel = myParser.getChannelInfo(token[3]);
+			IRCChannelInfo iChannel = myParser.getChannel(token[3]);
 			if (iChannel != null) {
 				try {
 					iChannel.setCreateTime(Integer.parseInt(token[4]));
@@ -51,11 +51,11 @@ public class ProcessJoin extends IRCProcessor {
 			Byte nTemp;
 			if (token.length < 3) { return; }
 			ClientInfo iClient;
-			ChannelInfo iChannel;
+			IRCChannelInfo iChannel;
 			ChannelClientInfo iChannelClient;
 			
 			iClient = myParser.getClientInfo(token[0]);
-			iChannel = myParser.getChannelInfo(token[token.length-1]);
+			iChannel = myParser.getChannel(token[token.length-1]);
 			
 			if (iClient == null) { 
 				iClient = new ClientInfo(myParser, token[0]);
@@ -89,7 +89,7 @@ public class ProcessJoin extends IRCProcessor {
 			//if (iClient != myParser.getMyself()) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			//}
-			iChannel = new ChannelInfo(myParser, token[token.length-1]);
+			iChannel = new IRCChannelInfo(myParser, token[token.length-1]);
 			// Add ourself to the channel, this will be overridden by the NAMES reply
 			iChannel.addClient(iClient);
 			myParser.addChannel(iChannel);
@@ -108,7 +108,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param cChannelClient ChannelClient object for new person
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelJoin(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
+	protected boolean callChannelJoin(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
 		return getCallbackManager().getCallbackType(ChannelJoinListener.class).call(cChannel, cChannelClient);
 	}
 	
@@ -119,7 +119,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param cChannel Channel Object
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelSelfJoin(final ChannelInfo cChannel) {
+	protected boolean callChannelSelfJoin(final IRCChannelInfo cChannel) {
 		return  getCallbackManager().getCallbackType(ChannelSelfJoinListener.class).call(cChannel);
 	}
 	

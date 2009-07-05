@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpReplyListener;
@@ -161,7 +162,7 @@ public class ProcessMessage extends IRCProcessor {
 		final String targetName = (hasModePrefix) ? token[2].substring(1) : token[2];
 		
 		if (isValidChannelName(targetName)) {
-			iChannel = getChannelInfo(targetName);
+			iChannel = getChannel(targetName);
 			if (iChannel == null) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+targetName+") that I am not on.", myParser.getLastLine()));
 				return;
@@ -238,7 +239,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelAction(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+	protected boolean callChannelAction(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelActionListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
@@ -253,7 +254,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelCTCP(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+	protected boolean callChannelCTCP(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelCtcpListener.class).call(cChannel, cChannelClient, sType, sMessage, sHost);
 	}
 
@@ -268,7 +269,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelCTCPReply(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+	protected boolean callChannelCTCPReply(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelCtcpReplyListener.class).call(cChannel, cChannelClient, sType, sMessage, sHost);
 	}
 	
@@ -282,7 +283,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelMessage(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+	protected boolean callChannelMessage(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelMessageListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
@@ -296,7 +297,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelNotice(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+	protected boolean callChannelNotice(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelNoticeListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
@@ -311,7 +312,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelModeNotice(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+	protected boolean callChannelModeNotice(final char prefix, final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelModeNoticeListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
@@ -326,7 +327,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelModeMessage(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+	protected boolean callChannelModeMessage(final char prefix, final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
 		return getCallbackManager().getCallbackType(ChannelModeMessageListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	

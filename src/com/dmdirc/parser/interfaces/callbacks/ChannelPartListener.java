@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -43,5 +43,5 @@ public interface ChannelPartListener extends CallbackInterface {
 	 * @param sReason Reason given for parting (May be "")
 	 * @see com.dmdirc.parser.irc.ProcessPart#callChannelPart
 	 */
-	void onChannelPart(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
+	void onChannelPart(Parser tParser, IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
 }

@@ -34,7 +34,7 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.ColourManager;
@@ -67,7 +67,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type.equals(CoreActionType.CHANNEL_GOTNAMES)) {
-            final ChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
+            final IRCChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
             final String network = ((Channel) arguments[0]).getServer().getNetwork();
             
             for (ChannelClientInfo client : chanInfo.getChannelClients()) {

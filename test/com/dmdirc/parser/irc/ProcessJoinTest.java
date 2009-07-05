@@ -49,7 +49,7 @@ public class ProcessJoinTest {
         assertSame(parser, test.channel.getParser());
         assertEquals(1, parser.getChannels().size());
         assertTrue(parser.getChannels().contains(test.channel));
-        assertEquals(test.channel, parser.getChannelInfo("#DMDirc_testing"));
+        assertEquals(test.channel, parser.getChannel("#DMDirc_testing"));
     }
     
     @Test
@@ -63,7 +63,7 @@ public class ProcessJoinTest {
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
 
-        verify(test).onChannelJoin(parser, parser.getChannelInfo("#DMDirc_testing"),
+        verify(test).onChannelJoin(parser, parser.getChannel("#DMDirc_testing"),
                 parser.getClientInfo("foo!bar@baz").getChannelClients().get(0));
     }    
 

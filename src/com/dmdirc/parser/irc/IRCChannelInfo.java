@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import java.util.Queue;
  * @author Chris Smith
  * @see IRCParser
  */
-public class ChannelInfo {
+public class IRCChannelInfo implements ChannelInfo {
 	/**
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
@@ -93,7 +94,7 @@ public class ChannelInfo {
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param name Channel name.
 	 */
-	public ChannelInfo(final IRCParser tParser, final String name) {
+	public IRCChannelInfo(final IRCParser tParser, final String name) {
 		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		sName = name;

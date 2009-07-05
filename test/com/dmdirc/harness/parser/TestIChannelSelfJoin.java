@@ -27,9 +27,9 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
 
 public class TestIChannelSelfJoin implements ChannelSelfJoinListener {
 
-    public ChannelInfo channel = null;
+    public IRCChannelInfo channel = null;
 
-    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+    public void onChannelSelfJoin(IRCParser tParser, IRCChannelInfo cChannel) {
         channel = cChannel;
     }
 }

@@ -45,11 +45,11 @@ public class ProcessPartTest {
         final TestIChannelPart test = new TestIChannelPart();
         parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville PART #DMDirc_testing :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);
@@ -73,11 +73,11 @@ public class ProcessPartTest {
         final TestIChannelPart test = new TestIChannelPart();
         parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville PART #DMDirc_testing");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);

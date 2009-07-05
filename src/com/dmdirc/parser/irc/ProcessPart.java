@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 
 /**
@@ -45,7 +46,7 @@ public class ProcessPart extends IRCProcessor {
 		ChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
-		iChannel = getChannelInfo(token[2]);
+		iChannel = getChannel(token[2]);
 		
 		if (iClient == null) { return; }
 		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
@@ -85,7 +86,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @param sReason Reason given for parting (May be "")
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+	protected boolean callChannelPart(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		return getCallbackManager().getCallbackType(ChannelPartListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	

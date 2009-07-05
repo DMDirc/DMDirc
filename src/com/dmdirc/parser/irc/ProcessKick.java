@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
 
 /**
@@ -46,7 +47,7 @@ public class ProcessKick extends IRCProcessor {
 		
 		iClient = getClientInfo(token[3]);
 		iKicker = getClientInfo(token[0]);
-		iChannel = getChannelInfo(token[2]);
+		iChannel = getChannel(token[2]);
 		
 		if (iClient == null) { return; }
 		
@@ -89,7 +90,7 @@ public class ProcessKick extends IRCProcessor {
 	 * @param sKickedByHost Hostname of Kicker (or servername)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
+	protected boolean callChannelKick(IRCChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
 		return getCallbackManager().getCallbackType(ChannelKickListener.class).call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 	}
 	

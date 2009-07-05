@@ -30,7 +30,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestLoggingPlugin;
 import com.dmdirc.harness.parser.TestParserFactory;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.util.ConfigFile;
@@ -54,7 +54,7 @@ public class LoggingPluginTest {
         server = new Server("255.255.255.255", 6667, "", false,
                 IdentityManager.getProfiles().get(0), new ArrayList<String>(),
                 new TestParserFactory());
-        channel = new Channel(server, new ChannelInfo(server.getParser(), "#test"));
+        channel = new Channel(server, new IRCChannelInfo(server.getParser(), "#test"));
         query = new Query(server, "foo!bar@baz");
 
         final ConfigFile file = new ConfigFile(LoggingPlugin.class

@@ -26,6 +26,7 @@ package com.dmdirc.parser.interfaces;
  * A parser connects to a back-end chat system and handles all communication
  * with it.
  *
+ * @since 0.6.3m2
  * @author chris
  */
 public interface Parser extends Runnable {
@@ -44,6 +45,14 @@ public interface Parser extends Runnable {
      * @param channel Name of channel to join
      */
     void joinChannel(String channel);
+
+    /**
+     * Retrieves a channel information object for the specified channel.
+     *
+     * @param channel Name of the channel to retrieve an information object for
+     * @return A corresponding channel info object
+     */
+    ChannelInfo getChannel(String channel);
 
     /**
      * Set the current Value of bindIP.

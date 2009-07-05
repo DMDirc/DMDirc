@@ -40,7 +40,7 @@ public class ChannelClientInfo {
 	/** Reference to the parser object that owns this channelclient, Used for modes. */
 	private final IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
-	private final ChannelInfo myChannel;
+	private final IRCChannelInfo myChannel;
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
 	
@@ -51,7 +51,7 @@ public class ChannelClientInfo {
 	 * @param client Client that this channelclient represents
 	 * @param channel Channel that owns this channelclient
 	 */	
-	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client, final ChannelInfo channel) {
+	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client, final IRCChannelInfo channel) {
 		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		cClient = client;
@@ -90,7 +90,7 @@ public class ChannelClientInfo {
 	 *
 	 * @return Channel object that owns this ChannelClient
 	 */
-	public ChannelInfo getChannel() { return myChannel; }
+	public IRCChannelInfo getChannel() { return myChannel; }
 	/**
 	 * Get the nickname of the client object represented by this channelclient.
 	 *

@@ -138,9 +138,9 @@ public class ProcessModeTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
         parser.injectLine(":server 324 nick #DMDirc_testing +Zstnl 1234");
 
-        assertEquals("1234", parser.getChannelInfo("#DMDirc_testing").getModeParam('l'));
+        assertEquals("1234", parser.getChannel("#DMDirc_testing").getModeParam('l'));
         
-        String modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
+        String modes = parser.getChannel("#DMDirc_testing").getModeStr().split(" ")[0];
         assertEquals(6, modes.length());
         assertEquals('+', modes.charAt(0));
         assertTrue(modes.indexOf('Z') > -1);
@@ -151,7 +151,7 @@ public class ProcessModeTest {
         
         parser.injectLine(":server MODE #DMDirc_testing :-Z");
         
-        modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
+        modes = parser.getChannel("#DMDirc_testing").getModeStr().split(" ")[0];
         assertEquals(5, modes.length());
         assertEquals('+', modes.charAt(0));
         assertTrue(modes.indexOf('s') > -1);

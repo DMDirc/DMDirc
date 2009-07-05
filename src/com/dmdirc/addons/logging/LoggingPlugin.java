@@ -40,7 +40,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -312,7 +312,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	protected void handleChannelEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
 		final Channel chan = ((Channel)arguments[0]);
-		final ChannelInfo channel = chan.getChannelInfo();
+		final IRCChannelInfo channel = chan.getChannelInfo();
 		final String filename = getLogFile(channel);
 		
 		final ChannelClientInfo channelClient = (arguments.length > 1 && arguments[1] instanceof ChannelClientInfo) ? (ChannelClientInfo)arguments[1] : null;
@@ -608,8 +608,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		if (obj == null) {
 			file.append("null.log");
-		} else if (obj instanceof ChannelInfo) {
-			final ChannelInfo channel = (ChannelInfo) obj;
+		} else if (obj instanceof IRCChannelInfo) {
+			final IRCChannelInfo channel = (IRCChannelInfo) obj;
 			if (channel.getParser() != null) {
 				addNetworkDir(directory, file, channel.getParser().getNetworkName());
 			}

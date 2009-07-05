@@ -28,8 +28,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
@@ -101,7 +102,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
      */
-    public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
+    public Channel(final Server newServer, final IRCChannelInfo newChannelInfo) {
         super("channel", newChannelInfo.getName(),
                 new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
                 newServer.getName(), newChannelInfo.getName()));
@@ -159,7 +160,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
     @Override
     public void sendLine(final String line) {
         if (server.getState() != ServerState.CONNECTED
-                || server.getParser().getChannelInfo(channelInfo.getName()) == null) {
+                || server.getParser().getChannel(channelInfo.getName()) == null) {
             // We're not in the channel/connected to the server
             return;
         }
@@ -194,7 +195,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
     @Override
     public void sendAction(final String action) {
         if (server.getState() != ServerState.CONNECTED
-                || server.getParser().getChannelInfo(channelInfo.getName()) == null) {
+                || server.getParser().getChannel(channelInfo.getName()) == null) {
             // We're not on the server/channel
             return;
         }
@@ -245,7 +246,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      *
      * @param newChannelInfo The new ChannelInfo object
      */
-    public void setChannelInfo(final ChannelInfo newChannelInfo) {
+    public void setChannelInfo(final IRCChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
         registerCallbacks();
     }

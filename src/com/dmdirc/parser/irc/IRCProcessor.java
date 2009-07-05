@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 
 /**
@@ -109,11 +110,11 @@ public abstract class IRCProcessor {
 	/**
 	 * Get the ChannelInfo object for a channel.
 	 *
-	 * @param sWhat This is the name of the channel.
+	 * @param name This is the name of the channel.
 	 * @return ChannelInfo Object for the channel, or null
 	 */
-	protected final ChannelInfo getChannelInfo(final String sWhat) {
-		return myParser.getChannelInfo(sWhat);
+	protected final ChannelInfo getChannel(final String name) {
+		return myParser.getChannel(name);
 	}
 	
 	/**

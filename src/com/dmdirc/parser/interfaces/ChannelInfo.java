@@ -20,26 +20,15 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.interfaces.callbacks;
+package com.dmdirc.parser.interfaces;
 
-import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.callbacks.SpecificCallback;
-
-/** 
- * Called when the topic is changed or discovered for the first time.
- * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
+/**
+ * Holds information about a channel and allows various operations to be
+ * performed on the channel.
+ *
+ * @since 0.6.3m2
+ * @author chris
  */
-@SpecificCallback
-public interface ChannelTopicListener extends CallbackInterface {
-	/**
-	 * Called when the topic is changed or discovered for the first time.
-	 * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
-	 * 
-	 * @param tParser Reference to the parser object that made the callback.
-	 * @param cChannel Channel that topic was set on
-	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-	 * @see com.dmdirc.parser.irc.ProcessTopic#callChannelTopic
-	 */
-	void onChannelTopic(Parser tParser, IRCChannelInfo cChannel, boolean bIsJoinTopic);
+public interface ChannelInfo {
+
 }

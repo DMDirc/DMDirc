@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -50,7 +50,7 @@ public interface ChannelCtcpReplyListener extends CallbackInterface {
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callChannelCTCPReply
 	 */
 	void onChannelCTCPReply(@FakableSource Parser tParser,
-            @FakableSource ChannelInfo cChannel,
+            @FakableSource IRCChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
             String sType, String sMessage,
             @FakableSource String sHost);

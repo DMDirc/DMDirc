@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelListModeListener;
 import java.util.List;
 import java.util.LinkedList;
@@ -40,7 +41,7 @@ public class ProcessListModes extends IRCProcessor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void process(String sParam, String[] token) {
-		ChannelInfo channel = getChannelInfo(token[3]);
+		ChannelInfo channel = getChannel(token[3]);
 		String thisIRCD = myParser.getIRCD(true).toLowerCase();
 		String item = "";
 		String owner = "";
@@ -227,7 +228,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param cChannel Channel which the ListModes reply is for
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
+	protected boolean callChannelGotListModes(IRCChannelInfo cChannel) {
 		return getCallbackManager().getCallbackType(ChannelListModeListener.class).call(cChannel);
 	}
 	

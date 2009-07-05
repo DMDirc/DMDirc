@@ -31,9 +31,9 @@ public class TestIChannelTopic implements ChannelTopicListener {
 
     public boolean isJoin;
 
-    public ChannelInfo channel;
+    public IRCChannelInfo channel;
 
-    public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel,
+    public void onChannelTopic(IRCParser tParser, IRCChannelInfo cChannel,
                                boolean bIsJoinTopic) {
         triggered = true;
         isJoin = bIsJoinTopic;

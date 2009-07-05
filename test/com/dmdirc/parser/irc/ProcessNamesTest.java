@@ -53,20 +53,20 @@ public class ProcessNamesTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
         assertEquals(1, parser.getChannels().size());
-        assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
-        assertEquals(4, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertNotNull(parser.getChannel("#DMDirc_testing"));
+        assertEquals(4, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         assertNotNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
 
         ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
-        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick2");
+        cci = parser.getChannel("#DMDirc_testing").getUser("nick2");
         assertNotNull(cci);
         assertEquals("@+", cci.getChanModeStr(true));
 
-        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick3");
+        cci = parser.getChannel("#DMDirc_testing").getUser("nick3");
         assertNotNull(cci);
         assertEquals("", cci.getChanModeStr(true));
     }

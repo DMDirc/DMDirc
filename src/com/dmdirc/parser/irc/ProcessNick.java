@@ -61,7 +61,7 @@ public class ProcessNick extends IRCProcessor {
 					myParser.addClient(iClient);
 				}
 				
-				for (ChannelInfo iChannel : myParser.getChannels()) {
+				for (IRCChannelInfo iChannel : myParser.getChannels()) {
 					// Find the user (using the old nickname)
 					iChannelClient = iChannel.getUser(oldNickname);
 					if (iChannelClient != null) {
@@ -90,7 +90,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @param sOldNick Nickname before change
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
+	protected boolean callChannelNickChanged(IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
 		return getCallbackManager().getCallbackType(ChannelNickChangeListener.class).call(cChannel, cChannelClient, sOldNick);
 	}
 	

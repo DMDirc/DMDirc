@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -50,7 +50,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            final ChannelInfo cChannel = channel.getChannelInfo();
+            final IRCChannelInfo cChannel = channel.getChannelInfo();
 
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, isSilent, "channelNoTopic", cChannel);

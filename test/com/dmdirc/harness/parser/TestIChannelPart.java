@@ -27,13 +27,13 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 
 public class TestIChannelPart implements ChannelPartListener {
 
-    public ChannelInfo channel;
+    public IRCChannelInfo channel;
 
     public ChannelClientInfo cclient;
 
     public String reason;
 
-    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
+    public void onChannelPart(IRCParser tParser, IRCChannelInfo cChannel,
                               ChannelClientInfo cChannelClient, String sReason) {
         channel = cChannel;
         cclient = cChannelClient;

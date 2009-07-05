@@ -23,7 +23,7 @@
 package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
@@ -38,5 +38,5 @@ public interface ChannelNamesListener extends CallbackInterface {
 	 * @param cChannel Channel which the names reply is for
 	 * @see com.dmdirc.parser.irc.ProcessNames#callChannelGotNames
 	 */
-	void onChannelGotNames(Parser tParser, ChannelInfo cChannel);
+	void onChannelGotNames(Parser tParser, IRCChannelInfo cChannel);
 }

@@ -35,7 +35,7 @@ import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
@@ -566,7 +566,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @param chan channel to add
      */
-    public void addChannel(final ChannelInfo chan) {
+    public void addChannel(final IRCChannelInfo chan) {
         synchronized (myState) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't join channels while the server is closing

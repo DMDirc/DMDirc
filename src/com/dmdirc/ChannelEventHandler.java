@@ -26,7 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
@@ -88,7 +88,7 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onChannelMessage(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sMessage, final String sHost) {
         checkParser(tParser);
 
@@ -99,7 +99,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelGotNames(final Parser tParser, final ChannelInfo cChannel) {
+    public void onChannelGotNames(final Parser tParser, final IRCChannelInfo cChannel) {
         checkParser(tParser);
 
         owner.setClients(cChannel.getChannelClients());
@@ -109,7 +109,7 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onChannelTopic(final Parser tParser,
-            final ChannelInfo cChannel, final boolean bIsJoinTopic) {
+            final IRCChannelInfo cChannel, final boolean bIsJoinTopic) {
         checkParser(tParser);
 
         final Topic newTopic = new Topic(cChannel.getTopic(),
@@ -128,7 +128,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelJoin(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelJoin(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
         checkParser(tParser);
 
@@ -138,7 +138,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelPart(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelPart(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
 
@@ -151,7 +151,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelKick(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelKick(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
         checkParser(tParser);
@@ -163,7 +163,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelQuit(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelQuit(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
 
@@ -174,7 +174,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelAction(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelAction(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage,
             final String sHost) {
         checkParser(tParser);
@@ -186,7 +186,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelNickChanged(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelNickChanged(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         checkParser(tParser);
 
@@ -198,7 +198,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelModeChanged(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelModeChanged(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost,
             final String sModes) {
         checkParser(tParser);
@@ -219,7 +219,7 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onChannelUserModeChanged(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
+            final IRCChannelInfo cChannel, final ChannelClientInfo cChangedClient,
             final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
         checkParser(tParser);
 
@@ -237,7 +237,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelCTCP(final Parser tParser, final ChannelInfo cChannel,
+    public void onChannelCTCP(final Parser tParser, final IRCChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
@@ -265,7 +265,7 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onChannelNotice(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sMessage, final String sHost) {
         checkParser(tParser);
 

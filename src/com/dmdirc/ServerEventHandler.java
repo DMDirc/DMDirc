@@ -27,7 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
@@ -78,7 +78,7 @@ public final class ServerEventHandler extends EventHandler
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelSelfJoin(final Parser tParser, final ChannelInfo cChannel) {
+    public void onChannelSelfJoin(final Parser tParser, final IRCChannelInfo cChannel) {
         checkParser(tParser);
         owner.addChannel(cChannel);
     }

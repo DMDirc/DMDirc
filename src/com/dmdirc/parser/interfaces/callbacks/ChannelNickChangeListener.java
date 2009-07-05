@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -43,5 +43,5 @@ public interface ChannelNickChangeListener extends CallbackInterface {
 	 * @param sOldNick Nickname before change
 	 * @see com.dmdirc.parser.irc.ProcessNick#callChannelNickChanged
 	 */
-	 void onChannelNickChanged(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick);
+	 void onChannelNickChanged(Parser tParser, IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick);
 }

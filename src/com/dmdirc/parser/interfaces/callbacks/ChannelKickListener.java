@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -48,7 +48,7 @@ public interface ChannelKickListener extends CallbackInterface {
 	 * @see com.dmdirc.parser.irc.ProcessKick#callChannelKick
 	 */
 	void onChannelKick(@FakableSource Parser tParser,
-            @FakableSource ChannelInfo cChannel,
+            @FakableSource IRCChannelInfo cChannel,
             ChannelClientInfo cKickedClient,
             @FakableArgument ChannelClientInfo cKickedByClient,
             String sReason,

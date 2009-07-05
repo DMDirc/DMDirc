@@ -55,8 +55,8 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
-		for (ChannelInfo iChannel : channelList) {
+		ArrayList<IRCChannelInfo> channelList = new ArrayList<IRCChannelInfo>(myParser.getChannels());
+		for (IRCChannelInfo iChannel : channelList) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
@@ -88,7 +88,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param sReason Quit reason
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+	protected boolean callChannelQuit(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		return getCallbackManager().getCallbackType(ChannelQuitListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	

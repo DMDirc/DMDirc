@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -48,7 +48,7 @@ public interface ChannelNonUserModeChangeListener extends CallbackInterface {
 	 * @param sModes String showing the exact mode change parsed. (Not including user modes)
 	 */
 	void onChannelNonUserModeChanged(@FakableSource Parser tParser,
-            @FakableSource ChannelInfo cChannel,
+            @FakableSource IRCChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
             @FakableSource String sHost,
             String sModes);

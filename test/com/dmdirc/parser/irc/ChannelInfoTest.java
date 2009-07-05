@@ -23,6 +23,7 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.harness.parser.TestParser;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ import static org.junit.Assert.*;
 
 public class ChannelInfoTest {
 
-    final ChannelInfo ci = new ChannelInfo(null, "name");
+    final IRCChannelInfo ci = new IRCChannelInfo(null, "name");
 
     @Test
     public void testGetName() {
@@ -81,7 +82,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendMessage() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendMessage("hello");
+        getChannel(parser).sendMessage("hello");
 
         assertEquals("PRIVMSG #DMDirc_testing :hello", parser.sentLines.get(0));
     }
@@ -89,7 +90,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendNotice() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendNotice("hello");
+        getChannel(parser).sendNotice("hello");
 
         assertEquals("NOTICE #DMDirc_testing :hello", parser.sentLines.get(0));
     }
@@ -97,7 +98,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendCTCP() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendCTCP("type", "hello");
+        getChannel(parser).sendCTCP("type", "hello");
 
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE hello" + ((char) 1),
                 parser.sentLines.get(0));
@@ -106,7 +107,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendCTCPEmpty() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendCTCP("type", "");
+        getChannel(parser).sendCTCP("type", "");
 
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
                 parser.sentLines.get(0));
@@ -115,7 +116,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendAction() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendAction("moo");
+        getChannel(parser).sendAction("moo");
 
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "ACTION moo" + ((char) 1),
                 parser.sentLines.get(0));
@@ -124,7 +125,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendCTCPReply() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendCTCPReply("type", "moo");
+        getChannel(parser).sendCTCPReply("type", "moo");
 
         assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE moo" + ((char) 1),
                 parser.sentLines.get(0));
@@ -133,7 +134,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendCTCPReplyEmpty() {
         final TestParser parser = new TestParser();
-        getChannelInfo(parser).sendCTCPReply("type", "");
+        getChannel(parser).sendCTCPReply("type", "");
 
         assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
                 parser.sentLines.get(0));
@@ -142,7 +143,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendEmptyMessages() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
         
         info.sendAction("");
         info.sendCTCP("", "");
@@ -156,7 +157,7 @@ public class ChannelInfoTest {
     @Test
     public void testGetSetParamMode() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
         parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
         parser.sentLines.clear();
         
@@ -171,7 +172,7 @@ public class ChannelInfoTest {
     @Test
     public void testModeSendFull() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
 
         parser.sentLines.clear();
         info.alterMode(true, 'i', null);
@@ -196,7 +197,7 @@ public class ChannelInfoTest {
     @Test
     public void testModeSendExtra() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
 
         parser.sentLines.clear();
         info.alterMode(true, 'i', null);
@@ -226,7 +227,7 @@ public class ChannelInfoTest {
     @Test
     public void testModeSendOptimisation1() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
 
         parser.sentLines.clear();
         info.alterMode(true, 'i', null);
@@ -250,7 +251,7 @@ public class ChannelInfoTest {
     @Test
     public void testModeSendOptimisation2() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
 
         parser.sentLines.clear();
         info.alterMode(true, 'm', null);
@@ -272,7 +273,7 @@ public class ChannelInfoTest {
     @Test
     public void testModeUnsetKey() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
         parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
         parser.sentLines.clear();
         
@@ -294,16 +295,16 @@ public class ChannelInfoTest {
         parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
         parser.injectLine(":flub!floo@fleeee JOIN #DMDirc_testing");
 
-        assertNotSame(parser.getChannelInfo("#DMDirc_testing").getChannelClients(),
-                parser.getChannelInfo("#DMDirc_testing").getChannelClients());
-        assertEquals(parser.getChannelInfo("#DMDirc_testing").getChannelClients(),
-                parser.getChannelInfo("#DMDirc_testing").getChannelClients());
+        assertNotSame(parser.getChannel("#DMDirc_testing").getChannelClients(),
+                parser.getChannel("#DMDirc_testing").getChannelClients());
+        assertEquals(parser.getChannel("#DMDirc_testing").getChannelClients(),
+                parser.getChannel("#DMDirc_testing").getChannelClients());
     }
     
     @Test @Ignore
     public void testModeUnsetKeyMultiple() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
         parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
         parser.sentLines.clear();
         
@@ -321,7 +322,7 @@ public class ChannelInfoTest {
     @Test @Ignore
     public void testModeUnsetLimitMultiple() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannelInfo(parser);
+        final ChannelInfo info = getChannel(parser);
         parser.injectLine(":server 324 nick #DMDirc_testing +l 73");
         parser.sentLines.clear();
         
@@ -346,7 +347,7 @@ public class ChannelInfoTest {
         return res;
     }
 
-    private ChannelInfo getChannelInfo(final TestParser parser) {
+    private ChannelInfo getChannel(final TestParser parser) {
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
 

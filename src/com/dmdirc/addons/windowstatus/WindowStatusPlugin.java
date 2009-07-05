@@ -39,7 +39,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -125,7 +125,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel) current;
-			final ChannelInfo chan = frame.getChannelInfo();
+			final IRCChannelInfo chan = frame.getChannelInfo();
 			final Map<Long, String> names = new Hashtable<Long, String>();
 			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
 

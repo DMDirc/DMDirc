@@ -28,7 +28,7 @@ import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 
 public class TestIQuit implements ChannelQuitListener, QuitListener {
 
-    public ChannelInfo channel;
+    public IRCChannelInfo channel;
 
     public ChannelClientInfo cclient;
 
@@ -38,7 +38,7 @@ public class TestIQuit implements ChannelQuitListener, QuitListener {
 
     public int count = 0;
 
-    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
+    public void onChannelQuit(IRCParser tParser, IRCChannelInfo cChannel,
                               ChannelClientInfo cChannelClient, String sReason) {
         this.channel = cChannel;
         this.cclient = cChannelClient;

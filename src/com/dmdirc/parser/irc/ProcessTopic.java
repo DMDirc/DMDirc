@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 
 /**
@@ -38,12 +39,12 @@ public class ProcessTopic extends IRCProcessor {
 	public void process(final String sParam, final String[] token) {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
-			iChannel = getChannelInfo(token[3]);
+			iChannel = getChannel(token[3]);
 			if (iChannel == null) { return; }
 			iChannel.setTopic(token[token.length-1]);
 		} else if (sParam.equals("333")) {
 			if (token.length > 3) {
-				iChannel = getChannelInfo(token[3]);
+				iChannel = getChannel(token[3]);
 				if (iChannel == null) { return; }
 				if (token.length > 4) {
 					iChannel.setTopicUser(token[4]);
@@ -58,7 +59,7 @@ public class ProcessTopic extends IRCProcessor {
 				final ClientInfo iClient = getClientInfo(token[0]);
 				if (iClient != null && iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
 			}
-			iChannel = getChannelInfo(token[2]);
+			iChannel = getChannel(token[2]);
 			if (iChannel == null) { return; }
 			iChannel.setTopicTime(System.currentTimeMillis() / 1000);
 			if (token[0].charAt(0) == ':') { token[0] = token[0].substring(1); }
