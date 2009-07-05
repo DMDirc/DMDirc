@@ -43,7 +43,7 @@ public final class CallbackManager {
         ChannelJoinListener.class, ChannelKickListener.class,
         ChannelMessageListener.class, ChannelModeChangeListener.class,
         ChannelNickChangeListener.class, ChannelNonUserModeChangeListener.class,
-	ChannelModeMessage.class, ChannelModeNotice.class,
+	ChannelModeMessageListener.class, ChannelModeNoticeListener.class,
         ChannelNoticeListener.class, ChannelPartListener.class, ChannelQuitListener.class,
         ChannelSelfJoinListener.class, ChannelSingleModeChangeListener.class,
         ChannelTopicListener.class, ChannelUserModeChangeListener.class, ConnectErrorListener.class,

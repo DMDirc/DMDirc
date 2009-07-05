@@ -26,6 +26,8 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpReplyListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeNoticeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNoticeListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
@@ -310,7 +312,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeNotice(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelModeNotice").call(prefix, cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelModeNoticeListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -325,7 +327,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeMessage(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelModeMessage").call(prefix, cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelModeMessageListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
