@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.durationeditor;
 
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Window;

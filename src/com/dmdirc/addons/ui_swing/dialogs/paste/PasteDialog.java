@@ -25,7 +25,7 @@ package com.dmdirc.addons.ui_swing.dialogs.paste;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.components.TextAreaInputField;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;

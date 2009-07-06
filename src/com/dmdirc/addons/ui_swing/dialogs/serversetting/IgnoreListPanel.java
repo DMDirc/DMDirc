@@ -26,7 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.RegexValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
-import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
 import java.awt.Dialog.ModalityType;

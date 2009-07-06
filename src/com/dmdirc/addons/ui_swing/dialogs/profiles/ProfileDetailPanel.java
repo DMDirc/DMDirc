@@ -28,7 +28,7 @@ import com.dmdirc.config.prefs.validator.IdentValidator;
 import com.dmdirc.config.prefs.validator.NicknameValidator;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
-import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 

@@ -29,7 +29,6 @@ import com.dmdirc.ui.core.util.Info;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.Downloader;

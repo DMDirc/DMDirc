@@ -34,8 +34,8 @@ import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.SortedListModel;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
-import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.ActionGroupListCellRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
 

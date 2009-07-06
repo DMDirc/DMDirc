@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 
 import java.awt.Component;
 import java.awt.Graphics;

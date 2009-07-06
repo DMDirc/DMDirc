@@ -30,7 +30,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PortValidator;
 import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
 

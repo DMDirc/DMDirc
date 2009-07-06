@@ -31,7 +31,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 
 import java.awt.Dimension;
 import java.awt.Window;

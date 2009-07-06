@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.wizard;
 
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 
 import com.dmdirc.ui.CoreUIUtils;
 import java.awt.Window;

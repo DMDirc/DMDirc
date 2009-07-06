@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ServerState;
 import com.dmdirc.ui.interfaces.Window;

@@ -487,5 +487,4 @@ public final class ProgramError implements Serializable {
         hash = 67 * hash + Arrays.hashCode(this.trace);
         return hash;
     }
-    
 }

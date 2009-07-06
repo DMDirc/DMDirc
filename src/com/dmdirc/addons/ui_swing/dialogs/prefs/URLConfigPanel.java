@@ -28,7 +28,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.validator.URLProtocolValidator;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
-import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
 
 import java.awt.Dialog.ModalityType;

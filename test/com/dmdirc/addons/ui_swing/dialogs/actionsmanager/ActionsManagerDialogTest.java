@@ -30,7 +30,7 @@ import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.harness.ui.UITestIface;
 
-import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
