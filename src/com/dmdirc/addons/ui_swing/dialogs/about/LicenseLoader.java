@@ -44,8 +44,6 @@ public class LicenseLoader extends LoggingSwingWorker<Void, Void> {
 
     /** Model to load licenses into. */
     private GenericListModel<License> model;
-    /** Void reference. */
-    private Void voidReference;
 
     /**
      * Instantiates a new license loader.
@@ -89,7 +87,7 @@ public class LicenseLoader extends LoggingSwingWorker<Void, Void> {
             }
         }
 
-        return voidReference;
+        return null;
     }
 
     /** {@inheritDoc} */
