@@ -64,7 +64,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 */
 	protected boolean isValidChan(final CallbackInterface eMethod, final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
-			if (!myParser.getIRCStringConverter().equalsIgnoreCase(cChannel.getName(), specificData.get(eMethod))) { return false; }
+			if (!myParser.getStringConverter().equalsIgnoreCase(cChannel.getName(), specificData.get(eMethod))) { return false; }
 		}
 		return true;
 	}
@@ -79,7 +79,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	protected boolean isValidUser(final CallbackInterface eMethod, final String sHost) {
 		final String nickname = ClientInfo.parseHost(sHost);
 		if (specificData.containsKey(eMethod)) {
-			if (!myParser.getIRCStringConverter().equalsIgnoreCase(nickname, specificData.get(eMethod))) { return false; }
+			if (!myParser.getStringConverter().equalsIgnoreCase(nickname, specificData.get(eMethod))) { return false; }
 		}
 		return true;
 	}
@@ -143,7 +143,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 		for (CallbackInterface iface :new ArrayList<CallbackInterface>(callbackInfo)) {
             if (type.isAnnotationPresent(SpecificCallback.class) &&
                     ((args[0] instanceof ClientInfo
-                        && !isValidUser(iface, ((ClientInfo) args[0]).getHost()))
+                        && !isValidUser(iface, ((ClientInfo) args[0]).getHostname()))
                         || (args[0] instanceof ChannelInfo
                         && !isValidChan(iface, (ChannelInfo) args[0]))
                         || (!(args[0] instanceof ClientInfo || args[0] instanceof ChannelInfo) &&

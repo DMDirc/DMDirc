@@ -200,7 +200,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         }
 
         final ClientInfo me = server.getParser().getLocalClient();
-        final String[] details = getDetails(channelInfo.getUser(me), showColours);
+        final String[] details = getDetails(channelInfo.getChannelClient(me), showColours);
 
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
@@ -276,8 +276,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         onChannel = true;
 
         final ClientInfo me = server.getParser().getLocalClient();
-        addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
-                me.getHost(), channelInfo.getName());
+        addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
+                me.getHostname(), channelInfo.getName());
 
         setIcon("channel");
 
@@ -372,7 +372,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public void checkWho() {
         if (onChannel && sendWho) {
-            server.getParser().sendLine("WHO :" + channelInfo.getName());
+            server.getParser().sendRawMessage("WHO :" + channelInfo.getName());
         }
     }
 
@@ -383,7 +383,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public void addClient(final ChannelClientInfo client) {
         window.addName(client);
-        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
     }
 
     /**
@@ -393,7 +393,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public void removeClient(final ChannelClientInfo client) {
         window.removeName(client);
-        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
 
         if (client.getClient().equals(server.getParser().getLocalClient())) {
             resetWindow();
@@ -412,7 +412,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
         for (ChannelClientInfo client : clients) {
-            tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+            tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
         }
     }
 
@@ -502,9 +502,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
 
         final String[] res = new String[4];
         res[0] = getModes(client);
-        res[1] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
-        res[2] = client.getClient().getIdent();
-        res[3] = client.getClient().getHost();
+        res[1] = Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME;
+        res[2] = client.getClient().getUsername();
+        res[3] = client.getClient().getHostname();
 
         if (showColours) {
             final Map map = client.getMap();
@@ -536,8 +536,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
 
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
-            args.add(clientInfo.getIdent());
-            args.add(clientInfo.getHost());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
 
             return true;
         } else if (arg instanceof ChannelClientInfo) {
@@ -579,6 +579,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * current topic
      */
     public void setTopic(final String topic) {
-        server.getParser().sendLine("TOPIC " + channelInfo.getName() + " :" + topic);
+        server.getParser().sendRawMessage("TOPIC " + channelInfo.getName() + " :" + topic);
     }
 }

@@ -52,7 +52,7 @@ public final class Raw extends ServerCommand {
             final boolean isSilent, final CommandArguments args) {
         final String line = args.getArgumentsAsString();
         
-        server.getParser().sendLine(line);
+        server.getParser().sendRawMessage(line);
         sendLine(origin, isSilent, "rawCommand", line);
     }
     

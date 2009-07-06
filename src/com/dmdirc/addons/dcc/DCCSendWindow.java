@@ -173,7 +173,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 				final String myNickname = parser.getMyNickname();
 				// Check again incase we have changed nickname to the same nickname that
 				// this send is for.
-				if (parser.getIRCStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
+				if (parser.getStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
 					final Thread errorThread = new Thread(new Runnable() {
 						/** {@inheritDoc} */
 						@Override

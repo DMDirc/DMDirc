@@ -55,7 +55,7 @@ public class ProcessKick extends IRCProcessor {
 		
 		if (IRCParser.ALWAYS_UPDATECLIENT && iKicker != null) {
 			// To facilitate dmdirc formatter, get user information
-			if (iKicker.getHost().isEmpty()) { iKicker.setUserBits(token[0],false); }
+			if (iKicker.getHostname().isEmpty()) { iKicker.setUserBits(token[0],false); }
 		}
 
 		if (iChannel == null) { 
@@ -65,12 +65,12 @@ public class ProcessKick extends IRCProcessor {
 			return;
 		} else {
 			if (token.length > 4) { sReason = token[token.length-1]; }
-			iChannelClient = iChannel.getUser(iClient);
+			iChannelClient = iChannel.getChannelClient(iClient);
 			if (iChannelClient == null) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got kick for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]", myParser.getLastLine()));
 				return;
 			}
-			iChannelKicker = iChannel.getUser(token[0]);
+			iChannelKicker = iChannel.getChannelClient(token[0]);
 			if (myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }

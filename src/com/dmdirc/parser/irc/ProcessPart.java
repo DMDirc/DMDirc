@@ -51,7 +51,7 @@ public class ProcessPart extends IRCProcessor {
 		iChannel = getChannel(token[2]);
 		
 		if (iClient == null) { return; }
-		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHostname().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
@@ -63,7 +63,7 @@ public class ProcessPart extends IRCProcessor {
 		} else {
 			String sReason = "";
 			if (token.length > 3) { sReason = token[token.length-1]; }
-			iChannelClient = iChannel.getUser(iClient);
+			iChannelClient = iChannel.getChannelClient(iClient);
 			if (iChannelClient == null) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]", myParser.getLastLine()));
 				return;

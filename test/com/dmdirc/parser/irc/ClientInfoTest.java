@@ -81,14 +81,14 @@ public class ClientInfoTest {
         ci.setUserBits("nick2!ident2@host2", false);
         
         assertEquals("nick", ci.getNickname());
-        assertEquals("ident2", ci.getIdent());
-        assertEquals("host2", ci.getHost());
+        assertEquals("ident2", ci.getUsername());
+        assertEquals("host2", ci.getHostname());
         
         ci.setUserBits(":nick3@host3", true);
         
         assertEquals("nick3", ci.getNickname());
-        assertEquals("ident2", ci.getIdent());
-        assertEquals("host3", ci.getHost());
+        assertEquals("ident2", ci.getUsername());
+        assertEquals("host3", ci.getHostname());
     }
     
     @Test

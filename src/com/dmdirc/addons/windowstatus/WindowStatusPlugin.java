@@ -38,6 +38,9 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCClientInfo;
@@ -125,14 +128,14 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel) current;
-			final IRCChannelInfo chan = frame.getChannelInfo();
+			final ChannelInfo chan = frame.getChannelInfo();
 			final Map<Long, String> names = new Hashtable<Long, String>();
 			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
 
 			textString.append(chan.getName());
 			textString.append(" - Nicks: " + chan.getUserCount() + " (");
 
-			for (IRCChannelClientInfo client : chan.getChannelClients()) {
+			for (ChannelClientInfo client : chan.getChannelClients()) {
 				final Long im = client.getImportantModeValue();
 
 				if (!names.containsKey(im)) {
@@ -176,7 +179,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
-				final IRCClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
+				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();
 					if (!realname.isEmpty()) {

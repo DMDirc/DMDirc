@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
@@ -91,9 +92,9 @@ public class ProcessMode extends IRCProcessor {
 		boolean bPositive = true, bBooleanMode = true;
 		char cPositive = '+';
 		ChannelInfo iChannel;
-		IRCChannelClientInfo iChannelClientInfo;
-		IRCClientInfo iClient;
-		IRCChannelClientInfo setterCCI;
+		ChannelClientInfo iChannelClientInfo;
+		ClientInfo iClient;
+		ChannelClientInfo setterCCI;
 		
 		CallbackObject cbSingle = null;
 		CallbackObject cbNonUser = null;
@@ -113,10 +114,10 @@ public class ProcessMode extends IRCProcessor {
 		// Get the current channel modes
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
 		
-		setterCCI = iChannel.getUser(token[0]);
+		setterCCI = iChannel.getChannelClient(token[0]);
 		if (IRCParser.ALWAYS_UPDATECLIENT && setterCCI != null) {
 			// Facilitate dmdirc formatter
-			if (setterCCI.getClient().getHost().isEmpty()) {setterCCI.getClient().setUserBits(token[0],false); }
+			if (setterCCI.getClient().getHostname().isEmpty()) {setterCCI.getClient().setUserBits(token[0],false); }
 		}
 		
 		// Loop through the mode string, and add/remove modes/params where they are needed
@@ -139,7 +140,7 @@ public class ProcessMode extends IRCProcessor {
 					sModeParam = sModestr[nParam++];
 					nValue = myParser.hPrefixModes.get(cMode);
 					callDebugInfo(IRCParser.DEBUG_INFO, "User Mode: %c / %d [%s] {Positive: %b}",cMode, nValue, sModeParam, bPositive);
-					iChannelClientInfo = iChannel.getUser(sModeParam);
+					iChannelClientInfo = iChannel.getChannelClient(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
 						iClient = getClientInfo(sModeParam);
@@ -228,9 +229,8 @@ public class ProcessMode extends IRCProcessor {
 		long nCurrent = 0, nValue = 0;
 		boolean bPositive = true;
 		
-		IRCClientInfo iClient;
-		
-		iClient = getClientInfo(token[2]);
+		ClientInfo iClient = getClientInfo(token[2]);
+                
 		if (iClient == null) { return; }
 		
 		if (clearOldModes) {
@@ -278,7 +278,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sModes Exact String parsed
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelModeChanged(ChannelInfo cChannel, IRCChannelClientInfo cChannelClient, String sHost, String sModes) {
+	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
 		return getCallbackManager().getCallbackType(ChannelModeChangeListener.class).call(cChannel, cChannelClient, sHost, sModes);
 	}
 	
@@ -293,7 +293,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, IRCChannelClientInfo cChangedClient, IRCChannelClientInfo cSetByClient, String sHost, String sMode) {
+	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
 		return getCallbackManager().getCallbackType(ChannelUserModeChangeListener.class).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
 	}
 	

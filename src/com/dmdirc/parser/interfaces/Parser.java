@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.interfaces;
 
+import com.dmdirc.parser.irc.IRCStringConverter;
 import java.util.Collection;
 
 /**
@@ -85,7 +86,7 @@ public interface Parser extends Runnable {
      * @param target Target of message (eg channel name)
      * @return The maximum length of the message
      */
-    int getMaxLength(final String type, final String target);
+    int getMaxLength(String type, String target);
 
     /**
      * Returns a {@link ClientInfo} object which represents the locally
@@ -94,5 +95,21 @@ public interface Parser extends Runnable {
      * @return An info object for the local client
      */
     ClientInfo getLocalClient();
+
+    /**
+     * Sends a raw message directly to the backend system. The message will
+     * need to be of the appropriate format for whatever system is in use.
+     * 
+     * @param message The message to be sent
+     */
+    void sendRawMessage(String message);
+
+    /**
+     * Retrieves an object that can be used to convert between upper- and lower-
+     * case strings in the relevant charset for the backend system.
+     *
+     * @return A string convertor for this parser
+     */
+    IRCStringConverter getStringConverter();
 
 }

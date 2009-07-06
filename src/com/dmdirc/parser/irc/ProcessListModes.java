@@ -228,7 +228,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param cChannel Channel which the ListModes reply is for
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelGotListModes(IRCChannelInfo cChannel) {
+	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
 		return getCallbackManager().getCallbackType(ChannelListModeListener.class).call(cChannel);
 	}
 	

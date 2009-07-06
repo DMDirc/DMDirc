@@ -46,6 +46,13 @@ public interface ChannelInfo {
     void sendMessage(final String message);
 
     /**
+     * Sends the specified action to this channel.
+     *
+     * @param action The action to be sent
+     */
+    void sendAction(String action);
+
+    /**
      * Retrieves a channel client information object corresponding to the
      * specified client.
      *

@@ -46,7 +46,7 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	/** Reference to the channel object that owns this channelclient. */
 	private final ChannelInfo myChannel;
 	/** A Map to allow applications to attach misc data to this object */
-	private Map myMap;
+	private Map<?, ?> myMap;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
@@ -73,27 +73,16 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 		myMap = newMap;
 	}
 	
-	/**
-	 * Get the Map object attatched to this object.
-	 *
-	 * @return Map to attatched to this.
-	 * @see #setMap
-	 */
-	public Map getMap() {
-		return myMap;
-	}
+	/** {@inheritDoc} */
+        @Override
+	public Map<?, ?> getMap() { return myMap; }
 	
-	/**
-	 * Get the client object represented by this channelclient.
-	 *
-	 * @return Client object represented by this channelclient
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public ClientInfo getClient() { return cClient; }
-	/**
-	 * Get the Channel object that owns this ChannelClient.
-	 *
-	 * @return Channel object that owns this ChannelClient
-	 */
+
+	/** {@inheritDoc} */
+        @Override
 	public ChannelInfo getChannel() { return myChannel; }
 	/**
 	 * Get the nickname of the client object represented by this channelclient.

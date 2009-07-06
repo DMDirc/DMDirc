@@ -28,8 +28,8 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.IRCClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -50,12 +50,12 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            final IRCChannelInfo cChannel = channel.getChannelInfo();
+            final ChannelInfo cChannel = channel.getChannelInfo();
 
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, isSilent, "channelNoTopic", cChannel);
             } else {
-                final String[] parts = IRCClientInfo.parseHostFull(cChannel.getTopicUser());
+                final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
 
                 sendLine(origin, isSilent, "channelTopicDiscovered",
                         "", parts[0], parts[1], parts[2], cChannel.getTopic(),
@@ -71,9 +71,9 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
     public void execute(final InputWindow origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            server.getParser().sendLine("TOPIC " + channel);
+            server.getParser().sendRawMessage("TOPIC " + channel);
         } else {
-            server.getParser().sendLine("TOPIC " + channel + " :" + args.getArgumentsAsString());
+            server.getParser().sendRawMessage("TOPIC " + channel + " :" + args.getArgumentsAsString());
         }
     }
 

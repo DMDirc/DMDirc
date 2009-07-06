@@ -58,7 +58,7 @@ public class ProcessTopic extends IRCProcessor {
 		} else {
 			if (IRCParser.ALWAYS_UPDATECLIENT) {
 				final ClientInfo iClient = getClientInfo(token[0]);
-				if (iClient != null && iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
+				if (iClient != null && iClient.getHostname().isEmpty()) {iClient.setUserBits(token[0],false); }
 			}
 			iChannel = getChannel(token[2]);
 			if (iChannel == null) { return; }

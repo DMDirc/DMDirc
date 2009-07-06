@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.interfaces;
 
+import java.util.Map;
+
 /**
  * Holds information about a client, and provides various methods for
  * interacting with that client.
@@ -31,4 +33,33 @@ package com.dmdirc.parser.interfaces;
  */
 public interface ClientInfo {
 
+    /**
+     * Retrieves the nickname or display name used by this client.
+     *
+     * @return This client's nickname
+     */
+    public String getNickname();
+
+    /**
+     * Retrieves the username or ident used by this client.
+     *
+     * @return This client's username
+     */
+    public String getUsername();
+
+    /**
+     * Retrieves the hostname that this client is connecting from.
+     *
+     * @return This client's hostname
+     */
+    public String getHostname();
+
+    /**
+     * Retrieves a {@link Map} which can be used to store arbitrary data
+     * about the client.
+     *
+     * @return A map used for storing arbitrary data
+     */
+    Map<?, ?> getMap();
+    
 }

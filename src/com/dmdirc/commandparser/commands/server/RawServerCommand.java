@@ -58,7 +58,7 @@ public final class RawServerCommand extends ServerCommand {
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
-        server.getParser().sendLine(myName.toUpperCase() + " " + args.getArgumentsAsString());
+        server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());
     }
     
     

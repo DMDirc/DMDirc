@@ -46,9 +46,9 @@ public class ProcessNick extends IRCProcessor {
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
-			oldNickname = myParser.getIRCStringConverter().toLowerCase(iClient.getNickname());
+			oldNickname = myParser.getStringConverter().toLowerCase(iClient.getNickname());
 			// Remove the client from the known clients list
-			final boolean isSameNick = myParser.getIRCStringConverter().equalsIgnoreCase(oldNickname, token[token.length-1]);
+			final boolean isSameNick = myParser.getStringConverter().equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
 				myParser.forceRemoveClient(getClientInfo(oldNickname));

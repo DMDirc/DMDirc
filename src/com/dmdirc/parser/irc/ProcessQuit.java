@@ -51,7 +51,7 @@ public class ProcessQuit extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHostname().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
@@ -60,7 +60,7 @@ public class ProcessQuit extends IRCProcessor {
 		
 		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
 		for (ChannelInfo iChannel : channelList) {
-			iChannelClient = iChannel.getUser(iClient);
+			iChannelClient = iChannel.getChannelClientnelClient(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
 				if (iClient == myParser.getLocalClient()) {

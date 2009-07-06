@@ -60,12 +60,12 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
         
         String host = args.getArguments()[0];
         final ChannelClientInfo user = channel.getChannelInfo().getChannelClient(host);
-        if (user != null && !user.getClient().getHost().isEmpty()) {
+        if (user != null && !user.getClient().getHostname().isEmpty()) {
             // TODO: Customisable ban masks, somehow.
-            host = "*!*@" + user.getClient().getHost();
+            host = "*!*@" + user.getClient().getHostname();
         }
         
-        server.getParser().sendLine("MODE " + channel + " +b " + host);
+        server.getParser().sendRawMessage("MODE " + channel + " +b " + host);
     }
     
     /** {@inheritDoc} */

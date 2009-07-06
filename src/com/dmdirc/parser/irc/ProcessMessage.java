@@ -143,7 +143,7 @@ public class ProcessMessage extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		if (IRCParser.ALWAYS_UPDATECLIENT && iClient != null) {
 			// Facilitate DMDIRC Formatter
-			if (iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
+			if (iClient.getHostname().isEmpty()) {iClient.setUserBits(token[0],false); }
 		}
 		
 		// Fire the appropriate callbacks.
@@ -191,7 +191,7 @@ public class ProcessMessage extends IRCProcessor {
 					callChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
 				}
 			}
-		} else if (myParser.getIRCStringConverter().equalsIgnoreCase(token[2], myParser.getMyNickname())) {
+		} else if (myParser.getStringConverter().equalsIgnoreCase(token[2], myParser.getMyNickname())) {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {

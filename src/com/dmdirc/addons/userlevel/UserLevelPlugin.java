@@ -29,8 +29,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.plugins.Plugin;
 
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
                              final Object... arguments) {
         switch ((CoreActionType) type) {
             case CHANNEL_JOIN:
-                doChannelLevel((IRCChannelClientInfo) arguments[1]);
+                doChannelLevel((ChannelClientInfo) arguments[1]);
                 break;
         }
     }
@@ -87,7 +87,7 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
      * 
      * @param client The client whose user level is to be updated
      */
-    protected static void doChannelLevel(final IRCChannelClientInfo client) {
+    protected static void doChannelLevel(final ChannelClientInfo client) {
         doGlobalLevel(client.getClient());
     }
     
@@ -98,8 +98,8 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
      */
     @SuppressWarnings("unchecked")
     protected static void doGlobalLevel(final ClientInfo client) {
-        final String host = client.getNickname() + "!" + client.getIdent()
-                + "@" + client.getHost();
+        final String host = client.getNickname() + "!" + client.getUsername()
+                + "@" + client.getHostname();
         
         int level = 0;
         

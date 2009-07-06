@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.interfaces;
 
+import java.util.Map;
+
 /**
  * Describes a client that is present on a channel and provides methods to
  * interact with it.
@@ -30,5 +32,29 @@ package com.dmdirc.parser.interfaces;
  * @author chris
  */
 public interface ChannelClientInfo {
+
+    /**
+     * Retrieves the {@link ClientInfo} object which this object corresponds
+     * to.
+     * 
+     * @return The client info object which this object represents
+     */
+    ClientInfo getClient();
+
+    /**
+     * Retrieves the {@link ChannelInfo} object for the channel which this
+     * object is associated with.
+     *
+     * @return The corresponding ChannelInfo object
+     */
+    ChannelInfo getChannel();
+
+    /**
+     * Retrieves a {@link Map} which can be used to store arbitrary data
+     * about the channel client.
+     *
+     * @return A map used for storing arbitrary data
+     */
+    Map<?, ?> getMap();
 
 }

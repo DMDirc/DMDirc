@@ -880,7 +880,7 @@ class IRCParser implements Parser, Runnable {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	public ClientInfo getClientInfo(final String sHost) {
-		final String sWho = getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
+		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
 	}
@@ -892,7 +892,7 @@ class IRCParser implements Parser, Runnable {
 	 * @return ClientInfo Object for the client.
 	 */
 	public ClientInfo getClientInfoOrFake(final String sHost) {
-		final String sWho = getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
+		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return new IRCClientInfo(this, sHost).setFake(true); }
 	}
@@ -901,18 +901,14 @@ class IRCParser implements Parser, Runnable {
         @Override
 	public ChannelInfo getChannel(String channel) {
 		synchronized (hChannelList) {
-			channel = getIRCStringConverter().toLowerCase(channel);
+			channel = getStringConverter().toLowerCase(channel);
 			if (hChannelList.containsKey(channel)) { return hChannelList.get(channel); } else { return null; }
 		}
 	}
 
-	/**
-	 * Send a line to the server.
-	 *
-	 * @param line Line to send (\r\n termination is added automatically)
-	 * @return True if line was sent, else false.
-	 */
-	public boolean sendLine(final String line) { return doSendString(line, false); }
+	/** {@inheritDoc} */
+        @Override
+	public void sendRawMessage(final String message) { doSendString(message, false); }
 
 	/**
 	 * Send a line to the server and add proper line ending.
@@ -1072,13 +1068,9 @@ class IRCParser implements Parser, Runnable {
 	/** The IRCStringConverter for this parser */
 	private IRCStringConverter stringConverter = null;
 
-	/**
-	 * Get the IRCStringConverter used by this parser.
-	 *
-	 * @return the IRCStringConverter used by this parser. (will create a default
-	 *         one if none exists already);
-	 */
-	public IRCStringConverter getIRCStringConverter() {
+	/** {@inheritDoc} */
+        @Override
+	public IRCStringConverter getStringConverter() {
 		if (stringConverter == null) {
 			stringConverter = new IRCStringConverter((byte)4);
 		}
@@ -1701,7 +1693,7 @@ class IRCParser implements Parser, Runnable {
 		// Check sChannelName is not empty or null
 		if (sChannelName == null || sChannelName.isEmpty()) { return false; }
 		// Check its not ourself (PM recieved before 005)
-		if (getIRCStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
+		if (getStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
 		// Check if we are already on this channel
 		if (getChannel(sChannelName) != null) { return true; }
 		// Check if we know of any valid chan prefixes
@@ -1936,7 +1928,7 @@ class IRCParser implements Parser, Runnable {
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
 				lastPingValue = String.valueOf(System.currentTimeMillis());
-				if (sendLine("PING " + lastPingValue)) {
+				if (doSendString("PING " + lastPingValue, false)) {
 					callPingSent();
 				}
 			}
@@ -2017,7 +2009,7 @@ class IRCParser implements Parser, Runnable {
 	 * @param client Client to add
 	 */
 	public void addClient(final ClientInfo client) {
-		hClientList.put(getIRCStringConverter().toLowerCase(client.getNickname()),client);
+		hClientList.put(getStringConverter().toLowerCase(client.getNickname()),client);
 	}
 
 	/**
@@ -2039,7 +2031,7 @@ class IRCParser implements Parser, Runnable {
 	 * @param client Client to remove
 	 */
 	protected void forceRemoveClient(final ClientInfo client) {
-		hClientList.remove(getIRCStringConverter().toLowerCase(client.getNickname()));
+		hClientList.remove(getStringConverter().toLowerCase(client.getNickname()));
 	}
 
 	/**
@@ -2075,7 +2067,7 @@ class IRCParser implements Parser, Runnable {
 	 */
 	public void addChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
-			hChannelList.put(getIRCStringConverter().toLowerCase(channel.getName()), channel);
+			hChannelList.put(getStringConverter().toLowerCase(channel.getName()), channel);
 		}
 	}
 
@@ -2086,7 +2078,7 @@ class IRCParser implements Parser, Runnable {
 	 */
 	public void removeChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
-			hChannelList.remove(getIRCStringConverter().toLowerCase(channel.getName()));
+			hChannelList.remove(getStringConverter().toLowerCase(channel.getName()));
 		}
 	}
 

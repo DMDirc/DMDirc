@@ -829,7 +829,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         synchronized (myState) {
             if (parser != null && myState.getState() == ServerState.CONNECTED) {
                 if (!line.isEmpty()) {
-                    parser.sendLine(window.getTranscoder().encode(line));
+                    parser.sendRawMessage(window.getTranscoder().encode(line));
                 }
             }
         }
@@ -1122,8 +1122,8 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (arg instanceof ClientInfo) {
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
-            args.add(clientInfo.getIdent());
-            args.add(clientInfo.getHost());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
             return true;
         } else {
             return super.processNotificationArg(arg, args);
@@ -1362,7 +1362,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
             updateIgnoreList();
 
-            converter = parser.getIRCStringConverter();
+            converter = parser.getStringConverter();
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {

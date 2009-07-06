@@ -120,7 +120,7 @@ public final class ChannelEventHandler extends EventHandler implements
                     newTopic);
         } else {
             owner.doNotification("channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
-                    cChannel.getUser(cChannel.getTopicUser(), true), cChannel.getTopic());
+                    cChannel.getChannelClient(cChannel.getTopicUser(), true), cChannel.getTopic());
         }
 
         owner.addTopic(newTopic);
@@ -193,7 +193,7 @@ public final class ChannelEventHandler extends EventHandler implements
         owner.doNotification(
                 isMyself(cChannelClient) ? "channelSelfNickChange" : "channelNickChange",
                 CoreActionType.CHANNEL_NICKCHANGE, cChannelClient, sOldNick);
-        owner.renameClient(sOldNick, cChannelClient.getNickname());
+        owner.renameClient(sOldNick, cChannelClient.getClient().getNickname());
     }
 
     /** {@inheritDoc} */
@@ -244,7 +244,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification("channelCTCP", CoreActionType.CHANNEL_CTCP,
                 cChannelClient, sType, sMessage);
-        owner.getServer().sendCTCPReply(cChannelClient.getNickname(), sType, sMessage);
+        owner.getServer().sendCTCPReply(cChannelClient.getClient().getNickname(), sType, sMessage);
     }
 
     /** {@inheritDoc} */
@@ -253,7 +253,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ClientInfo client, final boolean state) {
         checkParser(tParser);
 
-        final ChannelClientInfo channelClient = owner.getChannelInfo().getUser(client);
+        final ChannelClientInfo channelClient = owner.getChannelInfo().getChannelClient(client);
 
         if (channelClient != null) {
             owner.doNotification(state ? "channelUserAway" : "channelUserBack",

@@ -297,7 +297,7 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @since 0.6
 	 */
 	public ChannelClientInfo getChannelClient(final String sWho, final boolean createFake) {
-		final String who = myParser.getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
+		final String who = myParser.getStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
 		if (hChannelUserList.containsKey(who)) {
 			return hChannelUserList.get(who);
 		}
@@ -329,7 +329,7 @@ class IRCChannelInfo implements ChannelInfo {
 		ChannelClientInfo cTemp = getChannelClient(cClient);
 		if (cTemp == null) { 
 			cTemp = new IRCChannelClientInfo(myParser, cClient, this);
-			hChannelUserList.put(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
+			hChannelUserList.put(myParser.getStringConverter().toLowerCase(cTemp.getClient().getNickname()), cTemp);
 		}
 		return cTemp;
 	}
@@ -347,7 +347,7 @@ class IRCChannelInfo implements ChannelInfo {
 			if (clTemp != myParser.getLocalClient() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
 			}
-			hChannelUserList.remove(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()));
+			hChannelUserList.remove(myParser.getStringConverter().toLowerCase(cTemp.getClient().getNickname()));
 		}
 	}	
 	
@@ -365,7 +365,7 @@ class IRCChannelInfo implements ChannelInfo {
 				hChannelUserList.remove(oldNickname);
 				// Add with the new key. (getNickname will return the new name not the
 				// old one)
-				hChannelUserList.put(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
+				hChannelUserList.put(myParser.getStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
 			}
 		}
 	}
@@ -521,7 +521,7 @@ class IRCChannelInfo implements ChannelInfo {
 		}
 		final ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
-			if (myParser.getIRCStringConverter().equalsIgnoreCase(lModes.get(i).getItem(), newItem.getItem())) { 
+			if (myParser.getStringConverter().equalsIgnoreCase(lModes.get(i).getItem(), newItem.getItem())) {
 				if (bAdd) { return; }
 				else { 
 					lModes.remove(i);
@@ -682,7 +682,7 @@ class IRCChannelInfo implements ChannelInfo {
 		if (negativeparam.length() > 0) { sendModeStr.append(negativeparam); }
 		if (positiveparam.length() > 0) { sendModeStr.append(positiveparam); }
 		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
-		myParser.sendLine("MODE " + sName + " " + sendModeStr.toString());
+		myParser.sendRawMessage("MODE " + sName + " " + sendModeStr.toString());
 		clearModeQueue();
 	}
 	
@@ -712,14 +712,11 @@ class IRCChannelInfo implements ChannelInfo {
 		myParser.sendString("NOTICE " + sName + " :" + sMessage);	
 	}
 
-	/**
-	 * Send a private message to a target.
-	 *
-	 * @param sMessage Message to send
-	 */
-	public void sendAction(final String sMessage) { 
-		if (sMessage.isEmpty()) { return; }
-		sendCTCP("ACTION", sMessage);
+	/** {@inheritDoc} */
+        @Override
+	public void sendAction(final String action) {
+		if (action.isEmpty()) { return; }
+		sendCTCP("ACTION", action);
 	}
 	
 	/**

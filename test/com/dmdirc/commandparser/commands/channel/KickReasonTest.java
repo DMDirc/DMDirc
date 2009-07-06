@@ -58,7 +58,7 @@ public class KickReasonTest {
         final Channel channel = mock(Channel.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser(anyString())).thenReturn(null);
+        when(channelInfo.getChannelClient(anyString())).thenReturn(null);
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));
 
@@ -73,7 +73,7 @@ public class KickReasonTest {
         final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser("user1")).thenReturn(cci);
+        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1 reason here"));
 
@@ -90,7 +90,7 @@ public class KickReasonTest {
 
         when(tiw.getConfigManager()).thenReturn(manager);
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser("user1")).thenReturn(cci);
+        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));

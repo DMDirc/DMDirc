@@ -136,7 +136,7 @@ public final class Query extends MessageTarget implements
             return;
         }
 
-        final ClientInfo client = server.getParser().getMyself();
+        final ClientInfo client = server.getParser().getLocalClient();
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
@@ -147,8 +147,8 @@ public final class Query extends MessageTarget implements
 
                 ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
 
-                addLine(buff, client.getNickname(), client.getIdent(),
-                        client.getHost(), part);
+                addLine(buff, client.getNickname(), client.getUsername(),
+                        client.getHostname(), part);
             }
         }
     }
@@ -172,7 +172,7 @@ public final class Query extends MessageTarget implements
             return;
         }
 
-        final ClientInfo client = server.getParser().getMyself();
+        final ClientInfo client = server.getParser().getLocalClient();
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
 
         if (maxLineLength >= action.length() + 2) {
@@ -182,8 +182,8 @@ public final class Query extends MessageTarget implements
 
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
 
-            addLine(buff, client.getNickname(), client.getIdent(),
-                    client.getHost(), window.getTranscoder().encode(action));
+            addLine(buff, client.getNickname(), client.getUsername(),
+                    client.getHostname(), window.getTranscoder().encode(action));
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -276,9 +276,9 @@ public final class Query extends MessageTarget implements
             server.getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, sOldNick);
             server.getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, cClient.getNickname());
 
-            addLine(format, sOldNick, cClient.getIdent(),
-                    cClient.getHost(), cClient.getNickname());
-            host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
+            addLine(format, sOldNick, cClient.getUsername(),
+                    cClient.getHostname(), cClient.getNickname());
+            host = cClient.getNickname() + "!" + cClient.getUsername() + "@" + cClient.getHostname();
             updateTitle();
 
             setName(cClient.getNickname());
@@ -296,7 +296,7 @@ public final class Query extends MessageTarget implements
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
 
             addLine(format, cClient.getNickname(),
-                    cClient.getIdent(), cClient.getHost(), sReason);
+                    cClient.getUsername(), cClient.getHostname(), sReason);
         }
     }
 

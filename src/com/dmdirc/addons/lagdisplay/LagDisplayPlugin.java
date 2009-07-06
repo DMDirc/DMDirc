@@ -203,7 +203,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
 
             panel.refreshDialog();
         } else if (useAlternate && type.equals(CoreActionType.SERVER_PINGSENT)) {
-            ((Server) arguments[0]).getParser().sendLine("LAGCHECK_" + new Date().getTime());
+            ((Server) arguments[0]).getParser().sendRawMessage("LAGCHECK_" + new Date().getTime());
         } else if (useAlternate && type.equals(CoreActionType.SERVER_NUMERIC)
                 && ((Integer) arguments[1]).intValue() == 421
                 && ((String[]) arguments[2])[3].startsWith("LAGCHECK_")) {

@@ -75,12 +75,12 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 			final Parser parser = server.getParser();
 			final String myNickname = parser.getMyNickname();
 				
-			if (parser.isValidChannelName(target) || parser.getIRCStringConverter().equalsIgnoreCase(target, myNickname)) {
+			if (parser.isValidChannelName(target) || parser.getStringConverter().equalsIgnoreCase(target, myNickname)) {
 				final Thread errorThread = new Thread(new Runnable() {
 					/** {@inheritDoc} */
 					@Override
 					public void run() {
-						if (parser.getIRCStringConverter().equalsIgnoreCase(target, myNickname)) {
+						if (parser.getStringConverter().equalsIgnoreCase(target, myNickname)) {
 							JOptionPane.showMessageDialog(null, "You can't DCC yourself.", "DCC Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 							JOptionPane.showMessageDialog(null, "You can't DCC a channel.", "DCC Error", JOptionPane.ERROR_MESSAGE);

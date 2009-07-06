@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +58,9 @@ class IRCClientInfo implements ClientInfo {
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private final IRCParser myParser;
 	/** A Map to allow applications to attach misc data to this object */
-	private Map myMap;
+	private Map<?, ?> myMap;
 	/** List of ChannelClientInfos that point to this */
-	private final Map<String, IRCChannelClientInfo> myChannelClientInfos = new Hashtable<String, IRCChannelClientInfo>();
+	private final Map<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
 	/** Modes waiting to be sent to the server. */
 	private final List<String> lModeQueue = new LinkedList<String>();
 
@@ -85,13 +86,10 @@ class IRCClientInfo implements ClientInfo {
 		myMap = newMap;
 	}
 	
-	/**
-	 * Get the Map object attatched to this object.
-	 *
-	 * @return Map to attatched to this.
-	 */
-	public Map getMap() {
-		return myMap;
+	/** {@inheritDoc} */
+        @Override
+	public Map<?, ?> getMap() {
+            return myMap;
 	}
 
 	/**
@@ -180,26 +178,17 @@ class IRCClientInfo implements ClientInfo {
 	@Override
 	public String toString() { return sNickname + "!" + sIdent + "@" + sHost; }
 	
-	/**
-	 * Get the nickname for this user.
-	 *
-	 * @return Known nickname for user.
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getNickname() { return sNickname; }
 	
-	/**
-	 * Get the ident for this user.
-	 *
-	 * @return Known ident for user. (May be "")
-	 */		
-	public String getIdent() { return sIdent; }
+	/** {@inheritDoc} */
+        @Override
+        public String getUsername() { return sIdent; }
 	
-	/**
-	 * Get the hostname for this user.
-	 *
-	 * @return Known host for user. (May be "")
-	 */		
-	public String getHost() { return sHost; }
+	/** {@inheritDoc} */
+        @Override
+	public String getHostname() { return sHost; }
 	
 	/**
 	 * Set the away state of a user.
@@ -298,7 +287,7 @@ class IRCClientInfo implements ClientInfo {
 	 * @param cci ChannelClientInfo to add as a known reference
 	 */	
 	public void addChannelClientInfo(final IRCChannelClientInfo cci) {
-		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
+		final String key = myParser.getStringConverter().toLowerCase(cci.getChannel().getName());
 		if (!myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.put(key, cci);
 		}
@@ -310,7 +299,7 @@ class IRCClientInfo implements ClientInfo {
 	 * @param cci ChannelClientInfo to remove as a known reference
 	 */	
 	public void delChannelClientInfo(final IRCChannelClientInfo cci) {
-		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
+		final String key = myParser.getStringConverter().toLowerCase(cci.getChannel().getName());
 		if (myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.remove(key);
 		}
@@ -339,9 +328,9 @@ class IRCClientInfo implements ClientInfo {
 	 *
 	 * @return int with the count of known channels
 	 */	
-	public List<IRCChannelClientInfo> getChannelClients() {
-		final List<IRCChannelClientInfo> result = new ArrayList<IRCChannelClientInfo>();
-		for (IRCChannelClientInfo cci : myChannelClientInfos.values()) {
+	public List<ChannelClientInfo> getChannelClients() {
+		final List<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
+		for (ChannelClientInfo cci : myChannelClientInfos.values()) {
 			result.add(cci);
 		}
 		return result;
@@ -377,7 +366,7 @@ class IRCClientInfo implements ClientInfo {
 		} else if (lModeQueue.contains(modestr)) {
 			return;
 		}
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
+		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
 		lModeQueue.add(modestr);
 		if (lModeQueue.size() == modecount) { sendModes(); }
 	}
@@ -407,7 +396,7 @@ class IRCClientInfo implements ClientInfo {
 		if (negativemode.length() > 0) { sendModeStr.append("-").append(negativemode); }
 		if (positivemode.length() > 0) { sendModeStr.append("+").append(positivemode); }
 		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
-		myParser.sendLine("MODE " + sNickname + " " + sendModeStr.toString());
+		myParser.sendRawMessage("MODE " + sNickname + " " + sendModeStr.toString());
 		clearModeQueue();
 	}
 	

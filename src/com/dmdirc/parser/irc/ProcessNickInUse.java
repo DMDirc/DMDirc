@@ -55,7 +55,7 @@ public class ProcessNickInUse extends IRCProcessor {
 				callDebugInfo(IRCParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
 				if (myParser.triedAlt) {
-					if (myParser.getIRCStringConverter().equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
+					if (myParser.getStringConverter().equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
 						myParser.sThinkNickname = myParser.me.getNickname();
 					}
 					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);

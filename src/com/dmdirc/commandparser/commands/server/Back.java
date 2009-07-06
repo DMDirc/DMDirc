@@ -59,7 +59,7 @@ public final class Back extends ServerCommand implements IntelligentCommand {
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {        
-        server.getParser().sendLine("AWAY");
+        server.getParser().sendRawMessage("AWAY");
     }
     
     

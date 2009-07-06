@@ -516,7 +516,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {
-			final String myHost = parser.getLocalClient().getHost();
+			final String myHost = parser.getLocalClient().getHostname();
 			if (!myHost.isEmpty()) {
 				try {
 					return InetAddress.getByName(myHost).getHostAddress();

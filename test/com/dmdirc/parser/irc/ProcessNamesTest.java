@@ -62,11 +62,11 @@ public class ProcessNamesTest {
         assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
-        cci = parser.getChannel("#DMDirc_testing").getUser("nick2");
+        cci = parser.getChannel("#DMDirc_testing").getChannelClient("nick2");
         assertNotNull(cci);
         assertEquals("@+", cci.getChanModeStr(true));
 
-        cci = parser.getChannel("#DMDirc_testing").getUser("nick3");
+        cci = parser.getChannel("#DMDirc_testing").getChannelClient("nick3");
         assertNotNull(cci);
         assertEquals("", cci.getChanModeStr(true));
     }
