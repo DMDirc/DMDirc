@@ -526,8 +526,8 @@ public class IRCParserTest {
             parser.injectLine(String.format(line, ircd));
         }
 
-        assertEquals(ircd, parser.getIRCD(false));
-        assertEquals(expected.toLowerCase(), parser.getIRCD(true).toLowerCase());
+        assertEquals(ircd, parser.getServerSoftware());
+        assertEquals(expected.toLowerCase(), parser.getServerSoftwareType().toLowerCase());
     }
 
 }

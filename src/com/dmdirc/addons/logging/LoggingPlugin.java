@@ -257,7 +257,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			}
 			client = null;
 		} else {
-			client = parser.getClientInfo(query.getHost());
+			client = parser.getClient(query.getHost());
 			if (client == null) {
 				client = new IRCClientInfo(parser, query.getHost()).setFake(true);
 			}
@@ -781,7 +781,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			component = ((Channel) target.getContainer()).getChannelInfo();
 		} else if (target.getContainer() instanceof Query) {
 			final Parser parser = ((Query) target.getContainer()).getServer().getParser();
-			component = parser.getClientInfo(((Query) target.getContainer()).getHost());
+			component = parser.getClient(((Query) target.getContainer()).getHost());
 			if (component == null) {
 				component = new IRCClientInfo(parser, ((Query) target.getContainer()).getHost()).setFake(true);
 			}

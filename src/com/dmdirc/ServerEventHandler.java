@@ -216,7 +216,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, owner,
-                Long.valueOf(owner.getParser().getServerLag()));
+                Long.valueOf(owner.getParser().getServerLatency()));
     }
 
     /** {@inheritDoc} */

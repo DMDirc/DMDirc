@@ -175,7 +175,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
-				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
+				final ClientInfo client = frame.getServer().getParser().getClient(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealname();
 					if (!realname.isEmpty()) {

@@ -55,6 +55,6 @@ public interface ChannelClientInfo {
      *
      * @return A map used for storing arbitrary data
      */
-    Map<?, ?> getMap();
+    Map<Object, Object> getMap();
 
 }

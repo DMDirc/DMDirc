@@ -248,7 +248,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						try {
 							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
 						} catch (NumberFormatException nfe) { return; }
-						final String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
+						final String myNickname = ((Server)arguments[0]).getParser().getLocalClient().getNickname();
 						final DCCFrame f = new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
 						f.getFrame().addLine("DCCChatStarting", nickname, chat.getHost(), chat.getPort());
 						chat.connect();

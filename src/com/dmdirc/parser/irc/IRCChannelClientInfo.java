@@ -44,7 +44,7 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	/** Reference to the channel object that owns this channelclient. */
 	private final ChannelInfo myChannel;
 	/** A Map to allow applications to attach misc data to this object */
-	private Map<?, ?> myMap;
+	private Map<Object, Object> myMap;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
@@ -67,13 +67,13 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	 * @param newMap New Map to attatch.
 	 * @see #getMap
 	 */
-	public void setMap(final Map newMap) {
+	public void setMap(final Map<Object, Object> newMap) {
 		myMap = newMap;
 	}
 	
 	/** {@inheritDoc} */
         @Override
-	public Map<?, ?> getMap() { return myMap; }
+	public Map<Object, Object> getMap() { return myMap; }
 	
 	/** {@inheritDoc} */
         @Override

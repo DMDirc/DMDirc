@@ -230,9 +230,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
                         append(server.getParser().getServerName()).append("\n");
                 serverInfo.append("Network: ").append(server.getNetwork()).
                         append("\n");
-                serverInfo.append("IRCd: ").append(server.getParser().getIRCD(false)).
+                serverInfo.append("IRCd: ").append(server.getParser().getServerSoftware()).
                         append(" - ");
-                serverInfo.append(server.getParser().getIRCD(true)).append("\n");
+                serverInfo.append(server.getParser().getServerSoftwareType()).append("\n");
                 serverInfo.append("Modes: ").
                         append(server.getParser().getBoolChanModes()).
                         append(" ");

@@ -60,7 +60,7 @@ class IRCClientInfo implements LocalClientInfo {
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private final IRCParser myParser;
 	/** A Map to allow applications to attach misc data to this object */
-	private Map<?, ?> myMap;
+	private Map<Object, Object> myMap;
 	/** List of ChannelClientInfos that point to this */
 	private final Map<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
 	/** Modes waiting to be sent to the server. */
@@ -84,13 +84,13 @@ class IRCClientInfo implements LocalClientInfo {
 	 *
 	 * @param newMap New Map to attatch.
 	 */
-	public void setMap(final Map newMap) {
+	public void setMap(final Map<Object, Object> newMap) {
 		myMap = newMap;
 	}
 	
 	/** {@inheritDoc} */
         @Override
-	public Map<?, ?> getMap() {
+	public Map<Object, Object> getMap() {
             return myMap;
 	}
 

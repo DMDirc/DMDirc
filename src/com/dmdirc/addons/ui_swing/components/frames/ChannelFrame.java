@@ -46,7 +46,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -141,7 +141,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /** {@inheritDoc} */
     @Override
-    public void updateNames(final List<ChannelClientInfo> clients) {
+    public void updateNames(final Collection<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */

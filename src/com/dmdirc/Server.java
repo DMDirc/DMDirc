@@ -945,7 +945,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return The name of this server's IRCd
      */
     public String getIrcd() {
-        return parser.getIRCD(true);
+        return parser.getServerSoftwareType();
     }
 
     /**
@@ -1183,7 +1183,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             snumeric = "0" + snumeric;
         }
 
-        final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + snumeric;
+        final String withIrcd = "numeric_" + parser.getServerSoftwareType() + "_" + snumeric;
         final String sansIrcd = "numeric_" + snumeric;
         StringBuffer target = null;
 
@@ -1359,7 +1359,7 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             updateIcon();
 
-            getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
+            getConfigManager().migrate(parser.getServerSoftwareType(), getNetwork(), getName());
             updateIgnoreList();
 
             converter = parser.getStringConverter();
@@ -1422,11 +1422,11 @@ public class Server extends WritableFrameContainer implements Serializable {
             }
 
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
-                    + parser.getIRCD(true) + "]",
+                    + parser.getServerSoftwareType() + "]",
                     new Exception(missing.toString() + "\n" // NOPMD
                     + "Network: " + getNetwork() + "\n"
-                    + "IRCd: " + parser.getIRCD(false)
-                    + " (" + parser.getIRCD(true) + ")\n"
+                    + "IRCd: " + parser.getServerSoftware()
+                    + " (" + parser.getServerSoftwareType() + ")\n"
                     + "Mode alias version: "
                     + getConfigManager().getOption("identity", "modealiasversion")
                     + "\n\n"));

@@ -378,11 +378,8 @@ class IRCParser implements Parser, Runnable {
 	 */
 	public ProcessingManager getProcessingManager() { return myProcessingManager;	}
 
-	/**
-	 * Get a reference to the CallbackManager.
-	 *
-	 * @return Reference to the CallbackManager
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public CallbackManager getCallbackManager() { return myCallbackManager;	}
 
 	/**
@@ -872,13 +869,9 @@ class IRCParser implements Parser, Runnable {
 		return tokens;
 	}
 
-	/**
-	 * Get the ClientInfo object for a person.
-	 *
-	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
-	 * @return ClientInfo Object for the client, or null
-	 */
-	public IRCClientInfo getClientInfo(final String sHost) {
+	/** {@inheritDoc} */
+        @Override
+	public IRCClientInfo getClient(final String sHost) {
 		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
@@ -958,20 +951,14 @@ class IRCParser implements Parser, Runnable {
 		return true;
 	}
 
-	/**
-	 * Get the network name given in 005.
-	 *
-	 * @return network name from 005
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getNetworkName() {
 		return sNetworkName;
 	}
 
-	/**
-	 * Get the server name given in 001.
-	 *
-	 * @return server name from 001
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getServerName() {
 		return sServerName;
 	}
@@ -1615,32 +1602,22 @@ class IRCParser implements Parser, Runnable {
 		sendCTCP(sTarget, "ACTION", sMessage);
 	}
 
-	/**
-	 * Send a CTCP to a target.
-	 *
-	 * @param sTarget Target
-	 * @param sType Type of CTCP
-	 * @param sMessage Optional Additional Parameters
-	 */
-	public void sendCTCP(final String sTarget, final String sType, final String sMessage) {
-		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty() || sType.isEmpty()) { return; }
+	/** {@inheritDoc} */
+        @Override
+	public void sendCTCP(final String target, final String type, final String message) {
+		if (target == null || message == null) { return; }
+		if (target.isEmpty() || type.isEmpty()) { return; }
 		final char char1 = (char) 1;
-		sendString("PRIVMSG " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
+		sendString("PRIVMSG " + target + " :" + char1 + type.toUpperCase() + " " + message + char1);
 	}
 
-	/**
-	 * Send a CTCPReply to a target.
-	 *
-	 * @param sTarget Target
-	 * @param sType Type of CTCP
-	 * @param sMessage Optional Additional Parameters
-	 */
-	public void sendCTCPReply(final String sTarget, final String sType, final String sMessage) {
-		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty() || sType.isEmpty()) { return; }
+	/** {@inheritDoc} */
+        @Override
+	public void sendCTCPReply(final String target, final String type, final String message) {
+		if (target == null || message == null) { return; }
+		if (target.isEmpty() || type.isEmpty()) { return; }
 		final char char1 = (char) 1;
-		sendString("NOTICE " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
+		sendString("NOTICE " + target + " :" + char1 + type.toUpperCase() + " " + message + char1);
 	}
 
 	/**
@@ -1784,6 +1761,18 @@ class IRCParser implements Parser, Runnable {
 			else { return ""; }
 		}
 	}
+
+    /** {@inheritDoc} */
+    @Override
+    public String getServerSoftware() {
+        return getIRCD(false);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getServerSoftwareType() {
+        return getIRCD(true);
+    }
 
 	/**
 	 * Get the value of checkServerPing.
@@ -1932,12 +1921,9 @@ class IRCParser implements Parser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the current server lag.
-	 *
-	 * @return Last time between sending a PING and recieving a PONG
-	 */
-	public long getServerLag() {
+	/** {@inheritDoc} */
+        @Override
+	public long getServerLatency() {
 		return serverLag;
 	}
 

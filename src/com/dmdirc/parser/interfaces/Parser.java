@@ -23,6 +23,7 @@
 package com.dmdirc.parser.interfaces;
 
 import com.dmdirc.parser.irc.IRCStringConverter;
+import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import java.util.Collection;
 
 /**
@@ -97,6 +98,15 @@ public interface Parser extends Runnable {
     LocalClientInfo getLocalClient();
 
     /**
+     * Retrieves a {@link ClientInfo} object which corresponds to the specified
+     * details.
+     *
+     * @param detals The details of the client to look up
+     * @return A corresponding client info object, or null if no such client exists
+     */
+    ClientInfo getClient(String detals);
+
+    /**
      * Sends a raw message directly to the backend system. The message will
      * need to be of the appropriate format for whatever system is in use.
      * 
@@ -121,4 +131,64 @@ public interface Parser extends Runnable {
      */
     boolean isValidChannelName(String name);
 
+    /**
+     * Retrieves the name of the server that this parser is connected to.
+     *
+     * @return This parser's server's name
+     */
+    String getServerName();
+
+    /**
+     * Retrieves the name of the network that this parser is connected to.
+     *
+     * @return This parser's network's name
+     */
+    String getNetworkName();
+
+    /**
+     * Retrieves a textual description of the software running on the server.
+     *
+     * @return This parser's server's software name
+     */
+    String getServerSoftware();
+
+    /**
+     * Retrieves the detected type of the software running on the server
+     *
+     * @return This parser's server's software type
+     */
+    String getServerSoftwareType();
+    
+    /**
+     * Retrieves the object which is responsible for managing callbacks for
+     * this parser.
+     * 
+     * @return This parser's callback manager
+     */
+    CallbackManager getCallbackManager();
+
+    /**
+     * Retrieves the latency between the parser and the server in milliseconds.
+     *
+     * @return The current latency, in milliseconds
+     */
+    long getServerLatency();
+
+    /**
+     * Sends a CTCP of the specified type to the specified target.
+     *
+     * @param target The destination of the CTCP message
+     * @param type The type of CTCP to send
+     * @param message The content of the CTCP message
+     */
+    void sendCTCP(String target, String type, String message);
+
+    /**
+     * Sends a CTCP reply of the specified type to the specified target.
+     *
+     * @param target The destination of the CTCP reply
+     * @param type The type of CTCP to reply to
+     * @param message The content of the CTCP reply
+     */
+    void sendCTCPReply(String target, String type, String message);
 }

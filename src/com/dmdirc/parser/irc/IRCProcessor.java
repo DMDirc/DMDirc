@@ -105,7 +105,7 @@ abstract class IRCProcessor {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	protected final IRCClientInfo getClientInfo(final String sWho) {
-		return myParser.getClientInfo(sWho);
+		return myParser.getClient(sWho);
 	}
 	
 	/**

@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public final class NicklistListModel extends AbstractListModel implements Config
      * 
      * @return boolean success
      */
-    public boolean replace(final List<ChannelClientInfo> clients) {
+    public boolean replace(final Collection<ChannelClientInfo> clients) {
         boolean returnValue = false;
 
         nicknames.clear();

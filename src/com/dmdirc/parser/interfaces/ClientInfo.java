@@ -67,7 +67,7 @@ public interface ClientInfo {
      *
      * @return A map used for storing arbitrary data
      */
-    Map<?, ?> getMap();
+    Map<Object, Object> getMap();
 
     /**
      * Retrieves the parser which created this ClientInfo.
