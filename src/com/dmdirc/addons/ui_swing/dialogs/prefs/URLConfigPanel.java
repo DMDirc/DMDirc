@@ -171,10 +171,9 @@ public class URLConfigPanel extends JPanel implements
      */
     private void layoutComponents() {
         removeAll();
-        setLayout(new MigLayout("ins 0, wrap 1, hmax " +
-                SwingPreferencesDialog.CLIENT_HEIGHT));
+        setLayout(new MigLayout("ins 0, wrap 1"));
 
-        add(tableScrollPane, "growx, pushx");
+        add(tableScrollPane, "growx, pushx, h 150!");
         add(add, "split 2, growx, pushx");
         add(remove, "growx, pushx");
         add(activeComponent, "growx, pushx");
