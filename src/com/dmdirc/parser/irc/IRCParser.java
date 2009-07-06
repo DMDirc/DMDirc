@@ -963,11 +963,8 @@ class IRCParser implements Parser, Runnable {
 		return sServerName;
 	}
 
-	/**
-	 * Get the last line of input recieved from the server.
-	 *
-	 * @return the last line of input recieved from the server.
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getLastLine() {
 		return lastLine;
 	}

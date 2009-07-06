@@ -191,4 +191,12 @@ public interface Parser extends Runnable {
      * @param message The content of the CTCP reply
      */
     void sendCTCPReply(String target, String type, String message);
+
+    /**
+     * Retrieves the last line/communication received from the server, for use
+     * in debugging purposes.
+     *
+     * @return The last line received
+     */
+    String getLastLine();
 }
