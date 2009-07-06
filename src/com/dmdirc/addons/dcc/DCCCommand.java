@@ -73,7 +73,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 			final String type = args.getArguments()[0];
 			final String target = args.getArguments()[1];
 			final Parser parser = server.getParser();
-			final String myNickname = parser.getMyNickname();
+			final String myNickname = parser.getLocalClient().getNickname();
 				
 			if (parser.isValidChannelName(target) || parser.getStringConverter().equalsIgnoreCase(target, myNickname)) {
 				final Thread errorThread = new Thread(new Runnable() {

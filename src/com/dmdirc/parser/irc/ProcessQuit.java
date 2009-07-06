@@ -45,8 +45,8 @@ public class ProcessQuit extends IRCProcessor {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
-		ClientInfo iClient;
-		ChannelClientInfo iChannelClient;
+		IRCClientInfo iClient;
+		IRCChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
 		
@@ -58,9 +58,9 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
-		for (ChannelInfo iChannel : channelList) {
-			iChannelClient = iChannel.getChannelClientnelClient(iClient);
+		ArrayList<IRCChannelInfo> channelList = new ArrayList<IRCChannelInfo>(myParser.getChannels());
+		for (IRCChannelInfo iChannel : channelList) {
+			iChannelClient = iChannel.getChannelClient(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
 				if (iClient == myParser.getLocalClient()) {

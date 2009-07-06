@@ -30,7 +30,6 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -41,9 +40,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.irc.IRCChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.IRCClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -181,10 +177,10 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
-					final String realname = client.getRealName();
+					final String realname = client.getRealname();
 					if (!realname.isEmpty()) {
 						textString.append(" - ");
-						textString.append(client.getRealName());
+						textString.append(client.getRealname());
 					}
 				}
 			}

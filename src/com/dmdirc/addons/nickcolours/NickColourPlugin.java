@@ -90,9 +90,9 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getLocalClient();
         final String nickOption1 = "color:"
-                + client.getClient().getParser().getIRCStringConverter().toLowerCase(network + ":" + client.getNickname());
+                + client.getClient().getParser().getStringConverter().toLowerCase(network + ":" + client.getClient().getNickname());
         final String nickOption2 = "color:"
-                + client.getClient().getParser().getIRCStringConverter().toLowerCase("*:" + client.getClient().getNickname());
+                + client.getClient().getParser().getStringConverter().toLowerCase("*:" + client.getClient().getNickname());
         
         if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "useowncolour")
                 && client.getClient().equals(myself)) {

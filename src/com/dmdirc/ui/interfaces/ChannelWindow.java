@@ -25,7 +25,7 @@ package com.dmdirc.ui.interfaces;
 import com.dmdirc.Channel;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Specifies the standard interface for a channel window.
@@ -39,7 +39,7 @@ public interface ChannelWindow extends InputWindow {
      * 
      * @param clients The new list of clients for this channel
      */
-    void updateNames(List<ChannelClientInfo> clients);
+    void updateNames(Collection<ChannelClientInfo> clients);
     
     /**
      * Adds the specified client to this channel's name list.

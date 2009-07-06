@@ -104,7 +104,7 @@ abstract class IRCProcessor {
 	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	protected final ClientInfo getClientInfo(final String sWho) {
+	protected final IRCClientInfo getClientInfo(final String sWho) {
 		return myParser.getClientInfo(sWho);
 	}
 	
@@ -114,7 +114,7 @@ abstract class IRCProcessor {
 	 * @param name This is the name of the channel.
 	 * @return ChannelInfo Object for the channel, or null
 	 */
-	protected final ChannelInfo getChannel(final String name) {
+	protected final IRCChannelInfo getChannel(final String name) {
 		return myParser.getChannel(name);
 	}
 	

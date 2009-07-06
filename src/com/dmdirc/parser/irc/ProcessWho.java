@@ -50,12 +50,12 @@ public class ProcessWho extends IRCProcessor {
 		// :server 352 mynickname channel username address server nick flags :hops info
 		//     0    1      2         3     4          5      6      7    8        9
 		
-		final ClientInfo client = myParser.getClientInfo(token[7]);
+		final IRCClientInfo client = myParser.getClientInfo(token[7]);
 		if (client != null) {
 			// Update ident/host
 			client.setUserBits(token[7]+"!"+token[4]+"@"+token[5], false);
 			// Update real name
-			if (client.getRealName().isEmpty()) {
+			if (client.getRealname().isEmpty()) {
 				final String name = token[9].split(" ", 2)[1];
 				client.setRealName(name);
 			}

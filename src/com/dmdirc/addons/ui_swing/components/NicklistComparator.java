@@ -69,8 +69,8 @@ public final class NicklistComparator implements Comparator<ChannelClientInfo>,
      */
     public int compare(final ChannelClientInfo client1,
             final ChannelClientInfo client2) {
-        final String nickname1 = client1.getNickname();
-        final String nickname2 = client2.getNickname();
+        final String nickname1 = client1.getClient().getNickname();
+        final String nickname2 = client2.getClient().getNickname();
         
         if (sortByMode) {
             if (client1.getImportantModeValue()

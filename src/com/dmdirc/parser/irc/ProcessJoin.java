@@ -24,7 +24,6 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
 
@@ -43,7 +42,7 @@ public class ProcessJoin extends IRCProcessor {
 	public void process(final String sParam, final String[] token) {
 		if (sParam.equals("329")) {
 			if (token.length < 5) { return; }
-			ChannelInfo iChannel = myParser.getChannel(token[3]);
+			IRCChannelInfo iChannel = myParser.getChannel(token[3]);
 			if (iChannel != null) {
 				try {
 					iChannel.setCreateTime(Integer.parseInt(token[4]));
@@ -53,9 +52,9 @@ public class ProcessJoin extends IRCProcessor {
 			// :nick!ident@host JOIN (:)#Channel
 			Byte nTemp;
 			if (token.length < 3) { return; }
-			ClientInfo iClient;
-			ChannelInfo iChannel;
-			ChannelClientInfo iChannelClient;
+			IRCClientInfo iClient;
+			IRCChannelInfo iChannel;
+			IRCChannelClientInfo iChannelClient;
 			
 			iClient = myParser.getClientInfo(token[0]);
 			iChannel = myParser.getChannel(token[token.length-1]);

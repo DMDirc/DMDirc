@@ -24,6 +24,8 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.LocalClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
@@ -38,7 +40,7 @@ import java.util.Map;
  * @author Chris Smith
  * @see IRCParser
  */
-class IRCClientInfo implements ClientInfo {
+class IRCClientInfo implements LocalClientInfo {
 	/** Known nickname of client. */
 	private String sNickname = "";
 	/** Known ident of client. */
@@ -223,12 +225,9 @@ class IRCClientInfo implements ClientInfo {
 	 */
 	protected void setAwayReason(final String newValue) { myAwayReason = newValue; }
 	
-	/**
-	 * Get the RealName for this user.
-	 *
-	 * @return Known RealName for user.
-	 */
-	public String getRealName() { return sRealName; }
+	/** {@inheritDoc} */
+        @Override
+	public String getRealname() { return sRealName; }
 	
 	/**
 	 * Set the RealName for this user.
@@ -407,11 +406,18 @@ class IRCClientInfo implements ClientInfo {
 		lModeQueue.clear();
 	}
 	
-	/**
-	 * Get the parser object that owns this client.
-	 *
-	 * @return The parser object that owns this client
-	 */
-	public IRCParser getParser() { return myParser; }
+	/** {@inheritDoc} */
+        @Override
+	public Parser getParser() { return myParser; }
+
+        /** {@inheritDoc} */
+        @Override
+        public void setNickname(final String name) {
+            if (myParser.getLocalClient().equals(this)) {
+                myParser.setNickname(name);
+            } else {
+                throw new UnsupportedOperationException("Cannot call setNickname on non-local client");
+            }
+        }
 
 }

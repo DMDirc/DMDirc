@@ -91,10 +91,10 @@ public class ProcessMode extends IRCProcessor {
 		long nTemp = 0, nValue = 0, nCurrent = 0;
 		boolean bPositive = true, bBooleanMode = true;
 		char cPositive = '+';
-		ChannelInfo iChannel;
-		ChannelClientInfo iChannelClientInfo;
-		ClientInfo iClient;
-		ChannelClientInfo setterCCI;
+		IRCChannelInfo iChannel;
+		IRCChannelClientInfo iChannelClientInfo;
+		IRCClientInfo iClient;
+		IRCChannelClientInfo setterCCI;
 		
 		CallbackObject cbSingle = null;
 		CallbackObject cbNonUser = null;
@@ -229,7 +229,7 @@ public class ProcessMode extends IRCProcessor {
 		long nCurrent = 0, nValue = 0;
 		boolean bPositive = true;
 		
-		ClientInfo iClient = getClientInfo(token[2]);
+		IRCClientInfo iClient = getClientInfo(token[2]);
                 
 		if (iClient == null) { return; }
 		

@@ -306,7 +306,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
             if (checkCursorInSelectedCell() || selectNickUnderCursor()) {
                 if (e.isPopupTrigger()) {
                     showPopupMenu(ClickType.NICKNAME, getMousePosition(),
-                            ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
+                            ((ChannelClientInfo) nickList.getSelectedValue())
+                            .getClient().getNickname());
                 }
             } else {
                 nickList.clearSelection();

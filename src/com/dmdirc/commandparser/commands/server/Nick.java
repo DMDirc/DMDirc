@@ -59,7 +59,7 @@ public final class Nick extends ServerCommand implements IntelligentCommand {
             return;
         }
         
-        server.getParser().setNickname(args.getArguments()[0]);
+        server.getParser().getLocalClient().setNickname(args.getArguments()[0]);
     }
     
     

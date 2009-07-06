@@ -80,7 +80,7 @@ public final class UserModesPane extends JPanel {
         final Parser parser = server.getParser();
 
         final String userModes = parser.getUserModeString();
-        final String ourUserModes = parser.getMyself().getUserModeStr();
+        final String ourUserModes = parser.getLocalClient().getUserModeStr();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
@@ -145,7 +145,7 @@ public final class UserModesPane extends JPanel {
         boolean changed = false;
         final Parser parser = server.getParser();
         final String userModes = parser.getUserModeString();
-        final String ourUserModes = parser.getMyself().getUserModeStr();
+        final String ourUserModes = parser.getLocalClient().getUserModeStr();
 
         for (int i = 0; i < userModes.length();
                 i++) {
@@ -156,13 +156,13 @@ public final class UserModesPane extends JPanel {
             if (modeCheckBoxes.get(mode) != null &&
                     state != modeCheckBoxes.get(mode).isSelected()) {
                 changed = true;
-                server.getParser().getMyself().
+                server.getParser().getLocalClient().
                         alterMode(modeCheckBoxes.get(mode).isSelected(),
                         mode.toCharArray()[0]);
             }
         }
         if (changed) {
-            server.getParser().getMyself().sendModes();
+            server.getParser().getLocalClient().sendModes();
         }
     }
 }

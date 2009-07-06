@@ -24,7 +24,6 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpReplyListener;
@@ -42,6 +41,7 @@ import com.dmdirc.parser.interfaces.callbacks.UnknownCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.UnknownCtcpReplyListener;
 import com.dmdirc.parser.interfaces.callbacks.UnknownMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.UnknownNoticeListener;
+
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -91,9 +91,9 @@ public class ProcessMessage extends IRCProcessor {
 			return;
 		}
 		
-		ChannelClientInfo iChannelClient = null;
-		ChannelInfo iChannel = null;
-		ClientInfo iClient = null;
+		IRCChannelClientInfo iChannelClient = null;
+		IRCChannelInfo iChannel = null;
+		IRCClientInfo iClient = null;
 		// "nick!user@host PRIVMSG #Channel" should be processed as "nick!user@host PRIVMSG #Channel :"
 		if (token.length < 4) {
 			sMessage = "";

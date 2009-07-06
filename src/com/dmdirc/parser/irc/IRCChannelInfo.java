@@ -25,7 +25,9 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,7 +68,7 @@ class IRCChannelInfo implements ChannelInfo {
 	private final String sName;
 	
 	/** Hashtable containing references to ChannelClients. */
-	private final Map<String, ChannelClientInfo> hChannelUserList = new Hashtable<String, ChannelClientInfo>();
+	private final Map<String, IRCChannelClientInfo> hChannelUserList = new Hashtable<String, IRCChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
 	private final Map<Character, String> hParamModes = new Hashtable<Character, String>();
 	/** Hashtable storing list modes. */
@@ -124,7 +126,7 @@ class IRCChannelInfo implements ChannelInfo {
 	 * Ask the server for all the list modes for this channel.
 	 */
 	public void requestListModes() {
-		final ChannelClientInfo me = getChannelClient(myParser.getLocalClient());
+		final IRCChannelClientInfo me = getChannelClient(myParser.getLocalClient());
                 
 		if (me == null) {
 			// In a normal situation of non bouncer-brokenness this won't happen
@@ -258,12 +260,9 @@ class IRCChannelInfo implements ChannelInfo {
 	 */
 	public int getUserCount() { return hChannelUserList.size(); }
 	
-	/**
-	 * Get the channel users.
-	 *
-	 * @return ArrayList of ChannelClients
-	 */
-	public List<ChannelClientInfo> getChannelClients() {
+	/** {@inheritDoc} */
+        @Override
+	public Collection<ChannelClientInfo> getChannelClients() {
 		return new ArrayList<ChannelClientInfo>(hChannelUserList.values());
 	}
 	
@@ -271,8 +270,8 @@ class IRCChannelInfo implements ChannelInfo {
 	 * Empty the channel (Remove all known channelclients).
 	 */
 	protected void emptyChannel() {
-		ClientInfo cTemp = null;
-		for (ChannelClientInfo client : hChannelUserList.values()) {
+		IRCClientInfo cTemp = null;
+		for (IRCChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
 			cTemp.delChannelClientInfo(client);
 			if (cTemp != myParser.getLocalClient() && !cTemp.checkVisibility()) {
@@ -284,7 +283,7 @@ class IRCChannelInfo implements ChannelInfo {
 
 	/** {@inheritDoc} */
         @Override
-	public ChannelClientInfo getChannelClient(final String sWho) {
+	public IRCChannelClientInfo getChannelClient(final String sWho) {
 		return getChannelClient(sWho, false);
 	}
 	
@@ -296,7 +295,7 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @return ChannelClientInfo object requested
 	 * @since 0.6
 	 */
-	public ChannelClientInfo getChannelClient(final String sWho, final boolean createFake) {
+	public IRCChannelClientInfo getChannelClient(final String sWho, final boolean createFake) {
 		final String who = myParser.getStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
 		if (hChannelUserList.containsKey(who)) {
 			return hChannelUserList.get(who);
@@ -310,8 +309,8 @@ class IRCChannelInfo implements ChannelInfo {
 	
 	/** {@inheritDoc} */
         @Override
-	public ChannelClientInfo getChannelClient(final ClientInfo cWho) {
-		for (ChannelClientInfo client : hChannelUserList.values()) {
+	public IRCChannelClientInfo getChannelClient(final ClientInfo cWho) {
+		for (IRCChannelClientInfo client : hChannelUserList.values()) {
 			if (client.getClient() == cWho) {
 				return client;
 			}
@@ -325,8 +324,8 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */
-	protected ChannelClientInfo addClient(final ClientInfo cClient) {
-		ChannelClientInfo cTemp = getChannelClient(cClient);
+	protected IRCChannelClientInfo addClient(final IRCClientInfo cClient) {
+		IRCChannelClientInfo cTemp = getChannelClient(cClient);
 		if (cTemp == null) { 
 			cTemp = new IRCChannelClientInfo(myParser, cClient, this);
 			hChannelUserList.put(myParser.getStringConverter().toLowerCase(cTemp.getClient().getNickname()), cTemp);
@@ -339,10 +338,10 @@ class IRCChannelInfo implements ChannelInfo {
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
-	protected void delClient(final ClientInfo cClient) {
-		ChannelClientInfo cTemp = getChannelClient(cClient);
+	protected void delClient(final IRCClientInfo cClient) {
+		IRCChannelClientInfo cTemp = getChannelClient(cClient);
 		if (cTemp != null) {
-			final ClientInfo clTemp = cTemp.getClient();
+			final IRCClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
 			if (clTemp != myParser.getLocalClient() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
@@ -357,15 +356,15 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param oldNickname Nickname client used to be known as
 	 * @param cChannelClient ChannelClient object with updated client object
 	 */	
-	protected void renameClient(final String oldNickname, final ChannelClientInfo cChannelClient) {
+	protected void renameClient(final String oldNickname, final IRCChannelClientInfo cChannelClient) {
 		if (hChannelUserList.containsKey(oldNickname)) {
-			final ChannelClientInfo cTemp = hChannelUserList.get(oldNickname);
+			final IRCChannelClientInfo cTemp = hChannelUserList.get(oldNickname);
 			if (cTemp == cChannelClient) {
 				// Remove the old key
 				hChannelUserList.remove(oldNickname);
 				// Add with the new key. (getNickname will return the new name not the
 				// old one)
-				hChannelUserList.put(myParser.getStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
+				hChannelUserList.put(myParser.getStringConverter().toLowerCase(cTemp.getClient().getNickname()), cTemp);
 			}
 		}
 	}
@@ -402,11 +401,9 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param sNewTopic New contents of topic
 	 */	
 	protected void setTopic(final String sNewTopic) { sTopic = sNewTopic; }
-	/**
-	 * Get the topic.
-	 *
-	 * @return contents of topic
-	 */	
+	
+        /** {@inheritDoc} */
+        @Override
 	public String getTopic() { return sTopic; }	
 
 	/**
@@ -753,12 +750,15 @@ class IRCChannelInfo implements ChannelInfo {
 	@Override
 	public String toString() { return sName; }
 	
-	/**
-	 * Get the parser object that owns this channel.
-	 *
-	 * @return The parser object that owns this channel
-	 */
-	public IRCParser getParser() { return myParser; }
+	/** {@inheritDoc} */
+        @Override
+	public Parser getParser() { return myParser; }
+
+        /** {@inheritDoc} */
+        @Override
+        public void part(final String reason) {
+            myParser.partChannel(sName, reason);
+        }
 
 }
 

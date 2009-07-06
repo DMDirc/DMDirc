@@ -40,8 +40,8 @@ public class ProcessNick extends IRCProcessor {
 	 */
 	@Override
 	public void process(String sParam, String[] token) {
-		ClientInfo iClient;
-		ChannelClientInfo iChannelClient;
+		IRCClientInfo iClient;
+		IRCChannelClientInfo iChannelClient;
 		String oldNickname;
 		
 		iClient = getClientInfo(token[0]);
@@ -64,7 +64,7 @@ public class ProcessNick extends IRCProcessor {
 					myParser.addClient(iClient);
 				}
 				
-				for (ChannelInfo iChannel : myParser.getChannels()) {
+				for (IRCChannelInfo iChannel : myParser.getChannels()) {
 					// Find the user (using the old nickname)
 					iChannelClient = iChannel.getChannelClient(oldNickname);
 					if (iChannelClient != null) {

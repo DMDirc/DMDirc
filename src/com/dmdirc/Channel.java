@@ -44,6 +44,7 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -316,9 +317,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * @param reason The reason for parting the channel
      */
     public void part(final String reason) {
-        if (server != null && server.getParser() != null) {
-            server.getParser().partChannel(channelInfo.getName(), reason);
-        }
+        channelInfo.part(reason);
 
         resetWindow();
     }
@@ -406,7 +405,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      *
      * @param clients The list of clients to use
      */
-    public void setClients(final List<ChannelClientInfo> clients) {
+    public void setClients(final Collection<ChannelClientInfo> clients) {
         window.updateNames(clients);
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);

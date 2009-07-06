@@ -1141,7 +1141,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param nickname The nickname that we were trying to use
      */
     public void onNickInUse(final String nickname) {
-        final String lastNick = parser.getMyNickname();
+        final String lastNick = parser.getLocalClient().getNickname();
 
         // If our last nick is still valid, ignore the in use message
         if (!converter.equalsIgnoreCase(lastNick, nickname)) {
@@ -1165,7 +1165,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             newNick = alts.get(offset);
         }
 
-        parser.setNickname(newNick);
+        parser.getLocalClient().setNickname(newNick);
     }
 
     /**

@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.addons.ui_swing.components.ParamModePanel;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.parser.interfaces.Parser;
 import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
@@ -79,7 +80,7 @@ public final class ChannelModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final IRCParser parser = channel.getServer().getParser();
+        final Parser parser = channel.getServer().getParser();
 
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();

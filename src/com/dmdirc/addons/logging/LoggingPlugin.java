@@ -292,7 +292,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			case QUERY_ACTION:
 			case QUERY_SELF_ACTION:
 				final boolean isME = (type == CoreActionType.QUERY_SELF_MESSAGE || type == CoreActionType.QUERY_SELF_ACTION);
-				final String overrideNick = (isME) ? getDisplayName(parser.getMyself()) : "";
+				final String overrideNick = (isME) ? getDisplayName(parser.getLocalClient()) : "";
 				
 				if (type == CoreActionType.QUERY_MESSAGE || type == CoreActionType.QUERY_SELF_MESSAGE) {
 					appendLine(filename, "<%s> %s", getDisplayName(client, overrideNick), (String)arguments[1]);
@@ -393,7 +393,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				appendLine(filename, "*** %s is now %s", getDisplayName(channelClient, message), getDisplayName(channelClient));
 				break;
 			case CHANNEL_MODECHANGE:
-				if (channelClient.getNickname().isEmpty()) {
+				if (channelClient.getClient().getNickname().isEmpty()) {
 					appendLine(filename, "*** Channel modes are: %s", message);
 				} else {
 					appendLine(filename, "*** %s set modes: %s", getDisplayName(channelClient), message);
@@ -762,7 +762,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		if (channelClient == null) {
 			return (overrideNick.isEmpty()) ? "Unknown Client" : overrideNick;
 		} else if (overrideNick.isEmpty()) {
-			return (addModePrefix) ? channelClient.toString() : channelClient.getNickname();
+			return (addModePrefix) ? channelClient.toString() : channelClient.getClient().getNickname();
 		} else {
 			return (addModePrefix) ? channelClient.getImportantModePrefix() + overrideNick : overrideNick;
 		}

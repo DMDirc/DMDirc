@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.interfaces;
 
+import java.util.Collection;
+
 /**
  * Holds information about a channel and allows various operations to be
  * performed on the channel.
@@ -39,6 +41,13 @@ public interface ChannelInfo {
     String getName();
 
     /**
+     * Retrieves the current topic or subject of this channel.
+     *
+     * @return This channel's topic
+     */
+    String getTopic();
+
+    /**
      * Sends the specified message to this channel.
      *
      * @param message The message to be sent
@@ -51,6 +60,13 @@ public interface ChannelInfo {
      * @param action The action to be sent
      */
     void sendAction(String action);
+
+    /**
+     * Parts this channel with the specified reason.
+     *
+     * @param reason The reason for parting
+     */
+    void part(String reason);
 
     /**
      * Retrieves a channel client information object corresponding to the
@@ -69,5 +85,20 @@ public interface ChannelInfo {
      * @return A {@link ChannelClientInfo} object corresponding to the client
      */
     ChannelClientInfo getChannelClient(String client);
+
+    /**
+     * Retrieves a collection of all known clients that are present on the
+     * channel.
+     *
+     * @return A collection of known channel clients
+     */
+    Collection<ChannelClientInfo> getChannelClients();
+
+    /**
+     * Retrieves the parser which created this ChannelInfo.
+     *
+     * @return This ChannelInfo's parser
+     */
+    Parser getParser();
 
 }

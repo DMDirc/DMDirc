@@ -24,8 +24,6 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.interfaces.Parser;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,11 +36,11 @@ import java.util.Map;
  */
 class IRCChannelClientInfo implements ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
-	private final ClientInfo cClient;
+	private final IRCClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
 	private long nModes;
 	/** Reference to the parser object that owns this channelclient, Used for modes. */
-	private final Parser myParser;
+	private final IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
 	private final ChannelInfo myChannel;
 	/** A Map to allow applications to attach misc data to this object */
@@ -55,7 +53,7 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	 * @param client Client that this channelclient represents
 	 * @param channel Channel that owns this channelclient
 	 */	
-	public IRCChannelClientInfo(final Parser tParser, final ClientInfo client, final ChannelInfo channel) {
+	public IRCChannelClientInfo(final IRCParser tParser, final IRCClientInfo client, final ChannelInfo channel) {
 		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		cClient = client;
@@ -79,7 +77,7 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	
 	/** {@inheritDoc} */
         @Override
-	public ClientInfo getClient() { return cClient; }
+	public IRCClientInfo getClient() { return cClient; }
 
 	/** {@inheritDoc} */
         @Override

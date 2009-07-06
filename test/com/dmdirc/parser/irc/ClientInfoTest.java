@@ -120,9 +120,9 @@ public class ClientInfoTest {
     public void testRealName() {
         final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
         ci.setRealName("abc def");
-        assertEquals("abc def", ci.getRealName());
+        assertEquals("abc def", ci.getRealname());
         ci.setRealName("abc 123 def");
-        assertEquals("abc 123 def", ci.getRealName());
+        assertEquals("abc 123 def", ci.getRealname());
     }
     
 }

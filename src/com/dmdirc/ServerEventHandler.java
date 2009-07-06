@@ -342,7 +342,7 @@ public final class ServerEventHandler extends EventHandler
             final String sOldNick) {
         checkParser(tParser);
 
-        if (cClient.equals(owner.getParser().getMyself())) {
+        if (cClient.equals(owner.getParser().getLocalClient())) {
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
                     sOldNick, cClient.getNickname());
         }

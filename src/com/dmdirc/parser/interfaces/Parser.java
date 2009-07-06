@@ -70,7 +70,7 @@ public interface Parser extends Runnable {
      *
      * @return A collection of known channels
      */
-    Collection<ChannelInfo> getChannels();
+    Collection<? extends ChannelInfo> getChannels();
 
     /**
      * Set the IP address that this parser will bind to
@@ -94,7 +94,7 @@ public interface Parser extends Runnable {
      *
      * @return An info object for the local client
      */
-    ClientInfo getLocalClient();
+    LocalClientInfo getLocalClient();
 
     /**
      * Sends a raw message directly to the backend system. The message will
@@ -111,5 +111,14 @@ public interface Parser extends Runnable {
      * @return A string convertor for this parser
      */
     IRCStringConverter getStringConverter();
+
+    /**
+     * Determines whether the specified channel name is valid or not for this
+     * parser.
+     *
+     * @param name The name of the channel to be tested
+     * @return True if the channel name is valid, false otherwise
+     */
+    boolean isValidChannelName(String name);
 
 }

@@ -24,7 +24,7 @@ package com.dmdirc.addons.ui_dummy;
 
 import com.dmdirc.Channel;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.parser.irc.IRCChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
 import java.util.List;
@@ -49,19 +49,19 @@ public final class DummyChannelWindow extends DummyInputWindow implements Channe
 
     /** {@inheritDoc} */
     @Override
-    public void updateNames(final List<IRCChannelClientInfo> clients) {
+    public void updateNames(final List<ChannelClientInfo> clients) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addName(final IRCChannelClientInfo client) {
+    public void addName(final ChannelClientInfo client) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeName(final IRCChannelClientInfo client) {
+    public void removeName(final ChannelClientInfo client) {
         // Do nothing
     }
 

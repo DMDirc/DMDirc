@@ -41,7 +41,7 @@ public class ProcessListModes extends IRCProcessor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void process(String sParam, String[] token) {
-		ChannelInfo channel = getChannel(token[3]);
+		IRCChannelInfo channel = getChannel(token[3]);
 		String thisIRCD = myParser.getIRCD(true).toLowerCase();
 		String item = "";
 		String owner = "";

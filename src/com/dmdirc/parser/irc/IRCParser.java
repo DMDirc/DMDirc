@@ -22,7 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
@@ -206,9 +205,9 @@ class IRCParser implements Parser, Runnable {
 	*/
 	final Map<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
-	private final Map<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
+	private final Map<String, IRCClientInfo> hClientList = new Hashtable<String, IRCClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	private final Map<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
+	private final Map<String, IRCChannelInfo> hChannelList = new Hashtable<String, IRCChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
 	private IRCClientInfo cMyself = new IRCClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
@@ -879,7 +878,7 @@ class IRCParser implements Parser, Runnable {
 	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	public ClientInfo getClientInfo(final String sHost) {
+	public IRCClientInfo getClientInfo(final String sHost) {
 		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
@@ -899,7 +898,7 @@ class IRCParser implements Parser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public ChannelInfo getChannel(String channel) {
+	public IRCChannelInfo getChannel(String channel) {
 		synchronized (hChannelList) {
 			channel = getStringConverter().toLowerCase(channel);
 			if (hChannelList.containsKey(channel)) { return hChannelList.get(channel); } else { return null; }
@@ -937,7 +936,7 @@ class IRCParser implements Parser, Runnable {
 			// as the ircd will only reply once.
 			final LinkedList<Character> foundModes = new LinkedList<Character>();
 
-			final ChannelInfo channel = getChannel(newLine[1]);
+			final IRCChannelInfo channel = getChannel(newLine[1]);
 			if (channel != null) {
 				final Queue<Character> listModeQueue = channel.getListModeQueue();
 				for (int i = 0; i < newLine[2].length() ; ++i) {
@@ -1679,33 +1678,31 @@ class IRCParser implements Parser, Runnable {
 		}
 	}
 
-	/**
-	 * Check if a channel name is valid.
-	 *
-	 * @param sChannelName Channel name to test
-	 * @return true if name is valid on the current connection, false otherwise.
-	 *         - Before channel prefixes are known (005/noMOTD/MOTDEnd), this checks
-	 *           that the first character is either #, &amp;, ! or +
-	 *         - Assumes that any channel that is already known is valid, even if
-	 *           005 disagrees.
+	/** {@inheritDoc}
+         *
+	 * - Before channel prefixes are known (005/noMOTD/MOTDEnd), this checks
+	 *   that the first character is either #, &amp;, ! or +
+	 * - Assumes that any channel that is already known is valid, even if
+	 *   005 disagrees.
 	 */
-	public boolean isValidChannelName(final String sChannelName) {
+        @Override
+	public boolean isValidChannelName(final String name) {
 		// Check sChannelName is not empty or null
-		if (sChannelName == null || sChannelName.isEmpty()) { return false; }
+		if (name == null || name.isEmpty()) { return false; }
 		// Check its not ourself (PM recieved before 005)
-		if (getStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
+		if (getStringConverter().equalsIgnoreCase(getMyNickname(), name)) { return false; }
 		// Check if we are already on this channel
-		if (getChannel(sChannelName) != null) { return true; }
+		if (getChannel(name) != null) { return true; }
 		// Check if we know of any valid chan prefixes
 		if (hChanPrefix.isEmpty()) {
 			// We don't. Lets check against RFC2811-Specified channel types
-			final char first = sChannelName.charAt(0);
+			final char first = name.charAt(0);
 			return first == '#' || first == '&' || first == '!' || first == '+';
 		}
 		// Otherwise return true if:
 		// Channel equals "0"
 		// first character of the channel name is a valid channel prefix.
-		return hChanPrefix.containsKey(sChannelName.charAt(0)) || sChannelName.equals("0");
+		return hChanPrefix.containsKey(name.charAt(0)) || name.equals("0");
 	}
 
 	/**
@@ -1976,7 +1973,7 @@ class IRCParser implements Parser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public ClientInfo getLocalClient() { return cMyself; }
+	public IRCClientInfo getLocalClient() { return cMyself; }
 
 	/**
 	 * Get the current nickname.
@@ -2008,7 +2005,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to add
 	 */
-	public void addClient(final ClientInfo client) {
+	public void addClient(final IRCClientInfo client) {
 		hClientList.put(getStringConverter().toLowerCase(client.getNickname()),client);
 	}
 
@@ -2018,7 +2015,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	public void removeClient(final ClientInfo client) {
+	public void removeClient(final IRCClientInfo client) {
 		if (client != cMyself) {
 			forceRemoveClient(client);
 		}
@@ -2048,7 +2045,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @return Known clients as a collection
 	 */
-	public Collection<ClientInfo> getClients() {
+	public Collection<IRCClientInfo> getClients() {
 		return hClientList.values();
 	}
 
@@ -2065,7 +2062,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to add
 	 */
-	public void addChannel(final ChannelInfo channel) {
+	public void addChannel(final IRCChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.put(getStringConverter().toLowerCase(channel.getName()), channel);
 		}
@@ -2076,7 +2073,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to remove
 	 */
-	public void removeChannel(final ChannelInfo channel) {
+	public void removeChannel(final IRCChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.remove(getStringConverter().toLowerCase(channel.getName()));
 		}
@@ -2095,7 +2092,7 @@ class IRCParser implements Parser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public Collection<ChannelInfo> getChannels() {
+	public Collection<IRCChannelInfo> getChannels() {
 		synchronized (hChannelList) {
                     return hChannelList.values();
 		}

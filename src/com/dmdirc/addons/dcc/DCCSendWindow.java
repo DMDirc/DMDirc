@@ -170,7 +170,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			}
 			dcc.reset();
 			if (parser != null && parser.getSocketState() == SocketState.OPEN) {
-				final String myNickname = parser.getMyNickname();
+				final String myNickname = parser.getLocalClient().getNickname();
 				// Check again incase we have changed nickname to the same nickname that
 				// this send is for.
 				if (parser.getStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
