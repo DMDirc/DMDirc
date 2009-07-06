@@ -37,11 +37,11 @@ public class ProcessAway extends IRCProcessor {
 	@Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("301")) {
-			ClientInfo iClient = myParser.getClientInfo(token[3]);
+			IRCClientInfo iClient = myParser.getClientInfo(token[3]);
 			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
 		} else {
-			myParser.getMyself().setAwayState(sParam.equals("306"));
-			callAwayState(myParser.getMyself().getAwayState(), myParser.getMyself().getAwayReason());
+			myParser.getLocalClient().setAwayState(sParam.equals("306"));
+			callAwayState(myParser.getLocalClient().getAwayState(), myParser.getLocalClient().getAwayReason());
 		}
 	}
 	

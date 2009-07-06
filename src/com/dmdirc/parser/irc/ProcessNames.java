@@ -54,7 +54,7 @@ public class ProcessNames extends IRCProcessor {
 		} else {
 			// Names
 			
-			ClientInfo iClient;
+			IRCClientInfo iClient;
 			ChannelClientInfo iChannelClient;
 			
 			iChannel = getChannel(token[4]);
@@ -90,7 +90,7 @@ public class ProcessNames extends IRCProcessor {
 				callDebugInfo(IRCParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
 				
 				iClient = getClientInfo(sName);
-				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.addClient(iClient); }
+				if (iClient == null) { iClient = new IRCClientInfo(myParser, sName); myParser.addClient(iClient); }
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
 
@@ -108,7 +108,7 @@ public class ProcessNames extends IRCProcessor {
 	 * @param cChannel Channel which the names reply is for
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelGotNames(IRCChannelInfo cChannel) {
+	protected boolean callChannelGotNames(ChannelInfo cChannel) {
 		return getCallbackManager().getCallbackType(ChannelNamesListener.class).call(cChannel);
 	}
 	

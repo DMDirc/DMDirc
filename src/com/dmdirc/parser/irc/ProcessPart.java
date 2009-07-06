@@ -41,7 +41,7 @@ public class ProcessPart extends IRCProcessor {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
 		if (token.length < 3) { return; }
-		ClientInfo iClient;
+		IRCClientInfo iClient;
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
@@ -54,7 +54,7 @@ public class ProcessPart extends IRCProcessor {
 			iClient.setUserBits(token[0],false);
 		}
 		if (iChannel == null) { 
-			if (iClient != myParser.getMyself()) {
+			if (iClient != myParser.getLocalClient()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]", myParser.getLastLine()));
 			}
 			return;
@@ -70,7 +70,7 @@ public class ProcessPart extends IRCProcessor {
 			callDebugInfo(IRCParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
-			if (iClient == myParser.getMyself()) {
+			if (iClient == myParser.getLocalClient()) {
 				iChannel.emptyChannel();
 				myParser.removeChannel(iChannel);
 			}
@@ -86,7 +86,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @param sReason Reason given for parting (May be "")
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelPart(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		return getCallbackManager().getCallbackType(ChannelPartListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	

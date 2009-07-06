@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -43,5 +43,5 @@ public interface ChannelQuitListener extends CallbackInterface {
 	 * @param sReason Quit reason
 	 * @see com.dmdirc.parser.irc.ProcessQuit#callChannelQuit
 	 */
-	void onChannelQuit(Parser tParser, IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
+	void onChannelQuit(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
 }

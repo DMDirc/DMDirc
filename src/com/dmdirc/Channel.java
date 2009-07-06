@@ -29,9 +29,8 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -102,7 +101,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
      */
-    public Channel(final Server newServer, final IRCChannelInfo newChannelInfo) {
+    public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super("channel", newChannelInfo.getName(),
                 new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
                 newServer.getName(), newChannelInfo.getName()));
@@ -165,7 +164,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
             return;
         }
 
-        final ClientInfo me = server.getParser().getMyself();
+        final ClientInfo me = server.getParser().getLocalClient();
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
@@ -200,7 +199,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
             return;
         }
 
-        final ClientInfo me = server.getParser().getMyself();
+        final ClientInfo me = server.getParser().getLocalClient();
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
@@ -246,7 +245,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      *
      * @param newChannelInfo The new ChannelInfo object
      */
-    public void setChannelInfo(final IRCChannelInfo newChannelInfo) {
+    public void setChannelInfo(final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
         registerCallbacks();
     }
@@ -276,7 +275,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
     public void selfJoin() {
         onChannel = true;
 
-        final ClientInfo me = server.getParser().getMyself();
+        final ClientInfo me = server.getParser().getLocalClient();
         addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
 
@@ -396,7 +395,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         window.removeName(client);
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
 
-        if (client.getClient().equals(server.getParser().getMyself())) {
+        if (client.getClient().equals(server.getParser().getLocalClient())) {
             resetWindow();
         }
     }

@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ClientInfo;
 
 /**
  * Called when we or another user change nickname.

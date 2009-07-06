@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
@@ -62,7 +62,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @param cChannel ChannelInfo object for the channel to test
 	 * @return true if channel given matches the specifics for the method given
 	 */
-	protected boolean isValidChan(final CallbackInterface eMethod, final IRCChannelInfo cChannel) {
+	protected boolean isValidChan(final CallbackInterface eMethod, final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
 			if (!myParser.getIRCStringConverter().equalsIgnoreCase(cChannel.getName(), specificData.get(eMethod))) { return false; }
 		}
@@ -144,9 +144,9 @@ public class CallbackObjectSpecific extends CallbackObject {
             if (type.isAnnotationPresent(SpecificCallback.class) &&
                     ((args[0] instanceof ClientInfo
                         && !isValidUser(iface, ((ClientInfo) args[0]).getHost()))
-                        || (args[0] instanceof IRCChannelInfo
-                        && !isValidChan(iface, (IRCChannelInfo) args[0]))
-                        || (!(args[0] instanceof ClientInfo || args[0] instanceof IRCChannelInfo) &&
+                        || (args[0] instanceof ChannelInfo
+                        && !isValidChan(iface, (ChannelInfo) args[0]))
+                        || (!(args[0] instanceof ClientInfo || args[0] instanceof ChannelInfo) &&
                         args[args.length - 1] instanceof String
                         && !isValidUser(iface, (String) args[args.length - 1])))) {
                 continue;

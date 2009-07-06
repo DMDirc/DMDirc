@@ -40,7 +40,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.irc.IRCClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -176,7 +176,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
-				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
+				final IRCClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();
 					if (!realname.isEmpty()) {

@@ -22,8 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ClientInfo;
+
 /** 
  * Called When we, or another client quits IRC (Called once in total).
  * This is called BEFORE client has been removed from the channel.

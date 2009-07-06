@@ -23,6 +23,7 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import java.util.Queue;
  * @author Chris Smith
  * @see IRCParser
  */
-public class IRCChannelInfo implements ChannelInfo {
+class IRCChannelInfo implements ChannelInfo {
 	/**
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
@@ -122,7 +123,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	 * Ask the server for all the list modes for this channel.
 	 */
 	public void requestListModes() {
-		final ChannelClientInfo me = getUser(myParser.getMyself());
+		final ChannelClientInfo me = getUser(myParser.getLocalClient());
 		if (me == null) {
 			// In a normal situation of non bouncer-brokenness this won't happen
 			return;
@@ -268,11 +269,11 @@ public class IRCChannelInfo implements ChannelInfo {
 	 * Empty the channel (Remove all known channelclients).
 	 */
 	protected void emptyChannel() {
-		ClientInfo cTemp = null;
+		IRCClientInfo cTemp = null;
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
 			cTemp.delChannelClientInfo(client);
-			if (cTemp != myParser.getMyself() && !cTemp.checkVisibility()) {
+			if (cTemp != myParser.getLocalClient() && !cTemp.checkVisibility()) {
 				myParser.removeClient(cTemp);
 			}
 		}
@@ -298,12 +299,12 @@ public class IRCChannelInfo implements ChannelInfo {
 	 * @since 0.6
 	 */
 	public ChannelClientInfo getUser(final String sWho, final boolean createFake) {
-		final String who = myParser.getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sWho));
+		final String who = myParser.getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
 		if (hChannelUserList.containsKey(who)) {
 			return hChannelUserList.get(who);
 		}
 		if (createFake) {
-			return new ChannelClientInfo(myParser, (new ClientInfo(myParser, sWho)).setFake(true), this);
+			return new ChannelClientInfo(myParser, (new IRCClientInfo(myParser, sWho)).setFake(true), this);
 		} else {
 			return null;
 		}
@@ -330,7 +331,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */
-	protected ChannelClientInfo addClient(final ClientInfo cClient) {
+	protected ChannelClientInfo addClient(final IRCClientInfo cClient) {
 		ChannelClientInfo cTemp = getUser(cClient);
 		if (cTemp == null) { 
 			cTemp = new ChannelClientInfo(myParser, cClient, this);
@@ -344,13 +345,13 @@ public class IRCChannelInfo implements ChannelInfo {
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
-	protected void delClient(final ClientInfo cClient) {
+	protected void delClient(final IRCClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
-			final ClientInfo clTemp = cTemp.getClient();
+			final IRCClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
-			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
+			if (clTemp != myParser.getLocalClient() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
 			}
 			hChannelUserList.remove(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()));

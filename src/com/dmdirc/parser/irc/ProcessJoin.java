@@ -50,7 +50,7 @@ public class ProcessJoin extends IRCProcessor {
 			// :nick!ident@host JOIN (:)#Channel
 			Byte nTemp;
 			if (token.length < 3) { return; }
-			ClientInfo iClient;
+			IRCClientInfo iClient;
 			IRCChannelInfo iChannel;
 			ChannelClientInfo iChannelClient;
 			
@@ -58,13 +58,13 @@ public class ProcessJoin extends IRCProcessor {
 			iChannel = myParser.getChannel(token[token.length-1]);
 			
 			if (iClient == null) { 
-				iClient = new ClientInfo(myParser, token[0]);
+				iClient = new IRCClientInfo(myParser, token[0]);
 				myParser.addClient(iClient);
 			}
 			// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
 			if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
 			if (iChannel != null) {
-				if (iClient == myParser.getMyself()) {
+				if (iClient == myParser.getLocalClient()) {
 					try {
 						if (iChannel.getUser(iClient) != null) {
 							// If we are joining a channel we are already on, fake a part from

@@ -84,8 +84,8 @@ public class Process004005 extends IRCProcessor {
 						// This means that the casemapping is not rfc1459
 						// We have only added ourselves so far (from 001)
 						// We can fix the hashtable easily.
-						myParser.removeClient(myParser.getMyself());
-						myParser.addClient(myParser.getMyself());
+						myParser.removeClient(myParser.getLocalClient());
+						myParser.addClient(myParser.getLocalClient());
 					}
 				} else if (sKey.equals("CHANTYPES")) {
 					myParser.parseChanPrefix();

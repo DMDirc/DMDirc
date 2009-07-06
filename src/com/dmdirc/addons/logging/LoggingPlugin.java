@@ -38,10 +38,10 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -246,7 +246,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			return;
 		}
 		
-		final IRCParser parser = query.getServer().getParser();
+		final Parser parser = query.getServer().getParser();
 		ClientInfo client;
 		
 		if (parser == null) {
@@ -259,7 +259,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		} else {
 			client = parser.getClientInfo(query.getHost());
 			if (client == null) {
-				client = new ClientInfo(parser, query.getHost()).setFake(true);
+				client = new IRCClientInfo(parser, query.getHost()).setFake(true);
 			}
 		}
 		
@@ -312,7 +312,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	protected void handleChannelEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
 		final Channel chan = ((Channel)arguments[0]);
-		final IRCChannelInfo channel = chan.getChannelInfo();
+		final ChannelInfo channel = chan.getChannelInfo();
 		final String filename = getLogFile(channel);
 		
 		final ChannelClientInfo channelClient = (arguments.length > 1 && arguments[1] instanceof ChannelClientInfo) ? (ChannelClientInfo)arguments[1] : null;
@@ -608,8 +608,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		if (obj == null) {
 			file.append("null.log");
-		} else if (obj instanceof IRCChannelInfo) {
-			final IRCChannelInfo channel = (IRCChannelInfo) obj;
+		} else if (obj instanceof ChannelInfo) {
+			final ChannelInfo channel = (ChannelInfo) obj;
 			if (channel.getParser() != null) {
 				addNetworkDir(directory, file, channel.getParser().getNetworkName());
 			}
@@ -783,7 +783,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			final Parser parser = ((Query) target.getContainer()).getServer().getParser();
 			component = parser.getClientInfo(((Query) target.getContainer()).getHost());
 			if (component == null) {
-				component = new ClientInfo(parser, ((Query) target.getContainer()).getHost()).setFake(true);
+				component = new IRCClientInfo(parser, ((Query) target.getContainer()).getHost()).setFake(true);
 			}
 		} else if (target.getContainer() instanceof Server) {
 			component = target.getContainer().getServer().getParser();

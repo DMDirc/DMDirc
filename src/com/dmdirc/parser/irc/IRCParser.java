@@ -23,6 +23,7 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
@@ -207,9 +208,9 @@ class IRCParser implements Parser, Runnable {
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
 	private final Map<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	private final Map<String, IRCChannelInfo> hChannelList = new Hashtable<String, IRCChannelInfo>();
+	private final Map<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
-	private ClientInfo cMyself = new ClientInfo(this, "myself").setFake(true);
+	private IRCClientInfo cMyself = new IRCClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
 	final Map<String, String> h005Info = new Hashtable<String, String>();
 
@@ -596,7 +597,7 @@ class IRCParser implements Parser, Runnable {
 		sServerName = "";
 		sNetworkName = "";
 		lastLine = "";
-		cMyself = new ClientInfo(this, "myself").setFake(true);
+		cMyself = new IRCClientInfo(this, "myself").setFake(true);
 
 		stopPingTimer();
 
@@ -879,7 +880,7 @@ class IRCParser implements Parser, Runnable {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	public ClientInfo getClientInfo(final String sHost) {
-		final String sWho = getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sHost));
+		final String sWho = getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
 	}
@@ -891,9 +892,9 @@ class IRCParser implements Parser, Runnable {
 	 * @return ClientInfo Object for the client.
 	 */
 	public ClientInfo getClientInfoOrFake(final String sHost) {
-		final String sWho = getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sHost));
+		final String sWho = getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
-		else { return new ClientInfo(this, sHost).setFake(true); }
+		else { return new IRCClientInfo(this, sHost).setFake(true); }
 	}
 
 	/** {@inheritDoc} */
@@ -1981,12 +1982,9 @@ class IRCParser implements Parser, Runnable {
 		return pingNeeded.get();
 	}
 
-	/**
-	 * Get a reference to the cMyself object.
-	 *
-	 * @return cMyself reference
-	 */
-	public ClientInfo getMyself() { return cMyself; }
+	/** {@inheritDoc} */
+        @Override
+	public ClientInfo getLocalClient() { return cMyself; }
 
 	/**
 	 * Get the current nickname.
@@ -2028,7 +2026,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	public void removeClient(final ClientInfo client) {
+	public void removeClient(final IRCClientInfo client) {
 		if (client != cMyself) {
 			forceRemoveClient(client);
 		}
@@ -2040,7 +2038,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	protected void forceRemoveClient(final ClientInfo client) {
+	protected void forceRemoveClient(final IRCClientInfo client) {
 		hClientList.remove(getIRCStringConverter().toLowerCase(client.getNickname()));
 	}
 
@@ -2067,7 +2065,7 @@ class IRCParser implements Parser, Runnable {
 	 */
 	public void clearClients() {
 		hClientList.clear();
-		addClient(getMyself());
+		addClient(getLocalClient());
 	}
 
 	/**
@@ -2086,7 +2084,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to remove
 	 */
-	public void removeChannel(final IRCChannelInfo channel) {
+	public void removeChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.remove(getIRCStringConverter().toLowerCase(channel.getName()));
 		}
@@ -2103,14 +2101,11 @@ class IRCParser implements Parser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the known channels as a collection.
-	 *
-	 * @return Known channels as a collection
-	 */
-	public Collection<IRCChannelInfo> getChannels() {
+	/** {@inheritDoc} */
+        @Override
+	public Collection<ChannelInfo> getChannels() {
 		synchronized (hChannelList) {
-			return hChannelList.values();
+                    return hChannelList.values();
 		}
 	}
 

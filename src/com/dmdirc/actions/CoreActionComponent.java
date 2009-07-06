@@ -30,8 +30,8 @@ import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
@@ -128,7 +128,7 @@ public enum CoreActionComponent implements ActionComponent {
                 
                 return "null";
             } else {
-                return server.getParser().getMyself().getNickname();
+                return server.getParser().getLocalClient().getNickname();
             }
         }
         /** {@inheritDoc} */

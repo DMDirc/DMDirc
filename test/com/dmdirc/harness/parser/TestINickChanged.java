@@ -28,10 +28,10 @@ import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 public class TestINickChanged implements NickChangeListener {
 
     public String oldNick = null;
-    public ClientInfo client;
+    public IRCClientInfo client;
 
     @Override
-    public void onNickChanged(IRCParser tParser, ClientInfo cClient,
+    public void onNickChanged(IRCParser tParser, IRCClientInfo cClient,
                               String sOldNick) {
         oldNick = sOldNick;
         client = cClient;

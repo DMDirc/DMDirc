@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.interfaces;
 
+import java.util.Collection;
+
 /**
  * A parser connects to a back-end chat system and handles all communication
  * with it.
@@ -63,9 +65,16 @@ public interface Parser extends Runnable {
     ChannelInfo getChannel(String channel);
 
     /**
-     * Set the current Value of bindIP.
+     * Retrieves a collection of all known channels.
      *
-     * @param ip New value to set bindIP
+     * @return A collection of known channels
+     */
+    Collection<ChannelInfo> getChannels();
+
+    /**
+     * Set the IP address that this parser will bind to
+     *
+     * @param ip IP to bind to
      */
     void setBindIP(String ip);
 
@@ -77,5 +86,13 @@ public interface Parser extends Runnable {
      * @return The maximum length of the message
      */
     int getMaxLength(final String type, final String target);
+
+    /**
+     * Returns a {@link ClientInfo} object which represents the locally
+     * connected client.
+     *
+     * @return An info object for the local client
+     */
+    ClientInfo getLocalClient();
 
 }

@@ -22,8 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.irc.ClientInfo;
-
+import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.Date;
 
 /**

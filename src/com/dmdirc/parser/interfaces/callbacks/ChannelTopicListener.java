@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -41,5 +41,5 @@ public interface ChannelTopicListener extends CallbackInterface {
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
 	 * @see com.dmdirc.parser.irc.ProcessTopic#callChannelTopic
 	 */
-	void onChannelTopic(Parser tParser, IRCChannelInfo cChannel, boolean bIsJoinTopic);
+	void onChannelTopic(Parser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 }

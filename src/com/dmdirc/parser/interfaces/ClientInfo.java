@@ -20,23 +20,15 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.interfaces.callbacks;
+package com.dmdirc.parser.interfaces;
 
-import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.Parser;
-
-/** 
- * Called When we join a channel.
- * We are NOT added as a channelclient until after the names reply
+/**
+ * Holds information about a client, and provides various methods for
+ * interacting with that client.
+ *
+ * @author chris
+ * @since 0.6.3m2
  */
-public interface ChannelSelfJoinListener extends CallbackInterface {
-	/**
-	 * Called When we join a channel.
-	 * We are NOT added as a channelclient until after the names reply
-	 * 
-	 * @param tParser Reference to the parser object that made the callback.
-	 * @param cChannel Channel Object
-	 * @see com.dmdirc.parser.irc.ProcessJoin#callChannelSelfJoin
-	 */
-	void onChannelSelfJoin(Parser tParser, ChannelInfo cChannel);
+public interface ClientInfo {
+
 }

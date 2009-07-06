@@ -42,22 +42,22 @@ public class Process001 extends IRCProcessor {
 		final String sNick = token[2];
 				
 		// myself will be fake if we havn't recieved a 001 yet
-		if (myParser.getMyself().isFake()) {
+		if (myParser.getLocalClient().isFake()) {
 			// Update stored information
-			myParser.getMyself().setUserBits(sNick, true, true);
-			myParser.getMyself().setFake(false);
-			myParser.addClient(myParser.getMyself());
+			myParser.getLocalClient().setUserBits(sNick, true, true);
+			myParser.getLocalClient().setFake(false);
+			myParser.addClient(myParser.getLocalClient());
 		} else {
 			// Another 001? if nicknames change then we need to update the hashtable
-			if (!myParser.getMyself().getNickname().equalsIgnoreCase(sNick)) {
+			if (!myParser.getLocalClient().getNickname().equalsIgnoreCase(sNick)) {
 				// Nick changed, remove old me
-				myParser.forceRemoveClient(myParser.getMyself());
+				myParser.forceRemoveClient(myParser.getLocalClient());
 				/// Update stored information
-				myParser.getMyself().setUserBits(sNick, true, true);
+				myParser.getLocalClient().setUserBits(sNick, true, true);
 				// Check that we don't already know someone by this name
-				if (myParser.getClientInfo(myParser.getMyself().getNickname()) == null) {
+				if (myParser.getClientInfo(myParser.getLocalClient().getNickname()) == null) {
 					// And add to list
-					myParser.addClient(myParser.getMyself());
+					myParser.addClient(myParser.getLocalClient());
 				} else {
 					// Someone else already know? this is bad!
 					myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "001 overwrites existing client?", myParser.getLastLine()));

@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.FakableArgument;
 import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
@@ -51,7 +51,7 @@ public interface ChannelModeNoticeListener extends CallbackInterface {
 	 */
 	void onChannelModeNotice(@FakableSource Parser tParser,
             char prefix,
-            @FakableSource IRCChannelInfo cChannel,
+            @FakableSource ChannelInfo cChannel,
             @FakableArgument ChannelClientInfo cChannelClient,
             String sMessage,
             @FakableSource String sHost);

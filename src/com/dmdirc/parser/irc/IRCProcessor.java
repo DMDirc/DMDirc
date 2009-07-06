@@ -103,7 +103,7 @@ public abstract class IRCProcessor {
 	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	protected final ClientInfo getClientInfo(final String sWho) {
+	protected final IRCClientInfo getClientInfo(final String sWho) {
 		return myParser.getClientInfo(sWho);
 	}
 	

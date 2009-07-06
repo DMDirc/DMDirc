@@ -22,9 +22,9 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -42,5 +42,5 @@ public interface ChannelJoinListener extends CallbackInterface {
 	 * @param cChannelClient ChannelClient object for new person
 	 * @see com.dmdirc.parser.irc.ProcessJoin#callChannelJoin
 	 */
-	void onChannelJoin(Parser tParser, IRCChannelInfo cChannel, ChannelClientInfo cChannelClient);
+	void onChannelJoin(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient);
 }

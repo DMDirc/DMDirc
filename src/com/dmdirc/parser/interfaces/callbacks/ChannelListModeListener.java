@@ -22,8 +22,8 @@
 
 package com.dmdirc.parser.interfaces.callbacks;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
@@ -40,5 +40,5 @@ public interface ChannelListModeListener extends CallbackInterface {
 	 * @param cChannel Channel which the ListModes reply is for
 	 * @see com.dmdirc.parser.irc.ProcessListModes#callChannelGotListModes
 	 */
-	void onChannelGotListModes(Parser tParser, IRCChannelInfo cChannel);
+	void onChannelGotListModes(Parser tParser, ChannelInfo cChannel);
 }

@@ -24,7 +24,7 @@ package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.Server;
 import com.dmdirc.actions.interfaces.ActionMetaType;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Defines server-related events.

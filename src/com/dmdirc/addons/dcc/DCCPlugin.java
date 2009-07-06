@@ -41,8 +41,8 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
 
@@ -372,7 +372,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 								if ((!token.isEmpty() && !send.getToken().isEmpty()) && (!token.equals(send.getToken()))) {
 									continue;
 								}
-								final IRCParser parser = ((Server)arguments[0]).getParser();
+								final Parser parser = ((Server)arguments[0]).getParser();
 								final String nickname = ((ClientInfo)arguments[1]).getNickname();
 								if (ctcpData[0].equalsIgnoreCase("resume")) {
 									parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position)+token);
@@ -516,7 +516,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {
-			final String myHost = parser.getMyself().getHost();
+			final String myHost = parser.getLocalClient().getHost();
 			if (!myHost.isEmpty()) {
 				try {
 					return InetAddress.getByName(myHost).getHostAddress();

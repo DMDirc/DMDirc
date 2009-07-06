@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ import java.util.Map;
  * @author Chris Smith
  * @see IRCParser
  */
-public final class ClientInfo {
+class IRCClientInfo implements ClientInfo {
 	/** Known nickname of client. */
 	private String sNickname = "";
 	/** Known ident of client. */
@@ -69,7 +70,7 @@ public final class ClientInfo {
 	 * @param sHostmask Hostmask parsed by parseHost to get nickname
 	 * @see ClientInfo#parseHost
 	 */
-	public ClientInfo(final IRCParser tParser, final String sHostmask) { 
+	public IRCClientInfo(final IRCParser tParser, final String sHostmask) {
 		myMap = new HashMap<Object, Object>();
 		setUserBits(sHostmask, true);
 		myParser = tParser;
@@ -112,7 +113,7 @@ public final class ClientInfo {
 	 * @param newValue new value for isFake - True if this is a fake client, else false
 	 * @return this Object
 	 */
-	public ClientInfo setFake(final boolean newValue) { bIsFake = newValue; return this; }
+	public IRCClientInfo setFake(final boolean newValue) { bIsFake = newValue; return this; }
 
 	/**
 	 * Get a nickname of a user from a hostmask.

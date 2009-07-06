@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class ProcessQuit extends IRCProcessor {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
-		ClientInfo iClient;
+		IRCClientInfo iClient;
 		ChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
@@ -55,12 +57,12 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		ArrayList<IRCChannelInfo> channelList = new ArrayList<IRCChannelInfo>(myParser.getChannels());
-		for (IRCChannelInfo iChannel : channelList) {
+		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
+		for (ChannelInfo iChannel : channelList) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
-				if (iClient == myParser.getMyself()) {
+				if (iClient == myParser.getLocalClient()) {
 					iChannel.emptyChannel();
 					myParser.removeChannel(iChannel);
 				} else {
@@ -71,7 +73,7 @@ public class ProcessQuit extends IRCProcessor {
 		}
 
 		if (myParser.removeAfterCallback) { callQuit(iClient,sReason); }
-		if (iClient == myParser.getMyself()) {
+		if (iClient == myParser.getLocalClient()) {
 			myParser.clearClients();
 		} else {
 			myParser.removeClient(iClient);
@@ -88,7 +90,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param sReason Quit reason
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelQuit(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		return getCallbackManager().getCallbackType(ChannelQuitListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	

@@ -32,7 +32,7 @@ public class TestIQuit implements ChannelQuitListener, QuitListener {
 
     public ChannelClientInfo cclient;
 
-    public ClientInfo client;
+    public IRCClientInfo client;
 
     public String reason;
 
@@ -46,7 +46,7 @@ public class TestIQuit implements ChannelQuitListener, QuitListener {
         this.count++;
     }
 
-    public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason) {
+    public void onQuit(IRCParser tParser, IRCClientInfo cClient, String sReason) {
         this.client = cClient;
         this.reason = sReason;
         this.count++;

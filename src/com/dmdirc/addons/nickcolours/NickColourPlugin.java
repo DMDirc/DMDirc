@@ -33,9 +33,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -67,7 +67,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type.equals(CoreActionType.CHANNEL_GOTNAMES)) {
-            final IRCChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
+            final ChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
             final String network = ((Channel) arguments[0]).getServer().getNetwork();
             
             for (ChannelClientInfo client : chanInfo.getChannelClients()) {
@@ -88,7 +88,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      */
     private void colourClient(final String network, final ChannelClientInfo client) {
         final Map map = client.getMap();
-        final ClientInfo myself = client.getClient().getParser().getMyself();
+        final ClientInfo myself = client.getClient().getParser().getLocalClient();
         final String nickOption1 = "color:"
                 + client.getClient().getParser().getIRCStringConverter().toLowerCase(network + ":" + client.getNickname());
         final String nickOption2 = "color:"
