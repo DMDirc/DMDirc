@@ -82,10 +82,10 @@ public final class ChannelModesPane extends JPanel {
     private void initModesPanel() {
         final Parser parser = channel.getServer().getParser();
 
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final String booleanModes = parser.getBooleanChannelModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
@@ -187,10 +187,10 @@ public final class ChannelModesPane extends JPanel {
     public void setChangedBooleanModes() {
         boolean changed = false;
         final Parser parser = channel.getServer().getParser();
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final String booleanModes = parser.getBooleanChannelModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
 
         for (int i = 0; i < booleanModes.length();
                 i++) {

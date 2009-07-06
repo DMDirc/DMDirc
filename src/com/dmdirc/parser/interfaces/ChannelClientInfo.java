@@ -31,7 +31,7 @@ import java.util.Map;
  * @since 0.6.3m2
  * @author chris
  */
-public interface ChannelClientInfo {
+public interface ChannelClientInfo extends Comparable<ChannelClientInfo> {
 
     /**
      * Retrieves the {@link ClientInfo} object which this object corresponds
@@ -48,6 +48,22 @@ public interface ChannelClientInfo {
      * @return The corresponding ChannelInfo object
      */
     ChannelInfo getChannel();
+
+    /**
+     * Returns the most important mode that the client holds in its prefix
+     * form (e.g. @, +, etc).
+     *
+     * @return The most important mode the client holds, or an empty string
+     */
+    String getImportantModePrefix();
+
+    /**
+     * Returns the most important mode that the client holds in its textual
+     * form (e.g. o, v, etc)
+     *
+     * @return The most important mode the client holds, or an empty string
+     */
+    String getImportantMode();
 
     /**
      * Retrieves a {@link Map} which can be used to store arbitrary data

@@ -37,6 +37,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ParserError;
@@ -734,8 +735,13 @@ public class Server extends WritableFrameContainer implements Serializable {
 
         final MyInfo myInfo = buildMyInfo();
         final Parser myParser = parserFactory.getParser(myInfo, serverInfo);
-        myParser.setTrustManager(new TrustManager[]{certManager});
-        myParser.setKeyManagers(certManager.getKeyManager());
+
+        if (myParser instanceof SecureParser) {
+            final SecureParser secureParser = (SecureParser) myParser;
+            secureParser.setTrustManagers(new TrustManager[]{certManager});
+            secureParser.setKeyManagers(certManager.getKeyManager());
+        }
+
         myParser.setRemoveAfterCallback(true);
         myParser.setCreateFake(true);
         myParser.setIgnoreList(ignoreList);
@@ -1385,9 +1391,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     private void checkModeAliases() {
         // Check we have mode aliases
-        final String modes = parser.getBoolChanModes() + parser.getListChanModes()
-                + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
-        final String umodes = parser.getUserModeString();
+        final String modes = parser.getBooleanChannelModes() + parser.getListChannelModes()
+                + parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
+        final String umodes = parser.getUserModes();
 
         final StringBuffer missingModes = new StringBuffer();
         final StringBuffer missingUmodes = new StringBuffer();

@@ -357,7 +357,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				
 				appendLine(filename, "*** Topic is: %s", channel.getTopic());
-				appendLine(filename, "*** Set at: %s on %s by %s", timeFormat.format(1000 * channel.getTopicTime()), dateFormat.format(1000 * channel.getTopicTime()), channel.getTopicUser());
+				appendLine(filename, "*** Set at: %s on %s by %s", timeFormat.format(1000 * channel.getTopicTime()), dateFormat.format(1000 * channel.getTopicTime()), channel.getTopicSetter());
 				break;
 			case CHANNEL_TOPICCHANGE:
 				appendLine(filename, "*** %s Changed the topic to: %s", getDisplayName(channelClient), message);

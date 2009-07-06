@@ -388,11 +388,9 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds since epoch, not milliseconds)
 	 */
 	protected void setTopicTime(final long nNewTime) { nTopicTime = nNewTime; }
-	/**
-	 * Get the topic time.
-	 *
-	 * @return Unixtimestamp time for the topic (Seconds since epoch, not milliseconds)
-	 */
+
+        /** {@inheritDoc} */
+        @Override
 	public long getTopicTime() { return nTopicTime; }	
 	
 	/**
@@ -412,12 +410,10 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param sNewUser New user who set the topic (nickname if gotten on connect, full host if seen by parser)
 	 */	
 	protected void setTopicUser(final String sNewUser) { sTopicUser = sNewUser; }
-	/**
-	 * Get the topic creator.
-	 *
-	 * @return user who set the topic (nickname if gotten on connect, full host if seen by parser)
-	 */	
-	public String getTopicUser() { return sTopicUser; }
+	
+        /** {@inheritDoc} */
+        @Override
+	public String getTopicSetter() { return sTopicUser; }
 	
 	/**
 	 * Set the channel modes (as an integer).
@@ -432,12 +428,9 @@ class IRCChannelInfo implements ChannelInfo {
 	 */	
 	public long getMode() { return nModes; }	
 	
-	/**
-	 * Get the channel modes (as a string representation).
-	 *
-	 * @return string representing modes. (boolean and non-list)
-	 */	
-	public String getModeStr() {
+	/** {@inheritDoc} */
+        @Override
+	public String getModes() {
 		final StringBuilder sModes = new StringBuilder("+");
 		final StringBuilder sModeParams = new StringBuilder();
 		String sTemp = "";

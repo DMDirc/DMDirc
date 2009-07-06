@@ -145,24 +145,16 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 		return 0;
 	}
 	
-	/**
-	 * Get the most important mode this client has (o, v etc), or an empty
-     * string if the client has no modes.
-	 *
-	 * @return String representing the most important mode.
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getImportantMode() {
 		String sModes = this.getChanModeStr(false);
 		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
-	/**
-	 * Get the most important prefix this client has (@, + etc), or an empty
-     * string if the client has no modes.
-	 *
-	 * @return String representing the most important mode.
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getImportantModePrefix() {
 		String sModes = this.getChanModeStr(true);
 		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
@@ -194,7 +186,18 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @+Nickname)
 	 */
-	public String toFullString() { return this.getChanModeStr(true) + this.getNickname(); }	
+	public String toFullString() { return this.getChanModeStr(true) + this.getNickname(); }
+
+        /** {@inheritDoc} */
+        @Override
+        public int compareTo(final ChannelClientInfo arg0) {
+            if (arg0 instanceof IRCChannelClientInfo) {
+                final IRCChannelClientInfo other = (IRCChannelClientInfo) arg0;
+                return (int) (getImportantModeValue() - other.getImportantModeValue());
+            }
+
+            return 0;
+        }
 
 }
 

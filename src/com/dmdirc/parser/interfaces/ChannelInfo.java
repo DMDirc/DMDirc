@@ -48,6 +48,29 @@ public interface ChannelInfo {
     String getTopic();
 
     /**
+     * Retrieves the time the current topic was set, as a unix timestamp.
+     *
+     * @return The time the current topic was set
+     */
+    long getTopicTime();
+
+    /**
+     * Retrieves a textual description of the person or entity that set the
+     * channel topic.
+     *
+     * @return The person that set the current topic
+     */
+    String getTopicSetter();
+
+    /**
+     * Retrieves a textual representation of the modes currently set on this
+     * channel. This includes boolean and parameter modes, but not list modes.
+     *
+     * @return The current channel modes
+     */
+    String getModes();
+
+    /**
      * Sends the specified message to this channel.
      *
      * @param message The message to be sent

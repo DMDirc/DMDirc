@@ -55,7 +55,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, isSilent, "channelNoTopic", cChannel);
             } else {
-                final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
+                final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicSetter());
 
                 sendLine(origin, isSilent, "channelTopicDiscovered",
                         "", parts[0], parts[1], parts[2], cChannel.getTopic(),

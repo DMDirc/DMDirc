@@ -67,18 +67,17 @@ public final class NicklistComparator implements Comparator<ChannelClientInfo>,
      * @return a negative integer, zero, or a positive integer as the first
      * argument is less than, equal to, or greater than the second.
      */
+    @Override
     public int compare(final ChannelClientInfo client1,
             final ChannelClientInfo client2) {
         final String nickname1 = client1.getClient().getNickname();
         final String nickname2 = client2.getClient().getNickname();
         
         if (sortByMode) {
-            if (client1.getImportantModeValue()
-            > client2.getImportantModeValue()) {
-                return -1;
-            } else if (client1.getImportantModeValue()
-            < client2.getImportantModeValue()) {
-                return 1;
+            final int modeCom = client2.compareTo(client1);
+
+            if (modeCom != 0) {
+                return modeCom;
             }
         }
         

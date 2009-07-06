@@ -100,7 +100,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getParser().getPrefixModes(); }
+        public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return Server.class; }
@@ -274,7 +274,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_COMCHANS {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().channelCount()); }
+        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().getChannelCount()); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }

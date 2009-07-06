@@ -111,7 +111,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         listModesPanel = new JScrollPane();
         listModesPanels = new ArrayList<JList>();
         listModesArray =
-                channel.getServer().getParser().getListChanModes().toCharArray();
+                channel.getServer().getParser().getListChannelModes().toCharArray();
         existingListItems =
                 new MapList<Character, ChannelListModeItem>();
         listModesMenu =

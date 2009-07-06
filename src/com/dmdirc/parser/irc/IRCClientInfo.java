@@ -313,12 +313,9 @@ class IRCClientInfo implements LocalClientInfo {
 		return !myChannelClientInfos.isEmpty();
 	}
 	
-	/**
-	 * Check how many channels this client is known on.
-	 *
-	 * @return int with the count of known channels
-	 */	
-	public int channelCount() {
+	/** {@inheritDoc} */
+        @Override
+	public int getChannelCount() {
 		return myChannelClientInfos.size();
 	}
 	

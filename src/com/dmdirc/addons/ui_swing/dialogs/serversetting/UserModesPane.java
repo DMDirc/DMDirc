@@ -79,7 +79,7 @@ public final class UserModesPane extends JPanel {
     private void initModesPanel() {
         final Parser parser = server.getParser();
 
-        final String userModes = parser.getUserModeString();
+        final String userModes = parser.getUserModes();
         final String ourUserModes = parser.getLocalClient().getUserModeStr();
 
         modeCheckBoxes =
@@ -144,7 +144,7 @@ public final class UserModesPane extends JPanel {
         }
         boolean changed = false;
         final Parser parser = server.getParser();
-        final String userModes = parser.getUserModeString();
+        final String userModes = parser.getUserModes();
         final String ourUserModes = parser.getLocalClient().getUserModeStr();
 
         for (int i = 0; i < userModes.length();

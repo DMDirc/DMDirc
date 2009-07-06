@@ -113,14 +113,14 @@ public final class ChannelEventHandler extends EventHandler implements
         checkParser(tParser);
 
         final Topic newTopic = new Topic(cChannel.getTopic(),
-                cChannel.getTopicUser(), cChannel.getTopicTime());
+                cChannel.getTopicSetter(), cChannel.getTopicTime());
 
         if (bIsJoinTopic) {
             owner.doNotification("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
                     newTopic);
         } else {
             owner.doNotification("channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
-                    cChannel.getChannelClient(cChannel.getTopicUser(), true), cChannel.getTopic());
+                    cChannel.getChannelClient(cChannel.getTopicSetter(), true), cChannel.getTopic());
         }
 
         owner.addTopic(newTopic);

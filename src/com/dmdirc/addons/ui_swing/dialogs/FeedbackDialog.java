@@ -234,12 +234,12 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
                         append(" - ");
                 serverInfo.append(server.getParser().getServerSoftwareType()).append("\n");
                 serverInfo.append("Modes: ").
-                        append(server.getParser().getBoolChanModes()).
+                        append(server.getParser().getBooleanChannelModes()).
                         append(" ");
-                serverInfo.append(server.getParser().getListChanModes()).append(" ");
-                serverInfo.append(server.getParser().getSetOnlyChanModes()).
+                serverInfo.append(server.getParser().getListChannelModes()).append(" ");
+                serverInfo.append(server.getParser().getParameterChannelModes()).
                         append(" ");
-                serverInfo.append(server.getParser().getSetUnsetChanModes());
+                serverInfo.append(server.getParser().getDoubleParameterChannelModes());
             }
         }
         if (DMDircCheckbox.isSelected()) {

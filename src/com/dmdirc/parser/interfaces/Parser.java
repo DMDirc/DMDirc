@@ -23,7 +23,9 @@
 package com.dmdirc.parser.interfaces;
 
 import com.dmdirc.parser.irc.IRCStringConverter;
+import com.dmdirc.parser.irc.RegexStringList;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
+
 import java.util.Collection;
 
 /**
@@ -158,6 +160,57 @@ public interface Parser extends Runnable {
      * @return This parser's server's software type
      */
     String getServerSoftwareType();
+
+    /**
+     * Retrieves an alphabetically-sorted list of boolean channel modes.
+     * Boolean channel modes may only be set or unset, and do not take any
+     * arguments.
+     *
+     * @return A string containing a list of channel mode characters
+     */
+    String getBooleanChannelModes();
+
+    /**
+     * Retrieves an alphabetically-sorted list of channel list modes.
+     * List channel modes may be set multiple times with different arguments,
+     * building up a "list" of values.
+     *
+     * @return A string containing a list of channel mode characters
+     */
+    String getListChannelModes();
+
+    /**
+     * Retrieves an alphabetically-sorted list of 'parameter' channel modes.
+     * Parameter channel modes may only be set or unset, and require a
+     * parameter to be specified when they are set (but not when unset).
+     *
+     * @return A string containing a list of channel mode characters
+     */
+    String getParameterChannelModes();
+
+    /**
+     * Retrieves an alphabetically-sorted list of 'double parameter' channel
+     * modes. Double parameter channel modes may only be set or unset, and
+     * require a parameter to be specified both when they are set and when
+     * they are unset.
+     *
+     * @return A string containing a list of channel mode characters
+     */
+    String getDoubleParameterChannelModes();
+
+    /**
+     * Retrieves a list of user modes in no particular order.
+     *
+     * @return A string containing a list of user mode characters
+     */
+    String getUserModes();
+
+    /**
+     * Retrieves a list of channel user modes, in descending priority order.
+     * 
+     * @return A string containing a list of channel user mode characters
+     */
+    String getChannelUserModes();
     
     /**
      * Retrieves the object which is responsible for managing callbacks for
@@ -199,4 +252,19 @@ public interface Parser extends Runnable {
      * @return The last line received
      */
     String getLastLine();
+
+    /**
+     * Sets the ignore list which should be used by this parser.
+     *
+     * @param ignoreList The new ignore list to be used by the parser
+     */
+    void setIgnoreList(RegexStringList ignoreList);
+
+    /**
+     * Retrieves the ignore list which is currently in use by this parser.
+     *
+     * @return This parser's ignore list
+     */
+    RegexStringList getIgnoreList();
+
 }

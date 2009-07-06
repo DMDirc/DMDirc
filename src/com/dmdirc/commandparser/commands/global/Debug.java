@@ -294,10 +294,10 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
                     + server.getParser().getServerSoftware() + " - "
                     + server.getParser().getServerSoftwareType());
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Modes: "
-                    + server.getParser().getBoolChanModes() + " "
-                    + server.getParser().getListChanModes() + " "
-                    + server.getParser().getSetOnlyChanModes() + " "
-                    + server.getParser().getSetUnsetChanModes());
+                    + server.getParser().getBooleanChannelModes() + " "
+                    + server.getParser().getListChannelModes() + " "
+                    + server.getParser().getParameterChannelModes() + " "
+                    + server.getParser().getDoubleParameterChannelModes());
         }
     }
     

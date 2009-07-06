@@ -22,65 +22,31 @@
 
 package com.dmdirc.parser.interfaces;
 
-import java.util.Map;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
 
 /**
- * Holds information about a client, and provides various methods for
- * interacting with that client.
+ * A {@link SecureParser} is a specialised {@link Parser} that can connect
+ * to secure (SSL-enabled) backends.
  *
- * @author chris
  * @since 0.6.3m2
+ * @author chris
  */
-public interface ClientInfo {
+public interface SecureParser extends Parser {
 
     /**
-     * Retrieves the nickname or display name used by this client.
+     * Sets the trust managers which should be used to determine if a server
+     * certificate is trusted by the client.
      *
-     * @return This client's nickname
+     * @param managers The new trust managers to use
      */
-    String getNickname();
+    void setTrustManagers(TrustManager[] managers);
 
     /**
-     * Retrieves the username or ident used by this client.
+     * Sets the key managers which should be used to supply client certificates.
      *
-     * @return This client's username
+     * @param managers The new key managers to use
      */
-    String getUsername();
+    void setKeyManagers(KeyManager[] managers);
 
-    /**
-     * Retrieves the hostname that this client is connecting from.
-     *
-     * @return This client's hostname
-     */
-    String getHostname();
-
-    /**
-     * Retrieves the full/real name of the client.
-     *
-     * @return This client's real name
-     */
-    String getRealname();
-
-    /**
-     * Retrieves the number of channels that this client is known to be on.
-     *
-     * @return The number of channels the client is known to be on
-     */
-    int getChannelCount();
-
-    /**
-     * Retrieves a {@link Map} which can be used to store arbitrary data
-     * about the client.
-     *
-     * @return A map used for storing arbitrary data
-     */
-    Map<Object, Object> getMap();
-
-    /**
-     * Retrieves the parser which created this ClientInfo.
-     *
-     * @return This ClientInfo's parser
-     */
-    Parser getParser();
-    
 }

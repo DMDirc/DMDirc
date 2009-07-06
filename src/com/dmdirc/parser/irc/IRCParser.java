@@ -23,7 +23,7 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
@@ -70,7 +70,7 @@ import javax.net.ssl.X509TrustManager;
  *
  * @author Shane Mc Cormack
  */
-class IRCParser implements Parser, Runnable {
+class IRCParser implements SecureParser, Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -396,32 +396,20 @@ class IRCParser implements Parser, Runnable {
 	 */
 	public TrustManager[] getTrustManager() { return myTrustManager; }
 
-	/**
-	 * Replace the current TrustManager for SSL Sockets with a new one.
-	 *
-	 * @param newTrustManager Replacement TrustManager for SSL Sockets.
-	 */
-	public void setTrustManager(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
+	/** {@inheritDoc} */
+        @Override
+	public void setTrustManagers(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
 
-	/**
-	 * Replace the current KeyManagers for SSL Sockets with a new set.
-	 *
-	 * @param newKeyManagers Replacement KeyManagers for SSL Sockets.
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void setKeyManagers(final KeyManager[] newKeyManagers) { myKeyManagers = newKeyManagers; }
 
-	/**
-	 * Get a reference to the ignorelist.
-	 *
-	 * @return a reference to the ignorelist
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public RegexStringList getIgnoreList() { return myIgnoreList; }
 
-	/**
-	 * Replaces the current ignorelist with a new one.
-	 *
-	 * @param ignoreList Replacement ignorelist
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void setIgnoreList(final RegexStringList ignoreList) { myIgnoreList = ignoreList; }
 
 	//---------------------------------------------------------------------------
@@ -1190,7 +1178,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @return All the currently known usermodes
 	 */
-	public String getPrefixModes() {
+	public String getChannelUserModes() {
 		if (h005Info.containsKey("PREFIXSTRING")) {
 			return h005Info.get("PREFIXSTRING");
 		} else {
@@ -1198,13 +1186,9 @@ class IRCParser implements Parser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the known boolean chanmodes in alphabetical order.
-	 * Modes are returned in alphabetic order
-	 *
-	 * @return All the currently known boolean modes
-	 */
-	public String getBoolChanModes() {
+	/** {@inheritDoc} */
+        @Override
+	public String getBooleanChannelModes() {
 		final char[] modes = new char[hChanModesBool.size()];
 		int i = 0;
 		for (char mode : hChanModesBool.keySet()) {
@@ -1215,33 +1199,21 @@ class IRCParser implements Parser, Runnable {
 		return new String(modes);
 	}
 
-	/**
-	 * Get the known List chanmodes.
-	 * Modes are returned in alphabetical order
-	 *
-	 * @return All the currently known List modes
-	 */
-	public String getListChanModes() {
+	/** {@inheritDoc} */
+        @Override
+	public String getListChannelModes() {
 		return getOtherModeString(MODE_LIST);
 	}
 
-	/**
-	 * Get the known Set-Only chanmodes.
-	 * Modes are returned in alphabetical order
-	 *
-	 * @return All the currently known Set-Only modes
-	 */
-	public String getSetOnlyChanModes() {
+	/** {@inheritDoc} */
+        @Override
+	public String getParameterChannelModes() {
 		return getOtherModeString(MODE_SET);
 	}
 
-	/**
-	 * Get the known Set-Unset chanmodes.
-	 * Modes are returned in alphabetical order
-	 *
-	 * @return All the currently known Set-Unset modes
-	 */
-	public String getSetUnsetChanModes() {
+	/** {@inheritDoc} */
+        @Override
+	public String getDoubleParameterChannelModes() {
 		return getOtherModeString((byte) (MODE_SET + MODE_UNSET));
 	}
 
@@ -1271,7 +1243,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @return All the currently known usermodes (returns "" if usermodes are unknown)
 	 */
-	public String getUserModeString() {
+	public String getUserModes() {
 		if (h005Info.containsKey("USERMODES")) {
 			return h005Info.get("USERMODES");
 		} else {

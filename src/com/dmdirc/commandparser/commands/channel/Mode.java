@@ -57,7 +57,7 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
         final ChannelInfo cChannel = channel.getChannelInfo();
 
         if (args.getArguments().length == 0) {
-            sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModeStr(), cChannel);
+            sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModes(), cChannel);
         } else {
             server.getParser().sendRawMessage("MODE " + cChannel + " " + args.getArgumentsAsString());
         }
