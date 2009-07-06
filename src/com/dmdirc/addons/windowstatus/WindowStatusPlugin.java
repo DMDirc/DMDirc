@@ -38,7 +38,7 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCClientInfo;
 import com.dmdirc.plugins.Plugin;
@@ -132,7 +132,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(chan.getName());
 			textString.append(" - Nicks: " + chan.getUserCount() + " (");
 
-			for (ChannelClientInfo client : chan.getChannelClients()) {
+			for (IRCChannelClientInfo client : chan.getChannelClients()) {
 				final Long im = client.getImportantModeValue();
 
 				if (!names.containsKey(im)) {

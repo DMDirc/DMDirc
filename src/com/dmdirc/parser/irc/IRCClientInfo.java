@@ -59,7 +59,7 @@ class IRCClientInfo implements ClientInfo {
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
 	/** List of ChannelClientInfos that point to this */
-	private final Map<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
+	private final Map<String, IRCChannelClientInfo> myChannelClientInfos = new Hashtable<String, IRCChannelClientInfo>();
 	/** Modes waiting to be sent to the server. */
 	private final List<String> lModeQueue = new LinkedList<String>();
 
@@ -297,7 +297,7 @@ class IRCClientInfo implements ClientInfo {
 	 *
 	 * @param cci ChannelClientInfo to add as a known reference
 	 */	
-	public void addChannelClientInfo(final ChannelClientInfo cci) {
+	public void addChannelClientInfo(final IRCChannelClientInfo cci) {
 		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
 		if (!myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.put(key, cci);
@@ -309,7 +309,7 @@ class IRCClientInfo implements ClientInfo {
 	 *
 	 * @param cci ChannelClientInfo to remove as a known reference
 	 */	
-	public void delChannelClientInfo(final ChannelClientInfo cci) {
+	public void delChannelClientInfo(final IRCChannelClientInfo cci) {
 		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
 		if (myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.remove(key);
@@ -339,9 +339,9 @@ class IRCClientInfo implements ClientInfo {
 	 *
 	 * @return int with the count of known channels
 	 */	
-	public List<ChannelClientInfo> getChannelClients() {
-		final List<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
-		for (ChannelClientInfo cci : myChannelClientInfos.values()) {
+	public List<IRCChannelClientInfo> getChannelClients() {
+		final List<IRCChannelClientInfo> result = new ArrayList<IRCChannelClientInfo>();
+		for (IRCChannelClientInfo cci : myChannelClientInfos.values()) {
 			result.add(cci);
 		}
 		return result;

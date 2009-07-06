@@ -2026,7 +2026,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	public void removeClient(final IRCClientInfo client) {
+	public void removeClient(final ClientInfo client) {
 		if (client != cMyself) {
 			forceRemoveClient(client);
 		}
@@ -2038,7 +2038,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	protected void forceRemoveClient(final IRCClientInfo client) {
+	protected void forceRemoveClient(final ClientInfo client) {
 		hClientList.remove(getIRCStringConverter().toLowerCase(client.getNickname()));
 	}
 
@@ -2073,7 +2073,7 @@ class IRCParser implements Parser, Runnable {
 	 *
 	 * @param channel Channel to add
 	 */
-	public void addChannel(final IRCChannelInfo channel) {
+	public void addChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
 			hChannelList.put(getIRCStringConverter().toLowerCase(channel.getName()), channel);
 		}

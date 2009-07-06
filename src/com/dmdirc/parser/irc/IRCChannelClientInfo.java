@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
@@ -35,7 +36,7 @@ import java.util.Map;
  * @author Chris Smith
  * @see IRCParser
  */
-public class ChannelClientInfo {
+class IRCChannelClientInfo implements ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
 	private final ClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
@@ -54,7 +55,7 @@ public class ChannelClientInfo {
 	 * @param client Client that this channelclient represents
 	 * @param channel Channel that owns this channelclient
 	 */	
-	public ChannelClientInfo(final Parser tParser, final ClientInfo client, final ChannelInfo channel) {
+	public IRCChannelClientInfo(final Parser tParser, final ClientInfo client, final ChannelInfo channel) {
 		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		cClient = client;

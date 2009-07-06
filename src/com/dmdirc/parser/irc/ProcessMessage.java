@@ -22,7 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpReplyListener;
@@ -91,7 +93,7 @@ public class ProcessMessage extends IRCProcessor {
 		
 		ChannelClientInfo iChannelClient = null;
 		ChannelInfo iChannel = null;
-		IRCClientInfo iClient = null;
+		ClientInfo iClient = null;
 		// "nick!user@host PRIVMSG #Channel" should be processed as "nick!user@host PRIVMSG #Channel :"
 		if (token.length < 4) {
 			sMessage = "";
@@ -167,7 +169,7 @@ public class ProcessMessage extends IRCProcessor {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+targetName+") that I am not on.", myParser.getLastLine()));
 				return;
 			}
-			if (iClient != null) { iChannelClient = iChannel.getUser(iClient); }
+			if (iClient != null) { iChannelClient = iChannel.getChannelClient(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {

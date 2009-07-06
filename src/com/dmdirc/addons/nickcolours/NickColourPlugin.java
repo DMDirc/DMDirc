@@ -35,7 +35,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -70,13 +70,13 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
             final ChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
             final String network = ((Channel) arguments[0]).getServer().getNetwork();
             
-            for (ChannelClientInfo client : chanInfo.getChannelClients()) {
+            for (IRCChannelClientInfo client : chanInfo.getChannelClients()) {
                 colourClient(network, client);
             }
         } else if (type.equals(CoreActionType.CHANNEL_JOIN)) {
             final String network = ((Channel) arguments[0]).getServer().getNetwork();
             
-            colourClient(network, (ChannelClientInfo) arguments[1]);
+            colourClient(network, (IRCChannelClientInfo) arguments[1]);
         }
     }
     
@@ -86,7 +86,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      * @param network The network to use for the colouring
      * @param client The client to be coloured
      */
-    private void colourClient(final String network, final ChannelClientInfo client) {
+    private void colourClient(final String network, final IRCChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getLocalClient();
         final String nickOption1 = "color:"

@@ -58,7 +58,7 @@ public class ProcessNamesTest {
         assertNotNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
 
-        ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        IRCChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
         assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         

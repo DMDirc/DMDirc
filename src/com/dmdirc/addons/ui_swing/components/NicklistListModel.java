@@ -24,7 +24,7 @@ package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

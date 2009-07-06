@@ -28,9 +28,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -165,14 +165,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         }
 
         final ClientInfo me = server.getParser().getLocalClient();
-        final String[] details = getDetails(channelInfo.getUser(me), showColours);
+        final String[] details = getDetails(channelInfo.getChannelClient(me), showColours);
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
                 final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
                 ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
-                        this, channelInfo.getUser(me), part);
+                        this, channelInfo.getChannelClient(me), part);
 
                 addLine(buff, details[0], details[1], details[2], details[3],
                         part, channelInfo);
@@ -209,7 +209,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
             final StringBuffer buff = new StringBuffer("channelSelfAction");
 
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
-                    this, channelInfo.getUser(me), action);
+                    this, channelInfo.getChannelClient(me), action);
 
             addLine(buff, details[0], details[1], details[2], details[3],
                     window.getTranscoder().encode(action), channelInfo);

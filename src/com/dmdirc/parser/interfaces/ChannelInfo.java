@@ -45,4 +45,22 @@ public interface ChannelInfo {
      */
     void sendMessage(final String message);
 
+    /**
+     * Retrieves a channel client information object corresponding to the
+     * specified client.
+     *
+     * @param client The client whose channel client info object is being requested
+     * @return A {@link ChannelClientInfo} object corresponding to the client
+     */
+    ChannelClientInfo getChannelClient(ClientInfo client);
+
+    /**
+     * Retrieves a channel client information object corresponding to the
+     * specified client.
+     *
+     * @param client The name or other textual representation of the client
+     * @return A {@link ChannelClientInfo} object corresponding to the client
+     */
+    ChannelClientInfo getChannelClient(String client);
+
 }

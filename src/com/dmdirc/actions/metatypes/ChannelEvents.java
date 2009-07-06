@@ -25,7 +25,7 @@ package com.dmdirc.actions.metatypes;
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 import com.dmdirc.actions.interfaces.ActionMetaType;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
 
 /**
  * Defines channel-related events.
@@ -41,13 +41,13 @@ public enum ChannelEvents implements ActionMetaType {
     /** Channel topic event type. */
     CHANNEL_TOPICEVENT(new String[]{"channel", "topic"}, Channel.class, Topic.class),
     /** Channel CTCP type. */
-    CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
+    CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class, IRCChannelClientInfo.class, String.class, String.class),
     /** Channel event with source. */
-    CHANNEL_SOURCED_EVENT(new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
+    CHANNEL_SOURCED_EVENT(new String[]{"channel", "user"}, Channel.class, IRCChannelClientInfo.class),
     /** Chanel event with source and argument. */
-    CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class, ChannelClientInfo.class, String.class),
+    CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class, IRCChannelClientInfo.class, String.class),
     /** Channel event with source and victim. */
-    CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"}, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
+    CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"}, Channel.class, IRCChannelClientInfo.class, IRCChannelClientInfo.class, String.class);
 
     /** The names of the arguments for this meta type. */
     private String[] argNames;

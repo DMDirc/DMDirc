@@ -22,7 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 
 /**
@@ -41,7 +43,7 @@ public class ProcessPart extends IRCProcessor {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
 		if (token.length < 3) { return; }
-		IRCClientInfo iClient;
+		ClientInfo iClient;
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		

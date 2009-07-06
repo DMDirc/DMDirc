@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -70,7 +70,7 @@ public class KickReasonTest {
         final InputWindow tiw = mock(InputWindow.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
+        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getUser("user1")).thenReturn(cci);
@@ -86,7 +86,7 @@ public class KickReasonTest {
         final ConfigManager manager = mock(ConfigManager.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
+        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
 
         when(tiw.getConfigManager()).thenReturn(manager);
         when(channel.getChannelInfo()).thenReturn(channelInfo);

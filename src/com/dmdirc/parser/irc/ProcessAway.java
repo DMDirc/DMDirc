@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
 
 /**
@@ -37,7 +38,7 @@ public class ProcessAway extends IRCProcessor {
 	@Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("301")) {
-			IRCClientInfo iClient = myParser.getClientInfo(token[3]);
+			ClientInfo iClient = myParser.getClientInfo(token[3]);
 			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
 		} else {
 			myParser.getLocalClient().setAwayState(sParam.equals("306"));

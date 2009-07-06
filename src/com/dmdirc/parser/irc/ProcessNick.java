@@ -22,7 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNickChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 
@@ -38,7 +40,7 @@ public class ProcessNick extends IRCProcessor {
 	 */
 	@Override
 	public void process(String sParam, String[] token) {
-		IRCClientInfo iClient;
+		ClientInfo iClient;
 		ChannelClientInfo iChannelClient;
 		String oldNickname;
 		
@@ -64,7 +66,7 @@ public class ProcessNick extends IRCProcessor {
 				
 				for (ChannelInfo iChannel : myParser.getChannels()) {
 					// Find the user (using the old nickname)
-					iChannelClient = iChannel.getUser(oldNickname);
+					iChannelClient = iChannel.getChannelClient(oldNickname);
 					if (iChannelClient != null) {
 						// Rename them. This uses the old nickname (the key in the hashtable)
 						// and the channelClient object has access to the new nickname (by way
@@ -91,7 +93,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @param sOldNick Nickname before change
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelNickChanged(IRCChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
+	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
 		return getCallbackManager().getCallbackType(ChannelNickChangeListener.class).call(cChannel, cChannelClient, sOldNick);
 	}
 	
@@ -103,7 +105,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @param sOldNick Nickname before change
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callNickChanged(IRCClientInfo cClient, String sOldNick) {
+	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
 		return getCallbackManager().getCallbackType(NickChangeListener.class).call(cClient, sOldNick);
 	}
 	

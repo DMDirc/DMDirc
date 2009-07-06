@@ -22,6 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
 
@@ -40,7 +43,7 @@ public class ProcessJoin extends IRCProcessor {
 	public void process(final String sParam, final String[] token) {
 		if (sParam.equals("329")) {
 			if (token.length < 5) { return; }
-			IRCChannelInfo iChannel = myParser.getChannel(token[3]);
+			ChannelInfo iChannel = myParser.getChannel(token[3]);
 			if (iChannel != null) {
 				try {
 					iChannel.setCreateTime(Integer.parseInt(token[4]));
@@ -50,8 +53,8 @@ public class ProcessJoin extends IRCProcessor {
 			// :nick!ident@host JOIN (:)#Channel
 			Byte nTemp;
 			if (token.length < 3) { return; }
-			IRCClientInfo iClient;
-			IRCChannelInfo iChannel;
+			ClientInfo iClient;
+			ChannelInfo iChannel;
 			ChannelClientInfo iChannelClient;
 			
 			iClient = myParser.getClientInfo(token[0]);
@@ -66,7 +69,7 @@ public class ProcessJoin extends IRCProcessor {
 			if (iChannel != null) {
 				if (iClient == myParser.getLocalClient()) {
 					try {
-						if (iChannel.getUser(iClient) != null) {
+						if (iChannel.getChannelClient(iClient) != null) {
 							// If we are joining a channel we are already on, fake a part from
 							// the channel internally, and rejoin.
 							myParser.getProcessingManager().process("PART", token);
@@ -75,7 +78,7 @@ public class ProcessJoin extends IRCProcessor {
 							myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Joined known channel that we wern't already on..", myParser.getLastLine()));
 						}
 					} catch (ProcessorNotFoundException e) { }
-				} else if (iChannel.getUser(iClient) != null) {
+				} else if (iChannel.getChannelClient(iClient) != null) {
 					// Client joined channel that we already know of.
 					return;
 				} else {
@@ -108,7 +111,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param cChannelClient ChannelClient object for new person
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelJoin(final IRCChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
+	protected boolean callChannelJoin(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
 		return getCallbackManager().getCallbackType(ChannelJoinListener.class).call(cChannel, cChannelClient);
 	}
 	
@@ -119,8 +122,8 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param cChannel Channel Object
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelSelfJoin(final IRCChannelInfo cChannel) {
-		return  getCallbackManager().getCallbackType(ChannelSelfJoinListener.class).call(cChannel);
+	protected boolean callChannelSelfJoin(final ChannelInfo cChannel) {
+		return getCallbackManager().getCallbackType(ChannelSelfJoinListener.class).call(cChannel);
 	}
 	
 	/**

@@ -66,7 +66,7 @@ public class ProcessModeTest {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
-        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
 
         parser.injectLine(":server MODE #DMDirc_testing +v luser");
         assertEquals("+", cci.getChanModeStr(true));
@@ -97,7 +97,7 @@ public class ProcessModeTest {
         assertNotNull(parser.getClientInfo("moo"));
         assertEquals(1, parser.getClientInfo("moo").channelCount());
         
-        final ChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
         
         assertEquals("+", cci.getChanModeStr(true));        
         assertEquals("Parser should update ident when it sees a MODE line",
@@ -123,7 +123,7 @@ public class ProcessModeTest {
         assertNotNull(parser.getClientInfo("moo"));
         assertEquals(2, parser.getClientInfo("moo").channelCount());
         
-        final ChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
         
         assertEquals("+", cci.getChanModeStr(true));        
     }   

@@ -471,7 +471,7 @@ public class IRCParserTest {
         parser.injectLine(":bar!me@moo KICK #D nick :Bye!");
 
         verify(ick).onChannelKick(same(parser), (IRCChannelInfo) anyObject(),
-                (ChannelClientInfo) anyObject(), (ChannelClientInfo) anyObject(),
+                (IRCChannelClientInfo) anyObject(), (IRCChannelClientInfo) anyObject(),
                 anyString(), anyString());
     }
 

@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -58,7 +58,7 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
             return;
         }
         
-        final ChannelClientInfo victim = channel.getChannelInfo().getUser(args
+        final ChannelClientInfo victim = channel.getChannelInfo().getChannelClient(args
                 .getArguments()[0]);
         
         if (victim == null) {

@@ -23,8 +23,8 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.irc.ChannelClientInfo;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import java.util.List;
 
 /**

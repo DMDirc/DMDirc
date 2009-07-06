@@ -91,9 +91,9 @@ public class ProcessMode extends IRCProcessor {
 		boolean bPositive = true, bBooleanMode = true;
 		char cPositive = '+';
 		ChannelInfo iChannel;
-		ChannelClientInfo iChannelClientInfo;
+		IRCChannelClientInfo iChannelClientInfo;
 		IRCClientInfo iClient;
-		ChannelClientInfo setterCCI;
+		IRCChannelClientInfo setterCCI;
 		
 		CallbackObject cbSingle = null;
 		CallbackObject cbNonUser = null;
@@ -278,7 +278,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sModes Exact String parsed
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+	protected boolean callChannelModeChanged(ChannelInfo cChannel, IRCChannelClientInfo cChannelClient, String sHost, String sModes) {
 		return getCallbackManager().getCallbackType(ChannelModeChangeListener.class).call(cChannel, cChannelClient, sHost, sModes);
 	}
 	
@@ -293,7 +293,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
+	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, IRCChannelClientInfo cChangedClient, IRCChannelClientInfo cSetByClient, String sHost, String sMode) {
 		return getCallbackManager().getCallbackType(ChannelUserModeChangeListener.class).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
 	}
 	

@@ -20,26 +20,15 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.interfaces.callbacks;
-
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
-import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.callbacks.SpecificCallback;
+package com.dmdirc.parser.interfaces;
 
 /**
- * Called when we go away, or come back.
+ * Describes a client that is present on a channel and provides methods to
+ * interact with it.
+ *
+ * @since 0.6.3m2
+ * @author chris
  */
-@SpecificCallback
-public interface ChannelOtherAwayStateListener extends CallbackInterface {
-	/**
-	 * Called when we go away, or come back.
-	 *
-	 * @param tParser Reference to the parser object that made the callback.
-	 * @param channel Channel this is for
-	 * @param channelClient Client this is for
-	 * @param state Away State (true if away, false if here)
-	 * @see com.dmdirc.parser.irc.ProcessAway#callChannelAwayStateOther
-	 */
-	void onChannelAwayStateOther(Parser tParser, ChannelInfo channel, ChannelClientInfo channelClient, boolean state);
+public interface ChannelClientInfo {
+
 }

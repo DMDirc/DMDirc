@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
@@ -44,7 +45,7 @@ public class ProcessQuit extends IRCProcessor {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
-		IRCClientInfo iClient;
+		ClientInfo iClient;
 		ChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);

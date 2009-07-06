@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.ArrayList;
@@ -123,7 +124,8 @@ class IRCChannelInfo implements ChannelInfo {
 	 * Ask the server for all the list modes for this channel.
 	 */
 	public void requestListModes() {
-		final ChannelClientInfo me = getUser(myParser.getLocalClient());
+		final ChannelClientInfo me = getChannelClient(myParser.getLocalClient());
+                
 		if (me == null) {
 			// In a normal situation of non bouncer-brokenness this won't happen
 			return;
@@ -269,7 +271,7 @@ class IRCChannelInfo implements ChannelInfo {
 	 * Empty the channel (Remove all known channelclients).
 	 */
 	protected void emptyChannel() {
-		IRCClientInfo cTemp = null;
+		ClientInfo cTemp = null;
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
 			cTemp.delChannelClientInfo(client);
@@ -280,14 +282,10 @@ class IRCChannelInfo implements ChannelInfo {
 		hChannelUserList.clear();
 	}
 
-	/**
-	 * Get the ChannelClientInfo object associated with a nickname.
-	 *
-	 * @param sWho Nickname to return channelclient for
-	 * @return ChannelClientInfo object requested, or null if not found
-	 */
-	public ChannelClientInfo getUser(final String sWho) {
-		return getUser(sWho, false);
+	/** {@inheritDoc} */
+        @Override
+	public ChannelClientInfo getChannelClient(final String sWho) {
+		return getChannelClient(sWho, false);
 	}
 	
 	/**
@@ -298,25 +296,21 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @return ChannelClientInfo object requested
 	 * @since 0.6
 	 */
-	public ChannelClientInfo getUser(final String sWho, final boolean createFake) {
+	public ChannelClientInfo getChannelClient(final String sWho, final boolean createFake) {
 		final String who = myParser.getIRCStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
 		if (hChannelUserList.containsKey(who)) {
 			return hChannelUserList.get(who);
 		}
 		if (createFake) {
-			return new ChannelClientInfo(myParser, (new IRCClientInfo(myParser, sWho)).setFake(true), this);
+			return new IRCChannelClientInfo(myParser, (new IRCClientInfo(myParser, sWho)).setFake(true), this);
 		} else {
 			return null;
 		}
 	}
 	
-	/**
-	 * Get the ChannelClientInfo object associated with a ClientInfo object.
-	 *
-	 * @param cWho ClientInfo to return ChannelClient for
-	 * @return ChannelClientInfo object requested, or null if not found
-	 */	
-	public ChannelClientInfo getUser(final ClientInfo cWho) {
+	/** {@inheritDoc} */
+        @Override
+	public ChannelClientInfo getChannelClient(final ClientInfo cWho) {
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			if (client.getClient() == cWho) {
 				return client;
@@ -331,10 +325,10 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */
-	protected ChannelClientInfo addClient(final IRCClientInfo cClient) {
-		ChannelClientInfo cTemp = getUser(cClient);
+	protected ChannelClientInfo addClient(final ClientInfo cClient) {
+		ChannelClientInfo cTemp = getChannelClient(cClient);
 		if (cTemp == null) { 
-			cTemp = new ChannelClientInfo(myParser, cClient, this);
+			cTemp = new IRCChannelClientInfo(myParser, cClient, this);
 			hChannelUserList.put(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
 		}
 		return cTemp;
@@ -345,11 +339,10 @@ class IRCChannelInfo implements ChannelInfo {
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
-	protected void delClient(final IRCClientInfo cClient) {
-		ChannelClientInfo cTemp = null;
-		cTemp = getUser(cClient);
+	protected void delClient(final ClientInfo cClient) {
+		ChannelClientInfo cTemp = getChannelClient(cClient);
 		if (cTemp != null) {
-			final IRCClientInfo clTemp = cTemp.getClient();
+			final ClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
 			if (clTemp != myParser.getLocalClient() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
@@ -365,9 +358,8 @@ class IRCChannelInfo implements ChannelInfo {
 	 * @param cChannelClient ChannelClient object with updated client object
 	 */	
 	protected void renameClient(final String oldNickname, final ChannelClientInfo cChannelClient) {
-		ChannelClientInfo cTemp = null;
 		if (hChannelUserList.containsKey(oldNickname)) {
-			cTemp = hChannelUserList.get(oldNickname);
+			final ChannelClientInfo cTemp = hChannelUserList.get(oldNickname);
 			if (cTemp == cChannelClient) {
 				// Remove the old key
 				hChannelUserList.remove(oldNickname);

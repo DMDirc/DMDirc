@@ -29,12 +29,12 @@ public class TestIChannelPart implements ChannelPartListener {
 
     public IRCChannelInfo channel;
 
-    public ChannelClientInfo cclient;
+    public IRCChannelClientInfo cclient;
 
     public String reason;
 
     public void onChannelPart(IRCParser tParser, IRCChannelInfo cChannel,
-                              ChannelClientInfo cChannelClient, String sReason) {
+                              IRCChannelClientInfo cChannelClient, String sReason) {
         channel = cChannel;
         cclient = cChannelClient;
         reason = sReason;
