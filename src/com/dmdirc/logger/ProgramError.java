@@ -435,9 +435,13 @@ public final class ProgramError implements Serializable {
      * @return Occurrences description
      */
     public String occurrencesString() {
-        final DateFormat format = new SimpleDateFormat("MM/dd hh:mm aa");
-        return count.get() + " occurrences between " + format.format(getDate())
-                + " and " + format.format(getLastDate());
+        final DateFormat format = new SimpleDateFormat("MMM dd hh:mm aa");
+        if (count.get() == 1) {
+            return "1 occurrence on " + format.format(getDate());
+        } else {
+            return count.get() + " occurrences between " + format.format(
+                    getDate()) + " and " + format.format(getLastDate() + ".");
+        }
     }
     
     /** {@inheritDoc} */
