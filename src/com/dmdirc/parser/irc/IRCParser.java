@@ -2062,4 +2062,10 @@ class IRCParser implements SecureParser, Runnable {
 		}
 	}
 
+    /** {@inheritDoc} */
+    @Override
+    public String[] parseHostmask(final String hostmask) {
+        return IRCClientInfo.parseHostFull(hostmask);
+    }
+
 }

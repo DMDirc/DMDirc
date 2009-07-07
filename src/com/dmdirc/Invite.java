@@ -91,7 +91,7 @@ public class Invite {
      * @return This invite's source
      */
     public String[] getSource() {
-        return ClientInfo.parseHostFull(source);
+        return server.getParser().parseHostmask(source);
     }
     
     /**

@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -55,7 +54,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, isSilent, "channelNoTopic", cChannel);
             } else {
-                final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicSetter());
+                final String[] parts = server.getParser().parseHostmask(cChannel.getTopicSetter());
 
                 sendLine(origin, isSilent, "channelTopicDiscovered",
                         "", parts[0], parts[1], parts[2], cChannel.getTopic(),

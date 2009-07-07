@@ -267,4 +267,13 @@ public interface Parser extends Runnable {
      */
     RegexStringList getIgnoreList();
 
+    /**
+     * Parses the specified hostmask into an array containing a nickname,
+     * username and hostname, in that order.
+     *
+     * @param hostmask The hostmask to be parsed
+     * @return An array containing the nickname, username and hostname
+     */
+    String[] parseHostmask(String hostmask);
+
 }

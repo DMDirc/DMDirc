@@ -80,7 +80,8 @@ public final class Query extends MessageTarget implements
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
-        super("query", ClientInfo.parseHost(newHost), newServer.getConfigManager());
+        super("query", newServer.getParser().parseHostmask(newHost)[0],
+                newServer.getConfigManager());
 
         this.server = newServer;
         this.host = newHost;
@@ -140,8 +141,7 @@ public final class Query extends MessageTarget implements
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
-                server.getParser().sendMessage(ClientInfo.parseHost(host),
-                        part);
+                server.getParser().sendMessage(getNickname(), part);
 
                 final StringBuffer buff = new StringBuffer("querySelfMessage");
 
@@ -176,7 +176,8 @@ public final class Query extends MessageTarget implements
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
 
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(ClientInfo.parseHost(host), window.getTranscoder().encode(action));
+            server.getParser().sendAction(getNickname(),
+                    window.getTranscoder().encode(action));
 
             final StringBuffer buff = new StringBuffer("querySelfAction");
 
@@ -199,7 +200,7 @@ public final class Query extends MessageTarget implements
     @Override
     public void onPrivateMessage(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = ClientInfo.parseHostFull(remoteHost);
+        final String[] parts = parser.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
@@ -218,7 +219,7 @@ public final class Query extends MessageTarget implements
     @Override
     public void onPrivateAction(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = ClientInfo.parseHostFull(host);
+        final String[] parts = parser.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
@@ -231,9 +232,7 @@ public final class Query extends MessageTarget implements
      * Updates the QueryWindow's title.
      */
     private void updateTitle() {
-        final String title = ClientInfo.parseHost(host);
-
-        window.setTitle(title);
+        window.setTitle(getNickname());
     }
 
     /**
@@ -241,10 +240,11 @@ public final class Query extends MessageTarget implements
      */
     public void reregister() {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        final String nick = getNickname();
 
         try {
-            callbackManager.addCallback(PrivateActionListener.class, this, ClientInfo.parseHost(host));
-            callbackManager.addCallback(PrivateMessageListener.class, this, ClientInfo.parseHost(host));
+            callbackManager.addCallback(PrivateActionListener.class, this, nick);
+            callbackManager.addCallback(PrivateMessageListener.class, this, nick);
             callbackManager.addCallback(QuitListener.class, this);
             callbackManager.addCallback(NickChangeListener.class, this);
         } catch (CallbackNotFoundException ex) {
@@ -256,7 +256,7 @@ public final class Query extends MessageTarget implements
     @Override
     public void onNickChanged(final Parser tParser, final ClientInfo cClient,
             final String sOldNick) {
-        if (sOldNick.equals(ClientInfo.parseHost(host))) {
+        if (sOldNick.equals(getNickname())) {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
@@ -289,7 +289,7 @@ public final class Query extends MessageTarget implements
     @Override
     public void onQuit(final Parser tParser, final ClientInfo cClient,
             final String sReason) {
-        if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
+        if (cClient.getNickname().equals(getNickname())) {
             final StringBuffer format = new StringBuffer(sReason.isEmpty()
                 ? "queryQuit" : "queryQuitReason");
 
@@ -354,7 +354,7 @@ public final class Query extends MessageTarget implements
      * @return The nickname of this query's user
      */
     public String getNickname() {
-        return ClientInfo.parseHost(host);
+        return server.getParser().parseHostmask(host)[0];
     }
 
     /** {@inheritDoc} */

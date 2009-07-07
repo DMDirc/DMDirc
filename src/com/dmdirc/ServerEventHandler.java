@@ -132,7 +132,7 @@ public final class ServerEventHandler extends EventHandler
         owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
                 owner.getParser().getClientInfoOrFake(sHost), sType, sMessage);
 
-        owner.sendCTCPReply(ClientInfo.parseHost(sHost), sType, sMessage);
+        owner.sendCTCPReply(tParser.parseHostmask(sHost)[0], sType, sMessage);
     }
 
     /** {@inheritDoc} */

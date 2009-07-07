@@ -482,10 +482,10 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
-        final String nick = ClientInfo.parseHost(host);
+        final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
-            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
                 return true;
             }
         }
@@ -500,10 +500,10 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
-        final String nick = ClientInfo.parseHost(host);
+        final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
-            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
                 return query;
             }
         }
@@ -603,7 +603,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
-            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, ClientInfo.parseHost(host));
+            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, parser.parseHostmask(host)[0]);
             queries.add(newQuery);
         }
     }
