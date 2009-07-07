@@ -69,7 +69,7 @@ public class ProcessNickTest {
         parser.injectLine(":luser!lu@ser.com NICK foobar");
 
         assertNotNull(parser.getClient("foobar"));
-        assertNull(parser.getClient("luser"));
+        assertFalse(parser.isKnownClient("luser"));
         assertEquals(1, parser.getClient("foobar").getChannelClients().size());
 
         IRCChannelClientInfo cci = parser.getClient("foobar").getChannelClients().get(0);

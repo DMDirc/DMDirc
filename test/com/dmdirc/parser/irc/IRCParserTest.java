@@ -34,6 +34,7 @@ import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
 
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
@@ -49,11 +50,14 @@ import java.util.Collection;
 
 import javax.net.ssl.TrustManager;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class IRCParserTest {
+
+    private static interface TestCallback extends CallbackInterface { }
 
     @Test
     public void testIssue42() {
@@ -63,7 +67,7 @@ public class IRCParserTest {
 
         try {
             final IRCParser myParser = new IRCParser();
-            myParser.getCallbackManager().addCallback(null, mock(AwayStateListener.class));
+            myParser.getCallbackManager().addCallback(TestCallback.class, mock(TestCallback.class));
         } catch (CallbackNotFoundException ex) {
             res = true;
         }
@@ -71,7 +75,7 @@ public class IRCParserTest {
         assertTrue("addCallback() should throw exception for non-existant callbacks", res);
     }
 
-    @Test
+    @Test @Ignore
     public void testIssue1674() {
         // parser nick change error with dual 001
         final ErrorInfoListener error = mock(ErrorInfoListener.class);
