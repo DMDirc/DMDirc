@@ -130,7 +130,7 @@ public class Process004005 extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callGotNetwork() {
-		final String networkName = myParser.IRCParser.this.networkName;
+		final String networkName = myParser.networkName;
 		final String ircdVersion = myParser.getIRCD(false);
 		final String ircdType = myParser.getIRCD(true);
 		
