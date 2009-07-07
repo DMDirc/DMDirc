@@ -239,7 +239,7 @@ public final class Query extends MessageTarget implements
      * Reregisters query callbacks. Called when reconnecting to the server.
      */
     public void reregister() {
-        final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        final CallbackManager<?> callbackManager = server.getParser().getCallbackManager();
         final String nick = getNickname();
 
         try {
@@ -257,7 +257,7 @@ public final class Query extends MessageTarget implements
     public void onNickChanged(final Parser tParser, final ClientInfo cClient,
             final String sOldNick) {
         if (sOldNick.equals(getNickname())) {
-            final CallbackManager callbackManager = server.getParser().getCallbackManager();
+            final CallbackManager<?> callbackManager = server.getParser().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);

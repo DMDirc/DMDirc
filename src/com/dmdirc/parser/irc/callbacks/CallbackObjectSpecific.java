@@ -53,7 +53,7 @@ public class CallbackObjectSpecific extends CallbackObject {
      * @since 0.6.3m1
 	 */
 	public CallbackObjectSpecific(final IRCParser parser,
-            final CallbackManager manager, final Class<? extends CallbackInterface> type) {
+            final IRCCallbackManager manager, final Class<? extends CallbackInterface> type) {
         super(parser, manager, type);
     }
 	
