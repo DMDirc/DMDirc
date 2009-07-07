@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
@@ -76,11 +78,14 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	/** Button */
 	private final JButton button = new JButton("Cancel");
 
-    /** Plugin that this send belongs to. */
-    private final DCCPlugin myPlugin;
+	/** Plugin that this send belongs to. */
+	private final DCCPlugin myPlugin;
 	
 	/** IRC Parser that caused this send */
 	private Parser parser = null;
+	
+	/** Server that caused this send */
+	private Server server = null;
 	
 	/**
 	 * Creates a new instance of DCCSendWindow with a given DCCSend object.
@@ -91,12 +96,13 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param targetNick Nickname of target
 	 * @param parser The IRC parser that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Parser parser) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Server Server) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
-		this.parser = parser;
-        this.myPlugin = plugin;
-        
+		this.server = server;
+		this.parser = (server != null) ? server.getParser() : null;
+		this.myPlugin = plugin;
+		
 		if (parser != null) {
 			parser.getCallbackManager().addNonCriticalCallback(SocketCloseListener.class, this);
 		}
@@ -131,7 +137,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	}
 	
 	/** {@inheritDoc} */
-    @Override
+	@Override
 	public void onSocketClosed(final Parser tParser) {
 		// Remove our reference to the parser (and its reference to us)
 		parser.getCallbackManager().delAllCallback(this);
@@ -152,7 +158,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	}
 	
 	/** {@inheritDoc} */
-    @Override
+	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
 			if (dcc.getType() == DCCSend.TransferType.SEND) {
@@ -169,7 +175,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 				transferCount = 0;
 			}
 			dcc.reset();
-			if (parser != null /* TODO: Dataforce: Check server state not parser socket status && parser.getSocketState() == SocketState.OPEN*/) {
+			if (parser != null && server.getState() == ServerState.CONNECTED) {
 				final String myNickname = parser.getLocalClient().getNickname();
 				// Check again incase we have changed nickname to the same nickname that
 				// this send is for.
@@ -207,7 +213,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param dcc The DCCSend that this message is from
 	 * @param bytes The number of new bytes that were transfered
 	 */
-    @Override
+	@Override
 	public void dataTransfered(final DCCSend dcc, final int bytes) {
 		final double percent;
 		synchronized (this) {

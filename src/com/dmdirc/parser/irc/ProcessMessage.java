@@ -46,7 +46,7 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Process PRIVMSGs and NOTICEs.
- * This horrible handles PRIVMSGs and NOTICES<br>
+ * This horrible handles PRIVMSGs and NOTICE<br>
  * This inclues CTCPs and CTCPReplies<br>
  * It handles all 3 targets (Channel, Private, Unknown)<br>
  * Actions are handled here aswell separately from CTCPs.<br>

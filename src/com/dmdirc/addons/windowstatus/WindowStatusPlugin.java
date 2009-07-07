@@ -125,18 +125,17 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel) current;
 			final ChannelInfo chan = frame.getChannelInfo();
-			final Map<Long, String> names = new Hashtable<Long, String>();
-			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
+			final Map<Integer, String> names = new Hashtable<Integer, String>();
+			final Map<Integer, Integer> types = new Hashtable<Integer, Integer>();
 
 			textString.append(chan.getName());
 			textString.append(" - Nicks: " + chan.getChannelClientCount() + " (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
-				final Long im = 0l/* TODO: Dataforce: make work without getImportantModeValue()*/;
+				String mode = client.getImportantModePrefix();
+				final Integer im = client.getClient().getParser().getChannelUserModes().indexOf(mode);
 
 				if (!names.containsKey(im)) {
-					String mode = client.getImportantModePrefix();
-
 					if (mode.isEmpty()) {
 						if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "channel.shownone")) {
 							if (IdentityManager.getGlobalConfig().hasOptionString(getDomain(), "channel.noneprefix")) {
@@ -163,7 +162,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 
 			boolean isFirst = true;
 
-			for (Entry<Long, Integer> entry : types.entrySet()) {
+			for (Entry<Integer, Integer> entry : types.entrySet()) {
 				if (isFirst) { isFirst = false; } else { textString.append(' '); }
 				textString.append(names.get(entry.getKey()));
 				textString.append(entry.getValue());
@@ -176,11 +175,11 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
 				final ClientInfo client = frame.getServer().getParser().getClient(frame.getHost());
-                                    final String realname = client.getRealname();
-                                    if (!realname.isEmpty()) {
-                                            textString.append(" - ");
-                                            textString.append(client.getRealname());
-                                    }
+				final String realname = client.getRealname();
+				if (!realname.isEmpty()) {
+					textString.append(" - ");
+					textString.append(client.getRealname());
+				}
 			}
 		} else {
 			textString.append("???");
