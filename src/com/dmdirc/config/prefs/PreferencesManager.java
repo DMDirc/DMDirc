@@ -269,7 +269,8 @@ public class PreferencesManager {
      * @param parent The parent category.
      */
     private void addNotificationsCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Notifications", "");
+        final PreferencesCategory category = new PreferencesCategory("Notifications",
+                "", "input-error");
 
         final Map<String, String> options = new HashMap<String, String>();
         final Map<String, String> whoisOptions = new HashMap<String, String>();
@@ -467,7 +468,7 @@ public class PreferencesManager {
      * @param parent The parent category
      */
     private void addNicklistCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Nicklist", "");
+        final PreferencesCategory category = new PreferencesCategory("Nicklist", "", "nicklist");
 
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "nicklistbackgroundcolour", "Nicklist background colour",
@@ -494,7 +495,8 @@ public class PreferencesManager {
      * @param parent The parent category
      */
     private void addTreeviewCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Treeview", "");
+        final PreferencesCategory category = new PreferencesCategory("Treeview",
+                "", "treeview");
 
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "treeview", "backgroundcolour", "Treeview background colour",

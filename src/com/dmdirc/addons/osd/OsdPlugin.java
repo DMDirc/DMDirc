@@ -83,7 +83,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         y = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "locationY");
         
         final PreferencesCategory category = new PreferencesCategory("OSD",
-                "General configuration for OSD plugin.");
+                "General configuration for OSD plugin.", "category-osd");
         
         fontSizeSetting = new PreferencesSetting(PreferencesType.INTEGER,
                 getDomain(), "fontSize", "Font size", "Changes the font " +
