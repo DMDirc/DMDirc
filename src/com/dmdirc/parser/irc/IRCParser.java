@@ -2002,4 +2002,18 @@ public class IRCParser implements SecureParser, Runnable {
         return IRCClientInfo.parseHostFull(hostmask);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public int getMaxTopicLength() {
+        if (h005Info.containsKey("TOPICLEN")) {
+            try {
+                return Integer.parseInt(h005Info.get("TOPICLEN"));
+            } catch (NumberFormatException ex) {
+                // Do nothing
+            }
+        }
+
+        return 0;
+    }
+
 }

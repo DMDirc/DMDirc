@@ -162,6 +162,13 @@ public interface Parser extends Runnable {
     String getServerSoftwareType();
 
     /**
+     * Retrieves the maximum length for a topic that can be set by this parser.
+     *
+     * @return The maximum length (in bytes) of a topic
+     */
+    int getMaxTopicLength();
+
+    /**
      * Retrieves an alphabetically-sorted list of boolean channel modes.
      * Boolean channel modes may only be set or unset, and do not take any
      * arguments.

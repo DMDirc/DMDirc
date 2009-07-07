@@ -169,7 +169,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 				transferCount = 0;
 			}
 			dcc.reset();
-			if (parser != null && parser.getSocketState() == SocketState.OPEN) {
+			if (parser != null /* TODO: Dataforce: Check server state not parser socket status && parser.getSocketState() == SocketState.OPEN*/) {
 				final String myNickname = parser.getLocalClient().getNickname();
 				// Check again incase we have changed nickname to the same nickname that
 				// this send is for.

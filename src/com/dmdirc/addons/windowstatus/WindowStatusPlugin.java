@@ -132,7 +132,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(" - Nicks: " + chan.getChannelClientCount() + " (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
-				final Long im = client.getImportantModeValue();
+				final Long im = 0l/* TODO: Dataforce: make work without getImportantModeValue()*/;
 
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
