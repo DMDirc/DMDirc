@@ -103,10 +103,10 @@ public interface Parser extends Runnable {
      * Retrieves a {@link ClientInfo} object which corresponds to the specified
      * details. If the client wasn't previously known, it will be created.
      *
-     * @param detals The details of the client to look up
+     * @param details The details of the client to look up
      * @return A corresponding client info object
      */
-    ClientInfo getClient(String detals);
+    ClientInfo getClient(String details);
 
     /**
      * Sends a raw message directly to the backend system. The message will

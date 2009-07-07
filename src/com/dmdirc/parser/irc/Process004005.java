@@ -67,7 +67,7 @@ public class Process004005 extends IRCProcessor {
 					myParser.h005Info.put(sKey,sValue);
 				}
 				if (sKey.equals("NETWORK") && !isNegation) {
-					myParser.sNetworkName = sValue;
+					myParser.networkName = sValue;
 					callGotNetwork();
 				} else if (sKey.equals("CASEMAPPING") && !isNegation) {
 					byte limit = (byte)4;
@@ -130,7 +130,7 @@ public class Process004005 extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callGotNetwork() {
-		final String networkName = myParser.sNetworkName;
+		final String networkName = myParser.IRCParser.this.networkName;
 		final String ircdVersion = myParser.getIRCD(false);
 		final String ircdType = myParser.getIRCD(true);
 		

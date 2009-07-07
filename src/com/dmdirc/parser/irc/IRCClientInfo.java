@@ -257,8 +257,8 @@ public class IRCClientInfo implements LocalClientInfo {
 		long nTemp = 0;
 		final long nChanModes = this.getUserMode();
 		
-		for (char cTemp : myParser.hUserModes.keySet()) {
-			nTemp = myParser.hUserModes.get(cTemp);
+		for (char cTemp : myParser.userModes.keySet()) {
+			nTemp = myParser.userModes.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
 		
@@ -343,7 +343,7 @@ public class IRCClientInfo implements LocalClientInfo {
 			}
 		}
 		modestr = ((positive) ? "+" : "-") + mode;
-		if (!myParser.hUserModes.containsKey(mode)) { return; }
+		if (!myParser.userModes.containsKey(mode)) { return; }
 		final String teststr = ((positive) ? "-" : "+") + mode;
 		if (lModeQueue.contains(teststr)) {
 			lModeQueue.remove(teststr);

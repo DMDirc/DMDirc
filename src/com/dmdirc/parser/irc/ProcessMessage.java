@@ -160,7 +160,7 @@ public class ProcessMessage extends IRCProcessor {
 		// handled as if the prefix wasn't used. This can be changed in the future
 		// if desired.
 		final char modePrefix = token[2].charAt(1);
-		final boolean hasModePrefix =  (myParser.hPrefixMap.containsKey(modePrefix) && !myParser.hPrefixModes.containsKey(modePrefix));
+		final boolean hasModePrefix =  (myParser.prefixMap.containsKey(modePrefix) && !myParser.prefixModes.containsKey(modePrefix));
 		final String targetName = (hasModePrefix) ? token[2].substring(1) : token[2];
 		
 		if (isValidChannelName(targetName)) {

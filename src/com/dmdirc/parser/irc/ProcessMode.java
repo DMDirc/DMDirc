@@ -129,16 +129,16 @@ public class ProcessMode extends IRCProcessor {
 			if (cMode.equals("+".charAt(0))) { cPositive = '+'; bPositive = true; }
 			else if (cMode.equals("-".charAt(0))) { cPositive = '-'; bPositive = false; }
 			else {
-				if (myParser.hChanModesBool.containsKey(cMode)) { nValue = myParser.hChanModesBool.get(cMode); bBooleanMode = true; }
-				else if (myParser.hChanModesOther.containsKey(cMode)) { nValue = myParser.hChanModesOther.get(cMode); bBooleanMode = false; }
-				else if (myParser.hPrefixModes.containsKey(cMode)) { 
+				if (myParser.chanModesBool.containsKey(cMode)) { nValue = myParser.chanModesBool.get(cMode); bBooleanMode = true; }
+				else if (myParser.chanModesOther.containsKey(cMode)) { nValue = myParser.chanModesOther.get(cMode); bBooleanMode = false; }
+				else if (myParser.prefixModes.containsKey(cMode)) {
 					// (de) OP/Voice someone
 					if (sModestr.length <= nParam) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
 						return;
 					}
 					sModeParam = sModestr[nParam++];
-					nValue = myParser.hPrefixModes.get(cMode);
+					nValue = myParser.prefixModes.get(cMode);
 					callDebugInfo(IRCParser.DEBUG_INFO, "User Mode: %c / %d [%s] {Positive: %b}",cMode, nValue, sModeParam, bPositive);
 					iChannelClientInfo = iChannel.getChannelClient(sModeParam);
 					if (iChannelClientInfo == null) {
@@ -158,10 +158,10 @@ public class ProcessMode extends IRCProcessor {
 					continue;
 				} else {
 					// unknown mode - add as boolean
-					myParser.hChanModesBool.put(cMode,myParser.nNextKeyCMBool);
-					nValue = myParser.nNextKeyCMBool;
+					myParser.chanModesBool.put(cMode,myParser.nextKeyCMBool);
+					nValue = myParser.nextKeyCMBool;
 					bBooleanMode = true;
-					myParser.nNextKeyCMBool = myParser.nNextKeyCMBool*2;
+					myParser.nextKeyCMBool = myParser.nextKeyCMBool*2;
 				}
 				
 				if (bBooleanMode) {
@@ -245,11 +245,11 @@ public class ProcessMode extends IRCProcessor {
 			else if (cMode.equals("-".charAt(0))) { bPositive = false; }
 			else if (cMode.equals(":".charAt(0))) { continue; }
 			else {
-				if (myParser.hUserModes.containsKey(cMode)) { nValue = myParser.hUserModes.get(cMode); }
+				if (myParser.userModes.containsKey(cMode)) { nValue = myParser.userModes.get(cMode); }
 				else {
 					// Unknown mode
 					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown user mode "+cMode+" - Added", myParser.getLastLine()));
-					myParser.hUserModes.put(cMode,myParser.nNextKeyUser);
+					myParser.userModes.put(cMode,myParser.nNextKeyUser);
 					nValue = myParser.nNextKeyUser;
 					myParser.nNextKeyUser = myParser.nNextKeyUser*2;
 				}

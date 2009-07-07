@@ -117,12 +117,12 @@ public class IRCChannelClientInfo implements ChannelClientInfo {
 		long nTemp = 0;
 		final long nCurrentModes = this.getChanMode();
 
-		for (long i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
+		for (long i = myParser.nextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {
-				for (char cTemp : myParser.hPrefixModes.keySet()) {
-					nTemp = myParser.hPrefixModes.get(cTemp);
+				for (char cTemp : myParser.prefixModes.keySet()) {
+					nTemp = myParser.prefixModes.get(cTemp);
 					if (nTemp == i) {
-						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
+						if (bPrefix) { cTemp = myParser.prefixMap.get(cTemp); }
 						sModes = sModes.append(cTemp);
 						break;
 					}
@@ -146,7 +146,7 @@ public class IRCChannelClientInfo implements ChannelClientInfo {
 	 * @return integer representing the value of the most important mode.
 	 */
 	public long getImportantModeValue() {
-		for (long i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
+		for (long i = myParser.nextKeyPrefix; i > 0; i = i / 2) {
 			if ((nModes & i) == i) { return i; }
 		}
 		return 0;

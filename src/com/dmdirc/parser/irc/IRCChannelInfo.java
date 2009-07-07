@@ -144,7 +144,7 @@ public class IRCChannelInfo implements ChannelInfo {
 		
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
-		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
+		if (myParser.prefixModes.get('v') != null) { voiceValue = myParser.prefixModes.get('v');}
 		final boolean isOpped = me.getImportantModeValue() > voiceValue;
 		
 		int modecount = 1;
@@ -162,8 +162,8 @@ public class IRCChannelInfo implements ChannelInfo {
 		
 		String listmodes = "";
 		int i = 0;
-		for (Character cTemp : myParser.hChanModesOther.keySet()) {
-			final int nTemp = myParser.hChanModesOther.get(cTemp);
+		for (Character cTemp : myParser.chanModesOther.keySet()) {
+			final int nTemp = myParser.chanModesOther.get(cTemp);
 			if (nTemp == IRCParser.MODE_LIST) {
 				if ((isFreenode || isHybrid || isCharybdis) && (cTemp == 'e' || cTemp == 'I') && !isOpped) {
 					// IRCD doesn't allow non-ops to ask for these modes.
@@ -427,8 +427,8 @@ public class IRCChannelInfo implements ChannelInfo {
 		String sTemp = "";
 		long nTemp = 0;
 		final long nChanModes = this.getMode();
-		for (char cTemp : myParser.hChanModesBool.keySet()) {
-			nTemp = myParser.hChanModesBool.get(cTemp);
+		for (char cTemp : myParser.chanModesBool.keySet()) {
+			nTemp = myParser.chanModesBool.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
 		for (char cTemp : hParamModes.keySet()) {
@@ -477,7 +477,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	protected void setListModeParam(final Character givenMode, final ChannelListModeItem givenItem, final boolean bAdd) { 
 		Character cMode = givenMode;
 		ChannelListModeItem newItem = givenItem;
-		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return; }
+		if (!myParser.chanModesOther.containsKey(cMode) || myParser.chanModesOther.get(cMode) != IRCParser.MODE_LIST) { return; }
 		
 		// Hyperion sucks.
 		if (cMode == 'b' || cMode == 'q') {
@@ -513,7 +513,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	/** {@inheritDoc} */
         @Override
 	public Collection<ChannelListModeItem> getListMode(final char cMode) {
-		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return null; }
+		if (!myParser.chanModesOther.containsKey(cMode) || myParser.chanModesOther.get(cMode) != IRCParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
 			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
@@ -574,7 +574,7 @@ public class IRCChannelInfo implements ChannelInfo {
 		if (!myParser.isUserSettable(mode)) { return; }
 
 		modestr = ((positive) ? "+" : "-") + mode;
-		if (myParser.hChanModesBool.containsKey(mode)) {
+		if (myParser.chanModesBool.containsKey(mode)) {
 			final String teststr = ((positive) ? "-" : "+") + mode;
 			if (lModeQueue.contains(teststr)) {
 				lModeQueue.remove(teststr);
@@ -584,10 +584,10 @@ public class IRCChannelInfo implements ChannelInfo {
 			}
 		} else {
 			// May need a param
-			if (myParser.hPrefixModes.containsKey(mode)) {
+			if (myParser.prefixModes.containsKey(mode)) {
 				modestr = modestr + " " + parameter;
 			} else {
-				modeint = myParser.hChanModesOther.get(mode);
+				modeint = myParser.chanModesOther.get(mode);
 				if ((modeint & IRCParser.MODE_LIST) == IRCParser.MODE_LIST) {
 					modestr = modestr + " " + parameter;
 				} else if (!positive && ((modeint & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {

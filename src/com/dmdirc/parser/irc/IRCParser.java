@@ -139,13 +139,13 @@ public class IRCParser implements SecureParser, Runnable {
 	private int pingCountDownLength = 6;
 
 	/** Name the server calls itself. */
-	String sServerName;
+	String serverName;
 
 	/** Network name. This is "" if no network name is provided */
-	String sNetworkName;
+	String networkName;
 
 	/** This is what we think the nickname should be. */
-	String sThinkNickname;
+	String thinkNickname;
 
 	/** When using inbuilt pre-001 NickInUse handler, have we tried our AltNick. */
 	boolean triedAlt;
@@ -158,16 +158,16 @@ public class IRCParser implements SecureParser, Runnable {
 	boolean hasBegan;
 
 	/** Hashtable storing known prefix modes (ohv). */
-	final Map<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
+	final Map<Character, Long> prefixModes = new Hashtable<Character, Long>();
 	/**
 	 * Hashtable maping known prefix modes (ohv) to prefixes (@%+) - Both ways.
 	 * Prefix map contains 2 pairs for each mode. (eg @ => o and o => @)
 	 */
-	final Map<Character, Character> hPrefixMap = new Hashtable<Character, Character>();
+	final Map<Character, Character> prefixMap = new Hashtable<Character, Character>();
 	/** Integer representing the next avaliable integer value of a prefix mode. */
-	long nNextKeyPrefix = 1;
+	long nextKeyPrefix = 1;
 	/** Hashtable storing known user modes (owxis etc). */
-	final Map<Character, Long> hUserModes = new Hashtable<Character, Long>();
+	final Map<Character, Long> userModes = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a User mode. */
 	long nNextKeyUser = 1;
 	/**
@@ -178,10 +178,10 @@ public class IRCParser implements SecureParser, Runnable {
 	 * <br>
 	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a ERROR_WARNING Error is called)
 	 */
-	final Map<Character, Long> hChanModesBool = new Hashtable<Character, Long>();
+	final Map<Character, Long> chanModesBool = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */
 
-	long nNextKeyCMBool = 1;
+	long nextKeyCMBool = 1;
 
 	/**
 	 * Hashtable storing known non-boolean chan modes (klbeI etc).
@@ -192,7 +192,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * see MODE_SET<br>
 	 * see MODE_UNSET<br>
 	 */
-	final Map<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
+	final Map<Character, Byte> chanModesOther = new Hashtable<Character, Byte>();
 
 	/** The last line of input recieved from the server */
 	String lastLine = "";
@@ -203,13 +203,13 @@ public class IRCParser implements SecureParser, Runnable {
 	* Channel Prefixes (ie # + etc).
 	* The "value" for these is always true.
 	*/
-	final Map<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
+	final Map<Character, Boolean> chanPrefix = new Hashtable<Character, Boolean>();
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
-	private final Map<String, IRCClientInfo> hClientList = new Hashtable<String, IRCClientInfo>();
+	private final Map<String, IRCClientInfo> clientList = new Hashtable<String, IRCClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	private final Map<String, IRCChannelInfo> hChannelList = new Hashtable<String, IRCChannelInfo>();
+	private final Map<String, IRCChannelInfo> channelList = new Hashtable<String, IRCChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
-	private IRCClientInfo cMyself = new IRCClientInfo(this, "myself").setFake(true);
+	private IRCClientInfo myself = new IRCClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
 	final Map<String, String> h005Info = new Hashtable<String, String>();
 
@@ -398,11 +398,11 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public void setTrustManagers(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
+	public void setTrustManagers(final TrustManager[] managers) { myTrustManager = managers; }
 
 	/** {@inheritDoc} */
         @Override
-	public void setKeyManagers(final KeyManager[] newKeyManagers) { myKeyManagers = newKeyManagers; }
+	public void setKeyManagers(final KeyManager[] managers) { myKeyManagers = managers; }
 
 	/** {@inheritDoc} */
         @Override
@@ -565,23 +565,23 @@ public class IRCParser implements SecureParser, Runnable {
 		got001 = false;
 		post005 = false;
 		// Clear the hash tables
-		hChannelList.clear();
-		hClientList.clear();
+		channelList.clear();
+		clientList.clear();
 		h005Info.clear();
-		hPrefixModes.clear();
-		hPrefixMap.clear();
-		hChanModesOther.clear();
-		hChanModesBool.clear();
-		hUserModes.clear();
-		hChanPrefix.clear();
+		prefixModes.clear();
+		prefixMap.clear();
+		chanModesOther.clear();
+		chanModesBool.clear();
+		userModes.clear();
+		chanPrefix.clear();
 		// Reset the mode indexes
-		nNextKeyPrefix = 1;
-		nNextKeyCMBool = 1;
+		nextKeyPrefix = 1;
+		nextKeyCMBool = 1;
 		nNextKeyUser = 1;
-		sServerName = "";
-		sNetworkName = "";
+		serverName = "";
+		networkName = "";
 		lastLine = "";
-		cMyself = new IRCClientInfo(this, "myself").setFake(true);
+		myself = new IRCClientInfo(this, "myself").setFake(true);
 
 		stopPingTimer();
 
@@ -856,23 +856,23 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public IRCClientInfo getClient(final String sHost) {
-		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
-		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
-		else { return new IRCClientInfo(this, sHost).setFake(true); }
+	public IRCClientInfo getClient(final String details) {
+		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(details));
+		if (clientList.containsKey(sWho)) { return clientList.get(sWho); }
+		else { return new IRCClientInfo(this, details).setFake(true); }
 	}
 
-        public boolean isKnownClient(final String sHost) {
-            final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
-            return hClientList.containsKey(sWho);
+        public boolean isKnownClient(final String host) {
+            final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(host));
+            return clientList.containsKey(sWho);
         }
 
 	/** {@inheritDoc} */
         @Override
 	public IRCChannelInfo getChannel(String channel) {
-		synchronized (hChannelList) {
+		synchronized (channelList) {
 			channel = getStringConverter().toLowerCase(channel);
-			if (hChannelList.containsKey(channel)) { return hChannelList.get(channel); } else { return null; }
+			if (channelList.containsKey(channel)) { return channelList.get(channel); } else { return null; }
 		}
 	}
 
@@ -901,7 +901,7 @@ public class IRCParser implements SecureParser, Runnable {
 		out.printf("%s\r\n", line);
 		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
-			cMyself.setAwayReason(newLine[newLine.length-1]);
+			myself.setAwayReason(newLine[newLine.length-1]);
 		} else if (newLine[0].equalsIgnoreCase("mode") && newLine.length == 3) {
 			// This makes sure we don't add the same item to the LMQ twice, even if its requested twice,
 			// as the ircd will only reply once.
@@ -913,7 +913,7 @@ public class IRCParser implements SecureParser, Runnable {
 				for (int i = 0; i < newLine[2].length() ; ++i) {
 					final Character mode = newLine[2].charAt(i);
 					callDebugInfo(DEBUG_LMQ, "Intercepted mode request for "+channel+" for mode "+mode);
-					if (hChanModesOther.containsKey(mode) && hChanModesOther.get(mode) == MODE_LIST) {
+					if (chanModesOther.containsKey(mode) && chanModesOther.get(mode) == MODE_LIST) {
 						if (foundModes.contains(mode)) {
 							callDebugInfo(DEBUG_LMQ, "Already added to LMQ");
 						} else {
@@ -932,13 +932,13 @@ public class IRCParser implements SecureParser, Runnable {
 	/** {@inheritDoc} */
         @Override
 	public String getNetworkName() {
-		return sNetworkName;
+		return networkName;
 	}
 
 	/** {@inheritDoc} */
         @Override
 	public String getServerName() {
-		return sServerName;
+		return serverName;
 	}
 
 	/** {@inheritDoc} */
@@ -1064,12 +1064,12 @@ public class IRCParser implements SecureParser, Runnable {
 		// Order isn't really important, and this code only takes 3 lines of we
 		// don't care about it but ordered guarentees that on a specific ircd this
 		// method will ALWAYs return the same value.
-		final char[] modes = new char[hChanModesBool.size()];
+		final char[] modes = new char[chanModesBool.size()];
 		long nTemp;
 		double pos;
 
-		for (char cTemp : hChanModesBool.keySet()) {
-			nTemp = hChanModesBool.get(cTemp);
+		for (char cTemp : chanModesBool.keySet()) {
+			nTemp = chanModesBool.get(cTemp);
 			// nTemp should never be less than 0
 			if (nTemp > 0) {
 				pos = Math.log(nTemp) / Math.log(2);
@@ -1104,7 +1104,7 @@ public class IRCParser implements SecureParser, Runnable {
 			char mode;
 			for (int i = 0; i < modeStr.length(); ++i) {
 				mode = modeStr.charAt(i);
-				if (!hPrefixModes.containsKey(mode) && sDefaultModes.indexOf(Character.toString(mode)) < 0) {
+				if (!prefixModes.containsKey(mode) && sDefaultModes.indexOf(Character.toString(mode)) < 0) {
 					sDefaultModes.append(mode);
 				}
 			}
@@ -1126,15 +1126,15 @@ public class IRCParser implements SecureParser, Runnable {
 		}
 
 		// resetState
-		hChanModesOther.clear();
-		hChanModesBool.clear();
-		nNextKeyCMBool = 1;
+		chanModesOther.clear();
+		chanModesBool.clear();
+		nextKeyCMBool = 1;
 
 		// List modes.
 		for (int i = 0; i < bits[0].length(); ++i) {
 			final Character cMode = bits[0].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found List Mode: %c", cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_LIST); }
+			if (!chanModesOther.containsKey(cMode)) { chanModesOther.put(cMode, MODE_LIST); }
 		}
 
 		// Param for Set and Unset.
@@ -1142,23 +1142,23 @@ public class IRCParser implements SecureParser, Runnable {
 		for (int i = 0; i < bits[1].length(); ++i) {
 			final Character cMode = bits[1].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c", cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, nBoth); }
+			if (!chanModesOther.containsKey(cMode)) { chanModesOther.put(cMode, nBoth); }
 		}
 
 		// Param just for Set
 		for (int i = 0; i < bits[2].length(); ++i) {
 			final Character cMode = bits[2].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c", cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_SET); }
+			if (!chanModesOther.containsKey(cMode)) { chanModesOther.put(cMode, MODE_SET); }
 		}
 
 		// Boolean Mode
 		for (int i = 0; i < bits[3].length(); ++i) {
 			final Character cMode = bits[3].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Boolean Mode: %c [%d]", cMode, nNextKeyCMBool);
-			if (!hChanModesBool.containsKey(cMode)) {
-				hChanModesBool.put(cMode, nNextKeyCMBool);
-				nNextKeyCMBool = nNextKeyCMBool * 2;
+			callDebugInfo(DEBUG_INFO, "Found Boolean Mode: %c [%d]", cMode, nextKeyCMBool);
+			if (!chanModesBool.containsKey(cMode)) {
+				chanModesBool.put(cMode, nextKeyCMBool);
+				nextKeyCMBool = nextKeyCMBool * 2;
 			}
 		}
 	}
@@ -1176,9 +1176,9 @@ public class IRCParser implements SecureParser, Runnable {
 	/** {@inheritDoc} */
         @Override
 	public String getBooleanChannelModes() {
-		final char[] modes = new char[hChanModesBool.size()];
+		final char[] modes = new char[chanModesBool.size()];
 		int i = 0;
-		for (char mode : hChanModesBool.keySet()) {
+		for (char mode : chanModesBool.keySet()) {
 			modes[i++] = mode;
 		}
 		// Alphabetically sort the array
@@ -1208,16 +1208,16 @@ public class IRCParser implements SecureParser, Runnable {
 	 * Get modes from hChanModesOther that have a specific value.
 	 * Modes are returned in alphabetical order
 	 *
-	 * @param nValue Value mode must have to be included
+	 * @param value Value mode must have to be included
 	 * @return All the currently known Set-Unset modes
 	 */
-	protected String getOtherModeString(final byte nValue) {
-		final char[] modes = new char[hChanModesOther.size()];
+	protected String getOtherModeString(final byte value) {
+		final char[] modes = new char[chanModesOther.size()];
 		Byte nTemp;
 		int i = 0;
-		for (char cTemp : hChanModesOther.keySet()) {
-			nTemp = hChanModesOther.get(cTemp);
-			if (nTemp == nValue) { modes[i++] = cTemp; }
+		for (char cTemp : chanModesOther.keySet()) {
+			nTemp = chanModesOther.get(cTemp);
+			if (nTemp == value) { modes[i++] = cTemp; }
 		}
 		// Alphabetically sort the array
 		Arrays.sort(modes);
@@ -1248,15 +1248,15 @@ public class IRCParser implements SecureParser, Runnable {
 		}
 
 		// resetState
-		hUserModes.clear();
+		userModes.clear();
 		nNextKeyUser = 1;
 
 		// Boolean Mode
 		for (int i = 0; i < modeStr.length(); ++i) {
 			final Character cMode = modeStr.charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found User Mode: %c [%d]", cMode, nNextKeyUser);
-			if (!hUserModes.containsKey(cMode)) {
-				hUserModes.put(cMode, nNextKeyUser);
+			if (!userModes.containsKey(cMode)) {
+				userModes.put(cMode, nNextKeyUser);
 				nNextKeyUser = nNextKeyUser * 2;
 			}
 		}
@@ -1276,13 +1276,13 @@ public class IRCParser implements SecureParser, Runnable {
 		}
 
 		// resetState
-		hChanPrefix.clear();
+		chanPrefix.clear();
 
 		// Boolean Mode
 		for (int i = 0; i < modeStr.length(); ++i) {
 			final Character cMode = modeStr.charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Chan Prefix: %c", cMode);
-			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode, true); }
+			if (!chanPrefix.containsKey(cMode)) { chanPrefix.put(cMode, true); }
 		}
 	}
 
@@ -1315,19 +1315,19 @@ public class IRCParser implements SecureParser, Runnable {
 		}
 
 		// resetState
-		hPrefixModes.clear();
-		hPrefixMap.clear();
-		nNextKeyPrefix = 1;
+		prefixModes.clear();
+		prefixMap.clear();
+		nextKeyPrefix = 1;
 
 		for (int i = bits[0].length() - 1; i > -1; --i) {
 			final Character cMode = bits[0].charAt(i);
 			final Character cPrefix = bits[1].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Prefix Mode: %c => %c [%d]", cMode, cPrefix, nNextKeyPrefix);
-			if (!hPrefixModes.containsKey(cMode)) {
-				hPrefixModes.put(cMode, nNextKeyPrefix);
-				hPrefixMap.put(cMode, cPrefix);
-				hPrefixMap.put(cPrefix, cMode);
-				nNextKeyPrefix = nNextKeyPrefix * 2;
+			callDebugInfo(DEBUG_INFO, "Found Prefix Mode: %c => %c [%d]", cMode, cPrefix, nextKeyPrefix);
+			if (!prefixModes.containsKey(cMode)) {
+				prefixModes.put(cMode, nextKeyPrefix);
+				prefixMap.put(cMode, cPrefix);
+				prefixMap.put(cPrefix, cMode);
+				nextKeyPrefix = nextKeyPrefix * 2;
 			}
 		}
 
@@ -1368,24 +1368,24 @@ public class IRCParser implements SecureParser, Runnable {
 	/**
 	 * Join a Channel with a key.
 	 *
-	 * @param sChannelName Name of channel to join
-	 * @param sKey Key to use to try and join the channel
+	 * @param channel Name of channel to join
+	 * @param key Key to use to try and join the channel
 	 * @param autoPrefix Automatically prepend the first channel prefix defined
 	 *                   in 005 if sChannelName is an invalid channel.
 	 *                   **This only applies to the first channel if given a list**
 	 */
-	public void joinChannel(final String sChannelName, final String sKey, final boolean autoPrefix) {
+	public void joinChannel(final String channel, final String key, final boolean autoPrefix) {
 		final String channelName;
-		if (isValidChannelName(sChannelName)) {
-			channelName = sChannelName;
+		if (isValidChannelName(channel)) {
+			channelName = channel;
 		} else {
 			if (autoPrefix) {
 				if (h005Info.containsKey("CHANTYPES")) {
 					final String chantypes = h005Info.get("CHANTYPES");
 					if (chantypes.isEmpty()) {
-						channelName = "#" + sChannelName;
+						channelName = "#" + channel;
 					} else {
-						channelName = chantypes.charAt(0) + sChannelName;
+						channelName = chantypes.charAt(0) + channel;
 					}
 				} else {
 					return;
@@ -1394,71 +1394,71 @@ public class IRCParser implements SecureParser, Runnable {
 				return;
 			}
 		}
-		if (sKey.isEmpty()) {
+		if (key.isEmpty()) {
 			sendString("JOIN " + channelName);
 		} else {
-			sendString("JOIN " + channelName + " " + sKey);
+			sendString("JOIN " + channelName + " " + key);
 		}
 	}
 
 	/**
 	 * Leave a Channel.
 	 *
-	 * @param sChannelName Name of channel to part
-	 * @param sReason Reason for leaving (Nothing sent if sReason is "")
+	 * @param channel Name of channel to part
+	 * @param reason Reason for leaving (Nothing sent if sReason is "")
 	 */
-	public void partChannel(final String sChannelName, final String sReason) {
-		if (getChannel(sChannelName) == null) { return; }
-		if (sReason.isEmpty()) {
-			sendString("PART " + sChannelName);
+	public void partChannel(final String channel, final String reason) {
+		if (getChannel(channel) == null) { return; }
+		if (reason.isEmpty()) {
+			sendString("PART " + channel);
 		} else {
-			sendString("PART " + sChannelName + " :" + sReason);
+			sendString("PART " + channel + " :" + reason);
 		}
 	}
 
 	/**
 	 * Set Nickname.
 	 *
-	 * @param sNewNickName New nickname wanted.
+	 * @param nickname New nickname wanted.
 	 */
-	public void setNickname(final String sNewNickName) {
+	public void setNickname(final String nickname) {
 		if (getSocketState() == SocketState.OPEN) {
-			if (!cMyself.isFake() && cMyself.getNickname().equals(sNewNickName)) {
+			if (!myself.isFake() && myself.getNickname().equals(nickname)) {
 				return;
 			}
-			sendString("NICK " + sNewNickName);
+			sendString("NICK " + nickname);
 		} else {
-			me.setNickname(sNewNickName);
+			me.setNickname(nickname);
 		}
-		sThinkNickname = sNewNickName;
+		thinkNickname = nickname;
 	}
 
     /** {@inheritDoc} */
     @Override
-	public int getMaxLength(final String sType, final String sTarget) {
+	public int getMaxLength(final String type, final String target) {
 		// If my host is "nick!user@host" and we are sending "#Channel"
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
 		// Lint = the 2 ":" at the start and end and the 3 separating " "s
 		int length = 0;
-		if (sType != null) { length = length + sType.length(); }
-		if (sTarget != null) { length = length + sTarget.length(); }
+		if (type != null) { length = length + type.length(); }
+		if (target != null) { length = length + target.length(); }
 		return getMaxLength(length);
 	}
 
 	/**
 	 * Get the max length a message can be.
 	 *
-	 * @param nLength Length of stuff. (Ie "PRIVMSG"+"#Channel")
+	 * @param length Length of stuff. (Ie "PRIVMSG"+"#Channel")
 	 * @return Max Length message should be.
 	 */
-	public int getMaxLength(final int nLength) {
+	public int getMaxLength(final int length) {
 		final int lineLint = 5;
-		if (cMyself.isFake()) {
+		if (myself.isFake()) {
 			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", getLastLine()));
-			return MAX_LINELENGTH - nLength - lineLint;
+			return MAX_LINELENGTH - length - lineLint;
 		} else {
-			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;
+			return MAX_LINELENGTH - myself.toString().length() - length - lineLint;
 		}
 	}
 
@@ -1511,29 +1511,30 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public void sendMessage(final String sTarget, final String sMessage) {
-		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
+	public void sendMessage(final String target, final String message) {
+		if (target == null || message == null) { return; }
+		if (target.isEmpty()/* || sMessage.isEmpty()*/) { return; }
 
-		sendString("PRIVMSG " + sTarget + " :" + sMessage);
+		sendString("PRIVMSG " + target + " :" + message);
 	}
 
 	/**
 	 * Send a notice message to a target.
 	 *
-	 * @param sTarget Target
-	 * @param sMessage Message to send
+	 * @param target Target
+	 * @param message Message to send
 	 */
-	public void sendNotice(final String sTarget, final String sMessage) {
-		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
+	public void sendNotice(final String target, final String message) {
+		if (target == null || message == null) { return; }
+		if (target.isEmpty()/* || sMessage.isEmpty()*/) { return; }
 
-		sendString("NOTICE " + sTarget + " :" + sMessage);
+		sendString("NOTICE " + target + " :" + message);
 	}
 
 	/** {@inheritDoc} */
-        @Override	public void sendAction(final String sTarget, final String sMessage) {
-		sendCTCP(sTarget, "ACTION", sMessage);
+        @Override
+        public void sendAction(final String target, final String message) {
+		sendCTCP(target, "ACTION", message);
 	}
 
 	/** {@inheritDoc} */
@@ -1558,13 +1559,13 @@ public class IRCParser implements SecureParser, Runnable {
 	 * Quit IRC.
 	 * This method will wait for the server to close the socket.
 	 *
-	 * @param sReason Reason for quitting.
+	 * @param reason Reason for quitting.
 	 */
-	public void quit(final String sReason) {
-		if (sReason.isEmpty()) {
+	public void quit(final String reason) {
+		if (reason.isEmpty()) {
 			sendString("QUIT");
 		} else {
-			sendString("QUIT :" + sReason);
+			sendString("QUIT :" + reason);
 		}
 	}
     
@@ -1605,7 +1606,7 @@ public class IRCParser implements SecureParser, Runnable {
 		// Check if we are already on this channel
 		if (getChannel(name) != null) { return true; }
 		// Check if we know of any valid chan prefixes
-		if (hChanPrefix.isEmpty()) {
+		if (chanPrefix.isEmpty()) {
 			// We don't. Lets check against RFC2811-Specified channel types
 			final char first = name.charAt(0);
 			return first == '#' || first == '&' || first == '!' || first == '+';
@@ -1613,7 +1614,7 @@ public class IRCParser implements SecureParser, Runnable {
 		// Otherwise return true if:
 		// Channel equals "0"
 		// first character of the channel name is a valid channel prefix.
-		return hChanPrefix.containsKey(name.charAt(0)) || name.equals("0");
+		return chanPrefix.containsKey(name.charAt(0)) || name.equals("0");
 	}
 
 	/** {@inheritDoc} */
@@ -1677,9 +1678,9 @@ public class IRCParser implements SecureParser, Runnable {
 				else if (version.matches("(?i).*swiftirc.*")) { return "swiftirc"; }
 				else {
 					// Stupid networks/ircds go here...
-					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
-					else if (sNetworkName.equalsIgnoreCase("starchat")) { return "starchat"; }
-					else if (sNetworkName.equalsIgnoreCase("bitlbee")) { return "bitlbee"; }
+					if (networkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
+					else if (networkName.equalsIgnoreCase("starchat")) { return "starchat"; }
+					else if (networkName.equalsIgnoreCase("bitlbee")) { return "bitlbee"; }
 					else if (h005Info.containsKey("003IRCD") && h005Info.get("003IRCD").matches("(?i).*bitlbee.*")) { return "bitlbee"; } // Older bitlbee
 					else { return "generic"; }
 				}
@@ -1861,7 +1862,7 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public IRCClientInfo getLocalClient() { return cMyself; }
+	public IRCClientInfo getLocalClient() { return myself; }
 
 	/**
 	 * Get the current nickname.
@@ -1871,10 +1872,10 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @return Current nickname.
 	 */
 	public String getMyNickname() {
-		if (cMyself.isFake()) {
-			return sThinkNickname;
+		if (myself.isFake()) {
+			return thinkNickname;
 		} else {
-			return cMyself.getNickname();
+			return myself.getNickname();
 		}
 	}
 
@@ -1894,7 +1895,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param client Client to add
 	 */
 	public void addClient(final IRCClientInfo client) {
-		hClientList.put(getStringConverter().toLowerCase(client.getNickname()),client);
+		clientList.put(getStringConverter().toLowerCase(client.getNickname()),client);
 	}
 
 	/**
@@ -1904,7 +1905,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param client Client to remove
 	 */
 	public void removeClient(final IRCClientInfo client) {
-		if (client != cMyself) {
+		if (client != myself) {
 			forceRemoveClient(client);
 		}
 	}
@@ -1916,7 +1917,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param client Client to remove
 	 */
 	protected void forceRemoveClient(final ClientInfo client) {
-		hClientList.remove(getStringConverter().toLowerCase(client.getNickname()));
+		clientList.remove(getStringConverter().toLowerCase(client.getNickname()));
 	}
 
 	/**
@@ -1925,7 +1926,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @return Count of known clients
 	 */
 	public int knownClients() {
-		return hClientList.size();
+		return clientList.size();
 	}
 
 	/**
@@ -1934,14 +1935,14 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @return Known clients as a collection
 	 */
 	public Collection<IRCClientInfo> getClients() {
-		return hClientList.values();
+		return clientList.values();
 	}
 
 	/**
 	 * Clear the client list.
 	 */
 	public void clearClients() {
-		hClientList.clear();
+		clientList.clear();
 		addClient(getLocalClient());
 	}
 
@@ -1951,8 +1952,8 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param channel Channel to add
 	 */
 	public void addChannel(final IRCChannelInfo channel) {
-		synchronized (hChannelList) {
-			hChannelList.put(getStringConverter().toLowerCase(channel.getName()), channel);
+		synchronized (channelList) {
+			channelList.put(getStringConverter().toLowerCase(channel.getName()), channel);
 		}
 	}
 
@@ -1962,8 +1963,8 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param channel Channel to remove
 	 */
 	public void removeChannel(final IRCChannelInfo channel) {
-		synchronized (hChannelList) {
-			hChannelList.remove(getStringConverter().toLowerCase(channel.getName()));
+		synchronized (channelList) {
+			channelList.remove(getStringConverter().toLowerCase(channel.getName()));
 		}
 	}
 
@@ -1973,16 +1974,16 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @return Count of known channel
 	 */
 	public int knownChannels() {
-		synchronized (hChannelList) {
-			return hChannelList.size();
+		synchronized (channelList) {
+			return channelList.size();
 		}
 	}
 
 	/** {@inheritDoc} */
         @Override
 	public Collection<IRCChannelInfo> getChannels() {
-		synchronized (hChannelList) {
-                    return hChannelList.values();
+		synchronized (channelList) {
+                    return channelList.values();
 		}
 	}
 
@@ -1990,8 +1991,8 @@ public class IRCParser implements SecureParser, Runnable {
 	 * Clear the channel list.
 	 */
 	public void clearChannels() {
-		synchronized (hChannelList) {
-			hChannelList.clear();
+		synchronized (channelList) {
+			channelList.clear();
 		}
 	}
 
