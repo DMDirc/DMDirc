@@ -389,7 +389,7 @@ public class IRCChannelInfo implements ChannelInfo {
 	 *
 	 * @param sNewTopic New contents of topic
 	 */	
-	protected void setTopic(final String sNewTopic) { sTopic = sNewTopic; }
+	protected void setInternalTopic(final String sNewTopic) { sTopic = sNewTopic; }
 	
         /** {@inheritDoc} */
         @Override
@@ -723,6 +723,18 @@ public class IRCChannelInfo implements ChannelInfo {
         public void part(final String reason) {
             myParser.partChannel(sName, reason);
         }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setTopic(final String topic) {
+        myParser.sendRawMessage("TOPIC " + sName + " :" + topic);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendWho() {
+        myParser.sendRawMessage("WHO " + sName);
+    }
 
 }
 

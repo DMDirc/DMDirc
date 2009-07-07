@@ -59,8 +59,8 @@ public final class Message extends ServerCommand implements IntelligentCommand,
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "msg", "<target> <message>");
         } else {
-            server.getParser().sendRawMessage("PRIVMSG " + args.getArguments()[0] + " :"
-                    + args.getArgumentsAsString(1));
+            server.getParser().sendMessage(args.getArguments()[0],
+                    args.getArgumentsAsString(1));
             sendLine(origin, isSilent, "selfMessage", args.getArguments()[0],
                     args.getArgumentsAsString(1));
         }

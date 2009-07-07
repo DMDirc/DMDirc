@@ -42,6 +42,13 @@ public interface ChannelInfo {
     String getName();
 
     /**
+     * Changes the topic of this channel.
+     *
+     * @param topic This channel's new topic
+     */
+    void setTopic(String topic);
+
+    /**
      * Retrieves the current topic or subject of this channel.
      *
      * @return This channel's topic
@@ -107,6 +114,11 @@ public interface ChannelInfo {
      * @param reason The reason for parting
      */
     void part(String reason);
+
+    /**
+     * Sends a WHO request to get details about people who are on the channel.
+     */
+    void sendWho();
 
     /**
      * Adjust the modes on this channel. This method should queue modes to be

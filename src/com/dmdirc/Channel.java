@@ -371,7 +371,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public void checkWho() {
         if (onChannel && sendWho) {
-            server.getParser().sendRawMessage("WHO :" + channelInfo.getName());
+            channelInfo.sendWho();
         }
     }
 
@@ -578,6 +578,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * current topic
      */
     public void setTopic(final String topic) {
-        server.getParser().sendRawMessage("TOPIC " + channelInfo.getName() + " :" + topic);
+        channelInfo.setTopic(topic);
     }
 }

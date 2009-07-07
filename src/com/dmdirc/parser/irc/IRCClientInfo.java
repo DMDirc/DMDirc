@@ -402,4 +402,16 @@ public class IRCClientInfo implements LocalClientInfo {
             }
         }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setAway(String reason) {
+        myParser.sendRawMessage("AWAY :" + reason);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setBack() {
+        myParser.sendRawMessage("AWAY");
+    }
+
 }

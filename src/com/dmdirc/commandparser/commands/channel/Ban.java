@@ -65,7 +65,8 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
             host = "*!*@" + user.getClient().getHostname();
         }
         
-        server.getParser().sendRawMessage("MODE " + channel + " +b " + host);
+        channel.getChannelInfo().alterMode(true, 'b', host);
+        channel.getChannelInfo().flushModes();
     }
     
     /** {@inheritDoc} */

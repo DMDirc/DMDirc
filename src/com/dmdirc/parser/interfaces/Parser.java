@@ -279,6 +279,14 @@ public interface Parser extends Runnable {
     void sendMessage(String target, String message);
 
     /**
+     * Sends a notice to the specified target.
+     *
+     * @param target The target to send the notice to
+     * @param message The message to be sent
+     */
+    void sendNotice(String target, String message);
+
+    /**
      * Sends an action to the specified target.
      *
      * @param target The target to send the action to

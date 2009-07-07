@@ -1519,12 +1519,8 @@ public class IRCParser implements SecureParser, Runnable {
 		sendString("PRIVMSG " + target + " :" + message);
 	}
 
-	/**
-	 * Send a notice message to a target.
-	 *
-	 * @param target Target
-	 * @param message Message to send
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void sendNotice(final String target, final String message) {
 		if (target == null || message == null) { return; }
 		if (target.isEmpty()/* || sMessage.isEmpty()*/) { return; }

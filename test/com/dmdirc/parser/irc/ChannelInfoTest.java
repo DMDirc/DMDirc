@@ -74,7 +74,7 @@ public class ChannelInfoTest {
 
     @Test
     public void testTopic() {
-        ci.setTopic("abcdef");
+        ci.setInternalTopic("abcdef");
 
         assertEquals("abcdef", ci.getTopic());
     }

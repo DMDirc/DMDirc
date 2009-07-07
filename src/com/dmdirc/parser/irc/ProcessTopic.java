@@ -41,7 +41,7 @@ public class ProcessTopic extends IRCProcessor {
 		if (sParam.equals("332")) {
 			iChannel = getChannel(token[3]);
 			if (iChannel == null) { return; }
-			iChannel.setTopic(token[token.length-1]);
+			iChannel.setInternalTopic(token[token.length-1]);
 		} else if (sParam.equals("333")) {
 			if (token.length > 3) {
 				iChannel = getChannel(token[3]);
@@ -64,7 +64,7 @@ public class ProcessTopic extends IRCProcessor {
 			iChannel.setTopicTime(System.currentTimeMillis() / 1000);
 			if (token[0].charAt(0) == ':') { token[0] = token[0].substring(1); }
 			iChannel.setTopicUser(token[0]);
-			iChannel.setTopic(token[token.length-1]);
+			iChannel.setInternalTopic(token[token.length-1]);
 			callChannelTopic(iChannel,false);
 		}
 	}

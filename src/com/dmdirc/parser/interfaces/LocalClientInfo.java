@@ -46,6 +46,18 @@ public interface LocalClientInfo extends ClientInfo {
     String getModes();
 
     /**
+     * Marks the local client as being away.
+     *
+     * @param reason The reason for being away
+     */
+    void setAway(String reason);
+
+    /**
+     * Marks the local client as being back (not away).
+     */
+    void setBack();
+
+    /**
      * Alters the user modes of the local client. This method will queue modes
      * to be sent in one go, according to the behaviour/configuration of the
      * backend system. If fewer modes are altered than the queue accepts,
