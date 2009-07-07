@@ -42,7 +42,7 @@ import java.util.Queue;
  * @author Chris Smith
  * @see IRCParser
  */
-class IRCChannelInfo implements ChannelInfo {
+public class IRCChannelInfo implements ChannelInfo {
 	/**
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
@@ -435,7 +435,7 @@ class IRCChannelInfo implements ChannelInfo {
 			sTemp = hParamModes.get(cTemp);
 			if (!sTemp.isEmpty()) {
 				sModes.append(cTemp);
-				sModeParams.append(" ").append(this.getModeParam(cTemp));
+				sModeParams.append(" ").append(this.getMode(cTemp));
  			}
 		}
 		
@@ -457,13 +457,10 @@ class IRCChannelInfo implements ChannelInfo {
 			hParamModes.put(cMode, sValue);
 		}
 	}
-	/**
-	 * Get the value of a mode that requires a parameter.
-	 *
-	 * @param cMode Character representing mode
-	 * @return string representing the value of the mode ("" if mode not set)
-	 */	
-	public String getModeParam(final Character cMode) { 
+        
+	/** {@inheritDoc} */
+        @Override
+	public String getMode(final char cMode) {
 		if (hParamModes.containsKey(cMode)) { 
 			return hParamModes.get(cMode); 
 		}
@@ -513,13 +510,9 @@ class IRCChannelInfo implements ChannelInfo {
 		if (bAdd) { lModes.add(newItem); }
 	}
 	
-	/**
-	 * Get the list object representing a channel mode.
-	 *
-	 * @param cMode Character representing mode
-	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
-	 */
-	public List<ChannelListModeItem> getListModeParam(final Character cMode) {
+	/** {@inheritDoc} */
+        @Override
+	public Collection<ChannelListModeItem> getListMode(final char cMode) {
 		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
@@ -603,7 +596,7 @@ class IRCChannelInfo implements ChannelInfo {
 					// Does mode require a param to unset aswell?
 					// We might need to queue an unset first
 					if (((modeint & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
-						final String existingParam = getModeParam(mode);
+						final String existingParam = getMode(mode);
 						if (!existingParam.isEmpty()) {
 							final String reverseModeStr = "-" + mode + " " + existingParam;
 							

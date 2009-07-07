@@ -180,6 +180,24 @@ public interface Parser extends Runnable {
     String getListChannelModes();
 
     /**
+     * Retrieves the maximum number of list modes of the specified type which
+     * may be set on a channel. Returns 0 or -1 if the limit wasn't specified,
+     * or couldn't be discovered, respectively.
+     *
+     * @param mode The list mode being requested
+     * @return The maximimum number of that mode which can be set
+     */
+    int getMaxListModes(char mode);
+
+    /**
+     * Determines if the specified channel mode is settable by users.
+     *
+     * @param mode The mode to be tested
+     * @return True if users may set the mode, false otherwise
+     */
+    boolean isUserSettable(final char mode);
+
+    /**
      * Retrieves an alphabetically-sorted list of 'parameter' channel modes.
      * Parameter channel modes may only be set or unset, and require a
      * parameter to be specified when they are set (but not when unset).
@@ -246,6 +264,22 @@ public interface Parser extends Runnable {
     void sendCTCPReply(String target, String type, String message);
 
     /**
+     * Sends a message to the specified target.
+     *
+     * @param target The target to send the message to
+     * @param message The message to be sent
+     */
+    void sendMessage(String target, String message);
+
+    /**
+     * Sends an action to the specified target.
+     *
+     * @param target The target to send the action to
+     * @param message The message to be sent
+     */
+    void sendAction(String target, String message);
+
+    /**
      * Retrieves the last line/communication received from the server, for use
      * in debugging purposes.
      *
@@ -283,5 +317,13 @@ public interface Parser extends Runnable {
      * @return This parser's local port number
      */
     int getLocalPort();
+
+    /**
+     * Retrieves the amount of time elapsed since the last ping request was
+     * sent (or until the reply was received).
+     *
+     * @return The current ping time to the server
+     */
+    long getPingTime();
 
 }

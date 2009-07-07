@@ -40,7 +40,7 @@ import java.util.Map;
  * @author Chris Smith
  * @see IRCParser
  */
-class IRCClientInfo implements LocalClientInfo {
+public class IRCClientInfo implements LocalClientInfo {
 	/** Known nickname of client. */
 	private String sNickname = "";
 	/** Known ident of client. */

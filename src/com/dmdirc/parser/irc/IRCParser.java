@@ -70,7 +70,7 @@ import javax.net.ssl.X509TrustManager;
  *
  * @author Shane Mc Cormack
  */
-class IRCParser implements SecureParser, Runnable {
+public class IRCParser implements SecureParser, Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -1462,17 +1462,8 @@ class IRCParser implements SecureParser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the max number of list modes.
-	 *
-	 * @param mode The mode to know the max number for
-	 * @return The max number of list modes for the given mode.
-	 *         - returns 0 if MAXLIST does not contain the mode, unless MAXBANS is
-	 *           set, then this is returned instead.
-	 *         - returns -1 if:
-	 *           - MAXLIST or MAXBANS were not in 005
-	 *           - Values for MAXLIST or MAXBANS were invalid (non integer, empty)
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public int getMaxListModes(final char mode) {
 		// MAXLIST=bdeI:50
 		// MAXLIST=b:60,e:60,I:60
@@ -1518,12 +1509,8 @@ class IRCParser implements SecureParser, Runnable {
 		return result;
 	}
 
-	/**
-	 * Send a private message to a target.
-	 *
-	 * @param sTarget Target
-	 * @param sMessage Message to send
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void sendMessage(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
@@ -1544,13 +1531,8 @@ class IRCParser implements SecureParser, Runnable {
 		sendString("NOTICE " + sTarget + " :" + sMessage);
 	}
 
-	/**
-	 * Send a Action to a target.
-	 *
-	 * @param sTarget Target
-	 * @param sMessage Action to send
-	 */
-	public void sendAction(final String sTarget, final String sMessage) {
+	/** {@inheritDoc} */
+        @Override	public void sendAction(final String sTarget, final String sMessage) {
 		sendCTCP(sTarget, "ACTION", sMessage);
 	}
 
@@ -1634,13 +1616,9 @@ class IRCParser implements SecureParser, Runnable {
 		return hChanPrefix.containsKey(name.charAt(0)) || name.equals("0");
 	}
 
-	/**
-	 * Check if a given chanmode is user settable.
-	 *
-	 * @param mode Mode to test
-	 * @return true if mode is settable by users, false if servers only
-	 */
-	public boolean isUserSettable(final Character mode) {
+	/** {@inheritDoc} */
+        @Override
+	public boolean isUserSettable(final char mode) {
 		String validmodes;
 		if (h005Info.containsKey("USERCHANMODES")) {
 			validmodes = h005Info.get("USERCHANMODES");
@@ -1890,6 +1868,12 @@ class IRCParser implements SecureParser, Runnable {
 		if (actualTime) { return pingTime; }
 		else { return System.currentTimeMillis() - pingTime; }
 	}
+
+        /** {@inheritDoc} */
+        @Override
+        public long getPingTime() {
+            return getPingTime(false);
+        }
 
 	/**
 	 * Set if a ping is needed or not.

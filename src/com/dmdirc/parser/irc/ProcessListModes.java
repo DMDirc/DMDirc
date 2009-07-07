@@ -24,7 +24,7 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelListModeListener;
-import java.util.List;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -158,7 +158,7 @@ public class ProcessListModes extends IRCProcessor {
 			
 			if (!channel.getAddState(mode)) {
 				callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
-				final List<ChannelListModeItem> list = channel.getListModeParam(mode);
+				final Collection<ChannelListModeItem> list = channel.getListMode(mode);
 				if (list == null) {
 					myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+mode+"' - but channel object doesn't agree.", myParser.getLastLine()));
 				} else {
@@ -169,7 +169,7 @@ public class ProcessListModes extends IRCProcessor {
 						
 						if (!channel.getAddState(otherMode)) {
 							callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
-							final List<ChannelListModeItem> otherList = channel.getListModeParam(otherMode);
+							final Collection<ChannelListModeItem> otherList = channel.getListMode(otherMode);
 							if (otherList == null) {
 								myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+otherMode+"' - but channel object doesn't agree.", myParser.getLastLine()));
 							} else {

@@ -35,6 +35,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -148,9 +149,9 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             final char mode = listModesArray[i];
             existingListItems.add(mode,
                     new ArrayList<ChannelListModeItem>(channel.getChannelInfo().
-                    getListModeParam(mode)));
-            final List<ChannelListModeItem> listItems =
-                    channel.getChannelInfo().getListModeParam(mode);
+                    getListMode(mode)));
+            final Collection<ChannelListModeItem> listItems =
+                    channel.getChannelInfo().getListMode(mode);
             final DefaultListModel model =
                     (DefaultListModel) listModesPanels.get(i).getModel();
 

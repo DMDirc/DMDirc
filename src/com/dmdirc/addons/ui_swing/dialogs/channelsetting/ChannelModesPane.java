@@ -142,7 +142,7 @@ public final class ChannelModesPane extends JPanel {
                 i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value =
-                    channel.getChannelInfo().getModeParam(mode.charAt(0));
+                    channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
                     ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
 
@@ -211,7 +211,7 @@ public final class ChannelModesPane extends JPanel {
                 i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value =
-                    channel.getChannelInfo().getModeParam(mode.charAt(0));
+                    channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
                     ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             final ParamModePanel paramModePanel = modeInputs.get(mode);

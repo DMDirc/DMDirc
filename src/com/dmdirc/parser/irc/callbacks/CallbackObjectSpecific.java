@@ -24,10 +24,11 @@ package com.dmdirc.parser.irc.callbacks;
 
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
+import com.dmdirc.parser.irc.IRCClientInfo;
+import com.dmdirc.parser.irc.IRCParser;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -50,7 +51,7 @@ public class CallbackObjectSpecific extends CallbackObject {
      * @param type The type of callback to use
      * @since 0.6.3m1
 	 */
-	public CallbackObjectSpecific(final Parser parser,
+	public CallbackObjectSpecific(final IRCParser parser,
             final CallbackManager manager, final Class<? extends CallbackInterface> type) {
         super(parser, manager, type);
     }
@@ -77,7 +78,7 @@ public class CallbackObjectSpecific extends CallbackObject {
 	 * @return true if host given matches the specifics for the method given
 	 */
 	protected boolean isValidUser(final CallbackInterface eMethod, final String sHost) {
-		final String nickname = ClientInfo.parseHost(sHost);
+		final String nickname = IRCClientInfo.parseHost(sHost);
 		if (specificData.containsKey(eMethod)) {
 			if (!myParser.getStringConverter().equalsIgnoreCase(nickname, specificData.get(eMethod))) { return false; }
 		}

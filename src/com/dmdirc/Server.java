@@ -1019,9 +1019,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             eventHandler.unregisterCallbacks();
 
             // 3: Trigger any actions neccessary
-            if (parser != null && parser.isReady()) {
-                disconnect();
-            }
+            disconnect();
 
             myState.transition(ServerState.CLOSING);
         }
@@ -1331,13 +1329,13 @@ public class Server extends WritableFrameContainer implements Serializable {
     public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + getName() + " for over "
-                + ((int) (Math.floor(parser.getPingTime(false) / 1000.0)))
+                + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", null, 10);
 
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
-                Long.valueOf(parser.getPingTime(false)));
+                Long.valueOf(parser.getPingTime()));
 
-        if (parser.getPingTime(false)
+        if (parser.getPingTime()
                  >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
             handleNotification("stonedServer", getName());
             reconnect();

@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.interfaces;
 
+import com.dmdirc.parser.irc.ChannelListModeItem;
 import java.util.Collection;
 
 /**
@@ -69,6 +70,22 @@ public interface ChannelInfo {
      * @return The current channel modes
      */
     String getModes();
+
+    /**
+     * Retrieves the value of the specified mode if it's set.
+     *
+     * @param mode The mode to retrieve
+     * @return The value for the specified mode or an empty string if it's not set
+     */
+    String getMode(char mode);
+
+    /**
+     * Retrieves the known values for the specified list mode.
+     *
+     * @param mode The list mode to be retrieved
+     * @return A collection of known list mode items
+     */
+    Collection<ChannelListModeItem> getListMode(char mode);
 
     /**
      * Sends the specified message to this channel.

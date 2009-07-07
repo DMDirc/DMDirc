@@ -161,12 +161,12 @@ public class ChannelInfoTest {
         parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
         parser.sentLines.clear();
         
-        assertEquals("lalala", info.getModeParam('k'));
-        assertEquals("", info.getModeParam('z'));
+        assertEquals("lalala", info.getMode('k'));
+        assertEquals("", info.getMode('z'));
         
         parser.injectLine(":server MODE #DMDirc_testing -k *");
         
-        assertEquals("", info.getModeParam('k'));
+        assertEquals("", info.getMode('k'));
     }
     
     @Test

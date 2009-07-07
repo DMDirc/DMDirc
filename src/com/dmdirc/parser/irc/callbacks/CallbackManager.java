@@ -21,9 +21,9 @@
  */
 package com.dmdirc.parser.irc.callbacks;
 
-import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.*;
 
+import com.dmdirc.parser.irc.IRCParser;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -61,7 +61,7 @@ public final class CallbackManager {
     };
 
     /** Reference to the parser object that owns this CallbackManager. */
-    Parser myParser;
+    IRCParser myParser;
     /** Hashtable used to store the different types of callback known. */
     private final Map<Class<? extends CallbackInterface>, CallbackObject> callbackHash
             = new Hashtable<Class<? extends CallbackInterface>, CallbackObject>();
@@ -71,7 +71,7 @@ public final class CallbackManager {
      *
      * @param parser Parser that owns this callback manager.
      */
-    public CallbackManager(final Parser parser) {
+    public CallbackManager(final IRCParser parser) {
         myParser = parser;
 
         for (Class<?> type : CLASSES) {

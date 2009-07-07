@@ -34,7 +34,8 @@ import java.util.Map;
  * @author Chris Smith
  * @see IRCParser
  */
-class IRCChannelClientInfo implements ChannelClientInfo {
+public class IRCChannelClientInfo implements ChannelClientInfo {
+    
 	/** Reference to ClientInfo object this represents. */
 	private final IRCClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
