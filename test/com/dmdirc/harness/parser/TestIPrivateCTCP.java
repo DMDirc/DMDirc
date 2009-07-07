@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
 
 public class TestIPrivateCTCP implements PrivateCtcpListener {
 
     public String type, message, host;
 
-    public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage,
+    @Override
+    public void onPrivateCTCP(Parser tParser, String sType, String sMessage,
                               String sHost) {
         type = sType;
         message = sMessage;

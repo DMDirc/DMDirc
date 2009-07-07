@@ -22,7 +22,8 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 
 public class TestIChannelTopic implements ChannelTopicListener {
@@ -31,9 +32,9 @@ public class TestIChannelTopic implements ChannelTopicListener {
 
     public boolean isJoin;
 
-    public IRCChannelInfo channel;
+    public ChannelInfo channel;
 
-    public void onChannelTopic(IRCParser tParser, IRCChannelInfo cChannel,
+    public void onChannelTopic(Parser tParser, ChannelInfo cChannel,
                                boolean bIsJoinTopic) {
         triggered = true;
         isJoin = bIsJoinTopic;

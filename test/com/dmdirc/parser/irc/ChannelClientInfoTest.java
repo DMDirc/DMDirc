@@ -40,7 +40,7 @@ public class ChannelClientInfoTest {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
-        final IRCChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClient("luser").getChannelClients().get(0);
 
         assertEquals("v", cci.getImportantMode());
         assertEquals("+", cci.getImportantModePrefix());
@@ -69,10 +69,10 @@ public class ChannelClientInfoTest {
 
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
-        final Map<String, Integer> map1 = new HashMap<String, Integer>();
-        final Map<String, Integer> map2 = new HashMap<String, Integer>();
+        final Map<Object, Object> map1 = new HashMap<Object, Object>();
+        final Map<Object, Object> map2 = new HashMap<Object, Object>();
         
-        final IRCChannelClientInfo cci = parser.getClientInfo("nick").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClient("nick").getChannelClients().get(0);
         
         cci.setMap(map1);
         assertSame(map1, cci.getMap());
@@ -89,12 +89,12 @@ public class ChannelClientInfoTest {
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.sentLines.clear();
         
-        parser.getClientInfo("nick").getChannelClients().get(0).kick("");
+        parser.getClient("nick").getChannelClients().get(0).kick("");
         assertEquals(1, parser.sentLines.size());
         assertEquals("KICK #DMDirc_testing nick", parser.sentLines.get(0));
         parser.sentLines.clear();
         
-        parser.getClientInfo("nick").getChannelClients().get(0).kick("booya");
+        parser.getClient("nick").getChannelClients().get(0).kick("booya");
         assertEquals(1, parser.sentLines.size());
         assertEquals("KICK #DMDirc_testing nick :booya", parser.sentLines.get(0));
     }

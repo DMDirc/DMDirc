@@ -45,7 +45,7 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import javax.net.ssl.TrustManager;
 
@@ -348,7 +348,7 @@ public class IRCParserTest {
 
         assertTrue(Arrays.equals(parser.getDefaultTrustManager(), parser.getTrustManager()));
 
-        parser.setTrustManager(new TrustManager[0]);
+        parser.setTrustManagers(new TrustManager[0]);
 
         assertTrue(Arrays.equals(new TrustManager[0], parser.getTrustManager()));
     }
@@ -403,8 +403,8 @@ public class IRCParserTest {
         parser.injectLine(":server " + numeric1 + " nick #D ban3!ident@* bansetter3 1003");
         parser.injectLine(":server " + numeric2 + " nick #D :End of Channel Something List");
 
-        final List<ChannelListModeItem> items
-                = parser.getChannel("#D").getListModeParam(mode);
+        final Collection<ChannelListModeItem> items
+                = parser.getChannel("#D").getListMode(mode);
 
         assertEquals(3, items.size());
         boolean gotOne = false, gotTwo = false, gotThree = false;

@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.Post005Listener;
 
 public class TestIPost005 implements Post005Listener {
 
     public boolean done = false;
 
-    public void onPost005(IRCParser tParser) {
+    @Override
+    public void onPost005(Parser tParser) {
         done = true;
     }
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.NumericListener;
 
 public class TestINumeric implements NumericListener {
@@ -31,7 +31,8 @@ public class TestINumeric implements NumericListener {
 
     public String[] data;
 
-    public void onNumeric(IRCParser tParser, int numeric, String[] token) {
+    @Override
+    public void onNumeric(Parser tParser, int numeric, String[] token) {
         this.numeric = numeric;
         data = token;
     }

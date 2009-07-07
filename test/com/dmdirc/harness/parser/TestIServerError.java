@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 
 public class TestIServerError implements ServerErrorListener {
 
     public String message = null;
 
-    public void onServerError(IRCParser tParser, String sMessage) {
+    @Override
+    public void onServerError(Parser tParser, String sMessage) {
         message = sMessage;
     }
 }

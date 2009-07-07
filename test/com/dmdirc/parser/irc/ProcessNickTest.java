@@ -47,10 +47,10 @@ public class ProcessNickTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
         parser.injectLine(":luser!lu@ser.com NICK LUSER");
 
-        assertNotNull(parser.getClientInfo("LUSER"));
-        assertEquals(1, parser.getClientInfo("LUSER").getChannelClients().size());
+        assertNotNull(parser.getClient("LUSER"));
+        assertEquals(1, parser.getClient("LUSER").getChannelClients().size());
 
-        IRCChannelClientInfo cci = parser.getClientInfo("LUSER").getChannelClients().get(0);
+        IRCChannelClientInfo cci = parser.getClient("LUSER").getChannelClients().get(0);
         assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
@@ -68,11 +68,11 @@ public class ProcessNickTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
         parser.injectLine(":luser!lu@ser.com NICK foobar");
 
-        assertNotNull(parser.getClientInfo("foobar"));
-        assertNull(parser.getClientInfo("luser"));
-        assertEquals(1, parser.getClientInfo("foobar").getChannelClients().size());
+        assertNotNull(parser.getClient("foobar"));
+        assertNull(parser.getClient("luser"));
+        assertEquals(1, parser.getClient("foobar").getChannelClients().size());
 
-        IRCChannelClientInfo cci = parser.getClientInfo("foobar").getChannelClients().get(0);
+        IRCChannelClientInfo cci = parser.getClient("foobar").getChannelClients().get(0);
         assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
     }    

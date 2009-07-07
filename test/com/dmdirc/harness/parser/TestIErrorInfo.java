@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.irc.ParserError;
 
 public class TestIErrorInfo implements ErrorInfoListener {
 
     public boolean error = false;
 
-    public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
+    public void onErrorInfo(Parser tParser, ParserError errorInfo) {
         error = true;
     }
 }

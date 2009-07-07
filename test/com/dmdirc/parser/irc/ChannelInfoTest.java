@@ -143,7 +143,7 @@ public class ChannelInfoTest {
     @Test
     public void testSendEmptyMessages() {
         final TestParser parser = new TestParser();
-        final ChannelInfo info = getChannel(parser);
+        final IRCChannelInfo info = getChannel(parser);
         
         info.sendAction("");
         info.sendCTCP("", "");
@@ -347,7 +347,7 @@ public class ChannelInfoTest {
         return res;
     }
 
-    private ChannelInfo getChannel(final TestParser parser) {
+    private IRCChannelInfo getChannel(final TestParser parser) {
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
 

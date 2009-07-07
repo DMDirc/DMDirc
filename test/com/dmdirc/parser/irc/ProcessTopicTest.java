@@ -46,7 +46,7 @@ public class ProcessTopicTest {
         assertTrue(test.isJoin);
         assertEquals("#DMDirc_testing", test.channel.getName());
         assertEquals("This be a topic", test.channel.getTopic());
-        assertEquals("Q", test.channel.getTopicUser());
+        assertEquals("Q", test.channel.getTopicSetter());
         assertEquals(1207350306l, test.channel.getTopicTime());
     }
     
@@ -68,7 +68,7 @@ public class ProcessTopicTest {
         assertFalse(test.isJoin);
         assertEquals("#DMDirc_testing", test.channel.getName());
         assertEquals("New topic here", test.channel.getTopic());
-        assertEquals("foobar", test.channel.getTopicUser());
+        assertEquals("foobar", test.channel.getTopicSetter());
         assertTrue(1207350306l < test.channel.getTopicTime());
     }    
 

@@ -22,7 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.LocalClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
@@ -62,7 +61,7 @@ public class IRCClientInfo implements LocalClientInfo {
 	/** A Map to allow applications to attach misc data to this object */
 	private Map<Object, Object> myMap;
 	/** List of ChannelClientInfos that point to this */
-	private final Map<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
+	private final Map<String, IRCChannelClientInfo> myChannelClientInfos = new Hashtable<String, IRCChannelClientInfo>();
 	/** Modes waiting to be sent to the server. */
 	private final List<String> lModeQueue = new LinkedList<String>();
 
@@ -321,9 +320,9 @@ public class IRCClientInfo implements LocalClientInfo {
 	 *
 	 * @return int with the count of known channels
 	 */	
-	public List<ChannelClientInfo> getChannelClients() {
-		final List<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
-		for (ChannelClientInfo cci : myChannelClientInfos.values()) {
+	public List<IRCChannelClientInfo> getChannelClients() {
+		final List<IRCChannelClientInfo> result = new ArrayList<IRCChannelClientInfo>();
+		for (IRCChannelClientInfo cci : myChannelClientInfos.values()) {
 			result.add(cci);
 		}
 		return result;
@@ -331,7 +330,7 @@ public class IRCClientInfo implements LocalClientInfo {
 	
 	/** {@inheritDoc} */
         @Override
-	public void alterMode(final boolean positive, final Character mode) {
+	public void alterMode(final boolean add, final Character mode) {
 		if (isFake()) { return; }
 		int modecount = 1;
 		String modestr = "";
@@ -342,9 +341,9 @@ public class IRCClientInfo implements LocalClientInfo {
 				modecount = 1;
 			}
 		}
-		modestr = ((positive) ? "+" : "-") + mode;
+		modestr = ((add) ? "+" : "-") + mode;
 		if (!myParser.userModes.containsKey(mode)) { return; }
-		final String teststr = ((positive) ? "-" : "+") + mode;
+		final String teststr = ((add) ? "-" : "+") + mode;
 		if (lModeQueue.contains(teststr)) {
 			lModeQueue.remove(teststr);
 			return;

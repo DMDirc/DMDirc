@@ -32,17 +32,17 @@ public class Process001Test {
     public void testDuplicate001() {
         final TestParser tp = new TestParser();
         
-        assertTrue(tp.getMyself().isFake());
+        assertTrue(tp.getLocalClient().isFake());
         
         tp.injectConnectionStrings();
         
-        assertEquals("nick", tp.getMyself().getNickname());
-        assertFalse(tp.getMyself().isFake());
+        assertEquals("nick", tp.getLocalClient().getNickname());
+        assertFalse(tp.getLocalClient().isFake());
         
         tp.injectLine(":server 001 nick2 :Crazy second 001 for you, nick2");
         
-        assertEquals("nick2", tp.getMyself().getNickname());
-        assertFalse(tp.getMyself().isFake());
+        assertEquals("nick2", tp.getLocalClient().getNickname());
+        assertFalse(tp.getLocalClient().isFake());
     }
 
 }

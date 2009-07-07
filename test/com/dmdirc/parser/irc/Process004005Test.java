@@ -36,7 +36,7 @@ public class Process004005Test {
         parser.injectLine(":server 005 nick CASEMAPPING=" + target
                     + " :are supported by this server");
         
-        assertEquals(expected, parser.getIRCStringConverter().getLimit());
+        assertEquals(expected, parser.getStringConverter().getLimit());
         
         return parser;
     }

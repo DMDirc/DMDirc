@@ -64,7 +64,7 @@ public class ProcessJoinTest {
         parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
 
         verify(test).onChannelJoin(parser, parser.getChannel("#DMDirc_testing"),
-                parser.getClientInfo("foo!bar@baz").getChannelClients().get(0));
+                parser.getClient("foo!bar@baz").getChannelClients().get(0));
     }    
 
 }

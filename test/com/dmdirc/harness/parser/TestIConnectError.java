@@ -22,15 +22,16 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
+import com.dmdirc.parser.irc.ParserError;
 
 public class TestIConnectError implements ConnectErrorListener {
 
     public boolean error = false;
 
     @Override
-    public void onConnectError(IRCParser tParser, ParserError errorInfo) {
+    public void onConnectError(Parser tParser, ParserError errorInfo) {
         error = true;
     }
 }

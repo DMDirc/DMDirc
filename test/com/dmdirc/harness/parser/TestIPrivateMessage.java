@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 
 public class TestIPrivateMessage implements PrivateMessageListener {
 
     public String host, message;
 
-    public void onPrivateMessage(IRCParser tParser, String sMessage,
+    @Override
+    public void onPrivateMessage(Parser tParser, String sMessage,
                                  String sHost) {
         host = sHost;
         message = sMessage;

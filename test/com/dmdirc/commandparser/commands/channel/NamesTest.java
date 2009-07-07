@@ -65,14 +65,14 @@ public class NamesTest {
     public void testNormal() {
         command.execute(null, server, channel, false, new CommandArguments("/names"));
 
-        verify(parser).sendLine("NAMES #chan");
+        verify(parser).sendRawMessage("NAMES #chan");
     }
 
     @Test
     public void testExternal() {
         command.execute(null, server, "#chan", false, new CommandArguments("/names #chan"));
 
-        verify(parser).sendLine("NAMES #chan");
+        verify(parser).sendRawMessage("NAMES #chan");
     }
 
 }

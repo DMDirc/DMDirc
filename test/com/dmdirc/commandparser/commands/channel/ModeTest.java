@@ -59,7 +59,7 @@ public class ModeTest {
 
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
-        when(channelinfo.getModeStr()).thenReturn("my mode string!");
+        when(channelinfo.getModes()).thenReturn("my mode string!");
         when(channelinfo.toString()).thenReturn("#chan");
     }
 
@@ -78,7 +78,7 @@ public class ModeTest {
 
         command.execute(origin, server, channel, false, new CommandArguments("/mode +hello -bye"));
 
-        verify(parser).sendLine("MODE #chan +hello -bye");
+        verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ModeTest {
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode #chan +hello -bye"));
 
-        verify(parser).sendLine("MODE #chan +hello -bye");
+        verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ModeTest {
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode #chan"));
 
-        verify(parser).sendLine("MODE #chan");
+        verify(parser).sendRawMessage("MODE #chan");
     }
 
 }

@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 
 public class TestIPrivateAction implements PrivateActionListener {
 
     public String message, host;
 
-    public void onPrivateAction(IRCParser tParser, String sMessage, String sHost) {
+    @Override
+    public void onPrivateAction(Parser tParser, String sMessage, String sHost) {
         message = sMessage;
         host = sHost;
     }

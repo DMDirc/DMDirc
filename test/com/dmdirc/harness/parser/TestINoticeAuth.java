@@ -22,14 +22,15 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
 
 public class TestINoticeAuth implements AuthNoticeListener {
 
     public String message = null;
 
-    public void onNoticeAuth(IRCParser tParser, String sData) {
+    @Override
+    public void onNoticeAuth(Parser tParser, String sData) {
         message = sData;
     }
 }
