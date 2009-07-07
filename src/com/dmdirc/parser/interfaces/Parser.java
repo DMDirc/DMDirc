@@ -326,4 +326,41 @@ public interface Parser extends Runnable {
      */
     long getPingTime();
 
+    /**
+     * Sets the interval of the ping timer, in milliseconds. If the parser is
+     * waiting for a ping, it should fire a PingFailed event every time this
+     * interval is passed (or disconnect if no listeners are registered).
+     *
+     * @param newValue The new value for the ping timer interval
+     */
+    void setPingTimerInterval(long newValue);
+
+    /**
+     * Retrieves the length of the ping timer interval for this parser.
+     *
+     * @return This parser's ping timer interval
+     */
+    long getPingTimerInterval();
+
+    /**
+     * Sets how many ping timer intervals should pass before the parser sends
+     * a ping. That is, the time between pings on an idle connection will be
+     * <code>(ping timer interval) * (ping timer fraction)</code> millisecs.
+     *
+     * For example, setting the interval to 10,000 (10 seconds) and the fraction
+     * to 6 means that pings will be sent once every minute and if a reply is
+     * not received within 10 seconds, a ping failed event will be raised.
+     *
+     * @param newValue The new value of the ping timer fraction
+     */
+    void setPingTimerFraction(int newValue);
+
+    /**
+     * Retrieves the number of ping timer intervals that must pass before this
+     * parser sends a ping request.
+     *
+     * @return This parser's ping timer fraction
+     */
+    int getPingTimerFraction();
+
 }

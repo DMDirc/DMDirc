@@ -247,7 +247,7 @@ public class IRCParser implements SecureParser, Runnable {
 	};
 
 	/** Should fake (channel)clients be created for callbacks where they do not exist? */
-	boolean createFake = false;
+	boolean createFake = true;
 
 	/** Should channels automatically request list modes? */
 	boolean autoListMode = true;
@@ -1727,58 +1727,24 @@ public class IRCParser implements SecureParser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the time used for the ping Timer.
-	 *
-	 * @return current time used.
-	 * @see setPingCountDownLength
-	 */
-	public long getPingTimerLength() { return pingTimerLength; }
+	/** {@inheritDoc} */
+        @Override
+	public long getPingTimerInterval() { return pingTimerLength; }
 
-	/**
-	 * Set the time used for the ping Timer.
-	 * This will also reset the pingTimer.
-	 *
-	 * @param newValue New value to use.
-	 * @see setPingCountDownLength
-	 */
-	public void setPingTimerLength(final long newValue) {
+	/** {@inheritDoc} */
+        @Override
+	public void setPingTimerInterval(final long newValue) {
 		pingTimerLength = newValue;
 		startPingTimer();
 	}
 
-	/**
-	 * Get the time used for the pingCountdown.
-	 *
-	 * @return current time used.
-	 * @see setPingCountDownLength
-	 */
-	public int getPingCountDownLength() { return pingCountDownLength; }
+	/** {@inheritDoc} */
+        @Override
+	public int getPingTimerFraction() { return pingCountDownLength; }
 
-	/**
-	 * Set the time used for the ping countdown.
-	 * The pingTimer fires every pingTimerLength/1000 seconds, whenever a line of data
-	 * is received, the "waiting for ping" flag is set to false, if the line is
-	 * a "PONG", then onPingSuccess is also called.
-	 *
-	 * When waiting for a ping reply, onPingFailed() is called every time the
-	 * timer is fired.
-	 *
-	 * When not waiting for a ping reply, the pingCountDown is decreased by 1
-	 * every time the timer fires, when it reaches 0 is is reset to
-	 * pingCountDownLength and a PING is sent to the server.
-	 *
-	 * To ping the server after 30 seconds of inactivity you could use:
-	 * pingTimerLength = 5000, pingCountDown = 6
-	 * or
-	 * pingTimerLength = 10000, pingCountDown = 3
-	 *
-	 * @param newValue New value to use.
-	 * @see pingCountDown
-	 * @see pingTimerLength
-	 * @see pingTimerTask
-	 */
-	public void setPingCountDownLength(final int newValue) {
+	/** {@inheritDoc} */
+        @Override
+	public void setPingTimerFraction(final int newValue) {
 		pingCountDownLength = newValue;
 	}
 

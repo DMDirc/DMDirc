@@ -38,6 +38,7 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ParserError;
@@ -742,13 +743,11 @@ public class Server extends WritableFrameContainer implements Serializable {
             secureParser.setKeyManagers(certManager.getKeyManager());
         }
 
-        myParser.setRemoveAfterCallback(true);
-        myParser.setCreateFake(true);
         myParser.setIgnoreList(ignoreList);
-        myParser.setPingTimerLength(getConfigManager().getOptionInt(DOMAIN_SERVER,
+        myParser.setPingTimerInterval(getConfigManager().getOptionInt(DOMAIN_SERVER,
                 "pingtimer"));
-        myParser.setPingCountDownLength((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
-                "pingfrequency") / myParser.getPingTimerLength()));
+        myParser.setPingTimerFraction((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
+                "pingfrequency") / myParser.getPingTimerInterval()));
 
         if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
             myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));

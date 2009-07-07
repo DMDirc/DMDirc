@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ServerInfo;
 
