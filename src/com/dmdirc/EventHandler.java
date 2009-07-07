@@ -25,7 +25,7 @@ package com.dmdirc;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
