@@ -58,9 +58,9 @@ public class ProcessNickInUse extends IRCProcessor {
 					if (myParser.getStringConverter().equalsIgnoreCase(myParser.thinkNickname, myParser.me.getAltNickname())) {
 						myParser.thinkNickname = myParser.me.getNickname();
 					}
-					myParser.setNickname(myParser.me.getPrependChar()+myParser.thinkNickname);
+					myParser.getLocalClient().setNickname(myParser.me.getPrependChar()+myParser.thinkNickname);
 				} else {
-					myParser.setNickname(myParser.me.getAltNickname());
+					myParser.getLocalClient().setNickname(myParser.me.getAltNickname());
 					myParser.triedAlt = true; 
 				}
 			}
