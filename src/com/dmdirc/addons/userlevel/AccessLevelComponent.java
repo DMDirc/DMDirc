@@ -23,7 +23,7 @@
 package com.dmdirc.addons.userlevel;
 
 import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Action component to retrieve a client's global access level.

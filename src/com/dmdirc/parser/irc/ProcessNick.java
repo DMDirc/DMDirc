@@ -22,6 +22,12 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNickChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
+
 /**
  * Process a Nick change.
  */
@@ -34,15 +40,15 @@ public class ProcessNick extends IRCProcessor {
 	 */
 	@Override
 	public void process(String sParam, String[] token) {
-		ClientInfo iClient;
-		ChannelClientInfo iChannelClient;
+		IRCClientInfo iClient;
+		IRCChannelClientInfo iChannelClient;
 		String oldNickname;
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
-			oldNickname = myParser.getIRCStringConverter().toLowerCase(iClient.getNickname());
+			oldNickname = myParser.getStringConverter().toLowerCase(iClient.getNickname());
 			// Remove the client from the known clients list
-			final boolean isSameNick = myParser.getIRCStringConverter().equalsIgnoreCase(oldNickname, token[token.length-1]);
+			final boolean isSameNick = myParser.getStringConverter().equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
 				myParser.forceRemoveClient(getClientInfo(oldNickname));
@@ -50,7 +56,7 @@ public class ProcessNick extends IRCProcessor {
 			// Change the nickame
 			iClient.setUserBits(token[token.length-1],true);
 			// Readd the client
-			if (!isSameNick && myParser.getClientInfo(iClient.getNickname()) != null) {
+			if (!isSameNick && getClientInfo(iClient.getNickname()) != null) {
 //				myParser.onPostErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Nick change would overwrite existing client", myParser.getLastLine()), false);
 				myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Nick change would overwrite existing client", myParser.getLastLine()));
 			} else {
@@ -58,9 +64,9 @@ public class ProcessNick extends IRCProcessor {
 					myParser.addClient(iClient);
 				}
 				
-				for (ChannelInfo iChannel : myParser.getChannels()) {
+				for (IRCChannelInfo iChannel : myParser.getChannels()) {
 					// Find the user (using the old nickname)
-					iChannelClient = iChannel.getUser(oldNickname);
+					iChannelClient = iChannel.getChannelClient(oldNickname);
 					if (iChannelClient != null) {
 						// Rename them. This uses the old nickname (the key in the hashtable)
 						// and the channelClient object has access to the new nickname (by way
@@ -68,11 +74,11 @@ public class ProcessNick extends IRCProcessor {
 						if (!isSameNick) {
 							iChannel.renameClient(oldNickname, iChannelClient);
 						}
-						callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
+						callChannelNickChanged(iChannel,iChannelClient,IRCClientInfo.parseHost(token[0]));
 					}
 				}
 				
-				callNickChanged(iClient, ClientInfo.parseHost(token[0]));
+				callNickChanged(iClient, IRCClientInfo.parseHost(token[0]));
 			}
 		}
 		
@@ -88,7 +94,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
-		return getCallbackManager().getCallbackType("OnChannelNickChanged").call(cChannel, cChannelClient, sOldNick);
+		return getCallbackManager().getCallbackType(ChannelNickChangeListener.class).call(cChannel, cChannelClient, sOldNick);
 	}
 	
 	/**
@@ -100,7 +106,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
-		return getCallbackManager().getCallbackType("OnNickChanged").call(cClient, sOldNick);
+		return getCallbackManager().getCallbackType(NickChangeListener.class).call(cClient, sOldNick);
 	}
 	
 	/**

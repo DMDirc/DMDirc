@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.NumericListener;
 import java.util.Hashtable;
 
 /**
@@ -213,7 +214,7 @@ public class ProcessingManager {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNumeric(final int numeric, final String[] token) {
-		return myParser.getCallbackManager().getCallbackType("OnNumeric").call(numeric, token);
+		return myParser.getCallbackManager().getCallbackType(NumericListener.class).call(numeric, token);
 	}
 
 }

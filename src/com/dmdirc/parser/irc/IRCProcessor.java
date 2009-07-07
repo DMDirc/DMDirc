@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 
 /**
@@ -30,7 +32,7 @@ import com.dmdirc.parser.irc.callbacks.CallbackManager;
  *
  * @author Shane Mc Cormack
  */
-public abstract class IRCProcessor {
+abstract class IRCProcessor {
 	/** Reference to the IRCParser that owns this IRCProcessor. */
 	protected IRCParser myParser;
 	
@@ -102,18 +104,18 @@ public abstract class IRCProcessor {
 	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	protected final ClientInfo getClientInfo(final String sWho) {
-		return myParser.getClientInfo(sWho);
+	protected final IRCClientInfo getClientInfo(final String sWho) {
+		return myParser.isKnownClient(sWho) ? myParser.getClient(sWho) : null;
 	}
 	
 	/**
 	 * Get the ChannelInfo object for a channel.
 	 *
-	 * @param sWhat This is the name of the channel.
+	 * @param name This is the name of the channel.
 	 * @return ChannelInfo Object for the channel, or null
 	 */
-	protected final ChannelInfo getChannelInfo(final String sWhat) {
-		return myParser.getChannelInfo(sWhat);
+	protected final IRCChannelInfo getChannel(final String name) {
+		return myParser.getChannel(name);
 	}
 	
 	/**
@@ -174,6 +176,7 @@ public abstract class IRCProcessor {
 	 * Get the name for this Processor.
 	 * @return the name of this processor
 	 */
+        @Override
 	public final String toString() { return this.getName(); }
 	
 }

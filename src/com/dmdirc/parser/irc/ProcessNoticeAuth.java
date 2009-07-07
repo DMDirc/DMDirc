@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
+
 /**
  * Process a NoticeAuth message.
  */
@@ -45,7 +47,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNoticeAuth(final String data) {
-		return getCallbackManager().getCallbackType("OnNoticeAuth").call(data);
+		return getCallbackManager().getCallbackType(AuthNoticeListener.class).call(data);
 	}
 	
 	/**

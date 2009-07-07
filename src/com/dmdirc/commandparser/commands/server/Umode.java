@@ -56,7 +56,8 @@ public class Umode extends ServerCommand {
             return;
         }
 
-        server.getParser().sendLine("MODE " + server.getParser().getMyNickname()
+        server.getParser().sendRawMessage("MODE "
+                + server.getParser().getLocalClient().getNickname()
                 + " " + args.getArgumentsAsString());
     }
 

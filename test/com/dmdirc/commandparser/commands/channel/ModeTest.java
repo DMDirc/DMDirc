@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 public class ModeTest {
 
     private final Mode command = new Mode();
-    private ChannelInfo channelinfo;
+    private IRCChannelInfo channelinfo;
     private Channel channel;
     private Server server;
     private IRCParser parser;
@@ -55,7 +55,7 @@ public class ModeTest {
         parser = mock(IRCParser.class);
         server = mock(Server.class);
         channel = mock(Channel.class);
-        channelinfo = mock(ChannelInfo.class);
+        channelinfo = mock(IRCChannelInfo.class);
 
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);

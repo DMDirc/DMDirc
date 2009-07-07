@@ -33,9 +33,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -88,11 +88,11 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      */
     private void colourClient(final String network, final ChannelClientInfo client) {
         final Map map = client.getMap();
-        final ClientInfo myself = client.getClient().getParser().getMyself();
+        final ClientInfo myself = client.getClient().getParser().getLocalClient();
         final String nickOption1 = "color:"
-                + client.getClient().getParser().getIRCStringConverter().toLowerCase(network + ":" + client.getNickname());
+                + client.getClient().getParser().getStringConverter().toLowerCase(network + ":" + client.getClient().getNickname());
         final String nickOption2 = "color:"
-                + client.getClient().getParser().getIRCStringConverter().toLowerCase("*:" + client.getNickname());
+                + client.getClient().getParser().getStringConverter().toLowerCase("*:" + client.getClient().getNickname());
         
         if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "useowncolour")
                 && client.getClient().equals(myself)) {
@@ -100,7 +100,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
                     IdentityManager.getGlobalConfig().getOption(getDomain(), "owncolour"));
             putColour(map, color, color);
         }  else if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "userandomcolour")) {
-            putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
+            putColour(map, getColour(client.getClient().getNickname()), getColour(client.getClient().getNickname()));
         }
         
         String[] parts = null;

@@ -25,7 +25,7 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIChannelTopic;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelTopic;
+import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +36,7 @@ public class ProcessTopicTest {
         final TestParser parser = new TestParser();
         final TestIChannelTopic test = new TestIChannelTopic();
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("OnChannelTopic", test);
+        parser.getCallbackManager().addCallback(ChannelTopicListener.class, test);
         
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 332 nick #DMDirc_testing :This be a topic");
@@ -60,7 +60,7 @@ public class ProcessTopicTest {
         parser.injectLine(":server 332 nick #DMDirc_testing :This be a topic");
         parser.injectLine(":server 333 nick #DMDirc_testing Q 1207350306");
         
-        parser.getCallbackManager().addCallback("OnChannelTopic", test);
+        parser.getCallbackManager().addCallback(ChannelTopicListener.class, test);
         
         parser.injectLine(":foobar TOPIC #DMDirc_testing :New topic here");
         

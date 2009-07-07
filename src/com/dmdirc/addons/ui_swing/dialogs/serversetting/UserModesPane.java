@@ -24,8 +24,8 @@ package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import com.dmdirc.parser.irc.IRCParser;
 
+import com.dmdirc.parser.interfaces.Parser;
 import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
@@ -77,10 +77,10 @@ public final class UserModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final IRCParser parser = server.getParser();
+        final Parser parser = server.getParser();
 
-        final String userModes = parser.getUserModeString();
-        final String ourUserModes = parser.getMyself().getUserModeStr();
+        final String userModes = parser.getUserModes();
+        final String ourUserModes = parser.getLocalClient().getModes();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
@@ -143,9 +143,9 @@ public final class UserModesPane extends JPanel {
             return;
         }
         boolean changed = false;
-        final IRCParser parser = server.getParser();
-        final String userModes = parser.getUserModeString();
-        final String ourUserModes = parser.getMyself().getUserModeStr();
+        final Parser parser = server.getParser();
+        final String userModes = parser.getUserModes();
+        final String ourUserModes = parser.getLocalClient().getModes();
 
         for (int i = 0; i < userModes.length();
                 i++) {
@@ -156,13 +156,13 @@ public final class UserModesPane extends JPanel {
             if (modeCheckBoxes.get(mode) != null &&
                     state != modeCheckBoxes.get(mode).isSelected()) {
                 changed = true;
-                server.getParser().getMyself().
+                server.getParser().getLocalClient().
                         alterMode(modeCheckBoxes.get(mode).isSelected(),
                         mode.toCharArray()[0]);
             }
         }
         if (changed) {
-            server.getParser().getMyself().sendModes();
+            server.getParser().getLocalClient().flushModes();
         }
     }
 }

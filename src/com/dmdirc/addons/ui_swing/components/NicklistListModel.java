@@ -24,9 +24,10 @@ package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public final class NicklistListModel extends AbstractListModel implements Config
      * 
      * @return boolean success
      */
-    public boolean replace(final List<ChannelClientInfo> clients) {
+    public boolean replace(final Collection<ChannelClientInfo> clients) {
         boolean returnValue = false;
 
         nicknames.clear();

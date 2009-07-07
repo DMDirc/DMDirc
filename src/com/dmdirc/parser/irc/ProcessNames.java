@@ -22,6 +22,9 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
+
 /**
  * Process a Names reply.
  */
@@ -34,10 +37,10 @@ public class ProcessNames extends IRCProcessor {
 	 */
 	@Override
 	public void process(String sParam, String[] token) {
-		ChannelInfo iChannel;
+		IRCChannelInfo iChannel;
 		if (sParam.equals("366")) {
 			// End of names
-			iChannel = getChannelInfo(token[3]);
+			iChannel = getChannel(token[3]);
 			if (iChannel == null) { return; }
 			
 			iChannel.setAddingNames(false);
@@ -51,10 +54,10 @@ public class ProcessNames extends IRCProcessor {
 		} else {
 			// Names
 			
-			ClientInfo iClient;
-			ChannelClientInfo iChannelClient;
+			IRCClientInfo iClient;
+			IRCChannelClientInfo iChannelClient;
 			
-			iChannel = getChannelInfo(token[4]);
+			iChannel = getChannel(token[4]);
 		
 			if (iChannel == null) { return; }
 			
@@ -76,9 +79,9 @@ public class ProcessNames extends IRCProcessor {
 					// hPrefixMap contains @, o, +, v this caused issue 107
 					// hPrefixModes only contains o, v so if the mode is in hPrefixMap
 					// and not in hPrefixModes, its ok to use.
-					if (myParser.hPrefixMap.containsKey(cMode) && !myParser.hPrefixModes.containsKey(cMode)) {
+					if (myParser.prefixMap.containsKey(cMode) && !myParser.prefixModes.containsKey(cMode)) {
 						sModes.append(cMode);
-						nPrefix = nPrefix + myParser.hPrefixModes.get(myParser.hPrefixMap.get(cMode));
+						nPrefix = nPrefix + myParser.prefixModes.get(myParser.prefixMap.get(cMode));
 					} else {
 						sName = sNameBit.substring(i);
 						break;
@@ -87,7 +90,7 @@ public class ProcessNames extends IRCProcessor {
 				callDebugInfo(IRCParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
 				
 				iClient = getClientInfo(sName);
-				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.addClient(iClient); }
+				if (iClient == null) { iClient = new IRCClientInfo(myParser, sName); myParser.addClient(iClient); }
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
 
@@ -106,7 +109,7 @@ public class ProcessNames extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotNames(ChannelInfo cChannel) {
-		return getCallbackManager().getCallbackType("OnChannelGotNames").call(cChannel);
+		return getCallbackManager().getCallbackType(ChannelNamesListener.class).call(cChannel);
 	}
 	
 	/**

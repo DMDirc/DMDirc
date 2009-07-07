@@ -22,6 +22,13 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelOtherAwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
+
 /**
  * Process a /who reply.
  */
@@ -43,15 +50,12 @@ public class ProcessWho extends IRCProcessor {
 		// :server 352 mynickname channel username address server nick flags :hops info
 		//     0    1      2         3     4          5      6      7    8        9
 		
-//		ChannelInfo channel = myParser.getChannelInfo(token[3]);
-//		ChannelClientInfo channelClient = channel.getUser(token[7]);
-//		ClientInfo client = channelClient.getClient();
-		final ClientInfo client = myParser.getClientInfo(token[7]);
+		final IRCClientInfo client = getClientInfo(token[7]);
 		if (client != null) {
 			// Update ident/host
 			client.setUserBits(token[7]+"!"+token[4]+"@"+token[5], false);
 			// Update real name
-			if (client.getRealName().isEmpty()) {
+			if (client.getRealname().isEmpty()) {
 				final String name = token[9].split(" ", 2)[1];
 				client.setRealName(name);
 			}
@@ -59,17 +63,16 @@ public class ProcessWho extends IRCProcessor {
 			final String mode = token[8];
 			final boolean isAway = mode.indexOf('G') != -1;
 			if (client.getAwayState() != isAway) {
-//				System.out.println("Away state for '"+client+"' changed to: "+isAway);
 				client.setAwayState(isAway);
 				if (!isAway) { client.setAwayReason(""); }
-				if (client == myParser.getMyself()) {
+				if (client == myParser.getLocalClient()) {
 					callAwayState(client.getAwayState(), client.getAwayReason());
 				} else {
 					callAwayStateOther(client, isAway);
 					
 					ChannelClientInfo iChannelClient;
 					for (ChannelInfo iChannel : myParser.getChannels()) {
-						iChannelClient = iChannel.getUser(client);
+						iChannelClient = iChannel.getChannelClient(client);
 						if (iChannelClient != null) {
 							callChannelAwayStateOther(iChannel,iChannelClient,isAway);
 						}
@@ -88,7 +91,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return getCallbackManager().getCallbackType("OnAwayState").call(currentState, reason);
+		return getCallbackManager().getCallbackType(AwayStateListener.class).call(currentState, reason);
 	}
 	
 	/**
@@ -100,7 +103,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayStateOther(final ClientInfo client, final boolean state) {
-		return getCallbackManager().getCallbackType("OnAwayStateOther").call(client, state);
+		return getCallbackManager().getCallbackType(OtherAwayStateListener.class).call(client, state);
 	}
 	
 	/**
@@ -113,7 +116,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelAwayStateOther(final ChannelInfo channel, final ChannelClientInfo channelClient, final boolean state) {
-		return getCallbackManager().getCallbackType("OnChannelAwayStateOther").call(channel, channelClient, state);
+		return getCallbackManager().getCallbackType(ChannelOtherAwayStateListener.class).call(channel, channelClient, state);
 	}
 	
 	/**

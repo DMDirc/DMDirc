@@ -22,6 +22,11 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import java.util.ArrayList;
 
 /**
@@ -40,25 +45,25 @@ public class ProcessQuit extends IRCProcessor {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
-		ClientInfo iClient;
-		ChannelClientInfo iChannelClient;
+		IRCClientInfo iClient;
+		IRCChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHostname().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
-		for (ChannelInfo iChannel : channelList) {
-			iChannelClient = iChannel.getUser(iClient);
+		ArrayList<IRCChannelInfo> channelList = new ArrayList<IRCChannelInfo>(myParser.getChannels());
+		for (IRCChannelInfo iChannel : channelList) {
+			iChannelClient = iChannel.getChannelClient(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
-				if (iClient == myParser.getMyself()) {
+				if (iClient == myParser.getLocalClient()) {
 					iChannel.emptyChannel();
 					myParser.removeChannel(iChannel);
 				} else {
@@ -69,7 +74,7 @@ public class ProcessQuit extends IRCProcessor {
 		}
 
 		if (myParser.removeAfterCallback) { callQuit(iClient,sReason); }
-		if (iClient == myParser.getMyself()) {
+		if (iClient == myParser.getLocalClient()) {
 			myParser.clearClients();
 		} else {
 			myParser.removeClient(iClient);
@@ -87,7 +92,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return getCallbackManager().getCallbackType("OnChannelQuit").call(cChannel, cChannelClient, sReason);
+		return getCallbackManager().getCallbackType(ChannelQuitListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -99,7 +104,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
-		return getCallbackManager().getCallbackType("OnQuit").call(cClient, sReason);
+		return getCallbackManager().getCallbackType(QuitListener.class).call(cClient, sReason);
 	}
 	
 	/**

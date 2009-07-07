@@ -24,10 +24,10 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIQuit;
+import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -47,14 +47,14 @@ public class ProcessQuitTest {
         parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");        
         
         final TestIQuit test = new TestIQuit();
-        parser.getCallbackManager().addCallback("OnChannelQuit", test);
+        parser.getCallbackManager().addCallback(ChannelQuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing2").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);
@@ -80,14 +80,14 @@ public class ProcessQuitTest {
         parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");
         
         final TestIQuit test = new TestIQuit();
-        parser.getCallbackManager().addCallback("OnQuit", test);
+        parser.getCallbackManager().addCallback(QuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing2").getChannelClients().size());
         
         assertNotNull(test.client);
         assertNotNull(test.reason);
@@ -108,13 +108,13 @@ public class ProcessQuitTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
         final TestIQuit test = new TestIQuit();
-        parser.getCallbackManager().addCallback("OnQuit", test);
+        parser.getCallbackManager().addCallback(QuitListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville QUIT");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.client);
         assertNotNull(test.reason);

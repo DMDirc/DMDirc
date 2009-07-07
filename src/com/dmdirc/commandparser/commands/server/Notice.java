@@ -58,7 +58,7 @@ public final class Notice extends ServerCommand implements IntelligentCommand {
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "notice", "<target> <message>");
         } else {
-            server.getParser().sendLine("NOTICE " + args.getArguments()[0] + " :"
+            server.getParser().sendRawMessage("NOTICE " + args.getArguments()[0] + " :"
                     + args.getArgumentsAsString(1));
             sendLine(origin, isSilent, "selfNotice", args.getArguments()[0],
                     args.getArgumentsAsString(1));

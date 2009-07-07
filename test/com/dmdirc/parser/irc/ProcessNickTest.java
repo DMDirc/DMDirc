@@ -25,6 +25,8 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestINickChanged;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,7 +38,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestINickChanged tinc = new TestINickChanged();
 
-        parser.getCallbackManager().addCallback("OnNickChanged", tinc);
+        parser.getCallbackManager().addCallback(NickChangeListener.class, tinc);
         
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
@@ -48,8 +50,8 @@ public class ProcessNickTest {
         assertNotNull(parser.getClientInfo("LUSER"));
         assertEquals(1, parser.getClientInfo("LUSER").getChannelClients().size());
 
-        ChannelClientInfo cci = parser.getClientInfo("LUSER").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        IRCChannelClientInfo cci = parser.getClientInfo("LUSER").getChannelClients().get(0);
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
         assertSame(cci.getClient(), tinc.client);
@@ -70,8 +72,8 @@ public class ProcessNickTest {
         assertNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("foobar").getChannelClients().size());
 
-        ChannelClientInfo cci = parser.getClientInfo("foobar").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        IRCChannelClientInfo cci = parser.getClientInfo("foobar").getChannelClients().get(0);
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
     }    
     
@@ -80,7 +82,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestIErrorInfo info = new TestIErrorInfo();
         
-        parser.getCallbackManager().addCallback("OnErrorInfo", info);
+        parser.getCallbackManager().addCallback(ErrorInfoListener.class, info);
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser @+nick2 nick3");
@@ -96,7 +98,7 @@ public class ProcessNickTest {
         final TestParser parser = new TestParser();
         final TestINickChanged tinc = new TestINickChanged();
         
-        parser.getCallbackManager().addCallback("OnNickChanged", tinc);
+        parser.getCallbackManager().addCallback(NickChangeListener.class, tinc);
         
         parser.injectConnectionStrings();
         parser.injectLine(":random!lu@ser NICK rand");

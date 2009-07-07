@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -74,7 +74,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             return;
         }
         
-        final ChannelClientInfo target = channel.getChannelInfo().getUser(args.getArguments()[offset]);
+        final ChannelClientInfo target = channel.getChannelInfo().getChannelClient(args.getArguments()[offset]);
         offset++;
         
         if (target == null) {

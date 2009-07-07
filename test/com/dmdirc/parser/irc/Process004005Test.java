@@ -24,6 +24,7 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -63,7 +64,7 @@ public class Process004005Test {
         final TestParser tp = doCaseMappingTest("rfc1459", 4);
         final TestIErrorInfo tiei = new TestIErrorInfo();
         
-        tp.getCallbackManager().addCallback("OnErrorInfo", tiei);
+        tp.getCallbackManager().addCallback(ErrorInfoListener.class, tiei);
         
         tp.injectLine(":server 005 nick CASEMAPPING=unknown :are supported by this server");
         

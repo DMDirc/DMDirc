@@ -22,6 +22,26 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpReplyListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpReplyListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownActionListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownCtcpReplyListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownNoticeListener;
+
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -71,9 +91,9 @@ public class ProcessMessage extends IRCProcessor {
 			return;
 		}
 		
-		ChannelClientInfo iChannelClient = null;
-		ChannelInfo iChannel = null;
-		ClientInfo iClient = null;
+		IRCChannelClientInfo iChannelClient = null;
+		IRCChannelInfo iChannel = null;
+		IRCClientInfo iClient = null;
 		// "nick!user@host PRIVMSG #Channel" should be processed as "nick!user@host PRIVMSG #Channel :"
 		if (token.length < 4) {
 			sMessage = "";
@@ -123,7 +143,7 @@ public class ProcessMessage extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		if (IRCParser.ALWAYS_UPDATECLIENT && iClient != null) {
 			// Facilitate DMDIRC Formatter
-			if (iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
+			if (iClient.getHostname().isEmpty()) {iClient.setUserBits(token[0],false); }
 		}
 		
 		// Fire the appropriate callbacks.
@@ -140,16 +160,16 @@ public class ProcessMessage extends IRCProcessor {
 		// handled as if the prefix wasn't used. This can be changed in the future
 		// if desired.
 		final char modePrefix = token[2].charAt(1);
-		final boolean hasModePrefix =  (myParser.hPrefixMap.containsKey(modePrefix) && !myParser.hPrefixModes.containsKey(modePrefix));
+		final boolean hasModePrefix =  (myParser.prefixMap.containsKey(modePrefix) && !myParser.prefixModes.containsKey(modePrefix));
 		final String targetName = (hasModePrefix) ? token[2].substring(1) : token[2];
 		
 		if (isValidChannelName(targetName)) {
-			iChannel = getChannelInfo(targetName);
+			iChannel = getChannel(targetName);
 			if (iChannel == null) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+targetName+") that I am not on.", myParser.getLastLine()));
 				return;
 			}
-			if (iClient != null) { iChannelClient = iChannel.getUser(iClient); }
+			if (iClient != null) { iChannelClient = iChannel.getChannelClient(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
@@ -171,7 +191,7 @@ public class ProcessMessage extends IRCProcessor {
 					callChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
 				}
 			}
-		} else if (myParser.getIRCStringConverter().equalsIgnoreCase(token[2], myParser.getMyNickname())) {
+		} else if (myParser.getStringConverter().equalsIgnoreCase(token[2], myParser.getMyNickname())) {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
@@ -222,7 +242,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelAction(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelAction").call(cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelActionListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -237,7 +257,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelCTCP(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelCTCP").call(cChannel, cChannelClient, sType, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelCtcpListener.class).call(cChannel, cChannelClient, sType, sMessage, sHost);
 	}
 
 	/**
@@ -252,7 +272,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelCTCPReply(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelCTCPReply").call(cChannel, cChannelClient, sType, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelCtcpReplyListener.class).call(cChannel, cChannelClient, sType, sMessage, sHost);
 	}
 	
 	/**
@@ -266,7 +286,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelMessage(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelMessage").call(cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelMessageListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -280,7 +300,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelNotice(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelNotice").call(cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelNoticeListener.class).call(cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -295,7 +315,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeNotice(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelModeNotice").call(prefix, cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelModeNoticeListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -310,7 +330,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeMessage(final char prefix, final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnChannelModeMessage").call(prefix, cChannel, cChannelClient, sMessage, sHost);
+		return getCallbackManager().getCallbackType(ChannelModeMessageListener.class).call(prefix, cChannel, cChannelClient, sMessage, sHost);
 	}
 	
 	/**
@@ -322,7 +342,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPrivateAction(final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnPrivateAction").call(sMessage, sHost);
+		return getCallbackManager().getCallbackType(PrivateActionListener.class).call(sMessage, sHost);
 	}
 
 	/**
@@ -335,7 +355,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPrivateCTCP(final String sType, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnPrivateCTCP").call(sType, sMessage, sHost);
+		return getCallbackManager().getCallbackType(PrivateCtcpListener.class).call(sType, sMessage, sHost);
 	}
 
 	/**
@@ -348,7 +368,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPrivateCTCPReply(final String sType, final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnPrivateCTCPReply").call(sType, sMessage, sHost);
+		return getCallbackManager().getCallbackType(PrivateCtcpReplyListener.class).call(sType, sMessage, sHost);
 	}
 
 	/**
@@ -360,7 +380,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPrivateMessage(final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnPrivateMessage").call(sMessage, sHost);
+		return getCallbackManager().getCallbackType(PrivateMessageListener.class).call(sMessage, sHost);
 	}
 
 	/**
@@ -372,7 +392,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPrivateNotice(final String sMessage, final String sHost) {
-		return getCallbackManager().getCallbackType("OnPrivateNotice").call(sMessage, sHost);
+		return getCallbackManager().getCallbackType(PrivateNoticeListener.class).call(sMessage, sHost);
 	}
 	
 	/**
@@ -385,7 +405,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUnknownAction(final String sMessage, final String sTarget, final String sHost) {
-		return getCallbackManager().getCallbackType("OnUnknownAction").call(sMessage, sTarget, sHost);
+		return getCallbackManager().getCallbackType(UnknownActionListener.class).call(sMessage, sTarget, sHost);
 	}
 
 	/**
@@ -399,7 +419,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUnknownCTCP(final String sType, final String sMessage, final String sTarget, final String sHost) {
-		return getCallbackManager().getCallbackType("OnUnknownCTCP").call(sType, sMessage, sTarget, sHost);
+		return getCallbackManager().getCallbackType(UnknownCtcpListener.class).call(sType, sMessage, sTarget, sHost);
 	}
 
 	/**
@@ -413,7 +433,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUnknownCTCPReply(final String sType, final String sMessage, final String sTarget, final String sHost) {
-		return getCallbackManager().getCallbackType("OnUnknownCTCPReply").call(sType, sMessage, sTarget, sHost);
+		return getCallbackManager().getCallbackType(UnknownCtcpReplyListener.class).call(sType, sMessage, sTarget, sHost);
 	}
 
 	/**
@@ -426,7 +446,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUnknownMessage(final String sMessage, final String sTarget, final String sHost) {
-		return getCallbackManager().getCallbackType("OnUnknownMessage").call(sMessage, sTarget, sHost);
+		return getCallbackManager().getCallbackType(UnknownMessageListener.class).call(sMessage, sTarget, sHost);
 	}
 
 	/**
@@ -439,7 +459,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUnknownNotice(final String sMessage, final String sTarget, final String sHost) {
-		return getCallbackManager().getCallbackType("OnUnknownNotice").call(sMessage, sTarget, sHost);
+		return getCallbackManager().getCallbackType(UnknownNoticeListener.class).call(sMessage, sTarget, sHost);
 	}
 
 	

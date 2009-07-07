@@ -155,9 +155,9 @@ public final class IdentClient implements Runnable {
 		if (config.getOptionBool(myPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
 			username = customName;
 		} else if (server != null && config.getOptionBool(myPlugin.getDomain(), "general.useNickname")) {
-			username = server.getParser().getMyNickname();
+			username = server.getParser().getLocalClient().getNickname();
 		} else if (server != null && config.getOptionBool(myPlugin.getDomain(), "general.useUsername")) {
-			username = server.getParser().getMyUsername();
+			username = server.getParser().getLocalClient().getUsername();
 		} else {
 			username = System.getProperty("user.name");
 		}

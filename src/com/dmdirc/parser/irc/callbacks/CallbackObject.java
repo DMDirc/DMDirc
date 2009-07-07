@@ -22,10 +22,18 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.LocalClientInfo;
 import com.dmdirc.parser.irc.ParserError;
-import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
+import com.dmdirc.parser.irc.IRCClientInfo;
+import com.dmdirc.parser.irc.IRCParser;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -43,13 +51,23 @@ import java.util.Map;
  */
 public class CallbackObject {
 
+    /** A map of interfaces to the classes which should be instansiated for them. */
+    protected static Map<Class<?>, Class<?>> IMPL_MAP = new HashMap<Class<?>, Class<?>>();
+
+    static {
+        IMPL_MAP.put(ChannelClientInfo.class, IRCChannelClientInfo.class);
+        IMPL_MAP.put(ChannelInfo.class, IRCChannelInfo.class);
+        IMPL_MAP.put(ClientInfo.class, IRCClientInfo.class);
+        IMPL_MAP.put(LocalClientInfo.class, IRCClientInfo.class);
+    };
+
     /** The type of callback that this object is operating with. */
-    protected final Class<? extends ICallbackInterface> type;
+    protected final Class<? extends CallbackInterface> type;
 
 	/** Arraylist for storing callback information related to the callback. */
-	protected final List<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
+	protected final List<CallbackInterface> callbackInfo = new ArrayList<CallbackInterface>();
 	
-	/** Reference to the IRCParser that owns this callback. */
+	/** Reference to the Parser that owns this callback. */
 	protected IRCParser myParser;
 	/** Reference to the CallbackManager in charge of this callback. */
 	protected CallbackManager myManager;
@@ -57,13 +75,13 @@ public class CallbackObject {
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
-	 * @param parser IRCParser That owns this callback
+	 * @param parser Parser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
      * @param type The type of callback to use
      * @since 0.6.3m1
 	 */
 	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
-            final Class<? extends ICallbackInterface> type) {
+            final Class<? extends CallbackInterface> type) {
 		this.myParser = parser;
 		this.myManager = manager;
         this.type = type;
@@ -74,7 +92,7 @@ public class CallbackObject {
 	 *
 	 * @param eMethod OBject to callback to.
 	 */
-	protected final void addCallback(final ICallbackInterface eMethod) {
+	protected final void addCallback(final CallbackInterface eMethod) {
 		if (!callbackInfo.contains(eMethod)) {
             callbackInfo.add(eMethod);
         }
@@ -85,7 +103,7 @@ public class CallbackObject {
 	 *
 	 * @param eMethod Object that was being called back to.
 	 */
-	protected final void delCallback(final ICallbackInterface eMethod) {
+	protected final void delCallback(final CallbackInterface eMethod) {
         callbackInfo.remove(eMethod);
 	}
 	
@@ -96,7 +114,7 @@ public class CallbackObject {
 	 * @return true if error call succeeded, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
-		return myManager.getCallbackType("OnErrorInfo").call(errorInfo);
+		return myManager.getCallbackType(ErrorInfoListener.class).call(errorInfo);
 	}
 	
 	/**
@@ -104,31 +122,25 @@ public class CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
-	public void add(final ICallbackInterface eMethod) { addCallback(eMethod); }
+	public void add(final CallbackInterface eMethod) { addCallback(eMethod); }
 	
 	/**
 	 * Remove a callback.
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
-	public void del(final ICallbackInterface eMethod) { delCallback(eMethod); }
-	
-	/**
-	 * Get the name for this callback.
-	 *
-	 * @return Name of callback
-	 */
-	public String getName() {
-		return "On" + type.getSimpleName().substring(1); // Trim the 'I'
-	}
-	
-	/**
-	 * Get the name for this callback in lowercase.
-	 *
-	 * @return Name of callback, in lowercase
-	 */
-	public final String getLowerName() { return this.getName().toLowerCase(); }
+	public void del(final CallbackInterface eMethod) { delCallback(eMethod); }
 
+    /**
+     * Retrieves the type of callback that this callback object is for.
+     *
+     * @return This object's type
+     * @since 0.6.3m2
+     */
+    public Class<? extends CallbackInterface> getType() {
+        return type;
+    }
+	
     /**
      * Actually calls this callback. The specified arguments must match those
      * specified in the callback's interface, or an error will be raised.
@@ -147,7 +159,7 @@ public class CallbackObject {
             createFakeArgs(newArgs);
         }
 
-		for (ICallbackInterface iface : new ArrayList<ICallbackInterface>(callbackInfo)) {
+		for (CallbackInterface iface : new ArrayList<CallbackInterface>(callbackInfo)) {
 			try {
                 type.getMethods()[0].invoke(iface, newArgs);
 			} catch (Exception e) {
@@ -201,20 +213,24 @@ public class CallbackObject {
      * @return An instance of the target class, or null on failure
      */
     protected Object getFakeArg(final Object[] args, final Class<?> target) {
-        final Map<Class, Object> sources = new HashMap<Class, Object>();
+        final Map<Class<?>, Object> sources = new HashMap<Class<?>, Object>();
         int i = 0;
 
         for (Annotation[] anns : type.getMethods()[0].getParameterAnnotations()) {
             for (Annotation ann : anns) {
                 if (ann.annotationType().equals(FakableSource.class)) {
-                    sources.put(type.getMethods()[0].getParameterTypes()[i], args[i]);
+                    Class<?> argType = type.getMethods()[0].getParameterTypes()[i];
+
+                    sources.put(argType, args[i]);
                 }
             }
 
             i++;
         }
 
-        for (Constructor<?> ctor : target.getConstructors()) {
+        final Class<?> actualTarget = IMPL_MAP.containsKey(target) ? IMPL_MAP.get(target) : target;
+
+        for (Constructor<?> ctor : actualTarget.getConstructors()) {
             Object[] params = new Object[ctor.getParameterTypes().length];
 
             i = 0;
@@ -222,11 +238,18 @@ public class CallbackObject {
             boolean failed = false;
 
             for (Class<?> needed : ctor.getParameterTypes()) {
-                if (sources.containsKey(needed)) {
-                    params[i] = sources.get(needed);
-                } else if ((param = getFakeArg(args, needed)) != null) {
+                boolean found = false;
+
+                for (Class<?> source : sources.keySet()) {
+                    if (source.isAssignableFrom(needed)) {
+                        params[i] = sources.get(source);
+                        found = true;
+                    }
+                }
+
+                if (!found && (param = getFakeArg(args, needed)) != null) {
                     params[i] = param;
-                } else {
+                } else if (!found) {
                     failed = true;
                 }
 
@@ -237,7 +260,7 @@ public class CallbackObject {
                 try {
                     final Object instance = ctor.newInstance(params);
 
-                    for (Method method : target.getMethods()) {
+                    for (Method method : actualTarget.getMethods()) {
                         if (method.getName().equals("setFake")
                                 && method.getParameterTypes().length == 1
                                 && method.getParameterTypes()[0].equals(Boolean.TYPE)) {

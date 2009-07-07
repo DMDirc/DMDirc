@@ -23,18 +23,18 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelPart;
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 
-public class TestIChannelPart implements IChannelPart {
+public class TestIChannelPart implements ChannelPartListener {
 
-    public ChannelInfo channel;
+    public IRCChannelInfo channel;
 
-    public ChannelClientInfo cclient;
+    public IRCChannelClientInfo cclient;
 
     public String reason;
 
-    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
-                              ChannelClientInfo cChannelClient, String sReason) {
+    public void onChannelPart(IRCParser tParser, IRCChannelInfo cChannel,
+                              IRCChannelClientInfo cChannelClient, String sReason) {
         channel = cChannel;
         cclient = cChannelClient;
         reason = sReason;

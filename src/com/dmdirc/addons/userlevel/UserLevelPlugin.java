@@ -29,8 +29,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 
 import java.util.HashMap;
@@ -98,8 +98,8 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
      */
     @SuppressWarnings("unchecked")
     protected static void doGlobalLevel(final ClientInfo client) {
-        final String host = client.getNickname() + "!" + client.getIdent()
-                + "@" + client.getHost();
+        final String host = client.getNickname() + "!" + client.getUsername()
+                + "@" + client.getHostname();
         
         int level = 0;
         

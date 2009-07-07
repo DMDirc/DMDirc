@@ -23,15 +23,15 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.INickChanged;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 
-public class TestINickChanged implements INickChanged {
+public class TestINickChanged implements NickChangeListener {
 
     public String oldNick = null;
-    public ClientInfo client;
+    public IRCClientInfo client;
 
     @Override
-    public void onNickChanged(IRCParser tParser, ClientInfo cClient,
+    public void onNickChanged(IRCParser tParser, IRCClientInfo cClient,
                               String sOldNick) {
         oldNick = sOldNick;
         client = cClient;

@@ -24,10 +24,10 @@ package com.dmdirc.addons.ui_dummy;
 
 import com.dmdirc.Channel;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Dummy channel window, used for testing.
@@ -49,7 +49,7 @@ public final class DummyChannelWindow extends DummyInputWindow implements Channe
 
     /** {@inheritDoc} */
     @Override
-    public void updateNames(final List<ChannelClientInfo> clients) {
+    public void updateNames(final Collection<ChannelClientInfo> clients) {
         // Do nothing
     }
 

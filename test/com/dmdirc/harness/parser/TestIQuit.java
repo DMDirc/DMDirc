@@ -23,30 +23,30 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 
-public class TestIQuit implements IChannelQuit, IQuit {
+public class TestIQuit implements ChannelQuitListener, QuitListener {
 
-    public ChannelInfo channel;
+    public IRCChannelInfo channel;
 
-    public ChannelClientInfo cclient;
+    public IRCChannelClientInfo cclient;
 
-    public ClientInfo client;
+    public IRCClientInfo client;
 
     public String reason;
 
     public int count = 0;
 
-    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
-                              ChannelClientInfo cChannelClient, String sReason) {
+    public void onChannelQuit(IRCParser tParser, IRCChannelInfo cChannel,
+                              IRCChannelClientInfo cChannelClient, String sReason) {
         this.channel = cChannel;
         this.cclient = cChannelClient;
         this.reason = sReason;
         this.count++;
     }
 
-    public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason) {
+    public void onQuit(IRCParser tParser, IRCClientInfo cClient, String sReason) {
         this.client = cClient;
         this.reason = sReason;
         this.count++;

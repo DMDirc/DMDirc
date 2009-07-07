@@ -28,14 +28,14 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.INickChanged;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateAction;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -52,7 +52,7 @@ import java.io.Serializable;
  * @author chris
  */
 public final class Query extends MessageTarget implements
-        IPrivateAction, IPrivateMessage, INickChanged, IQuit, Serializable {
+        PrivateActionListener, PrivateMessageListener, NickChangeListener, QuitListener, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -80,7 +80,8 @@ public final class Query extends MessageTarget implements
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
-        super("query", ClientInfo.parseHost(newHost), newServer.getConfigManager());
+        super("query", newServer.getParser().parseHostmask(newHost)[0],
+                newServer.getConfigManager());
 
         this.server = newServer;
         this.host = newHost;
@@ -136,19 +137,18 @@ public final class Query extends MessageTarget implements
             return;
         }
 
-        final ClientInfo client = server.getParser().getMyself();
+        final ClientInfo client = server.getParser().getLocalClient();
 
         for (String part : splitLine(window.getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
-                server.getParser().sendMessage(ClientInfo.parseHost(host),
-                        part);
+                server.getParser().sendMessage(getNickname(), part);
 
                 final StringBuffer buff = new StringBuffer("querySelfMessage");
 
                 ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
 
-                addLine(buff, client.getNickname(), client.getIdent(),
-                        client.getHost(), part);
+                addLine(buff, client.getNickname(), client.getUsername(),
+                        client.getHostname(), part);
             }
         }
     }
@@ -172,18 +172,19 @@ public final class Query extends MessageTarget implements
             return;
         }
 
-        final ClientInfo client = server.getParser().getMyself();
+        final ClientInfo client = server.getParser().getLocalClient();
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
 
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(ClientInfo.parseHost(host), window.getTranscoder().encode(action));
+            server.getParser().sendAction(getNickname(),
+                    window.getTranscoder().encode(action));
 
             final StringBuffer buff = new StringBuffer("querySelfAction");
 
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
 
-            addLine(buff, client.getNickname(), client.getIdent(),
-                    client.getHost(), window.getTranscoder().encode(action));
+            addLine(buff, client.getNickname(), client.getUsername(),
+                    client.getHostname(), window.getTranscoder().encode(action));
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -197,9 +198,9 @@ public final class Query extends MessageTarget implements
      * @param remoteHost remote user host
      */
     @Override
-    public void onPrivateMessage(final IRCParser parser, final String message,
+    public void onPrivateMessage(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = ClientInfo.parseHostFull(remoteHost);
+        final String[] parts = parser.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
@@ -216,9 +217,9 @@ public final class Query extends MessageTarget implements
      * @param remoteHost remote host
      */
     @Override
-    public void onPrivateAction(final IRCParser parser, final String message,
+    public void onPrivateAction(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = ClientInfo.parseHostFull(host);
+        final String[] parts = parser.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
@@ -231,9 +232,7 @@ public final class Query extends MessageTarget implements
      * Updates the QueryWindow's title.
      */
     private void updateTitle() {
-        final String title = ClientInfo.parseHost(host);
-
-        window.setTitle(title);
+        window.setTitle(getNickname());
     }
 
     /**
@@ -241,12 +240,13 @@ public final class Query extends MessageTarget implements
      */
     public void reregister() {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        final String nick = getNickname();
 
         try {
-            callbackManager.addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
-            callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
-            callbackManager.addCallback("onQuit", this);
-            callbackManager.addCallback("onNickChanged", this);
+            callbackManager.addCallback(PrivateActionListener.class, this, nick);
+            callbackManager.addCallback(PrivateMessageListener.class, this, nick);
+            callbackManager.addCallback(QuitListener.class, this);
+            callbackManager.addCallback(NickChangeListener.class, this);
         } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
         }
@@ -254,17 +254,17 @@ public final class Query extends MessageTarget implements
 
     /** {@inheritDoc} */
     @Override
-    public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
+    public void onNickChanged(final Parser tParser, final ClientInfo cClient,
             final String sOldNick) {
-        if (sOldNick.equals(ClientInfo.parseHost(host))) {
+        if (sOldNick.equals(getNickname())) {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
 
-            callbackManager.delCallback("onPrivateAction", this);
-            callbackManager.delCallback("onPrivateMessage", this);
+            callbackManager.delCallback(PrivateActionListener.class, this);
+            callbackManager.delCallback(PrivateMessageListener.class, this);
 
             try {
-                callbackManager.addCallback("onPrivateAction", this, cClient.getNickname());
-                callbackManager.addCallback("onPrivateMessage", this, cClient.getNickname());
+                callbackManager.addCallback(PrivateActionListener.class, this, cClient.getNickname());
+                callbackManager.addCallback(PrivateMessageListener.class, this, cClient.getNickname());
             } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
@@ -276,9 +276,9 @@ public final class Query extends MessageTarget implements
             server.getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, sOldNick);
             server.getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, cClient.getNickname());
 
-            addLine(format, sOldNick, cClient.getIdent(),
-                    cClient.getHost(), cClient.getNickname());
-            host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
+            addLine(format, sOldNick, cClient.getUsername(),
+                    cClient.getHostname(), cClient.getNickname());
+            host = cClient.getNickname() + "!" + cClient.getUsername() + "@" + cClient.getHostname();
             updateTitle();
 
             setName(cClient.getNickname());
@@ -287,16 +287,16 @@ public final class Query extends MessageTarget implements
 
     /** {@inheritDoc} */
     @Override
-    public void onQuit(final IRCParser tParser, final ClientInfo cClient,
+    public void onQuit(final Parser tParser, final ClientInfo cClient,
             final String sReason) {
-        if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
+        if (cClient.getNickname().equals(getNickname())) {
             final StringBuffer format = new StringBuffer(sReason.isEmpty()
                 ? "queryQuit" : "queryQuitReason");
 
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
 
             addLine(format, cClient.getNickname(),
-                    cClient.getIdent(), cClient.getHost(), sReason);
+                    cClient.getUsername(), cClient.getHostname(), sReason);
         }
     }
 
@@ -354,7 +354,7 @@ public final class Query extends MessageTarget implements
      * @return The nickname of this query's user
      */
     public String getNickname() {
-        return ClientInfo.parseHost(host);
+        return server.getParser().parseHostmask(host)[0];
     }
 
     /** {@inheritDoc} */

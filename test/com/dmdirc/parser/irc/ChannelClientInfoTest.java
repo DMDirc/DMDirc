@@ -40,7 +40,7 @@ public class ChannelClientInfoTest {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
-        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
 
         assertEquals("v", cci.getImportantMode());
         assertEquals("+", cci.getImportantModePrefix());
@@ -72,7 +72,7 @@ public class ChannelClientInfoTest {
         final Map<String, Integer> map1 = new HashMap<String, Integer>();
         final Map<String, Integer> map2 = new HashMap<String, Integer>();
         
-        final ChannelClientInfo cci = parser.getClientInfo("nick").getChannelClients().get(0);
+        final IRCChannelClientInfo cci = parser.getClientInfo("nick").getChannelClients().get(0);
         
         cci.setMap(map1);
         assertSame(map1, cci.getMap());

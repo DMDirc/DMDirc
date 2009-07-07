@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -57,9 +57,9 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
         final ChannelInfo cChannel = channel.getChannelInfo();
 
         if (args.getArguments().length == 0) {
-            sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModeStr(), cChannel);
+            sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModes(), cChannel);
         } else {
-            server.getParser().sendLine("MODE " + cChannel + " " + args.getArgumentsAsString());
+            server.getParser().sendRawMessage("MODE " + cChannel + " " + args.getArgumentsAsString());
         }
     }
 
@@ -68,9 +68,9 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
     public void execute(final InputWindow origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
-            server.getParser().sendLine("MODE " + channel);
+            server.getParser().sendRawMessage("MODE " + channel);
         } else {
-            server.getParser().sendLine("MODE " + channel + " " + args.getArgumentsAsString(1));
+            server.getParser().sendRawMessage("MODE " + channel + " " + args.getArgumentsAsString(1));
         }
     }
 

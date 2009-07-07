@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.NetworkDetectedListener;
+
 /**
  * Process ISUPPORT lines.
  */
@@ -65,7 +67,7 @@ public class Process004005 extends IRCProcessor {
 					myParser.h005Info.put(sKey,sValue);
 				}
 				if (sKey.equals("NETWORK") && !isNegation) {
-					myParser.sNetworkName = sValue;
+					myParser.networkName = sValue;
 					callGotNetwork();
 				} else if (sKey.equals("CASEMAPPING") && !isNegation) {
 					byte limit = (byte)4;
@@ -76,14 +78,14 @@ public class Process004005 extends IRCProcessor {
 					} else if (!sValue.equalsIgnoreCase("rfc1459")) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Unknown casemapping: '"+sValue+"' - assuming rfc1459", myParser.getLastLine()));
 					}
-					final boolean limitChanged = (myParser.getIRCStringConverter().getLimit() != limit);
+					final boolean limitChanged = (myParser.getStringConverter().getLimit() != limit);
 					myParser.updateCharArrays(limit);
 					if (limitChanged && myParser.knownClients() == 1) {
 						// This means that the casemapping is not rfc1459
 						// We have only added ourselves so far (from 001)
 						// We can fix the hashtable easily.
-						myParser.removeClient(myParser.getMyself());
-						myParser.addClient(myParser.getMyself());
+						myParser.removeClient(myParser.getLocalClient());
+						myParser.addClient(myParser.getLocalClient());
 					}
 				} else if (sKey.equals("CHANTYPES")) {
 					myParser.parseChanPrefix();
@@ -128,11 +130,11 @@ public class Process004005 extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callGotNetwork() {
-		final String networkName = myParser.sNetworkName;
+		final String networkName = myParser.networkName;
 		final String ircdVersion = myParser.getIRCD(false);
 		final String ircdType = myParser.getIRCD(true);
 		
-		return getCallbackManager().getCallbackType("OnGotNetwork").call(networkName, ircdVersion, ircdType);
+		return getCallbackManager().getCallbackType(NetworkDetectedListener.class).call(networkName, ircdVersion, ircdType);
 	}
 	
 	/**

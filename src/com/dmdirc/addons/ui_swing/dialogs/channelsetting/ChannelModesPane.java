@@ -23,10 +23,10 @@
 package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.addons.ui_swing.components.ParamModePanel;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.parser.interfaces.Parser;
 import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
@@ -80,12 +80,12 @@ public final class ChannelModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final IRCParser parser = channel.getServer().getParser();
+        final Parser parser = channel.getServer().getParser();
 
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final String booleanModes = parser.getBooleanChannelModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
@@ -142,7 +142,7 @@ public final class ChannelModesPane extends JPanel {
                 i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value =
-                    channel.getChannelInfo().getModeParam(mode.charAt(0));
+                    channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
                     ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
 
@@ -186,11 +186,11 @@ public final class ChannelModesPane extends JPanel {
      */
     public void setChangedBooleanModes() {
         boolean changed = false;
-        final IRCParser parser = channel.getServer().getParser();
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final Parser parser = channel.getServer().getParser();
+        final String booleanModes = parser.getBooleanChannelModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
 
         for (int i = 0; i < booleanModes.length();
                 i++) {
@@ -211,7 +211,7 @@ public final class ChannelModesPane extends JPanel {
                 i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value =
-                    channel.getChannelInfo().getModeParam(mode.charAt(0));
+                    channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
                     ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             final ParamModePanel paramModePanel = modeInputs.get(mode);
@@ -225,7 +225,7 @@ public final class ChannelModesPane extends JPanel {
             }
         }
         if (changed) {
-            channel.getChannelInfo().sendModes();
+            channel.getChannelInfo().flushModes();
         }
     }
 }

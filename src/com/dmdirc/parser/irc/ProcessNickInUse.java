@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.NickInUseListener;
+
 /**
  * Process a NickInUse message.
  * Parser implements handling of this if Pre-001 and no other handler found,
@@ -53,12 +55,12 @@ public class ProcessNickInUse extends IRCProcessor {
 				callDebugInfo(IRCParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
 				if (myParser.triedAlt) {
-					if (myParser.getIRCStringConverter().equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
-						myParser.sThinkNickname = myParser.me.getNickname();
+					if (myParser.getStringConverter().equalsIgnoreCase(myParser.thinkNickname, myParser.me.getAltNickname())) {
+						myParser.thinkNickname = myParser.me.getNickname();
 					}
-					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);
+					myParser.getLocalClient().setNickname(myParser.me.getPrependChar()+myParser.thinkNickname);
 				} else {
-					myParser.setNickname(myParser.me.getAltNickname());
+					myParser.getLocalClient().setNickname(myParser.me.getAltNickname());
 					myParser.triedAlt = true; 
 				}
 			}
@@ -73,7 +75,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickInUse(final String nickname) {
-		return getCallbackManager().getCallbackType("OnNickInUse").call(nickname);
+		return getCallbackManager().getCallbackType(NickInUseListener.class).call(nickname);
 	}
 	
 	/**

@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.interfaces.callbacks.NumericListener;
 
-public class TestINumeric implements INumeric {
+public class TestINumeric implements NumericListener {
 
     public int numeric = 0;
 

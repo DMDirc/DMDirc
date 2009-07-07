@@ -22,6 +22,10 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
+
 /**
  * Process a channel part.
  */
@@ -38,27 +42,27 @@ public class ProcessPart extends IRCProcessor {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
 		if (token.length < 3) { return; }
-		ClientInfo iClient;
-		ChannelInfo iChannel;
-		ChannelClientInfo iChannelClient;
+		IRCClientInfo iClient;
+		IRCChannelInfo iChannel;
+		IRCChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
-		iChannel = getChannelInfo(token[2]);
+		iChannel = getChannel(token[2]);
 		
 		if (iClient == null) { return; }
-		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHostname().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
 		if (iChannel == null) { 
-			if (iClient != myParser.getMyself()) {
+			if (iClient != myParser.getLocalClient()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]", myParser.getLastLine()));
 			}
 			return;
 		} else {
 			String sReason = "";
 			if (token.length > 3) { sReason = token[token.length-1]; }
-			iChannelClient = iChannel.getUser(iClient);
+			iChannelClient = iChannel.getChannelClient(iClient);
 			if (iChannelClient == null) {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]", myParser.getLastLine()));
 				return;
@@ -67,7 +71,7 @@ public class ProcessPart extends IRCProcessor {
 			callDebugInfo(IRCParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
-			if (iClient == myParser.getMyself()) {
+			if (iClient == myParser.getLocalClient()) {
 				iChannel.emptyChannel();
 				myParser.removeChannel(iChannel);
 			}
@@ -84,7 +88,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return getCallbackManager().getCallbackType("OnChannelPart").call(cChannel, cChannelClient, sReason);
+		return getCallbackManager().getCallbackType(ChannelPartListener.class).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**

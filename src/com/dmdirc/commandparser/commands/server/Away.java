@@ -51,7 +51,7 @@ public final class Away extends ServerCommand {
             final boolean isSilent, final CommandArguments args) {
         final String line = args.getArgumentsAsString();
 
-        server.getParser().sendLine("AWAY :" + line);
+        server.getParser().sendRawMessage("AWAY :" + line);
     }
     
     

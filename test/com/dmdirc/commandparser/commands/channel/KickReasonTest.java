@@ -26,8 +26,8 @@ import com.dmdirc.Channel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.IRCChannelClientInfo;
+import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.BeforeClass;
@@ -54,11 +54,11 @@ public class KickReasonTest {
     @Test
     public void testUnknown() {
         final InputWindow tiw = mock(InputWindow.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
+        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser(anyString())).thenReturn(null);
+        when(channelInfo.getChannelClient(anyString())).thenReturn(null);
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));
 
@@ -68,12 +68,12 @@ public class KickReasonTest {
     @Test
     public void testWithReason() {
         final InputWindow tiw = mock(InputWindow.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
+        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
+        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser("user1")).thenReturn(cci);
+        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1 reason here"));
 
@@ -84,13 +84,13 @@ public class KickReasonTest {
     public void testWithoutReason() {
         final InputWindow tiw = mock(InputWindow.class);
         final ConfigManager manager = mock(ConfigManager.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
+        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
+        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
 
         when(tiw.getConfigManager()).thenReturn(manager);
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getUser("user1")).thenReturn(cci);
+        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
 
         command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));

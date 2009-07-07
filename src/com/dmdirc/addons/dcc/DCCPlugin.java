@@ -41,8 +41,8 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
 
@@ -116,7 +116,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param sendFilename The name of the file which is being received
 	 * @param token Token used in reverse dcc.
 	 */
-	public void saveFile(final String nickname, final DCCSend send, final IRCParser parser, final boolean reverse, final String sendFilename, final String token) {
+	public void saveFile(final String nickname, final DCCSend send, final Parser parser, final boolean reverse, final String sendFilename, final String token) {
 		// New thread to ask the user where to save in to stop us locking the UI
 		final Thread dccThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
@@ -248,7 +248,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						try {
 							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
 						} catch (NumberFormatException nfe) { return; }
-						final String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
+						final String myNickname = ((Server)arguments[0]).getParser().getLocalClient().getNickname();
 						final DCCFrame f = new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
 						f.getFrame().addLine("DCCChatStarting", nickname, chat.getHost(), chat.getPort());
 						chat.connect();
@@ -372,7 +372,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 								if ((!token.isEmpty() && !send.getToken().isEmpty()) && (!token.equals(send.getToken()))) {
 									continue;
 								}
-								final IRCParser parser = ((Server)arguments[0]).getParser();
+								final Parser parser = ((Server)arguments[0]).getParser();
 								final String nickname = ((ClientInfo)arguments[1]).getNickname();
 								if (ctcpData[0].equalsIgnoreCase("resume")) {
 									parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position)+token);
@@ -508,15 +508,15 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	/**
 	 * Get the IP Address we should send as our listening IP.
 	 *
-	 * @param parser IRCParser the IRC Parser where this dcc is initiated
+	 * @param parser Parser the IRC Parser where this dcc is initiated
 	 * @return The IP Address we should send as our listening IP.
 	 */
-	public String getListenIP(final IRCParser parser) {
+	public String getListenIP(final Parser parser) {
 		final String configIP = IdentityManager.getGlobalConfig().getOption(getDomain(), "firewall.ip");
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {
-			final String myHost = parser.getMyself().getHost();
+			final String myHost = parser.getLocalClient().getHostname();
 			if (!myHost.isEmpty()) {
 				try {
 					return InetAddress.getByName(myHost).getHostAddress();

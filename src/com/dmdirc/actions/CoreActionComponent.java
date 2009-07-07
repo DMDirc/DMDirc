@@ -30,8 +30,8 @@ import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
@@ -100,7 +100,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getParser().getPrefixModes(); }
+        public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return Server.class; }
@@ -128,7 +128,7 @@ public enum CoreActionComponent implements ActionComponent {
                 
                 return "null";
             } else {
-                return server.getParser().getMyself().getNickname();
+                return server.getParser().getLocalClient().getNickname();
             }
         }
         /** {@inheritDoc} */
@@ -210,7 +210,7 @@ public enum CoreActionComponent implements ActionComponent {
     CLIENT_HOST {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ClientInfo) argument).getHost(); }
+        public Object get(final Object argument) { return ((ClientInfo) argument).getHostname(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ClientInfo.class; }
@@ -226,7 +226,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getNickname(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }
@@ -242,7 +242,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_MODES {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getAllModes(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }
@@ -258,7 +258,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_HOST {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHost(); }
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHostname(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }
@@ -274,7 +274,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_COMCHANS {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().channelCount()); }
+        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().getChannelCount()); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }

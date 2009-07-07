@@ -25,9 +25,9 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.SocketState;
-import com.dmdirc.parser.irc.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +45,7 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Shane 'Dataforce' McCormack
  */
-public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, ISocketClosed {
+public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, SocketCloseListener {
 	/** The DCCSend object we are a window for */
 	private final DCCSend dcc;
 	
@@ -80,7 +80,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
     private final DCCPlugin myPlugin;
 	
 	/** IRC Parser that caused this send */
-	private IRCParser parser = null;
+	private Parser parser = null;
 	
 	/**
 	 * Creates a new instance of DCCSendWindow with a given DCCSend object.
@@ -91,14 +91,14 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param targetNick Nickname of target
 	 * @param parser The IRC parser that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final IRCParser parser) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Parser parser) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.parser = parser;
         this.myPlugin = plugin;
         
 		if (parser != null) {
-			parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
+			parser.getCallbackManager().addNonCriticalCallback(SocketCloseListener.class, this);
 		}
 		dcc.setHandler(this);
 
@@ -132,7 +132,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	
 	/** {@inheritDoc} */
     @Override
-	public void onSocketClosed(final IRCParser tParser) {
+	public void onSocketClosed(final Parser tParser) {
 		// Remove our reference to the parser (and its reference to us)
 		parser.getCallbackManager().delAllCallback(this);
 		parser = null;
@@ -169,11 +169,11 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 				transferCount = 0;
 			}
 			dcc.reset();
-			if (parser != null && parser.getSocketState() == SocketState.OPEN) {
-				final String myNickname = parser.getMyNickname();
+			if (parser != null /* TODO: Dataforce: Check server state not parser socket status && parser.getSocketState() == SocketState.OPEN*/) {
+				final String myNickname = parser.getLocalClient().getNickname();
 				// Check again incase we have changed nickname to the same nickname that
 				// this send is for.
-				if (parser.getIRCStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
+				if (parser.getStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
 					final Thread errorThread = new Thread(new Runnable() {
 						/** {@inheritDoc} */
 						@Override

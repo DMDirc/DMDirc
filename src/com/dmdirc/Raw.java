@@ -24,10 +24,10 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IDataIn;
-import com.dmdirc.parser.irc.callbacks.interfaces.IDataOut;
+import com.dmdirc.parser.interfaces.callbacks.DataInListener;
+import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -38,8 +38,8 @@ import java.io.Serializable;
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends WritableFrameContainer implements IDataIn,
-        IDataOut, Serializable {
+public final class Raw extends WritableFrameContainer implements DataInListener,
+        DataOutListener, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,8 +77,8 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
      */
     public void registerCallbacks() {
         try {
-            server.getParser().getCallbackManager().addCallback("OnDataIn", this);
-            server.getParser().getCallbackManager().addCallback("OnDataOut", this);
+            server.getParser().getCallbackManager().addCallback(DataInListener.class, this);
+            server.getParser().getCallbackManager().addCallback(DataOutListener.class, this);
         } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
         }
@@ -117,13 +117,13 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
 
     /** {@inheritDoc} */
     @Override
-    public void onDataIn(final IRCParser tParser, final String sData) {
+    public void onDataIn(final Parser tParser, final String sData) {
         addLine("rawIn", sData);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onDataOut(final IRCParser tParser, final String sData,
+    public void onDataOut(final Parser tParser, final String sData,
             final boolean bFromParser) {
         addLine("rawOut", sData);
     }

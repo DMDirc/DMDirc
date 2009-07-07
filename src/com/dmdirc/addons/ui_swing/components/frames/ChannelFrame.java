@@ -38,7 +38,7 @@ import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
 import java.awt.Dimension;
@@ -46,7 +46,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -141,7 +141,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /** {@inheritDoc} */
     @Override
-    public void updateNames(final List<ChannelClientInfo> clients) {
+    public void updateNames(final Collection<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -306,7 +306,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
             if (checkCursorInSelectedCell() || selectNickUnderCursor()) {
                 if (e.isPopupTrigger()) {
                     showPopupMenu(ClickType.NICKNAME, getMousePosition(),
-                            ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
+                            ((ChannelClientInfo) nickList.getSelectedValue())
+                            .getClient().getNickname());
                 }
             } else {
                 nickList.clearSelection();

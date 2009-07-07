@@ -32,7 +32,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -72,15 +72,15 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 		if (args.getArguments().length > 1) {
 			final String type = args.getArguments()[0];
 			final String target = args.getArguments()[1];
-			final IRCParser parser = server.getParser();
-			final String myNickname = parser.getMyNickname();
+			final Parser parser = server.getParser();
+			final String myNickname = parser.getLocalClient().getNickname();
 				
-			if (parser.isValidChannelName(target) || parser.getIRCStringConverter().equalsIgnoreCase(target, myNickname)) {
+			if (parser.isValidChannelName(target) || parser.getStringConverter().equalsIgnoreCase(target, myNickname)) {
 				final Thread errorThread = new Thread(new Runnable() {
 					/** {@inheritDoc} */
 					@Override
 					public void run() {
-						if (parser.getIRCStringConverter().equalsIgnoreCase(target, myNickname)) {
+						if (parser.getStringConverter().equalsIgnoreCase(target, myNickname)) {
 							JOptionPane.showMessageDialog(null, "You can't DCC yourself.", "DCC Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 							JOptionPane.showMessageDialog(null, "You can't DCC a channel.", "DCC Error", JOptionPane.ERROR_MESSAGE);
@@ -150,7 +150,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 						JOptionPane.showMessageDialog(null, "Invalid file specified", "DCC Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					final IRCParser parser = server.getParser();
+					final Parser parser = server.getParser();
 					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "send.blocksize"));
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.forceturbo"));
 					send.setType(DCCSend.TransferType.SEND);

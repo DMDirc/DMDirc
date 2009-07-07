@@ -22,12 +22,13 @@
 
 package com.dmdirc.harness.parser;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-public class TestParser extends IRCParser {
+public class TestParser extends IRCParser implements Parser {
 
     public final List<String> sentLines = new ArrayList<String>();
 

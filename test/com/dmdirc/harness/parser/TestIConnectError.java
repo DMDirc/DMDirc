@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IConnectError;
+import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 
-public class TestIConnectError implements IConnectError {
+public class TestIConnectError implements ConnectErrorListener {
 
     public boolean error = false;
 

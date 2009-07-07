@@ -23,13 +23,13 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelSelfJoin;
+import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
 
-public class TestIChannelSelfJoin implements IChannelSelfJoin {
+public class TestIChannelSelfJoin implements ChannelSelfJoinListener {
 
-    public ChannelInfo channel = null;
+    public IRCChannelInfo channel = null;
 
-    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+    public void onChannelSelfJoin(IRCParser tParser, IRCChannelInfo cChannel) {
         channel = cChannel;
     }
 }

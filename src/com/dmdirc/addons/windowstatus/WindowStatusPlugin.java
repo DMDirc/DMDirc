@@ -30,7 +30,6 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -38,9 +37,9 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -130,10 +129,10 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
 
 			textString.append(chan.getName());
-			textString.append(" - Nicks: " + chan.getUserCount() + " (");
+			textString.append(" - Nicks: " + chan.getChannelClientCount() + " (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
-				final Long im = client.getImportantModeValue();
+				final Long im = 0l/* TODO: Dataforce: make work without getImportantModeValue()*/;
 
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
@@ -176,14 +175,12 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
-				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
-				if (client != null) {
-					final String realname = client.getRealName();
-					if (!realname.isEmpty()) {
-						textString.append(" - ");
-						textString.append(client.getRealName());
-					}
-				}
+				final ClientInfo client = frame.getServer().getParser().getClient(frame.getHost());
+                                    final String realname = client.getRealname();
+                                    if (!realname.isEmpty()) {
+                                            textString.append(" - ");
+                                            textString.append(client.getRealname());
+                                    }
 			}
 		} else {
 			textString.append("???");

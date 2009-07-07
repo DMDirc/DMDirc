@@ -34,8 +34,10 @@ import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
@@ -94,8 +96,8 @@ public class Server extends WritableFrameContainer implements Serializable {
     /** Open query windows on the server. */
     private final List<Query> queries = new ArrayList<Query>();
 
-    /** The IRC Parser instance handling this server. */
-    private transient IRCParser parser;
+    /** The Parser instance handling this server. */
+    private transient Parser parser;
     /** The IRC Parser Thread. */
     private transient Thread parserThread;
     /** The raw frame used for this server instance. */
@@ -481,10 +483,10 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
-        final String nick = ClientInfo.parseHost(host);
+        final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
-            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
                 return true;
             }
         }
@@ -499,10 +501,10 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
-        final String nick = ClientInfo.parseHost(host);
+        final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
-            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
                 return query;
             }
         }
@@ -602,7 +604,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
-            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, ClientInfo.parseHost(host));
+            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, parser.parseHostmask(host)[0]);
             queries.add(newQuery);
         }
     }
@@ -728,21 +730,24 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @return A configured IRC parser.
      */
-    private IRCParser buildParser() {
+    private Parser buildParser() {
         final CertificateManager certManager = new CertificateManager(serverInfo.getHost(),
                 getConfigManager());
 
         final MyInfo myInfo = buildMyInfo();
-        final IRCParser myParser = parserFactory.getParser(myInfo, serverInfo);
-        myParser.setTrustManager(new TrustManager[]{certManager});
-        myParser.setKeyManagers(certManager.getKeyManager());
-        myParser.setRemoveAfterCallback(true);
-        myParser.setCreateFake(true);
+        final Parser myParser = parserFactory.getParser(myInfo, serverInfo);
+
+        if (myParser instanceof SecureParser) {
+            final SecureParser secureParser = (SecureParser) myParser;
+            secureParser.setTrustManagers(new TrustManager[]{certManager});
+            secureParser.setKeyManagers(certManager.getKeyManager());
+        }
+
         myParser.setIgnoreList(ignoreList);
-        myParser.setPingTimerLength(getConfigManager().getOptionInt(DOMAIN_SERVER,
+        myParser.setPingTimerInterval(getConfigManager().getOptionInt(DOMAIN_SERVER,
                 "pingtimer"));
-        myParser.setPingCountDownLength((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
-                "pingfrequency") / myParser.getPingTimerLength()));
+        myParser.setPingTimerFraction((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
+                "pingfrequency") / myParser.getPingTimerInterval()));
 
         if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
             myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
@@ -829,7 +834,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         synchronized (myState) {
             if (parser != null && myState.getState() == ServerState.CONNECTED) {
                 if (!line.isEmpty()) {
-                    parser.sendLine(window.getTranscoder().encode(line));
+                    parser.sendRawMessage(window.getTranscoder().encode(line));
                 }
             }
         }
@@ -846,7 +851,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @return IRCParser this connection's parser
      */
-    public IRCParser getParser() {
+    public Parser getParser() {
         return parser;
     }
 
@@ -945,7 +950,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return The name of this server's IRCd
      */
     public String getIrcd() {
-        return parser.getIRCD(true);
+        return parser.getServerSoftwareType();
     }
 
     /**
@@ -1013,9 +1018,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             eventHandler.unregisterCallbacks();
 
             // 3: Trigger any actions neccessary
-            if (parser != null && parser.isReady()) {
-                disconnect();
-            }
+            disconnect();
 
             myState.transition(ServerState.CLOSING);
         }
@@ -1122,8 +1125,8 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (arg instanceof ClientInfo) {
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
-            args.add(clientInfo.getIdent());
-            args.add(clientInfo.getHost());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
             return true;
         } else {
             return super.processNotificationArg(arg, args);
@@ -1141,7 +1144,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param nickname The nickname that we were trying to use
      */
     public void onNickInUse(final String nickname) {
-        final String lastNick = parser.getMyNickname();
+        final String lastNick = parser.getLocalClient().getNickname();
 
         // If our last nick is still valid, ignore the in use message
         if (!converter.equalsIgnoreCase(lastNick, nickname)) {
@@ -1165,7 +1168,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             newNick = alts.get(offset);
         }
 
-        parser.setNickname(newNick);
+        parser.getLocalClient().setNickname(newNick);
     }
 
     /**
@@ -1183,7 +1186,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             snumeric = "0" + snumeric;
         }
 
-        final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + snumeric;
+        final String withIrcd = "numeric_" + parser.getServerSoftwareType() + "_" + snumeric;
         final String sansIrcd = "numeric_" + snumeric;
         StringBuffer target = null;
 
@@ -1325,13 +1328,13 @@ public class Server extends WritableFrameContainer implements Serializable {
     public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + getName() + " for over "
-                + ((int) (Math.floor(parser.getPingTime(false) / 1000.0)))
+                + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", null, 10);
 
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
-                Long.valueOf(parser.getPingTime(false)));
+                Long.valueOf(parser.getPingTime()));
 
-        if (parser.getPingTime(false)
+        if (parser.getPingTime()
                  >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
             handleNotification("stonedServer", getName());
             reconnect();
@@ -1359,10 +1362,10 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             updateIcon();
 
-            getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
+            getConfigManager().migrate(parser.getServerSoftwareType(), getNetwork(), getName());
             updateIgnoreList();
 
-            converter = parser.getIRCStringConverter();
+            converter = parser.getStringConverter();
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {
@@ -1385,9 +1388,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     private void checkModeAliases() {
         // Check we have mode aliases
-        final String modes = parser.getBoolChanModes() + parser.getListChanModes()
-                + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
-        final String umodes = parser.getUserModeString();
+        final String modes = parser.getBooleanChannelModes() + parser.getListChannelModes()
+                + parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
+        final String umodes = parser.getUserModes();
 
         final StringBuffer missingModes = new StringBuffer();
         final StringBuffer missingUmodes = new StringBuffer();
@@ -1422,11 +1425,11 @@ public class Server extends WritableFrameContainer implements Serializable {
             }
 
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
-                    + parser.getIRCD(true) + "]",
+                    + parser.getServerSoftwareType() + "]",
                     new Exception(missing.toString() + "\n" // NOPMD
                     + "Network: " + getNetwork() + "\n"
-                    + "IRCd: " + parser.getIRCD(false)
-                    + " (" + parser.getIRCD(true) + ")\n"
+                    + "IRCd: " + parser.getServerSoftware()
+                    + " (" + parser.getServerSoftwareType() + ")\n"
                     + "Mode alias version: "
                     + getConfigManager().getOption("identity", "modealiasversion")
                     + "\n\n"));

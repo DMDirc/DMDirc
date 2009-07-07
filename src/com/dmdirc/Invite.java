@@ -22,8 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.irc.ClientInfo;
-
+import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.Date;
 
 /**
@@ -92,7 +91,7 @@ public class Invite {
      * @return This invite's source
      */
     public String[] getSource() {
-        return ClientInfo.parseHostFull(source);
+        return server.getParser().parseHostmask(source);
     }
     
     /**

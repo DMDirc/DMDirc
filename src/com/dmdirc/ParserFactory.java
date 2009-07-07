@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ServerInfo;
@@ -41,7 +42,7 @@ public class ParserFactory {
      * @param serverInfo The server details to use
      * @return An appropriately configured parser
      */
-    public IRCParser getParser(final MyInfo myInfo, final ServerInfo serverInfo) {
+    public Parser getParser(final MyInfo myInfo, final ServerInfo serverInfo) {
         return new IRCParser(myInfo, serverInfo);
     }
 

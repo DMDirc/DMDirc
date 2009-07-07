@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+
 /**
  * Process an Away/Back message.
  */
@@ -35,11 +37,11 @@ public class ProcessAway extends IRCProcessor {
 	@Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("301")) {
-			ClientInfo iClient = myParser.getClientInfo(token[3]);
+			IRCClientInfo iClient = getClientInfo(token[3]);
 			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
 		} else {
-			myParser.getMyself().setAwayState(sParam.equals("306"));
-			callAwayState(myParser.getMyself().getAwayState(), myParser.getMyself().getAwayReason());
+			myParser.getLocalClient().setAwayState(sParam.equals("306"));
+			callAwayState(myParser.getLocalClient().getAwayState(), myParser.getLocalClient().getAwayReason());
 		}
 	}
 	
@@ -52,7 +54,7 @@ public class ProcessAway extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return myParser.getCallbackManager().getCallbackType("OnAwayState").call(currentState, reason);
+		return myParser.getCallbackManager().getCallbackType(AwayStateListener.class).call(currentState, reason);
 	}
 	
 	/**

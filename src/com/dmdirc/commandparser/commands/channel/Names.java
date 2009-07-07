@@ -54,7 +54,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
     @Override
     public void execute(final InputWindow origin, final Server server, 
             final Channel channel, final boolean isSilent, final CommandArguments args) {
-        server.getParser().sendLine("NAMES " + channel.getChannelInfo().getName());
+        server.getParser().sendRawMessage("NAMES " + channel.getChannelInfo().getName());
     }
     
 
@@ -62,7 +62,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
     @Override
     public void execute(final InputWindow origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
-        server.getParser().sendLine("NAMES " + channel);
+        server.getParser().sendRawMessage("NAMES " + channel);
     }    
 
     /** {@inheritDoc} */

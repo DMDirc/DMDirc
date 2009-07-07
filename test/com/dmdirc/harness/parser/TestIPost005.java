@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.irc.*;
-import com.dmdirc.parser.irc.callbacks.interfaces.IPost005;
+import com.dmdirc.parser.interfaces.callbacks.Post005Listener;
 
-public class TestIPost005 implements IPost005 {
+public class TestIPost005 implements Post005Listener {
 
     public boolean done = false;
 

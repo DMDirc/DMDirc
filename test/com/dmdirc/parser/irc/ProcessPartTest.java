@@ -26,9 +26,7 @@ import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIChannelPart;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelPart;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,13 +43,13 @@ public class ProcessPartTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
         final TestIChannelPart test = new TestIChannelPart();
-        parser.getCallbackManager().addCallback("OnChannelPart", test);
+        parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville PART #DMDirc_testing :Bye bye, cruel world");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);
@@ -73,13 +71,13 @@ public class ProcessPartTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
         final TestIChannelPart test = new TestIChannelPart();
-        parser.getCallbackManager().addCallback("OnChannelPart", test);
+        parser.getCallbackManager().addCallback(ChannelPartListener.class, test);
         
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(2, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         parser.injectLine(":luser!foo@barsville PART #DMDirc_testing");
         
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(1, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);

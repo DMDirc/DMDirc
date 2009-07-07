@@ -25,8 +25,9 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestIChannelSelfJoin;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IChannelJoin;
+import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
 
+import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -39,7 +40,7 @@ public class ProcessJoinTest {
         final TestIChannelSelfJoin test = new TestIChannelSelfJoin();
 
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("onChannelSelfJoin", test);
+        parser.getCallbackManager().addCallback(ChannelSelfJoinListener.class, test);
         parser.injectLine(":nick JOIN #DMDirc_testing");
 
         assertNotNull(test.channel);
@@ -48,21 +49,21 @@ public class ProcessJoinTest {
         assertSame(parser, test.channel.getParser());
         assertEquals(1, parser.getChannels().size());
         assertTrue(parser.getChannels().contains(test.channel));
-        assertEquals(test.channel, parser.getChannelInfo("#DMDirc_testing"));
+        assertEquals(test.channel, parser.getChannel("#DMDirc_testing"));
     }
     
     @Test
     public void testOtherJoinChannel() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final IChannelJoin test = mock(IChannelJoin.class);
+        final ChannelJoinListener test = mock(ChannelJoinListener.class);
 
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("onChannelJoin", test);
+        parser.getCallbackManager().addCallback(ChannelJoinListener.class, test);
         
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
 
-        verify(test).onChannelJoin(parser, parser.getChannelInfo("#DMDirc_testing"),
+        verify(test).onChannelJoin(parser, parser.getChannel("#DMDirc_testing"),
                 parser.getClientInfo("foo!bar@baz").getChannelClients().get(0));
     }    
 

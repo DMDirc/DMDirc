@@ -19,12 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.parser.irc.callbacks;
 
-import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.parser.irc.callbacks.interfaces.*;
+import com.dmdirc.parser.interfaces.callbacks.*;
 
+import com.dmdirc.parser.irc.IRCParser;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -37,191 +36,216 @@ import java.util.Map;
 public final class CallbackManager {
 
     private static final Class[] CLASSES = {
-        IAwayState.class, IAwayStateOther.class, IChannelAwayStateOther.class,
-        IChannelAction.class, IChannelCTCP.class, IChannelCTCPReply.class,
-        IChannelGotListModes.class, IChannelGotNames.class, IChannelJoin.class,
-        IChannelKick.class, IChannelMessage.class, IChannelModeChanged.class,
-        IChannelNickChanged.class, IChannelNonUserModeChanged.class,
-        IChannelModeMessage.class, IChannelModeNotice.class,
-        IChannelNotice.class, IChannelPart.class, IChannelQuit.class,
-        IChannelSelfJoin.class, IChannelSingleModeChanged.class,
-        IChannelTopic.class, IChannelUserModeChanged.class, IConnectError.class,
-        IDataIn.class, IDataOut.class, IDebugInfo.class, IErrorInfo.class,
-        IGotNetwork.class, IInvite.class, IMOTDEnd.class, IMOTDLine.class,
-        IMOTDStart.class, INickChanged.class, INickInUse.class,
-        INoticeAuth.class, INumeric.class, IPasswordRequired.class,
-        IPingFailed.class, IPingSuccess.class, IPingSent.class, IPrivateAction.class,
-        IPrivateCTCP.class, IPrivateCTCPReply.class, IPrivateMessage.class,
-        IPrivateNotice.class, IPost005.class, IQuit.class, IServerError.class,
-        IServerReady.class, ISocketClosed.class, IUnknownAction.class,
-        IUnknownCTCP.class, IUnknownCTCPReply.class, IUnknownMessage.class,
-        IUnknownNotice.class, IUserModeChanged.class, IUserModeDiscovered.class,
-        IWallDesync.class, IWallop.class, IWalluser.class,
+        AwayStateListener.class, OtherAwayStateListener.class,
+        ChannelOtherAwayStateListener.class, ChannelActionListener.class,
+        ChannelCtcpListener.class, ChannelCtcpReplyListener.class,
+        ChannelListModeListener.class, ChannelNamesListener.class,
+        ChannelJoinListener.class, ChannelKickListener.class,
+        ChannelMessageListener.class, ChannelModeChangeListener.class,
+        ChannelNickChangeListener.class, ChannelNonUserModeChangeListener.class,
+	ChannelModeMessageListener.class, ChannelModeNoticeListener.class,
+        ChannelNoticeListener.class, ChannelPartListener.class, ChannelQuitListener.class,
+        ChannelSelfJoinListener.class, ChannelSingleModeChangeListener.class,
+        ChannelTopicListener.class, ChannelUserModeChangeListener.class, ConnectErrorListener.class,
+        DataInListener.class, DataOutListener.class, DebugInfoListener.class, ErrorInfoListener.class,
+        NetworkDetectedListener.class, InviteListener.class, MotdEndListener.class, MotdLineListener.class,
+        MotdStartListener.class, NickChangeListener.class, NickInUseListener.class,
+        AuthNoticeListener.class, NumericListener.class, PasswordRequiredListener.class,
+        PingFailureListener.class, PingSuccessListener.class, PingSentListener.class, PrivateActionListener.class,
+        PrivateCtcpListener.class, PrivateCtcpReplyListener.class, PrivateMessageListener.class,
+        PrivateNoticeListener.class, Post005Listener.class, QuitListener.class, ServerErrorListener.class,
+        ServerReadyListener.class, SocketCloseListener.class, UnknownActionListener.class,
+        UnknownCtcpListener.class, UnknownCtcpReplyListener.class, UnknownMessageListener.class,
+        UnknownNoticeListener.class, UserModeChangeListener.class, UserModeDiscoveryListener.class,
+        WallDesyncListener.class, WallopListener.class, WalluserListener.class,
     };
 
-	/** Reference to the parser object that owns this CallbackManager. */
-	IRCParser myParser;
-	
-	/** Hashtable used to store the different types of callback known. */
-	private final Map<String, CallbackObject> callbackHash = new Hashtable<String, CallbackObject>();
-	
-	/**
-	 * Constructor to create a CallbackManager.
-	 *
-	 * @param parser IRCParser that owns this callback manager.
-	 */
-	public CallbackManager(final IRCParser parser) {
-		myParser = parser;
-		
+    /** Reference to the parser object that owns this CallbackManager. */
+    IRCParser myParser;
+    /** Hashtable used to store the different types of callback known. */
+    private final Map<Class<? extends CallbackInterface>, CallbackObject> callbackHash
+            = new Hashtable<Class<? extends CallbackInterface>, CallbackObject>();
+
+    /**
+     * Constructor to create a CallbackManager.
+     *
+     * @param parser Parser that owns this callback manager.
+     */
+    public CallbackManager(final IRCParser parser) {
+        myParser = parser;
+
         for (Class<?> type : CLASSES) {
             if (type.isAnnotationPresent(SpecificCallback.class)) {
                 addCallbackType(new CallbackObjectSpecific(myParser, this,
-                        type.asSubclass(ICallbackInterface.class)));
+                        type.asSubclass(CallbackInterface.class)));
             } else {
                 addCallbackType(new CallbackObject(myParser, this,
-                        type.asSubclass(ICallbackInterface.class)));
+                        type.asSubclass(CallbackInterface.class)));
             }
         }
-	}
+    }
 
-	/**
-	 * Add new callback type.
-	 *
-	 * @param callback CallbackObject subclass for the callback.
-	 * @return if adding succeeded or not.
-	 */
-	public boolean addCallbackType(final CallbackObject callback) {
-		if (!callbackHash.containsKey(callback.getLowerName())) {
-			callbackHash.put(callback.getLowerName(), callback);
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Remove a callback type.
-	 *
-	 * @param callback CallbackObject subclass to remove.
-	 * @return if removal succeeded or not.
-	 */
-	public boolean delCallbackType(final CallbackObject callback) {
-		if (callbackHash.containsKey(callback.getLowerName())) {
-			callbackHash.remove(callback.getLowerName());
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Get reference to callback object.
-	 *
-	 * @param callbackName Name of callback object.
-	 * @return CallbackObject returns the callback object for this type
-	 */
-	public CallbackObject getCallbackType(final String callbackName) {
-		if (!callbackHash.containsKey(callbackName.toLowerCase())) {
-			throw new CallbackNotFoundException("Callback not found: " + callbackName);
-		}
-		
-		return callbackHash.get(callbackName.toLowerCase());
-	}
-	
-	/**
-	 * Remove all callbacks associated with a specific object.
-	 *
-	 * @param o instance of ICallbackInterface to remove.
-	 */
-	public void delAllCallback(final ICallbackInterface o) {
-		for (CallbackObject cb : callbackHash.values()) {
-			if (cb != null) { cb.del(o); }
-		}
-	}
-	
-	/**
-	 * Add all callbacks.
-	 *
-	 * @param o instance of ICallbackInterface to add.
-	 */
-	public void addAllCallback(final ICallbackInterface o) {
-		for (CallbackObject cb : callbackHash.values()) {
-			if (cb != null) { cb.add(o); }
-		}
-	}
-	
-	/**
-	 * Add a callback.
- 	 * This method will throw a CallbackNotFoundException if the callback does not exist.
-	 *
-	 * @param callbackName Name of callback object.
-	 * @param o instance of ICallbackInterface to add.
-	 * @throws CallbackNotFoundException If callback is not found.
-	 * @throws NullPointerException If 'o' is null
-	 */
-	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFoundException {
-		if (o == null) {
-			throw new NullPointerException("CallbackInterface is null");
-		}
-		
-		final CallbackObject cb = getCallbackType(callbackName);
-		
-		if (cb != null) { cb.add(o); }
-	}
-	
-	/**
-	 * Add a callback with a specific target.
- 	 * This method will throw a CallbackNotFoundException if the callback does not exist.
-	 *
-	 * @param callbackName Name of callback object.
-	 * @param o instance of ICallbackInterface to add.
-	 * @param target Parameter to specify that a callback should only fire for specific things
-	 * @throws CallbackNotFoundException If callback is not found.
-	 * @throws NullPointerException If 'o' is null
-	 */
-	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFoundException {
-		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
-		((CallbackObjectSpecific) getCallbackType(callbackName)).add(o,target);
-	}
-	
-	/**
-	 * Add a callback without an exception.
-	 * This should be used if a callback is not essential for execution (ie the DebugOut callback)
-	 *
-	 * @param callbackName Name of callback object.
-	 * @param o instance of ICallbackInterface to add.
-	 * @return true/false if the callback was added or not.
-	 */
-	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o)  {
-		try {
-			addCallback(callbackName, o);
-			return true;
-		} catch (CallbackNotFoundException e) { return false; }
-	}
-	
-	/**
-	 * Add a callback with a specific target.
-	 * This should be used if a callback is not essential for execution
-	 *
-	 * @param callbackName Name of callback object.
-	 * @param o instance of ICallbackInterface to add.
-	 * @param target Parameter to specify that a callback should only fire for specific things
-	 * @return true/false if the callback was added or not.
-	 */
-	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o, final String target) {
-		try {
-			addCallback(callbackName, o, target);
-			return true;
-		} catch (CallbackNotFoundException e) { return false;	}
-	}
-	
-	
-	/**
-	 * Remove a callback.
-	 *
-	 * @param callbackName Name of callback object.
-	 * @param o instance of ICallbackInterface to remove.
-	 */
-	public void delCallback(final String callbackName, final ICallbackInterface o) {
-		getCallbackType(callbackName).del(o);
-	}
+    /**
+     * Add new callback type.
+     *
+     * @param callback CallbackObject subclass for the callback.
+     * @return if adding succeeded or not.
+     */
+    public boolean addCallbackType(final CallbackObject callback) {
+        if (!callbackHash.containsKey(callback.getType())) {
+            callbackHash.put(callback.getType(), callback);
+            return true;
+        }
 
+        return false;
+    }
+
+    /**
+     * Remove a callback type.
+     *
+     * @param callback CallbackObject subclass to remove.
+     * @return if removal succeeded or not.
+     */
+    public boolean delCallbackType(final CallbackObject callback) {
+        if (callbackHash.containsKey(callback.getType())) {
+            callbackHash.remove(callback.getType());
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get reference to callback object.
+     *
+     * @param callback Name of type of callback object.
+     * @return CallbackObject returns the callback object for this type
+     */
+    public CallbackObject getCallbackType(final Class<? extends CallbackInterface> callback) {
+        if (!callbackHash.containsKey(callback)) {
+            throw new CallbackNotFoundException("Callback not found: " + callback.getName());
+        }
+
+        return callbackHash.get(callback);
+    }
+
+    /**
+     * Remove all callbacks associated with a specific object.
+     *
+     * @param o instance of ICallbackInterface to remove.
+     */
+    public void delAllCallback(final CallbackInterface o) {
+        for (CallbackObject cb : callbackHash.values()) {
+            if (cb != null) {
+                cb.del(o);
+            }
+        }
+    }
+
+    /**
+     * Add all callbacks.
+     *
+     * @param o instance of ICallbackInterface to add.
+     */
+    public void addAllCallback(final CallbackInterface o) {
+        for (CallbackObject cb : callbackHash.values()) {
+            if (cb != null) {
+                cb.add(o);
+            }
+        }
+    }
+
+    /**
+     * Add a callback.
+     * This method will throw a CallbackNotFoundException if the callback does not exist.
+     *
+     * @param <T> The type of callback
+     * @param callback Type of callback object
+     * @param o instance of ICallbackInterface to add.
+     * @throws CallbackNotFoundException If callback is not found.
+     * @throws NullPointerException If 'o' is null
+     */
+    public <T extends CallbackInterface> void addCallback(
+            final Class<T> callback, final T o) throws CallbackNotFoundException {
+        if (o == null) {
+            throw new NullPointerException("CallbackInterface is null");
+        }
+
+        final CallbackObject cb = getCallbackType(callback);
+
+        if (cb != null) {
+            cb.add(o);
+        }
+    }
+
+    /**
+     * Add a callback with a specific target.
+     * This method will throw a CallbackNotFoundException if the callback does not exist.
+     *
+     * @param <T> The type of callback
+     * @param callback Type of callback object.
+     * @param o instance of ICallbackInterface to add.
+     * @param target Parameter to specify that a callback should only fire for specific things
+     * @throws CallbackNotFoundException If callback is not found.
+     * @throws NullPointerException If 'o' is null
+     */
+    public <T extends CallbackInterface> void addCallback(
+            final Class<T> callback,
+            final T o, final String target) throws CallbackNotFoundException {
+        if (o == null) {
+            throw new NullPointerException("CallbackInterface is null");
+        }
+        
+        ((CallbackObjectSpecific) getCallbackType(callback)).add(o, target);
+    }
+
+    /**
+     * Add a callback without an exception.
+     * This should be used if a callback is not essential for execution (ie the DebugOut callback)
+     *
+     * @param <T> The type of callback object
+     * @param callback Type of callback object.
+     * @param o instance of ICallbackInterface to add.
+     * @return true/false if the callback was added or not.
+     */
+    public <T extends CallbackInterface> boolean addNonCriticalCallback(
+            final Class<T> callback, final T o) {
+        try {
+            addCallback(callback, o);
+            return true;
+        } catch (CallbackNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Add a callback with a specific target.
+     * This should be used if a callback is not essential for execution
+     *
+     * @param <T> The type of callback
+     * @param callback Type of callback object.
+     * @param o instance of ICallbackInterface to add.
+     * @param target Parameter to specify that a callback should only fire for specific things
+     * @return true/false if the callback was added or not.
+     */
+    public <T extends CallbackInterface> boolean addNonCriticalCallback(
+            final Class<T> callback, final T o, final String target) {
+        try {
+            addCallback(callback, o, target);
+            return true;
+        } catch (CallbackNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Remove a callback.
+     *
+     * @param callback Type of callback object.
+     * @param o instance of ICallbackInterface to remove.
+     */
+    public void delCallback(final Class<? extends CallbackInterface> callback,
+            final CallbackInterface o) {
+        getCallbackType(callback).del(o);
+    }
 }

@@ -92,18 +92,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         this.channel = channel;
         this.parent = parent;
 
-        final Map<String, String> iSupport =
-                channel.getServer().getParser().get005();
-        if (iSupport.containsKey("TOPICLEN")) {
-            try {
-                topicLengthMax =
-                        Integer.parseInt(iSupport.get("TOPICLEN"));
-            } catch (NumberFormatException ex) {
-                topicLengthMax = 0;
-                Logger.userError(ErrorLevel.LOW,
-                        "IRCD doesnt supply topic length");
-            }
-        }
+        topicLengthMax = channel.getServer().getParser().getMaxTopicLength();
 
         update();
     }

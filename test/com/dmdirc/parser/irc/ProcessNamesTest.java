@@ -25,7 +25,7 @@ package com.dmdirc.parser.irc;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.irc.callbacks.interfaces.IErrorInfo;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +36,7 @@ public class ProcessNamesTest {
         final TestParser parser = new TestParser();
         final TestIErrorInfo test = new TestIErrorInfo();
         parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("OnErrorInfo", test);
+        parser.getCallbackManager().addCallback(ErrorInfoListener.class, test);
         
         parser.injectLine(":server 366 nick #nonexistant :End of /NAMES list.");
         
@@ -53,20 +53,20 @@ public class ProcessNamesTest {
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
         assertEquals(1, parser.getChannels().size());
-        assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
-        assertEquals(4, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertNotNull(parser.getChannel("#DMDirc_testing"));
+        assertEquals(4, parser.getChannel("#DMDirc_testing").getChannelClients().size());
         assertNotNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
 
-        ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        IRCChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        assertEquals(parser.getChannel("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
         
-        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick2");
+        cci = parser.getChannel("#DMDirc_testing").getChannelClient("nick2");
         assertNotNull(cci);
         assertEquals("@+", cci.getChanModeStr(true));
 
-        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick3");
+        cci = parser.getChannel("#DMDirc_testing").getChannelClient("nick3");
         assertNotNull(cci);
         assertEquals("", cci.getChanModeStr(true));
     }

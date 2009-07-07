@@ -38,10 +38,10 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -246,7 +246,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			return;
 		}
 		
-		final IRCParser parser = query.getServer().getParser();
+		final Parser parser = query.getServer().getParser();
 		ClientInfo client;
 		
 		if (parser == null) {
@@ -257,10 +257,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			}
 			client = null;
 		} else {
-			client = parser.getClientInfo(query.getHost());
-			if (client == null) {
-				client = new ClientInfo(parser, query.getHost()).setFake(true);
-			}
+			client = parser.getClient(query.getHost());
 		}
 		
 		final String filename = getLogFile(client);
@@ -292,7 +289,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			case QUERY_ACTION:
 			case QUERY_SELF_ACTION:
 				final boolean isME = (type == CoreActionType.QUERY_SELF_MESSAGE || type == CoreActionType.QUERY_SELF_ACTION);
-				final String overrideNick = (isME) ? getDisplayName(parser.getMyself()) : "";
+				final String overrideNick = (isME) ? getDisplayName(parser.getLocalClient()) : "";
 				
 				if (type == CoreActionType.QUERY_MESSAGE || type == CoreActionType.QUERY_SELF_MESSAGE) {
 					appendLine(filename, "<%s> %s", getDisplayName(client, overrideNick), (String)arguments[1]);
@@ -357,7 +354,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				
 				appendLine(filename, "*** Topic is: %s", channel.getTopic());
-				appendLine(filename, "*** Set at: %s on %s by %s", timeFormat.format(1000 * channel.getTopicTime()), dateFormat.format(1000 * channel.getTopicTime()), channel.getTopicUser());
+				appendLine(filename, "*** Set at: %s on %s by %s", timeFormat.format(1000 * channel.getTopicTime()), dateFormat.format(1000 * channel.getTopicTime()), channel.getTopicSetter());
 				break;
 			case CHANNEL_TOPICCHANGE:
 				appendLine(filename, "*** %s Changed the topic to: %s", getDisplayName(channelClient), message);
@@ -393,7 +390,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				appendLine(filename, "*** %s is now %s", getDisplayName(channelClient, message), getDisplayName(channelClient));
 				break;
 			case CHANNEL_MODECHANGE:
-				if (channelClient.getNickname().isEmpty()) {
+				if (channelClient.getClient().getNickname().isEmpty()) {
 					appendLine(filename, "*** Channel modes are: %s", message);
 				} else {
 					appendLine(filename, "*** %s set modes: %s", getDisplayName(channelClient), message);
@@ -762,7 +759,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		if (channelClient == null) {
 			return (overrideNick.isEmpty()) ? "Unknown Client" : overrideNick;
 		} else if (overrideNick.isEmpty()) {
-			return (addModePrefix) ? channelClient.toString() : channelClient.getNickname();
+			return (addModePrefix) ? channelClient.toString() : channelClient.getClient().getNickname();
 		} else {
 			return (addModePrefix) ? channelClient.getImportantModePrefix() + overrideNick : overrideNick;
 		}
@@ -780,11 +777,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		if (target.getContainer() instanceof Channel) {
 			component = ((Channel) target.getContainer()).getChannelInfo();
 		} else if (target.getContainer() instanceof Query) {
-			final IRCParser parser = ((Query) target.getContainer()).getServer().getParser();
-			component = parser.getClientInfo(((Query) target.getContainer()).getHost());
-			if (component == null) {
-				component = new ClientInfo(parser, ((Query) target.getContainer()).getHost()).setFake(true);
-			}
+			final Parser parser = ((Query) target.getContainer()).getServer().getParser();
+			component = parser.getClient(((Query) target.getContainer()).getHost());
 		} else if (target.getContainer() instanceof Server) {
 			component = target.getContainer().getServer().getParser();
 		} else {
