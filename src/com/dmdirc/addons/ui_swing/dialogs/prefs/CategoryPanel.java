@@ -121,6 +121,7 @@ public class CategoryPanel extends JPanel {
         scrollPane = new JScrollPane(loading);
         scrollPane.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
 
         title = new TitlePanel(BorderFactory.createEtchedBorder(),
                 "Preferences");
