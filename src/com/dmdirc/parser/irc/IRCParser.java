@@ -35,8 +35,9 @@ import com.dmdirc.parser.interfaces.callbacks.PingSuccessListener;
 import com.dmdirc.parser.interfaces.callbacks.Post005Listener;
 import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
-import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.common.CallbackManager;
 
+import com.dmdirc.parser.irc.callbacks.IRCCallbackManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -217,7 +218,7 @@ public class IRCParser implements SecureParser, Runnable {
 	RegexStringList myIgnoreList = new RegexStringList();
 
 	/** Reference to the callback Manager. */
-	CallbackManager myCallbackManager = new CallbackManager(this);
+	CallbackManager<IRCParser> myCallbackManager = new IRCCallbackManager(this);
 	/** Reference to the Processing Manager. */
 	ProcessingManager myProcessingManager = new ProcessingManager(this);
 
@@ -380,7 +381,7 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
         @Override
-	public CallbackManager getCallbackManager() { return myCallbackManager;	}
+	public CallbackManager<IRCParser> getCallbackManager() { return myCallbackManager;	}
 
 	/**
 	 * Get a reference to the default TrustManager for SSL Sockets.

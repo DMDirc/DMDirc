@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces;
 
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.RegexStringList;
-import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.common.CallbackManager;
 
 import java.util.Collection;
 
@@ -243,7 +243,7 @@ public interface Parser extends Runnable {
      * 
      * @return This parser's callback manager
      */
-    CallbackManager getCallbackManager();
+    CallbackManager<? extends Parser> getCallbackManager();
 
     /**
      * Retrieves the latency between the parser and the server in milliseconds.

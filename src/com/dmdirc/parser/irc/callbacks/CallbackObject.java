@@ -70,7 +70,7 @@ public class CallbackObject {
 	/** Reference to the Parser that owns this callback. */
 	protected IRCParser myParser;
 	/** Reference to the CallbackManager in charge of this callback. */
-	protected CallbackManager myManager;
+	protected IRCCallbackManager myManager;
 	
 	/**
 	 * Create a new instance of the Callback Object.
@@ -80,7 +80,7 @@ public class CallbackObject {
      * @param type The type of callback to use
      * @since 0.6.3m1
 	 */
-	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
+	protected CallbackObject(final IRCParser parser, final IRCCallbackManager manager,
             final Class<? extends CallbackInterface> type) {
 		this.myParser = parser;
 		this.myManager = manager;

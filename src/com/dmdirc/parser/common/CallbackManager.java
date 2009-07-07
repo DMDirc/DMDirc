@@ -19,11 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.dmdirc.parser.irc.callbacks;
+package com.dmdirc.parser.common;
 
+import com.dmdirc.parser.irc.callbacks.*;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.*;
 
-import com.dmdirc.parser.irc.IRCParser;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -31,11 +32,12 @@ import java.util.Map;
  * IRC Parser Callback Manager.
  * Manages adding/removing/calling callbacks.
  *
+ * @param <T> The type of parser which this manager managers callbacks for
  * @author            Shane Mc Cormack
  */
-public final class CallbackManager {
+public abstract class CallbackManager<T extends Parser> {
 
-    private static final Class[] CLASSES = {
+    protected static final Class[] CLASSES = {
         AwayStateListener.class, OtherAwayStateListener.class,
         ChannelOtherAwayStateListener.class, ChannelActionListener.class,
         ChannelCtcpListener.class, ChannelCtcpReplyListener.class,
@@ -61,7 +63,8 @@ public final class CallbackManager {
     };
 
     /** Reference to the parser object that owns this CallbackManager. */
-    IRCParser myParser;
+    private final Parser myParser;
+    
     /** Hashtable used to store the different types of callback known. */
     private final Map<Class<? extends CallbackInterface>, CallbackObject> callbackHash
             = new Hashtable<Class<? extends CallbackInterface>, CallbackObject>();
@@ -71,19 +74,21 @@ public final class CallbackManager {
      *
      * @param parser Parser that owns this callback manager.
      */
-    public CallbackManager(final IRCParser parser) {
+    public CallbackManager(final T parser) {
         myParser = parser;
 
-        for (Class<?> type : CLASSES) {
-            if (type.isAnnotationPresent(SpecificCallback.class)) {
-                addCallbackType(new CallbackObjectSpecific(myParser, this,
-                        type.asSubclass(CallbackInterface.class)));
-            } else {
-                addCallbackType(new CallbackObject(myParser, this,
-                        type.asSubclass(CallbackInterface.class)));
-            }
-        }
+        initialise(parser);
     }
+
+    /**
+     * Initialises this callback manager by calling
+     * {@link #addCallbackType(CallbackObject)} with a relevant
+     * {@link CallbackObject} instance for each entry in the
+     * <code>CLASSES</code> array.
+     *
+     * @param parser The parser associated with this CallbackManager
+     */
+    protected abstract void initialise(T parser);
 
     /**
      * Add new callback type.
