@@ -250,12 +250,9 @@ class IRCClientInfo implements LocalClientInfo {
 	 */	
 	public long getUserMode() { return nModes; }	
 	
-	/**
-	 * Get the user modes (as a string representation).
-	 *
-	 * @return string representing modes. (boolean and non-list)
-	 */	
-	public String getUserModeStr() { 
+	/** {@inheritDoc} */
+        @Override
+	public String getModes() {
 		final StringBuilder sModes = new StringBuilder("+");
 		long nTemp = 0;
 		final long nChanModes = this.getUserMode();
@@ -276,7 +273,7 @@ class IRCClientInfo implements LocalClientInfo {
 	 * @return True/False if this client appears to be an oper
 	 */
 	public boolean isOper() {
-		final String modestr = getUserModeStr();
+		final String modestr = getModes();
 		return (modestr.indexOf('o') > -1) || (modestr.indexOf('O') > -1);
 	}
 	
@@ -332,16 +329,8 @@ class IRCClientInfo implements LocalClientInfo {
 		return result;
 	}
 	
-	/**
-	 * Adjust the channel modes on a channel.
-	 * This function will queue modes up to be sent in one go, according to 005 params.
-	 * If less modes are altered than the queue accepts, sendModes() must be called.<br><br>
-	 * sendModes is automatically called if you attempt to add more modes than is allowed
-	 * to be queued
-	 *
-	 * @param positive Is this a positive mode change, or a negative mode change
-	 * @param mode Character representing the mode to change
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void alterMode(final boolean positive, final Character mode) {
 		if (isFake()) { return; }
 		int modecount = 1;
@@ -364,16 +353,12 @@ class IRCClientInfo implements LocalClientInfo {
 		}
 		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
 		lModeQueue.add(modestr);
-		if (lModeQueue.size() == modecount) { sendModes(); }
+		if (lModeQueue.size() == modecount) { flushModes(); }
 	}
 	
-	/**
-	 * This function will send modes that are currently queued up to send.
-	 * This assumes that the queue only contains the amount that are alowed to be sent
-	 * and thus will try to send the entire queue in one go.<br><br>
-	 * Modes are always sent negative then positive and not mixed.
-	 */
-	public void sendModes() {
+	/** {@inheritDoc} */
+        @Override
+	public void flushModes() {
 		if (lModeQueue.isEmpty()) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder negativemode = new StringBuilder();

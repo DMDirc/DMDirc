@@ -130,7 +130,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
-                owner.getParser().getClientInfoOrFake(sHost), sType, sMessage);
+                owner.getParser().getClient(sHost), sType, sMessage);
 
         owner.sendCTCPReply(tParser.parseHostmask(sHost)[0], sType, sMessage);
     }
@@ -142,7 +142,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
-                owner.getParser().getClientInfoOrFake(sHost), sType, sMessage);
+                owner.getParser().getClient(sHost), sType, sMessage);
     }
 
     /** {@inheritDoc} */
@@ -160,7 +160,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
-                owner.getParser().getClientInfoOrFake(sHost), sMessage);
+                owner.getParser().getClient(sHost), sMessage);
     }
 
     /** {@inheritDoc} */
@@ -280,7 +280,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
-                owner.getParser().getClientInfoOrFake(sSetBy), sModes);
+                owner.getParser().getClient(sSetBy), sModes);
     }
 
     /** {@inheritDoc} */
@@ -302,7 +302,7 @@ public final class ServerEventHandler extends EventHandler
         owner.addInvite(new Invite(owner, channel, userHost));
         owner.doNotification("inviteReceived",
                 CoreActionType.SERVER_INVITERECEIVED,
-                owner.getParser().getClientInfoOrFake(userHost), channel);
+                owner.getParser().getClient(userHost), channel);
     }
 
     /** {@inheritDoc} */
@@ -312,7 +312,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS,
-                owner.getParser().getClientInfoOrFake(sHost), sMessage);
+                owner.getParser().getClient(sHost), sMessage);
 
     }
 
@@ -323,7 +323,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS,
-                owner.getParser().getClientInfoOrFake(sHost), sMessage);
+                owner.getParser().getClient(sHost), sMessage);
     }
 
     /** {@inheritDoc} */
@@ -333,7 +333,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC,
-                owner.getParser().getClientInfoOrFake(sHost), sMessage);
+                owner.getParser().getClient(sHost), sMessage);
     }
 
     /** {@inheritDoc} */

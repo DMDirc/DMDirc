@@ -794,11 +794,8 @@ class IRCParser implements SecureParser, Runnable {
 		callDebugInfo(DEBUG_INFO, "End Thread Execution");
 	}
 
-	/**
-	 * Get the current local port number.
-	 *
-	 * @return 0 if not connected, else the current local port number
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public int getLocalPort() {
 		if (currentSocketState == SocketState.OPEN) {
 			return socket.getLocalPort();
@@ -862,20 +859,13 @@ class IRCParser implements SecureParser, Runnable {
 	public IRCClientInfo getClient(final String sHost) {
 		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
-		else { return null; }
-	}
-
-	/**
-	 * Get the ClientInfo object for a person, or create a fake client info object.
-	 *
-	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
-	 * @return ClientInfo Object for the client.
-	 */
-	public ClientInfo getClientInfoOrFake(final String sHost) {
-		final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
-		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return new IRCClientInfo(this, sHost).setFake(true); }
 	}
+
+        public boolean isKnownClient(final String sHost) {
+            final String sWho = getStringConverter().toLowerCase(IRCClientInfo.parseHost(sHost));
+            return hClientList.containsKey(sWho);
+        }
 
 	/** {@inheritDoc} */
         @Override
@@ -1173,11 +1163,8 @@ class IRCParser implements SecureParser, Runnable {
 		}
 	}
 
-	/**
-	 * Get the known prefixmodes in priority order.
-	 *
-	 * @return All the currently known usermodes
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getChannelUserModes() {
 		if (h005Info.containsKey("PREFIXSTRING")) {
 			return h005Info.get("PREFIXSTRING");
@@ -1237,12 +1224,8 @@ class IRCParser implements SecureParser, Runnable {
 		return new String(modes).trim();
 	}
 
-	/**
-	 * Get the known usermodes.
-	 * Modes are returned in the order specified by the ircd.
-	 *
-	 * @return All the currently known usermodes (returns "" if usermodes are unknown)
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String getUserModes() {
 		if (h005Info.containsKey("USERMODES")) {
 			return h005Info.get("USERMODES");

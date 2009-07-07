@@ -242,7 +242,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_MODES {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getAllModes(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return ChannelClientInfo.class; }

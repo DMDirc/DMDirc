@@ -207,7 +207,7 @@ public class ChannelInfoTest {
         info.alterMode(true, 't', null);
         info.alterMode(true, 'r', null);
         info.alterMode(true, 'N', null);
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes",
                 2, parser.sentLines.size());
@@ -235,7 +235,7 @@ public class ChannelInfoTest {
         info.alterMode(true, 'n', null);
         info.alterMode(true, 'n', null);
         info.alterMode(false, 'i', null);
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes in one go",
                 1, parser.sentLines.size());
@@ -257,7 +257,7 @@ public class ChannelInfoTest {
         info.alterMode(true, 'm', null);
         info.alterMode(true, 'n', null);
         info.alterMode(true, 'n', null);
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes in one go",
                 1, parser.sentLines.size());
@@ -278,7 +278,7 @@ public class ChannelInfoTest {
         parser.sentLines.clear();
         
         info.alterMode(true, 'k', "foobar");
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes in one go",
                 1, parser.sentLines.size());
@@ -311,7 +311,7 @@ public class ChannelInfoTest {
         info.alterMode(true, 'k', "foobar");
         info.alterMode(true, 'k', "blahblah");
         info.alterMode(true, 'k', "unittest");
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes in one go",
                 1, parser.sentLines.size());
@@ -329,7 +329,7 @@ public class ChannelInfoTest {
         info.alterMode(true, 'l', "74");
         info.alterMode(true, 'l', "75");
         info.alterMode(true, 'l', "76");
-        info.sendModes();
+        info.flushModes();
         
         assertEquals("sendModes must send modes in one go",
                 1, parser.sentLines.size());

@@ -253,12 +253,9 @@ class IRCChannelInfo implements ChannelInfo {
         @Override
 	public String getName() { return sName; }
 
-        /**
-	 * Get the number of users known on this channel.
-	 *
-	 * @return Channel user count.
-	 */
-	public int getUserCount() { return hChannelUserList.size(); }
+        /** {@inheritDoc} */
+        @Override
+	public int getChannelClientCount() { return hChannelUserList.size(); }
 	
 	/** {@inheritDoc} */
         @Override
@@ -287,14 +284,8 @@ class IRCChannelInfo implements ChannelInfo {
 		return getChannelClient(sWho, false);
 	}
 	
-	/**
-	 * Get the ChannelClientInfo object associated with a nickname.
-	 *
-	 * @param sWho Nickname to return channelclient for
-	 * @param createFake Create a fake client if not found
-	 * @return ChannelClientInfo object requested
-	 * @since 0.6
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public IRCChannelClientInfo getChannelClient(final String sWho, final boolean createFake) {
 		final String who = myParser.getStringConverter().toLowerCase(IRCClientInfo.parseHost(sWho));
 		if (hChannelUserList.containsKey(who)) {
@@ -574,17 +565,8 @@ class IRCChannelInfo implements ChannelInfo {
 		}
 	}
 	
-	/**
-	 * Adjust the channel modes on a channel.
-	 * This function will queue modes up to be sent in one go, according to 005 params.
-	 * If less modes are altered than the queue accepts, sendModes() must be called.<br><br>
-	 * sendModes is automatically called if you attempt to add more modes than is allowed
-	 * to be queued
-	 *
-	 * @param positive Is this a positive mode change, or a negative mode change
-	 * @param mode Character representing the mode to change
-	 * @param parameter Parameter needed to make change (not used if mode doesn't need a parameter)
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void alterMode(final boolean positive, final Character mode, final String parameter) { 
 		int modecount = 1;
 		int modeint = 0;
@@ -627,7 +609,7 @@ class IRCChannelInfo implements ChannelInfo {
 							
 							myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", reverseModeStr);
 							lModeQueue.add(reverseModeStr);
-							if (lModeQueue.size() == modecount) { sendModes(); }
+							if (lModeQueue.size() == modecount) { flushModes(); }
 						}
 					}
 					modestr = modestr + " " + parameter;
@@ -636,16 +618,12 @@ class IRCChannelInfo implements ChannelInfo {
 		}
 		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", modestr);
 		lModeQueue.add(modestr);
-		if (lModeQueue.size() == modecount) { sendModes(); }
+		if (lModeQueue.size() == modecount) { flushModes(); }
 	}
 	
-	/**
-	 * This function will send modes that are currently queued up to send.
-	 * This assumes that the queue only contains the amount that are alowed to be sent
-	 * and thus will try to send the entire queue in one go.<br><br>
-	 * Modes are always sent negative then positive and not mixed.
-	 */
-	public void sendModes() { 
+	/** {@inheritDoc} */
+        @Override
+	public void flushModes() {
 		if (lModeQueue.isEmpty()) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder positiveparam = new StringBuilder();

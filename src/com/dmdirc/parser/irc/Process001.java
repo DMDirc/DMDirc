@@ -55,7 +55,7 @@ public class Process001 extends IRCProcessor {
 				/// Update stored information
 				myParser.getLocalClient().setUserBits(sNick, true, true);
 				// Check that we don't already know someone by this name
-				if (myParser.getClient(myParser.getLocalClient().getNickname()) == null) {
+				if (getClientInfo(myParser.getLocalClient().getNickname()) == null) {
 					// And add to list
 					myParser.addClient(myParser.getLocalClient());
 				} else {

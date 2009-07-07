@@ -56,7 +56,7 @@ public class ProcessNick extends IRCProcessor {
 			// Change the nickame
 			iClient.setUserBits(token[token.length-1],true);
 			// Readd the client
-			if (!isSameNick && myParser.getClient(iClient.getNickname()) != null) {
+			if (!isSameNick && getClientInfo(iClient.getNickname()) != null) {
 //				myParser.onPostErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Nick change would overwrite existing client", myParser.getLastLine()), false);
 				myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Nick change would overwrite existing client", myParser.getLastLine()));
 			} else {

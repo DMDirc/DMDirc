@@ -56,7 +56,7 @@ public class ProcessJoin extends IRCProcessor {
 			IRCChannelInfo iChannel;
 			IRCChannelClientInfo iChannelClient;
 			
-			iClient = myParser.getClient(token[0]);
+			iClient = getClientInfo(token[0]);
 			iChannel = myParser.getChannel(token[token.length-1]);
 			
 			if (iClient == null) { 

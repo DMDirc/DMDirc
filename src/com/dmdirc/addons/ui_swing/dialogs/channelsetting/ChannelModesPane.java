@@ -225,7 +225,7 @@ public final class ChannelModesPane extends JPanel {
             }
         }
         if (changed) {
-            channel.getChannelInfo().sendModes();
+            channel.getChannelInfo().flushModes();
         }
     }
 }

@@ -92,6 +92,24 @@ public interface ChannelInfo {
     void part(String reason);
 
     /**
+     * Adjust the modes on this channel. This method should queue modes to be
+     * sent in one go, according to the configuration/behaviour of the backend
+     * system. If fewer modes are altered than the queue accepts, the
+     * flushModes() method must be called.
+     *
+     * @param add Whether to add or remove the specified mode
+     * @param mode Character The character representation of the mode to be changed
+     * @param parameter Optional parameter needed to make change
+     */
+    void alterMode(boolean add, final Character mode, String parameter);
+
+    /**
+     * Flushes any mode changes that have been queued by the
+     * {@link #alterMode(boolean, Character, String)} method.
+     */
+    void flushModes();
+
+    /**
      * Retrieves a channel client information object corresponding to the
      * specified client.
      *
@@ -105,9 +123,21 @@ public interface ChannelInfo {
      * specified client.
      *
      * @param client The name or other textual representation of the client
-     * @return A {@link ChannelClientInfo} object corresponding to the client
+     * @return A {@link ChannelClientInfo} object corresponding to the client,
+     * or null if none was found
      */
     ChannelClientInfo getChannelClient(String client);
+
+    /**
+     * Retrieves a channel client information object corresponding to the
+     * specified client. If the client doesn't exist and the value of
+     * <code>create</code> is <code>true</code>, a new fake client is created.
+     *
+     * @param client The name or other textual representation of the client
+     * @param create Whether or not to create the client if it doesn't exist
+     * @return A {@link ChannelClientInfo} object corresponding to the client
+     */
+    ChannelClientInfo getChannelClient(String client, boolean create);
 
     /**
      * Retrieves a collection of all known clients that are present on the
@@ -116,6 +146,13 @@ public interface ChannelInfo {
      * @return A collection of known channel clients
      */
     Collection<ChannelClientInfo> getChannelClients();
+
+    /**
+     * Retrieves the number of clients known to exist in this channel.
+     *
+     * @return The number of clients known in this channel
+     */
+    int getChannelClientCount();
 
     /**
      * Retrieves the parser which created this ChannelInfo.

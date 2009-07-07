@@ -274,7 +274,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
                     alterMode(false, entry.getValue(), entry.getKey().getItem());
         }
 
-        channel.getChannelInfo().sendModes();
+        channel.getChannelInfo().flushModes();
 
         IdentityManager.getConfigIdentity().setOption("general",
                 "extendedListModes", toggle.isSelected());

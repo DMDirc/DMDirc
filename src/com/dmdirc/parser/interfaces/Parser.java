@@ -101,10 +101,10 @@ public interface Parser extends Runnable {
 
     /**
      * Retrieves a {@link ClientInfo} object which corresponds to the specified
-     * details.
+     * details. If the client wasn't previously known, it will be created.
      *
      * @param detals The details of the client to look up
-     * @return A corresponding client info object, or null if no such client exists
+     * @return A corresponding client info object
      */
     ClientInfo getClient(String detals);
 
@@ -275,5 +275,13 @@ public interface Parser extends Runnable {
      * @return An array containing the nickname, username and hostname
      */
     String[] parseHostmask(String hostmask);
+
+    /**
+     * Retrieves the local port number that this parser is using to communicate
+     * with the service.
+     *
+     * @return This parser's local port number
+     */
+    int getLocalPort();
 
 }

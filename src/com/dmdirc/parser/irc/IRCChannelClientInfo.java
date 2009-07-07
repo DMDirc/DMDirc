@@ -132,6 +132,12 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 		return sModes.toString();
 	}
 
+    /** {@inheritDoc} */
+    @Override
+    public String getAllModes() {
+        return getChanModeStr(false);
+    }
+
 	/**
 	 * Get the value of the most important mode this client has (Prefix modes).
 	 * A higher value, is a more important mode, 0 = no modes.
@@ -172,11 +178,8 @@ class IRCChannelClientInfo implements ChannelClientInfo {
 		return this.getImportantModePrefix() + this.getNickname();
 	}	
 	
-	/**
-	 * Attempt to kick this user from the channel.
-	 *
-	 * @param sReason Why are they being kicked? "" for no reason
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public void kick(final String sReason) {
 		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + (sReason.isEmpty() ? sReason : " :" + sReason));
 	}

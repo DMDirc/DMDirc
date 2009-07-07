@@ -129,7 +129,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
 
 			textString.append(chan.getName());
-			textString.append(" - Nicks: " + chan.getUserCount() + " (");
+			textString.append(" - Nicks: " + chan.getChannelClientCount() + " (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
 				final Long im = client.getImportantModeValue();
@@ -176,13 +176,11 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
 				final ClientInfo client = frame.getServer().getParser().getClient(frame.getHost());
-				if (client != null) {
-					final String realname = client.getRealname();
-					if (!realname.isEmpty()) {
-						textString.append(" - ");
-						textString.append(client.getRealname());
-					}
-				}
+                                    final String realname = client.getRealname();
+                                    if (!realname.isEmpty()) {
+                                            textString.append(" - ");
+                                            textString.append(client.getRealname());
+                                    }
 			}
 		} else {
 			textString.append("???");

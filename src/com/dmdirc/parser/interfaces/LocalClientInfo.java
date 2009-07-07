@@ -38,4 +38,28 @@ public interface LocalClientInfo extends ClientInfo {
      */
     void setNickname(String name);
 
+    /**
+     * Retrieves the modes which are currently set on the local client.
+     *
+     * @return A string representation of the client's user modes
+     */
+    String getModes();
+
+    /**
+     * Alters the user modes of the local client. This method will queue modes
+     * to be sent in one go, according to the behaviour/configuration of the
+     * backend system. If fewer modes are altered than the queue accepts,
+     * {@link #flushModes()} must be called.
+     *
+     * @param add Whether to add or remove the mode
+     * @param mode Character representation of the mode to be altered
+     */
+    public void alterMode(boolean add, Character mode);
+
+    /**
+     * Flushes any modes that have been queued by the
+     * {@link #alterMode(boolean, Character)} method.
+     */
+    public void flushModes();
+
 }

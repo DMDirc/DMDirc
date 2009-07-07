@@ -66,11 +66,26 @@ public interface ChannelClientInfo extends Comparable<ChannelClientInfo> {
     String getImportantMode();
 
     /**
+     * Returns a list of all modes known to be held by the client, in their
+     * textual for (e.g. o, v, etc)
+     *
+     * @return All modes the client holds, or an empty string
+     */
+    String getAllModes();
+
+    /**
      * Retrieves a {@link Map} which can be used to store arbitrary data
      * about the channel client.
      *
      * @return A map used for storing arbitrary data
      */
     Map<Object, Object> getMap();
+
+    /**
+     * Kicks this client from the channel.
+     *
+     * @param message The kick message to use
+     */
+    void kick(String message);
 
 }
