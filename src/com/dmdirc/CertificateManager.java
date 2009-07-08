@@ -68,6 +68,24 @@ import net.miginfocom.Base64;
  */
 public class CertificateManager implements X509TrustManager {
 
+    public static enum TrustResult {
+
+        TRUSTED_CA(true),
+        TRUSTED_MANUALLY(true),
+        UNTRUSTED_EXCEPTION(false),
+        UNTRUSTED_GENERAL(false);
+
+        private final boolean trusted;
+
+        private TrustResult(boolean trusted) {
+            this.trusted = trusted;
+        }
+
+        public boolean isTrusted() {
+            return trusted;
+        }
+    }
+
     /** The password for the global java cacert file. */
     private final String cacertpass;
 
@@ -211,28 +229,28 @@ public class CertificateManager implements X509TrustManager {
      * store, or if the certificate's details are marked as trusted in the
      * DMDirc configuration file.
      */
-    public boolean isTrusted(final X509Certificate certificate) {
+    public TrustResult isTrusted(final X509Certificate certificate) {
         try {
             final String sig = Base64.encodeToString(certificate.getSignature(), false);
 
             if (config.hasOptionString("ssl", "trusted") && config.getOptionList("ssl",
                     "trusted").contains(sig)) {
-                return true;
+                return TrustResult.TRUSTED_MANUALLY;
             } else {
                 for (X509Certificate trustedCert : globalTrustedCAs) {
                     if (Arrays.equals(certificate.getSignature(), trustedCert.getSignature())
                             && certificate.getIssuerDN().getName()
                             .equals(trustedCert.getIssuerDN().getName())) {
                         certificate.verify(trustedCert.getPublicKey());
-                        return true;
+                        return TrustResult.TRUSTED_CA;
                     }
                 }
             }
         } catch (Exception ex) {
-           return false;
+           return TrustResult.UNTRUSTED_EXCEPTION;
         }
 
-        return false;
+        return TrustResult.UNTRUSTED_GENERAL;
     }
 
     public boolean isValidHost(final X509Certificate certificate) {
@@ -265,6 +283,7 @@ public class CertificateManager implements X509TrustManager {
             throws CertificateException {
         final List<CertificateException> problems = new ArrayList<CertificateException>();
         boolean verified = false;
+        boolean manual = false;
 
         if (checkHost) {
             // Check that the cert is issued to the correct host
@@ -279,6 +298,8 @@ public class CertificateManager implements X509TrustManager {
         }
 
         for (X509Certificate cert : chain) {
+            TrustResult trustResult = isTrusted(cert);
+            
             if (checkDate) {
                 // Check that the certificate is in-date
                 try {
@@ -291,7 +312,11 @@ public class CertificateManager implements X509TrustManager {
             if (checkIssuer) {
                 // Check that we trust an issuer
 
-                verified |= isTrusted(cert);
+                verified |= trustResult.isTrusted();
+            }
+
+            if (trustResult == TrustResult.TRUSTED_MANUALLY) {
+                manual = true;
             }
         }
 
@@ -299,9 +324,10 @@ public class CertificateManager implements X509TrustManager {
             problems.add(new CertificateNotTrustedException("Issuer is not trusted"));
         }
 
-        if (!problems.isEmpty()) {
-            final SSLCertificateDialogModel test = new SSLCertificateDialogModel(chain, problems, this);
-            Main.getUI().showSSLCertificateDialog(test);
+        if (!problems.isEmpty() && !manual) {
+            final SSLCertificateDialogModel model
+                    = new SSLCertificateDialogModel(chain, problems, this);
+            Main.getUI().showSSLCertificateDialog(model);
 
             try {
                 actionSem.acquire();

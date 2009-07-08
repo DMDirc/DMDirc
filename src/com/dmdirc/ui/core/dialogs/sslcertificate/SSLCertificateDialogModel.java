@@ -93,7 +93,7 @@ public class SSLCertificateDialogModel {
 
             res.add(new CertificateChainEntry(CertificateManager
                     .getDNFieldsFromCert(cert).get("CN"),
-                    manager.isTrusted(cert), invalid));
+                    manager.isTrusted(cert).isTrusted(), invalid));
         }
 
         return res;
