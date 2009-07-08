@@ -712,7 +712,7 @@ public class IRCParser implements SecureParser, Runnable {
 		if (!server.getPassword().isEmpty()) {
 			sendString("PASS " + server.getPassword());
 		}
-		getLocalClient().setNickname(me.getNickname());
+		sendString("NICK " + me.getNickname());
 		String localhost;
 		try {
 			localhost = InetAddress.getLocalHost().getHostAddress();
@@ -1431,7 +1431,7 @@ public class IRCParser implements SecureParser, Runnable {
 		} else {
 			me.setNickname(nickname);
 		}
-                
+		
 		thinkNickname = nickname;
 	}
 

@@ -75,7 +75,7 @@ public class IRCParserTest {
         assertTrue("addCallback() should throw exception for non-existant callbacks", res);
     }
 
-    @Test @Ignore
+    @Test
     public void testIssue1674() {
         // parser nick change error with dual 001
         final ErrorInfoListener error = mock(ErrorInfoListener.class);
