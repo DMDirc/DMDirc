@@ -93,6 +93,8 @@ public class Process004005 extends IRCProcessor {
 					myParser.parsePrefixModes();
 				} else if (sKey.equals("CHANMODES")) {
 					myParser.parseChanModes();
+				} else if (sKey.equals("NAMESX") || sKey.equals("UHNAMES")) {
+					myParser.sendString("PROTOCTL "+sKey);
 				} else if (sKey.equals("LISTMODE")) {
 					// Support for potential future decent mode listing in the protocol
 					// 

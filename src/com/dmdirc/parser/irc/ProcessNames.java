@@ -91,6 +91,7 @@ public class ProcessNames extends IRCProcessor {
 				
 				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new IRCClientInfo(myParser, sName); myParser.addClient(iClient); }
+				iClient.setUserBits(sName, false); // Will do nothing if this isn't UHNAMES
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
 
