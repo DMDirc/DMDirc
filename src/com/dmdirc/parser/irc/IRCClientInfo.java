@@ -396,7 +396,6 @@ public class IRCClientInfo implements LocalClientInfo {
         public void setNickname(final String name) {
             if (myParser.getLocalClient().equals(this)) {
                 myParser.setNickname(name);
-                sNickname = name;
             } else {
                 throw new UnsupportedOperationException("Cannot call setNickname on non-local client");
             }
