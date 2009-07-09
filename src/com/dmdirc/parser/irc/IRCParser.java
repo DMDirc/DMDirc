@@ -1914,7 +1914,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 *
 	 * @param client Client to remove
 	 */
-	protected void forceRemoveClient(final ClientInfo client) {
+	protected void forceRemoveClient(final IRCClientInfo client) {
 		clientList.remove(getStringConverter().toLowerCase(client.getRealNickname()));
 	}
 
