@@ -49,6 +49,5 @@ server:
   umodew=Receive wallops
   umodeo=IRC Operator
   umodeO=Local IRC Operator
-  umoder=Restricted connection
   umodeR=Only registered users may query
   umodex=Hide hostname
