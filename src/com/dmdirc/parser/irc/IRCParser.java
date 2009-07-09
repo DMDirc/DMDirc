@@ -1424,7 +1424,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 */
 	public void setNickname(final String nickname) {
 		if (getSocketState() == SocketState.OPEN) {
-			if (!myself.isFake() && myself.getNickname().equals(nickname)) {
+			if (!myself.isFake() && myself.getRealNickname().equals(nickname)) {
 				return;
 			}
 			sendString("NICK " + nickname);
@@ -1864,7 +1864,7 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/**
 	 * Get the current nickname.
-	 * If after 001 this returns the exact same as getMyself.getNickname();
+	 * After 001 this returns the exact same as getLocalClient().getRealNickname();
 	 * Before 001 it returns the nickname that the parser Thinks it has.
 	 *
 	 * @return Current nickname.
@@ -1873,7 +1873,7 @@ public class IRCParser implements SecureParser, Runnable {
 		if (myself.isFake()) {
 			return thinkNickname;
 		} else {
-			return myself.getNickname();
+			return myself.getRealNickname();
 		}
 	}
 
@@ -1893,7 +1893,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param client Client to add
 	 */
 	public void addClient(final IRCClientInfo client) {
-		clientList.put(getStringConverter().toLowerCase(client.getNickname()),client);
+		clientList.put(getStringConverter().toLowerCase(client.getRealNickname()),client);
 	}
 
 	/**
@@ -1915,7 +1915,7 @@ public class IRCParser implements SecureParser, Runnable {
 	 * @param client Client to remove
 	 */
 	protected void forceRemoveClient(final ClientInfo client) {
-		clientList.remove(getStringConverter().toLowerCase(client.getNickname()));
+		clientList.remove(getStringConverter().toLowerCase(client.getRealNickname()));
 	}
 
 	/**
