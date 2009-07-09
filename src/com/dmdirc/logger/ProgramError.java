@@ -440,7 +440,7 @@ public final class ProgramError implements Serializable {
             return "1 occurrence on " + format.format(getDate());
         } else {
             return count.get() + " occurrences between " + format.format(
-                    getDate()) + " and " + format.format(getLastDate() + ".");
+                    getDate()) + " and " + format.format(getLastDate()) + ".";
         }
     }
     
