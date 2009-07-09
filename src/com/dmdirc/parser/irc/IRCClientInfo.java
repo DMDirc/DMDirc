@@ -68,7 +68,7 @@ public class IRCClientInfo implements LocalClientInfo {
 	/**
 	 * Create a new client object from a hostmask.
 	 *
- 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
+ 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)
 	 * @param sHostmask Hostmask parsed by parseHost to get nickname
 	 * @see ClientInfo#parseHost
 	 */
@@ -182,12 +182,11 @@ public class IRCClientInfo implements LocalClientInfo {
 	/** {@inheritDoc} */
 	@Override
 	public String getNickname() {
-		// If we havn't actually connected yet then return the nickname the user
-		// wants us to have rather than the nickname the parser is giving us.
-		// parser.getNickname() was used prior to the great-parser-breaking (aka
-		// abstraction) of 09 so now the 2 methods do the exact same, awesome.
-		if (myParser.getLocalClient().equals(this) && isFake()) {
-			return myParser.thinkNickname;
+		// If this is the localClient then do what we are supposed to do, and ask
+		// the parser using parser.getNickname() like was used prior to the
+		// great-parser-breaking (aka abstraction) of 09.
+		if (this.equals(myParser.getLocalClient())) {
+			return myParser.getMyNickname();
 		} else {
 			return sNickname;
 		}

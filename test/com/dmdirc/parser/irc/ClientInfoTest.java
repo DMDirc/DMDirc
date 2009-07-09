@@ -32,7 +32,7 @@ public class ClientInfoTest {
     
     @Test
     public void testMap() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         final Map map = new HashMap();
         
         ci.setMap(map);
@@ -41,7 +41,7 @@ public class ClientInfoTest {
     
     @Test
     public void testFake() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         assertFalse(ci.isFake());
         ci.setFake(true);
         assertTrue(ci.isFake());
@@ -77,7 +77,7 @@ public class ClientInfoTest {
     
     @Test
     public void testSetUserBits() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         ci.setUserBits("nick2!ident2@host2", false);
         
         assertEquals("nick", ci.getNickname());
@@ -93,13 +93,13 @@ public class ClientInfoTest {
     
     @Test
     public void testToString() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         assertEquals("nick!ident@host", ci.toString());
     }
     
     @Test
     public void testAwayState() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         assertFalse(ci.getAwayState());
         ci.setAwayState(true);
         assertTrue(ci.getAwayState());
@@ -107,7 +107,7 @@ public class ClientInfoTest {
     
     @Test
     public void testAwayReason() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         ci.setAwayState(true);
         ci.setAwayReason("away reason");
         
@@ -118,7 +118,7 @@ public class ClientInfoTest {
     
     @Test
     public void testRealName() {
-        final IRCClientInfo ci = new IRCClientInfo(null, "nick!ident@host");
+        final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
         ci.setRealName("abc def");
         assertEquals("abc def", ci.getRealname());
         ci.setRealName("abc 123 def");
