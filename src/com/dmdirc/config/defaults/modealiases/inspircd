@@ -34,7 +34,9 @@ server:
   modeq=Channel founder
 
   # BGHSWn http://wiki.inspircd.org/User_Modes
+  # BHcn http://wiki.inspircd.org/1.2/User_Modes
   umodeB=Bot
+  umodec=Only users in comchannels may query
   umodeG=Filter bad works
   umodeH=Hide IRCop status
   umoden=Server notice mask
