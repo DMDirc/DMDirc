@@ -27,8 +27,10 @@ import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 
+import com.dmdirc.ui.interfaces.Window;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -65,11 +67,12 @@ public class ActionSubstitutor {
     /**
      * Substitutes in config variables into the specified target.
      *
+     * @param config The configuration manager to use for options
      * @param target The StringBuilder to modify
+     * @since 0.6.3m2
      */
-    private void doConfigSubstitutions(final StringBuilder target) {
-        for (Map.Entry<String, String> option 
-                : IdentityManager.getGlobalConfig().getOptions("actions").entrySet()) {
+    private void doConfigSubstitutions(final ConfigManager config, final StringBuilder target) {
+        for (Map.Entry<String, String> option : config.getOptions("actions").entrySet()) {
             doReplacement(target, "$" + option.getKey(), option.getValue());
         }
     }
@@ -257,12 +260,34 @@ public class ActionSubstitutor {
     public String doSubstitution(final String target, final Object ... args) {
         final StringBuilder res = new StringBuilder(target);
         
-        doConfigSubstitutions(res);
+        doConfigSubstitutions(getConfigManager(args), res);
         doServerSubstitutions(res, args);
         doComponentSubstitutions(res, args);
         doWordSubstitutions(res, args);
         
         return res.toString();
+    }
+
+    /**
+     * Tries to retrieve an appropriate configuration manager from the
+     * specified set of arguments. If any of the arguments is an instance of
+     * {@link FrameContainer} or {@link Window}, the config manager is
+     * requested from them. Otherwise, the global config is returned.
+     * 
+     * @param args The arguments to be tested
+     * @return The best config manager to use for those arguments
+     * @since 0.6.3m2
+     */
+    protected ConfigManager getConfigManager(final Object ... args) {
+        for (Object arg : args) {
+            if (arg instanceof FrameContainer) {
+                return ((FrameContainer) arg).getConfigManager();
+            } else if (arg instanceof Window) {
+                return ((Window) arg).getConfigManager();
+            }
+        }
+
+        return IdentityManager.getGlobalConfig();
     }
     
     /**
