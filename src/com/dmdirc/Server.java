@@ -294,8 +294,6 @@ public class Server extends WritableFrameContainer implements Serializable {
                 setName(server);
             }
 
-            myState.transition(ServerState.CONNECTING);
-
             getConfigManager().migrate("", "", server);
 
             serverInfo = buildServerInfo(server, port, password, ssl);
@@ -307,6 +305,8 @@ public class Server extends WritableFrameContainer implements Serializable {
             addLine("serverConnecting", server, port);
 
             parser = buildParser();
+
+            myState.transition(ServerState.CONNECTING);
 
             doCallbacks();
 
