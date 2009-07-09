@@ -199,6 +199,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
 
+        this.autochannels = autochannels;
+        this.parserFactory = factory;
+
         window = Main.getUI().getServer(this);
 
         ServerManager.getServerManager().registerServer(this);
@@ -218,9 +221,6 @@ public class Server extends WritableFrameContainer implements Serializable {
         updateIcon();
 
         window.open();
-
-        this.autochannels = autochannels;
-        this.parserFactory = factory;
 
         new Timer("Server Who Timer").schedule(new TimerTask() {
             @Override
