@@ -325,6 +325,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             listModesPanel.setVisible(false);
             listModesPanel.setViewportView(listModesPanels.get(selectedIndex));
             listModesPanel.setVisible(true);
+            updateModeCount();
         } else if (addListModeButton.equals(event.getSource())) {
             addListMode();
         } else if (removeListModeButton.equals(event.getSource())) {
