@@ -22,7 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
@@ -54,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
@@ -264,6 +264,9 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** This is the IP we want to bind to. */
 	private String bindIP = "";
+	
+	/** This is list containing 001 - 005 inclusive. */
+	private List<String> serverInformationLines = new LinkedList<String>();
 
 	/**
 	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
@@ -398,19 +401,19 @@ public class IRCParser implements SecureParser, Runnable {
 	public TrustManager[] getTrustManager() { return myTrustManager; }
 
 	/** {@inheritDoc} */
-        @Override
+	@Override
 	public void setTrustManagers(final TrustManager[] managers) { myTrustManager = managers; }
 
 	/** {@inheritDoc} */
-        @Override
+	@Override
 	public void setKeyManagers(final KeyManager[] managers) { myKeyManagers = managers; }
 
 	/** {@inheritDoc} */
-        @Override
+	@Override
 	public RegexStringList getIgnoreList() { return myIgnoreList; }
 
 	/** {@inheritDoc} */
-        @Override
+	@Override
 	public void setIgnoreList(final RegexStringList ignoreList) { myIgnoreList = ignoreList; }
 
 	//---------------------------------------------------------------------------
@@ -584,6 +587,7 @@ public class IRCParser implements SecureParser, Runnable {
 		lastLine = "";
 		myself = new IRCClientInfo(this, "myself").setFake(true);
 
+		serverInformationLines.clear();
 		stopPingTimer();
 
 		currentSocketState = SocketState.CLOSED;
@@ -947,6 +951,15 @@ public class IRCParser implements SecureParser, Runnable {
 	public String getLastLine() {
 		return lastLine;
 	}
+	
+	/**
+	 * Get the list of lines the server gave from 001 - 005.
+	 *
+	 * @return List of lines sent by the server between 001 and 005 inclusive.
+	 */
+	public List<String> getServerInformationLines() {
+		return new LinkedList<String>(serverInformationLines);
+	}
 
 	/**
 	 * Process a line and call relevent methods for handling.
@@ -990,6 +1003,9 @@ public class IRCParser implements SecureParser, Runnable {
 						try { nParam = Integer.parseInt(token[1]); } catch (NumberFormatException e) { nParam = -1; }
 						if (nParam < 0 || nParam > 5) {
 							callPost005();
+						} else {
+							// Store 001 - 005 for informational purposes.
+							serverInformationLines.add(line);
 						}
 					}
 					// After 001 we potentially care about everything!
@@ -1680,6 +1696,7 @@ public class IRCParser implements SecureParser, Runnable {
 					else if (networkName.equalsIgnoreCase("starchat")) { return "starchat"; }
 					else if (networkName.equalsIgnoreCase("bitlbee")) { return "bitlbee"; }
 					else if (h005Info.containsKey("003IRCD") && h005Info.get("003IRCD").matches("(?i).*bitlbee.*")) { return "bitlbee"; } // Older bitlbee
+					else if (h005Info.containsKey("002IRCD") && h005Info.get("002IRCD").matches("(?i).*pastiche.*")) { return "ircd-pastiche"; }
 					else { return "generic"; }
 				}
 			} else {

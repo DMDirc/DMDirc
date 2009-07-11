@@ -23,6 +23,8 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.interfaces.callbacks.NetworkDetectedListener;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * Process ISUPPORT lines.
@@ -36,7 +38,13 @@ public class Process004005 extends IRCProcessor {
 	 */
 	@Override
 	public void process(final String sParam, final String[] token) {
-		if (sParam.equals("003")) {
+		if (sParam.equals("002")) {
+			final Pattern pattern = Pattern.compile("running(?: version)? (.*)$");
+			final Matcher matcher = pattern.matcher(myParser.getLastLine());
+			if (matcher.find()) {
+				myParser.h005Info.put("002IRCD", matcher.group(1));
+			}
+		} else if (sParam.equals("003")) {
 			myParser.h005Info.put("003IRCD",token[token.length-1]);
 		} else if (sParam.equals("004")) {
 			// 004
@@ -121,7 +129,7 @@ public class Process004005 extends IRCProcessor {
 	 */
 	@Override
 	public String[] handles() {
-		return new String[]{"003", "004", "005"};
+		return new String[]{"002", "003", "004", "005"};
 	} 
 	
 	/**
