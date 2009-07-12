@@ -59,24 +59,27 @@ public class IrcAddressTest {
     @Test
     public void testBasic() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("irc://servername");
+        assertEquals("irc", address.getProtocol());
         assertEquals("servername", address.getServer());
         assertEquals("", address.getPassword());
-        assertEquals(6667, address.getPort());
+        assertEquals(-1, address.getPort());
         assertFalse(address.isSSL());
     }
 
     @Test
     public void testPasswordSSL() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("ircs://password@servername");
+        assertEquals("irc", address.getProtocol());
         assertEquals("servername", address.getServer());
         assertEquals("password", address.getPassword());
-        assertEquals(6667, address.getPort());
+        assertEquals(-1, address.getPort());
         assertTrue(address.isSSL());
     }
 
     @Test
     public void testPort() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("irc://servername:7000/");
+        assertEquals("irc", address.getProtocol());
         assertEquals("servername", address.getServer());
         assertEquals("", address.getPassword());
         assertEquals(7000, address.getPort());
@@ -91,6 +94,7 @@ public class IrcAddressTest {
     @Test
     public void testPortSSL() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("ircs://servername:+7000/");
+        assertEquals("irc", address.getProtocol());
         assertEquals("servername", address.getServer());
         assertEquals("", address.getPassword());
         assertEquals(7000, address.getPort());
@@ -100,6 +104,7 @@ public class IrcAddressTest {
     @Test
     public void testComplex() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("ircs://password@servername:+7000/c1,c2,c3");
+        assertEquals("irc", address.getProtocol());
         assertEquals("servername", address.getServer());
         assertEquals("password", address.getPassword());
         assertEquals(7000, address.getPort());
