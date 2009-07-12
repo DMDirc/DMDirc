@@ -22,7 +22,6 @@
 
 package com.dmdirc.parser.interfaces;
 
-import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.CallbackManager;
 
@@ -122,7 +121,7 @@ public interface Parser extends Runnable {
      *
      * @return A string convertor for this parser
      */
-    IRCStringConverter getStringConverter();
+    StringConverter getStringConverter();
 
     /**
      * Determines whether the specified channel name is valid or not for this

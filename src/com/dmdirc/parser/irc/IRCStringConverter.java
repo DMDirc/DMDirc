@@ -22,12 +22,15 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.interfaces.StringConverter;
+
 /**
  * IRC String Converter.
  *
  * @author Shane Mc Cormack
  */
-public class IRCStringConverter {
+public class IRCStringConverter implements StringConverter {
+    
 	/** Characters to use when converting tolowercase. */
 	private final char[] lowercase;
 	/** Characters to use when converting touppercase. */
@@ -76,12 +79,8 @@ public class IRCStringConverter {
 	 */
 	protected int getLimit() { return limit; }
 	
-	/**
-	 * Get the lowercase version of a String for this Server.
-	 *
-	 * @param input String to convert lowercase
-	 * @return input String converterd to lowercase
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String toLowerCase(final String input) {
 		final char[] result = input.toCharArray();
 		for (int i = 0; i < input.length(); ++i) {
@@ -94,12 +93,8 @@ public class IRCStringConverter {
 		return new String(result);
 	}
 
-	/**
-	 * Get the uppercase version of a String for this Server.
-	 *
-	 * @param input String to convert uppercase
-	 * @return input String converterd to uppercase
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public String toUpperCase(final String input) {
 		final char[] result = input.toCharArray();
 		for (int i = 0; i < input.length(); ++i) {
@@ -112,13 +107,8 @@ public class IRCStringConverter {
 		return new String(result);
 	}
 
-	/**
-	 * Check if 2 strings are equal to each other ignoring case.
-	 *
-	 * @param first First string to check
-	 * @param second Second string to check
-	 * @return True if both strings are equal after being lowercased
-	 */
+	/** {@inheritDoc} */
+        @Override
 	public boolean equalsIgnoreCase(final String first, final String second) {
 		if (first == null && second == null) { return true; }
 		if (first == null || second == null) { return false; }
