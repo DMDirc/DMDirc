@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.callbacks;
+package com.dmdirc.parser.interfaces;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,13 +28,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates a specific argument may be faked.
+ * Indicates that the specified argument is a source of data for fakable
+ * arguments.
  *
  * @since 0.6.3m1
  * @author chris
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface FakableArgument {
+public @interface FakableSource {
 
 }
