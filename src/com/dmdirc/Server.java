@@ -41,7 +41,7 @@ import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
-import com.dmdirc.parser.irc.ParserError;
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.irc.ServerInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;

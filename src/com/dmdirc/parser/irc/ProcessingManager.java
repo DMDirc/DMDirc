@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.callbacks.NumericListener;
 import java.util.Hashtable;
 

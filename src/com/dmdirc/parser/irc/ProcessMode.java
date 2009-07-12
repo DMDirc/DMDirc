@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -31,7 +32,7 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelSingleModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.UserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
-import com.dmdirc.parser.irc.callbacks.CallbackObject;
+import com.dmdirc.parser.common.CallbackObject;
 import java.util.Calendar;
 
 /**

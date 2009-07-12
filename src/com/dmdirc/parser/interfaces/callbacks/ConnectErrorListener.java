@@ -23,7 +23,7 @@
 package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.ParserError;
+import com.dmdirc.parser.common.ParserError;
 
 /**
  * Called to give Error Information related to a connection attempt.

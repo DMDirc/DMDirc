@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.harness.parser.TestIPrivateCTCP;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIConnectError;

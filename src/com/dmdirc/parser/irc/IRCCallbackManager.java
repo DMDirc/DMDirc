@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.callbacks;
+package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.interfaces.SpecificCallback;
+import com.dmdirc.parser.common.CallbackObjectSpecific;
+import com.dmdirc.parser.common.CallbackObject;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
-import com.dmdirc.parser.irc.IRCParser;
 
 /**
  * Handles callbacks for the IRC Parser.
@@ -40,16 +40,16 @@ public class IRCCallbackManager extends CallbackManager<IRCParser> {
 
     /** {@inheritDoc} */
     @Override
-    protected void initialise(final IRCParser parser) {
-        for (Class<?> type : CLASSES) {
-            if (type.isAnnotationPresent(SpecificCallback.class)) {
-                addCallbackType(new CallbackObjectSpecific(parser, this,
-                        type.asSubclass(CallbackInterface.class)));
-            } else {
-                addCallbackType(new CallbackObject(parser, this,
-                        type.asSubclass(CallbackInterface.class)));
-            }
-        }
+    protected CallbackObject getCallbackObject(final IRCParser parser, final Class<?> type) {
+        return new IRCCallbackObject(parser, this, type.asSubclass(CallbackInterface.class));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected CallbackObjectSpecific getSpecificCallbackObject(final IRCParser parser,
+            final Class<?> type) {
+        return new IRCCallbackObjectSpecific(parser, this,
+                type.asSubclass(CallbackInterface.class));
     }
 
 }

@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
@@ -36,7 +37,6 @@ import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 import com.dmdirc.parser.common.CallbackManager;
 
-import com.dmdirc.parser.irc.callbacks.IRCCallbackManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

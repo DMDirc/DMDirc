@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.parser.common;
 
-import com.dmdirc.parser.irc.callbacks.*;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.SpecificCallback;
 import com.dmdirc.parser.interfaces.callbacks.*;
 
 import java.util.Hashtable;
@@ -48,22 +49,25 @@ public abstract class CallbackManager<T extends Parser> {
 	ChannelModeMessageListener.class, ChannelModeNoticeListener.class,
         ChannelNoticeListener.class, ChannelPartListener.class, ChannelQuitListener.class,
         ChannelSelfJoinListener.class, ChannelSingleModeChangeListener.class,
-        ChannelTopicListener.class, ChannelUserModeChangeListener.class, ConnectErrorListener.class,
-        DataInListener.class, DataOutListener.class, DebugInfoListener.class, ErrorInfoListener.class,
-        NetworkDetectedListener.class, InviteListener.class, MotdEndListener.class, MotdLineListener.class,
-        MotdStartListener.class, NickChangeListener.class, NickInUseListener.class,
-        AuthNoticeListener.class, NumericListener.class, PasswordRequiredListener.class,
-        PingFailureListener.class, PingSuccessListener.class, PingSentListener.class, PrivateActionListener.class,
-        PrivateCtcpListener.class, PrivateCtcpReplyListener.class, PrivateMessageListener.class,
-        PrivateNoticeListener.class, Post005Listener.class, QuitListener.class, ServerErrorListener.class,
-        ServerReadyListener.class, SocketCloseListener.class, UnknownActionListener.class,
-        UnknownCtcpListener.class, UnknownCtcpReplyListener.class, UnknownMessageListener.class,
-        UnknownNoticeListener.class, UserModeChangeListener.class, UserModeDiscoveryListener.class,
+        ChannelTopicListener.class, ChannelUserModeChangeListener.class,
+        ConnectErrorListener.class, DataInListener.class, DataOutListener.class,
+        DebugInfoListener.class, ErrorInfoListener.class,
+        NetworkDetectedListener.class, InviteListener.class,
+        MotdEndListener.class, MotdLineListener.class, MotdStartListener.class,
+        NickChangeListener.class, NickInUseListener.class,
+        AuthNoticeListener.class, NumericListener.class,
+        PasswordRequiredListener.class, PingFailureListener.class,
+        PingSuccessListener.class, PingSentListener.class,
+        PrivateActionListener.class, PrivateCtcpListener.class,
+        PrivateCtcpReplyListener.class, PrivateMessageListener.class,
+        PrivateNoticeListener.class, Post005Listener.class, QuitListener.class,
+        ServerErrorListener.class, ServerReadyListener.class,
+        SocketCloseListener.class, UnknownActionListener.class,
+        UnknownCtcpListener.class, UnknownCtcpReplyListener.class,
+        UnknownMessageListener.class, UnknownNoticeListener.class,
+        UserModeChangeListener.class, UserModeDiscoveryListener.class,
         WallDesyncListener.class, WallopListener.class, WalluserListener.class,
     };
-
-    /** Reference to the parser object that owns this CallbackManager. */
-    private final Parser myParser;
     
     /** Hashtable used to store the different types of callback known. */
     private final Map<Class<? extends CallbackInterface>, CallbackObject> callbackHash
@@ -75,20 +79,41 @@ public abstract class CallbackManager<T extends Parser> {
      * @param parser Parser that owns this callback manager.
      */
     public CallbackManager(final T parser) {
-        myParser = parser;
-
         initialise(parser);
     }
 
     /**
-     * Initialises this callback manager by calling
-     * {@link #addCallbackType(CallbackObject)} with a relevant
-     * {@link CallbackObject} instance for each entry in the
-     * <code>CLASSES</code> array.
+     * Initialises this callback manager.
      *
      * @param parser The parser associated with this CallbackManager
      */
-    protected abstract void initialise(T parser);
+    protected void initialise(T parser) {
+        for (Class<?> type : CLASSES) {
+            if (type.isAnnotationPresent(SpecificCallback.class)) {
+                addCallbackType(getCallbackObject(parser, type));
+            } else {
+                addCallbackType(getSpecificCallbackObject(parser, type));
+            }
+        }
+    }
+
+    /**
+     * Retrieves a relevant {@link CallbackObject} for the specified type.
+     *
+     * @param parser The parser that this manager belongs to
+     * @param type The type of callback to create an object for
+     * @return The relevant CallbackObject
+     */
+    protected abstract CallbackObject getCallbackObject(T parser, Class<?> type);
+
+    /**
+     * Retrieves a relevant {@link CallbackObjectSpecific} for the specified type.
+     *
+     * @param parser The parser that this manager belongs to
+     * @param type The type of callback to create an object for
+     * @return The relevant CallbackObject
+     */
+    protected abstract CallbackObjectSpecific getSpecificCallbackObject(T parser, Class<?> type);
 
     /**
      * Add new callback type.

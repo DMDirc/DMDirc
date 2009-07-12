@@ -21,6 +21,7 @@
  */
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.ParserError;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
