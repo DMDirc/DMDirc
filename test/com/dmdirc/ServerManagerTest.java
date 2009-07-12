@@ -23,12 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 import com.dmdirc.plugins.PluginManager;
-
-import java.util.ArrayList;
+import com.dmdirc.util.InvalidAddressException;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -103,13 +101,11 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void testGetServerFromFrame() {
-        final Server serverA = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
-        final Server serverB = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+    public void testGetServerFromFrame() throws InvalidAddressException {
+        final Server serverA = new Server("irc-test://255.255.255.255",
+                IdentityManager.getProfiles().get(0));
+        final Server serverB = new Server("irc-test://255.255.255.254",
+                IdentityManager.getProfiles().get(0));
         
         final ServerManager sm = ServerManager.getServerManager();
         

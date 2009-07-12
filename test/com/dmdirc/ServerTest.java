@@ -23,9 +23,8 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.addons.ui_dummy.DummyController;
-import java.util.ArrayList;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,9 +37,8 @@ public class ServerTest {
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        server = new Server("255.255.255.255", 6667, "", false, 
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        server = new Server("irc-test://255.255.255.255",
+                IdentityManager.getProfiles().get(0));
     }
 
     @Test

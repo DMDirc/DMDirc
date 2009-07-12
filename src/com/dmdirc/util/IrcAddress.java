@@ -50,10 +50,12 @@ public class IrcAddress implements Serializable {
 
     /** Whether or not this address uses SSL. */
     private boolean usesSSL;
+    /** The protocol for this address. */
+    private String protocol;
     /** The server name for this address. */
     private String server;
     /** The port number for this address. */
-    private int port = 6667;
+    private int port;
     /** A list of channels to auto-connect to. */
     private List<String> channels = new ArrayList<String>();
     /** The password for this address. */
@@ -80,11 +82,16 @@ public class IrcAddress implements Serializable {
         } catch (URISyntaxException ex) {
             throw new InvalidAddressException("Unable to parse URI", ex);
         }
-        
-        if (uri.getScheme() != null && uri.getScheme().equalsIgnoreCase("ircs")) {
-            usesSSL = true;
-        } else if (uri.getScheme() == null || !uri.getScheme().equalsIgnoreCase("irc")) {
+
+        if (uri.getScheme() == null) {
             throw new InvalidAddressException("Invalid protocol specified");
+        }
+
+        protocol = uri.getScheme();
+
+        if (protocol.endsWith("s")) {
+            protocol = protocol.substring(0, protocol.length() - 1);
+            usesSSL = true;
         }
         
         if (uri.getUserInfo() != null) {
@@ -95,9 +102,7 @@ public class IrcAddress implements Serializable {
             "?" + uri.getQuery()) + (uri.getFragment() == null ? "" :
             "#" + uri.getFragment()));
 
-        if (uri.getPort() > -1) {
-            doPort(uri.getPort());
-        }
+        doPort(uri.getPort());
 
         if (uri.getHost() == null) {
             throw new InvalidAddressException("Invalid host or port specified");
@@ -155,9 +160,8 @@ public class IrcAddress implements Serializable {
      * Processes the port part of this address.
      *
      * @param port The port part of this address
-     * @throws InvalidAddressException if the port is non-numeric
      */
-    private void doPort(final int port) throws InvalidAddressException {
+    private void doPort(final int port) {
         this.port = port;
     }
 
@@ -180,6 +184,16 @@ public class IrcAddress implements Serializable {
     }
 
     /**
+     * Retrieves the protocol from this address.
+     *
+     * @since 0.6.3m2
+     * @return This address's protocol
+     */
+    public String getProtocol() {
+        return protocol;
+    }
+
+    /**
      * Retrieves the server from this address.
      *
      * @return This address's server
@@ -191,10 +205,21 @@ public class IrcAddress implements Serializable {
     /**
      * Retrieves the port used for this address.
      *
-     * @return This address's port
+     * @return This address's port, or -1 if none specified.
      */
     public int getPort() {
         return port;
+    }
+
+    /**
+     * Retrieves the port used for this address.
+     *
+     * @since 0.6.3m2
+     * @param fallback The port to fall back to if none was specified
+     * @return This address's port, or the fallback value if none is specified
+     */
+    public int getPort(final int fallback) {
+        return port == -1 ? fallback : port;
     }
 
     /**
@@ -238,5 +263,66 @@ public class IrcAddress implements Serializable {
                 thisServer.join(channel);
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final IrcAddress other = (IrcAddress) obj;
+
+        if (this.usesSSL != other.usesSSL) {
+            return false;
+        }
+        
+        if ((this.protocol == null) ? (other.protocol != null)
+                : !this.protocol.equals(other.protocol)) {
+            return false;
+        }
+
+        if ((this.server == null) ? (other.server != null)
+                : !this.server.equals(other.server)) {
+            return false;
+        }
+
+        if (this.port != other.port) {
+            return false;
+        }
+
+        if (this.channels != other.channels && (this.channels == null
+                || !this.channels.equals(other.channels))) {
+            return false;
+        }
+        
+        if ((this.pass == null) ? (other.pass != null) : !this.pass.equals(other.pass)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + (this.usesSSL ? 1 : 0);
+        hash = 67 * hash + (this.protocol != null ? this.protocol.hashCode() : 0);
+        hash = 67 * hash + (this.server != null ? this.server.hashCode() : 0);
+        hash = 67 * hash + this.port;
+        hash = 67 * hash + (this.channels != null ? this.channels.hashCode() : 0);
+        hash = 67 * hash + (this.pass != null ? this.pass.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return protocol + "://" + pass + "@" + server + ":" + (isSSL() ? "+" : "")
+                + port + "/" + channels;
     }
 }

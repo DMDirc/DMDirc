@@ -29,13 +29,13 @@ import com.dmdirc.Query;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestLoggingPlugin;
-import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.util.ConfigFile;
-import java.util.ArrayList;
+
 import java.util.Map;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -51,9 +51,8 @@ public class LoggingPluginTest {
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        server = new Server("irc-test://255.255.255.255",
+                IdentityManager.getProfiles().get(0));
         channel = new Channel(server, new IRCChannelInfo((IRCParser) server.getParser(), "#test"));
         query = new Query(server, "foo!bar@baz");
 

@@ -33,7 +33,7 @@ public class ClientInfoTest {
     @Test
     public void testMap() {
         final IRCClientInfo ci = new IRCClientInfo(new IRCParser(), "nick!ident@host");
-        final Map map = new HashMap();
+        final Map<Object, Object> map = new HashMap<Object, Object>();
         
         ci.setMap(map);
         assertEquals(map, ci.getMap());

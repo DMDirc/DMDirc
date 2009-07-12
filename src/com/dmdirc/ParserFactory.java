@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.MyInfo;
@@ -45,11 +47,24 @@ public class ParserFactory {
      * @since 0.6.3m2
      */
     public Parser getParser(final MyInfo myInfo, final IrcAddress address) {
-        final ServerInfo info = new ServerInfo(address.getServer(), address.getPort(),
+        // TODO: Hacky Hack McHack
+        final ServerInfo info = new ServerInfo(address.getServer(), address.getPort(6667),
                 address.getPassword());
         info.setSSL(address.isSSL());
-        
-        return new IRCParser(myInfo, info);
+
+        if ("irc".equals(address.getProtocol())) {
+            return new IRCParser(myInfo, info);
+        } else if ("irc-test".equals(address.getProtocol())) {
+            try {
+                return (Parser) Class.forName("com.dmdirc.harness.parser.TestParser")
+                        .getConstructor(MyInfo.class, ServerInfo.class)
+                        .newInstance(myInfo, info);
+            } catch (Exception ex) {
+                Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser", ex);
+            }
+        }
+
+        return null;
     }
 
 }

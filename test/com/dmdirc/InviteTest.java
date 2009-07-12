@@ -23,10 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.addons.ui_dummy.DummyController;
-import java.util.ArrayList;
+
 import java.util.Date;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,9 +42,7 @@ public class InviteTest {
         Main.setUI(new DummyController());
         IdentityManager.load();
         
-        server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        server = new Server("irc-test://255.255.255.255", IdentityManager.getProfiles().get(0));
         test = new Invite(server, "#channel", "nick!ident@host");
         server.addInvite(test);
         ts = new Date().getTime();

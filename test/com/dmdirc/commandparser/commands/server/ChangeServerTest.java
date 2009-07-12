@@ -27,6 +27,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import com.dmdirc.util.InvalidAddressException;
+import com.dmdirc.util.IrcAddress;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -67,57 +69,57 @@ public class ChangeServerTest {
     @Test
     public void testOutOfRangePort2() {
         final InputWindow tiw = mock(InputWindow.class);
-        command.execute(tiw, null, false,new CommandArguments("/server foo:65537"));
+        command.execute(tiw, null, false, new CommandArguments("/server foo:65537"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
 
     @Test
-    public void testExecuteBasic() {
+    public void testExecuteBasic() throws InvalidAddressException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
 
-        command.execute(tiw, server, false,new CommandArguments("/server foo:1234"));
+        command.execute(tiw, server, false, new CommandArguments("/server foo:1234"));
 
-        verify(server).connect("foo", 1234, "", false, profile);
+        verify(server).connect(eq(new IrcAddress("foo", 1234, "", false)), same(profile));
     }
 
     @Test
-    public void testExecuteNoPort() {
+    public void testExecuteNoPort() throws InvalidAddressException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
 
-        command.execute(tiw, server, false,new CommandArguments("/server foo"));
+        command.execute(tiw, server, false, new CommandArguments("/server foo"));
 
-        verify(server).connect("foo", 6667, "", false, profile);
+        verify(server).connect(eq(new IrcAddress("foo", 6667, "", false)), same(profile));
     }
 
     @Test
-    public void testDeprecatedSSL() {
+    public void testDeprecatedSSL() throws InvalidAddressException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
 
-        command.execute(tiw, server, false,new CommandArguments("/server --ssl foo"));
+        command.execute(tiw, server, false, new CommandArguments("/server --ssl foo"));
 
-        verify(server).connect("foo", 6667, "", true, profile);
+        verify(server).connect(eq(new IrcAddress("foo", 6667, "", true)), same(profile));
     }
 
     @Test
-    public void testExecuteComplex() {
+    public void testExecuteComplex() throws InvalidAddressException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
 
-        command.execute(tiw, server, false,new CommandArguments("/server foo:+1234 password"));
+        command.execute(tiw, server, false, new CommandArguments("/server foo:+1234 password"));
 
-        verify(server).connect("foo", 1234, "password", true, profile);
+        verify(server).connect(eq(new IrcAddress("foo", 1234, "password", true)), same(profile));
     }
 
 }
