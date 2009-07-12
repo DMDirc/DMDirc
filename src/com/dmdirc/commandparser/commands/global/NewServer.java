@@ -103,7 +103,9 @@ public final class NewServer extends GlobalCommand {
             pass = args.getArgumentsAsString(offset);
         }
         
-        new Server(new IrcAddress(host, port, pass, ssl), IdentityManager.getProfiles().get(0));
+        final Server server = new Server(new IrcAddress(host, port, pass, ssl),
+                IdentityManager.getProfiles().get(0));
+        server.connect();
     }
     
     

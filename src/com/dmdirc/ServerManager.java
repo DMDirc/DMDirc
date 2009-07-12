@@ -222,8 +222,9 @@ public final class ServerManager {
 
         if (connectedServer == null) {
             try {
-                new Server("irc://irc.quakenet.org/DMDirc",
+                final Server server = new Server("irc://irc.quakenet.org/DMDirc",
                         IdentityManager.getProfiles().get(0));
+                server.connect();
             } catch (InvalidAddressException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
             }

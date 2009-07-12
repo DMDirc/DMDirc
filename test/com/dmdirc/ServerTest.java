@@ -39,6 +39,7 @@ public class ServerTest {
         IdentityManager.load();
         server = new Server("irc-test://255.255.255.255",
                 IdentityManager.getProfiles().get(0));
+        server.connect();
     }
 
     @Test

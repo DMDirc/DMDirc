@@ -256,7 +256,8 @@ public class IrcAddress implements Serializable {
         final List<Server> servers = ServerManager.getServerManager().
                 getServersByAddress(getServer());
         if (servers.isEmpty()) {
-            new Server(this, profile);
+            final Server newServer = new Server(this, profile);
+            newServer.connect();
         } else {
             final Server thisServer = servers.get(0);
             for (String channel : new ArrayList<String>(getChannels())) {

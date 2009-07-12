@@ -53,6 +53,8 @@ public class LoggingPluginTest {
         IdentityManager.load();
         server = new Server("irc-test://255.255.255.255",
                 IdentityManager.getProfiles().get(0));
+        server.connect();
+        
         channel = new Channel(server, new IRCChannelInfo((IRCParser) server.getParser(), "#test"));
         query = new Query(server, "foo!bar@baz");
 

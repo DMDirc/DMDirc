@@ -106,6 +106,8 @@ public class ServerManagerTest {
                 IdentityManager.getProfiles().get(0));
         final Server serverB = new Server("irc-test://255.255.255.254",
                 IdentityManager.getProfiles().get(0));
+        serverA.connect();
+        serverB.connect();
         
         final ServerManager sm = ServerManager.getServerManager();
         

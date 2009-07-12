@@ -282,7 +282,8 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
             new LoggingSwingWorker() {
                 @Override
                 protected Object doInBackground() throws Exception {
-                    new Server(address, profile);
+                    final Server server = new Server(address, profile);
+                    server.connect();
                     return null;
                 }
             }.execute();
@@ -295,7 +296,8 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
                 @Override
                 protected Object doInBackground() throws Exception {
                     if (server == null) {
-                        new Server(address, profile);
+                        final Server newServer = new Server(address, profile);
+                        newServer.connect();
                     } else {
                         server.connect(address, profile);
                     }

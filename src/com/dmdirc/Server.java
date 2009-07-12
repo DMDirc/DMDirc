@@ -176,6 +176,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                 new ConfigManager("", "", url.getServer()));
 
         this.address = url;
+        this.profile = profile;
 
         window = Main.getUI().getServer(this);
 
@@ -209,13 +210,20 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "showrawwindow")) {
             addRaw();
         }
-
-        connect(url, profile);
     }
 
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Connection, disconnection & reconnection">
+
+    /**
+     * Connects to a new server with the previously supplied address and profile.
+     *
+     * @since 0.6.3m2
+     */
+    public void connect() {
+        connect(address, profile);
+    }
 
     /**
      * Connects to a new server with the specified details.

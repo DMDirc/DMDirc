@@ -43,6 +43,8 @@ public class InviteTest {
         IdentityManager.load();
         
         server = new Server("irc-test://255.255.255.255", IdentityManager.getProfiles().get(0));
+        server.connect();
+        
         test = new Invite(server, "#channel", "nick!ident@host");
         server.addInvite(test);
         ts = new Date().getTime();
