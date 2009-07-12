@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.parser.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
