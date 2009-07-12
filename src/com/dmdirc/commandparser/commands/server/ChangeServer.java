@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.util.IrcAddress;
 
 /**
  * The /server command allows the user to connect to a new server.
@@ -101,7 +102,7 @@ public final class ChangeServer extends ServerCommand {
             pass = args.getArgumentsAsString(offset);
         }
 
-        server.connect(host, port, pass, ssl, server.getProfile());
+        server.connect(new IrcAddress(host, port, pass, ssl), server.getProfile());
     }
     
     /** {@inheritDoc} */

@@ -273,33 +273,31 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         final Identity profile =
                 (Identity) identityField.getSelectedItem();
+        final IrcAddress address = new IrcAddress(host, port, pass, sslCheck.isSelected());
 
         // Open in a new window?
-        if (newServerWindowCheck.isSelected() || ServerManager.getServerManager().
-                numServers() == 0 || mainFrame.getActiveFrame() == null) {
-            new LoggingSwingWorker() {
+        if (newServerWindowCheck.isSelected() || ServerManager.getServerManager()
+                .numServers() == 0 || mainFrame.getActiveFrame() == null) {
 
+            new LoggingSwingWorker() {
                 @Override
                 protected Object doInBackground() throws Exception {
-                    new Server(new IrcAddress(host, port, pass, sslCheck.isSelected()), profile);
+                    new Server(address, profile);
                     return null;
                 }
             }.execute();
         } else {
-            final com.dmdirc.ui.interfaces.Window active =
-                    mainFrame.getActiveFrame();
-            final Server server = ServerManager.getServerManager().
-                    getServerFromFrame(active);
+            final com.dmdirc.ui.interfaces.Window active = mainFrame.getActiveFrame();
+            final Server server = ServerManager.getServerManager().getServerFromFrame(active);
+
             new LoggingSwingWorker() {
 
                 @Override
                 protected Object doInBackground() throws Exception {
                     if (server == null) {
-                        new Server(new IrcAddress(host, port, pass, sslCheck.isSelected()),
-                            profile);
+                        new Server(address, profile);
                     } else {
-                        server.connect(host, port, pass, sslCheck.isSelected(),
-                            profile);
+                        server.connect(address, profile);
                     }
                     return null;
                 }

@@ -51,9 +51,9 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
-
 import com.dmdirc.util.InvalidAddressException;
 import com.dmdirc.util.IrcAddress;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -97,20 +97,24 @@ public class Server extends WritableFrameContainer implements Serializable {
 
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
+
     /** Open query windows on the server. */
     private final List<Query> queries = new ArrayList<Query>();
 
     /** The Parser instance handling this server. */
     private transient Parser parser;
+
     /** The IRC Parser Thread. */
     private transient Thread parserThread;
+
     /** The raw frame used for this server instance. */
     private Raw raw;
+
     /** The ServerWindow corresponding to this server. */
     private ServerWindow window;
 
-    /** The details of the server we're connecting to. */
-    private ServerInfo serverInfo;
+    /** The address of the server we're connecting to. */
+    private IrcAddress address;
 
     /** The profile we're using. */
     private transient Identity profile;
@@ -120,9 +124,6 @@ public class Server extends WritableFrameContainer implements Serializable {
 
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
-
-    /** Channels we're meant to auto-join. */
-    private final List<String> autochannels;
 
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
@@ -143,9 +144,6 @@ public class Server extends WritableFrameContainer implements Serializable {
 
     /** Our string convertor. */
     private StringConverter converter = new IRCStringConverter();
-
-    /** The parser factory to use. */
-    private final ParserFactory parserFactory;
 
     // </editor-fold>
     
@@ -177,11 +175,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         super("server-disconnected", url.getServer(),
                 new ConfigManager("", "", url.getServer()));
 
-        serverInfo = new ServerInfo(url.getServer(), url.getPort(), url.getPassword());
-        serverInfo.setSSL(url.isSSL());
-
-        this.autochannels = url.getChannels();
-        this.parserFactory = new ParserFactory();
+        this.address = url;
 
         window = Main.getUI().getServer(this);
 
@@ -216,7 +210,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             addRaw();
         }
 
-        connect(url.getServer(), url.getPort(), url.getPassword(), url.isSSL(), profile);
+        connect(url, profile);
     }
 
     // </editor-fold>
@@ -226,19 +220,16 @@ public class Server extends WritableFrameContainer implements Serializable {
     /**
      * Connects to a new server with the specified details.
      *
-     * @param server The hostname/ip of the server to connect to
-     * @param port The port to connect to
-     * @param password The server password
-     * @param ssl Whether to use SSL or not
+     * @param address The address of the server to connect to
      * @param profile The profile to use
+     * @since 0.6.3m2
      */
     @Precondition({
-        "The IRC Parser is null or not connected",
+        "The current parser is null or not connected",
         "The specified profile is not null"
     })
     @SuppressWarnings("fallthrough")
-    public void connect(final String server, final int port, final String password,
-            final boolean ssl, final Identity profile) {
+    public void connect(final IrcAddress address, final Identity profile) {
         assert profile != null;
 
         synchronized (myState) {
@@ -271,19 +262,19 @@ public class Server extends WritableFrameContainer implements Serializable {
                         + "is still connected.\n\nMy state:" + getState());
             }
 
-            if (!server.equals(getName())) {
-                setName(server);
+            // Update the name of this container (shown in treeview, etc)
+            if (!address.getServer().equals(getName())) {
+                setName(address.getServer());
             }
 
-            getConfigManager().migrate("", "", server);
+            getConfigManager().migrate("", "", address.getServer());
 
-            serverInfo = buildServerInfo(server, port, password, ssl);
-
+            this.address = address;
             this.profile = profile;
 
             updateIcon();
 
-            addLine("serverConnecting", server, port);
+            addLine("serverConnecting", address.getServer(), address.getPort());
 
             parser = buildParser();
 
@@ -319,8 +310,7 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             disconnect(reason);
             
-            connect(serverInfo.getHost(), serverInfo.getPort(),
-                    serverInfo.getPassword(), serverInfo.getSSL(), profile);
+            connect(address, profile);
         }
     }
 
@@ -712,11 +702,11 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return A configured IRC parser.
      */
     private Parser buildParser() {
-        final CertificateManager certManager = new CertificateManager(serverInfo.getHost(),
+        final CertificateManager certManager = new CertificateManager(address.getServer(),
                 getConfigManager());
 
         final MyInfo myInfo = buildMyInfo();
-        final Parser myParser = parserFactory.getParser(myInfo, serverInfo);
+        final Parser myParser = new ParserFactory().getParser(myInfo, address);
 
         if (myParser instanceof SecureParser) {
             final SecureParser secureParser = (SecureParser) myParser;
@@ -766,7 +756,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     private void updateIcon() {
         final String icon = myState.getState() == ServerState.CONNECTED
-                    ? serverInfo.getSSL() ? "secure-server" : "server"
+                    ? address.isSSL() ? "secure-server" : "server"
                     : "server-disconnected";
         setIcon(icon);
     }
@@ -804,7 +794,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                     parser.joinChannel(channel);
                 }
             } else {
-                autochannels.add(channel);
+                address.getChannels().add(channel);
             }
         }
     }
@@ -1354,7 +1344,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                 }
             }
 
-            for (String channel : autochannels) {
+            for (String channel : address.getChannels()) {
                 parser.joinChannel(channel);
             }
 

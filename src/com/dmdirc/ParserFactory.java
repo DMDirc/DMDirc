@@ -26,6 +26,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.MyInfo;
 import com.dmdirc.parser.irc.ServerInfo;
+import com.dmdirc.util.IrcAddress;
 
 /**
  * Provides a method to retrieve a parser.
@@ -39,11 +40,16 @@ public class ParserFactory {
      * Retrieves a parser instance.
      * 
      * @param myInfo The client information to use
-     * @param serverInfo The server details to use
+     * @param address The address of the server to connect to
      * @return An appropriately configured parser
+     * @since 0.6.3m2
      */
-    public Parser getParser(final MyInfo myInfo, final ServerInfo serverInfo) {
-        return new IRCParser(myInfo, serverInfo);
+    public Parser getParser(final MyInfo myInfo, final IrcAddress address) {
+        final ServerInfo info = new ServerInfo(address.getServer(), address.getPort(),
+                address.getPassword());
+        info.setSSL(address.isSSL());
+        
+        return new IRCParser(myInfo, info);
     }
 
 }
