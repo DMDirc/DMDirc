@@ -28,7 +28,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.SocketState;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 
 import java.awt.event.ActionEvent;
@@ -94,13 +93,13 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param dcc The DCCSend object this window wraps around
 	 * @param title The title of this window
 	 * @param targetNick Nickname of target
-	 * @param parser The IRC parser that initiated this send
+	 * @param server The server that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Server Server) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final Server server) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.server = server;
-		this.parser = (server != null) ? server.getParser() : null;
+		this.parser = server == null ? null : server.getParser();
 		this.myPlugin = plugin;
 		
 		if (parser != null) {
