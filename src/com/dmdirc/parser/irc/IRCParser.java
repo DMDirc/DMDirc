@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
@@ -215,7 +216,7 @@ public class IRCParser implements SecureParser, Runnable {
 	final Map<String, String> h005Info = new Hashtable<String, String>();
 
 	/** Ignore List. */
-	RegexStringList myIgnoreList = new RegexStringList();
+	IgnoreList myIgnoreList = new IgnoreList();
 
 	/** Reference to the callback Manager. */
 	CallbackManager<IRCParser> myCallbackManager = new IRCCallbackManager(this);
@@ -410,11 +411,11 @@ public class IRCParser implements SecureParser, Runnable {
 
 	/** {@inheritDoc} */
 	@Override
-	public RegexStringList getIgnoreList() { return myIgnoreList; }
+	public IgnoreList getIgnoreList() { return myIgnoreList; }
 
 	/** {@inheritDoc} */
 	@Override
-	public void setIgnoreList(final RegexStringList ignoreList) { myIgnoreList = ignoreList; }
+	public void setIgnoreList(final IgnoreList ignoreList) { myIgnoreList = ignoreList; }
 
 	//---------------------------------------------------------------------------
 	// Start Callbacks

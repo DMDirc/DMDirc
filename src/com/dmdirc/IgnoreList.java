@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.irc.RegexStringList;
+import com.dmdirc.parser.common.IgnoreList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author chris
  */
-public class IgnoreList extends RegexStringList {
+public class IgnoreList extends IgnoreList {
 
     /**
      * Creates a new instance of IgnoreList.

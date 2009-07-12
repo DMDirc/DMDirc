@@ -21,6 +21,7 @@
  */
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.IgnoreList;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class RegexStringListTest {
 
     @Test
     public void testAdd() {
-        final RegexStringList list = new RegexStringList();
+        final IgnoreList list = new IgnoreList();
         list.add("a!b@c");
         list.add("a!b@c");
         list.add("A!B@c");
@@ -47,7 +48,7 @@ public class RegexStringListTest {
         tempList.add("A!B@C");
         tempList.add("Data.*");
 
-        final RegexStringList list = new RegexStringList(tempList);
+        final IgnoreList list = new IgnoreList(tempList);
 
         assertEquals(2, list.count());
         assertEquals("a!b@c", list.get(0));
@@ -60,7 +61,7 @@ public class RegexStringListTest {
         tempList.add("a!b@c");
         tempList.add("Data.*");
 
-        final RegexStringList list = new RegexStringList(tempList);
+        final IgnoreList list = new IgnoreList(tempList);
         list.remove(0);
         list.remove(17);
 
@@ -74,7 +75,7 @@ public class RegexStringListTest {
         tempList.add("a!b@c");
         tempList.add("Data.*");
 
-        final RegexStringList list = new RegexStringList(tempList);
+        final IgnoreList list = new IgnoreList(tempList);
         list.clear();
 
         assertEquals(0, list.count());
@@ -86,7 +87,7 @@ public class RegexStringListTest {
         tempList.add("a!b@c");
         tempList.add("Data.*");
 
-        final RegexStringList list = new RegexStringList(tempList);
+        final IgnoreList list = new IgnoreList(tempList);
 
         assertTrue(list.matches("a!b@c") == 0);
         assertTrue(list.matches("foo") == -1);
@@ -97,7 +98,7 @@ public class RegexStringListTest {
     
     @Test
     public void testGet() {
-        final RegexStringList list = new RegexStringList();
+        final IgnoreList list = new IgnoreList();
         list.add("a!b@c");
         assertEquals("a!b@c", list.get(0));
         assertEquals("", list.get(7));
@@ -105,7 +106,7 @@ public class RegexStringListTest {
 
     @Test
     public void testSet() {
-        final RegexStringList list = new RegexStringList();
+        final IgnoreList list = new IgnoreList();
         list.add("a!b@c");
         list.set(0, "moo");
         list.set(1, "bar");

@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc;
+package com.dmdirc.parser.common;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * IRC Parser Ignore list.
+ * Parser Ignore list.
  *
  * @author Shane Mc Cormack
  */
-public class RegexStringList {
+public class IgnoreList {
 
 	/** Arraylist storing ignore patterns. */
 	protected final List<String> ignoreInfo = new ArrayList<String>();
@@ -39,7 +39,7 @@ public class RegexStringList {
 	/**
 	 * Creates a new instance of RegexStringList.
 	 */
-	public RegexStringList() {
+	public IgnoreList() {
 		// Do nothing
 	}
 
@@ -48,7 +48,7 @@ public class RegexStringList {
 	 *
 	 * @param items Items to add to this RegexStringList
 	 */
-	public RegexStringList(final List<String> items) {
+	public IgnoreList(final List<String> items) {
 		addAll(items);
 	}
 

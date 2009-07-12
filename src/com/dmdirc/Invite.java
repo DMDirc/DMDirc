@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.interfaces.ClientInfo;
 import java.util.Date;
 
 /**

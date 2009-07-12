@@ -23,7 +23,7 @@
 package com.dmdirc.parser.interfaces;
 
 import com.dmdirc.parser.irc.IRCStringConverter;
-import com.dmdirc.parser.irc.RegexStringList;
+import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.CallbackManager;
 
 import java.util.Collection;
@@ -307,14 +307,14 @@ public interface Parser extends Runnable {
      *
      * @param ignoreList The new ignore list to be used by the parser
      */
-    void setIgnoreList(RegexStringList ignoreList);
+    void setIgnoreList(IgnoreList ignoreList);
 
     /**
      * Retrieves the ignore list which is currently in use by this parser.
      *
      * @return This parser's ignore list
      */
-    RegexStringList getIgnoreList();
+    IgnoreList getIgnoreList();
 
     /**
      * Parses the specified hostmask into an array containing a nickname,
