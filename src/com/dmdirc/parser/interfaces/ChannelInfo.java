@@ -22,7 +22,7 @@
 
 package com.dmdirc.parser.interfaces;
 
-import com.dmdirc.parser.irc.ChannelListModeItem;
+import com.dmdirc.parser.common.ChannelListModeItem;
 import java.util.Collection;
 
 /**

@@ -28,7 +28,7 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.Channel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.irc.ChannelListModeItem;
+import com.dmdirc.parser.common.ChannelListModeItem;
 import com.dmdirc.util.MapList;
 
 import java.awt.Insets;
