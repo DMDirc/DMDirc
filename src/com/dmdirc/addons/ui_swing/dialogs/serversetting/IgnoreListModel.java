@@ -21,7 +21,7 @@
  */
 package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
-import com.dmdirc.IgnoreList;
+import com.dmdirc.parser.common.IgnoreList;
 import javax.swing.AbstractListModel;
 
 /**
@@ -41,7 +41,7 @@ public class IgnoreListModel extends AbstractListModel {
 
     private boolean isSimple;
 
-    public IgnoreListModel(IgnoreList ignoreList) {
+    public IgnoreListModel(final IgnoreList ignoreList) {
         this.ignoreList = ignoreList;
         isSimple = ignoreList.canConvert();
     }

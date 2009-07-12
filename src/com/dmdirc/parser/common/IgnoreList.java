@@ -163,4 +163,141 @@ public class IgnoreList {
 		return ignoreInfo.size();
 	}
 
+    /**
+     * Adds the specified simple pattern to this ignore list.
+     *
+     * @param pattern The simple pattern to be added
+     */
+    public void addSimple(final String pattern) {
+        add(simpleToRegex(pattern));
+    }
+
+    /**
+     * Determines if this list can be converted to a simple list.
+     *
+     * @return True if this list can be converted, false otherwise.
+     */
+    public boolean canConvert() {
+        try {
+            getSimpleList();
+            return true;
+        } catch (UnsupportedOperationException ex) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves a list of regular expressions in this ignore list.
+     *
+     * @return All expressions in this ignore list
+     */
+    public List<String> getRegexList() {
+        return new ArrayList<String>(ignoreInfo);
+    }
+
+    /**
+     * Retrieves a list of simple expressions in this ignore list.
+     *
+     * @return All expressions in this ignore list, converted to simple expressions
+     * @throws UnsupportedOperationException if an expression can't be converted
+     */
+    public List<String> getSimpleList() throws UnsupportedOperationException {
+        final List<String> res = new ArrayList<String>();
+
+        for (String regex : ignoreInfo) {
+            res.add(regexToSimple(regex));
+        }
+
+        return res;
+    }
+
+    /**
+     * Converts a regular expression into a simple expression.
+     *
+     * @param regex The regular expression to be converted
+     * @return A simple expression corresponding to the regex
+     * @throws UnsupportedOperationException if the regex cannot be converted
+     */
+    protected static String regexToSimple(final String regex)
+            throws UnsupportedOperationException {
+        final StringBuilder res = new StringBuilder(regex.length());
+        boolean escaped = false;
+        boolean inchar = false;
+
+        for (char part : regex.toCharArray()) {
+            if (inchar) {
+                inchar = false;
+
+                if (part == '*') {
+                    res.append(part);
+                    continue;
+                } else {
+                    res.append('?');
+                }
+            }
+
+            if (escaped) {
+                if (part == '?' || part == '*') {
+                    throw new UnsupportedOperationException("Cannot convert to"
+                            + " simple expression: ? or * is escaped.");
+                }
+
+                res.append(part);
+                escaped = false;
+            }  else if (part == '\\') {
+                escaped = true;
+            } else if (part == '.') {
+                inchar = true;
+            } else if (part == '.' || part == '^' || part == '$' || part == '['
+                    || part == ']' || part == '\\' || part == '(' || part == ')'
+                    || part == '{' || part == '}' || part == '|' || part == '+'
+                    || part == '*' || part == '?') {
+                throw new UnsupportedOperationException("Cannot convert to"
+                        + " simple expression: unescaped special char: " + part);
+            } else {
+                res.append(part);
+            }
+        }
+
+        if (escaped) {
+            throw new UnsupportedOperationException("Cannot convert to "
+                    + "simple expression: trailing backslash");
+        } else if (inchar) {
+            res.append('?');
+        }
+
+        return res.toString();
+    }
+
+    /**
+     * Converts a simple expression to a regular expression.
+     *
+     * @param regex The simple expression to be converted
+     * @return A corresponding regular expression
+     */
+    @SuppressWarnings("fallthrough")
+    protected static String simpleToRegex(final String regex) {
+        final StringBuilder res = new StringBuilder(regex.length());
+
+        for (char part : regex.toCharArray()) {
+            switch (part) {
+            case '.': case '^': case '$': case '[': case ']': case '\\':
+            case '(': case ')': case '{': case '}': case '|': case '+':
+                res.append('\\');
+                res.append(part);
+                break;
+            case '?':
+                res.append('.');
+                break;
+            case '*':
+                res.append('.');
+            default:
+                res.append(part);
+                break;
+            }
+        }
+
+        return res.toString();
+    }
+
 }
