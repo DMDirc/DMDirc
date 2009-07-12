@@ -107,6 +107,23 @@ public class IrcAddress implements Serializable {
     }
 
     /**
+     * Constructs a new IrcAddress object representing the specified details.
+     *
+     * @param host The hostname or IP of the server
+     * @param port The port of the server
+     * @param pass The password to use for the server
+     * @param ssl Whether or not to use SSL
+     * @since 0.6.3m2
+     */
+    public IrcAddress(final String host, final int port, final String pass,
+            final boolean ssl) {
+        this.server = host;
+        this.port = port;
+        this.pass = pass;
+        this.usesSSL = ssl;
+    }
+
+    /**
      * Processes the password part of this address.
      *
      * @param pass The password part of this address
@@ -214,8 +231,7 @@ public class IrcAddress implements Serializable {
         final List<Server> servers = ServerManager.getServerManager().
                 getServersByAddress(getServer());
         if (servers.isEmpty()) {
-            new Server(getServer(), getPort(), getPassword(), isSSL(), 
-                    profile, getChannels());
+            new Server(this, profile);
         } else {
             final Server thisServer = servers.get(0);
             for (String channel : new ArrayList<String>(getChannels())) {

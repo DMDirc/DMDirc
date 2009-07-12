@@ -23,7 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.util.InvalidAddressException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,11 +221,12 @@ public final class ServerManager {
         }
 
         if (connectedServer == null) {
-            final List<String> channels = new ArrayList<String>();
-                channels.add("#DMDirc");
-
-                new Server("irc.quakenet.org", 6667, "", false,
-                        IdentityManager.getProfiles().get(0), channels);
+            try {
+                new Server("irc://irc.quakenet.org/DMDirc",
+                        IdentityManager.getProfiles().get(0));
+            } catch (InvalidAddressException ex) {
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
+            }
         } else {
             connectedServer.join("#DMDirc");
         }

@@ -52,6 +52,8 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 
+import com.dmdirc.util.InvalidAddressException;
+import com.dmdirc.util.IrcAddress;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -152,64 +154,41 @@ public class Server extends WritableFrameContainer implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Constructors">
 
     /**
-     * Creates a new instance of Server. Does not auto-join any channels, and
-     * uses a default {@link ParserFactory}.
-     *
-     * @param server The hostname/ip of the server to connect to
-     * @param port The port to connect to
-     * @param password The server password
-     * @param ssl Whether to use SSL or not
-     * @param profile The profile to use
-     */
-    public Server(final String server, final int port, final String password,
-            final boolean ssl, final Identity profile) {
-        this(server, port, password, ssl, profile, new ArrayList<String>());
-    }
-
-    /**
-     * Creates a new instance of Server. Uses a default {@link ParserFactory}.
-     *
-     * @param server The hostname/ip of the server to connect to
-     * @param port The port to connect to
-     * @param password The server password
-     * @param ssl Whether to use SSL or not
-     * @param profile The profile to use
-     * @param autochannels A list of channels to auto-join when we connect
-     */
-    public Server(final String server, final int port, final String password,
-            final boolean ssl, final Identity profile, final List<String> autochannels) {
-        this(server, port, password, ssl, profile, autochannels, new ParserFactory());
-    }
-
-    /**
      * Creates a new instance of Server.
      *
-     * @since 0.6
-     * @param server The hostname/ip of the server to connect to
-     * @param port The port to connect to
-     * @param password The server password
-     * @param ssl Whether to use SSL or not
+     * @since 0.6.3m2
+     * @param url The address of the server to connect to
      * @param profile The profile to use
-     * @param autochannels A list of channels to auto-join when we connect
-     * @param factory The {@link ParserFactory} to use to create parsers
+     * @throws InvalidAddressException If the specified URL is not valid
      */
-    public Server(final String server, final int port, final String password,
-            final boolean ssl, final Identity profile,
-            final List<String> autochannels, final ParserFactory factory) {
-        super("server-disconnected", server, new ConfigManager("", "", server));
+    public Server(final String url, final Identity profile) throws InvalidAddressException {
+        this(new IrcAddress(url), profile);
+    }
 
-        serverInfo = new ServerInfo(server, port, password);
-        serverInfo.setSSL(ssl);
+    /**
+     * Creates a new server which will connect to the specified URL with
+     * the specified profile.
+     *
+     * @since 0.6.3m2
+     * @param url The address of the server to connect to
+     * @param profile The profile to use
+     */
+    public Server(final IrcAddress url, final Identity profile) {
+        super("server-disconnected", url.getServer(),
+                new ConfigManager("", "", url.getServer()));
 
-        this.autochannels = autochannels;
-        this.parserFactory = factory;
+        serverInfo = new ServerInfo(url.getServer(), url.getPort(), url.getPassword());
+        serverInfo.setSSL(url.isSSL());
+
+        this.autochannels = url.getChannels();
+        this.parserFactory = new ParserFactory();
 
         window = Main.getUI().getServer(this);
 
         ServerManager.getServerManager().registerServer(this);
         WindowManager.addWindow(window);
 
-        window.setTitle(server + ":" + port);
+        window.setTitle(url.getServer() + ":" + url.getPort());
 
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
@@ -237,7 +216,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             addRaw();
         }
 
-        connect(server, port, password, ssl, profile);
+        connect(url.getServer(), url.getPort(), url.getPassword(), url.isSSL(), profile);
     }
 
     // </editor-fold>

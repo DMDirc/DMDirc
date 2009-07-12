@@ -30,6 +30,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.util.IrcAddress;
 
 /**
  * The new server command allows users to open a new server window.
@@ -102,7 +103,7 @@ public final class NewServer extends GlobalCommand {
             pass = args.getArgumentsAsString(offset);
         }
         
-        new Server(host, port, pass, ssl, IdentityManager.getProfiles().get(0));
+        new Server(new IrcAddress(host, port, pass, ssl), IdentityManager.getProfiles().get(0));
     }
     
     
