@@ -20,26 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.callbacks;
+package com.dmdirc.parser.interfaces;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * IRC Parser Callback Exception.
+ * Used to indicate that a callback interface can be called for specified
+ * objects (hosts/channels/etc).
  *
- * @author            Shane Mc Cormack
+ * @since 0.6.3m1
+ * @author chris
  */
-public class CallbackNotFoundException extends RuntimeException {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 1;
-	
-	/**
-	 * Create a new CallbackNotFound Exception.
-	 *
-	 * @param message Reason for exception
-	 */
-	public CallbackNotFoundException(final String message) { super(message); }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SpecificCallback {
 
 }

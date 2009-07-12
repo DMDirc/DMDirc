@@ -27,7 +27,7 @@ import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestINickChanged;
 import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
-import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.common.CallbackNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

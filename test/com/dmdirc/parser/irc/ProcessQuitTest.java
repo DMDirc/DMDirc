@@ -26,7 +26,7 @@ import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIQuit;
 import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
-import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.common.CallbackNotFoundException;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

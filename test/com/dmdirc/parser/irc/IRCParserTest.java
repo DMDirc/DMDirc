@@ -32,7 +32,7 @@ import com.dmdirc.harness.parser.TestIPost005;
 import com.dmdirc.harness.parser.TestIPrivateMessage;
 import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
-import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;

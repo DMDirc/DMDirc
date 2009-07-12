@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
+import com.dmdirc.parser.interfaces.SpecificCallback;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 import com.dmdirc.parser.irc.IRCParser;

@@ -24,7 +24,7 @@ package com.dmdirc.parser.interfaces.callbacks;
 
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.callbacks.SpecificCallback;
+import com.dmdirc.parser.interfaces.SpecificCallback;
 
 /**
  * Called when we go away, or come back.

@@ -23,7 +23,7 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.harness.parser.TestParser;
-import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.common.CallbackNotFoundException;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
