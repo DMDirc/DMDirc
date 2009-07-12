@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.SecureParser;
@@ -2030,6 +2031,12 @@ public class IRCParser implements SecureParser, Runnable {
         }
 
         return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getMaxLength() {
+        return MAX_LINELENGTH;
     }
 
 }

@@ -41,10 +41,7 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
-import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.parser.irc.IRCStringConverter;
-import com.dmdirc.parser.irc.MyInfo;
-import com.dmdirc.parser.irc.ServerInfo;
+import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -143,7 +140,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     private final IgnoreList ignoreList = new IgnoreList();
 
     /** Our string convertor. */
-    private StringConverter converter = new IRCStringConverter();
+    private StringConverter converter;
 
     // </editor-fold>
     
@@ -675,36 +672,6 @@ public class Server extends WritableFrameContainer implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Miscellaneous methods">
 
     /**
-     * Construsts a {@link ServerInfo} object for the specified details.
-     *
-     * @param server The hostname or IP address of the server
-     * @param port The port of the server
-     * @param password The password to use, if any
-     * @param ssl Whether or not to use SSL
-     * @return An appropriately configured ServerInfo instance
-     */
-    private ServerInfo buildServerInfo(final String server, final int port,
-            final String password, final boolean ssl) {
-        final ServerInfo myInfo = new ServerInfo(server, port, password);
-        myInfo.setSSL(ssl);
-
-        if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.address")) {
-            myInfo.setUseSocks(true);
-
-            myInfo.setProxyHost(getConfigManager()
-                    .getOption(DOMAIN_SERVER, "proxy.address"));
-            myInfo.setProxyUser(getConfigManager()
-                    .getOption(DOMAIN_SERVER, "proxy.user"));
-            myInfo.setProxyPass(getConfigManager()
-                    .getOption(DOMAIN_SERVER, "proxy.password"));
-            myInfo.setProxyPort(getConfigManager()
-                    .getOptionInt(DOMAIN_SERVER, "proxy.port"));
-        }
-
-        return myInfo;
-    }
-
-    /**
      * Builds an appropriately configured {@link IRCParser} for this server.
      *
      * @return A configured IRC parser.
@@ -822,7 +789,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
-        return IRCParser.MAX_LINELENGTH;
+        return parser == null ? -1 : parser.getMaxLength();
     }
 
     /**

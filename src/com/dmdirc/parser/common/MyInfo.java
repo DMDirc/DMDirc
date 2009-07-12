@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc;
+package com.dmdirc.parser.common;
 
 /**
  * Contains User information.
@@ -29,7 +29,8 @@ package com.dmdirc.parser.irc;
  * @author Chris Smith
  * @see IRCParser
  */
-public final class MyInfo {
+public class MyInfo {
+    
 	/** Character to prepend to nickname if in use (Default "_"). */
 	private char prependChar = '_';	
 	/** Nickname to attempt to use on IRC. */

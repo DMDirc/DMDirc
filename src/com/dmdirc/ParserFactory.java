@@ -26,7 +26,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.parser.irc.MyInfo;
+import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.irc.ServerInfo;
 import com.dmdirc.util.IrcAddress;
 

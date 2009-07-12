@@ -22,6 +22,7 @@
 
 package com.dmdirc.harness.parser;
 
+import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.*;
 import java.util.ArrayList;

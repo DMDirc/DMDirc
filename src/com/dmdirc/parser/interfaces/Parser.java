@@ -91,6 +91,13 @@ public interface Parser extends Runnable {
     int getMaxLength(String type, String target);
 
     /**
+     * Determines the maximum length any message/raw command may be.
+     *
+     * @return The maximum length of a message
+     */
+    int getMaxLength();
+
+    /**
      * Returns a {@link ClientInfo} object which represents the locally
      * connected client.
      *
