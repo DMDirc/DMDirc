@@ -90,9 +90,9 @@ public abstract class CallbackManager<T extends Parser> {
     protected void initialise(T parser) {
         for (Class<?> type : CLASSES) {
             if (type.isAnnotationPresent(SpecificCallback.class)) {
-                addCallbackType(getCallbackObject(parser, type));
-            } else {
                 addCallbackType(getSpecificCallbackObject(parser, type));
+            } else {
+                addCallbackType(getCallbackObject(parser, type));
             }
         }
     }
