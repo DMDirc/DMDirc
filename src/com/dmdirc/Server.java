@@ -35,14 +35,15 @@ import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.IgnoreList;
+import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
+import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.IRCStringConverter;
 import com.dmdirc.parser.irc.MyInfo;
-import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.irc.ServerInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
@@ -139,7 +140,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     private final IgnoreList ignoreList = new IgnoreList();
 
     /** Our string convertor. */
-    private IRCStringConverter converter = new IRCStringConverter();
+    private StringConverter converter = new IRCStringConverter();
 
     /** The parser factory to use. */
     private final ParserFactory parserFactory;
