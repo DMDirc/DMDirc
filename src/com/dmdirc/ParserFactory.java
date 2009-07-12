@@ -52,9 +52,7 @@ public class ParserFactory {
                 address.getPassword());
         info.setSSL(address.isSSL());
 
-        if ("irc".equals(address.getProtocol())) {
-            return new IRCParser(myInfo, info);
-        } else if ("irc-test".equals(address.getProtocol())) {
+        if ("irc-test".equals(address.getProtocol())) {
             try {
                 return (Parser) Class.forName("com.dmdirc.harness.parser.TestParser")
                         .getConstructor(MyInfo.class, ServerInfo.class)
@@ -64,7 +62,7 @@ public class ParserFactory {
             }
         }
 
-        return null;
+        return new IRCParser(myInfo, info);
     }
 
 }
