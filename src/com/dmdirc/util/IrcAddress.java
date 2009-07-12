@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Parses an IRC address. IRC addresses take the following form:
- * irc[s]://[[username][:password]@]<server>[:[+]port][/channel1[,channel2[,...]]]
+ * irc[s]://[password@]&lt;server&gt;[:[+]port][/channel1[,channel2[,...]]]
  * 
  * @author Chris
  */
