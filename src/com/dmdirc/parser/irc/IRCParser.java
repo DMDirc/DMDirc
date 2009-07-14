@@ -719,6 +719,7 @@ public class IRCParser implements SecureParser, Runnable {
 			sendString("PASS " + server.getPassword());
 		}
 		sendString("NICK " + me.getNickname());
+    thinkNickname = me.getNickname();
 		String localhost;
 		try {
 			localhost = InetAddress.getLocalHost().getHostAddress();
