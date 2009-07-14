@@ -203,14 +203,17 @@ public final class ChannelEventHandler extends EventHandler implements
             final String sModes) {
         checkParser(tParser);
 
-        if (sHost.isEmpty()) {
-            owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
-                    : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
-                    sModes.length() <= 1 ? "" : sModes);
-        } else {
-            owner.doNotification(isMyself(cChannelClient) ? "channelSelfModeChanged"
-                    : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
-                    cChannelClient, sModes);
+        if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
+                && !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
+            if (sHost.isEmpty()) {
+                owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
+                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
+                        sModes.length() <= 1 ? "" : sModes);
+            } else {
+                owner.doNotification(isMyself(cChannelClient) ? "channelSelfModeChanged"
+                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
+                        cChannelClient, sModes);
+            }
         }
 
         owner.refreshClients();
