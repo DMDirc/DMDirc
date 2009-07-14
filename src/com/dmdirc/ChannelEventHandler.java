@@ -41,7 +41,7 @@ public final class ChannelEventHandler extends EventHandler implements
         ChannelMessageListener, ChannelNamesListener, ChannelTopicListener, ChannelJoinListener,
         ChannelPartListener, ChannelKickListener, ChannelQuitListener, ChannelActionListener,
         ChannelNickChangeListener, ChannelModeChangeListener, ChannelUserModeChangeListener,
-        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener {
+        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener, ChannelNonUserModeChangeListener {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -271,6 +271,27 @@ public final class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification("channelNotice", CoreActionType.CHANNEL_NOTICE,
                 cChannelClient, sMessage);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onChannelNonUserModeChanged(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+        checkParser(tParser);
+
+        if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
+                && owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
+            if (sHost.isEmpty()) {
+                owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
+                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
+                        sModes.length() <= 1 ? "" : sModes);
+            } else {
+                owner.doNotification(isMyself(cChannelClient) ? "channelSelfModeChanged"
+                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
+                        cChannelClient, sModes);
+            }
+        }
+
+        owner.refreshClients();
     }
 
 }
