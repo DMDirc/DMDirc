@@ -204,7 +204,7 @@ public final class ChannelEventHandler extends EventHandler implements
         checkParser(tParser);
 
         if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
-                && !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
+                || !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
             if (sHost.isEmpty()) {
                 owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
                         : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
