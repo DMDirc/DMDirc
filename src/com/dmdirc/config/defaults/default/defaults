@@ -180,6 +180,7 @@ treeview:
 
 channel:
   splitusermodes=false
+  hideduplicatemodes=false
   sendwho=false
   showmodeprefix=true
   topichistorysize=10
