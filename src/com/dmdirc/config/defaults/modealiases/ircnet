@@ -1,0 +1,14 @@
+# Default mode settings for ircnet
+
+keysections:
+  identity
+  server
+
+identity:
+  name=IRCnet mode aliases
+  ircd=ircnet
+
+server:
+  umoder=Restricted connection
+  moder=Registered
+  modeR=Reop

@@ -37,8 +37,6 @@ server:
   modec=No formatting
   modeM=Mute non-registered users
   modeO=IRCops only
-  moder=Registered users only
-  modeR=Registered users only
   modez=SSL users only
 
 # Umodes

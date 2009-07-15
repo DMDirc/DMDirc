@@ -14,6 +14,7 @@ server:
   moded=Auditorium mode
   modeC=No channel CTCPs
   modeN=No channel notices
+  moder=Registered users only
   modeu=No quit messages
 
   umodeh=Set host

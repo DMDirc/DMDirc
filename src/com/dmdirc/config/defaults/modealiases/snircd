@@ -18,6 +18,7 @@ server:
   enablemodeC=true
   modeN=No channel notices
   enablemodeN=true
+  moder=Registered users only
   modeu=No quit mesages
   enablemodeu=true
   modeT=No multi-target messages
