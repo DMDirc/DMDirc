@@ -115,6 +115,51 @@ questiondialog() {
 
 UNAME=`uname -a`
 
+# Store params so that we can pass them back to ourself if needed.
+for param in "$@"; do
+	PSN=`echo "${param}" | grep "^-psn_"`
+	if [ "" = "${PSN}" ]; then
+		SPACE=`echo "${param}" | grep " "`
+		if [ "${SPACE}" != "" ]; then
+			niceParam=`echo "${param}" | sed 's/"/\\\\"/g'`
+			params=${params}" \"${niceParam}\""
+		else
+			params=${params}" ${param}"
+		fi;
+	fi;
+done;
+
+# Check for some CLI params
+isRelease=""
+USEPROFILE=1;
+while test -n "$1"; do
+	case "$1" in
+		--release|-r)
+			shift
+			isRelease=${1}
+			;;
+		--help|-h)
+			showHelp;
+			;;
+		--noprofile)
+			USEPROFILE=0;
+			;;
+	esac
+	shift;
+done
+
+relaunch() {
+	trap - INT TERM EXIT
+	echo ""
+	echo "============================================================="
+	echo "ERROR"
+	echo "============================================================="
+	echo "${HOME}/.profile has errors in it (or an 'exit' command)."
+	echo "Setup will now restart with the --noprofile option."
+	echo "============================================================="
+	sh ${0} ${params} --noprofile
+}
+
 echo ""
 echo "---------------------"
 echo "Setup.sh"
@@ -128,9 +173,12 @@ if [ ! -e "${JAVA}" ]; then
 	JAVA="/usr/local/diablo-jdk1.6.0/jre/bin/java"
 	if [ ! -e "${JAVA}" ]; then
 		# Look in path
-		if [ -e "${HOME}/.profile" ]; then
-				# Source the profile incase java can't be found otherwise
+		if [ -e "${HOME}/.profile" -a "${USEPROFILE}" = "1" ]; then
+			# Source the profile incase java can't be found otherwise
+			# First, lets add a nice handler for the script exiting because of this crap.
+			trap relaunch INT TERM EXIT
 			. ${HOME}/.profile
+			trap - INT TERM EXIT
 		fi;
 		JAVA=`which java`
 	fi
@@ -206,21 +254,6 @@ showHelp() {
 	echo "---------------------"
 	exit 0;
 }
-
-# Check for some CLI params
-isRelease=""
-while test -n "$1"; do
-	case "$1" in
-		--release|-r)
-			shift
-			isRelease=${1}
-			shift
-			;;
-		--help|-h)
-			showHelp;
-			;;
-	esac
-done
 
 if [ "${isRelease}" != "" ]; then
 	isRelease=" --release "${isRelease}
