@@ -67,23 +67,28 @@ public class ParserFactory {
             }
         }
 
-        try {
-            if (address.getProtocol() != null) {
+        if (address.getProtocol() != null) {
+            try {
                 final Service service = PluginManager.getPluginManager().getService("parser", address.getProtocol());
-                final ServiceProvider provider = service.getProviders().get(0);
-                provider.activateServices();
-                if (provider != null) {
-                    final ExportedService exportService = provider.getExportedService("getParser");
-                    final Object obj = exportService.execute(myInfo, address);
-                    if (obj != null && obj instanceof Parser) {
-                        return (Parser)obj;
-                    } else {
-                        Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser for: "+address.getProtocol());
+
+                if (service != null) {
+                    final ServiceProvider provider = service.getProviders().get(0);
+
+                    if (provider != null) {
+                        provider.activateServices();
+
+                        final ExportedService exportService = provider.getExportedService("getParser");
+                        final Object obj = exportService.execute(myInfo, address);
+                        if (obj != null && obj instanceof Parser) {
+                            return (Parser)obj;
+                        } else {
+                            Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser for: " + address.getProtocol());
+                        }
                     }
                 }
+            } catch (NoSuchProviderException nspe) {
+                Logger.userError(ErrorLevel.UNKNOWN, "No parser found for: " + address.getProtocol());
             }
-        } catch (NoSuchProviderException nspe) {
-            Logger.userError(ErrorLevel.UNKNOWN, "No parser found for: "+address.getProtocol());
         }
 
         return new IRCParser(myInfo, info);
