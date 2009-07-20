@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="11"
+LAUNCHERVERSION="12"
 
 params=""
 
@@ -52,6 +52,9 @@ fi
 
 # Store params so that we can pass them back to the client
 for param in "$@"; do
+	if [ "${param}" = "--noprofile" ]; then 
+		continue;
+	fi;
 	PSN=`echo "${param}" | grep "^-psn_"`
 	if [ "" = "${PSN}" ]; then
 		SPACE=`echo "${param}" | grep " "`
@@ -80,11 +83,15 @@ else
 	profiledir="${HOME}/.DMDirc/"
 fi;
 
+USEPROFILE=1;
 while test -n "$1"; do
 	case "$1" in
 		--directory|-d)
 			shift
 			profiledir=${1}
+			;;
+		--noprofile)
+			USEPROFILE=0;
 			;;
 	esac
 	shift
@@ -363,6 +370,18 @@ else
 	echo "Not found.";
 fi;
 
+relaunch() {
+	trap - INT TERM EXIT
+	echo ""
+	echo "============================================================="
+	echo "ERROR"
+	echo "============================================================="
+	echo "${HOME}/.profile has errors in it (or an 'exit' command)."
+	echo "Setup will now restart with the --noprofile option."
+	echo "============================================================="
+	sh ${0} ${params} --noprofile
+}
+
 echo -n "Looking for java - ";
 if [ "${ISOSX}" = "1" ]; then
 	JAVA=`which java`
@@ -372,9 +391,11 @@ if [ "${ISOSX}" = "1" ]; then
 		JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
 	fi;
 else
-	if [ -e "${HOME}/.profile" ]; then
+	if [ -e "${HOME}/.profile" -a "${USEPROFILE}" = "1" ]; then
 		# Source the profile incase java can't be found otherwise
+		trap relaunch INT TERM EXIT
 		. ${HOME}/.profile
+		trap - INT TERM EXIT
 	fi;
 	JAVA=`which java`
 	if [ ! -e "${JAVA}" ]; then
