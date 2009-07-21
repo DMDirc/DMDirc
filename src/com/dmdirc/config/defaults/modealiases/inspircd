@@ -33,13 +33,16 @@ server:
   modea=Protected
   modeq=Channel founder
 
-  # BGHSWn http://wiki.inspircd.org/User_Modes
+  # BGhHIQrSWn http://wiki.inspircd.org/User_Modes
   # BHcn http://wiki.inspircd.org/1.2/User_Modes
   umodeB=Bot
   umodec=Only users in comchannels may query
   umodeG=Filter bad works
+  umodeh=HelpOp
   umodeH=Hide IRCop status
+  umodeI=Hide channels
   umoden=Server notice mask
+  umodeQ=Invisible IRCop
   umoder=Registered
   umodeS=Strip colours in queries
   umodeW=Can see /WHOIS notices
