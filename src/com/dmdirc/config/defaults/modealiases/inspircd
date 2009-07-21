@@ -23,6 +23,7 @@ server:
   modeV=No /invite
   modef=Prevent message and notice floods
   modej=Prevents join floods
+  modeR=Registered users only
   moder=Registered channel
 
   modeg=Censored word
