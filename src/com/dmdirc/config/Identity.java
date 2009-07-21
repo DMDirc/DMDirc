@@ -469,14 +469,27 @@ public class Identity extends ConfigSource implements Serializable,
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 LOGGER.finer(getName() + ": I'm a global config");
-                // If we're the global config, unset useless settings that are
-                // covered by global defaults.
+
+                // This branch is executed if this identity is global. In this
+                // case, we build a global config (removing ourself and the
+                // versions identity) and compare our values to the values
+                // contained in that. Any values that are the same can be unset
+                // from this identity (as they will default to their current
+                // value).
+                //
+                // Note that the updater channel is included in the version
+                // identity, and this is excluded from the global config. This
+                // means that once you manually set the channel it will stay
+                // like that until you manually change it again, as opposed
+                // to being removed as soon as you use a build from that
+                // channel.
 
                 if (globalConfig == null) {
                     globalConfig = new ConfigManager("", "", "");
                 }
 
                 globalConfig.removeIdentity(this);
+                globalConfig.removeIdentity(IdentityManager.getVersionIdentity());
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     for (Identity source : globalConfig.getSources()) {

@@ -59,6 +59,9 @@ public final class IdentityManager {
     
     /** The identity file used for addon defaults. */
     private static Identity addonConfig;
+
+    /** The identity file bundled with the client containing version info. */
+    private static Identity versionConfig;
     
     /** The config manager used for global settings. */
     private static ConfigManager globalconfig;
@@ -252,7 +255,8 @@ public final class IdentityManager {
     /** Loads the version information. */
     public static void loadVersion() {
         try {
-            addIdentity(new Identity(Main.class.getResourceAsStream("version.config"), false));
+            versionConfig = new Identity(Main.class.getResourceAsStream("version.config"), false);
+            addIdentity(versionConfig);
         } catch (IOException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         } catch (InvalidIdentityFileException ex) {
@@ -297,6 +301,17 @@ public final class IdentityManager {
      */
     public static Identity getAddonIdentity() {
         return addonConfig;
+    }
+
+    /**
+     * Retrieves the identity bundled with the DMDirc client containing
+     * version information.
+     *
+     * @return The version identity
+     * @since 0.6.3m2
+     */
+    public static Identity getVersionIdentity() {
+        return versionConfig;
     }
     
     /**
