@@ -29,7 +29,6 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.common.CallbackManager;
-import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.*;
 
 /**
@@ -38,10 +37,12 @@ import com.dmdirc.parser.interfaces.callbacks.*;
  * @author chris
  */
 public final class ChannelEventHandler extends EventHandler implements
-        ChannelMessageListener, ChannelNamesListener, ChannelTopicListener, ChannelJoinListener,
-        ChannelPartListener, ChannelKickListener, ChannelQuitListener, ChannelActionListener,
-        ChannelNickChangeListener, ChannelModeChangeListener, ChannelUserModeChangeListener,
-        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener, ChannelNonUserModeChangeListener {
+        ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
+        ChannelJoinListener, ChannelPartListener, ChannelKickListener,
+        ChannelQuitListener, ChannelActionListener, ChannelNickChangeListener,
+        ChannelModeChangeListener, ChannelUserModeChangeListener,
+        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener,
+        ChannelNonUserModeChangeListener, ChannelModeNoticeListener {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -60,8 +61,8 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    protected <T extends CallbackInterface> void addCallback(
-            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException {
+    protected <T extends CallbackInterface> void addCallback(final CallbackManager cbm,
+            final Class<T> type) {
         if (OtherAwayStateListener.class.equals(type)) {
             cbm.addCallback(type, (T) this);
         } else {
@@ -278,7 +279,9 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelNonUserModeChanged(Parser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+    public void onChannelNonUserModeChanged(final Parser tParser,
+            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final String sHost, final String sModes) {
         checkParser(tParser);
 
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
@@ -295,6 +298,17 @@ public final class ChannelEventHandler extends EventHandler implements
         }
 
         owner.refreshClients();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onChannelModeNotice(final Parser tParser, final char prefix,
+            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final String sMessage, final String sHost) {
+        checkParser(tParser);
+        
+        owner.doNotification("channelModeMessage", CoreActionType.CHANNEL_MODE_NOTICE,
+                cChannelClient, String.valueOf(prefix), sMessage);
     }
 
 }

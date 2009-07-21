@@ -43,6 +43,7 @@ public interface ChannelModeNoticeListener extends CallbackInterface {
 	 * cChannelClient is null if user is a server, or not on the channel.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
+         * @param prefix The mode prefix of the message
 	 * @param cChannel Channel where the notice was sent to
 	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
 	 * @param sMessage notice contents
