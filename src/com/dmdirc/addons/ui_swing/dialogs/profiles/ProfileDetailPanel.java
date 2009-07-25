@@ -31,8 +31,8 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.addons.ui_swing.dialogs.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
-
 import com.dmdirc.config.prefs.validator.ValidatorChain;
+
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -149,12 +149,11 @@ public class Line {
         } else {
             fontName = defaultFont.getName();
         }
-        //TODO issue 2251
-        //if (config.hasOptionString("ui", "textPaneFontSize")) {
-        //    fontSize = config.getOptionInt("ui", "textPaneFontSize");
-        //} else {
+        if (config.hasOptionString("ui", "textPaneFontSize")) {
+            fontSize = config.getOptionInt("ui", "textPaneFontSize");
+        } else {
             fontSize = defaultFont.getSize();
-        //}
+        }
         lineHeight = fontSize;
         if (attString.getIterator().getEndIndex() != 0) {
             final Font font = new Font(fontName, Font.PLAIN, fontSize);

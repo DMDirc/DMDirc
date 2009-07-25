@@ -100,8 +100,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
-    //TODO issue 2251
-    //parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
+        parent.getFrameContainer().getConfigManager().addChangeListener("ui",
+                "textPaneFontSize", this);
     }
 
     /**
@@ -849,7 +849,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     @Override
     public void componentResized(final ComponentEvent e) {
         //line wrap cache now invalid, clear and repaint
-        lineWrap.clear();
+        clearWrapCache();
         if (isVisible()) {
             repaint();
         }
@@ -907,6 +907,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             public void run() {
                 if (isVisible()) {
                     repaint();
+                    clearWrapCache();
                 }
             }
         });
