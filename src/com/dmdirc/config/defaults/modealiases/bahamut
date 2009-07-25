@@ -12,7 +12,8 @@ identity:
 server:
   modej=Join throttling
 
-  moder=Channel has been registered
+  moder=Registered
+  modeR=Registered users only
 
   modeL=Appear in /list
 
