@@ -10,7 +10,7 @@ identity:
 formatter:
 # Type: Timestamp
 #    1: Current timestamp
-  timestamp=%1$tH:%1$tM:%1$tS |
+  timestamp=%1$tH:%1$tM:%1$tS | 
 
 # Type: Server names and titles
 #    1: User supplied name
