@@ -21,6 +21,7 @@ server:
   modeq=Channel owner
   modeQ=Only servers can kick
   moder=Registered
+  modeR=Registered users only
   modeS=Strip colours
   modeT=No channel notices
   modeu=Auditorium
