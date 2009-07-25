@@ -37,7 +37,7 @@ import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 
 
-    /**
+ /**
  * A popup window which is shown above a status bar component to provide more
  * detailed information.
  *
@@ -76,6 +76,9 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
     /** {@inheritDoc} */
     @Override
     public void setVisible(boolean b) {
+        if (!parent.isVisible()) {
+            return;
+        }
         if (b) {
             final JPanel panel = new JPanel();
 
