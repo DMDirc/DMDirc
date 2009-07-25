@@ -345,6 +345,7 @@ public final class ServerEventHandler extends EventHandler
         if (cClient.equals(owner.getParser().getLocalClient())) {
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
                     sOldNick, cClient.getNickname());
+            owner.updateTitle();
         }
     }
 

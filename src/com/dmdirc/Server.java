@@ -49,6 +49,7 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.InvalidAddressException;
 import com.dmdirc.util.IrcAddress;
 
@@ -181,8 +182,6 @@ public class Server extends WritableFrameContainer implements Serializable {
         ServerManager.getServerManager().registerServer(this);
         WindowManager.addWindow(window);
 
-        window.setTitle(url.getServer() + ":" + url.getPort());
-
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -268,16 +267,12 @@ public class Server extends WritableFrameContainer implements Serializable {
                         + "is still connected.\n\nMy state:" + getState());
             }
 
-            // Update the name of this container (shown in treeview, etc)
-            if (!address.getServer().equals(getName())) {
-                setName(address.getServer());
-            }
-
             getConfigManager().migrate("", "", address.getServer());
 
             this.address = address;
             this.profile = profile;
 
+            updateTitle();
             updateIcon();
 
             addLine("serverConnecting", address.getServer(), address.getPort());
@@ -1106,6 +1101,20 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
     }
 
+    /**
+     * Updates the name and title of this window.
+     */
+    public void updateTitle() {
+        final Object[] arguments = new Object[]{
+            address.getServer(), parser == null ? "Unknown" : parser.getServerName(),
+            address.getPort(), parser == null ? "Unknown" : getNetwork(),
+            parser == null ? "Unknown" : parser.getLocalClient().getNickname()
+        };
+        
+        setName(Formatter.formatMessage(getConfigManager(), "serverName", arguments));
+        window.setTitle(Formatter.formatMessage(getConfigManager(), "serverTitle", arguments));
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Parser callbacks">
@@ -1333,9 +1342,10 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             myState.transition(ServerState.CONNECTED);
 
-            updateIcon();
-
             getConfigManager().migrate(parser.getServerSoftwareType(), getNetwork(), getName());
+
+            updateIcon();
+            updateTitle();
             updateIgnoreList();
 
             converter = parser.getStringConverter();

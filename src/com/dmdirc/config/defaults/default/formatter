@@ -10,7 +10,16 @@ identity:
 formatter:
 # Type: Timestamp
 #    1: Current timestamp
-  timestamp=%1$tH:%1$tM:%1$tS | 
+  timestamp=%1$tH:%1$tM:%1$tS |
+
+# Type: Server names and titles
+#    1: User supplied name
+#    2: Server supplied name
+#    3: Port
+#    4: Network
+#    5: Current nickname
+  serverName=%1$s
+  serverTitle=%5$s on %1$s (%4$s)
 
 # Type: Channel Messages with mode
 #    1: User mode prefixes
