@@ -753,6 +753,32 @@ public class Server extends WritableFrameContainer implements Serializable {
     }
 
     /**
+     * Joins the specified channel with the specified key.
+     *
+     * @since 0.6.3m1
+     * @param channel The channel to be joined
+     * @param key The key for the channel
+     */
+    public void join(final String channel, final String key) {
+        synchronized (myState) {
+            if (myState.getState() == ServerState.CONNECTED) {
+                removeInvites(channel);
+
+                if (hasChannel(channel)) {
+                    // TODO: Need to pass key?
+                    getChannel(channel).join();
+                    getChannel(channel).activateFrame();
+                } else {
+                    parser.joinChannel(channel, key);
+                }
+            } else {
+                // TODO: Need to pass key
+                address.getChannels().add(channel);
+            }
+        }
+    }
+
+    /**
      * Joins the specified channel, or adds it to the auto-join list if the
      * server is not connected.
      *

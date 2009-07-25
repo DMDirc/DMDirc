@@ -252,6 +252,7 @@ public final class CommandManager {
         new Ctcp();
         new Disconnect();
         new Ignore();
+        new JoinChannelCommand();
         new Message();
         new Nick();
         new Notice();
@@ -261,7 +262,6 @@ public final class CommandManager {
         new Umode();
         
         new RawServerCommand("invite");
-        new RawServerCommand("join");
         new RawServerCommand("lusers");
         new RawServerCommand("map");
         new RawServerCommand("motd");

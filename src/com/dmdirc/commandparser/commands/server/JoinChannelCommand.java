@@ -34,7 +34,6 @@ import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.messages.Styliser;
 
 import java.util.List;
 
@@ -68,32 +67,13 @@ public final class JoinChannelCommand extends ServerCommand implements
         }
 
         for (String pair : args.getArgumentsAsString().split(",")) {
-            if (pair.trim().indexOf(' ') == -1) {
+            int index = pair.trim().indexOf(' ');
+
+            if (index == -1) {
                 server.join(pair);
             } else {
-
+                server.join(pair.substring(0, index), pair.substring(index + 1));
             }
-        }
-
-        if (server.getParser().isValidChannelName(args.getArguments()[0])) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query "
-                    + "with a channel; maybe you meant " + Styliser.CODE_FIXED
-                    + Styliser.CODE_BOLD + CommandManager.getCommandChar()
-                    + (args.getArguments().length > 1 ? "msg" : "join")
-                    + " " + args.getArgumentsAsString()
-                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");
-            return;
-        }
-
-        if (server.hasQuery(args.getArguments()[0])) {
-            server.getQuery(args.getArguments()[0]).activateFrame();
-        } else {
-            server.addQuery(args.getArguments()[0]);
-            server.getQuery(args.getArguments()[0]).show();
-        }
-
-        if (args.getArguments().length > 1) {
-            server.getQuery(args.getArguments()[0]).sendLine(args.getArgumentsAsString(1));
         }
     }
     
@@ -128,7 +108,8 @@ public final class JoinChannelCommand extends ServerCommand implements
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final List<String> previousArgs) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new AdditionalTabTargets();
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }
