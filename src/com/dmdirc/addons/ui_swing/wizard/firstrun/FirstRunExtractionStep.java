@@ -57,7 +57,7 @@ public final class FirstRunExtractionStep extends ExtractionStep {
                 + "This short wizard will help you setup DMDirc.\n\n"
                 + "DMDirc comes with a set of core plugins that add "
                 + "functionality such as channel logging to the client. "
-                + "Thse plugins need to be copied into your home directory to"
+                + "These plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
                 + "plugins for you, tick the box below.");
         add(infoLabel, "growx, pushx");
