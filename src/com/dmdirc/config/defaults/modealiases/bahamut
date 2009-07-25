@@ -1,5 +1,7 @@
 # Default mode settings for Bahamut
 # beI,k,jl,cimMnOprRst
+#
+# http://docs.dal.net/docs/modes.html
 
 keysections:
   identity

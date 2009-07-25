@@ -1,4 +1,6 @@
 # Unreal IRCd mode aliases
+#
+# http://www.unrealircd.com/files/docs/unreal32docs.html#userchannelmodes
 
 keysections:
   identity
