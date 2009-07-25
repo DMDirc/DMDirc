@@ -30,6 +30,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.util.InvalidAddressException;
 import com.dmdirc.util.IrcAddress;
 
 /**
@@ -38,94 +39,112 @@ import com.dmdirc.util.IrcAddress;
  * @author chris
  */
 public final class NewServer extends GlobalCommand {
-    
+
     /**
      * Creates a new instance of NewServer.
      */
     public NewServer() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final CommandArguments args) {
+        IrcAddress address = null;
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "newserver", "<host[:[+]port]> [password]");
+            showUsage(origin, isSilent, "newserver",
+                    "<host[:[+]port]> [password]");
+            address = null;
+            return;
+        } else if (args.getArguments().length == 1) {
+            try {
+                address = new IrcAddress(args.getArgumentsAsString());
+            } catch (InvalidAddressException ex) {
+                address = null;
+            }
+        }
+        if (address == null) {
+            address = parseInput(origin, isSilent, args);
+        }
+
+        if (address == null) {
             return;
         }
-        
+
+        final Server server = new Server(address, IdentityManager.getProfiles().get(0));
+        server.connect();
+    }
+    private IrcAddress parseInput(final InputWindow origin, final boolean isSilent,
+            final CommandArguments args) {
+
         boolean ssl = false;
         String host = "";
         String pass = "";
         int port = 6667;
         int offset = 0;
-        
+
         // Check for SSL
         if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
-            Logger.userError(ErrorLevel.LOW, 
-                    "Using /newserver --ssl is deprecated, and may be removed in the future."
-                    + " Use /newserver <host>:+<port> instead.");
-            
+            Logger.userError(ErrorLevel.LOW,
+                    "Using /newserver --ssl is deprecated, and may be removed in the future." +
+                    " Use /newserver <host>:+<port> instead.");
+
             ssl = true;
             offset++;
         }
-        
+
         // Check for port
         if (args.getArguments()[offset].indexOf(':') > -1) {
             final String[] parts = args.getArguments()[offset].split(":");
             host = parts[0];
-            
+
             if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
                 ssl = true;
                 parts[1] = parts[1].substring(1);
             }
-            
+
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
                 origin.addLine(FORMAT_ERROR, "Invalid port specified");
-                return;
+                return null;
             }
-            
+
             if (port <= 0 || port > 65535) {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Port must be between 1 and 65535");
-                return;
-            }            
+                sendLine(origin, isSilent, FORMAT_ERROR,
+                        "Port must be between 1 and 65535");
+                return null;
+            }
         } else {
             host = args.getArguments()[offset];
         }
-        
+
         // Check for password
         if (args.getArguments().length > ++offset) {
             pass = args.getArgumentsAsString(offset);
         }
-        
-        final Server server = new Server(new IrcAddress(host, port, pass, ssl),
-                IdentityManager.getProfiles().get(0));
-        server.connect();
+
+        return new IrcAddress(host, port, pass, ssl);
     }
-    
-    
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "newserver";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
         return "newserver <host[:[+]port]> [password] - connect to a new server";
     }
-    
 }
