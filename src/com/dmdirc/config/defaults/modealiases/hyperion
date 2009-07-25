@@ -23,6 +23,7 @@ server:
   modeL=Allow large lists
   modeP=Permanent channel
   modeQ=No forwarded users
+  moder=Registered users only
   modeR=Silence unidentified users
   modez=Reduced moderation
 
