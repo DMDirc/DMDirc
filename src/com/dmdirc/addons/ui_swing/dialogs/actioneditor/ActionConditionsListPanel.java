@@ -134,9 +134,9 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         } else {
             synchronized (conditions) {
                 for (ActionConditionDisplayPanel condition : conditions) {
-                    index++;
                     add(new JLabel(index + "."), "aligny top");
                     add(condition, "growx, pushx, aligny top");
+                    index++;
                 }
             }
             if (index == 0) {
