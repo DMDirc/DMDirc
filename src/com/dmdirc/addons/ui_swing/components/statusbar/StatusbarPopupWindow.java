@@ -76,10 +76,7 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
     /** {@inheritDoc} */
     @Override
     public void setVisible(boolean b) {
-        if (!parent.isVisible()) {
-            return;
-        }
-        if (b) {
+        if (b && parent.isVisible()) {
             final JPanel panel = new JPanel();
 
             panel.setLayout(new MigLayout("ins 3 5 6 10, gap 10 5"));
