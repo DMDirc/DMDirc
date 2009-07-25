@@ -67,8 +67,8 @@ public final class Query extends MessageTarget implements
     /** The QueryWindow used for this Query. */
     private QueryWindow window;
 
-    /** The full host of the client associated with this Query. */
-    private String host;
+    /** The full host and nickname of the client associated with this Query. */
+    private String host, nickname;
 
     /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;
@@ -85,6 +85,7 @@ public final class Query extends MessageTarget implements
 
         this.server = newServer;
         this.host = newHost;
+        this.nickname = server.getParser().parseHostmask(host)[0];
 
         window = Main.getUI().getQuery(this);
         WindowManager.addWindow(server.getFrame(), window);
@@ -279,6 +280,7 @@ public final class Query extends MessageTarget implements
             addLine(format, sOldNick, cClient.getUsername(),
                     cClient.getHostname(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getUsername() + "@" + cClient.getHostname();
+            nickname = cClient.getNickname();
             updateTitle();
 
             setName(cClient.getNickname());
@@ -354,7 +356,7 @@ public final class Query extends MessageTarget implements
      * @return The nickname of this query's user
      */
     public String getNickname() {
-        return server.getParser().parseHostmask(host)[0];
+        return nickname;
     }
 
     /** {@inheritDoc} */
