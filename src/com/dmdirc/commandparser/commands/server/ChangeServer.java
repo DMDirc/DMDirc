@@ -26,7 +26,6 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -73,7 +72,7 @@ public final class ChangeServer extends ServerCommand {
             return;
         }
 
-        server.connect(address, IdentityManager.getProfiles().get(0));
+        server.connect(address, server.getProfile());
     }
 
     private IrcAddress parseInput(final InputWindow origin, final boolean isSilent,
