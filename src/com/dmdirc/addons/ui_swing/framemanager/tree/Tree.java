@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
 import com.dmdirc.addons.ui_swing.UIUtilities;
@@ -28,6 +29,8 @@ import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -47,7 +50,7 @@ import net.miginfocom.layout.PlatformDefaults;
  * Specialised JTree for the frame manager.
  */
 public class Tree extends JTree implements MouseMotionListener,
-        ConfigChangeListener, MouseListener {
+        ConfigChangeListener, MouseListener, ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,6 +60,8 @@ public class Tree extends JTree implements MouseMotionListener,
     private static final long serialVersionUID = 1;
     /** Drag selection enabled? */
     private boolean dragSelect;
+    /** Manual reorder? */
+    private boolean manualReorder;
     /** Drag button 1? */
     private boolean dragButton;
     /** Tree frame manager. */
@@ -80,7 +85,8 @@ public class Tree extends JTree implements MouseMotionListener,
         getInputMap(JComponent.WHEN_FOCUSED).clear();
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
-        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        getSelectionModel().setSelectionMode(
+                TreeSelectionModel.SINGLE_TREE_SELECTION);
         setRootVisible(false);
         setRowHeight(0);
         setShowsRootHandles(false);
@@ -96,15 +102,15 @@ public class Tree extends JTree implements MouseMotionListener,
             @Override
             protected void setPath(final TreePath path) {
                 super.setPath(path);
-                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+                        activateFrame();
             }
         };
         setFocusable(false);
 
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
                 "dragSelection");
-        IdentityManager.getGlobalConfig().addChangeListener("treeview",
-                "dragSelection", this);
+        IdentityManager.getGlobalConfig().addChangeListener("treeview", this);
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -148,8 +154,17 @@ public class Tree extends JTree implements MouseMotionListener,
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
-                "dragSelection");
+        if ("dragSelection".equals(key)) {
+            dragSelect = IdentityManager.getGlobalConfig().getOptionBool(
+                    "treeview",
+                    "dragSelection");
+        } else {
+            manualReorder = IdentityManager.getGlobalConfig().getOptionBool(
+                    "treeview",
+                    "sortServers") || IdentityManager.getGlobalConfig().
+                    getOptionBool("treeview",
+                    "sortWindows");
+        }
     }
 
     /** 
@@ -162,7 +177,9 @@ public class Tree extends JTree implements MouseMotionListener,
         if (dragSelect && dragButton) {
             final TreeViewNode node = getNodeForLocation(e.getX(), e.getY());
             if (node != null) {
-                ((TreeViewNode) new TreePath(node.getPath()).getLastPathComponent()).getFrameContainer().activateFrame();
+                ((TreeViewNode) new TreePath(node.getPath()).
+                        getLastPathComponent()).getFrameContainer().
+                        activateFrame();
             }
         }
         manager.checkRollover(e);
@@ -199,7 +216,8 @@ public class Tree extends JTree implements MouseMotionListener,
             dragButton = true;
             final TreePath selectedPath = getPathForLocation(e.getX(), e.getY());
             if (selectedPath != null) {
-                ((TreeViewNode) selectedPath.getLastPathComponent()).getFrameContainer().activateFrame();
+                ((TreeViewNode) selectedPath.getLastPathComponent()).
+                        getFrameContainer().activateFrame();
             }
         }
         processMouseEvents(e);
@@ -244,16 +262,61 @@ public class Tree extends JTree implements MouseMotionListener,
         final TreePath localPath = getPathForLocation(e.getX(), e.getY());
         if (localPath != null) {
             if (e.isPopupTrigger()) {
-                final TextFrame frame = (TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
+                final TextFrame frame = (TextFrame) ((TreeViewNode) localPath.
+                        getLastPathComponent()).getFrameContainer().
                         getFrame();
                 final JPopupMenu popupMenu = frame.getPopupMenu(null, "");
                 frame.addCustomPopupItems(popupMenu);
                 if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
-                popupMenu.add(new JMenuItem(new CloseFrameContainerAction(frame.getContainer())));
+                    final TreeViewNodeMenuItem moveUp =
+                            new TreeViewNodeMenuItem("Move Up", "Up",
+                            (TreeViewNode) localPath.getLastPathComponent());
+                    final TreeViewNodeMenuItem moveDown =
+                            new TreeViewNodeMenuItem("Move Down", "Down",
+                            (TreeViewNode) localPath.getLastPathComponent());
+
+                    moveUp.addActionListener(this);
+                    moveDown.addActionListener(this);
+
+                    popupMenu.add(moveUp);
+                    popupMenu.add(moveDown);
+                popupMenu.add(new JMenuItem(new CloseFrameContainerAction(frame.
+                        getContainer())));
                 popupMenu.show(this, e.getX(), e.getY());
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        final TreeViewNode node = ((TreeViewNodeMenuItem) e.getSource()).
+                getTreeNode();
+        int index = getModel().getIndexOfChild(node.getParent(), node);
+        if ("Up".equals(e.getActionCommand())) {
+            if (index == 0) {
+                index = node.getSiblingCount() - 1;
+            } else {
+                index--;
+            }
+        } else if ("Down".equals(e.getActionCommand())) {
+            if (index == (node.getSiblingCount() - 1)) {
+                index = 0;
+            } else {
+                index++;
+            }
+        }
+        final TreeViewNode parentNode = (TreeViewNode) node.getParent();
+        final TreePath nodePath = new TreePath(node.getPath());
+        final boolean isExpanded = isExpanded(nodePath);
+        ((TreeViewModel) getModel()).removeNodeFromParent(node);
+        ((TreeViewModel) getModel()).insertNodeInto(node, parentNode, index);
+        setExpandedState(nodePath, isExpanded);
     }
 }

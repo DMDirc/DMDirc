@@ -76,6 +76,18 @@ public class TreeViewModel extends DefaultTreeModel {
             final TreeViewNode parent) {
         int index = 0;
         index = getIndex(newChild, parent);
+        insertNodeInto(newChild, parent, index);
+    }
+
+    /**
+     * Inserts a new node into the tree and fires the appropriate events.
+     *
+     * @param newChild child to be added.
+     * @param parent parent child is to be added too.
+     * @param index Index of item to add
+     */
+    public final void insertNodeInto(final TreeViewNode newChild,
+            final TreeViewNode parent, final int index) {
         super.insertNodeInto(newChild, parent, index);
     }
 
