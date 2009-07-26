@@ -7,7 +7,7 @@ keysections:
 
 identity:
   name=Asuka mode aliases
-  ircd=re:asuka|snircd
+  ircd=re:asuka|snircd|bircd
 
 server:
   modeN=No channel notices

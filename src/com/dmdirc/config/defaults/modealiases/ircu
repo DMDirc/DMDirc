@@ -7,7 +7,7 @@ keysections:
 
 identity:
   name=IRCu mode aliases
-  ircd=re:ircu|asuka|snircd
+  ircd=re:ircu|asuka|snircd|bircd
 
 server:
   modeA=Admin password
