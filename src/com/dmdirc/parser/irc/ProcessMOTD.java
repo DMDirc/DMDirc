@@ -31,73 +31,73 @@ import com.dmdirc.parser.interfaces.callbacks.MotdStartListener;
  */
 public class ProcessMOTD extends IRCProcessor {
 
-	/**
-	 * Process a MOTD Related Line.
-	 *
-	 * @param sParam Type of line to process ("375", "372", "376", "422")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(String sParam, String[] token) {
-		if (sParam.equals("375")) {
-			callMOTDStart(token[token.length-1]);
-		} else if (sParam.equals("372")) {
-			callMOTDLine(token[token.length-1]);
-		} else {
-			callMOTDEnd(sParam.equals("422"), token[token.length-1]);
-		}
-	}
-	
-	/**
-	 * Callback to all objects implementing the MOTDEnd Callback.
-	 *
-	 * @param noMOTD Was this an MOTDEnd or NoMOTD
-	 * @param data The contents of the line (incase of language changes or so)
-	 * @see IMOTDEnd
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callMOTDEnd(final boolean noMOTD, final String data) {
-		return getCallbackManager().getCallbackType(MotdEndListener.class).call(noMOTD, data);
-	}
-	
-	/**
-	 * Callback to all objects implementing the MOTDLine Callback.
-	 *
-	 * @see IMOTDLine
-	 * @param data Incomming Line.
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callMOTDLine(final String data) {
-		return getCallbackManager().getCallbackType(MotdLineListener.class).call(data);
-	}
-	
-	/**
-	 * Callback to all objects implementing the MOTDStart Callback.
-	 *
-	 * @see IMOTDStart
-	 * @param data Incomming Line.
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callMOTDStart(String data) {
-		return getCallbackManager().getCallbackType(MotdStartListener.class).call(data);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"372", "375", "376", "422"};
-	} 
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected ProcessMOTD (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process a MOTD Related Line.
+     *
+     * @param sParam Type of line to process ("375", "372", "376", "422")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(String sParam, String[] token) {
+        if (sParam.equals("375")) {
+            callMOTDStart(token[token.length-1]);
+        } else if (sParam.equals("372")) {
+            callMOTDLine(token[token.length-1]);
+        } else {
+            callMOTDEnd(sParam.equals("422"), token[token.length-1]);
+        }
+    }
+    
+    /**
+     * Callback to all objects implementing the MOTDEnd Callback.
+     *
+     * @param noMOTD Was this an MOTDEnd or NoMOTD
+     * @param data The contents of the line (incase of language changes or so)
+     * @see IMOTDEnd
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callMOTDEnd(final boolean noMOTD, final String data) {
+        return getCallbackManager().getCallbackType(MotdEndListener.class).call(noMOTD, data);
+    }
+    
+    /**
+     * Callback to all objects implementing the MOTDLine Callback.
+     *
+     * @see IMOTDLine
+     * @param data Incomming Line.
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callMOTDLine(final String data) {
+        return getCallbackManager().getCallbackType(MotdLineListener.class).call(data);
+    }
+    
+    /**
+     * Callback to all objects implementing the MOTDStart Callback.
+     *
+     * @see IMOTDStart
+     * @param data Incomming Line.
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callMOTDStart(String data) {
+        return getCallbackManager().getCallbackType(MotdStartListener.class).call(data);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"372", "375", "376", "422"};
+    } 
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected ProcessMOTD (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }

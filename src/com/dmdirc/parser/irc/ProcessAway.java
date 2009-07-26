@@ -28,51 +28,51 @@ import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
  * Process an Away/Back message.
  */
 public class ProcessAway extends IRCProcessor {
-	/**
-	 * Process an Away/Back message.
-	 *
-	 * @param sParam Type of line to process ("305", "306")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(String sParam, String[] token) {
-		if (sParam.equals("301")) {
-			IRCClientInfo iClient = getClientInfo(token[3]);
-			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
-		} else {
-			myParser.getLocalClient().setAwayState(sParam.equals("306"));
-			callAwayState(myParser.getLocalClient().getAwayState(), myParser.getLocalClient().getAwayReason());
-		}
-	}
-	
-	/**
-	 * Callback to all objects implementing the onAwayState Callback.
-	 *
-	 * @see IAwayState
-	 * @param currentState Set to true if we are now away, else false.
-	 * @param reason Best guess at away reason
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callAwayState(boolean currentState, String reason) {
-		return myParser.getCallbackManager().getCallbackType(AwayStateListener.class).call(currentState, reason);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"301", "305", "306"};
-	} 
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected ProcessAway (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process an Away/Back message.
+     *
+     * @param sParam Type of line to process ("305", "306")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(String sParam, String[] token) {
+        if (sParam.equals("301")) {
+            IRCClientInfo iClient = getClientInfo(token[3]);
+            if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
+        } else {
+            myParser.getLocalClient().setAwayState(sParam.equals("306"));
+            callAwayState(myParser.getLocalClient().getAwayState(), myParser.getLocalClient().getAwayReason());
+        }
+    }
+    
+    /**
+     * Callback to all objects implementing the onAwayState Callback.
+     *
+     * @see IAwayState
+     * @param currentState Set to true if we are now away, else false.
+     * @param reason Best guess at away reason
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callAwayState(boolean currentState, String reason) {
+        return myParser.getCallbackManager().getCallbackType(AwayStateListener.class).call(currentState, reason);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"301", "305", "306"};
+    } 
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected ProcessAway (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }

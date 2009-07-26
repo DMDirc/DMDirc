@@ -28,48 +28,48 @@ import com.dmdirc.parser.interfaces.callbacks.InviteListener;
  * Process an Invite Request.
  */
 public class ProcessInvite extends IRCProcessor {
-	/**
-	 * Process an Invite Request.
-	 *
-	 * @param sParam Type of line to process ("INVITE")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(final String sParam, final String[] token) {
-		// :Tobavaj!shane@Tobavaj.users.quakenet.org INVITE Dataforce #dataforceisgod 1188846462
-		if (token.length > 2) {
-			callInvite(token[0].substring(1), token[3]);
-		}
-	}
-	
-	/**
-	 * Callback to all objects implementing the Invite Callback.
-	 *
-	 * @see IInvite
-	 * @param userHost The hostname of the person who invited us
-	 * @param channel The name of the channel we were invited to
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callInvite(final String userHost, final String channel) {
-		return getCallbackManager().getCallbackType(InviteListener.class).call(userHost, channel);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"INVITE"};
-	} 
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected ProcessInvite (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process an Invite Request.
+     *
+     * @param sParam Type of line to process ("INVITE")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(final String sParam, final String[] token) {
+        // :Tobavaj!shane@Tobavaj.users.quakenet.org INVITE Dataforce #dataforceisgod 1188846462
+        if (token.length > 2) {
+            callInvite(token[0].substring(1), token[3]);
+        }
+    }
+    
+    /**
+     * Callback to all objects implementing the Invite Callback.
+     *
+     * @see IInvite
+     * @param userHost The hostname of the person who invited us
+     * @param channel The name of the channel we were invited to
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callInvite(final String userHost, final String channel) {
+        return getCallbackManager().getCallbackType(InviteListener.class).call(userHost, channel);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"INVITE"};
+    } 
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected ProcessInvite (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }

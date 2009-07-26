@@ -35,96 +35,96 @@ import java.util.HashMap;
  * @see IRCParser
  */
 public class IRCAuthenticator extends Authenticator {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 1;
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
 
-	/** Singleton instance of IRCAuthenticator. */
-	private static IRCAuthenticator me = null;
-	
-	/** List of authentication replies. */
-	private final Map<String,PasswordAuthentication> replies = new HashMap<String,PasswordAuthentication>();
-	
-	/**
-	 * Create a new IRCAuthenticator.
-	 *
-	 * This creates an IRCAuthenticator and registers it as the default
-	 * Authenticator.
-	 */
-	private IRCAuthenticator() {
-/*		try {
-			final Field field = Authenticator.class.getDeclaredField("theAuthenticator");
-			field.setAccessible(true);
-			final Object authenticator = field.get(null);
-			if (authenticator instanceof Authenticator) {
-				oldAuthenticator = (Authenticator)authenticator;
-			}
-		} catch (NoSuchFieldException nsfe) {
-		} catch (IllegalAccessException iae) {
-		}*/
-		Authenticator.setDefault(this);
-	}
-	
-	/**
-	 * Get the instance of IRCAuthenticator.
-	 *
-	 * @return The IRCAuthenticator instance.
-	 */
-	public static synchronized IRCAuthenticator getIRCAuthenticator() {
-		if (me == null) {
-			me = new IRCAuthenticator();
-		}
-		return me;
-	}
+    /** Singleton instance of IRCAuthenticator. */
+    private static IRCAuthenticator me = null;
+    
+    /** List of authentication replies. */
+    private final Map<String,PasswordAuthentication> replies = new HashMap<String,PasswordAuthentication>();
+    
+    /**
+     * Create a new IRCAuthenticator.
+     *
+     * This creates an IRCAuthenticator and registers it as the default
+     * Authenticator.
+     */
+    private IRCAuthenticator() {
+/*        try {
+            final Field field = Authenticator.class.getDeclaredField("theAuthenticator");
+            field.setAccessible(true);
+            final Object authenticator = field.get(null);
+            if (authenticator instanceof Authenticator) {
+                oldAuthenticator = (Authenticator)authenticator;
+            }
+        } catch (NoSuchFieldException nsfe) {
+        } catch (IllegalAccessException iae) {
+        }*/
+        Authenticator.setDefault(this);
+    }
+    
+    /**
+     * Get the instance of IRCAuthenticator.
+     *
+     * @return The IRCAuthenticator instance.
+     */
+    public static synchronized IRCAuthenticator getIRCAuthenticator() {
+        if (me == null) {
+            me = new IRCAuthenticator();
+        }
+        return me;
+    }
 
-	/**
-	 * Add a server to authenticate for.
-	 *
-	 * @param server ServerInfo object with proxy details.
-	 */
-	public void addAuthentication(final ServerInfo server) {
-		addAuthentication(server.getProxyHost(), server.getProxyPort(), server.getProxyUser(), server.getProxyPass());
-	}
+    /**
+     * Add a server to authenticate for.
+     *
+     * @param server ServerInfo object with proxy details.
+     */
+    public void addAuthentication(final ServerInfo server) {
+        addAuthentication(server.getProxyHost(), server.getProxyPort(), server.getProxyUser(), server.getProxyPass());
+    }
 
-	/**
-	 * Add a host to authenticate for.
-	 *
-	 * @param host Hostname
-	 * @param port Port
-	 * @param username Username to return for authentication
-	 * @param password Password to return for authentication
-	 */
-	public void addAuthentication(final String host, final int port, final String username, final String password) {
-		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-			return;
-		}
-		final PasswordAuthentication pass = new PasswordAuthentication(username, password.toCharArray());
-		final String fullhost = host.toLowerCase()+":"+port;
-		
-		if (replies.containsKey(fullhost)) {
-			replies.remove(fullhost);
-		}
-		
-		replies.put(fullhost, pass);
-	}
-	
-	/** {@inheritDoc} */
-	protected PasswordAuthentication getPasswordAuthentication() {
-		/*
-		 * getRequestingHost: 85.234.138.2
-		 * getRequestingPort: 1080
-		 * getRequestingPrompt: SOCKS authentication
-		 * getRequestingProtocol: SOCKS5
-		 * getRequestingScheme: null
-		 * getRequestingSite: /85.234.138.2
-		 * getRequestingURL: null
-		 * getRequestorType: SERVER
-		 */
+    /**
+     * Add a host to authenticate for.
+     *
+     * @param host Hostname
+     * @param port Port
+     * @param username Username to return for authentication
+     * @param password Password to return for authentication
+     */
+    public void addAuthentication(final String host, final int port, final String username, final String password) {
+        if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
+            return;
+        }
+        final PasswordAuthentication pass = new PasswordAuthentication(username, password.toCharArray());
+        final String fullhost = host.toLowerCase()+":"+port;
+        
+        if (replies.containsKey(fullhost)) {
+            replies.remove(fullhost);
+        }
+        
+        replies.put(fullhost, pass);
+    }
+    
+    /** {@inheritDoc} */
+    protected PasswordAuthentication getPasswordAuthentication() {
+        /*
+         * getRequestingHost: 85.234.138.2
+         * getRequestingPort: 1080
+         * getRequestingPrompt: SOCKS authentication
+         * getRequestingProtocol: SOCKS5
+         * getRequestingScheme: null
+         * getRequestingSite: /85.234.138.2
+         * getRequestingURL: null
+         * getRequestorType: SERVER
+         */
 
-		final String fullhost = getRequestingHost().toLowerCase()+":"+getRequestingPort();
-		return replies.get(fullhost);
-	}
+        final String fullhost = getRequestingHost().toLowerCase()+":"+getRequestingPort();
+        return replies.get(fullhost);
+    }
 }

@@ -28,44 +28,44 @@ import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
  * Process a NoticeAuth message.
  */
 public class ProcessNoticeAuth extends IRCProcessor {
-	/**
-	 * Process a NoticeAuth message.
-	 *
-	 * @param sParam Type of line to process ("Notice Auth")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(final String sParam, final String[] token) {
-		callNoticeAuth(token[token.length-1]);
-	}
-	
-	/**
-	 * Callback to all objects implementing the NoticeAuth Callback.
-	 *
-	 * @see INoticeAuth
-	 * @param data Incomming Line.
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callNoticeAuth(final String data) {
-		return getCallbackManager().getCallbackType(AuthNoticeListener.class).call(data);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"Notice Auth"};
-	} 
-	
-	/**
-	 * Create a new instance of the ProcessNoticeAuth Object.
-	 *
-	 * @param parser IRCParser That owns this object
-	 * @param manager ProcessingManager that is in charge of this object
-	 */
-	protected ProcessNoticeAuth (final IRCParser parser, final ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process a NoticeAuth message.
+     *
+     * @param sParam Type of line to process ("Notice Auth")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(final String sParam, final String[] token) {
+        callNoticeAuth(token[token.length-1]);
+    }
+    
+    /**
+     * Callback to all objects implementing the NoticeAuth Callback.
+     *
+     * @see INoticeAuth
+     * @param data Incomming Line.
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callNoticeAuth(final String data) {
+        return getCallbackManager().getCallbackType(AuthNoticeListener.class).call(data);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"Notice Auth"};
+    } 
+    
+    /**
+     * Create a new instance of the ProcessNoticeAuth Object.
+     *
+     * @param parser IRCParser That owns this object
+     * @param manager ProcessingManager that is in charge of this object
+     */
+    protected ProcessNoticeAuth (final IRCParser parser, final ProcessingManager manager) { super(parser, manager); }
 
 }

@@ -29,73 +29,73 @@ import com.dmdirc.parser.interfaces.callbacks.ServerReadyListener;
  * Process a 001 message.
  */
 public class Process001 extends IRCProcessor {
-	/**
-	 * Process a 001 message.
-	 *
-	 * @param sParam Type of line to process ("001")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(final String sParam, final String[] token) {
-		myParser.got001 = true;
-		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
-		myParser.serverName = token[0].substring(1,token[0].length());
-		final String sNick = token[2];
-				
-		// myself will be fake if we havn't recieved a 001 yet
-		if (myParser.getLocalClient().isFake()) {
-			// Update stored information
-			myParser.getLocalClient().setUserBits(sNick, true, true);
-			myParser.getLocalClient().setFake(false);
-			myParser.addClient(myParser.getLocalClient());
-		} else {
-			// Another 001? if nicknames change then we need to update the hashtable
-			if (!myParser.getLocalClient().getNickname().equalsIgnoreCase(sNick)) {
-				// Nick changed, remove old me
-				myParser.forceRemoveClient(myParser.getLocalClient());
-				/// Update stored information
-				myParser.getLocalClient().setUserBits(sNick, true, true);
-				// Check that we don't already know someone by this name
-				if (getClientInfo(myParser.getLocalClient().getNickname()) == null) {
-					// And add to list
-					myParser.addClient(myParser.getLocalClient());
-				} else {
-					// Someone else already know? this is bad!
-					myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "001 overwrites existing client?", myParser.getLastLine()));
-				}
-			}
-		}
-		
-		callServerReady();
-		myParser.startPingTimer();
-	}
-	
-	/**
-	 * Callback to all objects implementing the ServerReady Callback.
-	 *
-	 * @see IServerReady
-	 * @return true if a method was called, false otherwise
-	 */	
-	protected boolean callServerReady() {
-		return getCallbackManager().getCallbackType(ServerReadyListener.class).call();
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"001"};
-	} 
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected Process001 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process a 001 message.
+     *
+     * @param sParam Type of line to process ("001")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(final String sParam, final String[] token) {
+        myParser.got001 = true;
+        // << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
+        myParser.serverName = token[0].substring(1,token[0].length());
+        final String sNick = token[2];
+                
+        // myself will be fake if we havn't recieved a 001 yet
+        if (myParser.getLocalClient().isFake()) {
+            // Update stored information
+            myParser.getLocalClient().setUserBits(sNick, true, true);
+            myParser.getLocalClient().setFake(false);
+            myParser.addClient(myParser.getLocalClient());
+        } else {
+            // Another 001? if nicknames change then we need to update the hashtable
+            if (!myParser.getLocalClient().getNickname().equalsIgnoreCase(sNick)) {
+                // Nick changed, remove old me
+                myParser.forceRemoveClient(myParser.getLocalClient());
+                /// Update stored information
+                myParser.getLocalClient().setUserBits(sNick, true, true);
+                // Check that we don't already know someone by this name
+                if (getClientInfo(myParser.getLocalClient().getNickname()) == null) {
+                    // And add to list
+                    myParser.addClient(myParser.getLocalClient());
+                } else {
+                    // Someone else already know? this is bad!
+                    myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "001 overwrites existing client?", myParser.getLastLine()));
+                }
+            }
+        }
+        
+        callServerReady();
+        myParser.startPingTimer();
+    }
+    
+    /**
+     * Callback to all objects implementing the ServerReady Callback.
+     *
+     * @see IServerReady
+     * @return true if a method was called, false otherwise
+     */    
+    protected boolean callServerReady() {
+        return getCallbackManager().getCallbackType(ServerReadyListener.class).call();
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"001"};
+    } 
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected Process001 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }

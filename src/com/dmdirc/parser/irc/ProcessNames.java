@@ -29,106 +29,106 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
  * Process a Names reply.
  */
 public class ProcessNames extends IRCProcessor {
-	/**
-	 * Process a Names reply.
-	 *
-	 * @param sParam Type of line to process ("366", "353")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(String sParam, String[] token) {
-		IRCChannelInfo iChannel;
-		if (sParam.equals("366")) {
-			// End of names
-			iChannel = getChannel(token[3]);
-			if (iChannel == null) { return; }
-			
-			iChannel.setAddingNames(false);
-			callChannelGotNames(iChannel);
-			
-			if (!iChannel.hasAskedForListModes()) {
-				if (myParser.getAutoListMode()) {
-					iChannel.requestListModes();
-				}
-			}
-		} else {
-			// Names
-			
-			IRCClientInfo iClient;
-			IRCChannelClientInfo iChannelClient;
-			
-			iChannel = getChannel(token[4]);
-		
-			if (iChannel == null) { return; }
-			
-			// If we are not expecting names, clear the current known names - this is fresh stuff!
-			if (!iChannel.isAddingNames()) { iChannel.emptyChannel(); }
-			iChannel.setAddingNames(true);
-			
-			String[] sNames = token[token.length-1].split(" ");
-			String sNameBit = "", sName = "";
-			StringBuilder sModes = new StringBuilder();
-			long nPrefix = 0;
-			for (int j = 0; j < sNames.length; ++j) {
-				sNameBit = sNames[j];
-				// If name is empty (ie there was an extra space) ignore it.
-				if (sNameBit.isEmpty()) { continue; }
-				// This next bit of code allows for any ircd which decides to use @+Foo in names
-				for (int i = 0; i < sNameBit.length(); ++i) {
-					Character cMode = sNameBit.charAt(i);
-					// hPrefixMap contains @, o, +, v this caused issue 107
-					// hPrefixModes only contains o, v so if the mode is in hPrefixMap
-					// and not in hPrefixModes, its ok to use.
-					if (myParser.prefixMap.containsKey(cMode) && !myParser.prefixModes.containsKey(cMode)) {
-						sModes.append(cMode);
-						nPrefix = nPrefix + myParser.prefixModes.get(myParser.prefixMap.get(cMode));
-					} else {
-						sName = sNameBit.substring(i);
-						break;
-					}
-				}
-				callDebugInfo(IRCParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
-				
-				iClient = getClientInfo(sName);
-				if (iClient == null) { iClient = new IRCClientInfo(myParser, sName); myParser.addClient(iClient); }
-				iClient.setUserBits(sName, false); // Will do nothing if this isn't UHNAMES
-				iChannelClient = iChannel.addClient(iClient);
-				iChannelClient.setChanMode(nPrefix);
+    /**
+     * Process a Names reply.
+     *
+     * @param sParam Type of line to process ("366", "353")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(String sParam, String[] token) {
+        IRCChannelInfo iChannel;
+        if (sParam.equals("366")) {
+            // End of names
+            iChannel = getChannel(token[3]);
+            if (iChannel == null) { return; }
+            
+            iChannel.setAddingNames(false);
+            callChannelGotNames(iChannel);
+            
+            if (!iChannel.hasAskedForListModes()) {
+                if (myParser.getAutoListMode()) {
+                    iChannel.requestListModes();
+                }
+            }
+        } else {
+            // Names
+            
+            IRCClientInfo iClient;
+            IRCChannelClientInfo iChannelClient;
+            
+            iChannel = getChannel(token[4]);
+        
+            if (iChannel == null) { return; }
+            
+            // If we are not expecting names, clear the current known names - this is fresh stuff!
+            if (!iChannel.isAddingNames()) { iChannel.emptyChannel(); }
+            iChannel.setAddingNames(true);
+            
+            String[] sNames = token[token.length-1].split(" ");
+            String sNameBit = "", sName = "";
+            StringBuilder sModes = new StringBuilder();
+            long nPrefix = 0;
+            for (int j = 0; j < sNames.length; ++j) {
+                sNameBit = sNames[j];
+                // If name is empty (ie there was an extra space) ignore it.
+                if (sNameBit.isEmpty()) { continue; }
+                // This next bit of code allows for any ircd which decides to use @+Foo in names
+                for (int i = 0; i < sNameBit.length(); ++i) {
+                    Character cMode = sNameBit.charAt(i);
+                    // hPrefixMap contains @, o, +, v this caused issue 107
+                    // hPrefixModes only contains o, v so if the mode is in hPrefixMap
+                    // and not in hPrefixModes, its ok to use.
+                    if (myParser.prefixMap.containsKey(cMode) && !myParser.prefixModes.containsKey(cMode)) {
+                        sModes.append(cMode);
+                        nPrefix = nPrefix + myParser.prefixModes.get(myParser.prefixMap.get(cMode));
+                    } else {
+                        sName = sNameBit.substring(i);
+                        break;
+                    }
+                }
+                callDebugInfo(IRCParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
+                
+                iClient = getClientInfo(sName);
+                if (iClient == null) { iClient = new IRCClientInfo(myParser, sName); myParser.addClient(iClient); }
+                iClient.setUserBits(sName, false); // Will do nothing if this isn't UHNAMES
+                iChannelClient = iChannel.addClient(iClient);
+                iChannelClient.setChanMode(nPrefix);
 
-				sName = "";
-				sModes = new StringBuilder();
-				nPrefix = 0;
-			}
-		}
-	}
-	
-	/**
-	 * Callback to all objects implementing the ChannelGotNames Callback.
-	 *
-	 * @see IChannelGotNames
-	 * @param cChannel Channel which the names reply is for
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callChannelGotNames(ChannelInfo cChannel) {
-		return getCallbackManager().getCallbackType(ChannelNamesListener.class).call(cChannel);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"353", "366"};
-	} 
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected ProcessNames (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+                sName = "";
+                sModes = new StringBuilder();
+                nPrefix = 0;
+            }
+        }
+    }
+    
+    /**
+     * Callback to all objects implementing the ChannelGotNames Callback.
+     *
+     * @see IChannelGotNames
+     * @param cChannel Channel which the names reply is for
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callChannelGotNames(ChannelInfo cChannel) {
+        return getCallbackManager().getCallbackType(ChannelNamesListener.class).call(cChannel);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"353", "366"};
+    } 
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected ProcessNames (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }

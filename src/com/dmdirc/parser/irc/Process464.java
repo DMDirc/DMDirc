@@ -28,45 +28,45 @@ import com.dmdirc.parser.interfaces.callbacks.PasswordRequiredListener;
  * Process a 464 message.
  */
 public class Process464 extends IRCProcessor {
-	/**
-	 * Process a 464 message.
-	 *
-	 * @param sParam Type of line to process ("464")
-	 * @param token IRCTokenised line to process
-	 */
-	@Override
-	public void process(String sParam, String[] token) {
-		callPasswordRequired();
-//		ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
-//		callErrorInfo(ei);
-	}
-	
-	/**
-	 * What does this IRCProcessor handle.
-	 *
-	 * @return String[] with the names of the tokens we handle.
-	 */
-	@Override
-	public String[] handles() {
-		return new String[]{"464"};
-	} 
-	
-	/**
-	 * Callback to all objects implementing the PasswordRequired Callback.
-	 *
-	 * @see IPasswordRequired
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callPasswordRequired() {
-		return getCallbackManager().getCallbackType(PasswordRequiredListener.class).call();
-	}
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object.
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected Process464 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+    /**
+     * Process a 464 message.
+     *
+     * @param sParam Type of line to process ("464")
+     * @param token IRCTokenised line to process
+     */
+    @Override
+    public void process(String sParam, String[] token) {
+        callPasswordRequired();
+//        ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
+//        callErrorInfo(ei);
+    }
+    
+    /**
+     * What does this IRCProcessor handle.
+     *
+     * @return String[] with the names of the tokens we handle.
+     */
+    @Override
+    public String[] handles() {
+        return new String[]{"464"};
+    } 
+    
+    /**
+     * Callback to all objects implementing the PasswordRequired Callback.
+     *
+     * @see IPasswordRequired
+     * @return true if a method was called, false otherwise
+     */
+    protected boolean callPasswordRequired() {
+        return getCallbackManager().getCallbackType(PasswordRequiredListener.class).call();
+    }
+    
+    /**
+     * Create a new instance of the IRCProcessor Object.
+     *
+     * @param parser IRCParser That owns this IRCProcessor
+     * @param manager ProcessingManager that is in charge of this IRCProcessor
+     */
+    protected Process464 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 
 }
