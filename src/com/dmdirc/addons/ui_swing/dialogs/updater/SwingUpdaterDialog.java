@@ -183,7 +183,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill"));
+        setLayout(new MigLayout("fill, wmin 450, hmin 400, wmax 450, hmax 400"));
 
         add(header, "wrap 1.5*unrel, growx, pushx");
         add(scrollPane, "grow, push, wrap");
