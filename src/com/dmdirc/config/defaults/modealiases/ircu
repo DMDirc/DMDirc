@@ -7,7 +7,7 @@ keysections:
 
 identity:
   name=IRCu mode aliases
-  ircd=ircu
+  ircd=re:ircu|asuka|snircd
 
 server:
   modeA=Admin password
@@ -15,6 +15,7 @@ server:
   enablemodeC=true
   modeD=Auditorium mode
   moded=Auditorium mode
+  enablemoded=false
   moder=Registered users only
   modeS=Strip all colours
   modeT=No multi-target messages

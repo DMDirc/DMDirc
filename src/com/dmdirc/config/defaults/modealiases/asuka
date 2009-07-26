@@ -7,19 +7,15 @@ keysections:
 
 identity:
   name=Asuka mode aliases
-  ircd=asuka
+  ircd=re:asuka|snircd
 
 server:
-  modeD=Auditorium mode
-  moded=Auditorium mode
-  modeC=No channel CTCPs
   modeN=No channel notices
-  moder=Registered users only
+  enablemodeN=true
   modeu=No quit messages
+  enablemodeu=true
 
   umodeh=Set host
   umodeI=Hide idle time
-  umodek=Services operator
   umoden=Hide channel list
-  umodeg=Receive debug information
   umodeX=Extended operator

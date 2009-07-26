@@ -121,7 +121,7 @@ public final class Styliser {
             + "[^" + CODE_HYPERLINK + "]+?)([" + URL_PUNCT + "]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
-    private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>])([#&]" + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
     private static boolean styleLinks

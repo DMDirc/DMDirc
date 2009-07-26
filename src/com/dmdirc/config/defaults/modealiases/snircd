@@ -10,25 +10,5 @@ identity:
   ircd=snircd
 
 server:
-  modeA=Admin password
-  modeD=Auditorium mode
-  moded=Auditorium mode
-  enablemodec=true
-  modeC=No channel CTCPs
-  enablemodeC=true
-  modeN=No channel notices
-  enablemodeN=true
-  moder=Registered users only
-  modeu=No quit mesages
-  enablemodeu=true
-  modeT=No multi-target messages
-  modeU=User password
-
-  umodeg=Receive debug information
-  umodeI=Hide idle time
-  umodek=Services operator
-  umoden=Hide channel list
   umodeP=Paranoid
   umodeR=Only registered users may query
-  umodex=Hide hostname
-  umodeX=Extended operator
