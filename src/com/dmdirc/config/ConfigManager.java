@@ -240,7 +240,23 @@ public class ConfigManager extends ConfigSource implements Serializable,
             break;
         }
 
-        return comp != null && comp.equalsIgnoreCase(identity.getTarget().getData());
+        return comp != null && identityTargetMatches(identity.getTarget().getData(), comp);
+    }
+
+    /**
+     * Determines whether the specified identity target matches the desired
+     * target. If the desired target is prefixed with "re:", it is treated
+     * as a regular expression; otherwise the strings are compared
+     * lexigraphically to determine a match.
+     *
+     * @param desired The target string required by this config manager
+     * @param actual The target string supplied by the identity
+     * @return True if the identity should be applied, false otherwise
+     * @since 0.6.3m2
+     */
+    protected boolean identityTargetMatches(final String actual, final String desired) {
+        return actual.startsWith("re:") ? desired.matches(actual.substring(3))
+                : actual.equalsIgnoreCase(desired);
     }
 
     /**
