@@ -33,6 +33,7 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.ui.WindowManager;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
@@ -43,7 +44,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -270,7 +270,29 @@ public final class TreeFrameManager implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        setColours();
+        if ("sortservers".equals(key) || "sortwindows".equals(key)) {
+            redoTreeView();
+        } else {
+            setColours();
+        }
+    }
+
+    /**
+     * Starts the tree from scratch taking into account new sort orders.
+     */
+    private void redoTreeView() {
+        ((DefaultTreeModel)tree.getModel()).setRoot(null);
+        ((DefaultTreeModel)tree.getModel()).setRoot(new TreeViewNode(null, null));
+        
+        final Window[] rootWindows = WindowManager.getRootWindows();
+
+        for (Window window : rootWindows) {
+            addWindow(window.getContainer());
+            final Window[] childWindows = WindowManager.getChildren(window);
+            for (Window childWindow : childWindows) {
+                addWindow(window.getContainer(), childWindow.getContainer());
+            }
+        }
     }
 
     /** {@inheritDoc} */

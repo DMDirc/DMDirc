@@ -98,14 +98,18 @@ public class TreeViewModel extends DefaultTreeModel {
             return parent.getChildCount();
         }
 
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            final TreeViewNode child = (TreeViewNode) parent.getChildAt(i);
-            if (sortBefore(newChild, child)) {
-                return i;
-            } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
-                    getOptionBool("treeview", "sortwindows") && newChild.getUserObject().
-                    toString().compareToIgnoreCase(child.getUserObject().toString()) < 0) {
-                return i;
+        if (IdentityManager.getGlobalConfig().getOptionBool("treeview",
+                "sortwindows")) {
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                final TreeViewNode child = (TreeViewNode) parent.getChildAt(i);
+                if (sortBefore(newChild, child)) {
+                    return i;
+                } else if (!sortAfter(newChild, child) && newChild.
+                        getUserObject().
+                        toString().compareToIgnoreCase(child.getUserObject().
+                        toString()) < 0) {
+                    return i;
+                }
             }
         }
 
@@ -121,8 +125,10 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @return True iff newChild should be sorted before child
      */
-    private boolean sortBefore(final TreeViewNode newChild, final TreeViewNode child) {
-        return comparator.compare(newChild.getFrameContainer(), child.getFrameContainer()) <= -1;
+    private boolean sortBefore(final TreeViewNode newChild,
+            final TreeViewNode child) {
+        return comparator.compare(newChild.getFrameContainer(), child.
+                getFrameContainer()) <= -1;
     }
 
     /**
@@ -134,10 +140,12 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @return True iff newChild should be sorted before child
      */
-    private boolean sortAfter(final TreeViewNode newChild,final TreeViewNode child) {
-        return comparator.compare(newChild.getFrameContainer(), child.getFrameContainer()) >= 1;
+    private boolean sortAfter(final TreeViewNode newChild,
+            final TreeViewNode child) {
+        return comparator.compare(newChild.getFrameContainer(), child.
+                getFrameContainer()) >= 1;
     }
-    
+
     /**
      * Returns the root node for this model.
      * 
