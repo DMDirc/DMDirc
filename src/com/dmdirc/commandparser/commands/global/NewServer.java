@@ -77,6 +77,7 @@ public final class NewServer extends GlobalCommand {
         final Server server = new Server(address, IdentityManager.getProfiles().get(0));
         server.connect();
     }
+    
     private IrcAddress parseInput(final InputWindow origin, final boolean isSilent,
             final CommandArguments args) {
 
