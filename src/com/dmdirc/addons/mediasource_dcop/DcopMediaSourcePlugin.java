@@ -24,6 +24,7 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
+import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 
@@ -58,8 +59,12 @@ public class DcopMediaSourcePlugin extends Plugin
      */
     @SuppressWarnings("unchecked")
     protected static List<String> getDcopResult(final String query) {
-        return (List<String>) PluginManager.getPluginManager()
-                .getExportedService("dcop").execute(query);
+        try {
+            return (List<String>) PluginManager.getPluginManager()
+                    .getExportedService("dcop").execute(query);
+        } catch (NoSuchProviderException nspe) {
+            return new ArrayList<String>();
+        }
     }
     
     /** {@inheritDoc} */
