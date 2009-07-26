@@ -20,7 +20,7 @@
  *  SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.outputqueue;
+package com.dmdirc.parser.common;
 
 /**
  * Queue Priority.

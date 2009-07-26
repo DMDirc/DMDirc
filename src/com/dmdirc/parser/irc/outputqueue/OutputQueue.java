@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc.outputqueue;
 
+import com.dmdirc.parser.common.QueuePriority;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;

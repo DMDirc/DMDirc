@@ -117,10 +117,19 @@ public interface Parser extends Runnable {
     /**
      * Sends a raw message directly to the backend system. The message will
      * need to be of the appropriate format for whatever system is in use.
-     * 
+     *
      * @param message The message to be sent
      */
     void sendRawMessage(String message);
+
+    /**
+     * Sends a raw message directly to the backend system. The message will
+     * need to be of the appropriate format for whatever system is in use.
+     *
+     * @param message The message to be sent
+     * @param priority Priority of this line.
+     */
+    void sendRawMessage(String message, QueuePriority priority);
 
     /**
      * Retrieves an object that can be used to convert between upper- and lower-

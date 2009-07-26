@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser.irc.outputqueue;
 
+import com.dmdirc.parser.common.QueuePriority;
+
 /**
  * Queued Item
  *

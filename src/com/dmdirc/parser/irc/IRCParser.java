@@ -40,7 +40,7 @@ import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 import com.dmdirc.parser.common.CallbackManager;
 
-import com.dmdirc.parser.irc.outputqueue.QueuePriority;
+import com.dmdirc.parser.common.QueuePriority;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -892,12 +892,8 @@ public class IRCParser implements SecureParser, Runnable {
     @Override
     public void sendRawMessage(final String message) { doSendString(message, QueuePriority.NORMAL, false); }
 
-    /**
-     * Send a line to the server and add proper line ending.
-     *
-     * @param message Line to send (\r\n termination is added automatically)
-     * @param priority Priority of this line.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void sendRawMessage(final String message, final QueuePriority priority) { doSendString(message, priority, false); }
 
     /**
