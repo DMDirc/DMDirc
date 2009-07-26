@@ -25,6 +25,7 @@ package com.dmdirc.parser.interfaces;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.CallbackManager;
 
+import com.dmdirc.parser.common.QueuePriority;
 import java.util.Collection;
 
 /**
