@@ -27,6 +27,7 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.irc.outputqueue.QueuePriority;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -176,7 +177,7 @@ public class IRCChannelInfo implements ChannelInfo {
                 i++;
                 listmodes = listmodes + cTemp;
                 if (i >= modecount && !supportLISTMODE) {
-                    myParser.sendString("MODE "+getName()+" "+listmodes);
+                    myParser.sendString("MODE "+getName()+" "+listmodes, QueuePriority.LOW);
                     i = 0;
                     listmodes = "";
                 }
@@ -184,9 +185,9 @@ public class IRCChannelInfo implements ChannelInfo {
         }
         if (i > 0) {
             if (supportLISTMODE) {
-                myParser.sendString("LISTMODE "+getName()+" "+listmodes);
+                myParser.sendString("LISTMODE "+getName()+" "+listmodes, QueuePriority.LOW);
             } else {
-                myParser.sendString("MODE "+getName()+" "+listmodes);
+                myParser.sendString("MODE "+getName()+" "+listmodes, QueuePriority.LOW);
             }
         }
     }

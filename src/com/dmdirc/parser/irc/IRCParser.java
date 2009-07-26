@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import com.dmdirc.parser.irc.outputqueue.OutputQueue;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
@@ -39,10 +40,10 @@ import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
 import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
 import com.dmdirc.parser.common.CallbackManager;
 
+import com.dmdirc.parser.irc.outputqueue.QueuePriority;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -233,7 +234,7 @@ public class IRCParser implements SecureParser, Runnable {
     /** This is the socket used for reading from/writing to the IRC server. */
     private Socket socket;
     /** Used for writing to the server. */
-    private PrintWriter out;
+    private OutputQueue out;
     /** Used for reading from the server. */
     private BufferedReader in;
 
@@ -580,6 +581,8 @@ public class IRCParser implements SecureParser, Runnable {
         chanModesBool.clear();
         userModes.clear();
         chanPrefix.clear();
+        // Clear output queue.
+        if (out != null) { out.clearQueue(); }
         // Reset the mode indexes
         nextKeyPrefix = 1;
         nextKeyCMBool = 1;
@@ -705,7 +708,8 @@ public class IRCParser implements SecureParser, Runnable {
         }
 
         callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
-        out = new PrintWriter(socket.getOutputStream(), true);
+        out = new OutputQueue(socket.getOutputStream());
+        out.setQueueEnabled(true);
         callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
@@ -885,8 +889,16 @@ public class IRCParser implements SecureParser, Runnable {
     }
 
     /** {@inheritDoc} */
-        @Override
-    public void sendRawMessage(final String message) { doSendString(message, false); }
+    @Override
+    public void sendRawMessage(final String message) { doSendString(message, QueuePriority.NORMAL, false); }
+
+    /**
+     * Send a line to the server and add proper line ending.
+     *
+     * @param message Line to send (\r\n termination is added automatically)
+     * @param priority Priority of this line.
+     */
+    public void sendRawMessage(final String message, final QueuePriority priority) { doSendString(message, priority, false); }
 
     /**
      * Send a line to the server and add proper line ending.
@@ -894,19 +906,30 @@ public class IRCParser implements SecureParser, Runnable {
      * @param line Line to send (\r\n termination is added automatically)
      * @return True if line was sent, else false.
      */
-    protected boolean sendString(final String line) { return doSendString(line, true); }
+    protected boolean sendString(final String line) { return doSendString(line, QueuePriority.NORMAL, true); }
+
 
     /**
      * Send a line to the server and add proper line ending.
      *
      * @param line Line to send (\r\n termination is added automatically)
+     * @param priority Priority of this line.
+     * @return True if line was sent, else false.
+     */
+    protected boolean sendString(final String line, final QueuePriority priority) { return doSendString(line, priority, true); }
+
+    /**
+     * Send a line to the server and add proper line ending.
+     *
+     * @param line Line to send (\r\n termination is added automatically)
+     * @param priority Priority of this line.
      * @param fromParser is this line from the parser? (used for callDataOut)
      * @return True if line was sent, else false.
      */
-    protected boolean doSendString(final String line, final boolean fromParser) {
+    protected boolean doSendString(final String line, final QueuePriority priority, final boolean fromParser) {
         if (out == null || getSocketState() != SocketState.OPEN) { return false; }
         callDataOut(line, fromParser);
-        out.printf("%s\r\n", line);
+        out.sendLine(line);
         final String[] newLine = tokeniseLine(line);
         if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
             myself.setAwayReason(newLine[newLine.length-1]);
@@ -983,7 +1006,7 @@ public class IRCParser implements SecureParser, Runnable {
         try {
             final String sParam = token[1];
             if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
-                sendString("PONG :" + sParam);
+                sendString("PONG :" + sParam, QueuePriority.HIGH);
             } else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
                 if (!lastPingValue.isEmpty() && lastPingValue.equals(token[token.length-1])) {
                     lastPingValue = "";
@@ -1829,7 +1852,7 @@ public class IRCParser implements SecureParser, Runnable {
                 setPingNeeded(true);
                 pingCountDown = pingCountDownLength;
                 lastPingValue = String.valueOf(System.currentTimeMillis());
-                if (doSendString("PING " + lastPingValue, false)) {
+                if (sendString("PING " + lastPingValue)) {
                     callPingSent();
                 }
             }
@@ -2039,5 +2062,4 @@ public class IRCParser implements SecureParser, Runnable {
     public int getMaxLength() {
         return MAX_LINELENGTH;
     }
-
 }
