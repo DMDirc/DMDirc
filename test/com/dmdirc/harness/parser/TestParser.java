@@ -23,6 +23,7 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.parser.common.MyInfo;
+import com.dmdirc.parser.common.QueuePriority;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.*;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class TestParser extends IRCParser implements Parser {
     }
 
     @Override
-    protected boolean doSendString(String line, final QueuePriority priority, boolean fromParser) {
+    protected boolean doSendString(String line, QueuePriority priority, boolean fromParser) {
         sentLines.add(line);
         return true;
     }

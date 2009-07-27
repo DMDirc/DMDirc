@@ -128,7 +128,8 @@ public interface Parser extends Runnable {
      * need to be of the appropriate format for whatever system is in use.
      *
      * @param message The message to be sent
-     * @param priority Priority of this line.
+     * @param priority Priority of this line. (Priorities are advisory and not
+     *                 guaranteed to be enforced.
      */
     void sendRawMessage(String message, QueuePriority priority);
 
