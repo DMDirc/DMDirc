@@ -23,8 +23,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-import com.dmdirc.addons.ui_swing.components.frames.*;
-import com.dmdirc.addons.ui_swing.components.NicklistListModel;
+import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
 import com.dmdirc.addons.ui_swing.components.renderers.NicklistRenderer;
 import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.config.ConfigManager;
