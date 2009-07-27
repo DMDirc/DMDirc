@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.components.frames;
 
-import com.dmdirc.addons.ui_swing.components.NicklistListModel;
+import com.dmdirc.addons.ui_swing.components.NickList;
 import com.dmdirc.Channel;
 import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
@@ -30,9 +31,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
-import com.dmdirc.addons.ui_swing.components.renderers.NicklistRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
-import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -42,19 +41,13 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.Collection;
 
-import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -70,22 +63,18 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 10;
-    /** The nick list model used for this channel's nickname list. */
-    private NicklistListModel nicklistModel;
     /** This channel's command parser. */
     private final ChannelCommandParser commandParser;
-    /** Nick list. */
-    private JList nickList;
     /** split pane. */
     private JSplitPane splitPane;
     /** popup menu item. */
     private JMenuItem settingsMI;
     /** The channel object that owns this frame. */
     private final Channel parentChannel;
-    /** Nick list scroll pane. */
-    private JScrollPane nickScrollPane;
     /** Identity. */
     private Identity identity;
+    /** Nicklist. */
+    private NickList nicklist;
 
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -101,22 +90,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         initComponents();
 
-        nickList.setBackground(getConfigManager().getOptionColour(
-                "ui", "nicklistbackgroundcolour",
-                "ui", "backgroundcolour"));
-        nickList.setForeground(getConfigManager().getOptionColour(
-                "ui", "nicklistforegroundcolour",
-                "ui", "foregroundcolour"));
-
-        getConfigManager().addChangeListener("ui", "nicklistforegroundcolour",
+        getConfigManager().addChangeListener("ui", "channelSplitPanePosition",
                 this);
-        getConfigManager().addChangeListener("ui", "foregroundcolour", this);
-        getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour",
-                this);
-        getConfigManager().addChangeListener("ui", "backgroundcolour", this);
-        getConfigManager().addChangeListener("ui", "nickListAltBackgroundColour",
-                this);
-        getConfigManager().addChangeListener("ui", "channelSplitPanePosition", this);
         ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
@@ -142,61 +117,33 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /** {@inheritDoc} */
     @Override
     public void updateNames(final Collection<ChannelClientInfo> clients) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                nicklistModel.replace(clients);
-            }
-        });
+        nicklist.updateNames(clients);
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateNames() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                nicklistModel.sort();
-            }
-        });
+        nicklist.updateNames();
     }
 
     /** {@inheritDoc} */
     @Override
     public void addName(final ChannelClientInfo client) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                nicklistModel.add(client);
-            }
-        });
+        nicklist.addName(client);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeName(final ChannelClientInfo client) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                nicklistModel.remove(client);
-            }
-        });
+        nicklist.removeName(client);
     }
 
     /**
      * Retrieves this channel frame's nicklist component.
      * @return This channel's nicklist
      */
-    public JList getNickList() {
-        return nickList;
+    public NickList getNickList() {
+        return nicklist;
     }
 
     /** {@inheritDoc} */
@@ -209,30 +156,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      * Initialises the compoents in this frame.
      */
     private void initComponents() {
+        nicklist = new NickList(this, getConfigManager());
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
 
-        splitPane =
-                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL,
-                false);
-
-        nickScrollPane = new JScrollPane();
-        nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parentChannel.getConfigManager(),
-                nickList));
-        nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        nickList.addMouseListener(this);
-
-        nicklistModel = new NicklistListModel();
-
-        nickList.setModel(nicklistModel);
-        nickScrollPane.setViewportView(nickList);
-
-        final int splitPanePosition = getConfigManager().getOptionInt("ui",
-                "channelSplitPanePosition");
-        nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
-        nickScrollPane.setMinimumSize(new Dimension(150, 0));
+        splitPane = new SnappingJSplitPane(
+                SnappingJSplitPane.Orientation.HORIZONTAL, false);
 
         getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
 
@@ -241,7 +170,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         getContentPane().add(inputPanel, "growx, pushx");
 
         splitPane.setLeftComponent(getTextPane());
-        splitPane.setRightComponent(nickScrollPane);
+        splitPane.setRightComponent(nicklist);
         splitPane.setResizeWeight(1);
 
         pack();
@@ -255,7 +184,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {
-            ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer(), getController().getMainFrame());
+            ChannelSettingsDialog.showChannelSettingsDialog(
+                    (Channel) getContainer(), getController().getMainFrame());
         }
     }
 
@@ -267,125 +197,18 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         return splitPane;
     }
 
-    /**
-     * Checks for url's, channels and nicknames. {@inheritDoc}
-     */
-    @Override
-    public void mouseClicked(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
-        super.mouseClicked(mouseEvent);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void mousePressed(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
-        super.mousePressed(mouseEvent);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void mouseReleased(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
-        super.mouseReleased(mouseEvent);
-    }
-
-    /**
-     * Processes every mouse button event to check for a popup trigger.
-     *
-     * @param e mouse event
-     */
-    @Override
-    public void processMouseEvent(final MouseEvent e) {
-        if (e.getSource() == nickList && nickList.getMousePosition() != null
-                && getMousePosition() != null) {
-            if (checkCursorInSelectedCell() || selectNickUnderCursor()) {
-                if (e.isPopupTrigger()) {
-                    showPopupMenu(ClickType.NICKNAME, getMousePosition(),
-                            ((ChannelClientInfo) nickList.getSelectedValue())
-                            .getClient().getNickname());
-                }
-            } else {
-                nickList.clearSelection();
-            }
-        }
-
-        super.processMouseEvent(e);
-    }
-
-    /**
-     * Checks whether the mouse cursor is currently over a cell in the nicklist
-     * which has been previously selected.
-     *
-     * @return True if the cursor is over a selected cell, false otherwise
-     */
-    private boolean checkCursorInSelectedCell() {
-        boolean showMenu = false;
-        final Point mousePos = nickList.getMousePosition();
-        if (mousePos != null) {
-            for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null && nickList.getCellBounds(i, i).
-                        contains(mousePos) && nickList.isSelectedIndex(i)) {
-                    showMenu = true;
-                    break;
-                }
-            }
-        }
-        return showMenu;
-    }
-
-    /**
-     * If the mouse cursor is over a nicklist cell, sets that cell to be
-     * selected and returns true. If the mouse is not over any cell, the
-     * selection is unchanged and the method returns false.
-     *
-     * @return True if an item was selected
-     */
-    private boolean selectNickUnderCursor() {
-        boolean suceeded = false;
-        final Point mousePos = nickList.getMousePosition();
-        if (mousePos != null) {
-            for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null && nickList.getCellBounds(i, i).
-                        contains(mousePos)) {
-                    nickList.setSelectedIndex(i);
-                    suceeded = true;
-                    break;
-                }
-            }
-        }
-        return suceeded;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         super.configChanged(domain, key);
 
-        if ("nickListAltBackgroundColour".equals(key) ||
-                "nicklistbackgroundcolour".equals(key) ||
-                "backgroundcolour".equals(key) ||
-                "nicklistforegroundcolour".equals(key) ||
-                "foregroundcolour".equals(key)) {
-            nickList.setBackground(getConfigManager().getOptionColour(
-                    "ui", "nicklistbackgroundcolour",
-                    "ui", "backgroundcolour"));
-            nickList.setForeground(getConfigManager().getOptionColour(
-                    "ui", "nicklistforegroundcolour",
-                    "ui", "foregroundcolour"));
-            nickList.repaint();
-        }
         if ("channelSplitPanePosition".equals(key)) {
             final int splitPanePosition = getConfigManager().getOptionInt("ui",
                     "channelSplitPanePosition");
-            nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
-            splitPane.setDividerLocation(splitPane.getWidth() - splitPanePosition);
+            nicklist.setPreferredSize(new Dimension(splitPanePosition, 0));
+            splitPane.setDividerLocation(splitPane.getWidth() -
+                    splitPanePosition);
         }
-        nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     /** {@inheritDoc} */
@@ -403,8 +226,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     private void saveSplitPanePosition() {
-        identity.setOption("ui", "channelSplitPanePosition",
-                (int) nickScrollPane.getSize().getWidth());
+        identity.setOption("ui", "channelSplitPanePosition", nicklist.getWidth());
     }
 
     /** {@inheritDoc} */

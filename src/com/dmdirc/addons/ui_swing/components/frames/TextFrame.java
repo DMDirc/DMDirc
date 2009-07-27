@@ -85,6 +85,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameEvent;
@@ -1002,12 +1003,13 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * Shows a popup menu at the specified point for the specified click type
      * 
      * @param type ClickType Click type
-     * @param point Point Point of the click
+     * @param point Point Point of the click (Must be screen coords)
      * @param argument Word under the click
      */
     public void showPopupMenu(final ClickType type,
             final Point point,
             final String argument) {
+        SwingUtilities.convertPointFromScreen(point, this);
         final JPopupMenu popupMenu;
 
         switch (type) {
