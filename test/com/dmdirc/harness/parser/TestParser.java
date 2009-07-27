@@ -48,7 +48,7 @@ public class TestParser extends IRCParser implements Parser {
     }
 
     @Override
-    protected boolean doSendString(String line, boolean fromParser) {
+    protected boolean doSendString(String line, final QueuePriority priority, boolean fromParser) {
         sentLines.add(line);
         return true;
     }
