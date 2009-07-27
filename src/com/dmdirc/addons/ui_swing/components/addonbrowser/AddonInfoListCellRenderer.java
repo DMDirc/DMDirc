@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.addonbrowser;
+package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import java.awt.Color;

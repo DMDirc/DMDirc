@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.addonbrowser;
+package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
@@ -150,9 +151,10 @@ public class AddonInfo {
     }
     
     public boolean isDownloadable() {
-        return false; /*!stableDownload.isEmpty() ||
-                (Main.UPDATE_CHANNEL != UpdateChannel.STABLE
-                && !unstableDownload.isEmpty());*/
+        final String channel = IdentityManager.getGlobalConfig().
+                getOption("updater", "channel");
+        return !stableDownload.isEmpty() || (!"STABLE".equals(channel) &&
+                !unstableDownload.isEmpty());
     }
 
     public boolean matches(final String text) {

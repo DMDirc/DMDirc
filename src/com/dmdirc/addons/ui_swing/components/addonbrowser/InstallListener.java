@@ -20,11 +20,13 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.addonbrowser;
+package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.Downloader;
 
 import java.awt.event.ActionEvent;
@@ -69,11 +71,11 @@ public class InstallListener implements ActionListener {
                     ActionManager.installActionPack(file.getAbsolutePath());
                     break;
                 case TYPE_PLUGIN:
-                    throw new UnsupportedOperationException("Not supported yet");
-                    //break;
+                    file.renameTo(new File(PluginManager.getPluginManager().getDirectory()));
+                    break;
                 case TYPE_THEME:
-                    throw new UnsupportedOperationException("Not supported yet");
-                    //break;
+                    file.renameTo(new File(ThemeManager.getThemeDirectory()));
+                    break;
             }
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to download addon: "

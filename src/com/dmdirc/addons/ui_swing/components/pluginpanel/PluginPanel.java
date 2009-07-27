@@ -26,6 +26,7 @@ import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
+import com.dmdirc.addons.ui_swing.components.addonbrowser.DownloaderWindow;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.renderers.AddonCellRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.SwingPreferencesDialog;
@@ -179,7 +180,7 @@ public final class PluginPanel extends JPanel implements
 
             pluginList.repaint();
         } else if (e.getSource() != toggleButton) {
-            URLHandler.getURLHander().launchApp("http://addons.dmdirc.com/");
+            new DownloaderWindow();
         }
     }
 

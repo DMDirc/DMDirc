@@ -3,9 +3,11 @@
  * and open the template in the editor.
  */
 
-package com.dmdirc.addons.addonbrowser;
+package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
+import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
 
@@ -40,7 +42,7 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
         add(jpb, "grow");
         pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo((Component) Main.getUI().getMainWindow());
+        CoreUIUtils.centreWindow(this);
         setIconImage(Main.getUI().getMainWindow().getIcon().getImage());
         setVisible(true);
         
