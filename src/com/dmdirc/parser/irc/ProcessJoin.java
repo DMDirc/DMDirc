@@ -23,6 +23,7 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.common.ParserError;
+import com.dmdirc.parser.common.QueuePriority;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
@@ -96,7 +97,7 @@ public class ProcessJoin extends IRCProcessor {
             // Add ourself to the channel, this will be overridden by the NAMES reply
             iChannel.addClient(iClient);
             myParser.addChannel(iChannel);
-            sendString("MODE "+iChannel.getName());
+            sendString("MODE "+iChannel.getName(), QueuePriority.LOW);
             
             callChannelSelfJoin(iChannel);
         }

@@ -904,7 +904,6 @@ public class IRCParser implements SecureParser, Runnable {
      */
     protected boolean sendString(final String line) { return doSendString(line, QueuePriority.NORMAL, true); }
 
-
     /**
      * Send a line to the server and add proper line ending.
      *
@@ -925,7 +924,7 @@ public class IRCParser implements SecureParser, Runnable {
     protected boolean doSendString(final String line, final QueuePriority priority, final boolean fromParser) {
         if (out == null || getSocketState() != SocketState.OPEN) { return false; }
         callDataOut(line, fromParser);
-        out.sendLine(line);
+        out.sendLine(line, priority);
         final String[] newLine = tokeniseLine(line);
         if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
             myself.setAwayReason(newLine[newLine.length-1]);

@@ -24,6 +24,7 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.common.CallbackManager;
+import com.dmdirc.parser.common.QueuePriority;
 
 /**
  * IRCProcessor.
@@ -126,13 +127,23 @@ abstract class IRCProcessor {
         return myParser.getCallbackManager();
     }
     
-    /** 
+    /**
      * Send a line to the server and add proper line ending.
      *
      * @param line Line to send (\r\n termination is added automatically)
      */
     protected final void sendString(final String line) {
         myParser.sendString(line);
+    }
+
+    /**
+     * Send a line to the server and add proper line ending.
+     *
+     * @param line Line to send (\r\n termination is added automatically)
+     * @param priority Priority of this line.
+     */
+    protected final void sendString(final String line, final QueuePriority priority) {
+        myParser.sendString(line, priority);
     }
     
     /**
