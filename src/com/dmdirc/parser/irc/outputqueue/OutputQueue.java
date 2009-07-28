@@ -94,8 +94,10 @@ public class OutputQueue {
      */
     public void clearQueue() {
         this.queueEnabled = false;
-        queueThread.interrupt();
-        queueThread = null;
+        if (queueThread != null) {
+            queueThread.interrupt();
+            queueThread = null;
+        }
 
         queue.clear();
     }
