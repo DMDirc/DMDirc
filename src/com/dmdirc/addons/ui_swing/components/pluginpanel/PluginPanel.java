@@ -30,7 +30,6 @@ import com.dmdirc.addons.ui_swing.components.addonbrowser.DownloaderWindow;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.renderers.AddonCellRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.SwingPreferencesDialog;
-import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -6,12 +6,10 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
 
-import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 
