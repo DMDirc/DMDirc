@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
@@ -34,7 +34,8 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 /** Stores and provides means to modify nicklist data for a channel. */
-public final class NicklistListModel extends AbstractListModel implements ConfigChangeListener {
+public final class NicklistListModel extends AbstractListModel implements
+        ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,27 +45,38 @@ public final class NicklistListModel extends AbstractListModel implements Config
     private static final long serialVersionUID = 1;
     /** stores the nicknames to be shown in this list. */
     private final List<ChannelClientInfo> nicknames;
+    /** Config manager. */
+    private ConfigManager config;
     /** Sort by mode? */
     private boolean sortByMode;
     /** Sort by case? */
     private boolean sortByCase;
 
-    /** Creates a new empty model. */
-    public NicklistListModel() {
-        this(Collections.synchronizedList(new ArrayList<ChannelClientInfo>()));
+    /**
+     * Creates a new empty model.
+     *
+     * @param config Config manager
+     */
+    public NicklistListModel(final ConfigManager config) {
+        this(config, Collections.synchronizedList(new ArrayList<ChannelClientInfo>()));
     }
 
     /**
      * Creates a new model and initiliases it with the data provided.
+     *
+     * @param config Config manager
      * @param newNicknames list of nicknames used for initialisation
      */
-    public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
+    public NicklistListModel(final ConfigManager config,
+            final List<ChannelClientInfo> newNicknames) {
         super();
+
+        this.config = config;
         
-        sortByMode = IdentityManager.getGlobalConfig().
-                getOptionBool("nicklist", "sortByMode");
-        sortByCase = IdentityManager.getGlobalConfig().
-                getOptionBool("nicklist", "sortByCase");
+        sortByMode = config.getOptionBool("nicklist", "sortByMode");
+        sortByCase = config.getOptionBool("nicklist", "sortByCase");
+        config.addChangeListener("nicklist", "sortByMode", this);
+        config.addChangeListener("nicklist", "sortByCase", this);
         nicknames = Collections.synchronizedList(newNicknames);
         
         sort();
@@ -178,11 +190,9 @@ public final class NicklistListModel extends AbstractListModel implements Config
     @Override
     public void configChanged(String domain, String key) {
         if ("sortByMode".equals(key)) {
-            sortByMode = IdentityManager.getGlobalConfig().
-                    getOptionBool("nicklist", "sortByMode");
+            sortByMode = config.getOptionBool("nicklist", "sortByMode");
         } else if ("sortByCase".equals(key)) {
-            sortByCase = IdentityManager.getGlobalConfig().
-                    getOptionBool("nicklist", "sortByCase");
+            sortByCase = config.getOptionBool("nicklist", "sortByCase");
         }
         
         sort();

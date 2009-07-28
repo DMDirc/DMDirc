@@ -93,7 +93,7 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
 
         nickList.addMouseListener(this);
 
-        nicklistModel = new NicklistListModel();
+        nicklistModel = new NicklistListModel(config);
 
         nickList.setModel(nicklistModel);
         setViewportView(nickList);
