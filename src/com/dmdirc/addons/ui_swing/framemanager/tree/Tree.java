@@ -60,8 +60,6 @@ public class Tree extends JTree implements MouseMotionListener,
     private static final long serialVersionUID = 1;
     /** Drag selection enabled? */
     private boolean dragSelect;
-    /** Manual reorder? */
-    private boolean manualReorder;
     /** Drag button 1? */
     private boolean dragButton;
     /** Tree frame manager. */
@@ -158,12 +156,6 @@ public class Tree extends JTree implements MouseMotionListener,
             dragSelect = IdentityManager.getGlobalConfig().getOptionBool(
                     "treeview",
                     "dragSelection");
-        } else {
-            manualReorder = IdentityManager.getGlobalConfig().getOptionBool(
-                    "treeview",
-                    "sortServers") || IdentityManager.getGlobalConfig().
-                    getOptionBool("treeview",
-                    "sortWindows");
         }
     }
 
