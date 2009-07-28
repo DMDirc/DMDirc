@@ -44,8 +44,6 @@ public class PriorityQueueHandler extends QueueHandler {
             while (outputQueue.isQueueEnabled()) {
                 final QueueItem item = queue.take();
 
-                System.out.println("Sending: "+item);
-
                 sendLine(item.getLine());
             }
         } catch (InterruptedException ex) {
