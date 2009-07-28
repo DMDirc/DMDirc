@@ -101,7 +101,7 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         final int splitPanePosition = config.getOptionInt("ui",
                 "channelSplitPanePosition");
         setPreferredSize(new Dimension(splitPanePosition, 0));
-        setMinimumSize(new Dimension(150, 0));
+        setMinimumSize(new Dimension(75, 0));
     }
 
     /**
