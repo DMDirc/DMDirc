@@ -169,7 +169,9 @@ public final class TreeFrameManager implements FrameManager,
                 } else {
                     model.removeNodeFromParent(nodes.get(window));
                 }
-                nodes.remove(window);
+                synchronized (nodes) {
+                    nodes.remove(window);
+                }
                 window.removeSelectionListener(TreeFrameManager.this);
                 window.removeFrameInfoListener(TreeFrameManager.this);
                 window.removeNotificationListener(TreeFrameManager.this);
@@ -193,7 +195,9 @@ public final class TreeFrameManager implements FrameManager,
                 final TreeViewNode node =
                         new TreeViewNode(new NodeLabel(window.getFrame()),
                         window);
-                nodes.put(window, node);
+                synchronized (nodes) {
+                    nodes.put(window, node);
+                }
                 if (parent == null) {
                     model.insertNodeInto(node, model.getRootNode());
                 } else {
