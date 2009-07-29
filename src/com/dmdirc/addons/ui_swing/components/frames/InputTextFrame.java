@@ -326,8 +326,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents: " +
                     ex.getMessage());
         } catch (UnsupportedFlavorException ex) {
-            Logger.appError(ErrorLevel.LOW, "Unable to get clipboard contents",
-                    ex);
+            Logger.userError(ErrorLevel.LOW, "Unsupported clipboard type", ex);
         }
     }
 
