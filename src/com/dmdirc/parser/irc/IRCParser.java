@@ -592,7 +592,9 @@ public class IRCParser implements SecureParser, Runnable {
         lastLine = "";
         myself = new IRCClientInfo(this, "myself").setFake(true);
 
-        serverInformationLines.clear();
+        synchronized (serverInformationLines) {
+            serverInformationLines.clear();
+        }
         stopPingTimer();
 
         currentSocketState = SocketState.CLOSED;
@@ -979,7 +981,9 @@ public class IRCParser implements SecureParser, Runnable {
      * @return List of lines sent by the server between 001 and 005 inclusive.
      */
     public List<String> getServerInformationLines() {
-        return new LinkedList<String>(serverInformationLines);
+        synchronized (serverInformationLines) {
+            return new LinkedList<String>(serverInformationLines);
+        }
     }
 
     /**
@@ -1026,7 +1030,9 @@ public class IRCParser implements SecureParser, Runnable {
                             callPost005();
                         } else {
                             // Store 001 - 005 for informational purposes.
-                            serverInformationLines.add(line);
+                            synchronized (serverInformationLines) {
+                                serverInformationLines.add(line);
+                            }
                         }
                     }
                     // After 001 we potentially care about everything!
