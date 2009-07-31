@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
 import com.dmdirc.addons.ui_swing.Apple;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
@@ -73,9 +74,16 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
             final PreferencesCategory category) {
         this.categoryPanel = categoryPanel;
         this.category = category;
-        
-        errorCategory = new JPanel(new MigLayout("fillx"));
-        errorCategory.add(new TextLabel("There was an error loading this category."));
+
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            @Override
+            public void run() {
+                errorCategory = new JPanel(new MigLayout("fillx"));
+                errorCategory.add(new TextLabel(
+                        "There was an error loading this category."));
+            }
+        });
     }
 
     /**
