@@ -32,14 +32,14 @@ import javax.swing.JButton;
  * Focus traversal policy for the paste dialog.
  */
 public final class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy {
-    
+
     /** Cancel button. */
     private final JButton cancelButton;
     /** Edit button. */
     private final JButton editButton;
     /** Send button. */
     private final JButton sendButton;
-    
+
     /** 
      * Creates a new instance of PasteDialogFocusTraversalPolicy. 
      *
@@ -50,12 +50,12 @@ public final class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy 
     public PasteDialogFocusTraversalPolicy(final JButton cancelButton,
             final JButton editButton, final JButton sendButton) {
         super();
-        
+
         this.cancelButton = cancelButton;
         this.editButton = editButton;
         this.sendButton = sendButton;
     }
-    
+
     /** {@inheritDoc} */
     public Component getComponentAfter(final Container aContainer,
             final Component aComponent) {
@@ -69,8 +69,9 @@ public final class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy 
             return cancelButton;
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getComponentBefore(final Container aContainer,
             final Component aComponent) {
         if (aComponent.equals(cancelButton)) {
@@ -83,20 +84,22 @@ public final class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy 
             return sendButton;
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getFirstComponent(final Container aContainer) {
         return cancelButton;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getLastComponent(final Container aContainer) {
         return sendButton;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getDefaultComponent(final Container aContainer) {
         return sendButton;
     }
-    
 }
