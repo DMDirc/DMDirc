@@ -69,7 +69,6 @@ public class AddonSorter extends TableRowSorter<DefaultTableModel> implements
     public int compare(final AddonInfoLabel o1, final AddonInfoLabel o2) {
         final AddonInfo info1 = o1.getAddonInfo();
         final AddonInfo info2 = o2.getAddonInfo();
-        System.out.println("compare");
         if (sortByDate.isSelected()) {
             return info1.getId() - info2.getId();
         } else if (sortByName.isSelected()) {
