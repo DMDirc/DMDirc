@@ -87,7 +87,6 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         config.addChangeListener("ui", "backgroundcolour", this);
         config.addChangeListener("ui", "nickListAltBackgroundColour", this);
 
-        nickList = new JList();
         nickList.setCellRenderer(new NicklistRenderer(config, nickList));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
