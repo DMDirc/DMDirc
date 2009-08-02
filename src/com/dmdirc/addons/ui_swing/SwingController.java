@@ -509,7 +509,7 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getPluginPrefsPanel() {
-        return new PluginPanel();
+        return new PluginPanel(me);
     }
 
     /** {@inheritDoc} */

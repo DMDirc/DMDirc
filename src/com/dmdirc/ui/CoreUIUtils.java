@@ -32,6 +32,10 @@ import java.awt.Window;
  * Core UI Utilities.
  */
 public class CoreUIUtils {
+
+    /** Precent creation. */
+    private CoreUIUtils() {
+    }
     
     /**
      * Centre the specified window on the active monitor.

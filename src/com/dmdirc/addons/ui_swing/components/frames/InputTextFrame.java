@@ -132,7 +132,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        setInputField(new SwingInputField());
+        setInputField(new SwingInputField(getController().getMainFrame()));
 
         getInputField().addKeyListener(this);
         getInputField().addMouseListener(this);

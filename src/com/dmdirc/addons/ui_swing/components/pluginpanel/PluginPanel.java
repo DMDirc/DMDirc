@@ -31,6 +31,7 @@ import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.renderers.AddonCellRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.SwingPreferencesDialog;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -69,10 +70,18 @@ public final class PluginPanel extends JPanel implements
     private int selectedPlugin;
     /** Blurb label. */
     private TextLabel blurbLabel;
+    /** Parent Window. */
+    private Window parentWindow;
 
-    /** Creates a new instance of PluginDialog. */
-    public PluginPanel() {
+    /**
+     * Creates a new instance of PluginDialog.
+     *
+     * @param parentWindow Parent window
+     */
+    public PluginPanel(final Window parentWindow) {
         super();
+
+        this.parentWindow = parentWindow;
 
         initComponents();
         addListeners();
@@ -179,7 +188,7 @@ public final class PluginPanel extends JPanel implements
 
             pluginList.repaint();
         } else if (e.getSource() != toggleButton) {
-            new DownloaderWindow();
+            new DownloaderWindow(parentWindow);
         }
     }
 

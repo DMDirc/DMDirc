@@ -6,11 +6,11 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
 
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,11 +33,17 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
     private static final long serialVersionUID = 1;
     /** Downloader progress bar. */
     private final JProgressBar jpb = new JProgressBar(0, 100);
+    /** Parent window. */
+    private Window parentWindow;
 
-    /** Instantiates a new downloader window. */
-    public DownloaderWindow() {
-        super((MainFrame) Main.getUI().getMainWindow(), "DMDirc Addon Browser",
-                false);
+    /**
+     * Instantiates a new downloader window.
+     *
+     * @param parentWindow Parent window
+     */
+    public DownloaderWindow(final Window parentWindow) {
+        super(parentWindow, "DMDirc Addon Browser", ModalityType.MODELESS);
+        this.parentWindow = parentWindow;
         setTitle("Downloading addon information...");
         setLayout(new MigLayout("fill"));
         add(jpb, "grow");
@@ -56,7 +62,7 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
         try {
             Downloader.downloadPage("http://addons.dmdirc.com/feed", 
                     Main.getConfigDir() + File.separator + "addons.feed", this);
-            new BrowserWindow();
+            new BrowserWindow(parentWindow);
         } catch (IOException ex) {
             removeAll();
             add(new JLabel("Unable to download feed."));

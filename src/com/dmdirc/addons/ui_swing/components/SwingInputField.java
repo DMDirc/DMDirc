@@ -31,6 +31,7 @@ import com.dmdirc.util.ListenerList;
 
 import com.dmdirc.util.ReturnableThread;
 import java.awt.Color;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -63,12 +64,18 @@ public class SwingInputField extends JComponent implements InputField,
     private final JLabel errorIndicator;
     /** Listener list. */
     private final ListenerList listeners;
+    /** Parent Window. */
+    private final Window parentWindow;
 
     /**
      * Instantiates a new swing input field.
+     *
+     * @param parentWindow Parent window
      */
-    public SwingInputField() {
+    public SwingInputField(final Window parentWindow) {
         super();
+
+        this.parentWindow = parentWindow;
 
         listeners = new ListenerList();
 
@@ -133,7 +140,7 @@ public class SwingInputField extends JComponent implements InputField,
             public void run() {
                 if (IdentityManager.getGlobalConfig().getOptionBool("general",
                         "showcolourdialog")) {
-                    colourPicker = new ColourPickerDialog(irc, hex);
+                    colourPicker = new ColourPickerDialog(irc, hex, parentWindow);
                     colourPicker.addActionListener(new ActionListener() {
 
                         @Override

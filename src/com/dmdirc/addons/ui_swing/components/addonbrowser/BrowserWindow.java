@@ -23,10 +23,11 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -96,12 +97,12 @@ public class BrowserWindow extends JDialog implements ActionListener {
 
     /**
      * Creates and displays a new browser window.
+     *
+     * @param parentWindow Parent window
      */
-    public BrowserWindow() {
-        super((MainFrame) Main.getUI().getMainWindow(), "DMDirc Addon Browser",
-                false);
-        setIconImage(((MainFrame) Main.getUI().getMainWindow()).getIcon().
-                getImage());
+    public BrowserWindow(final Window parentWindow) {
+        super(parentWindow, "DMDirc Addon Browser", ModalityType.MODELESS);
+        setIconImages(parentWindow.getIconImages());
         setResizable(false);
         setLayout(new MigLayout("fill, wmin 650, hmin 600"));
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
@@ -158,9 +159,9 @@ public class BrowserWindow extends JDialog implements ActionListener {
         }
 
         pack();
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(parentWindow);
         setVisible(true);
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(parentWindow);
     }
 
     /**
