@@ -23,6 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -63,8 +64,13 @@ public class InstallListener implements ActionListener {
             final File file = File.createTempFile("dmdirc-addon", ".tmp");
             file.deleteOnExit();
 
-            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
+            if ("STABLE".equals(IdentityManager.getGlobalConfig().getOption("updater", "channel"))) {
+                Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
                     + info.getStableDownload(), file.getAbsolutePath());
+            } else {
+                Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
+                    + info.getUnstableDownload(), file.getAbsolutePath());
+            }
 
             switch (info.getType()) {
                 case TYPE_ACTION_PACK:

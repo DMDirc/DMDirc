@@ -22,9 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.util.URLBuilder;
@@ -36,30 +34,8 @@ import javax.swing.ImageIcon;
 
 /**
  * Describes an addon.
- * 
- * @author chris
  */
-public class AddonInfo {
-    
-    /**
-     * The possible addon types.
-     */
-    public static enum AddonType {
-        /** Plugins. */
-        TYPE_PLUGIN,
-        /** Themes. */
-        TYPE_THEME,
-        /** Action packs. */
-        TYPE_ACTION_PACK;
-
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return super.toString().charAt(5) + 
-                    super.toString().substring(6).toLowerCase().replace('_', ' ');
-        }
-    };
-    
+public class AddonInfo {    
     private final int id;
     private final String stableDownload;
     private final String unstableDownload;
@@ -72,6 +48,11 @@ public class AddonInfo {
     private final int date;
     private final ImageIcon screenshot;
 
+    /**
+     * Creates a new addon info class with the specified entries.
+     *
+     * @param entry List of entries
+     */
     public AddonInfo(final Map<String, String> entry) {
         this.id = Integer.parseInt(entry.get("id"));
         this.title = entry.get("title");
@@ -96,50 +77,110 @@ public class AddonInfo {
         }
     }
 
+    /**
+     * Returns the addon author.
+     *
+     * @return Addon author
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * Returns the addon date.
+     *
+     * @return Addon date
+     */
     public int getDate() {
         return date;
     }
 
+    /**
+     * Returns the addon description.
+     *
+     * @return Addon description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns the addon ID.
+     *
+     * @return Addon ID
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Returns the addon rating.
+     *
+     * @return Addon rating
+     */
     public int getRating() {
         return rating;
     }
 
+    /**
+     * Returns the stable download location.
+     *
+     * @return Stable download location
+     */
     public String getStableDownload() {
         return stableDownload;
     }
 
+    /**
+     * Returns the addon title.
+     *
+     * @return Addon title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Returns the addon type.
+     *
+     * @return Addon type
+     */
     public AddonType getType() {
         return type;
     }
 
+    /**
+     * Returns the unstable download location.
+     *
+     * @return Unstable download location
+     */
     public String getUnstableDownload() {
         return unstableDownload;
     }
 
+    /**
+     * Returns whether the addon is verified.
+     *
+     * @return true iff the addon is verified
+     */
     public boolean isVerified() {
         return verified;
     }
 
+    /**
+     * Returns the screen shot for the addon.
+     *
+     * @return Addon screenshot
+     */
     public ImageIcon getScreenshot() {
         return screenshot;
     }
-    
+
+    /**
+     * Is the plugin installed?
+     *
+     * @return true iff installed
+     */
     public boolean isInstalled() {
         for (UpdateComponent comp : UpdateChecker.getComponents()) {
             if (comp.getName().equals("addon-" + getId())) {
@@ -149,7 +190,12 @@ public class AddonInfo {
         
         return false;
     }
-    
+
+    /**
+     * Is the plugin downloadable?
+     *
+     * @return true iff the plugin is downloadable
+     */
     public boolean isDownloadable() {
         final String channel = IdentityManager.getGlobalConfig().
                 getOption("updater", "channel");
@@ -157,6 +203,13 @@ public class AddonInfo {
                 !unstableDownload.isEmpty());
     }
 
+    /**
+     * Checks if the text matches this plugin
+     *
+     * @param text Comparison addon text.
+     *
+     * @return true iff the plugin matches
+     */
     public boolean matches(final String text) {
         return title.toLowerCase().indexOf(text.toLowerCase()) > -1
                 || description.toLowerCase().indexOf(text.toLowerCase()) > -1;

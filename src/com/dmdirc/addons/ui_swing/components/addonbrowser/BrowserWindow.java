@@ -22,7 +22,6 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.components.addonbrowser.AddonInfo.AddonType;
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
@@ -45,12 +44,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -84,7 +84,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
     /** The not installed checkbox. */
     private final JCheckBox notinstalledBox = new JCheckBox("Not installed", true);
     /** The panel used to list addons. */
-    private final JList list = new JList(new DefaultListModel());
+    private final AddonTable list = new AddonTable();
     /** The scrollpane for the list panel. */
     private final JScrollPane scrollPane = new JScrollPane(list,
             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -108,7 +108,6 @@ public class BrowserWindow extends JDialog implements ActionListener,
         setResizable(false);
         setLayout(new MigLayout("fill, wmin 650, hmin 600"));
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
-        list.setCellRenderer(new AddonInfoListCellRenderer());
 
         JPanel panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Search"));
@@ -208,7 +207,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
      * options.
      */
     private void sortAndFilter() {
-        ((DefaultListModel) list.getModel()).clear();
+        list.getModel().setRowCount(0);
         list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
 
         new LoggingSwingWorker() {
@@ -245,9 +244,9 @@ public class BrowserWindow extends JDialog implements ActionListener,
             protected void done() {
                 super.done();
 
-                ((DefaultListModel) list.getModel()).clear();
+                list.getModel().setRowCount(0);
                 for (AddonInfo info : newInfos) {
-                    ((DefaultListModel) list.getModel()).addElement(info);
+                    list.getModel().addRow(new Object[] {new AddonInfoLabel(info), });
                 }
                 UIUtilities.resetScrollPane(scrollPane);
             }

@@ -14,13 +14,13 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- *
- * @author chris
+ * Simple window to show download progress on addon feed.
  */
 public class DownloaderWindow extends JDialog implements Runnable, DownloadListener {
    
@@ -55,7 +55,8 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
                     Main.getConfigDir() + File.separator + "addons.feed", this);
             new BrowserWindow();
         } catch (IOException ex) {
-            // Do nothing
+            removeAll();
+            add(new JLabel("Unable to download feed."));
         }
         
         dispose();
@@ -64,7 +65,6 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
     /** {@inheritDoc} */
     @Override
     public void downloadProgress(float percent) {
-        System.out.println("value: " + percent);
         jpb.setValue((int) percent);
     }
 
