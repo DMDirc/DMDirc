@@ -115,6 +115,17 @@ public abstract class ConfigSource {
     }
 
     /**
+     * Retrieves a boolean representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The boolean representation of the option
+     */
+    public boolean hasOptionBool(final String domain, final String option) {
+        return hasOption(domain, option);
+    }
+
+    /**
      * Retrieves the specified option as a character.
      *
      * @param domain The domain of the option

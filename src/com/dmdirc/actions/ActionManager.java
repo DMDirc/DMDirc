@@ -393,7 +393,17 @@ public final class ActionManager {
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {
-                action.trigger(format, arguments);
+                final String actionName = (action.getGroup() + "/" +
+                        action.getName()).replace(' ', '.');
+                final boolean hasOption = IdentityManager.getGlobalConfig()
+                        .hasOptionBool("disable_action", actionName);
+                final boolean disabled = (hasOption) ? IdentityManager
+                        .getGlobalConfig().getOptionBool("disable_action",
+                        actionName) : false;
+
+                if (!disabled) {
+                    action.trigger(format, arguments);
+                }
             }
         }
     }
