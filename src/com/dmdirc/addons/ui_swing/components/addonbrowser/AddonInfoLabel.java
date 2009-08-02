@@ -94,4 +94,13 @@ public class AddonInfoLabel extends JPanel {
 
         add(new JSeparator(), "newline, span, growx, pushx, gaptop 5");
     }
+
+    /**
+     * Returns the addon info for this label.
+     *
+     * @return Addon info
+     */
+    public AddonInfo getAddonInfo() {
+        return addonInfo;
+    }
 }

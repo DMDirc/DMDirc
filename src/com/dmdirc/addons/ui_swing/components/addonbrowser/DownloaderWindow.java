@@ -6,6 +6,7 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
@@ -35,6 +36,8 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
 
     /** Instantiates a new downloader window. */
     public DownloaderWindow() {
+        super((MainFrame) Main.getUI().getMainWindow(), "DMDirc Addon Browser",
+                false);
         setTitle("Downloading addon information...");
         setLayout(new MigLayout("fill"));
         add(jpb, "grow");

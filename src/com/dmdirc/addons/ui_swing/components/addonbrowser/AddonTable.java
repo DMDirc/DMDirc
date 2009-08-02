@@ -24,6 +24,7 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -44,13 +45,13 @@ public class AddonTable extends JTable {
      * Creates a new addon table.
      */
     public AddonTable() {
-        super(new DefaultTableModel(new String[]{"Addon",}, 0));
+        super(new DefaultTableModel(0, 1));
         setTableHeader(null);
     }
 
     /** {@inheritDoc} */
     @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
+    public TableCellRenderer getCellRenderer(final int row, final int column) {
         return new AddonInfoCellRenderer();
     }
 
@@ -58,6 +59,31 @@ public class AddonTable extends JTable {
     @Override
     public DefaultTableModel getModel() {
         return (DefaultTableModel) super.getModel();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModel(final TableModel dataModel) {
+        if (!(dataModel instanceof DefaultTableModel)) {
+            throw new IllegalArgumentException("Row sorter must be of type DefaultTableModel");
+        }
+        super.setModel(dataModel);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @SuppressWarnings("unchecked")
+    public AddonSorter getRowSorter() {
+        return (AddonSorter) super.getRowSorter();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setRowSorter(final RowSorter<? extends TableModel> sorter) {
+        if (!(sorter instanceof AddonSorter)) {
+            throw new IllegalArgumentException("Row sorter must be of type AddonSorter");
+        }
+        super.setRowSorter(sorter);
     }
 
 }
