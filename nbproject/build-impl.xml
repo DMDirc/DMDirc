@@ -58,16 +58,16 @@ is divided into following sections:
             </and>
         </condition>
         <condition property="have.tests">
-            <or>
+            <and>
                 <available file="${main.test.dir}"/>
                 <available file="${parser.test.dir}"/>
-            </or>
+            </and>
         </condition>
         <condition property="have.sources">
-            <or>
+            <and>
                 <available file="${main.src.dir}"/>
                 <available file="${parser.src.dir}"/>
-            </or>
+            </and>
         </condition>
         <condition property="netbeans.home+have.tests">
             <and>
@@ -108,6 +108,7 @@ is divided into following sections:
         <condition property="do.depend.true">
             <istrue value="${do.depend}"/>
         </condition>
+        <fail unless="have.sources">Not all sources are available, have you run `git submodule init` and `git submodule update`</fail>
     </target>
     <target name="-post-init">
         <!-- Empty placeholder for easier customization. -->
