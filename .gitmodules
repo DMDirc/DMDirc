@@ -1,0 +1,3 @@
+[submodule "modules/parser"]
+	path = modules/parser
+	url = git://dmdirc.com/~dmdirc/parser

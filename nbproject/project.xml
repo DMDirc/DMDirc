@@ -6,10 +6,12 @@
             <name>DMDirc</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <source-roots>
-                <root id="src.dir"/>
+                <root id="parser.src.dir" name="Parser Source"/>
+                <root id="main.src.dir" name="Main Source"/>
             </source-roots>
             <test-roots>
-                <root id="test.src.dir"/>
+                <root id="main.test.dir" name="Main Test Packages"/>
+                <root id="parser.test.dir" name="Parser Test Packages"/>
             </test-roots>
         </data>
         <junit-version xmlns="http://www.netbeans.org/ns/junit/1" value="junit4"/>
