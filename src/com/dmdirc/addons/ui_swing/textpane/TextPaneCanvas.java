@@ -181,7 +181,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 drawPosY -= lineHeight * wrappedLine;
             }
 
-            int j = 0;
+            int numberOfWraps = 0;
             int chars = 0;
             // Loop through each wrapped line
             while (lineMeasurer.getPosition() < paragraphEnd) {
@@ -190,7 +190,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 // Calculate the Y offset
                 if (wrappedLine == 1) {
                     drawPosY -= lineHeight;
-                } else if (j != 0) {
+                } else if (numberOfWraps != 0) {
                     drawPosY += lineHeight;
                 }
 
@@ -209,16 +209,16 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     layout.draw(g, drawPosX, drawPosY + lineHeight / 2f);
                     doHighlight(i, chars, layout, g, drawPosY, drawPosX);
                     firstVisibleLine = i;
-                    textLayouts.put(layout, new LineInfo(i, j));
+                    textLayouts.put(layout, new LineInfo(i, numberOfWraps));
                     positions.put(new Rectangle(0, (int) drawPosY,
                             (int) formatWidth + 6,
                             lineHeight), layout);
                 }
 
-                j++;
+                numberOfWraps++;
                 chars += layout.getCharacterCount();
             }
-            if (j > 1) {
+            if (numberOfWraps > 1) {
                 drawPosY -= lineHeight * (wrappedLine - 1);
             }
             if (drawPosY <= 0) {
