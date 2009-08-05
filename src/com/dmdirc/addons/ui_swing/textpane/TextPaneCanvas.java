@@ -151,11 +151,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         firstVisibleLine = startLine;
 
         // Iterate through the lines
-        for (int i = startLine; i >= 0; i--) {
+        for (int line = startLine; line >= 0; line--) {
             float drawPosX;
             final AttributedCharacterIterator iterator = document.getStyledLine(
-                    i);
-            int lineHeight = document.getLineHeight(i);
+                    line);
+            int lineHeight = document.getLineHeight(line);
             lineHeight += lineHeight * 0.2;
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
@@ -166,15 +166,15 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             final int wrappedLine;
 
             //do we have the line wrapping in the cache?
-            if (lineWrap.containsKey(i)) {
+            if (lineWrap.containsKey(line)) {
                 //use it
-                wrappedLine = lineWrap.get(i);
+                wrappedLine = lineWrap.get(line);
             } else {
                 //get it and populate the cache
                 wrappedLine = getNumWrappedLines(lineMeasurer,
                         paragraphStart, paragraphEnd,
                         formatWidth);
-                lineWrap.put(i, wrappedLine);
+                lineWrap.put(line, wrappedLine);
             }
 
             if (wrappedLine > 1) {
@@ -207,9 +207,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     g.setColor(textPane.getForeground());
 
                     layout.draw(g, drawPosX, drawPosY + lineHeight / 2f);
-                    doHighlight(i, chars, layout, g, drawPosY, drawPosX);
-                    firstVisibleLine = i;
-                    textLayouts.put(layout, new LineInfo(i, numberOfWraps));
+                    doHighlight(line, chars, layout, g, drawPosY, drawPosX);
+                    firstVisibleLine = line;
+                    textLayouts.put(layout, new LineInfo(line, numberOfWraps));
                     positions.put(new Rectangle(0, (int) drawPosY,
                             (int) formatWidth + 6,
                             lineHeight), layout);
