@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.textpane;
 
 import com.dmdirc.config.ConfigManager;
@@ -53,14 +54,27 @@ public class Line {
 
     /**
      * Creates a new line.
-     * 
+     *
      * @param lineParts Parts of the line
      * @param config Configuration manager for this line
      */
     public Line(final String[] lineParts, final ConfigManager config) {
         this.lineParts = lineParts;
         this.config = config;
-        this.lineHeight = UIManager.getFont("TextPane.font").getSize();
+        this.lineHeight = -1;
+    }
+
+    /**
+     * Creates a new line with a specified height.
+     *
+     * @param lineParts Parts of the line
+     * @param config Configuration manager for this line
+     * @param lineHeight The height for this line
+     */
+    public Line(final String[] lineParts, final ConfigManager config, final int lineHeight) {
+        this.lineParts = lineParts;
+        this.config = config;
+        this.lineHeight = lineHeight;
     }
 
     /**
@@ -149,12 +163,14 @@ public class Line {
         } else {
             fontName = defaultFont.getName();
         }
-        if (config.hasOptionString("ui", "textPaneFontSize")) {
-            fontSize = config.getOptionInt("ui", "textPaneFontSize");
-        } else {
-            fontSize = defaultFont.getSize();
+        if (lineHeight == -1) {
+            if (config.hasOptionString("ui", "textPaneFontSize")) {
+                fontSize = config.getOptionInt("ui", "textPaneFontSize");
+            } else {
+                fontSize = defaultFont.getSize();
+            }
+            lineHeight = fontSize;
         }
-        lineHeight = fontSize;
         if (attString.getIterator().getEndIndex() != 0) {
             final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
