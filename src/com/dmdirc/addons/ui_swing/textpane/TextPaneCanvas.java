@@ -51,7 +51,7 @@ import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener,
-        ComponentListener, ConfigChangeListener {
+        ComponentListener {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -100,8 +100,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
-        parent.getFrameContainer().getConfigManager().addChangeListener("ui",
-                "textPaneFontSize", this);
     }
 
     /**
@@ -893,22 +891,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             @Override
             public void run() {
                 lineWrap.clear();
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void configChanged(final String domain, final String key) {
-        UIUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isVisible()) {
-                    repaint();
-                    clearWrapCache();
-                }
             }
         });
     }

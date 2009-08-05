@@ -426,6 +426,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         canvas.repaint();
     }
 
+    /** {@inheritDoc}. */
+    @Override
+    public void clearWrapCache() {
+        canvas.clearWrapCache();
+    }
+
     /**
      * Retrieves this textpane's IRCDocument.
      * 
