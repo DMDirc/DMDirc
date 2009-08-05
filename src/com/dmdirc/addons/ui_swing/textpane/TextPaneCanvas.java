@@ -440,7 +440,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             final AttributedCharacterIterator iterator = document.getStyledLine(
                     lineInfo.getLine());
             final int index = lineInfo.getIndex();
-            if (index >= iterator.getBeginIndex() && index <= iterator.getEndIndex()) {
+            if (index >= iterator.getBeginIndex() && index <= iterator.
+                    getEndIndex()) {
                 iterator.setIndex(lineInfo.getIndex());
                 Object linkattr =
                         iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
@@ -681,16 +682,20 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 final Rectangle bounds = getBounds();
                 final Point mousePos = e.getPoint();
                 if (mousePos.getX() < bounds.getX()) {
-                    point.setLocation(bounds.getX() + SINGLE_SIDE_PADDING, point.getY());
-                } else if (mousePos.getX() > (bounds.getX() + bounds.getWidth())) {
-                    point.setLocation(bounds.getX() + bounds.getWidth() - SINGLE_SIDE_PADDING,
+                    point.setLocation(bounds.getX() + SINGLE_SIDE_PADDING,
+                            point.getY());
+                } else if (mousePos.getX() > (bounds.getX() + bounds.
+                        getWidth())) {
+                    point.setLocation(bounds.getX() + bounds.getWidth() -
+                            SINGLE_SIDE_PADDING,
                             point.getY());
                 }
                 if (mousePos.getY() < bounds.getY()) {
-                    point.setLocation(point.getX(), bounds.getY() + DOUBLE_SIDE_PADDING);
+                    point.setLocation(point.getX(), bounds.getY() +
+                            DOUBLE_SIDE_PADDING);
                 } else if (mousePos.getY() >
                         (bounds.getY() + bounds.getHeight())) {
-                    point.setLocation(bounds.getX() + bounds.getWidth() - 
+                    point.setLocation(bounds.getX() + bounds.getWidth() -
                             SINGLE_SIDE_PADDING, bounds.getY() +
                             bounds.getHeight() - DOUBLE_SIDE_PADDING);
                 }
@@ -762,7 +767,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     pos += entry.getValue().getCharacterCount();
                 } else if (textLayouts.get(entry.getValue()).getPart() ==
                         linePart) {
-                    final TextHitInfo hit = entry.getValue().hitTestChar(x - 
+                    final TextHitInfo hit = entry.getValue().hitTestChar(x -
                             DOUBLE_SIDE_PADDING, y);
                     pos += hit.getInsertionIndex();
                 }
