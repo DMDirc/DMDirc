@@ -681,30 +681,24 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 final Rectangle bounds = getBounds();
                 final Point mousePos = e.getPoint();
                 if (mousePos.getX() < bounds.getX()) {
-                    point.setLocation(bounds.getX() + 3, point.getY());
+                    point.setLocation(bounds.getX() + SINGLE_SIDE_PADDING, point.getY());
                 } else if (mousePos.getX() > (bounds.getX() + bounds.getWidth())) {
-                    point.setLocation(bounds.getX() + bounds.getWidth() - 3,
+                    point.setLocation(bounds.getX() + bounds.getWidth() - SINGLE_SIDE_PADDING,
                             point.getY());
                 }
                 if (mousePos.getY() < bounds.getY()) {
-                    point.setLocation(point.getX(), bounds.getY() + 6);
+                    point.setLocation(point.getX(), bounds.getY() + DOUBLE_SIDE_PADDING);
                 } else if (mousePos.getY() >
                         (bounds.getY() + bounds.getHeight())) {
-                    //Nice text selection behaviour
-                    //point.setLocation(point.getX(), bounds.getY() +
-                    //        bounds.getHeight() - 6);
-                    point.setLocation(bounds.getX() + bounds.getWidth() - 3,
-                            bounds.getY() +
-                            bounds.getHeight() - 6);
+                    point.setLocation(bounds.getX() + bounds.getWidth() - 
+                            SINGLE_SIDE_PADDING, bounds.getY() +
+                            bounds.getHeight() - DOUBLE_SIDE_PADDING);
                 }
             }
             final LineInfo info = getClickPosition(point);
             if (info.getLine() == -1 && info.getPart() == -1 && contains(point)) {
                 info.setLine(0);
                 info.setPart(0);
-                //Nice text selection behaviour
-                //info.setIndex(getHitPosition(info.getLine(), info.getPart(),
-                //        point.x, 0));
                 info.setIndex(0);
             }
             if (info.getLine() != -1 && info.getPart() != -1) {
@@ -768,8 +762,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     pos += entry.getValue().getCharacterCount();
                 } else if (textLayouts.get(entry.getValue()).getPart() ==
                         linePart) {
-                    final TextHitInfo hit = entry.getValue().hitTestChar(x - 6,
-                            y);
+                    final TextHitInfo hit = entry.getValue().hitTestChar(x - 
+                            DOUBLE_SIDE_PADDING, y);
                     pos += hit.getInsertionIndex();
                 }
             }
