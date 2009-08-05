@@ -60,6 +60,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private static final long serialVersionUID = 8;
     /** Hand cursor. */
     private static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR);
+    /** Side padding for textpane. */
+    private static final int SIDE_PADDING = 3;
     /** IRCDocument. */
     private final IRCDocument document;
     /** parent textpane. */
@@ -116,7 +118,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             g.addRenderingHints(desktopHints);
         }
 
-        final float formatWidth = getWidth() - 6;
+        final float formatWidth = getWidth() - SIDE_PADDING - SIDE_PADDING;
         final float formatHeight = getHeight();
         float drawPosY = formatHeight;
         int startLine = scrollBarPosition;
@@ -196,7 +198,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
                 // Calculate the initial X position
                 if (layout.isLeftToRight()) {
-                    drawPosX = 3;
+                    drawPosX = SIDE_PADDING;
                 } else {
                     drawPosX = formatWidth - layout.getAdvance();
                 }
