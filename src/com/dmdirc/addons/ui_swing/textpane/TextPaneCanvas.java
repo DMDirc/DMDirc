@@ -60,8 +60,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private static final long serialVersionUID = 8;
     /** Hand cursor. */
     private static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR);
-    /** Side padding for textpane. */
-    private static final int SIDE_PADDING = 3;
+    /** Single Side padding for textpane. */
+    private static final int SINGLE_SIDE_PADDING = 3;
+    /** Both Side padding for textpane. */
+    private static final int DOUBLE_SIDE_PADDING = SINGLE_SIDE_PADDING * 2;
     /** IRCDocument. */
     private final IRCDocument document;
     /** parent textpane. */
@@ -118,7 +120,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             g.addRenderingHints(desktopHints);
         }
 
-        final float formatWidth = getWidth() - SIDE_PADDING - SIDE_PADDING;
+        final float formatWidth = getWidth() - DOUBLE_SIDE_PADDING;
         final float formatHeight = getHeight();
         float drawPosY = formatHeight;
         int startLine = scrollBarPosition;
@@ -198,7 +200,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
                 // Calculate the initial X position
                 if (layout.isLeftToRight()) {
-                    drawPosX = SIDE_PADDING;
+                    drawPosX = SINGLE_SIDE_PADDING;
                 } else {
                     drawPosX = formatWidth - layout.getAdvance();
                 }
@@ -213,7 +215,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     firstVisibleLine = line;
                     textLayouts.put(layout, new LineInfo(line, numberOfWraps));
                     positions.put(new Rectangle(0, (int) drawPosY,
-                            (int) formatWidth + 6,
+                            (int) formatWidth + DOUBLE_SIDE_PADDING,
                             lineHeight), layout);
                 }
 
