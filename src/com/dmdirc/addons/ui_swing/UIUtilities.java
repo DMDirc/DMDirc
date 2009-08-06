@@ -31,7 +31,6 @@ import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
