@@ -168,14 +168,10 @@ public class Line {
         } else {
             fontName = defaultFont.getName();
         }
-        if (lineHeight == -1) {
-            int fontSize = -1;
-            if (config.hasOptionString("ui", "textPaneFontSize")) {
-                fontSize = config.getOptionInt("ui", "textPaneFontSize");
-            } else {
-                fontSize = defaultFont.getSize();
-            }
-            lineHeight = fontSize;
+        if (config.hasOptionString("ui", "textPaneFontSize")) {
+            lineHeight = config.getOptionInt("ui", "textPaneFontSize");
+        } else {
+            lineHeight = defaultFont.getSize();
         }
         if (attString.getIterator().getEndIndex() != 0) {
             final Font font = new Font(fontName, Font.PLAIN, lineHeight);
