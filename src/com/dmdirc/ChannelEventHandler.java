@@ -302,11 +302,12 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelModeNotice(final Parser tParser, final char prefix,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
-            final String sMessage, final String sHost) {
+    public void onChannelModeNotice(final Parser tParser, 
+            final ChannelInfo cChannel, final char prefix, 
+            final ChannelClientInfo cChannelClient, final String sMessage,
+            final String sHost) {
         checkParser(tParser);
-        
+
         owner.doNotification("channelModeMessage", CoreActionType.CHANNEL_MODE_NOTICE,
                 cChannelClient, String.valueOf(prefix), sMessage);
     }
