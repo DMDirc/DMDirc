@@ -12,9 +12,20 @@
     <import file="build-tests.xml"/>
     <import file="build-versioning.xml"/>
 
-    <target name="-post-compile" depends="-write-version, build-plugins"/>
+    <target name="-submodules">
+        <exec executable="git">
+            <arg value="submodule"/>
+            <arg value="init"/>
+        </exec>
+        <exec executable="git">
+            <arg value="submodule"/>
+            <arg value="update"/>
+        </exec>
+    </target>
+
+    <target name="-pre-init" depends="-submodules"/>
+    <target name="-post-compile" depends="-write-version, build-plugins, -addpluginlibs"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-pre-jar" depends="-addpluginlibs"/>
     <target name="-post-jar" depends="-addjarlibs"/>
 
 </project>

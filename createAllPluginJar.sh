@@ -18,7 +18,7 @@ fi
 plugins="ui_swing.jar tabcompletion_bash.jar tabcompletion_mirc.jar"
 mkdir -p ${PWD}/build/classes/plugins
 for PLUGIN in ${plugins}; do
-	ln -s ${PWD}/plugins/${PLUGIN} ${PWD}/build/classes/plugins/${PLUGIN};
+	ln -sf ${PWD}/plugins/${PLUGIN} ${PWD}/build/classes/plugins/${PLUGIN};
 done;
 
 #if [ -d ${PWD}/build/classes -a ! -e ${PWD}/build/classes/plugins ]; then
