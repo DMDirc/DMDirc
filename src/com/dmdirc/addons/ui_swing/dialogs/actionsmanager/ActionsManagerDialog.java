@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
@@ -31,6 +32,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
+import com.dmdirc.addons.ui_swing.Apple;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.SortedListModel;
@@ -97,7 +100,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
-        super(null, ModalityType.MODELESS);
+        super(((MainFrame)Main.getUI().getMainWindow()), ModalityType.MODELESS);
 
         initComponents();
         addListeners();
