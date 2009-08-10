@@ -32,6 +32,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
+import com.dmdirc.addons.ui_swing.Apple;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.addons.ui_swing.wizard.Step;
 import com.dmdirc.addons.ui_swing.wizard.WizardDialog;
@@ -73,7 +74,11 @@ public final class SwingFirstRunWizard implements WizardListener,
                     "Migration wizard"), new ArrayList<Step>(), this, null);
         wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
         wizardDialog.addWizardListener(this);
-        wizardDialog.setMinimumSize(new Dimension(400, 400));
+        if(Apple.isAppleUI()) {
+            wizardDialog.setMinimumSize(new Dimension(400, 425));
+        } else {
+            wizardDialog.setMinimumSize(new Dimension(400, 400));
+        }
     }
 
     /** {@inheritDoc} */
