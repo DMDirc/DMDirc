@@ -230,7 +230,7 @@ public class ActionsManagerDialogTest implements UITestIface {
     }
     
     protected void setupWindow() {
-        window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog(null));
+        window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog(null, null));
         window.robot.settings().eventMode(EventMode.AWT);
         window.show();
     }
