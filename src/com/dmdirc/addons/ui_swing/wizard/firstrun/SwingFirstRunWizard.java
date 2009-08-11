@@ -97,9 +97,6 @@ public final class SwingFirstRunWizard implements WizardListener,
         if (firstRun) {
             IdentityManager.getConfigIdentity().setOption("updater", "enable",
                     ((CommunicationStep) wizardDialog.getStep(1)).checkUpdates());
-        }
-
-        if (firstRun) {
             IdentityManager.getConfigIdentity().setOption("general", "submitErrors",
                     ((CommunicationStep) wizardDialog.getStep(1)).checkErrors());
         }
