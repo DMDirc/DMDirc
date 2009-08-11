@@ -22,11 +22,15 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 
+import com.dmdirc.addons.ui_swing.components.frames.AppleJFrame;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.addons.ui_swing.Apple;
+import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
@@ -98,8 +102,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** 
      * Creates a new instance of ActionsManagerDialog.
      */
-    private ActionsManagerDialog(final Window parentWindow) {
-        super(null, ModalityType.MODELESS);
+    private ActionsManagerDialog(final Window parentWindow, final SwingController controller) {
+        super(Apple.isAppleUI() ? new AppleJFrame((MainFrame) parentWindow, controller) :
+            null, ModalityType.MODELESS);
 
         initComponents();
         addListeners();
@@ -116,8 +121,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * 
      * @param parentWindow Parent window
      */
-    public static void showActionsManagerDialog(final Window parentWindow) {
-        getActionsManagerDialog(parentWindow);
+    public static void showActionsManagerDialog(final Window parentWindow, final SwingController controller) {
+        getActionsManagerDialog(parentWindow, controller);
 
         me.setIconImages(parentWindow.getIconImages());
         me.pack();
@@ -140,10 +145,11 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * 
      * @return The current ActionsManagerDialog instance
      */
-    public static ActionsManagerDialog getActionsManagerDialog(final Window parentWindow) {
+    public static ActionsManagerDialog getActionsManagerDialog(final Window parentWindow,
+            final SwingController controller) {
         synchronized (ActionsManagerDialog.class) {
             if (me == null) {
-                me = new ActionsManagerDialog(parentWindow);
+                me = new ActionsManagerDialog(parentWindow, controller);
             } else {
                 me.reloadGroups();
             }
