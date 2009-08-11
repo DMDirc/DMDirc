@@ -261,18 +261,6 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * fires the clear wrap cache method on all listeners.
-     */
-    protected void fireClearWrapCache() {
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).clearWrapCache();
-            }
-        }
-    }
-
-    /**
      * Returns an attributed character iterator for a particular line,
      * utilising the document cache where possible.
      *
@@ -335,7 +323,6 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
     public void configChanged(final String domain, final String key) {
         cachedLines.clear();
         cachedStrings.clear();
-        fireClearWrapCache();
         fireRepaintNeeded();
     }
 }

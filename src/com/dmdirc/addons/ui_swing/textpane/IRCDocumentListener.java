@@ -62,9 +62,4 @@ public interface IRCDocumentListener extends EventListener {
      * The textpane requires repainting.
      */
     void repaintNeeded();
-
-    /**
-     * The line wrap cache needs to be cleared.
-     */
-    void clearWrapCache();
 }

@@ -72,8 +72,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         this.frame = frame;
         document = new IRCDocument(frame.getConfigManager());
-        frame.getConfigManager().addChangeListener("ui", "textPaneFontName", document);
-        frame.getConfigManager().addChangeListener("ui", "textPaneFontSize", document);
+        frame.getConfigManager().addChangeListener("ui", "textPaneFontName",
+                document);
+        frame.getConfigManager().addChangeListener("ui", "textPaneFontSize",
+                document);
 
         setLayout(new MigLayout("fill"));
         canvas = new TextPaneCanvas(this, document);
@@ -149,10 +151,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         final int currentLine = scrollBar.getValue();
         final int allowedDeviation = lines - linesAllowed;
 
-        if (lines == 0) {
-            canvas.repaint();
-        }
-
         scrollBar.setMaximum(lines);
 
         boolean setToMax = currentLine == allowedDeviation;
@@ -162,6 +160,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         if (!scrollBar.getValueIsAdjusting() && setToMax) {
             setScrollBarPosition(lines);
+        }
+        canvas.recalc();
+        if (canvas.isVisible()) {
+            canvas.repaint();
         }
     }
 
@@ -234,8 +236,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             if (!line.isEmpty()) {
                 if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                     //loop through range
-                    if (selectedRange.getStartPos() != -1
-                            && selectedRange.getEndPos() != -1) {
+                    if (selectedRange.getStartPos() != -1 && selectedRange.
+                            getEndPos() != -1) {
                         selectedText.append(line.substring(
                                 selectedRange.getStartPos(),
                                 selectedRange.getEndPos()));
@@ -346,7 +348,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         document.clear();
         setScrollBarPosition(0);
         setScrollBarMax(1);
-        canvas.repaint();
+        canvas.recalc();
+        if (canvas.isVisible()) {
+            canvas.repaint();
+        }
     }
 
     /** Clears the selection. */
@@ -404,14 +409,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** {@inheritDoc}. */
     @Override
     public void trimmed(final int numLines) {
-        canvas.clearWrapCache();
         setScrollBarMax(1);
     }
 
     /** {@inheritDoc}. */
     @Override
     public void cleared() {
-        canvas.clearWrapCache();
+        canvas.recalc();
+        if (canvas.isVisible()) {
+            canvas.repaint();
+        }
     }
 
     /** {@inheritDoc}. */
@@ -419,17 +426,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void linesAdded(int line, int length, int size) {
         setScrollBarMax(length);
     }
-    
-    /** {@inheritDoc}. */
-    @Override
-    public void repaintNeeded() {
-        canvas.repaint();
-    }
 
     /** {@inheritDoc}. */
     @Override
-    public void clearWrapCache() {
-        canvas.clearWrapCache();
+    public void repaintNeeded() {
+        canvas.recalc();
+        if (canvas.isVisible()) {
+            canvas.repaint();
+        }
     }
 
     /**
@@ -440,7 +444,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public IRCDocument getDocument() {
         return document;
     }
-    
+
     /**
      * Retrives the parent framecontainer for this textpane.
      * 
