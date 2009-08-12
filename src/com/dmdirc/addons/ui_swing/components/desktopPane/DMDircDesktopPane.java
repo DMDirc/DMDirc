@@ -306,7 +306,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameListener,
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         if ("title".equals(evt.getPropertyName())) {
-            handleTitleEvent((Window) evt.getSource(), 
+            handleTitleEvent((Window) evt.getSource(),
                     ((Window) evt.getSource()).getTitle());
         } else if ("maximum".equals(evt.getPropertyName())) {
             handleMaximiseEvent((Boolean) evt.getNewValue(),
@@ -321,7 +321,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameListener,
             mainFrame.setTitle(null);
         }
     }
-    
+
     private void handleMaximiseEvent(final boolean isMaximised,
             final String title) {
         if (changing.get()) {
@@ -329,25 +329,23 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameListener,
         }
         changing.set(true);
         maximised = isMaximised;
-        if (!UIUtilities.isWindowsUI()) {
-            Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
-            stack.addAll(Arrays.asList(getAllFrames()));
+        Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
+        stack.addAll(Arrays.asList(getAllFrames()));
 
-            while (!stack.empty()) {
-                JInternalFrame frame = stack.pop();
-                if (isMaximised) {
-                    if (!frame.isMaximum()) {
-                        ((Window) frame).maximise();
-                    }
-                } else {
-                    if (frame.isMaximum()) {
-                        ((Window) frame).restore();
-                    }
+        while (!stack.empty()) {
+            JInternalFrame frame = stack.pop();
+            if (isMaximised) {
+                if (!frame.isMaximum()) {
+                    ((Window) frame).maximise();
+                }
+            } else {
+                if (frame.isMaximum()) {
+                    ((Window) frame).restore();
                 }
             }
-            if (selectedWindow != null) {
-                selectedWindow.activateFrame();
-            }
+        }
+        if (selectedWindow != null) {
+            selectedWindow.activateFrame();
         }
         if (!isMaximised) {
             mainFrame.setTitle(title);

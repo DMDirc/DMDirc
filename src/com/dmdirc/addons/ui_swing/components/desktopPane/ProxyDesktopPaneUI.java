@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.DefaultDesktopManager;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -95,6 +96,7 @@ public class ProxyDesktopPaneUI extends DesktopPaneUI {
         c.setInputMap(JDesktopPane.WHEN_FOCUSED, null);
         c.setInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, inputMap);
         c.setActionMap(actionMap);
+        ((JDesktopPane) c).setDesktopManager(new DefaultDesktopManager());
     }
 
     /** @inheritDoc} */
