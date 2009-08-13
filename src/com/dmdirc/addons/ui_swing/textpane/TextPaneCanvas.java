@@ -121,10 +121,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     }
 
     /**
-     * This method is badly named, it might aswell be badly javadoced.
+     * Re calculates positions of lines and repaints if required.
      */
     protected void recalc() {
         buffer = null;
+        if (isVisible()) {
+            repaint();
+        }
     }
 
     /**
@@ -388,10 +391,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     protected void setScrollBarPosition(final int position) {
         if (scrollBarPosition != position) {
             scrollBarPosition = position;
-            buffer = null;
-            if (textPane.isVisible()) {
-                repaint();
-            }
+            recalc();
         }
     }
 
@@ -734,8 +734,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 selection.setEndLine(info.getLine());
                 selection.setEndPos(info.getIndex());
 
-                buffer = null;
-                repaint();
+                recalc();
             }
         }
     }
@@ -827,10 +826,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     protected void clearSelection() {
         selection.setEndLine(selection.getStartLine());
         selection.setEndPos(selection.getStartPos());
-        buffer = null;
-        if (isVisible()) {
-            repaint();
-        }
+        recalc();
     }
 
     /**
@@ -840,10 +836,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public void setSelectedRange(final LinePosition position) {
         selection = new LinePosition(position);
-        buffer = null;
-        if (isVisible()) {
-            repaint();
-        }
+        recalc();
     }
 
     /**nee
@@ -871,10 +864,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentResized(final ComponentEvent e) {
-        buffer = null;
-        if (isVisible()) {
-            repaint();
-        }
+        recalc();
     }
 
     /** 

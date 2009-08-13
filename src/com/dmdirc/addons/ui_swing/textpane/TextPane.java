@@ -162,9 +162,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             setScrollBarPosition(lines);
         }
         canvas.recalc();
-        if (canvas.isVisible()) {
-            canvas.repaint();
-        }
     }
 
     /** 
@@ -349,9 +346,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setScrollBarPosition(0);
         setScrollBarMax(1);
         canvas.recalc();
-        if (canvas.isVisible()) {
-            canvas.repaint();
-        }
     }
 
     /** Clears the selection. */
@@ -416,9 +410,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     @Override
     public void cleared() {
         canvas.recalc();
-        if (canvas.isVisible()) {
-            canvas.repaint();
-        }
     }
 
     /** {@inheritDoc}. */
@@ -431,9 +422,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     @Override
     public void repaintNeeded() {
         canvas.recalc();
-        if (canvas.isVisible()) {
-            canvas.repaint();
-        }
     }
 
     /**
