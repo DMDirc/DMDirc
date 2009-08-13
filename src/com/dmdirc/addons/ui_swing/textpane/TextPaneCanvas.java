@@ -196,6 +196,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 drawPosY -= lineHeight * wrappedLine;
             }
 
+            if (line == startLine) {
+                drawPosY += DOUBLE_SIDE_PADDING;
+            }
+
             int numberOfWraps = 0;
             int chars = 0;
             // Loop through each wrapped line
@@ -221,7 +225,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
                     g.setColor(textPane.getForeground());
 
-                    layout.draw(g, drawPosX, drawPosY + lineHeight / 2f);
+                    layout.draw(g, drawPosX, drawPosY + layout.getDescent());
                     doHighlight(line, chars, layout, g, drawPosY, drawPosX);
                     firstVisibleLine = line;
                     textLayouts.put(layout, new LineInfo(line, numberOfWraps));
@@ -351,7 +355,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 final AttributedString as = new AttributedString(iterator,
                         firstChar,
                         lastChar);
-                final int trans = (int) (lineHeight / 2f + drawPosY);
 
                 as.addAttribute(TextAttribute.FOREGROUND,
                         textPane.getBackground());
@@ -363,6 +366,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                         chars,
                         lastChar -
                         chars);
+                final int trans = (int) (newLayout.getDescent() + drawPosY);
 
                 if (firstChar != 0) {
                     g.translate(shape.getBounds().getX(), 0);
