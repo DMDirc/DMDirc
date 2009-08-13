@@ -111,13 +111,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void paintComponent(final Graphics graphics) {
+        final Graphics2D g = (Graphics2D) graphics;
         if (buffer == null) {
             calc();
         }
-        graphics.setColor(textPane.getBackground());
-        graphics.clearRect(getBounds().x, getBounds().y,
-                getBounds().width, getBounds().height);
-        graphics.drawImage(buffer, 0, 0, null);
+        g.setColor(textPane.getBackground());
+        g.fill(g.getClipBounds());
+        g.drawImage(buffer, 0, 0, null);
     }
 
     /**
