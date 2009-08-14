@@ -24,7 +24,7 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
-import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
+import com.dmdirc.addons.ui_swing.components.SplitPane;
 import com.dmdirc.addons.ui_swing.components.desktopPane.DMDircDesktopPane;
 import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
@@ -401,7 +401,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     private JSplitPane initSplitPane() {
         final JSplitPane mainSplitPane =
-                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL);
+                new SplitPane(SplitPane.Orientation.HORIZONTAL);
         position =
                 FramemanagerPosition.getPosition(IdentityManager.getGlobalConfig().
                 getOption("ui", "framemanagerPosition"));

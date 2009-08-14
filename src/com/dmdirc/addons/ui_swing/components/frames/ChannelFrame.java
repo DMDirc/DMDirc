@@ -29,7 +29,8 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
+import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.components.SplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.commandparser.PopupType;
@@ -66,7 +67,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /** This channel's command parser. */
     private final ChannelCommandParser commandParser;
     /** split pane. */
-    private JSplitPane splitPane;
+    private SplitPane splitPane;
     /** popup menu item. */
     private JMenuItem settingsMI;
     /** The channel object that owns this frame. */
@@ -90,8 +91,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         initComponents();
 
-        getConfigManager().addChangeListener("ui", "channelSplitPanePosition",
-                this);
+        IdentityManager.getGlobalConfig().addChangeListener("ui",
+                "channelSplitPanePosition", this);
         ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
@@ -160,10 +161,11 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
 
-        splitPane = new SnappingJSplitPane(
-                SnappingJSplitPane.Orientation.HORIZONTAL, false);
+        splitPane = new SplitPane(
+                SplitPane.Orientation.HORIZONTAL, false);
 
-        getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
+        getContentPane().setLayout(new MigLayout(
+                "fill, ins 0, hidemode 3, wrap 1"));
 
         getContentPane().add(splitPane, "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
@@ -206,9 +208,17 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         if ("channelSplitPanePosition".equals(key)) {
             final int splitPanePosition = getConfigManager().getOptionInt("ui",
                     "channelSplitPanePosition");
-            nicklist.setPreferredSize(new Dimension(splitPanePosition, 0));
-            splitPane.setDividerLocation(splitPane.getWidth() - splitPane.getDividerSize() - 
-                    splitPanePosition);
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    nicklist.setPreferredSize(
+                            new Dimension(splitPanePosition, 0));
+                    splitPane.setDividerLocation(splitPane.getWidth() - 
+                            splitPane.getDividerSize() - splitPanePosition);
+                }
+            });
         }
     }
 
