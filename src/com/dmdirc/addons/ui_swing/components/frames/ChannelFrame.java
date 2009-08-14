@@ -172,6 +172,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nicklist);
         splitPane.setResizeWeight(1);
+        splitPane.setDividerLocation(-1);
 
         pack();
     }
@@ -206,7 +207,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
             final int splitPanePosition = getConfigManager().getOptionInt("ui",
                     "channelSplitPanePosition");
             nicklist.setPreferredSize(new Dimension(splitPanePosition, 0));
-            splitPane.setDividerLocation(splitPane.getWidth() -
+            splitPane.setDividerLocation(splitPane.getWidth() - splitPane.getDividerSize() - 
                     splitPanePosition);
         }
     }
