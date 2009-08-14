@@ -158,6 +158,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         canvas.recalc();
     }
 
+    /**
+     * Sets the new position for the scrollbar and the associated position
+     * to render the text from.
+     * @param position new position of the scrollbar
+     */
+    public void setScrollBarPosition(final int position) {
+        scrollModel.setValue(position);
+    }
+
     /** 
      * {@inheritDoc}
      * 
@@ -377,7 +386,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
 
     /** Scrolls one page down in the textpane. */
-    public void pageUp() {  
+    public void pageUp() {
         scrollModel.setValue(scrollModel.getValue() - 10);
     }
 
