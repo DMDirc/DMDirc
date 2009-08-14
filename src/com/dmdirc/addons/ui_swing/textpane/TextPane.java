@@ -35,6 +35,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 
@@ -52,8 +54,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    /** Scrollbar for the component. */
-    private final JScrollBar scrollBar;
+    /** Scrollbar model. */
+    private final BoundedRangeModel scrollModel;
     /** Canvas object, used to draw text. */
     private final TextPaneCanvas canvas;
     /** IRCDocument. */
@@ -80,12 +82,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setLayout(new MigLayout("fill"));
         canvas = new TextPaneCanvas(this, document);
         add(canvas, "dock center");
-        scrollBar = new JScrollBar(JScrollBar.VERTICAL);
+        scrollModel = new DefaultBoundedRangeModel();
+        scrollModel.setMaximum(document.getNumLines());
+        scrollModel.setExtent(0);
+        final JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
+        scrollBar.setModel(scrollModel);
         add(scrollBar, "dock east");
-        scrollBar.setMaximum(document.getNumLines());
-        scrollBar.setBlockIncrement(10);
-        scrollBar.setUnitIncrement(1);
         scrollBar.addAdjustmentListener(this);
+        scrollBar.addAdjustmentListener(canvas);
 
         addMouseWheelListener(this);
         document.addIRCDocumentListener(this);
@@ -101,10 +105,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                         getX() + getWidth()) && e.getModifiersEx() ==
                         MouseEvent.BUTTON1_DOWN_MASK) {
                     if (getLocationOnScreen().getY() > e.getYOnScreen()) {
-                        setScrollBarPosition(scrollBar.getValue() - 1);
+                        scrollModel.setValue(scrollBar.getValue() - 1);
                     } else if (getLocationOnScreen().getY() + getHeight() <
                             e.getYOnScreen()) {
-                        setScrollBarPosition(scrollBar.getValue() + 1);
+                        scrollModel.setValue(scrollBar.getValue() + 1);
                     }
                     canvas.highlightEvent(MouseEventType.DRAG, e);
                 }
@@ -120,22 +124,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
 
     /**
-     * Sets the new position for the scrollbar and the associated position
-     * to render the text from.
-     * @param position new position of the scrollbar
-     */
-    public void setScrollBarPosition(final int position) {
-        scrollBar.setValue(position);
-        canvas.setScrollBarPosition(position);
-    }
-
-    /**
      * Returns the last visible line in the textpane.
      *
      * @return Last visible line index
      */
     public int getLastVisibleLine() {
-        return scrollBar.getValue();
+        return scrollModel.getValue();
     }
 
     /**
@@ -148,18 +142,18 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     protected void setScrollBarMax(final int linesAllowed) {
         final int lines = document.getNumLines() - 1;
-        final int currentLine = scrollBar.getValue();
+        final int currentLine = scrollModel.getValue();
         final int allowedDeviation = lines - linesAllowed;
 
-        scrollBar.setMaximum(lines);
+        scrollModel.setMaximum(lines);
 
         boolean setToMax = currentLine == allowedDeviation;
         if (allowedDeviation == -1) {
             setToMax = true;
         }
 
-        if (!scrollBar.getValueIsAdjusting() && setToMax) {
-            setScrollBarPosition(lines);
+        if (!scrollModel.getValueIsAdjusting() && setToMax) {
+            scrollModel.setValue(lines);
         }
         canvas.recalc();
     }
@@ -171,7 +165,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     @Override
     public void adjustmentValueChanged(final AdjustmentEvent e) {
-        setScrollBarPosition(e.getValue());
+        scrollModel.setValue(e.getValue());
     }
 
     /** 
@@ -181,12 +175,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
-        if (scrollBar.isEnabled()) {
-            if (e.getWheelRotation() > 0) {
-                setScrollBarPosition(scrollBar.getValue() + e.getScrollAmount());
-            } else {
-                setScrollBarPosition(scrollBar.getValue() - e.getScrollAmount());
-            }
+        if (e.getWheelRotation() > 0) {
+            scrollModel.setValue(scrollModel.getValue() + e.getScrollAmount());
+        } else {
+            scrollModel.setValue(scrollModel.getValue() - e.getScrollAmount());
         }
     }
 
@@ -343,7 +335,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Clears the textpane. */
     public void clear() {
         document.clear();
-        setScrollBarPosition(0);
+        scrollModel.setValue(0);
         setScrollBarMax(1);
         canvas.recalc();
     }
@@ -381,17 +373,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
     /** Scrolls one page up in the textpane. */
     public void pageDown() {
-        //setScrollBarPosition(scrollBar.getValue() + canvas.getLastVisibleLine() 
-        // - canvas.getFirstVisibleLine() + 1);
-        //use this method for now, its consistent with the block unit for the scrollbar
-        setScrollBarPosition(scrollBar.getValue() + 10);
+        scrollModel.setValue(scrollModel.getValue() + 10);
     }
 
     /** Scrolls one page down in the textpane. */
-    public void pageUp() {
-        //setScrollBarPosition(canvas.getFirstVisibleLine());
-        //use this method for now, its consistent with the block unit for the scrollbar
-        setScrollBarPosition(scrollBar.getValue() - 10);
+    public void pageUp() {  
+        scrollModel.setValue(scrollModel.getValue() - 10);
     }
 
     /** {@inheritDoc}. */

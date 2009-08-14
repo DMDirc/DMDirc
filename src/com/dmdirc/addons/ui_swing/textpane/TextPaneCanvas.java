@@ -31,6 +31,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -50,7 +52,7 @@ import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener,
-        ComponentListener {
+        ComponentListener, AdjustmentListener {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -72,8 +74,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private final Map<Rectangle, TextLayout> positions;
     /** TextLayout -> Line numbers. */
     private final Map<TextLayout, LineInfo> textLayouts;
-    /** position of the scrollbar. */
-    private int scrollBarPosition;
+    /** Start line. */
+    private int startLine;
     /** Selection. */
     private LinePosition selection;
     /** First visible line. */
@@ -92,7 +94,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     public TextPaneCanvas(final TextPane parent, final IRCDocument document) {
         super();
         this.document = document;
-        scrollBarPosition = 0;
+        startLine = 0;
         textPane = parent;
         setDoubleBuffered(true);
         setOpaque(true);
@@ -101,7 +103,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         selection = new LinePosition(-1, -1, -1, -1);
         addMouseListener(this);
         addMouseMotionListener(this);
-        addComponentListener(this);        
+        addComponentListener(this);
     }
 
     /**
@@ -147,7 +149,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         final float formatWidth = getWidth() - DOUBLE_SIDE_PADDING;
         final float formatHeight = getHeight();
         float drawPosY = formatHeight;
-        int startLine = scrollBarPosition;
 
         int paragraphStart;
         int paragraphEnd;
@@ -192,8 +193,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             lineMeasurer.setPosition(paragraphStart);
 
             final int wrappedLine = getNumWrappedLines(lineMeasurer,
-                        paragraphStart, paragraphEnd,
-                        formatWidth);
+                    paragraphStart, paragraphEnd,
+                    formatWidth);
 
             if (wrappedLine > 1) {
                 drawPosY -= lineHeight * wrappedLine;
@@ -294,49 +295,49 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private void doHighlight(final int line, final int chars,
             final TextLayout layout, final Graphics2D g,
             final float drawPosY, final float drawPosX) {
-        int startLine;
-        int startChar;
-        int endLine;
-        int endChar;
+        int selectionStartLine;
+        int selectionStartChar;
+        int selectionEndLine;
+        int selectionEndChar;
 
         if (selection.getStartLine() > selection.getEndLine()) {
             // Swap both
-            startLine = selection.getEndLine();
-            startChar = selection.getEndPos();
-            endLine = selection.getStartLine();
-            endChar = selection.getStartPos();
+            selectionStartLine = selection.getEndLine();
+            selectionStartChar = selection.getEndPos();
+            selectionEndLine = selection.getStartLine();
+            selectionEndChar = selection.getStartPos();
         } else if (selection.getStartLine() == selection.getEndLine() &&
                 selection.getStartPos() > selection.getEndPos()) {
             // Just swap the chars
-            startLine = selection.getStartLine();
-            startChar = selection.getEndPos();
-            endLine = selection.getEndLine();
-            endChar = selection.getStartPos();
+            selectionStartLine = selection.getStartLine();
+            selectionStartChar = selection.getEndPos();
+            selectionEndLine = selection.getEndLine();
+            selectionEndChar = selection.getStartPos();
         } else {
             // Swap nothing
-            startLine = selection.getStartLine();
-            startChar = selection.getStartPos();
-            endLine = selection.getEndLine();
-            endChar = selection.getEndPos();
+            selectionStartLine = selection.getStartLine();
+            selectionStartChar = selection.getStartPos();
+            selectionEndLine = selection.getEndLine();
+            selectionEndChar = selection.getEndPos();
         }
 
         //Does this line need highlighting?
-        if (startLine <= line && endLine >= line) {
+        if (selectionStartLine <= line && selectionEndLine >= line) {
             int firstChar;
             int lastChar;
 
             // Determine the first char we care about
-            if (startLine < line || startChar < chars) {
+            if (selectionStartLine < line || selectionStartChar < chars) {
                 firstChar = chars;
             } else {
-                firstChar = startChar;
+                firstChar = selectionStartChar;
             }
 
             // ... And the last
-            if (endLine > line || endChar > chars + layout.getCharacterCount()) {
+            if (selectionEndLine > line || selectionEndChar > chars + layout.getCharacterCount()) {
                 lastChar = chars + layout.getCharacterCount();
             } else {
-                lastChar = endChar;
+                lastChar = selectionEndChar;
             }
 
             // If the selection includes the chars we're showing
@@ -385,23 +386,16 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     }
 
     /**
-     * sets the position of the scroll bar, and repaints if required.
-     * @param position scroll bar position
+     * {@{@inheritDoc}
+     *
+     * @param e Adjustment event
      */
-    protected void setScrollBarPosition(final int position) {
-        if (scrollBarPosition != position) {
-            scrollBarPosition = position;
+    @Override
+    public void adjustmentValueChanged(final AdjustmentEvent e) {
+        if (startLine != e.getValue()) {
+            startLine = e.getValue();
             recalc();
         }
-    }
-
-    /**
-     * Returns the current scroll bar position.
-     * 
-     * @return Scroll bar position
-     */
-    protected int getScrollBarPosition() {
-        return scrollBarPosition;
     }
 
     /** 
@@ -839,7 +833,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         recalc();
     }
 
-    /**nee
+    /**
      * Returns the first visible line.
      *
      * @return the line number of the first visible line
@@ -855,6 +849,15 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public int getLastVisibleLine() {
         return lastVisibleLine;
+    }
+
+    /**
+     * Returns the number of visible lines.
+     *
+     * @return Number of visible lines
+     */
+    public int getNumVisibleLines() {
+        return lastVisibleLine - firstVisibleLine;
     }
 
     /** 
