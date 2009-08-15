@@ -34,7 +34,12 @@ public final class DMDircExceptionHandler implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public void uncaughtException(final Thread t, final Throwable e) {
-        Logger.appError(ErrorLevel.HIGH, e.toString(), e);
+        if (e instanceof Error) {
+            Logger.appError(ErrorLevel.FATAL, e.toString(), e);
+        } else {
+            Logger.appError(ErrorLevel.HIGH, e.toString(), e);
+        }
     }
 }

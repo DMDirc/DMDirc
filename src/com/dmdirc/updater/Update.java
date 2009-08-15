@@ -187,7 +187,7 @@ public final class Update implements DownloadListener {
                     setStatus(UpdateStatus.ERROR);
                     Logger.userError(ErrorLevel.MEDIUM,
                             "I/O error when updating component " + component.getName(), ex);
-                } catch (Throwable ex) {
+                } catch (Exception ex) {
                     setStatus(UpdateStatus.ERROR);
                     Logger.appError(ErrorLevel.MEDIUM,
                             "Error when updating component " + component.getName(), ex);

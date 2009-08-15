@@ -884,8 +884,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			
 			try {
 				plugin.onLoad();
-			} catch (Throwable e) {
-				lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
+                        } catch (LinkageError e) {
+                            lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
+				Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+				unloadPlugin();
+			} catch (Exception e) {
+                            lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
 				Logger.userError(ErrorLevel.MEDIUM, lastError, e);
 				unloadPlugin();
 			}
@@ -968,7 +972,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 						if (!tempLoaded) {
 							try {
 								plugin.onLoad();
-							} catch (Throwable e) {
+                                                        } catch (LinkageError e) {
+                                                            lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
+								Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+								unloadPlugin();
+							} catch (Exception e) {
 								lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
 								Logger.userError(ErrorLevel.MEDIUM, lastError, e);
 								unloadPlugin();

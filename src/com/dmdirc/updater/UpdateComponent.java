@@ -68,8 +68,8 @@ public interface UpdateComponent {
      * 
      * @param path The full path to the downloaded data
      * @return True if a client restart is needed, false otherwise
-     * @throws java.lang.Throwable If any error occured
+     * @throws java.lang.Exception If any error occured
      */
-    boolean doInstall(String path) throws Throwable;
+    boolean doInstall(String path) throws Exception;
 
 }

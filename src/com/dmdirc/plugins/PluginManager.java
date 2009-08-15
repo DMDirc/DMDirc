@@ -462,8 +462,10 @@ public class PluginManager implements ActionListener {
 				if (pi.isLoaded() || pi.isTempLoaded()) {
 					try {
 						pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
-					} catch (Throwable t) {
-						Logger.userError(ErrorLevel.MEDIUM, "Error with plugin ("+pi.getNiceName()+"), unable to show config ("+t+")", t);
+                                        } catch (LinkageError le) {
+                                            Logger.userError(ErrorLevel.MEDIUM, "Error with plugin ("+pi.getNiceName()+"), unable to show config ("+le+")", le);
+					} catch (Exception ex) {
+                                            Logger.userError(ErrorLevel.MEDIUM, "Error with plugin ("+pi.getNiceName()+"), unable to show config ("+ex+")", ex);
 					}
 				}
 			}
