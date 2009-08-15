@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
 import com.dmdirc.FrameContainer;
@@ -116,8 +117,10 @@ public final class TreeFrameManager implements FrameManager,
             public void run() {
                 final JScrollPane scrollPane = new JScrollPane(tree);
                 scrollPane.setAutoscrolls(true);
-                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                scrollPane.getHorizontalScrollBar().addAdjustmentListener(TreeFrameManager.this);
+                scrollPane.setHorizontalScrollBarPolicy(
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollPane.getHorizontalScrollBar().addAdjustmentListener(
+                        TreeFrameManager.this);
 
                 parent.setLayout(new MigLayout("ins 0, fill"));
                 parent.add(scrollPane, "grow");
@@ -205,9 +208,11 @@ public final class TreeFrameManager implements FrameManager,
                 }
                 tree.expandPath(new TreePath(node.getPath()).getParentPath());
                 final Rectangle view =
-                        tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+                        tree.getRowBounds(tree.getRowForPath(new TreePath(node.
+                        getPath())));
                 if (view != null) {
-                    tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
+                    tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(),
+                            0, 0));
                 }
                 window.addSelectionListener(TreeFrameManager.this);
                 window.addFrameInfoListener(TreeFrameManager.this);
@@ -246,7 +251,8 @@ public final class TreeFrameManager implements FrameManager,
 
         if (event == null) {
             node = null;
-        } else if (tree.getNodeForLocation(event.getX(), event.getY()) != null) {
+        } else if (tree.getNodeForLocation(event.getX(), event.getY()) !=
+                null) {
             node =
                     tree.getNodeForLocation(event.getX(), event.getY()).getLabel();
         }
@@ -286,25 +292,35 @@ public final class TreeFrameManager implements FrameManager,
      * Starts the tree from scratch taking into account new sort orders.
      */
     private void redoTreeView() {
-        ((DefaultTreeModel)tree.getModel()).setRoot(null);
-        ((DefaultTreeModel)tree.getModel()).setRoot(new TreeViewNode(null, null));
-        
-        final Window[] rootWindows = WindowManager.getRootWindows();
+        UIUtilities.invokeLater(new Runnable() {
 
-        for (Window window : rootWindows) {
-            addWindow(window.getContainer());
-            final Window[] childWindows = WindowManager.getChildren(window);
-            for (Window childWindow : childWindows) {
-                addWindow(window.getContainer(), childWindow.getContainer());
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                ((DefaultTreeModel) tree.getModel()).setRoot(null);
+                ((DefaultTreeModel) tree.getModel()).setRoot(new TreeViewNode(
+                        null, null));
+
+                final Window[] rootWindows = WindowManager.getRootWindows();
+
+                for (Window window : rootWindows) {
+                    addWindow(window.getContainer());
+                    final Window[] childWindows = WindowManager.getChildren(
+                            window);
+                    for (Window childWindow : childWindows) {
+                        addWindow(window.getContainer(), childWindow.
+                                getContainer());
+                    }
+                }
             }
-        }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
         synchronized (nodes) {
-            final Collection<TreeViewNode> collection = 
+            final Collection<TreeViewNode> collection =
                     new ArrayList<TreeViewNode>(nodes.values());
             for (TreeViewNode treeNode : collection) {
                 final NodeLabel label = treeNode.getLabel();
@@ -314,7 +330,8 @@ public final class TreeFrameManager implements FrameManager,
 
         if (window != null) {
             final TreeNode[] treePath =
-                    ((DefaultTreeModel) tree.getModel()).getPathToRoot(nodes.get(window.getContainer()));
+                    ((DefaultTreeModel) tree.getModel()).getPathToRoot(
+                    nodes.get(window.getContainer()));
             if (treePath != null && treePath.length > 0) {
                 final TreePath path = new TreePath(treePath);
                 if (path != null) {
