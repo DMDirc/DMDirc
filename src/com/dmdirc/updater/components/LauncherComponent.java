@@ -99,7 +99,7 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Throwable {
+    public boolean doInstall(final String path) throws Exception {
         final File tmpFile = new File(path);
         if (platform.equalsIgnoreCase("Linux") || platform.equalsIgnoreCase("unix")) {
             final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");

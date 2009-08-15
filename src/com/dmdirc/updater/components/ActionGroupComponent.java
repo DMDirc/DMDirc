@@ -78,7 +78,7 @@ public class ActionGroupComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Throwable {
+    public boolean doInstall(final String path) throws Exception {
         ActionManager.installActionPack(path);
         return false;
     }

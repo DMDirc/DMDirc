@@ -90,7 +90,7 @@ public class PluginComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override    
-    public boolean doInstall(final String path) throws Throwable {
+    public boolean doInstall(final String path) throws Exception {
         final File target = new File(plugin.getFullFilename());
         
         if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
