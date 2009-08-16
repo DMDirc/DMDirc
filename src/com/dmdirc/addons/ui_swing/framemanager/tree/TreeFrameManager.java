@@ -33,12 +33,10 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-
 import com.dmdirc.ui.WindowManager;
+
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,7 +45,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -62,8 +59,7 @@ import net.miginfocom.swing.MigLayout;
  * Manages open windows in the application in a tree style view.
  */
 public final class TreeFrameManager implements FrameManager,
-        AdjustmentListener, Serializable,
-        ConfigChangeListener, SelectionListener,
+        Serializable, ConfigChangeListener, SelectionListener,
         NotificationListener, FrameInfoListener {
 
     /**
@@ -119,8 +115,6 @@ public final class TreeFrameManager implements FrameManager,
                 scrollPane.setAutoscrolls(true);
                 scrollPane.setHorizontalScrollBarPolicy(
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                scrollPane.getHorizontalScrollBar().addAdjustmentListener(
-                        TreeFrameManager.this);
 
                 parent.setLayout(new MigLayout("ins 0, fill"));
                 parent.add(scrollPane, "grow");
@@ -230,17 +224,6 @@ public final class TreeFrameManager implements FrameManager,
         return tree;
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Adjustment event
-     */
-    @Override
-    public void adjustmentValueChanged(final AdjustmentEvent e) {
-        //HACK Disregard all scrolling events
-        ((JScrollBar) e.getSource()).setValue(0);
-    }
-
     /**
      * Checks for and sets a rollover node.
      * 
@@ -336,6 +319,7 @@ public final class TreeFrameManager implements FrameManager,
                 final TreePath path = new TreePath(treePath);
                 if (path != null) {
                     tree.setTreePath(path);
+                    tree.scrollPathToVisible(path);
                 }
             }
         }

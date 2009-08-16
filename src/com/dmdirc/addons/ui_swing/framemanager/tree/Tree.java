@@ -29,6 +29,7 @@ import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -64,8 +65,6 @@ public class Tree extends JTree implements MouseMotionListener,
     private boolean dragButton;
     /** Tree frame manager. */
     private TreeFrameManager manager;
-    /** Current selection path. */
-    private TreePath path;
 
     /**
      * Specialised JTree for frame manager.
@@ -114,13 +113,20 @@ public class Tree extends JTree implements MouseMotionListener,
         addMouseMotionListener(this);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void scrollRectToVisible(final Rectangle aRect) {
+        final Rectangle rect = new Rectangle(0, aRect.y,
+                aRect.width, aRect.height);
+        super.scrollRectToVisible(rect);
+    }
+
     /**
      * Set path.
      *
      * @param path Path
      */
     public void setTreePath(final TreePath path) {
-        this.path = path;
         UIUtilities.invokeLater(new Runnable() {
 
             @Override
