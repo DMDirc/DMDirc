@@ -117,6 +117,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (buffer == null) {
             calc();
         }
+        final Map desktopHints = (Map) Toolkit.getDefaultToolkit().
+                getDesktopProperty("awt.font.desktophints");
+        if (desktopHints != null) {
+            g.addRenderingHints(desktopHints);
+        }
         g.setColor(textPane.getBackground());
         g.fill(g.getClipBounds());
         g.drawImage(buffer, 0, 0, null);
