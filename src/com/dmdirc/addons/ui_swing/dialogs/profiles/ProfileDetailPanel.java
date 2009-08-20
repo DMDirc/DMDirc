@@ -33,18 +33,21 @@ import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
 
+import java.awt.Color;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
@@ -86,6 +89,10 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     private JButton editButton;
     /** Main frame. */
     private MainFrame mainFrame;
+    /** List border. */
+    private Border passBorder;
+    /** Validation failed border. */
+    private Border failBorder;
 
     /**
      * Creates a new profile detail panel.
@@ -116,6 +123,12 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         realname = new ValidatingJTextField(new NotEmptyValidator());
         ident = new ValidatingJTextField(new IdentValidator());
         nicknames = new ReorderableJList(nicknameModel);
+
+        passBorder = nicknames.getBorder();
+        failBorder = BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.RED, 10),
+                nicknames.getBorder()
+                );
 
         addButton = new JButton("Add");
         delButton = new JButton("Delete");
@@ -223,6 +236,11 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
      * @return Validation Result
      */
     public boolean validateDetails() {
+        if (nicknames.getModel().getSize() <= 0) {
+           nicknames.setBorder(failBorder);
+        } else {
+            nicknames.setBorder(passBorder);
+        }
         if (!ident.validateText() || !realname.validateText() ||
                 !name.validateText() || nicknames.getModel().getSize() <= 0) {
             return false;
