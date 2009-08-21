@@ -31,6 +31,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
@@ -49,11 +50,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-
 /**
  * Invite label.
  */
-public class InviteLabel extends StatusbarPopupPanel implements StatusBarComponent,
+public class InviteLabel extends StatusbarPopupPanel implements
+        StatusBarComponent,
         InviteListener, ActionListener {
 
     /**
@@ -84,7 +85,7 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
      */
     public InviteLabel(final MainFrame mainFrame) {
         super(new JLabel());
-        
+
         this.mainFrame = mainFrame;
 
         setBorder(BorderFactory.createEtchedBorder());
@@ -99,7 +100,8 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
             @Override
             public void actionPerformed(final ActionEvent e) {
                 for (Server server : inviteList.keySet()) {
-                    final List<Invite> invites = new ArrayList<Invite>(inviteList.values(server));
+                    final List<Invite> invites = new ArrayList<Invite>(
+                            inviteList.values(server));
                     for (Invite invite : invites) {
                         invite.getServer().removeInvite(invite);
                     }
@@ -114,7 +116,8 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
             @Override
             public void actionPerformed(final ActionEvent e) {
                 for (Server server : inviteList.keySet()) {
-                    final List<Invite> invites = new ArrayList<Invite>(inviteList.values(server));
+                    final List<Invite> invites = new ArrayList<Invite>(
+                            inviteList.values(server));
                     for (Invite invite : invites) {
                         invite.accept();
                     }
@@ -170,13 +173,21 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
             activeServer.addInviteListener(this);
         }
 
-        if (activeServer == null || inviteList.get(activeServer).isEmpty()) {
-            setVisible(false);
-            closeDialog();
-        } else {
-            refreshDialog();
-            setVisible(true);
-        }
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (activeServer == null ||
+                        inviteList.get(activeServer).isEmpty()) {
+                    setVisible(false);
+                    closeDialog();
+                } else {
+                    refreshDialog();
+                    setVisible(true);
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -205,7 +216,7 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
             final Object... arguments) {
         if (type == CoreActionType.CLIENT_FRAME_CHANGED) {
             if (arguments[0] instanceof FrameContainer) {
-            activeFrame = (FrameContainer) arguments[0];
+                activeFrame = (FrameContainer) arguments[0];
                 update();
             }
         } else if (type == CoreActionType.SERVER_CONNECTED) {
@@ -232,8 +243,8 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
             menu.show(this, e.getX(), e.getY());
         }
     }
-
 }
+
 /**
  * Invite action.
  */
@@ -272,6 +283,7 @@ class InviteAction extends AbstractAction {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return invite.getChannel() + "(" + Arrays.toString(invite.getSource()) + ")";
+        return invite.getChannel() + "(" + Arrays.toString(invite.getSource()) +
+                ")";
     }
 }
