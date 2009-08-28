@@ -101,7 +101,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
         } else {
             final StringBuilder remaining = new StringBuilder(line);
 
-            while (remaining.toString().getBytes().length > getMaxLineLength()) {
+            while (getMaxLineLength() > -1 && remaining.toString().getBytes().length
+                    > getMaxLineLength()) {
                 int number = Math.min(remaining.length(), getMaxLineLength());
 
                 while (remaining.substring(0, number).getBytes().length > getMaxLineLength()) {
