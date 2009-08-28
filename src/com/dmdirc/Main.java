@@ -192,7 +192,7 @@ public final class Main {
         if (!GraphicsEnvironment.isHeadless()) {
             // Show a dialog informing the user that no UI was found.
             NoUIDialog.displayBlocking();
-            return;
+            System.exit(2);
         }
 
         // Can't find any
