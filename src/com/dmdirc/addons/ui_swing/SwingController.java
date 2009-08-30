@@ -509,25 +509,53 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getPluginPrefsPanel() {
-        return new PluginPanel(me);
+        return UIUtilities.invokeAndWait(new ReturnableThread<PluginPanel>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new PluginPanel(me));
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getUpdatesPrefsPanel() {
-        return new UpdateConfigPanel();
+        return UIUtilities.invokeAndWait(new ReturnableThread<PreferencesInterface>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new UpdateConfigPanel());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getUrlHandlersPrefsPanel() {
-        return new URLConfigPanel(me);
+        return UIUtilities.invokeAndWait(new ReturnableThread<PreferencesInterface>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new URLConfigPanel(me));
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getThemesPrefsPanel() {
-        return new ThemePanel();
+        return UIUtilities.invokeAndWait(new ReturnableThread<PreferencesInterface>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new ThemePanel());
+            }
+        });
     }
 
     /**
