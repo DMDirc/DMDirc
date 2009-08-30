@@ -312,7 +312,7 @@ public final class TreeFrameManager implements FrameManager,
         }
 
         if (window != null) {
-            UIUtilities.invokeAndWait(new Runnable() {
+            UIUtilities.invokeLater(new Runnable() {
 
                 /** {@inheritDoc} */
                 @Override
