@@ -115,13 +115,5 @@ public interface StatusBar {
      *
      * @param component component to add
      */
-    void removeComponent(final StatusBarComponent component);
-    
-    /**
-     * Returns true if the status bar is visible.
-     *
-     * @return true iff the status bar is visible
-     */
-    boolean isVisible();
-    
+    void removeComponent(final StatusBarComponent component);   
 }

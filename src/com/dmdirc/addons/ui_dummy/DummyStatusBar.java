@@ -90,11 +90,4 @@ public final class DummyStatusBar implements StatusBar {
     public void removeComponent(final StatusBarComponent component) {
         // Do nothing
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
 }
