@@ -214,8 +214,14 @@ public final class UpdateChecker implements Runnable {
         if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else if (line.startsWith("error")) {
-            Logger.userError(ErrorLevel.LOW, "Error when checking for updates: "
-                    + line.substring(6));
+            String errorMessage = "Error when checking for updates: " + line.substring(6);
+            final UpdateComponent thisComponent = findComponent(line.split(" ")[2]);
+            if (thisComponent != null) {
+                if (thisComponent instanceof FileComponent) {
+                    errorMessage = errorMessage + " (" + ((FileComponent)thisComponent).getFileName() + ")";
+                }
+            }
+            Logger.userError(ErrorLevel.LOW, errorMessage);
         } else if (!line.startsWith("uptodate")) {
             Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
                     + line);
