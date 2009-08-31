@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.addons.ui_swing.components.renderers.FontListCellRenderer;
@@ -36,14 +37,22 @@ public class FontPicker extends JComboBox {
 
     private static final long serialVersionUID = -9054812588033935839L;
 
+    /**
+     * Creates a new Font picker for the specified font family.
+     *
+     * @param fontFamily Font family
+     */
     public FontPicker(final String fontFamily) {
         super(new DefaultComboBoxModel());
 
-        final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().
+                getAvailableFontFamilyNames();
         final int size = getFont().getSize();
         for (String font : fonts) {
-            ((DefaultComboBoxModel) getModel()).addElement(new Font(font, Font.PLAIN, size));
+            ((DefaultComboBoxModel) getModel()).addElement(new Font(font,
+                    Font.PLAIN, size));
         }
+        setSelectedItem(new Font(fontFamily, Font.PLAIN, size));
 
         setRenderer(new FontListCellRenderer());
     }

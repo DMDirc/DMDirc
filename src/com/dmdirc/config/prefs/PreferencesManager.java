@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -338,12 +336,6 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Advanced", 
                 "", "category-advanced");
 
-        final Map<String, String> options = new HashMap<String, String>();
-
-        options.put("alwaysShow", "Always show");
-        options.put("neverShow", "Never show");
-        options.put("showWhenMaximised", "Show only when windows maximised");
-
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "uselaunchdelay", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
@@ -366,15 +358,6 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "showversion", "Show version",
                 "Show DMDirc version in the titlebar?"));
-        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                new NumericalValidator(10, -1), "ui", "frameBufferSize",
-                "Window buffer size", "The maximum number of lines in a window" +
-                " buffer"));
-        category.addSetting(new PreferencesSetting("ui", "mdiBarVisibility", 
-                "MDI Bar Visibility", "Controls the visibility of the MDI bar", options));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
-                "useOneTouchExpandable", "Use one touch expandable split panes?",
-                "Use one touch expandable arrows for collapsing/expanding the split panes"));
 
         addCategory(category);
     }
@@ -383,27 +366,8 @@ public class PreferencesManager {
      * Creates and adds the "GUI" category.
      */
     private void addGuiCategory() {
-        final Map<String, String> lafs = new HashMap<String, String>();
-        final Map<String, String> framemanagers = new HashMap<String, String>();
-        final Map<String, String> fmpositions = new HashMap<String, String>();
         final PreferencesCategory category = new PreferencesCategory("GUI", "",
                 "category-gui");
-
-        framemanagers.put("com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager", "Treeview");
-        framemanagers.put("com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar", "Button bar");
-
-        fmpositions.put("top", "Top");
-        fmpositions.put("bottom", "Bottom");
-        fmpositions.put("left", "Left");
-        fmpositions.put("right", "Right");
-
-        final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
-        final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
-
-        lafs.put("Native", "Native");
-        for (LookAndFeelInfo laf : plaf) {
-            lafs.put(laf.getName(), laf.getName());
-        }
 
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 "ui", "backgroundcolour", "Background colour", "Default " +
@@ -420,9 +384,6 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showcolourdialog", "Show colour dialog",
                 "Show colour picker dialog when using colour control codes?"));
-        category.addSetting(new PreferencesSetting("ui", "lookandfeel",
-                "Look and feel", "The Java look and feel to use",
-                lafs));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "System anti-alias",
                 "Anti-alias all fonts?").setRestartNeeded());
@@ -435,18 +396,8 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursinnicklist", "Show nick colours in nicklists",
                 "Show nickname colours in channel nicklists?"));
-        category.addSetting(new PreferencesSetting("ui", "framemanager",
-                "Window manager", "Which window manager should be used?",
-                framemanagers).setRestartNeeded());
-        category.addSetting(new PreferencesSetting("ui", "framemanagerPosition",
-                "Window manager position", "Where should the window " +
-                "manager be positioned?", fmpositions).setRestartNeeded());
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "stylelinks", "Style links", "Style links in text areas"));
 
         addThemesCategory(category);
-        addNicklistCategory(category);
-        addTreeviewCategory(category);
         addCategory(category);
     }
 
@@ -460,70 +411,6 @@ public class PreferencesManager {
 
         parent.addSubCategory(new PreferencesCategory("Themes", "",
                 "category-addons", Main.getUI().getThemesPrefsPanel()));
-    }
-
-    /**
-     * Creates and adds the "Nicklist" category.
-     *
-     * @param parent The parent category
-     */
-    private void addNicklistCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Nicklist", "", "nicklist");
-
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistbackgroundcolour", "Nicklist background colour",
-                "Background colour to use for the nicklist"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistforegroundcolour", "Nicklist foreground colour",
-                "Foreground colour to use for the nicklist"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nickListAltBackgroundColour", "Alternate background colour",
-                "Background colour to use for every other nicklist entry"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "nicklist", "sortByMode", "Sort nicklist by user mode",
-                "Sort nicknames by the modes that they have?"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "nicklist", "sortByCase", "Sort nicklist by case",
-                "Sort nicknames in a case-sensitive manner?"));
-
-        parent.addSubCategory(category);
-    }
-
-    /**
-     * Creates and adds the "Treeview" category.
-     *
-     * @param parent The parent category
-     */
-    private void addTreeviewCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Treeview",
-                "", "treeview");
-
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "backgroundcolour", "Treeview background colour",
-                "Background colour to use for the treeview"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "foregroundcolour", "Treeview foreground colour",
-                "Foreground colour to use for the treeview"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewRolloverColour", "Treeview rollover colour",
-                "Background colour to use when the mouse cursor is over a node"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "treeview", "sortwindows", "Sort windows",
-                "Sort windows belonging to servers in the treeview?"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "treeview", "sortservers", "Sort servers",
-                "Sort servers in the treeview?"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "treeviewActiveBold", "Active node bold",
-                "Make the active node bold?"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveBackground", "Active node background",
-                "Background colour to use for active treeview node"));
-        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveForeground", "Active node foreground",
-                "Foreground colour to use for active treeview node"));
-
-        parent.addSubCategory(category);
     }
 
     /**

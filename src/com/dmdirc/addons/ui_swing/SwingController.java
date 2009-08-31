@@ -31,6 +31,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.config.prefs.PreferencesInterface;
+import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -61,6 +62,11 @@ import com.dmdirc.addons.ui_swing.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.addons.ui_swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.SSLCertificateDialog;
 import com.dmdirc.addons.ui_swing.wizard.WizardListener;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.updater.Update;
 import com.dmdirc.util.ReturnableThread;
@@ -70,13 +76,16 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.layout.PlatformDefaults;
@@ -577,7 +586,7 @@ public final class SwingController extends Plugin implements UIController {
 
         Toolkit.getDefaultToolkit().getSystemEventQueue().
                 push(new DMDircEventQueue(this));
-        
+
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -600,7 +609,7 @@ public final class SwingController extends Plugin implements UIController {
             JOptionPane.showMessageDialog(null, "OpenJDK has known graphical " +
                     "issues and as such is unsupported by DMDirc.  Please " +
                     "consider using the official JRE.", "Unsupported JRE",
-                   JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         }
 
         Main.setUI(this);
@@ -610,6 +619,170 @@ public final class SwingController extends Plugin implements UIController {
     @Override
     public void onUnload() {
         // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void domainUpdated() {
+        final Identity defaults = IdentityManager.getAddonIdentity();
+
+        defaults.setOption("ui", "textPaneFontName", "Dialog");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig(final PreferencesManager manager) {
+        manager.getCategory("GUI").addSubCategory(createGeneralCategory());
+
+    }
+
+    /**
+     * Creates the "Advanced" category.
+     */
+    private PreferencesCategory createGeneralCategory() {
+        final PreferencesCategory general = new PreferencesCategory("Swing UI",
+                "These config options apply only to the swing UI.",
+                "category-gui");
+
+        final Map<String, String> lafs = new HashMap<String, String>();
+        final Map<String, String> framemanagers = new HashMap<String, String>();
+        final Map<String, String> fmpositions = new HashMap<String, String>();
+
+        framemanagers.put(
+                "com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager",
+                "Treeview");
+        framemanagers.put(
+                "com.dmdirc.addons.ui_swing.framemanager.buttonbar.ButtonBar",
+                "Button bar");
+
+        fmpositions.put("top", "Top");
+        fmpositions.put("bottom", "Bottom");
+        fmpositions.put("left", "Left");
+        fmpositions.put("right", "Right");
+
+        final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
+
+        lafs.put("Native", "Native");
+        for (LookAndFeelInfo laf : plaf) {
+            lafs.put(laf.getName(), laf.getName());
+        }
+
+        general.addSetting(new PreferencesSetting("ui", "lookandfeel",
+                "Look and feel", "The Java look and feel to use", lafs));
+        general.addSetting(new PreferencesSetting("ui", "framemanager",
+                "Window manager", "Which window manager should be used?",
+                framemanagers).setRestartNeeded());
+        general.addSetting(new PreferencesSetting("ui", "framemanagerPosition",
+                "Window manager position", "Where should the window " +
+                "manager be positioned?", fmpositions).setRestartNeeded());
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "stylelinks", "Style links", "Style links in text areas"));
+        general.addSetting(new PreferencesSetting(PreferencesType.FONT,
+                "ui", "textPaneFontName", "Textpane font",
+                "Font for the textpane"));
+
+        general.addSubCategory(createNicklistCategory());
+        general.addSubCategory(createTreeViewCategory());
+        general.addSubCategory(createAdvancedCategory());
+
+        return general;
+    }
+
+    /**
+     * Creates the "Advanced" category.
+     */
+    private PreferencesCategory createAdvancedCategory() {
+        final PreferencesCategory advanced = new PreferencesCategory("Advanced",
+                "");
+        final Map<String, String> options = new HashMap<String, String>();
+
+        options.put("alwaysShow", "Always show");
+        options.put("neverShow", "Never show");
+        options.put("showWhenMaximised", "Show only when windows maximised");
+
+        advanced.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                new NumericalValidator(10, -1), "ui", "frameBufferSize",
+                "Window buffer size", "The maximum number of lines in a window" +
+                " buffer"));
+        advanced.addSetting(new PreferencesSetting("ui", "mdiBarVisibility",
+                "MDI Bar Visibility", "Controls the visibility of the MDI bar",
+                options));
+        advanced.addSetting(
+                new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
+                "useOneTouchExpandable", "Use one touch expandable split panes?",
+                "Use one touch expandable arrows for collapsing/expanding the split panes"));
+
+        return advanced;
+    }
+
+    /**
+     * Creates the "Treeview" category.
+     */
+    private PreferencesCategory createTreeViewCategory() {
+        final PreferencesCategory treeview = new PreferencesCategory("Treeview",
+                "", "treeview");
+
+        treeview.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "treeview", "backgroundcolour", "Treeview background colour",
+                "Background colour to use for the treeview"));
+        treeview.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "treeview", "foregroundcolour", "Treeview foreground colour",
+                "Foreground colour to use for the treeview"));
+        treeview.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewRolloverColour", "Treeview rollover colour",
+                "Background colour to use when the mouse cursor is over a node"));
+        treeview.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "treeview", "sortwindows", "Sort windows",
+                "Sort windows belonging to servers in the treeview?"));
+        treeview.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "treeview", "sortservers", "Sort servers",
+                "Sort servers in the treeview?"));
+        treeview.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "treeviewActiveBold", "Active node bold",
+                "Make the active node bold?"));
+        treeview.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewActiveBackground", "Active node background",
+                "Background colour to use for active treeview node"));
+        treeview.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewActiveForeground", "Active node foreground",
+                "Foreground colour to use for active treeview node"));
+
+        return treeview;
+    }
+
+    /**
+     * Creates the "Nicklist" category.
+     */
+    private PreferencesCategory createNicklistCategory() {
+        final PreferencesCategory nicklist = new PreferencesCategory("Nicklist",
+                "", "nicklist");
+
+        nicklist.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "nicklistbackgroundcolour", "Nicklist background colour",
+                "Background colour to use for the nicklist"));
+        nicklist.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "nicklistforegroundcolour", "Nicklist foreground colour",
+                "Foreground colour to use for the nicklist"));
+        nicklist.addSetting(new PreferencesSetting(
+                PreferencesType.OPTIONALCOLOUR,
+                "ui", "nickListAltBackgroundColour",
+                "Alternate background colour",
+                "Background colour to use for every other nicklist entry"));
+        nicklist.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "nicklist", "sortByMode", "Sort nicklist by user mode",
+                "Sort nicknames by the modes that they have?"));
+        nicklist.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "nicklist", "sortByCase", "Sort nicklist by case",
+                "Sort nicknames in a case-sensitive manner?"));
+
+        return nicklist;
     }
 
     /**

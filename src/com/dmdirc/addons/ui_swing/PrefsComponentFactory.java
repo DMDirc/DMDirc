@@ -303,7 +303,7 @@ public final class PrefsComponentFactory {
      */
     private static JComponent getFontOption(final PreferencesSetting setting) {
         final String value = setting.getValue();
-        
+
         final FontPicker option = new FontPicker(value);
         
         option.addActionListener(new ActionListener() {

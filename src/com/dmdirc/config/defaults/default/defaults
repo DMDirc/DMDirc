@@ -145,13 +145,13 @@ ui:
   confirmQuit=false
   foregroundcolour=1
   frameBufferSize=25000
-  framemanager=com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager
+  framemanager=com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager
   framemanagerPosition=left
   frameManagerSize=150
   inputbackgroundcolour=false:0
   inputbuffersize=50
   inputforegroundcolour=false:1
-  lookandfeel=
+  lookandfeel=Native
   maximisewindows=true
   mdiBarVisibility=showWhenMaximised
   nickListAltBackgroundColour=false:f0f0f0
@@ -169,7 +169,6 @@ ui:
   treeviewRolloverColour=false:f0f0f0
   useOneTouchExpandable=false
   channelSplitPanePosition=150
-  textPaneFontName=Dialog
 
 treeview:
   dragSelection=true
