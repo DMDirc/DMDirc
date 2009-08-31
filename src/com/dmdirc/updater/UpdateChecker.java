@@ -215,10 +215,13 @@ public final class UpdateChecker implements Runnable {
             doUpdateAvailable(line);
         } else if (line.startsWith("error")) {
             String errorMessage = "Error when checking for updates: " + line.substring(6);
-            final UpdateComponent thisComponent = findComponent(line.split(" ")[2]);
-            if (thisComponent != null) {
-                if (thisComponent instanceof FileComponent) {
-                    errorMessage = errorMessage + " (" + ((FileComponent)thisComponent).getFileName() + ")";
+            final String[] bits = line.split(" ");
+            if (bits.length > 2) {
+                final UpdateComponent thisComponent = findComponent(bits[2]);
+                if (thisComponent != null) {
+                    if (thisComponent instanceof FileComponent) {
+                        errorMessage = errorMessage + " (" + ((FileComponent)thisComponent).getFileName() + ")";
+                    }
                 }
             }
             Logger.userError(ErrorLevel.LOW, errorMessage);
