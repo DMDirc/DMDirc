@@ -23,10 +23,13 @@
 package com.dmdirc.addons.ui_swing.dialogs.sslcertificate;
 
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -49,6 +52,9 @@ public class ActionsPanel extends JPanel {
     /** Radio button group. */
     private ButtonGroup group;
 
+    /**
+     * Creates a new actions panel.
+     */
     public ActionsPanel() {
         initComponents();
         layoutComponents();
@@ -68,7 +74,8 @@ public class ActionsPanel extends JPanel {
     }
 
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder("Actions"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Actions"));
         setLayout(new MigLayout("fill, wrap 1"));
 
         add(tempAccept, "growx, pushx");
@@ -76,6 +83,11 @@ public class ActionsPanel extends JPanel {
         add(disconnect, "growx, pushx");
     }
 
+    /**
+     * Gets the action select for this chain.
+     *
+     * @return Selected action
+     */
     public CertificateAction getAction() {
         if (group.getSelection().equals(tempAccept.getModel())) {
             return CertificateAction.IGNORE_TEMPORARILY;

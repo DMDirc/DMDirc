@@ -36,6 +36,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
@@ -58,6 +59,9 @@ public class CertificateChainPanel extends JPanel {
     /** List model. */
     private DefaultListModel model;
 
+    /**
+     * Creates a new certificate chain panel.
+     */
     public CertificateChainPanel() {
         initComponents();
         layoutComponents();
@@ -72,7 +76,8 @@ public class CertificateChainPanel extends JPanel {
     }
 
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Certificate Chain"));
         setLayout(new MigLayout("fillx, wrap 1"));
 
         add(new JScrollPane(list), "grow, pushy");
@@ -82,6 +87,11 @@ public class CertificateChainPanel extends JPanel {
                 getIcon("cross"), JLabel.LEFT), "growx");
     }
 
+    /**
+     * Sets the chain for this certificate.
+     *
+     * @param certificateChain Certificate chain list
+     */
     public void setChain(final List<CertificateChainEntry> certificateChain) {
         this.certificateChain = certificateChain;
 
@@ -94,18 +104,40 @@ public class CertificateChainPanel extends JPanel {
         }
     }
 
+    /**
+     * Gets the name of the certificate at the specified point in the chain.
+     *
+     * @param index Index of certificate
+     *
+     * @return Name of specified index
+     */
     public String getName(final int index) {
         return ((CertificateChainEntry) model.get(index)).getName();
     }
 
+    /**
+     * Gets the selected index.
+     *
+     * @return Selected index
+     */
     public int getSelectedIndex() {
         return list.getSelectedIndex();
     }
 
+    /**
+     * Sets the selected index.
+     *
+     * @param index Index to select
+     */
     public void setSelectedIndex(final int index) {
         list.setSelectedIndex(index);
     }
 
+    /**
+     * Adds a list selection listener.
+     *
+     * @param listener Listener to add
+     */
     public void addListSelectionListener(final ListSelectionListener listener) {
         list.addListSelectionListener(listener);
     }

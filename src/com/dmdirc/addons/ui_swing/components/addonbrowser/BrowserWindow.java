@@ -23,7 +23,6 @@
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
 import com.dmdirc.Main;
-import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
@@ -44,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -108,24 +108,28 @@ public class BrowserWindow extends JDialog implements ActionListener {
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
 
         JPanel panel = new JPanel(new MigLayout("fill"));
-        panel.setBorder(BorderFactory.createTitledBorder("Search"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Search"));
         panel.add(searchBox, "growx");
         add(panel, "width 150!");
 
         panel = new JPanel(new MigLayout("fill"));
-        panel.setBorder(BorderFactory.createTitledBorder("Results"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Results"));
         panel.add(scrollPane, "grow");
         add(panel, "wrap, spany 4, grow");
 
         panel = new JPanel(new MigLayout("fill, wrap"));
-        panel.setBorder(BorderFactory.createTitledBorder("Types"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Types"));
         panel.add(pluginsBox, "grow");
         panel.add(themesBox, "grow");
         panel.add(actionsBox, "grow");
         add(panel, "wrap, pushy, growy, width 150!");
 
         panel = new JPanel(new MigLayout("fill, wrap"));
-        panel.setBorder(BorderFactory.createTitledBorder("Status"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Status"));
         panel.add(verifiedBox, "grow");
         panel.add(unverifiedBox, "grow");
         panel.add(installedBox, "grow");
@@ -133,7 +137,8 @@ public class BrowserWindow extends JDialog implements ActionListener {
         add(panel, "wrap, pushy, growy, width 150!");
 
         panel = new JPanel(new MigLayout("fill, wrap"));
-        panel.setBorder(BorderFactory.createTitledBorder("Sort by"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Sort by"));
         panel.add(nameButton, "grow");
         panel.add(ratingButton, "grow");
         panel.add(dateButton, "grow");
@@ -147,7 +152,7 @@ public class BrowserWindow extends JDialog implements ActionListener {
                 notinstalledBox.getModel(), pluginsBox.getModel(), themesBox.
                 getModel(), actionsBox.getModel(),
                 searchBox);
-        sorter = new AddonSorter(list.getModel(), dateButton.getModel(), 
+        sorter = new AddonSorter(list.getModel(), dateButton.getModel(),
                 nameButton.getModel(), ratingButton.getModel(),
                 statusButton.getModel(), filter);
         list.setRowSorter(sorter);

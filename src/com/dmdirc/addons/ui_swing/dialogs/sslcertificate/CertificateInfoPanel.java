@@ -27,12 +27,13 @@ import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
 import java.awt.Color;
 import java.util.ArrayList;
-
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
@@ -57,6 +58,9 @@ public class CertificateInfoPanel extends JScrollPane {
     /** Content panel. */
     private JPanel content;
 
+    /**
+     * Creates a certificate info panel.
+     */
     public CertificateInfoPanel() {
         initComponents();
         layoutComponents();
@@ -69,7 +73,8 @@ public class CertificateInfoPanel extends JScrollPane {
     }
 
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder("Information for " +
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Information for " +
                 certificateName));
         content.setVisible(false);
         content.removeAll();
@@ -78,7 +83,8 @@ public class CertificateInfoPanel extends JScrollPane {
         int i = 1;
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
-                content.add(new TextLabel(info.getTitle() + ": "), "alignx right");
+                content.add(new TextLabel(info.getTitle() + ": "),
+                        "alignx right");
                 final TextLabel text = new TextLabel(info.getValue(), false);
                 if (info.isInvalid()) {
                     SimpleAttributeSet sas = new SimpleAttributeSet();
@@ -102,6 +108,12 @@ public class CertificateInfoPanel extends JScrollPane {
         content.setVisible(true);
     }
 
+    /**
+     * Sets the certificate info lists.
+     *
+     * @param certificateName Certificate name
+     * @param certificateInfo Certificate info list
+     */
     public void setInfo(final String certificateName,
             final List<List<CertificateInformationEntry>> certificateInfo) {
         this.certificateInfo = certificateInfo;

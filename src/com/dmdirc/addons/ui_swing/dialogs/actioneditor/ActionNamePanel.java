@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -50,7 +51,7 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     private final String originalName;
     /** Action name field. */
     private ValidatingJTextField name;
-    
+
     /** Instantiates the panel. */
     public ActionNamePanel() {
         this("");
@@ -63,13 +64,13 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
      */
     public ActionNamePanel(final String name) {
         super();
-        
+
         if (name == null) {
             this.originalName = "";
         } else {
             this.originalName = name;
         }
-        
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -92,7 +93,8 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
 
     /** Initialises the components. */
     private void initComponents() {
-        name = new ValidatingJTextField(new JTextField(originalName), new FileNameValidator());
+        name = new ValidatingJTextField(new JTextField(originalName),
+                new FileNameValidator());
     }
 
     /** Adds the listeners. */
@@ -103,13 +105,14 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 1"));
-        
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Name"));
-        
+
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Name"));
+
         add(new JLabel("This action's name:"));
         add(name, "growx, pushx");
     }
-    
+
     /**
      * Has the action's name changed.
      * 
@@ -119,7 +122,7 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     public boolean hasNameChanged() {
         return getActionName().equals(originalName);
     }
-    
+
     /**
      * Returns the name represented by this component.
      * 
@@ -128,7 +131,7 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     public String getActionName() {
         return name.getText();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
@@ -138,6 +141,7 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
+        firePropertyChange("validationResult", evt.getOldValue(), evt.
+                getNewValue());
     }
 }

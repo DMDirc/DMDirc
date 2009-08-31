@@ -42,13 +42,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Now playing plugin config panel.
  */
-public class ConfigPanel extends JPanel implements PreferencesInterface, KeyListener {
+public class ConfigPanel extends JPanel implements PreferencesInterface,
+        KeyListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -56,25 +58,18 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-
     /** Media source order list. */
     private ReorderableJList list;
-
     /** Media sources. */
     private final List<String> sources;
-
     /** The plugin that owns this panel. */
     private final NowPlayingPlugin plugin;
-
     /** Text field for our setting. */
     private JTextField textfield;
-
     /** Panel that the preview is in. */
     private JPanel previewPanel;
-
     /** Label for previews. */
     private TextLabel preview;
-    
     /** Update timer. */
     private Timer updateTimer;
 
@@ -107,8 +102,8 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
             list.getModel().addElement(source);
         }
 
-        textfield = new JTextField(IdentityManager.getGlobalConfig()
-                .getOption(plugin.getDomain(), "format"));
+        textfield = new JTextField(IdentityManager.getGlobalConfig().getOption(
+                plugin.getDomain(), "format"));
         textfield.addKeyListener(this);
         preview = new TextLabel("Preview:\n");
 
@@ -116,7 +111,8 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         JPanel panel = new JPanel();
 
-        panel.setBorder(BorderFactory.createTitledBorder("Source order"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Source order"));
         panel.setLayout(new MigLayout("fillx, ins 5"));
 
         panel.add(new JLabel("Drag and drop items to reorder"), "wrap");
@@ -126,7 +122,8 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         panel = new JPanel();
 
-        panel.setBorder(BorderFactory.createTitledBorder("Output format"));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Output format"));
         panel.setLayout(new MigLayout("fillx, ins 5"));
 
         panel.add(textfield, "span, growx, wrap");
@@ -135,9 +132,10 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         previewPanel = panel;
 
-        add(new NowPlayingSubsitutionPanel(Arrays.asList(new String[]{"app", 
-        "title", "artist", "album", "bitrate", "format", "length", "time", 
-        "state"})), "growx");
+        add(new NowPlayingSubsitutionPanel(Arrays.asList(new String[]{"app",
+                    "title", "artist", "album", "bitrate", "format", "length",
+                    "time",
+                    "state"})), "growx");
         schedulePreviewUpdate();
     }
 
@@ -146,7 +144,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
      */
     private void updatePreview() {
         updateTimer.cancel();
-        
+
         MediaSource source = plugin.getBestSource();
 
         if (source == null) {
@@ -158,6 +156,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         preview.repaint();
 
         SwingUtilities.invokeLater(new Runnable() {
+
             @Override
             public void run() {
                 previewPanel.revalidate();
@@ -191,24 +190,36 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
                 "format", textfield.getText());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Key event action
+     */
     @Override
     public void keyTyped(final KeyEvent e) {
         // Do nothing
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Key event action
+     */
     @Override
     public void keyPressed(final KeyEvent e) {
         // Do nothing
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Key event action
+     */
     @Override
     public void keyReleased(final KeyEvent e) {
         schedulePreviewUpdate();
     }
-    
+
     /**
      * Schedules an update to the preview text.
      */
@@ -216,9 +227,10 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         if (updateTimer != null) {
             updateTimer.cancel();
         }
-        
+
         updateTimer = new Timer("Nowplaying config timer");
         updateTimer.schedule(new TimerTask() {
+
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -285,7 +297,6 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         public String getBitrate() {
             return "128";
         }
-
     }
 
 }

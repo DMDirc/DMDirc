@@ -33,7 +33,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-    
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -77,7 +78,8 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
 
     /** Initialises the components. */
     private void initComponents() {
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Triggers"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Triggers"));
 
         trigger =
                 new JComboBox(new ActionTypeModel(getFontMetrics(getFont()),
@@ -95,14 +97,16 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                 if (!(comp instanceof JPopupMenu)) {
                     return;
                 }
-                JComponent scrollPane = (JComponent) ((JPopupMenu) comp).getComponent(0);
+                JComponent scrollPane = (JComponent) ((JPopupMenu) comp).
+                        getComponent(0);
                 Dimension size = scrollPane.getPreferredSize();
                 if (scrollPane instanceof JScrollPane) {
                     size.width = ((ActionTypeModel) trigger.getModel()).
                             getMaxWidth() + (int) ((JScrollPane) scrollPane).
                             getVerticalScrollBar().getPreferredSize().getWidth();
                 } else {
-                    size.width = ((ActionTypeModel) trigger.getModel()).getMaxWidth();
+                    size.width = ((ActionTypeModel) trigger.getModel()).
+                            getMaxWidth();
                 }
                 scrollPane.setPreferredSize(size);
                 scrollPane.setMaximumSize(size);
@@ -137,7 +141,8 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
     private void layoutComponents() {
         setLayout(new MigLayout("fill, pack"));
 
-        add(new TextLabel("This action will be triggered when any of these events occurs: "),
+        add(new TextLabel(
+                "This action will be triggered when any of these events occurs: "),
                 "growx, pushx, wrap, spanx");
         add(triggerList, "grow, push, wrap, spanx");
         add(trigger, "growx, pushx");
@@ -155,7 +160,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         }
         return triggerList.getTrigger(0);
     }
-    
+
     /**
      * Returns the list of triggers.
      * 
@@ -165,7 +170,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         final List<ActionType> triggers = triggerList.getTriggers();
         return triggers.toArray(new ActionType[triggers.size()]);
     }
-    
+
     /**
      * Sets the triggers.
      * 
@@ -173,11 +178,11 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
      */
     void setTriggers(final ActionType[] triggers) {
         triggerList.clearTriggers();
-        
+
         for (ActionType localTrigger : triggers) {
             triggerList.addTrigger(localTrigger);
         }
-        
+
         repopulateTriggers();
     }
 
@@ -214,14 +219,17 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                 ((ActionTypeModel) trigger.getModel()).removeAllElements();
 
                 if (triggerList.getTriggerCount() == 0) {
-                    ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.getTypeGroups());
+                    ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.
+                            getTypeGroups());
                     trigger.setEnabled((trigger.getModel().getSize() > 0));
                     return;
                 }
-                for (ActionType thisType : ActionManager.getCompatibleTypes(triggerList.getTrigger(0))) {
+                for (ActionType thisType : ActionManager.getCompatibleTypes(
+                        triggerList.getTrigger(0))) {
                     final List<ActionType> types = triggerList.getTriggers();
                     if (!types.contains(thisType)) {
-                        ((ActionTypeModel) trigger.getModel()).addElement(thisType);
+                        ((ActionTypeModel) trigger.getModel()).addElement(
+                                thisType);
                     }
                 }
                 trigger.setEnabled(trigger.getModel().getSize() > 0);
@@ -234,9 +242,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
     public void setEnabled(final boolean enabled) {
         triggerList.setEnabled(enabled);
         if (enabled) {
-        add.setEnabled(trigger.getSelectedIndex() != -1);
+            add.setEnabled(trigger.getSelectedIndex() != -1);
             if (trigger.getModel().getSize() > 0) {
-               trigger.setEnabled(enabled);
+                trigger.setEnabled(enabled);
             }
         } else {
             add.setEnabled(false);
@@ -250,7 +258,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         firePropertyChange("validationResult", (Integer) evt.getOldValue() > 0,
                 (Integer) evt.getNewValue() > 0);
     }
-    
+
     /** Validates the triggers. */
     public void validateTriggers() {
         triggerList.validateTriggers();

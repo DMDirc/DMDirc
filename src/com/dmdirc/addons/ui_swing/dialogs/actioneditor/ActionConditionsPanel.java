@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -114,7 +115,8 @@ public class ActionConditionsPanel extends JPanel implements ActionListener,
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 1, pack"));
 
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Conditions"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Conditions"));
 
         final JScrollPane sp = new JScrollPane(list);
         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -135,7 +137,8 @@ public class ActionConditionsPanel extends JPanel implements ActionListener,
         this.trigger = trigger;
         list.setTrigger(trigger);
         add.setEnabled(trigger != null);
-        add.setEnabled(trigger != null && trigger.getType().getArgNames().length != 0);
+        add.setEnabled(trigger != null &&
+                trigger.getType().getArgNames().length != 0);
     }
 
     /** {@inheritDoc} */

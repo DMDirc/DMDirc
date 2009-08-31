@@ -41,6 +41,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
+import javax.swing.UIManager;
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
@@ -238,7 +239,8 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
                 new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack, " +
                 "wmax 470-" + leftPadding + "-" +
                 rightPadding + "-2*" + padding));
-        panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
+        panel.setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), category.getTitle()));
 
         parent.add(panel, "span, growx, pushx, wrap");
 

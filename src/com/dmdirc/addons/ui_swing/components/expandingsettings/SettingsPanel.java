@@ -34,6 +34,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -62,6 +63,7 @@ public final class SettingsPanel extends JPanel {
         /** Number spinner. */
         SPINNER
     }
+
     /** config option -> name. */
     private Map<String, String> names;
     /** config option -> type. */
@@ -108,9 +110,11 @@ public final class SettingsPanel extends JPanel {
                 new CurrentOptionsPanel(this);
         scrollPane = new JScrollPane(currentOptionsPanel);
 
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Current settings"));
-        addOptionPanel.setBorder(BorderFactory.createTitledBorder("Add new setting"));
-        
+        scrollPane.setBorder(BorderFactory.createTitledBorder(UIManager.
+                getBorder("TitledBorder.border"), "Current settings"));
+        addOptionPanel.setBorder(BorderFactory.createTitledBorder(UIManager.
+                getBorder("TitledBorder.border"), "Add new setting"));
+
         scrollPane.setOpaque(UIUtilities.getTabbedPaneOpaque());
         scrollPane.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
     }

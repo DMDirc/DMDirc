@@ -25,7 +25,6 @@ package com.dmdirc.addons.ui_swing.dialogs.actioneditor;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
@@ -35,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -91,7 +91,8 @@ public class ActionResponsePanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Response"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Response"));
         setLayout(new MigLayout("fill, wrap 1"));
 
         add(new JLabel("Execute these commands: "));

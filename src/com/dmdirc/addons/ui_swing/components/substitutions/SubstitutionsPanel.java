@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -113,7 +114,8 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Substitutions"));
         if (alignment.equals(Alignment.VERTICAL)) {
             setLayout(new MigLayout("fill, wrap 4, pack"));
         } else {

@@ -32,6 +32,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -48,13 +49,17 @@ public class SummaryPanel extends JPanel {
     /** List of certificate summary entries. */
     private List<CertificateSummaryEntry> summary;
 
+    /**
+     * Creates a Certificate chain summary panel.
+     */
     public SummaryPanel() {
         summary = new ArrayList<CertificateSummaryEntry>();
         layoutComponents();
     }
 
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder("Summary"));
+        setBorder(BorderFactory.createTitledBorder(UIManager.getBorder(
+                "TitledBorder.border"), "Summary"));
         setLayout(new MigLayout("fill, wrap 1"));
 
         for (CertificateSummaryEntry entry : summary) {
@@ -65,6 +70,11 @@ public class SummaryPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets the summary for this panel.
+     *
+     * @param summary Summary to show
+     */
     void setSummary(final List<CertificateSummaryEntry> summary) {
         this.summary = summary;
         layoutComponents();

@@ -35,6 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /** Non list mode panel. */
@@ -85,7 +86,8 @@ public final class ChannelModesPane extends JPanel {
         final String booleanModes = parser.getBooleanChannelModes();
         final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
+                parser.getParameterChannelModes() + parser.
+                getDoubleParameterChannelModes();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
@@ -96,21 +98,25 @@ public final class ChannelModesPane extends JPanel {
             final String mode = booleanModes.substring(i, i + 1);
             final char modeChar = mode.toCharArray()[0];
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourBooleanModes.split(" ")[0].contains(
+                    mode.subSequence(0, 1));
             String text;
             String tooltip;
-            
+
             final boolean opaque = UIUtilities.getTabbedPaneOpaque();
 
-            if (channel.getConfigManager().getOptionBool("server", "friendlymodes") &&
-                    channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
-                text =  channel.getConfigManager().
+            if (channel.getConfigManager().getOptionBool("server",
+                    "friendlymodes") &&
+                    channel.getConfigManager().hasOptionString("server",
+                    "mode" + mode)) {
+                text = channel.getConfigManager().
                         getOption("server", "mode" + mode);
             } else {
                 text = "Mode " + mode;
             }
 
-            if (channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
+            if (channel.getConfigManager().hasOptionString("server", "mode" +
+                    mode)) {
                 tooltip =
                         "Mode " + mode + ": " +
                         channel.getConfigManager().
@@ -125,11 +131,13 @@ public final class ChannelModesPane extends JPanel {
             checkBox.setOpaque(opaque);
 
             modeCheckBoxes.put(mode, checkBox);
-            if (!channel.getConfigManager().hasOptionString("server", "enablemode" + modeChar)
-                    || channel.getConfigManager().getOptionBool("server",
+            if (!channel.getConfigManager().hasOptionString("server",
+                    "enablemode" + modeChar) || channel.getConfigManager().
+                    getOptionBool("server",
                     "enablemode" + modeChar)) {
                 checkBox.setEnabled(true);
-            } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
+            } else if (!channel.getServer().getParser().isUserSettable(
+                    modeChar)) {
                 checkBox.setEnabled(false);
             }
         }
@@ -144,7 +152,8 @@ public final class ChannelModesPane extends JPanel {
             final String value =
                     channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourBooleanModes.split(" ")[0].contains(
+                    mode.subSequence(0, 1));
 
             final ParamModePanel panel =
                     new ParamModePanel(mode, state, value,
@@ -169,12 +178,14 @@ public final class ChannelModesPane extends JPanel {
             paramModes.add(modePanel.getValueComponent(), "growx, pushx");
         }
 
-        booleanModes.setBorder(BorderFactory.createTitledBorder("Boolean modes"));
-        paramModes.setBorder(BorderFactory.createTitledBorder("Parameter modes"));
-        
+        booleanModes.setBorder(BorderFactory.createTitledBorder(UIManager.
+                getBorder("TitledBorder.border"), "Boolean modes"));
+        paramModes.setBorder(BorderFactory.createTitledBorder(UIManager.
+                getBorder("TitledBorder.border"), "Parameter modes"));
+
         booleanModes.setOpaque(UIUtilities.getTabbedPaneOpaque());
         paramModes.setOpaque(UIUtilities.getTabbedPaneOpaque());
-        
+
         setLayout(new MigLayout("flowy, fillx", "fill", ""));
         add(booleanModes);
         add(paramModes);
@@ -190,13 +201,15 @@ public final class ChannelModesPane extends JPanel {
         final String booleanModes = parser.getBooleanChannelModes();
         final String ourBooleanModes = channel.getChannelInfo().getModes();
         final String paramModes =
-                parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
+                parser.getParameterChannelModes() + parser.
+                getDoubleParameterChannelModes();
 
         for (int i = 0; i < booleanModes.length();
                 i++) {
             final String mode = booleanModes.substring(i, i + 1);
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourBooleanModes.split(" ")[0].contains(
+                    mode.subSequence(0, 1));
 
             if (modeCheckBoxes.get(mode) != null &&
                     state != modeCheckBoxes.get(mode).isSelected()) {
@@ -213,15 +226,16 @@ public final class ChannelModesPane extends JPanel {
             final String value =
                     channel.getChannelInfo().getMode(mode.charAt(0));
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourBooleanModes.split(" ")[0].contains(
+                    mode.subSequence(0, 1));
             final ParamModePanel paramModePanel = modeInputs.get(mode);
 
             if (state != paramModePanel.getState() ||
                     !value.equals(paramModePanel.getValue())) {
                 changed = true;
-                    channel.getChannelInfo().
-                            alterMode(paramModePanel.getState(),
-                            mode.toCharArray()[0], paramModePanel.getValue());
+                channel.getChannelInfo().
+                        alterMode(paramModePanel.getState(),
+                        mode.toCharArray()[0], paramModePanel.getValue());
             }
         }
         if (changed) {
