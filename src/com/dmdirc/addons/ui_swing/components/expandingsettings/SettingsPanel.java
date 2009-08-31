@@ -61,7 +61,9 @@ public final class SettingsPanel extends JPanel {
         /** Colour chooser. */
         COLOUR,
         /** Number spinner. */
-        SPINNER
+        SPINNER,
+        /** Font picker. */
+        FONT,
     }
 
     /** config option -> name. */

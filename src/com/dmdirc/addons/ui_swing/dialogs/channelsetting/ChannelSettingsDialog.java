@@ -217,7 +217,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         channelSettingsPane.addOption("ui.frameBufferSize",
                 "Frame buffer size", OptionType.SPINNER);
         channelSettingsPane.addOption("ui.textPaneFontName", "Textpane font name",
-                OptionType.TEXTFIELD);
+                OptionType.FONT);
         channelSettingsPane.addOption("ui.textPaneFontSize", "Textpane font size",
                 OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbuffersize",

@@ -28,6 +28,8 @@ import com.dmdirc.addons.ui_swing.components.ImageButton;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel.OptionType;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.addons.ui_swing.components.FontPicker;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -66,6 +68,8 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
     private Map<String, ColourChooser> colours;
     /** config option -> spinners. */
     private Map<String, JSpinner> spinners;
+    /** config option -> spinners. */
+    private Map<String, FontPicker> fonts;
     
     /**
      * Creates a new instance of CurrentOptionsPanel.
@@ -87,6 +91,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         checkBoxes = new HashMap<String, JCheckBox>();
         colours = new HashMap<String, ColourChooser>();
         spinners = new HashMap<String, JSpinner>();
+        fonts = new HashMap<String, FontPicker>();
     }
     
     /** Clears all the current options. */
@@ -95,6 +100,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         checkBoxes.clear();
         colours.clear();
         spinners.clear();
+        fonts.clear();
         populateCurrentSettings();
     }
     
@@ -121,6 +127,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
             case SPINNER:
                 spinners.put(optionName, new JSpinner(new SpinnerNumberModel()));
                 spinners.get(optionName).setValue(Integer.parseInt(value));
+                break;
+            case FONT:
+                fonts.put(optionName, new FontPicker(value));
                 break;
             default:
                 throw new IllegalArgumentException("Illegal Type: " + type);
@@ -149,6 +158,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 break;
             case SPINNER:
                 spinners.remove(optionName);
+                break;
+            case FONT:
+                fonts.remove(optionName);
                 break;
             default:
                 throw new IllegalArgumentException("Illegal Type: " + type);
@@ -190,6 +202,11 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
             case SPINNER:
                 if (spinners.containsKey(optionName)) {
                     returnValue = spinners.get(optionName).getValue().toString();
+                }
+                break;
+            case FONT:
+                if (fonts.containsKey(optionName)) {
+                    returnValue = ((Font) fonts.get(optionName).getSelectedItem()).getFamily();
                 }
                 break;
             default:
@@ -250,6 +267,12 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         }
         
         for (Entry<String, JSpinner> entry : spinners.entrySet()) {
+            addCurrentOption(entry.getKey(),
+                    parent.getOptionName(entry.getKey()),
+                    this, entry.getValue());
+        }
+
+        for (Entry<String, FontPicker> entry : fonts.entrySet()) {
             addCurrentOption(entry.getKey(),
                     parent.getOptionName(entry.getKey()),
                     this, entry.getValue());
