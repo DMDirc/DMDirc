@@ -82,6 +82,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     /** 
      * Creates a new instance of ActionsManagerDialog.
      * 
+     * @param parent Parent window
      * @param group Action group to display
      */
     public ActionsGroupPanel(final Window parent, final ActionGroup group) {

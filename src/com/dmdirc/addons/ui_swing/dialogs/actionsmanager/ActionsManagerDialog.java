@@ -172,7 +172,9 @@ public final class ActionsManagerDialog extends StandardDialog implements
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
         infoLabel = new TextLabel("Actions allow you to make DMDirc" +
-                " intelligently respond to various events.");
+                " intelligently respond to various events.  Action groups are " +
+                "there for you to organise groups, add or remove them " +
+                "to suit your needs.");
         groups = new JList(new SortedListModel<ActionGroup>(
                 new ActionGroupNameComparator()));
         actions = new ActionsGroupPanel(this, null);
