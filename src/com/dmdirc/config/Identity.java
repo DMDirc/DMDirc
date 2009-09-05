@@ -328,16 +328,13 @@ public class Identity extends ConfigSource implements Serializable,
     /** {@inheritDoc} */
     @Override
     protected boolean hasOption(final String domain, final String option) {
-        return file.isKeyDomain(domain.toLowerCase(Locale.getDefault())) &&
-                file.getKeyDomain(domain.toLowerCase(Locale.getDefault())).
-                containsKey(option.toLowerCase(Locale.getDefault()));
+        return file.isKeyDomain(domain) && file.getKeyDomain(domain).containsKey(option);
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized String getOption(final String domain, final String option) {
-        return file.getKeyDomain(domain.toLowerCase(Locale.getDefault())).
-                get(option.toLowerCase(Locale.getDefault()));
+        return file.getKeyDomain(domain).get(option);
     }
 
     /**
@@ -349,13 +346,11 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public void setOption(final String domain, final String option,
             final String value) {
-        final String lowerCaseDomain = domain.toLowerCase(Locale.getDefault());
-        final String lowerCaseOption = option.toLowerCase(Locale.getDefault());
         String oldValue;
 
         synchronized (this) {
-            oldValue = getOption(lowerCaseDomain, lowerCaseOption);
-            LOGGER.finer(getName() + ": setting " + lowerCaseDomain + "." + lowerCaseOption + " to " + value);
+            oldValue = getOption(domain, option);
+            LOGGER.finer(getName() + ": setting " + domain + "." + option + " to " + value);
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, don't set useless settings that are
@@ -367,12 +362,12 @@ public class Identity extends ConfigSource implements Serializable,
 
                 globalConfig.removeIdentity(this);
 
-                if (globalConfig.hasOption(lowerCaseDomain, lowerCaseOption)
-                        && globalConfig.getOption(lowerCaseDomain, lowerCaseOption).equals(value)) {
+                if (globalConfig.hasOption(domain, option)
+                        && globalConfig.getOption(domain, option).equals(value)) {
                     if (oldValue == null) {
                         return;
                     } else {
-                        unsetOption(lowerCaseDomain, lowerCaseOption);
+                        unsetOption(domain, option);
                         return;
                     }
                 }
@@ -382,11 +377,11 @@ public class Identity extends ConfigSource implements Serializable,
         if ((oldValue == null && value != null)
                 || (oldValue != null && !oldValue.equals(value))) {
             synchronized (this) {
-                file.getKeyDomain(lowerCaseDomain).put(lowerCaseOption, value);
+                file.getKeyDomain(domain).put(option, value);
                 needSave = true;
             }
 
-            fireSettingChange(lowerCaseDomain, lowerCaseOption);
+            fireSettingChange(domain, option);
         }
     }
 
@@ -438,12 +433,10 @@ public class Identity extends ConfigSource implements Serializable,
      * @param option name of the option
      */
     public synchronized void unsetOption(final String domain, final String option) {
-        file.getKeyDomain(domain.toLowerCase(Locale.getDefault())).
-                remove(option.toLowerCase(Locale.getDefault()));
+        file.getKeyDomain(domain).remove(option);
         needSave = true;
 
-        fireSettingChange(domain.toLowerCase(Locale.getDefault()),
-                option.toLowerCase(Locale.getDefault()));
+        fireSettingChange(domain, option);
     }
 
     /**
