@@ -100,6 +100,16 @@ public final class NewServer extends GlobalCommand {
         // Check for port
         if (args.getArguments()[offset].indexOf(':') > -1) {
             final String[] parts = args.getArguments()[offset].split(":");
+
+            if (parts.length < 2) {
+                if (origin != null) {
+                    origin.addLine(FORMAT_ERROR, "Invalid port specified");
+                } else {
+                    Logger.userError(ErrorLevel.LOW, "Invalid port specified " +
+                            "in newserver command");
+                }
+                return null;
+            }
             host = parts[0];
 
             if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
@@ -110,13 +120,23 @@ public final class NewServer extends GlobalCommand {
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
-                origin.addLine(FORMAT_ERROR, "Invalid port specified");
+                if (origin != null) {
+                    origin.addLine(FORMAT_ERROR, "Invalid port specified");
+                } else {
+                    Logger.userError(ErrorLevel.LOW, "Invalid port specified " +
+                            "in newserver command");
+                }
                 return null;
             }
 
             if (port <= 0 || port > 65535) {
-                sendLine(origin, isSilent, FORMAT_ERROR,
-                        "Port must be between 1 and 65535");
+                if (origin != null) {
+                    sendLine(origin, isSilent, FORMAT_ERROR,
+                            "Port must be between 1 and 65535");
+                } else {
+                    Logger.userError(ErrorLevel.LOW, "Port must be between 1 " +
+                            "and 65535 in newserver command");
+                }
                 return null;
             }
         } else {
