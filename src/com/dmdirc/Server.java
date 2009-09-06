@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.parsers.RawCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -43,6 +44,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.parser.common.MyInfo;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -498,7 +500,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this);
+            raw = new Raw(this, new RawCommandParser(this));
 
             if (parser != null) {
                 raw.registerCallbacks();

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
@@ -58,13 +59,14 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
      * Creates a new instance of Raw.
      *
      * @param newServer the server to monitor
+     * @param commandParser Command parser to use
      */
-    public Raw(final Server newServer) {
+    public Raw(final Server newServer, final CommandParser commandParser) {
         super("raw", "Raw", newServer.getConfigManager());
 
         this.server = newServer;
 
-        window = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
+        window = Main.getUI().getInputWindow(this, commandParser);
         WindowManager.addWindow(server.getFrame(), window);
         window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());

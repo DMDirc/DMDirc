@@ -36,7 +36,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * A command parser used in the context of a server.
  * @author chris
  */
-public final class ServerCommandParser extends CommandParser {
+public class ServerCommandParser extends CommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
