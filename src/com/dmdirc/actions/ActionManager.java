@@ -369,7 +369,12 @@ public final class ActionManager {
         if (listeners.containsKey(type)) {
             for (ActionListener listener :
                 new ArrayList<ActionListener>(listeners.get(type))) {
-                listener.processEvent(type, format, arguments);
+                try {
+                    listener.processEvent(type, format, arguments);
+                } catch (Exception e) {
+                    Logger.userError(ErrorLevel.MEDIUM, "Error processing action: "
+                            + e.getMessage(), e);
+                }
             }
         }
 
