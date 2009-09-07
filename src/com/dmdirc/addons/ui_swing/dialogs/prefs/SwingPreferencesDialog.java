@@ -297,6 +297,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             if (selected != null) {
                 selected.fireCategoryDeselected();
             }
+            final int index = tabList.getSelectedIndex();
+            tabList.scrollRectToVisible(tabList.getCellBounds(index, index));
             selected = node;
             if (selected != null) {
                 selected.fireCategorySelected();
