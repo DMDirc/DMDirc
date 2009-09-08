@@ -308,7 +308,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final String sHost) {
         checkParser(tParser);
 
-        owner.doNotification("channelModeMessage", CoreActionType.CHANNEL_MODE_NOTICE,
+        owner.doNotification("channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
                 cChannelClient, String.valueOf(prefix), sMessage);
     }
 
