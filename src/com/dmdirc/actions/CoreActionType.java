@@ -178,7 +178,7 @@ public enum CoreActionType implements ActionType {
     CHANNEL_USERMODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone changed someone else's modes"),
     
     /** Someone changed nickname. */
-    CHANNEL_NICKCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed nicknames"),
+    CHANNEL_NICKCHANGE(ChannelEvents.CHANNEL_NICKEVENT, "Someone changed nicknames"),
     
     /** Someone changed a topic. */
     CHANNEL_TOPICCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel topic"),

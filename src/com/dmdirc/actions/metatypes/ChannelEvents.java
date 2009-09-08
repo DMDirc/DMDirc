@@ -46,6 +46,8 @@ public enum ChannelEvents implements ActionMetaType {
     CHANNEL_SOURCED_EVENT(new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
     /** Chanel event with source and argument. */
     CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class, ChannelClientInfo.class, String.class),
+    /** Chanel event with source and nickname. */
+    CHANNEL_NICKEVENT(new String[]{"channel", "user", "old nickname"}, Channel.class, ChannelClientInfo.class, String.class),
     /** Chanel event with source, message and mode character argument. @since 0.6.3m2 */
     CHANNEL_SOURCED_EVENT_WITH_CHARARG(new String[]{"channel", "user", "mode", "message"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
     /** Channel event with source and victim. */
