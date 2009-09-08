@@ -37,6 +37,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -49,7 +51,7 @@ import net.miginfocom.swing.MigLayout;
  * @author Chris
  */
 public class NickColourPanel extends JPanel implements ActionListener,
-        PreferencesInterface {
+        PreferencesInterface, ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -111,6 +113,7 @@ public class NickColourPanel extends JPanel implements ActionListener,
 
         final JScrollPane scrollPane = new JScrollPane(table);
 
+        table.getSelectionModel().addListSelectionListener(this);
         table.setFillsViewportHeight(true);
         table.setDefaultRenderer(Color.class, new ColourRenderer());
 
@@ -130,10 +133,8 @@ public class NickColourPanel extends JPanel implements ActionListener,
         deleteButton.addActionListener(this);
         add(deleteButton, "sg button, growx, pushx");
 
-        if (data.length == 0) {
-            editButton.setEnabled(false);
-            deleteButton.setEnabled(false);
-        }
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
     }
 
     /** 
@@ -182,11 +183,6 @@ public class NickColourPanel extends JPanel implements ActionListener,
      */
     void removeRow(final int row) {
         ((DefaultTableModel) table.getModel()).removeRow(row);
-
-        if (table.getModel().getRowCount() == 0) {
-            editButton.setEnabled(false);
-            deleteButton.setEnabled(false);
-        }
     }
 
     /**
@@ -201,9 +197,6 @@ public class NickColourPanel extends JPanel implements ActionListener,
             final String textcolour, final String nickcolour) {
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
         model.addRow(new Object[]{network, nickname, textcolour, nickcolour});
-
-        editButton.setEnabled(true);
-        deleteButton.setEnabled(true);
     }
 
     /**
@@ -239,5 +232,14 @@ public class NickColourPanel extends JPanel implements ActionListener,
             IdentityManager.getConfigIdentity().setOption(plugin.getDomain(),
                     "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        boolean enable = table.getSelectedRow() > -1 && table.getModel().getRowCount() > 0;
+
+        editButton.setEnabled(enable);
+        deleteButton.setEnabled(enable);
     }
 }
