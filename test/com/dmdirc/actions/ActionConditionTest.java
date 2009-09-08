@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.config.IdentityManager;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -58,9 +57,9 @@ public class ActionConditionTest {
 
     @Test
     public void testTest1() {
-        final ActionCondition ac = new ActionCondition(0, CoreActionComponent.STRING_STRING,
+        final ActionCondition ac = new ActionCondition(1, CoreActionComponent.STRING_STRING,
             CoreActionComparison.STRING_STARTSWITH, "foo");
-        assertTrue(ac.test(new ActionSubstitutor(CoreActionType.CLIENT_CLOSED), "foo bar"));
+        assertTrue(ac.test(new ActionSubstitutor(CoreActionType.CLIENT_USER_INPUT), null, "foo bar"));
     }
 
     @Test
