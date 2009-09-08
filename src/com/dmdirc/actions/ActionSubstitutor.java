@@ -25,6 +25,7 @@ package com.dmdirc.actions;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.config.ConfigManager;
@@ -257,7 +258,15 @@ public class ActionSubstitutor {
      * @param args The arguments for the action type
      * @return The substituted string
      */
+    @Precondition("Number of arguments given equals the number of arguments " +
+    "required by this substitutor's type")
     public String doSubstitution(final String target, final Object ... args) {
+        if (type.getType().getArity() != args.length) {
+            throw new IllegalArgumentException("Invalid number of arguments "
+                    + "for doSubstitution: expected " + type.getType().getArity() + ", got "
+                    + args.length + ". Type: " + type.getName());
+        }
+
         final StringBuilder res = new StringBuilder(target);
         
         doConfigSubstitutions(getConfigManager(args), res);

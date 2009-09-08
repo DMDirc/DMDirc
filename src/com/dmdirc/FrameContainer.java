@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.ListenerList;
 
@@ -181,6 +180,7 @@ public abstract class FrameContainer {
     /**
      * Requests that this object's frame be activated.
      */
+    @Precondition("getFrame() does not return null")
     public void activateFrame() {
         final Window window = getFrame();
 
