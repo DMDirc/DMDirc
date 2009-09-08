@@ -71,7 +71,7 @@ public class ParserFactory {
             try {
                 final Service service = PluginManager.getPluginManager().getService("parser", address.getProtocol());
 
-                if (service != null) {
+                if (service != null && !service.getProviders().isEmpty()) {
                     final ServiceProvider provider = service.getProviders().get(0);
 
                     if (provider != null) {
