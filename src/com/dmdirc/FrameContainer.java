@@ -182,7 +182,14 @@ public abstract class FrameContainer {
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
-        getFrame().activateFrame();
+        final Window window = getFrame();
+
+        if (window == null) {
+            throw new IllegalStateException("Cannot activate frame '"
+                    + getName() + "' while window is null");
+        } else {
+            window.activateFrame();
+        }
     }
 
     /**
