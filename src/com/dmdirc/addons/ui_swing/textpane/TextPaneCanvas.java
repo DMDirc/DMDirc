@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
@@ -115,9 +114,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     @Override
     public void paintComponent(final Graphics graphics) {
         final Graphics2D g = (Graphics2D) graphics;
-        if (buffer == null) {
-            calc();
-        }
+        //if (buffer == null) {
+            //calc();
+        //}
         final Map desktopHints = (Map) Toolkit.getDefaultToolkit().
                 getDesktopProperty("awt.font.desktophints");
         if (desktopHints != null) {
@@ -125,7 +124,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         }
         g.setColor(textPane.getBackground());
         g.fill(g.getClipBounds());
-        g.drawImage(buffer, 0, 0, null);
+        paintOntoGraphics(g);
+        //g.drawImage(buffer, 0, 0, null);
     }
 
     /**
@@ -146,6 +146,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = image.createGraphics();
 
+        paintOntoGraphics(g);
+        
+        buffer = new BufferedImage(getWidth(), getHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        buffer.createGraphics().drawImage(image, null, null);
+    }
+
+    private void paintOntoGraphics(final Graphics2D g) {
         final Map desktopHints = (Map) Toolkit.getDefaultToolkit().
                 getDesktopProperty("awt.font.desktophints");
         if (desktopHints != null) {
@@ -239,7 +247,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     doHighlight(line, chars, layout, g, drawPosY, drawPosX);
                     firstVisibleLine = line;
                     textLayouts.put(layout, new LineInfo(line, numberOfWraps));
-                    positions.put(new Rectangle(0, (int) (drawPosY - 
+                    positions.put(new Rectangle(0, (int) (drawPosY -
                             layout.getDescent()), (int) (formatWidth +
                             DOUBLE_SIDE_PADDING), lineHeight), layout);
                 }
@@ -255,10 +263,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
         checkForLink();
-        buffer = new BufferedImage(getWidth(), getHeight(),
-                BufferedImage.TYPE_INT_ARGB);
-        buffer.createGraphics().drawImage(image, null, null);
-
     }
 
     /**
