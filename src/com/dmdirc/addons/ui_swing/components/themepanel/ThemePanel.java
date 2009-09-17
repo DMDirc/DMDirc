@@ -54,29 +54,24 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class ThemePanel extends JPanel implements
         ActionListener, ListSelectionListener, PreferencesInterface {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    
     /** List of themes. */
     private JList themeList;
-    
     /** plugin list scroll pane. */
     private JScrollPane scrollPane;
-    
     /** Button to enable/disable theme. */
     private JButton toggleButton;
-    
     /** Currently selected theme. */
     private int selectedTheme;
-    
     /** Blurb label. */
     private TextLabel blurbLabel;
-    
+
     /** Creates a new instance of PluginDialog. */
     public ThemePanel() {
         super();
@@ -84,25 +79,27 @@ public final class ThemePanel extends JPanel implements
         initComponents();
         addListeners();
         layoutComponents();
-        
+
         themeList.setSelectedIndex(0);
         selectedTheme = 0;
     }
-    
+
     /** Initialises the components. */
-    private void initComponents() {                        
+    private void initComponents() {
         themeList = new JList(new DefaultListModel());
         themeList.setCellRenderer(new AddonCellRenderer());
-        
+
         scrollPane = new JScrollPane(new JLabel("Loading plugins..."));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                
+        scrollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
         toggleButton = new JButton("Enable");
         toggleButton.setEnabled(false);
-        
+
         blurbLabel = new TextLabel("Themes alter the appearance of DMDirc");
-        
+
         /** {@inheritDoc}. */
         new LoggingSwingWorker() {
 
@@ -120,52 +117,53 @@ public final class ThemePanel extends JPanel implements
             }
         }.execute();
     }
-    
+
     /** Lays out the dialog. */
     private void layoutComponents() {
         setLayout(new MigLayout("ins 0, fill"));
-        
+
         add(blurbLabel, "wrap 10, growx, pushx");
-        
+
         add(scrollPane, "wrap 5, grow, push");
-               
+
         add(toggleButton, "split 2, growx, pushx, sg button");
-        
+
         final JButton button = new JButton("Get more themes");
         button.addActionListener(this);
         add(button, "growx, pushx, sg button");
     }
-    
-    
+
     /** 
      * Populates the plugins list with plugins from the plugin manager. 
      * 
      * @return Populated list
      */
     private JList populateList() {
-        final List<Theme> list = new ArrayList<Theme>(ThemeManager.getAvailableThemes().values());
+        final List<Theme> list = new ArrayList<Theme>(ThemeManager.
+                getAvailableThemes().values());
         Collections.sort(list);
-        
+
         ((DefaultListModel) themeList.getModel()).clear();
-        
+
         for (Theme plugin : list) {
-            ((DefaultListModel) themeList.getModel()).addElement(new ThemeToggle(plugin));
+            ((DefaultListModel) themeList.getModel()).addElement(new ThemeToggle(
+                    plugin));
         }
-        
+
         if (((DefaultListModel) themeList.getModel()).size() > 0) {
             toggleButton.setEnabled(true);
         }
-        
+
         themeList.repaint();
         return themeList;
     }
-    
+
     /** Adds listeners to components. */
     private void addListeners() {
         toggleButton.addActionListener(this);
         themeList.addListSelectionListener(this);
     }
-    
+
     /**
      * Invoked when an action occurs.
      * 
@@ -175,31 +173,31 @@ public final class ThemePanel extends JPanel implements
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == toggleButton && selectedTheme >= 0) {
             final ThemeToggle theme = (ThemeToggle) themeList.getSelectedValue();
-            
+
             theme.toggle();
-            
+
             if (theme.getState()) {
                 toggleButton.setText("Disable");
             } else {
                 toggleButton.setText("Enable");
             }
-            
+
             themeList.repaint();
         } else if (e.getSource() != toggleButton) {
             URLHandler.getURLHander().launchApp("http://addons.dmdirc.com/");
         }
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final ThemeToggle theme = (ThemeToggle) 
-                        ((JList) e.getSource()).getSelectedValue();
+                final ThemeToggle theme = (ThemeToggle) ((JList) e.getSource()).
+                        getSelectedValue();
                 toggleButton.setEnabled(true);
-                
+
                 if (theme.getState()) {
                     toggleButton.setText("Disable");
                 } else {
@@ -209,19 +207,19 @@ public final class ThemePanel extends JPanel implements
             selectedTheme = selected;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void save() {
         final List<String> enabled = new ArrayList<String>();
-        
+
         for (Object pit : ((DefaultListModel) themeList.getModel()).toArray()) {
             if (((ThemeToggle) pit).getState()) {
                 enabled.add(((ThemeToggle) pit).getTheme().getFileName());
             }
         }
-        
-        IdentityManager.getConfigIdentity().setOption("themes", "enabled", enabled);
+
+        IdentityManager.getConfigIdentity().setOption("themes", "enabled",
+                enabled);
     }
-    
 }
