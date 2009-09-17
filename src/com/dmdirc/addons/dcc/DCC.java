@@ -186,6 +186,9 @@ public abstract class DCC implements Runnable {
 					serverSocketSem.release();
 				}
 			}
+			
+			// Sleep for a short period of time to reduce CPU usage.
+			try { Thread.sleep(100); } catch (InterruptedException ie) { }
 		}
 		// Socket closed
 
