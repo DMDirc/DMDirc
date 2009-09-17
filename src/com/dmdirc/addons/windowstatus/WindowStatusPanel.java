@@ -22,6 +22,7 @@
 package com.dmdirc.addons.windowstatus;
 
 import com.dmdirc.ui.interfaces.StatusBarComponent;
+import com.dmdirc.ui.messages.Styliser;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -50,10 +51,11 @@ public class WindowStatusPanel extends JPanel implements StatusBarComponent {
     
     /**
      * Sets the text for this label.
-     * 
+     * This will strip any formatting from the text.
+     *
      * @param text New text
      */
     public void setText(final String text) {
-        label.setText(text);
+        label.setText(Styliser.stipControlCodes(text));
     }
 }
