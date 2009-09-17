@@ -156,11 +156,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		} else if (getAuthor().isEmpty()) {
 			lastError = "Incomplete plugin.config (Missing or invalid 'author')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getName().isEmpty()) {
+		} else if (getName().isEmpty() || getName().indexOf(' ') != -1) {
 			lastError = "Incomplete plugin.config (Missing or invalid 'name')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getName().contains(" ")) {
-			lastError = "plugin.config contains invalid 'name'";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getMainClass().isEmpty()) {
 			lastError = "Incomplete plugin.config (Missing or invalid 'mainclass')";
