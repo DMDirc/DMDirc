@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.addons.ui_swing.textpane.Line;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.core.util.Utils;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
@@ -57,8 +57,9 @@ public class StyliserStylesTest {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
         Styliser.addStyledString(doc, new String[]{input});
-        final AttributedCharacterIterator aci = new Line(new String[]{input, }, 
-                IdentityManager.getGlobalConfig()).getStyled().getIterator();
+        final AttributedCharacterIterator aci = Utils.getAttributedString(
+                new String[]{input, }, IdentityManager.getGlobalConfig()).
+                getAttributedString().getIterator();
          
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
         char chr = aci.current();

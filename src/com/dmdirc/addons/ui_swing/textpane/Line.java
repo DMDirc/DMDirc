@@ -35,7 +35,7 @@ import javax.swing.UIManager;
 /**
  * Represents a line of text in IRC.
  */
-public class Line {
+class Line {
 
     private final String[] lineParts;
     private final ConfigManager config;
