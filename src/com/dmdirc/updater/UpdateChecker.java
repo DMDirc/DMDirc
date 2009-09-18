@@ -443,13 +443,12 @@ public final class UpdateChecker implements Runnable {
      * Checks is a specified component is enabled.
      *
      * @param component Update component to check state
-     *
      * @return true iif the update component is enabled
      */
     public static boolean isEnabled(final UpdateComponent component) {
-        return !IdentityManager.getGlobalConfig().hasOptionString("updater",
-                component.getName()) || IdentityManager.getGlobalConfig()
-                .getOptionBool("updater", component.getName());
+        return !IdentityManager.getGlobalConfig().hasOptionBool("updater",
+                "enable-" + component.getName()) || IdentityManager.getGlobalConfig()
+                .getOptionBool("updater", "enable-" + component.getName());
     }
 
 }

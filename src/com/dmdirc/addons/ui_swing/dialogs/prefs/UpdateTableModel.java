@@ -206,4 +206,15 @@ public class UpdateTableModel extends AbstractTableModel {
             }
         }
     }
+
+    /**
+     * Retrieves the update component that corresponds to the specified row.
+     *
+     * @since 0.6.3m2
+     * @param row The row number
+     * @return The corresponding update component
+     */
+    public UpdateComponent getComponent(final int row) {
+        return updates.get(row);
+    }
 }

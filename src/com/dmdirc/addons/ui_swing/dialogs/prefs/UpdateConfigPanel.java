@@ -83,7 +83,7 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
         }
 
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            final String componentName = (String) tableModel.getValueAt(i, 0);
+            final String componentName = tableModel.getComponent(i).getName();
             if ((Boolean) tableModel.getValueAt(i, 1)) {
                 identity.unsetOption("updater", "enable-" + componentName);
             } else {
