@@ -67,9 +67,12 @@ public class ParserFactory {
             }
         }
 
-        if (address.getProtocol() != null) {
+        if (address.getProtocol() == null || "irc".equals(address.getProtocol())) {
+            return new IRCParser(myInfo, info);
+        } else {
             try {
-                final Service service = PluginManager.getPluginManager().getService("parser", address.getProtocol());
+                final Service service = PluginManager.getPluginManager()
+                        .getService("parser", address.getProtocol());
 
                 if (service != null && !service.getProviders().isEmpty()) {
                     final ServiceProvider provider = service.getProviders().get(0);
@@ -77,21 +80,24 @@ public class ParserFactory {
                     if (provider != null) {
                         provider.activateServices();
 
-                        final ExportedService exportService = provider.getExportedService("getParser");
+                        final ExportedService exportService = provider
+                                .getExportedService("getParser");
                         final Object obj = exportService.execute(myInfo, address);
                         if (obj != null && obj instanceof Parser) {
                             return (Parser)obj;
                         } else {
-                            Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser for: " + address.getProtocol());
+                            Logger.userError(ErrorLevel.MEDIUM,
+                                    "Unable to create parser for: " + address.getProtocol());
                         }
                     }
                 }
             } catch (NoSuchProviderException nspe) {
-                Logger.userError(ErrorLevel.UNKNOWN, "No parser found for: " + address.getProtocol());
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "No parser found for: " + address.getProtocol(), nspe);
             }
-        }
 
-        return new IRCParser(myInfo, info);
+            return null;
+        }
     }
 
 }
