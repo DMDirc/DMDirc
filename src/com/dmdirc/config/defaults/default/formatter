@@ -216,6 +216,7 @@ formatter:
   actionTooLong=Warning: action too long to be sent
   tabCompletion=14Multiple possibilities: %1$s
   serverError=4ERROR: %1$s
+  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
 
 # Type: Binary Miscellaneous
 #    1: Miscellaneous data

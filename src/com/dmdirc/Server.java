@@ -281,6 +281,11 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             parser = buildParser();
 
+            if (parser == null) {
+                addLine("serverUnknownProtocol", address.getProtocol());
+                return;
+            }
+
             myState.transition(ServerState.CONNECTING);
 
             doCallbacks();
@@ -687,14 +692,16 @@ public class Server extends WritableFrameContainer implements Serializable {
             secureParser.setKeyManagers(certManager.getKeyManager());
         }
 
-        myParser.setIgnoreList(ignoreList);
-        myParser.setPingTimerInterval(getConfigManager().getOptionInt(DOMAIN_SERVER,
-                "pingtimer"));
-        myParser.setPingTimerFraction((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
-                "pingfrequency") / myParser.getPingTimerInterval()));
+        if (myParser != null) {
+            myParser.setIgnoreList(ignoreList);
+            myParser.setPingTimerInterval(getConfigManager().getOptionInt(DOMAIN_SERVER,
+                    "pingtimer"));
+            myParser.setPingTimerFraction((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
+                    "pingfrequency") / myParser.getPingTimerInterval()));
 
-        if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
-            myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
+            if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
+                myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
+            }
         }
 
         return myParser;
