@@ -29,10 +29,10 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 
 
 import java.awt.Font;
+import java.nio.charset.Charset;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import javax.swing.UIManager;
 import javax.swing.text.html.HTMLDocument;
@@ -75,6 +75,7 @@ public final class InfoPanel extends JPanel {
                 "<b>OS Version: </b>" + Info.getOSVersion() + "<br>" +
                 "<b>Look and Feel: </b>" + SwingController.getLookAndFeel() + "<br>" +
                 "<b>MiG Layout version: </b>" + LayoutUtil.getVersion() + "<br>" +
+                "<b>Java Default charset: </b>" + Charset.defaultCharset().displayName() + "<br>" +
                 "</html>");
         infoPane.setEditable(false);
         scrollPane.setViewportView(infoPane);
