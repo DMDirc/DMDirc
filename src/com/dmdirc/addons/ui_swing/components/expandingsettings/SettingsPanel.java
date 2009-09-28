@@ -64,6 +64,8 @@ public final class SettingsPanel extends JPanel {
         SPINNER,
         /** Font picker. */
         FONT,
+        /** Combo box. */
+        COMBOBOX,
     }
 
     /** config option -> name. */
