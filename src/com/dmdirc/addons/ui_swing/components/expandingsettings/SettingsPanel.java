@@ -64,6 +64,8 @@ public final class SettingsPanel extends JPanel {
         SPINNER,
         /** Font picker. */
         FONT,
+        /** Combo box. */
+        COMBOBOX,
     }
 
     /** config option -> name. */
@@ -138,10 +140,11 @@ public final class SettingsPanel extends JPanel {
      * @param optionName Option name
      * @param displayName Display name
      * @param type Option type
+     * @param arguments Arguments (optional)
      */
     public void addOption(final String optionName,
             final String displayName,
-            final OptionType type) {
+            final OptionType type, Object... arguments) {
         if (config == null) {
             return;
         }

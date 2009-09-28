@@ -33,6 +33,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.nio.charset.Charset;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -78,6 +79,8 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     private JSpinner addInputSpinner;
     /** Add option font picker. */
     private FontPicker addInputFontPicker;
+    /** Add option combobox. */
+    private JComboBox addInputComboBox;
     /** Add option checkbox. */
     private JLabel addInputNone;
     
@@ -112,6 +115,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputSpinner = new JSpinner(new SpinnerNumberModel());
         addInputNone = new JLabel("");
         addInputFontPicker = new FontPicker("Dialog");
+        addInputComboBox = new JComboBox(new DefaultComboBoxModel());
         
         addInputCurrent = addInputNone;
         
@@ -160,6 +164,12 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     protected void addOption(final String optionName) {
         ((DefaultComboBoxModel) addOptionComboBox.getModel()).addElement(
                 optionName);
+        if ("channel.encoding".equals(optionName)) {
+            ((DefaultComboBoxModel) addInputComboBox.getModel()).removeAllElements();
+            for (Object argument: Charset.availableCharsets().keySet()) {
+                ((DefaultComboBoxModel) addInputComboBox.getModel()).addElement(argument);
+            }
+        }
         addOptionButton.setEnabled(true);
         addOptionComboBox.setEnabled(true);
     }
@@ -213,6 +223,9 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                     break;
                 case FONT:
                     addInputCurrent = addInputFontPicker;
+                    break;
+                case COMBOBOX:
+                    addInputCurrent = addInputComboBox;
                     break;
                 default:
                     addInputCurrent = addInputNone;
@@ -273,6 +286,11 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                             (String) addOptionComboBox.getSelectedItem(),
                             type,
                             ((Font) addInputFontPicker.getSelectedItem()).getFamily());
+                    break;
+                case COMBOBOX:
+                    parent.addCurrentOption((String) addOptionComboBox.getSelectedItem(),
+                            type,
+                            (String) addInputComboBox.getSelectedItem());
                     break;
                 default:
                     break;
