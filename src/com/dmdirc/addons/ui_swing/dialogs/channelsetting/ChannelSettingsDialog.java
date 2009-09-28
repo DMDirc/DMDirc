@@ -231,7 +231,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         channelSettingsPane.addOption("ui.nicklistforegroundcolour",
                 "Nicklist foreground colour", OptionType.COLOUR);
         channelSettingsPane.addOption("channel.encoding", "Encoding",
-                OptionType.TEXTFIELD);
+                OptionType.COMBOBOX);
     }
 
     /** Initialises listeners for this dialog. */
