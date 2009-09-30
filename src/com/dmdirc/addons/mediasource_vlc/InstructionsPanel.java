@@ -44,13 +44,13 @@ class InstructionsPanel extends JPanel implements PreferencesInterface {
                 + "The VLC media source requires that VLC's web interface is" +
                 " enabled. To do this, follow the steps below:</p>"
                 + "<ol style='margin-left: 20px; padding-left: 0px;'>" +
-                "<li>Open VLC's preferences dialog (found in the 'Settings' menu)" +
-                "<li>Expand the 'Interface' category by clicking on the arrow next to it" +
+                "<li>Open VLC's preferences dialog (found in the 'Tools' menu)" +
+                "<li>Set the 'Show settings' option to 'All'" +
+                "<li>Expand the 'Interface' category by clicking on the plus sign next to it" +
                 "<li>Select the 'Main interfaces' category" +
                 "<li>Check the box next to 'HTTP remote control interface'" +
                 "<li>Expand the 'Main interfaces' category" +
                 "<li>Select the 'HTTP' category" +
-                "<li>Check the box next to 'Advanced options'" +
                 "<li>In the 'Host address' field, enter 'localhost:8082'" +
                 "<li>In the 'Source directory' field enter the path to VLC's" +
                 " http directory<ul style='margin-left: 5px; padding-left: 0px;" +
