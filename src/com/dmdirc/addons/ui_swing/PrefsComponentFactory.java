@@ -32,6 +32,7 @@ import com.dmdirc.addons.ui_swing.components.durationeditor.DurationListener;
 import com.dmdirc.addons.ui_swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
+import com.dmdirc.util.ReturnableThread;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -100,8 +101,8 @@ public final class PrefsComponentFactory {
                 option = getFontOption(setting);
                 break;
             default:
-                throw new IllegalArgumentException(setting.getType()
-                        + " is not a valid option type");
+                throw new IllegalArgumentException(setting.getType() +
+                        " is not a valid option type");
         }
 
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
@@ -117,17 +118,24 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getTextOption(final PreferencesSetting setting) {
-        final ValidatingJTextField option = new ValidatingJTextField(setting.getValidator());
-        option.setText(setting.getValue());
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        option.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(final KeyEvent e) {
-                setting.setValue(((JTextField) e.getSource()).getText());
+            public void run() {
+                final ValidatingJTextField option = new ValidatingJTextField(
+                        setting.getValidator());
+                option.setText(setting.getValue());
+
+                option.addKeyListener(new KeyAdapter() {
+
+                    @Override
+                    public void keyReleased(final KeyEvent e) {
+                        setting.setValue(((JTextField) e.getSource()).getText());
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -137,18 +145,24 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getBooleanOption(final PreferencesSetting setting) {
-        final JCheckBox option = new JCheckBox();
-        option.setSelected(Boolean.parseBoolean(setting.getValue()));
-        option.addChangeListener(new ChangeListener() {
-            
-            /** {@inheritDoc} */
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
+
             @Override
-            public void stateChanged(final ChangeEvent e) {
-                setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
+            public void run() {
+                final JCheckBox option = new JCheckBox();
+                option.setSelected(Boolean.parseBoolean(setting.getValue()));
+                option.addChangeListener(new ChangeListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void stateChanged(final ChangeEvent e) {
+                        setting.setValue(String.valueOf(((JCheckBox) e.getSource()).
+                                isSelected()));
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -158,28 +172,35 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getComboOption(final PreferencesSetting setting) {
-        final JComboBox option = new JComboBox(setting.getComboOptions().entrySet().toArray());
-        option.setRenderer(new MapEntryRenderer());
-        option.setEditable(false);
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        for (Map.Entry<String, String> entry : setting.getComboOptions().entrySet()) {
-            if (entry.getKey().equals(setting.getValue())) {
-                option.setSelectedItem(entry);
-                break;
-            }
-        }
-
-        option.addActionListener(new ActionListener() {
-            
-            /** {@inheritDoc} */
             @Override
-            public void actionPerformed(final ActionEvent e) {
-                setting.setValue((String) ((Map.Entry)
-                        ((JComboBox) e.getSource()).getSelectedItem()).getKey());
+            public void run() {
+                final JComboBox option = new JComboBox(setting.getComboOptions().
+                        entrySet().toArray());
+                option.setRenderer(new MapEntryRenderer());
+                option.setEditable(false);
+
+                for (Map.Entry<String, String> entry : setting.getComboOptions().
+                        entrySet()) {
+                    if (entry.getKey().equals(setting.getValue())) {
+                        option.setSelectedItem(entry);
+                        break;
+                    }
+                }
+
+                option.addActionListener(new ActionListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        setting.setValue((String) ((Map.Entry) ((JComboBox) e.
+                                getSource()).getSelectedItem()).getKey());
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -189,34 +210,42 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getIntegerOption(final PreferencesSetting setting) {
-        JSpinner option;
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        try {
-            if (setting.getValidator() instanceof NumericalValidator) {
-                option = new JSpinner(
-                        new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
-                        ((NumericalValidator) setting.getValidator()).getMin(),
-                        ((NumericalValidator) setting.getValidator()).getMax(),
-                        1));
-            } else {
-                option = new JSpinner(new SpinnerNumberModel());
-                option.setValue(Integer.parseInt(setting.getValue()));
-            }
-        } catch (NumberFormatException ex) {
-            option = new JSpinner(new SpinnerNumberModel());
-        }
-
-        option.addChangeListener(new ChangeListener() {
-            
-            /** {@inheritDoc} */
             @Override
-            public void stateChanged(final ChangeEvent e) {
-                setting.setValue(((JSpinner) e.getSource()).getValue().
-                        toString());
+            public void run() {
+                JSpinner option;
+
+                try {
+                    if (setting.getValidator() instanceof NumericalValidator) {
+                        option = new JSpinner(
+                                new SpinnerNumberModel(Integer.parseInt(
+                                setting.getValue()),
+                                ((NumericalValidator) setting.getValidator()).
+                                getMin(),
+                                ((NumericalValidator) setting.getValidator()).
+                                getMax(),
+                                1));
+                    } else {
+                        option = new JSpinner(new SpinnerNumberModel());
+                        option.setValue(Integer.parseInt(setting.getValue()));
+                    }
+                } catch (NumberFormatException ex) {
+                    option = new JSpinner(new SpinnerNumberModel());
+                }
+
+                option.addChangeListener(new ChangeListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void stateChanged(final ChangeEvent e) {
+                        setting.setValue(((JSpinner) e.getSource()).getValue().
+                                toString());
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -226,24 +255,30 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getDurationOption(final PreferencesSetting setting) {
-        DurationDisplay option;
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        try {
-            option = new DurationDisplay(Integer.parseInt(setting.getValue()));
-        } catch (NumberFormatException ex) {
-            option = new DurationDisplay();
-        }
-
-        option.addDurationListener(new DurationListener() {
-            
-            /** {@inheritDoc} */
             @Override
-            public void durationUpdated(final int newDuration) {
-                setting.setValue(String.valueOf(newDuration));
+            public void run() {
+                DurationDisplay option;
+
+                try {
+                    option = new DurationDisplay(Integer.parseInt(setting.
+                            getValue()));
+                } catch (NumberFormatException ex) {
+                    option = new DurationDisplay();
+                }
+
+                option.addDurationListener(new DurationListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void durationUpdated(final int newDuration) {
+                        setting.setValue(String.valueOf(newDuration));
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -253,18 +288,26 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getColourOption(final PreferencesSetting setting) {
-        final ColourChooser option = new ColourChooser(setting.getValue(), true, true);
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        option.addActionListener(new ActionListener() {
-            
-            /** {@inheritDoc} */
             @Override
-            public void actionPerformed(final ActionEvent e) {
-                setting.setValue(((ColourChooser) e.getSource()).getColour());
+            public void run() {
+                final ColourChooser option = new ColourChooser(
+                        setting.getValue(), true,
+                        true);
+
+                option.addActionListener(new ActionListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        setting.setValue(((ColourChooser) e.getSource()).
+                                getColour());
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
 
     /**
@@ -273,28 +316,40 @@ public final class PrefsComponentFactory {
      * @param setting The setting to create the component for
      * @return A JComponent descendent for the specified setting
      */
-    private static JComponent getOptionalColourOption(final PreferencesSetting setting) {
-        final boolean state = setting.getValue() != null
-                && !setting.getValue().startsWith("false:");
-        final String colour = setting.getValue() == null ? "0" : setting.getValue().
-                substring(1 + setting.getValue().indexOf(':'));
+    private static JComponent getOptionalColourOption(
+            final PreferencesSetting setting) {
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        final OptionalColourChooser option = new OptionalColourChooser(colour, state, true, true);
-
-        option.addActionListener(new ActionListener() {
-            
-            /** {@inheritDoc} */
             @Override
-            public void actionPerformed(final ActionEvent e) {
-                setting.setValue(
-                        ((OptionalColourChooser) e.getSource()).isEnabled() + ":"
-                        + ((OptionalColourChooser) e.getSource()).getColour());
+            public void run() {
+                final boolean state = setting.getValue() != null && !setting.
+                        getValue().
+                        startsWith("false:");
+                final String colour = setting.getValue() == null ? "0" : setting.getValue().
+                        substring(1 + setting.getValue().indexOf(':'));
+
+                final OptionalColourChooser option = new OptionalColourChooser(
+                        colour,
+                        state, true, true);
+
+                option.addActionListener(new ActionListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        setting.setValue(
+                                ((OptionalColourChooser) e.getSource()).
+                                isEnabled() +
+                                ":" +
+                                ((OptionalColourChooser) e.getSource()).
+                                getColour());
+                    }
+                });
+                setObject(option);
             }
         });
-
-        return option;
     }
-    
+
     /**
      * Initialises and returns an Font Chooser for the specified setting.
      *
@@ -302,25 +357,30 @@ public final class PrefsComponentFactory {
      * @return A JComponent descendent for the specified setting
      */
     private static JComponent getFontOption(final PreferencesSetting setting) {
-        final String value = setting.getValue();
+        return UIUtilities.invokeAndWait(new ReturnableThread<JComponent>() {
 
-        final FontPicker option = new FontPicker(value);
-        
-        option.addActionListener(new ActionListener() {
-
-            /** {@inheritDoc} */
             @Override
-            public void actionPerformed(final ActionEvent e) {
-                Object value = ((FontPicker) e.getSource()).getSelectedItem();
-                if (value instanceof Font) {
-                    setting.setValue(((Font) value).getFamily());
-                } else {
-                    setting.setValue(null);
-                }
-            }
-        });        
-        
-        return option;
-    }
+            public void run() {
+                final String value = setting.getValue();
 
+                final FontPicker option = new FontPicker(value);
+
+                option.addActionListener(new ActionListener() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        Object value = ((FontPicker) e.getSource()).
+                                getSelectedItem();
+                        if (value instanceof Font) {
+                            setting.setValue(((Font) value).getFamily());
+                        } else {
+                            setting.setValue(null);
+                        }
+                    }
+                });
+                setObject(option);
+            }
+        });
+    }
 }
