@@ -306,8 +306,13 @@ echo "Clean Up"
 echo "================================================================"
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
-	SVN=`which svn`
-	${SVN} revert ${updatedir}/*
+	if [ ${isSVN} -eq 1 ]; then
+		SVN=`which svn`
+		${SVN} revert ${updatedir}/*
+	else
+		GIT=`which git`
+		${GIT} checkout ${updatedir}
+	fi;
 done;
 
 if [ "1" = "${UPLOAD}" -a "" != "${TAGGED}" ]; then
