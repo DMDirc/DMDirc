@@ -164,9 +164,6 @@ if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*
 	if [ "${plugins_osx}" = "*" ]; then plugins_osx=${allPlugins}; fi
 fi;
 
-# Remove plugins added by createAllPluginJar
-zip -d dist/DMDirc.jar plugins plugins/*
-
 if [ ${isSVN} -eq 1 ]; then
 	VERSION=""
 	if [ "${LAST}" != "" ]; then
