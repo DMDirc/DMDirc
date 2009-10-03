@@ -116,8 +116,8 @@ while test -n "$1"; do
 			BRANCH="1"
 			;;
 		--tag|-t)
-			shift
 			if [ ${isSVN} -eq 1 ]; then
+				shift
 				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
 				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
 				if [ "" = "${CHECKTAG}" ]; then
@@ -192,6 +192,9 @@ fi;
 
 echo "Copying jar (${jarfile} -> ${RUNNAME}).."
 cp ${jarfile} ${RUNNAME}
+
+# Remove plugins added by createAllPluginJar
+zip -d ${RUNNAME} plugins plugins/*
 
 if [ "${plugins}" != "" ]; then
 	echo "Adding plugins to jar"
