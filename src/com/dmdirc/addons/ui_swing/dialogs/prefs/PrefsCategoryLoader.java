@@ -35,6 +35,7 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.ReturnableThread;
 import java.util.concurrent.ExecutionException;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -173,7 +174,7 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
         }
     }
 
-    /**panel.
+    /**
      * Initialises and adds a component to a panel.
      *
      * @param category The category the setting is being added to
@@ -186,7 +187,17 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
 
         final TextLabel label = getLabel(setting);
 
-        JComponent option = PrefsComponentFactory.getComponent(setting);
+
+        JComponent option = UIUtilities.invokeAndWait(
+                new ReturnableThread<JComponent>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(PrefsComponentFactory.getComponent(setting));
+            }
+        });
+        
         option.setToolTipText(null);
         categoryPanel.getToolTipPanel().registerTooltipHandler(label);
         categoryPanel.getToolTipPanel().registerTooltipHandler(option,
