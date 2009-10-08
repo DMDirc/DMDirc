@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -40,6 +41,7 @@ import java.util.List;
  * The mode command allows the user to inspect and change channel modes.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Mode extends ChannelCommand implements IntelligentCommand,
         ExternalCommand {
 

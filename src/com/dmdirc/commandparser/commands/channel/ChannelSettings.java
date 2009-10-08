@@ -28,6 +28,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -38,6 +39,7 @@ import java.util.List;
  * Opens the channel settings window for the channel.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class ChannelSettings extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of ChannelSettings. */

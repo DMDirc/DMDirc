@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -34,6 +35,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  *
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Cycle extends ChannelCommand {
     
     /** Creates a new instance of Cycle. */
