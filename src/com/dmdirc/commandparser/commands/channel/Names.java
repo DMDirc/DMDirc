@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -39,6 +40,7 @@ import java.util.List;
  * 
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public class Names extends ChannelCommand implements IntelligentCommand, ExternalCommand {
     
     /**

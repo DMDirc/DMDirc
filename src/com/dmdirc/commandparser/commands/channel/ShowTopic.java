@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -35,6 +36,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * The show topic command shows the user the current topic.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class ShowTopic extends ChannelCommand implements ExternalCommand {
 
     /** Creates a new instance of ShowTopic. */
