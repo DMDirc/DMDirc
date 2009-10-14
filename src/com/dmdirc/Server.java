@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -1146,7 +1147,7 @@ public class Server extends WritableFrameContainer implements Serializable {
             return;
         }
 
-        String newNick = lastNick + (int) (Math.random() * 10);
+        String newNick = lastNick + new Random().nextInt(10);
 
         final List<String> alts = profile.getOptionList(DOMAIN_PROFILE, "nicknames");
         int offset = 0;
