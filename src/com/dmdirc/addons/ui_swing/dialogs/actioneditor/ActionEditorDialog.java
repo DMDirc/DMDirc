@@ -260,6 +260,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             substitutions.setVisible(!substitutions.isVisible());
             showSubstitutions.setText(substitutions.isVisible() ? "Hide Substitutions"
                     : "Show Substitutions");
+            pack();
         } else if (e.getSource().equals(getOkButton())) {
             save();
             dispose();
