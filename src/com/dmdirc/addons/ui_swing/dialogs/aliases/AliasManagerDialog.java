@@ -313,9 +313,11 @@ public final class AliasManagerDialog extends StandardDialog implements
         } else if (e.getSource() == showSubs) {
             if (subsPanel.isVisible()) {
                 subsPanel.setVisible(false);
+                pack();
                 showSubs.setText("Show Substitutions");
             } else {
                 subsPanel.setVisible(true);
+                pack();
                 showSubs.setText("Hide Substitutions");
             }
         }
