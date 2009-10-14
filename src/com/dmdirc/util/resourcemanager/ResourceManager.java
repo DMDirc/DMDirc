@@ -25,6 +25,7 @@ package com.dmdirc.util.resourcemanager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import com.dmdirc.util.StreamUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,13 +117,16 @@ public abstract class ResourceManager {
      * @throws IOException if the write operation fails
      */
     public final void resourceToFile(final byte[] resource, final File file)
-    throws IOException {
-        final FileOutputStream out = new FileOutputStream(file, false);
-        
-        out.write(resource);
-        
-        out.flush();
-        out.close();
+            throws IOException {
+        FileOutputStream out = null;
+
+        try {
+            out = new FileOutputStream(file, false);
+            out.write(resource);
+            out.flush();
+        } finally {
+            StreamUtil.close(out);
+        }
     }
        
     /**
