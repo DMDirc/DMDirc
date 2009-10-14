@@ -70,7 +70,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      *
      * @since 0.6.3m1
      */
-    public static int CLIENT_HEIGHT = 375;
+    public static final int CLIENT_HEIGHT = 375;
     /** Previously instantiated instance of SwingPreferencesDialog. */
     private static volatile SwingPreferencesDialog me;
     /** Preferences tab list, used to switch option types. */

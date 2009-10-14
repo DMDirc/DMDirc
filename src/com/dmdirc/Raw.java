@@ -93,7 +93,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
         window.setVisible(false);
 
         // 2: Remove any callbacks or listeners
-        if (server != null && server.getParser() != null) {
+        if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(this);
         }
 
