@@ -22,8 +22,7 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.util.StreamUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,7 +71,7 @@ public final class FileResourceManager extends ResourceManager {
     /** {@inheritDoc} */
     @Override
     public byte[] getResourceBytes(final String resource) {
-        FileInputStream inputStream;
+        FileInputStream inputStream = null;
         final File file;
         
         if (resource.startsWith(basePath)) {
@@ -93,22 +92,13 @@ public final class FileResourceManager extends ResourceManager {
         
         try {
             inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException ex) {
-            return new byte[0];
-        }
-        
-        try {
             inputStream.read(bytes);
         } catch (IOException ex) {
             return new byte[0];
+        } finally {
+            StreamUtil.close(inputStream);
         }
-        
-        try {
-            inputStream.close();
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to close stream");
-        }
-        
+
         return bytes;
     }
     

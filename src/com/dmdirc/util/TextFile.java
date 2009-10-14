@@ -165,14 +165,18 @@ public class TextFile {
                     + "opened with an InputStream");
         }
         
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
         
-        for (String line : lines) {
-            writer.write(line);
-            writer.newLine();
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } finally {
+            StreamUtil.close(writer);
         }
-        
-        writer.close();
     }
 
     /**
