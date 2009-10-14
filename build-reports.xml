@@ -161,8 +161,7 @@
     
     <target name="findbugs" depends="jar" description="Run Findbugs.">
         <mkdir dir="reports/findbugs" />
-        <taskdef name="findbugs" classpath="findbugs-ant.jar"
-                         classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
+        <taskdef name="findbugs" classpath="lib/findbugs-ant.jar" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
         <findbugs home="/usr/share/java/findbugs/" effort="max"
                             jvmargs="-Xmx512M"
                             output="xml:withMessages"
