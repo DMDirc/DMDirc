@@ -50,17 +50,32 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     private TextLabel info;
     /** Swing controller. */
     private MainFrame mainFrame;
+    /** Info text. */
+    private String cause;
     
 
     /**
      * Dialog to restart the client.
-     * 
+     *
      * @param mainFrame Main Frame
      * @param modal Modality
      */
     public SwingRestartDialog(final MainFrame mainFrame, final ModalityType modal) {
+        this(mainFrame, modal, "finish updating");
+    }
+
+    /**
+     * Dialog to restart the client.
+     *
+     * @param mainFrame Main Frame
+     * @param modal Modality
+     * @param cause Reason for restart
+     */
+    public SwingRestartDialog(final MainFrame mainFrame, 
+            final ModalityType modal, final String cause) {
         super(mainFrame, modal);
         this.mainFrame = mainFrame;
+        this.cause = cause;
 
         setTitle("DMDirc: Restart needed");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -77,10 +92,10 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
         orderButtons(new JButton(), new JButton());
         if (LauncherComponent.isUsingLauncher()) {
             info = new TextLabel("Your client needs to be restarted to " +
-                    "finish updating.");
+                    cause + ".");
         } else {
             info = new TextLabel("Your client needs to be restarted to " +
-                    "finish updating, but as you do not seem to be using " +
+                    cause + ", but as you do not seem to be using " +
                     "the launcher you will have to restart the client " +
                     "manually, do you wish to close the client?");
         }
