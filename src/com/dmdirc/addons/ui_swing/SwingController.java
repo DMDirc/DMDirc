@@ -711,6 +711,12 @@ public final class SwingController extends Plugin implements UIController {
                 new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
                 "useOneTouchExpandable", "Use one touch expandable split panes?",
                 "Use one touch expandable arrows for collapsing/expanding the split panes"));
+       advanced.addSetting(new PreferencesSetting(PreferencesType.INTEGER, getDomain(),
+               "windowMenuItems", "Window menu item count",
+               "Number of items to show in the window menu"));
+       advanced.addSetting(new PreferencesSetting(PreferencesType.INTEGER, getDomain(),
+               "windowMenuScrollInterval", "Window menu scroll interval",
+               "Number of milliseconds to pause when autoscrolling in the window menu"));
 
         return advanced;
     }
