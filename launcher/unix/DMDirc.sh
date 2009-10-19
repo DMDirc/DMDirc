@@ -23,7 +23,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="12"
+LAUNCHERVERSION="13"
+LAUNCHERINFO="unix-${LAUNCHERVERSION}"
 
 params=""
 
@@ -52,7 +53,7 @@ fi
 
 # Store params so that we can pass them back to the client
 for param in "$@"; do
-	if [ "${param}" = "--noprofile" ]; then 
+	if [ "${param}" = "--noprofile" -o "${param}" = "--updateonly" ]; then 
 		continue;
 	fi;
 	PSN=`echo "${param}" | grep "^-psn_"`
@@ -153,6 +154,16 @@ else
 	}
 fi;
 
+# Check to see if we can bspatch things
+BSPATCH="./bspatch"
+if [ ! -e "${BSPATCH}" ]; then
+	BSPATCH=`which bspatch`
+fi;
+
+if [ "${BSPATCH}" != "" ];
+	# LAUNCHERINFO=${LAUNCHERINFO}"|bsdiff"
+fi;
+
 # Check for some CLI params
 if [ "${ISOSX}" = "1" ]; then
 	profiledir="${HOME}/Library/Preferences/DMDirc"
@@ -161,6 +172,7 @@ else
 fi;
 
 USEPROFILE=1;
+UPDATEONLY=0;
 while test -n "$1"; do
 	case "$1" in
 		--directory|-d)
@@ -169,6 +181,9 @@ while test -n "$1"; do
 			;;
 		--noprofile)
 			USEPROFILE=0;
+			;;
+		--updateonly)
+			UPDATEONLY=1;
 			;;
 	esac
 	shift
@@ -338,47 +353,102 @@ if [ -e "${launcherUpdater}" ]; then
 fi;
 
 echo -n "Checking for client updates in ${profiledir} - ";
-if [ -e "${profiledir}/.DMDirc.jar" ]; then
+
+UPDATESOURCE="${profiledir}/.DMDirc.jar"
+BSDIFF="0"
+if [ -e "${profiledir}/.DMDirc.jar.bsdiff" -a "${BSPATCH}" != "" ]; then
+	UPDATESOURCE="${profiledir}/.DMDirc.jar.bsdiff"
+	BSDIFF="1"
+fi;
+
+if [ -e "${UPDATESOURCE}" ]; then
+	UPDATEOK="0"
+	TRYROOT="1"
 	echo "Found!";
 	echo "Attempting to update..";
-	mv -fv ${profiledir}/.DMDirc.jar ${jar}
-	if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+	if [ "${BSDIFF}" = "1" ]; then
+		cp ${jar} ${jar}.bak
+		${BSPATCH} ${jar}.bak ${jar} ${UPDATESOURCE}
+		if [ "${?}" = "0" ]; then
+			FILEINFO=`which ${jar} | egrep "data$`
+			if [ "${FILEINFO}" = "" ]; then
+				UPDATEOK="1"
+			else
+				# Let the user know the update failed.
+				echo "1" >> "${profiledir}/.updatefailed";
+				chmod 777 "${profiledir}/.updatefailed";
+				# Replace the attempted update with the old jar
+				cp ${jar}.bak ${jar}
+				# Don't bother trying as root.
+				TRYROOT="0"
+			fi;
+		fi;
+	else
+		mv -fv ${UPDATESOURCE} ${jar}
+		if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+			UPDATEOK="1"
+		fi;
+	fi;
+	
+	if [ "${UPDATEOK}" = "1" ]; then
 		echo "Update successful."
 		messagedialog "Client Update" "Client Update successful"
+		if [ "${UPDATEONLY}" = "1" ]; then
+			exit 0;
+		fi;
 	else
 		if [ "${UID}" = "" ]; then
 			UID=`id -u`;
 		fi
-		if [ "0" != "${UID}" ]; then
+		if [ "0" != "${UID}" -a "1" = "${TRYROOT}" ]; then
 			if [ "${ISOSX}" = "1" ]; then
 				messagedialog "DMDirc" "The DMDirc Client Updater was unable to modify the client installation, trying again with administrator access"
 				if [ $? -eq 0 ]; then
 					echo "Password dialog on display"
-					osascript -e "do shell script \"mv -fv \\\"${profiledir}/.DMDirc.jar\\\" \\\"${jar}\\\"\" with administrator privileges"
+					# osascript -e "do shell script \"mv -fv \\\"${profiledir}/.DMDirc.jar\\\" \\\"${jar}\\\"\" with administrator privileges"
+					osascript -e "do shell script \"sh ${0} ${params} --updateonly\" with administrator privileges"
 				fi;
 			else
 				if [ "" != "${ISKDE}" -a "" != "${KSUDO}" -a "" != "${DISPLAY}" ]; then
 					echo "Password dialog on ${DISPLAY}"
-					${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					# ${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} --updateonly
 				elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
 					echo "Password dialog on ${DISPLAY}"
-					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					# ${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} --updateonly
 				else
 					echo "DMDirc Client Updater requires root access to modify the global installation"
-					sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					# sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+					sudo sh ${0} ${params} --updateonly
 				fi;
 			fi;
-		fi
-		if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+		elif [ "${UPDATEONLY}" = "1" ]; then
+			# Update failed as root, so give up.
+			echo "1" >> "${profiledir}/.updatefailed";
+			chmod 777 "${profiledir}/.updatefailed";
+			exit 1;
+		fi;
+		
+		if [ ! -e "${profiledir}/.updatefailed" ]; then
 			echo "Update successful."
 			messagedialog "Client Update" "Client Update successful"
 		else
+			rm -Rf ${profiledir}/.updatefailed;
 			echo "Update failed."
 			errordialog "Client Update" "Client Update failed, using old version"
+			if [ "${BSDIFF}" = "1" ]; then
+				# Run the client without bspatch support
+				LAUNCHERINFO=`echo ${LAUNCHERINFO} | sed 's/|bsdiff//'`
+			fi;
 		fi;
 	fi
 else
 	echo "Not found.";
+fi;
+
+if [ "${UPDATEONLY}" = "1" ]; then
+	exit 0;
 fi;
 
 relaunch() {
@@ -486,7 +556,7 @@ if [ -e "${jar}" ]; then
 		#APPLEOPTS="${APPLEOPTS} -Dapple.awt.showGrowBox=true"
 		#APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
 	fi;
-	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l unix-${LAUNCHERVERSION} ${params}
+	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l ${LAUNCHERINFO} ${params}
 	EXITCODE=${?}
 	if [ ${EXITCODE} -eq 42 ]; then
 		# The client says we need to up update, rerun ourself before exiting.
