@@ -75,57 +75,12 @@ if [ "${PIDOF}" = "" ]; then
 	fi;
 fi;
 
-## Helper Functions
-if [ "${PIDOF}" != "" ]; then
-	ISKDE=`${PIDOF} -x -s kdeinit`
-	ISGNOME=`${PIDOF} -x -s gnome-panel`
+if [ -e "functions.sh" ]; then
+	. functions.sh
 else
-	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
-	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
+	echo "Unable to find functions.sh, unable to continue."
+	exit 1;
 fi;
-KDIALOG=`which kdialog`
-ZENITY=`which zenity`
-
-errordialog() {
-	# Send message to console.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "Error: ${1}"
-	echo "-----------------------------------------------------------------------"
-	echo "${2}"
-	echo "-----------------------------------------------------------------------"
-
-	# Now try to use the GUI Dialogs.
-	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "${1}" --error "${1}\n\n${2}"
-	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --error --title "${1}" --text "${1}\n\n${2}"
-	fi
-}
-
-questiondialog() {
-	# Send question to console.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "Question: ${1}"
-	echo "-----------------------------------------------------------------------"
-	echo "${2}"
-	echo "-----------------------------------------------------------------------"
-
-	# Now try to use the GUI Dialogs.
-	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "${1}" --yesno "${2}"
-	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --question --title "${1}" --text "${2}"
-	else
-		echo "Unable to ask question, assuming no."
-		return 1;
-	fi
-}
 
 # Location of .run stub end
 ENDLINE=`grep ${GREPOPTS} "^###END STUB###$" $0`
