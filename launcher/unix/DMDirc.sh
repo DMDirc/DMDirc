@@ -191,6 +191,9 @@ while test -n "$1"; do
 		--updateonly)
 			UPDATEONLY=1;
 			;;
+		-p|--portable)
+			profiledir=${PWD};
+			;;
 	esac
 	shift
 done
