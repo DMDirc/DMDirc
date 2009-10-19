@@ -71,6 +71,7 @@ done;
 if [ -e "functions.sh" ]; then
 	. functions.sh
 else
+	# TODO: Remove this and depend on functions.sh...
 	echo "Unable to find functions.sh, using old functions"
 	
 	# Check for OS X
@@ -160,8 +161,13 @@ if [ ! -e "${BSPATCH}" ]; then
 	BSPATCH=`which bspatch`
 fi;
 
+# This launcher supports zip files.
+# LAUNCHERINFO=${LAUNCHERINFO}"|zip"
+
 if [ "${BSPATCH}" != "" ];
-	# LAUNCHERINFO=${LAUNCHERINFO}"|bsdiff"
+	# TODO: Website should (if available) send bsdiff patches
+	# to clients with bsdiff compatible launchers
+	LAUNCHERINFO=${LAUNCHERINFO}",bsdiff"
 fi;
 
 # Check for some CLI params
@@ -213,8 +219,6 @@ getConfigOption() {
 	fi;
 }
 
-# LOOKANDFEEL=`getConfigOption "ui" "lookandfeel" | tail -n 1`
-
 if [ "${ISOSX}" = "1" ]; then
 	jarDir=`dirname $0`/../Resources/Java/
 	jar=${jarDir}DMDirc.jar
@@ -241,6 +245,11 @@ else
 	echo "Running on unknown unix variation: ${KERNEL}."
 fi;
 
+if [ -e "${profiledir}/.launcher.zip" ]; then
+	# Unzip!
+	unzip ${profiledir}/.launcher.zip -d ${profiledir}/
+fi;
+
 echo -n "Checking for launcher updates in ${profiledir} - ";
 if [ -e "${profiledir}/.launcher.sh.ignore" ]; then
 	rm -Rf "${profiledir}/.launcher.sh.ignore"
@@ -254,6 +263,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 		if [ -e "functions.sh" ]; then
 			. functions.sh
 		else
+			# TODO: Remove this and depend on functions.sh...
 			echo "Unable to find functions.sh, using old functions"
 			errordialog() {
 				# Send message to console.
