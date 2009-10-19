@@ -337,6 +337,9 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 					elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
 						echo "Password dialog on ${DISPLAY}"
 						${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.launcher.sh" "${0}"
+					elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then	
+						sudo -k
+						${ZENITY} --entry --title="DMDirc" --text="DMDirc Client Updater requires root access to modify the global installation, please enter your password to continue." --entry-text="" --hide-text | sudo -S -- mv -fv "${profiledir}/.launcher.sh" "${0}"
 					else
 						echo "DMDirc Client Updater requires root access to modify the global installation"
 						sudo mv -fv "${profiledir}/.launcher.sh" "${0}"
@@ -430,6 +433,9 @@ if [ -e "${UPDATESOURCE}" ]; then
 					echo "Password dialog on ${DISPLAY}"
 					# ${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
 					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} --updateonly
+				elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then	
+					sudo -k
+					${ZENITY} --entry --title="DMDirc" --text="DMDirc Client Updater requires root access to modify the global installation, please enter your password to continue." --entry-text="" --hide-text | sudo -S -- sh ${0} ${params} --updateonly
 				else
 					echo "DMDirc Client Updater requires root access to modify the global installation"
 					# sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
