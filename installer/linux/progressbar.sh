@@ -51,15 +51,37 @@ if [ "${PIDOF}" = "" ]; then
 fi;
 
 ## Helper Functions
-if [ "${PIDOF}" != "" ]; then
-	ISKDE=`${PIDOF} -x -s kdeinit`
+if [ -n "${PIDOF}" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit kdeinit4`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
-	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
+	ISKDE=`pgrep kdeinit`
+	ISGNOME=`pgrep gnome-panel`
 fi;
+
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
+USEKDIALOG="0";
+QDBUS=`which qdbus`
+DBUSSEND=`which dbus-send`
+DCOP=`which dcop`
+KDETYPE=""
+if [ "${ISKDE}" != "" -o "${ZENITY}" = "" ]; then
+	# Check to see if we have the dcop or dbus binaries needed..
+	USEDCOP=`kdialog --help | grep -i dcop`
+	if [ "${USEDCOP}" != "" -a "${DCOP}" != "" ]; then
+		KDETYPE="dcop"
+		USEKDIALOG="1";
+	else if [ "${USEDCOP}" = "" -a "${QDBUS}" != "" ]; then
+		KDETYPE="qdbus"
+		USEKDIALOG="1";
+	else if [ "${USEDCOP}" = "" -a "${DBUSSEND}" != "" ]; then
+		KDETYPE="dbussend"
+		USEKDIALOG="1";
+	fi;
+fi;
+
+
 CAPTION=${1}
 FILESIZE=${2}
 WGETPID=${3}
@@ -74,9 +96,17 @@ readprogress() {
 	input=""
 	while [ ${CONTINUE} -eq "1" -a -e ${PIPE} ]; do
 		if [ "${TYPE}" = "KDE" ]; then
-			if [ `dcop ${progresswindow} wasCancelled` = "true" ]; then
-				break;
+			wasCancelled="false"
+			if [ "${KDETYPE}" = "dcop" ]; then
+				wasCancelled=`${DCOP} ${progresswindow} wasCancelled`;
+			elif [ "${KDETYPE}" = "qdbus" ]; then
+				wasCancelled=` ${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled`;
+			elif [ "${KDETYPE}" = "dbussend" ]; then
+				wasCancelled=` ${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled | grep boolean | awk '{print $2}'`;
 			fi
+			if [ "${wasCancelled}" = "true" ]; then
+				break;
+			fi;
 		fi;
 		input=`cat "${PIPE}" | tail ${TAILOPTS}1`
 		if [ "${input}" = "quit" ]; then
@@ -90,8 +120,18 @@ readprogress() {
 				val=0
 			fi;
 			if [ "${TYPE}" = "KDE" ]; then
-				dcop ${progresswindow} setProgress ${val}
-				if [ ${?} -ne 0 ]; then
+				if [ "${KDETYPE}" = "dcop" ]; then
+					${DCOP} ${progresswindow} setProgress ${val}
+					returnVal=${?}
+				elif [ "${KDETYPE}" = "qdbus" ]; then
+					${QDBUS} ${progresswindow} org.freedesktop.DBus.Properties.Set org.kde.kdialog.ProgressDialog value 20
+					returnVal=${?}
+				elif [ "${KDETYPE}" = "dbussend" ]; then
+					${DBUSSEND} --print-reply --dest=${progresswindow} org.freedesktop.DBus.Properties.Set string:'org.kde.kdialog.ProgressDialog' string:'value' variant:int32:${val} > /dev/null
+					returnVal=${?}
+				fi;
+				
+				if [ ${returnVal} -ne 0 ]; then
 					break;
 				fi;
 			elif [ "${TYPE}" = "GNOME" ]; then
@@ -151,22 +191,34 @@ closeProgress() {
 }
 trap 'closeProgress' INT TERM EXIT
 
-if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+# if kdialog exists, and we have a display, and we are not running gnome,
+# and either we are running kde or zenity doesn't exist..
+if [ "" != "${KDIALOG}" -a "" != "${DISPLAY}" -a "" = "${ISGNOME}" -a "${USEKDIALOG}" = "1" ]; then
 	echo "Progress dialog on Display: ${DISPLAY}"
 	progresswindow=`${KDIALOG} --title "DMDirc: ${CAPTION}" --progressbar "${CAPTION}" 100`
-	dcop ${progresswindow} setAutoClose true
-	dcop ${progresswindow} showCancelButton true
+	if [ "${KDETYPE}" = "dcop" ]; then
+		${DCOP} ${progresswindow} setAutoClose true
+		${DCOP} ${progresswindow} showCancelButton true
+	elif [ "${KDETYPE}" = "qdbus" ]; then
+		${QDBUS} ${progresswindow} org.freedesktop.DBus.Properties.Set org.kde.kdialog.ProgressDialog autoClose true
+		${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton true
+	elif [ "${KDETYPE}" = "dbussend" ]; then
+		${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton boolean:true >/dev/null
+		${DBUSSEND} --print-reply --dest=${progresswindow} org.freedesktop.DBus.Properties.Set string:'org.kde.kdialog.ProgressDialog' string:'autoClose' variant:boolean:true > /dev/null
+	fi;
 	TYPE="KDE"
 	readprogress
 	CONTINUE="0"
 	echo "Progress Bar Complete"
-elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+	# Else, if zenity exists and we have a display
 	echo "Progress dialog on Display: ${DISPLAY}"
 	TYPE="GNOME"
 	readprogress | ${ZENITY} --progress --auto-close --auto-kill --title "DMDirc: ${CAPTION}" --text "${CAPTION}"
 	CONTINUE="0"
 	echo "Progress Bar Complete"
 else
+	# Else, basic command-line progress
 	echo "Progress For: ${CAPTION}"
 	echo "-> 0%"
 	readprogress
