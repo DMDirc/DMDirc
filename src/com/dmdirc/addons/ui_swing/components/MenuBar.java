@@ -93,7 +93,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         initServerMenu();
         initChannelMenu();
         initSettingsMenu();
-        add(new WindowMenuFrameManager());
+        add(new WindowMenuFrameManager(controller));
         initHelpMenu();
         add(Box.createHorizontalGlue(), "growx, pushx");
         add(new MDIBar(mainFrame));
