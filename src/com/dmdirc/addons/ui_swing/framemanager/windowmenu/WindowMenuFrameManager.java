@@ -19,10 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
@@ -31,6 +33,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.interfaces.FrameListener;
 import com.dmdirc.addons.ui_swing.components.MenuScroller;
+import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +52,8 @@ import javax.swing.event.MenuListener;
  * Manages the window menu window list.
  */
 public final class WindowMenuFrameManager extends JMenu implements
-        FrameListener, ActionListener, SelectionListener, MenuListener {
+        FrameListener, ActionListener, SelectionListener, MenuListener,
+        ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -65,19 +69,26 @@ public final class WindowMenuFrameManager extends JMenu implements
     /** Non frame container menu count. */
     private final int itemCount;
     /** Menu items for toggling, closing and minimising. */
-    private final JMenuItem toggleStateMenuItem,  closeMenuItem,  minimiseMenuItem;
+    private final JMenuItem toggleStateMenuItem, closeMenuItem, minimiseMenuItem;
     /** Seperator. */
     private final JSeparator separator;
     /** Active window. */
     private Window activeWindow;
     /** Enabled menu items? */
     private final AtomicBoolean enabledMenuItems = new AtomicBoolean(false);
+    /** Swing controller. */
+    private final SwingController controller;
+    /** Menu scroller. */
+    private MenuScroller scroller;
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
+     *
+     * @param controller Swing controller
      */
-    public WindowMenuFrameManager() {
+    public WindowMenuFrameManager(final SwingController controller) {
         super();
+        this.controller = controller;
 
         menuItemMap =
                 new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
@@ -110,14 +121,24 @@ public final class WindowMenuFrameManager extends JMenu implements
         closeMenuItem.setActionCommand("Close");
         closeMenuItem.addActionListener(this);
         add(closeMenuItem);
-        
+
         separator = new JPopupMenu.Separator();
         add(separator);
 
         itemCount = getMenuComponentCount();
         checkToggleState();
 
-        new MenuScroller(this, 20, 250, 4, 0).setShowSeperators(false);
+        scroller = new MenuScroller(this,
+                IdentityManager.getGlobalConfig().getOptionInt(
+                controller.getDomain(), "windowMenuItems"),
+                IdentityManager.getGlobalConfig().getOptionInt(
+                controller.getDomain(), "windowMenuScrollInterval"), 4, 0);
+        scroller.setShowSeperators(false);
+
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(), "windowMenuItems", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(), "windowMenuScrollInterval", this);
     }
 
     /**
@@ -346,5 +367,25 @@ public final class WindowMenuFrameManager extends JMenu implements
     @Override
     public void menuCanceled(final MenuEvent e) {
         //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                scroller.dispose();
+                scroller = new MenuScroller(WindowMenuFrameManager.this,
+                        IdentityManager.getGlobalConfig().getOptionInt(
+                        controller.getDomain(), "windowMenuItems"),
+                        IdentityManager.getGlobalConfig().getOptionInt(
+                        controller.getDomain(), "windowMenuScrollInterval"), 4,
+                        0);
+                scroller.setShowSeperators(false);
+            }
+        });
     }
 }
