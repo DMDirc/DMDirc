@@ -281,7 +281,7 @@ fi;
 
 FILES="DMDirc.jar";
 echo "Compressing files.."
-for FILE in "getjre.sh" "installjre.sh" "progressbar.sh"; do
+for FILE in "getjre.sh" "installjre.sh" "progressbar.sh" "functions.sh"; do
 	if [ -e "${FILE}" ]; then
 		FILES="${FILES} ${FILE}"
 	fi

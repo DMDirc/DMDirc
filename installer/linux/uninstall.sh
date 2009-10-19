@@ -20,82 +20,14 @@ if [ -z "${PIDOF}" ]; then
 	fi;
 fi;
 
-## Helper Functions
-if [ -n "${PIDOF}" ]; then
-	ISKDE=`${PIDOF} -x -s kdeinit`
-	ISGNOME=`${PIDOF} -x -s gnome-panel`
-else
-	ISKDE=`pgrep kdeinit`
-	ISGNOME=`pgrep gnome-panel`
-fi;
-
-KDIALOG=`which kdialog`
-ZENITY=`which zenity`
-DIALOG=`which dialog`
 JAVA=`which java`
 
-messagedialog() {
-	# Send message to console.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "DMDirc: ${1}"
-	echo "-----------------------------------------------------------------------"
-	echo "${2}"
-	echo "-----------------------------------------------------------------------"
-
-	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: ${1}" --msgbox "${2}"
-	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --info --title "DMDirc: ${1}" --text "${2}"
-	elif [ "" != "${DIALOG}" ]; then
-		${DIALOG} --title "DMDirc: ${1}" --msgbox "${2}" 8 40
-	fi
-}
-
-questiondialog() {
-	# Send question to console.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "DMDirc: ${1}"
-	echo "-----------------------------------------------------------------------"
-	echo "${2}"
-	echo "-----------------------------------------------------------------------"
-
-	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: ${1}" --yesno "${2}"
-	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --question --title "DMDirc: ${1}" --text "${2}"
-	elif [ "" != "${DIALOG}" ]; then
-		${DIALOG} --title "DMDirc: ${1}" --yesno "${2}" 8 40
-	else
-		echo "Unable to show Dialog for question, assuming no"
-		return 1
-	fi
-}
-
-errordialog() {
-	# Send error to console.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "[Error] DMDirc: ${1}"
-	echo "-----------------------------------------------------------------------"
-	echo "${2}"
-	echo "-----------------------------------------------------------------------"
-
-	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: ${1}" --error "${2}"
-	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --error --title "DMDirc: ${1}" --text "${2}"
-	elif [ "" != "${DIALOG}" ]; then
-		${DIALOG} --title "[Error] DMDirc: ${1}" --msgbox "${2}" 8 40
-	fi
-}
+if [ -e "functions.sh" ]; then
+	. functions.sh
+else
+	echo "Unable to find functions.sh, unable to continue."
+	exit 1;
+fi;
 
 if [ ${INSTALLED_AS_ROOT} -eq 1 ]; then
 	USER=`whoami`
