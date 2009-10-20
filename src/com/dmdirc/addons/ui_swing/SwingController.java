@@ -626,7 +626,11 @@ public final class SwingController extends Plugin implements UIController {
     public void domainUpdated() {
         final Identity defaults = IdentityManager.getAddonIdentity();
 
-        defaults.setOption("ui", "textPaneFontName", "Dialog");
+
+        defaults.setOption("ui", "textPaneFontName",
+                UIManager.getFont("TextPane.font").getFamily());
+        defaults.setOption("ui", "textPaneFontSize",
+                UIManager.getFont("TextPane.font").getSize());
     }
 
     /** {@inheritDoc} */
@@ -680,6 +684,9 @@ public final class SwingController extends Plugin implements UIController {
         general.addSetting(new PreferencesSetting(PreferencesType.FONT,
                 "ui", "textPaneFontName", "Textpane font",
                 "Font for the textpane"));
+        general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                "ui", "textPaneFontSize", "Textpane font size",
+                "Font size for the textpane"));
 
         general.addSubCategory(createNicklistCategory());
         general.addSubCategory(createTreeViewCategory());
