@@ -268,7 +268,28 @@ fi
 
 echo "Creating .run file"
 echo "Adding stub.."
-cat installerstub.sh > ${RUNNAME}
+
+grep -na "" /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	GREPOPTS="-n"
+else
+	GREPOPTS="-na"
+fi;
+# Solaris also has a crappy version of tail!
+tail -n +1 /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	TAILOPTS="+"
+else
+	TAILOPTS="-n +"
+fi;
+
+FUNCTIONSLINE=`grep ${GREPOPTS} "^###FUNCTIONS_FILE###$" installerstub.sh`
+FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
+
+head -n ${FUNCTIONSLINE} installerstub.sh  > ${RUNNAME}
+cat functions.sh >> ${RUNNAME}
+echo "" >> ${RUNNAME}
+tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) installerstub.sh >> ${RUNNAME}
 
 # Add release info.
 if [ $isSVN -eq 1 ]; then
@@ -439,12 +460,14 @@ mv getjre.sh getjre.sh.tmp
 mv installjre.sh installjre.sh.tmp
 mv progressbar.sh progressbar.sh.tmp
 mv uninstall.sh uninstall.sh.tmp
+mv functions.sh functions.sh.tmp
 rm -f ${FILES}
 mv setup.sh.tmp setup.sh
 mv getjre.sh.tmp getjre.sh
 mv installjre.sh.tmp installjre.sh
 mv progressbar.sh.tmp progressbar.sh
 mv uninstall.sh.tmp uninstall.sh
+mv functions.sh.tmp functions.sh
 
 echo "-----------"
 echo "Done."

@@ -65,22 +65,7 @@ fi;
 
 ###ADDITIONAL_STUFF###
 
-PIDOF=`which pidof`
-if [ "${PIDOF}" = "" ]; then
-	# For some reason some distros hide pidof...
-	if [ -e /sbin/pidof ]; then
-		PIDOF=/sbin/pidof
-	elif [ -e /usr/sbin/pidof ]; then
-		PIDOF=/usr/sbin/pidof
-	fi;
-fi;
-
-if [ -e "functions.sh" ]; then
-	. functions.sh
-else
-	echo "Unable to find functions.sh, unable to continue."
-	exit 1;
-fi;
+###FUNCTIONS_FILE###
 
 # Location of .run stub end
 ENDLINE=`grep ${GREPOPTS} "^###END STUB###$" $0`
