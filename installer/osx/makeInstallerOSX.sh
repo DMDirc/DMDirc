@@ -395,6 +395,13 @@ if [ -e "${jarPath}/launcher/unix" ]; then
 	chmod a+x ${MACOSDIR}/DMDirc.sh
 fi
 
+if [ -e "${jarPath}/installer/linux" ]; then
+        cp ${jarPath}/installer/linux/functions.sh ${MACOSDIR}/functions.sh
+else
+	echo "Unable to find launcher functions, exiting."
+	exit 1;
+fi
+
 echo "Packaging.."
 # Create RUNNAME
 # Create temp dir
