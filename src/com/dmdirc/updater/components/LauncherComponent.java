@@ -24,6 +24,7 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.OptionsComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
@@ -34,13 +35,16 @@ import java.io.File;
  *
  * @author chris
  */
-public class LauncherComponent implements UpdateComponent {
+public class LauncherComponent implements UpdateComponent, OptionsComponent {
 
     /** The platform of our current launcher. */
     private static String platform = "";
 
     /** The version of our current launcher. */
     private static int version = -1;
+
+    /** The options of our current launcher. */
+    private static String[] options = new String[]{};
 
     /**
      * Parses the specified launcher information.
@@ -49,6 +53,7 @@ public class LauncherComponent implements UpdateComponent {
      */
     public static void setLauncherInfo(final String info) {
         final int hpos = info.indexOf('-');
+        final int cpos = info.indexOf(',');
 
         if (hpos == -1) {
             return;
@@ -56,7 +61,12 @@ public class LauncherComponent implements UpdateComponent {
 
         try {
             platform = info.substring(0, hpos);
-            version = Integer.parseInt(info.substring(hpos + 1));
+            if (cpos == -1) {
+                version = Integer.parseInt(info.substring(hpos + 1));
+            } else {
+                version = Integer.parseInt(info.substring(hpos + 1), cpos);
+                options = info.substring(cpos + 1).split(",");
+            }
         } catch (NumberFormatException ex) {
             return;
         }
@@ -95,6 +105,12 @@ public class LauncherComponent implements UpdateComponent {
     @Override
     public Version getVersion() {
         return new Version(version);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String[] getOptions() {
+        return options;
     }
 
     /** {@inheritDoc} */

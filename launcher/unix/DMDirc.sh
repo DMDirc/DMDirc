@@ -164,10 +164,10 @@ fi;
 # This launcher supports zip files.
 LAUNCHERINFO=${LAUNCHERINFO}",zip"
 
-if [ "${BSPATCH}" != "" ];
+if [ "${BSPATCH}" != "" ]; then
 	# TODO: Website should (if available) send bsdiff patches
 	# to clients with bsdiff compatible launchers
-	LAUNCHERINFO=${LAUNCHERINFO}",bsdiff"
+	LAUNCHERINFO=${LAUNCHERINFO}",bsdiff";
 fi;
 
 # Check for some CLI params
