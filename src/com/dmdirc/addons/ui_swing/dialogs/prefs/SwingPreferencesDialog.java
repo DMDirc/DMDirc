@@ -294,6 +294,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 return;
             }
 
+            if (node == selected) {
+                return;
+            }
+
             if (selected != null) {
                 selected.fireCategoryDeselected();
             }
