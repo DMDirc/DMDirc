@@ -101,9 +101,6 @@ public class PrefsCategoryLoader extends SwingWorker<JPanel, Object> {
     /** {@inheritDoc} */
     @Override
     protected void done() {
-        if (isCancelled()) {
-            return;
-        }
         categoryPanel.categoryLoaded(this, category);
     }
 
