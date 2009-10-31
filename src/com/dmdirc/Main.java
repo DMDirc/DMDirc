@@ -118,6 +118,18 @@ public final class Main {
         }
 
         loadUI(pm, IdentityManager.getGlobalConfig());
+        if (getUI() == null) {
+            // Try to extract the UIs again incase they changed between versions
+            // and the user didn't update the UI plugin.
+            extractCorePlugins("ui_");
+
+            System.out.println("DMDirc has updated the UI plugins and needs to restart.");
+
+            if (!GraphicsEnvironment.isHeadless()) {
+                new NoUIDialog(NoUIDialog.TITLE2, NoUIDialog.BODY2).displayBlocking();
+            }
+            System.exit(42);
+        }
 
         doFirstRun();
 
@@ -191,7 +203,7 @@ public final class Main {
 
         if (!GraphicsEnvironment.isHeadless()) {
             // Show a dialog informing the user that no UI was found.
-            NoUIDialog.displayBlocking();
+            new NoUIDialog().displayBlocking();
             System.exit(2);
         }
 
