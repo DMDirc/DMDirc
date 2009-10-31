@@ -118,6 +118,39 @@ public final class Main {
         }
 
         loadUI(pm, IdentityManager.getGlobalConfig());
+        if (getUI() == null) {
+            // Check to see if we have already tried this
+            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+                System.out.println("DMDirc is unable to load any compatible UI plugins.");
+                if (!GraphicsEnvironment.isHeadless()) {
+                    new NoUIDialog(NoUIDialog.TITLE2, NoUIDialog.BODY3).displayBlocking();
+                }
+                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
+                System.exit(1);
+            } else {
+                // Try to extract the UIs again incase they changed between versions
+                // and the user didn't update the UI plugin.
+                extractCorePlugins("ui_");
+
+                System.out.println("DMDirc has updated the UI plugins and needs to restart.");
+
+                if (!GraphicsEnvironment.isHeadless()) {
+                    new NoUIDialog(NoUIDialog.TITLE2, NoUIDialog.BODY2).displayBlocking();
+                }
+
+                // Allow the rebooted DMDirc to know that we have attempted restarting.
+                IdentityManager.getConfigIdentity().setOption("debug", "uiFixAttempted", "true");
+                // Force the UI to swing to prevent problematic 3rd party UIs.
+                IdentityManager.getConfigIdentity().setOption("general", "ui", "swing");
+                // Tell the launcher to restart!
+                System.exit(42);
+            }
+        } else {
+            // The fix worked!
+            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            }
+        }
 
         doFirstRun();
 
@@ -191,7 +224,7 @@ public final class Main {
 
         if (!GraphicsEnvironment.isHeadless()) {
             // Show a dialog informing the user that no UI was found.
-            NoUIDialog.displayBlocking();
+            new NoUIDialog().displayBlocking();
             System.exit(2);
         }
 

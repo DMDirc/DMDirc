@@ -52,18 +52,44 @@ public class NoUIDialog extends JDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = -528603916540455178L;
+    private static final long serialVersionUID = -528603916540455179L;
     /** Dialog heading text. */
-    private static final String TITLE = "<h1>No UIs Found</h1>";
+    public static final String TITLE = "No UIs Found";
     /** Dialog body text. */
-    private static final String BODY = "DMDirc cannot find any UI plugins, " +
+    public static final String BODY = "DMDirc cannot find any UI plugins, " +
             "which are required for you to use DMDirc.  You can either " +
             "download a UI plugin or extract one from the jar. DMDirc will " +
             "now exit";
 
-    /** Private constructor to prevent external instantiation. */
-    private NoUIDialog() {
-        super((JFrame) null, "DMDirc: No UIs Found");
+    /** Alternative Dialog heading text. */
+    public static final String TITLE2 = "No compatible UIs Found";
+    /** Alternative Dialog body text. */
+    public static final String BODY2 = "DMDirc did not find any compatible UI plugins, " +
+            "which are required for you to use DMDirc. The bundled UI plugins " +
+            "have automatically been extracted from the jar, and your UI has been " +
+            "reset to the default swing UI. DMDirc will now attempt to restart. " +
+            "If you are not using the launcher you will need to restart DMDirc " +
+            "manually.";
+
+    /** Another alternative Dialog body text! */
+    public static final String BODY3 = "DMDirc did not find any compatible UI plugins, " +
+            "which are required for you to use DMDirc.  The bundled UI plugins " +
+            "were automatically extracted from the jar, but this did not fix " +
+            "the problem. DMDirc is unable to continue and will now exit.";
+
+    /** Create a new NoUIDialog */
+    public NoUIDialog() {
+        this(TITLE, BODY);
+    }
+
+    /**
+     * Create a new NoUIDialog
+     *
+     * @param title Title of dialog
+     * @param body Body of dialog
+     */
+    public NoUIDialog(final String title, final String body) {
+        super((JFrame) null, "DMDirc: "+title);
         setResizable(false);
         setLayout(new BorderLayout(5, 5));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -95,27 +121,27 @@ public class NoUIDialog extends JDialog {
                 "font-size: 1.5em; padding: 0; margin: 0}");
         doc.getStyleSheet().addRule("p { text-align: justify; }");
 
-        textArea.setText(TITLE + "<p>" + BODY + "</p>");
+        textArea.setText("<h1>" + title + "</h1><p>" + body + "</p>");
 
         add(textArea, BorderLayout.CENTER);
         add(button, BorderLayout.SOUTH);
 
-        setPreferredSize(new Dimension(250, 200));
+        setPreferredSize(new Dimension(250, 255));
+
     }
 
     /**
      * Static method to instantiate and display the dialog.
      */
-    public static void display() {
+    public void display() {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final NoUIDialog me = new NoUIDialog();
-                me.pack();
-                CoreUIUtils.centreWindow(me);
-                me.setVisible(true);
+                pack();
+                CoreUIUtils.centreWindow(NoUIDialog.this);
+                setVisible(true);
             }
         });
     }
@@ -124,15 +150,14 @@ public class NoUIDialog extends JDialog {
      * Static method to instantiate and display the dialog, blocking until it
      * is closed.
      */
-    public static void displayBlocking() {
+    public void displayBlocking() {
         final Semaphore semaphore = new Semaphore(0);
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final NoUIDialog me = new NoUIDialog();
-                me.addWindowListener(new WindowAdapter() {
+                addWindowListener(new WindowAdapter() {
 
                     @Override
                     public void windowClosed(final WindowEvent e) {
@@ -140,9 +165,9 @@ public class NoUIDialog extends JDialog {
                     }
 
                 });
-                me.pack();
-                CoreUIUtils.centreWindow(me);
-                me.setVisible(true);
+                pack();
+                CoreUIUtils.centreWindow(NoUIDialog.this);
+                setVisible(true);
             }
         });
         semaphore.acquireUninterruptibly();
