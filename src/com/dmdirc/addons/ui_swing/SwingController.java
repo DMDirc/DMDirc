@@ -111,7 +111,20 @@ public final class SwingController extends Plugin implements UIController {
 
     /** Instantiates a new SwingController. */
     public SwingController() {
+        setAntiAlias();
         windows = new ArrayList<java.awt.Window>();
+    }
+
+    /**
+     * Make swing not use Anti Aliasing if the user doesn't want it.
+     */
+    public void setAntiAlias() {
+        // For this to work it *HAS* to be before anything else UI related.
+        final boolean aaSetting = IdentityManager.getGlobalConfig().
+                getOptionBool("ui", "antialias");
+        System.setProperty("awt.useSystemAAFontSettings",
+                Boolean.toString(aaSetting));
+        System.setProperty("swing.aatext", Boolean.toString(aaSetting));
     }
 
     /**
@@ -376,13 +389,6 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public void initUISettings() {
-        // For this to work it *HAS* to be before anything else UI related.
-        final boolean aaSetting = IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "antialias");
-        System.setProperty("awt.useSystemAAFontSettings",
-                Boolean.toString(aaSetting));
-        System.setProperty("swing.aatext", Boolean.toString(aaSetting));
-
         // This will do nothing on non OS X Systems
         if (Apple.isApple()) {
             final Apple apple = Apple.getApple();
