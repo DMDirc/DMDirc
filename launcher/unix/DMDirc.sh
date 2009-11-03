@@ -69,7 +69,7 @@ for param in "$@"; do
 done;
 
 if [ -e "functions.sh" ]; then
-	. functions.sh
+	. `dirname $0`/functions.sh
 else
 	# TODO: Remove this and depend on functions.sh...
 	echo "Unable to find functions.sh, using old functions"
@@ -264,7 +264,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 	cat <<EOF> ${launcherUpdater}
 		cd `dirname $0`
 		if [ -e "functions.sh" ]; then
-			. functions.sh
+			. `dirname $0`/functions.sh
 		else
 			# TODO: Remove this and depend on functions.sh...
 			echo "Unable to find functions.sh, using old functions"

@@ -23,7 +23,7 @@ fi;
 JAVA=`which java`
 
 if [ -e "functions.sh" ]; then
-	. functions.sh
+	. `dirname $0`/functions.sh
 else
 	echo "Unable to find functions.sh, unable to continue."
 	exit 1;
