@@ -277,11 +277,10 @@ public final class IdentityManager {
             config.setOption("identity", "name", "Global config");
             addIdentity(config);
         } catch (InvalidIdentityFileException ex) {
-            // This shouldn't happen as we're forcing it to global
-            Logger.appError(ErrorLevel.HIGH, "Unable to load global config", ex);
+            Logger.appError(ErrorLevel.FATAL, "Unable to load global config", ex);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading file: "
-                    + ex.getMessage());
+            Logger.userError(ErrorLevel.FATAL, "I/O error when loading global config: "
+                    + ex.getMessage(), ex);
         }
     }
     
