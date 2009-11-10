@@ -34,6 +34,7 @@ import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.util.ConfigFile;
 
+import java.net.URI;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -51,7 +52,7 @@ public class LoggingPluginTest {
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        server = new Server("irc-test://255.255.255.255",
+        server = new Server(new URI("irc-test://255.255.255.255"),
                 IdentityManager.getProfiles().get(0));
         server.connect();
         

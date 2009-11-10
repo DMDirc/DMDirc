@@ -26,8 +26,9 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.util.InvalidAddressException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -101,10 +102,10 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void testGetServerFromFrame() throws InvalidAddressException {
-        final Server serverA = new Server("irc-test://255.255.255.255",
+    public void testGetServerFromFrame() throws URISyntaxException {
+        final Server serverA = new Server(new URI("irc-test://255.255.255.255"),
                 IdentityManager.getProfiles().get(0));
-        final Server serverB = new Server("irc-test://255.255.255.254",
+        final Server serverB = new Server(new URI("irc-test://255.255.255.254"),
                 IdentityManager.getProfiles().get(0));
         serverA.connect();
         serverB.connect();
