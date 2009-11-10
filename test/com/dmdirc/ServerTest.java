@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
 
+import java.net.URI;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,7 +38,7 @@ public class ServerTest {
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        server = new Server("irc-test://255.255.255.255",
+        server = new Server(new URI("irc-test://255.255.255.255"),
                 IdentityManager.getProfiles().get(0));
         server.connect();
     }

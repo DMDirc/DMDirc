@@ -27,8 +27,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -75,7 +75,7 @@ public class ChangeServerTest {
     }
 
     @Test
-    public void testExecuteBasic() throws InvalidAddressException {
+    public void testExecuteBasic() throws URISyntaxException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
@@ -83,11 +83,11 @@ public class ChangeServerTest {
 
         command.execute(tiw, server, false, new CommandArguments("/server foo:1234"));
 
-        verify(server).connect(eq(new IrcAddress("foo", 1234, "", false)), same(profile));
+        verify(server).connect(eq(new URI("irc://foo:1234")), same(profile));
     }
 
     @Test
-    public void testExecuteNoPort() throws InvalidAddressException {
+    public void testExecuteNoPort() throws URISyntaxException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
@@ -95,11 +95,11 @@ public class ChangeServerTest {
 
         command.execute(tiw, server, false, new CommandArguments("/server foo"));
 
-        verify(server).connect(eq(new IrcAddress("foo", 6667, "", false)), same(profile));
+        verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
     }
 
     @Test
-    public void testDeprecatedSSL() throws InvalidAddressException {
+    public void testDeprecatedSSL() throws URISyntaxException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
@@ -107,11 +107,11 @@ public class ChangeServerTest {
 
         command.execute(tiw, server, false, new CommandArguments("/server --ssl foo"));
 
-        verify(server).connect(eq(new IrcAddress("foo", 6667, "", true)), same(profile));
+        verify(server).connect(eq(new URI("ircs://foo:6667")), same(profile));
     }
 
     @Test
-    public void testExecuteComplex() throws InvalidAddressException {
+    public void testExecuteComplex() throws URISyntaxException {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
@@ -119,7 +119,7 @@ public class ChangeServerTest {
 
         command.execute(tiw, server, false, new CommandArguments("/server foo:+1234 password"));
 
-        verify(server).connect(eq(new IrcAddress("foo", 1234, "password", true)), same(profile));
+        verify(server).connect(eq(new URI("ircs://password@foo:1234")), same(profile));
     }
 
 }

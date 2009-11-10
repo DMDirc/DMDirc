@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
 
+import java.net.URI;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -42,7 +43,8 @@ public class InviteTest {
         Main.setUI(new DummyController());
         IdentityManager.load();
         
-        server = new Server("irc-test://255.255.255.255", IdentityManager.getProfiles().get(0));
+        server = new Server(new URI("irc-test://255.255.255.255"),
+                IdentityManager.getProfiles().get(0));
         server.connect();
         
         test = new Invite(server, "#channel", "nick!ident@host");
