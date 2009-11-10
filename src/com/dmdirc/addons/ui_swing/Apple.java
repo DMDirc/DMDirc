@@ -22,15 +22,13 @@
 
 package com.dmdirc.addons.ui_swing;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.util.IrcAddress;
-import com.dmdirc.util.InvalidAddressException;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -42,6 +40,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationTargetException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.UIManager;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -109,8 +109,7 @@ public final class Apple implements InvocationHandler, ActionListener {
     /** Has the CLIENT_OPENED action been called? */
     private volatile boolean clientOpened = false;
     /** Store any addresses that are opened before CLIENT_OPENED. */
-    private volatile ArrayList<IrcAddress> addresses =
-            new ArrayList<IrcAddress>();
+    private final ArrayList<URI> addresses = new ArrayList<URI>();
 
     /**
      * Get the "Apple" instance.
@@ -442,8 +441,8 @@ public final class Apple implements InvocationHandler, ActionListener {
         if (type == CoreActionType.CLIENT_OPENED) {
             synchronized (addresses) {
                 clientOpened = true;
-                for (IrcAddress addr : addresses) {
-                    addr.connect();
+                for (URI addr : addresses) {
+                    ServerManager.getServerManager().connectToAddress(addr);
                 }
                 addresses.clear();
             }
@@ -462,7 +461,7 @@ public final class Apple implements InvocationHandler, ActionListener {
         if (isApple()) {
             try {
                 synchronized (addresses) {
-                    final IrcAddress addr = new IrcAddress(url);
+                    final URI addr = new URI(url);
                     if (!clientOpened) {
                         addresses.add(addr);
                     } else {
@@ -474,10 +473,10 @@ public final class Apple implements InvocationHandler, ActionListener {
                             Thread.currentThread().setContextClassLoader(ClassLoader.
                                     getSystemClassLoader());
                         }
-                        addr.connect();
+                        ServerManager.getServerManager().connectToAddress(addr);
                     }
                 }
-            } catch (InvalidAddressException iae) {
+            } catch (URISyntaxException iae) {
             }
         }
     }

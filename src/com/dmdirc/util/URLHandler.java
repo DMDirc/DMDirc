@@ -23,6 +23,7 @@
 package com.dmdirc.util;
 
 import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -137,14 +138,9 @@ public class URLHandler {
         final String command = config.getOption("protocol", uri.getScheme());
 
         if ("DMDIRC".equals(command)) {
-            try {
-                Main.getUI().getStatusBar().setMessage("Connecting to: " +
-                        uri.toString());
-                new IrcAddress(uri.toString()).connect();
-            } catch (InvalidAddressException ex) {
-                Logger.userError(ErrorLevel.LOW, "Invalid IRC Address: " +
-                        ex.getMessage());
-            }
+            Main.getUI().getStatusBar().setMessage("Connecting to: " +
+                    uri.toString());
+            ServerManager.getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
             Main.getUI().getStatusBar().setMessage("Opening: " + uri.toString());
             execBrowser(uri);

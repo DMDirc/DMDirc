@@ -26,11 +26,11 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * The /server command allows the user to connect to a new server.
@@ -52,20 +52,21 @@ public final class ChangeServer extends ServerCommand {
     @Override
     public void execute(final InputWindow origin,  final Server server,
             final boolean isSilent, final CommandArguments args) {
-        IrcAddress address = null;
+        URI address = null;
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "server", "<host[:[+]port]> [password]");
             address = null;
             return;
-        } else if (args.getArguments().length == 1) {
+        } else if (args.getArguments().length == 1
+                && args.getArgumentsAsString().contains("://")) {
             try {
-                address = new IrcAddress(args.getArgumentsAsString());
-            } catch (InvalidAddressException ex) {
+                address = new URI(args.getArgumentsAsString());
+            } catch (URISyntaxException ex) {
                 address = null;
             }
         }
         if (address == null) {
-            address = parseInput(origin, isSilent, args);
+            address = NewServer.parseInput(origin, isSilent, args);
         }
 
         if (address == null) {
@@ -73,59 +74,6 @@ public final class ChangeServer extends ServerCommand {
         }
 
         server.connect(address, server.getProfile());
-    }
-
-    private IrcAddress parseInput(final InputWindow origin, final boolean isSilent,
-            final CommandArguments args) {
-
-        boolean ssl = false;
-        String host = "";
-        String pass = "";
-        int port = 6667;
-        int offset = 0;
-
-        // Check for SSL
-        if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
-            Logger.userError(ErrorLevel.LOW,
-                    "Using /server --ssl is deprecated, and may be removed in the future." +
-                    " Use /server <host>:+<port> instead.");
-
-            ssl = true;
-            offset++;
-        }
-
-        // Check for port
-        if (args.getArguments()[offset].indexOf(':') > -1) {
-            final String[] parts = args.getArguments()[offset].split(":");
-            host = parts[0];
-
-            if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
-                ssl = true;
-                parts[1] = parts[1].substring(1);
-            }
-
-            try {
-                port = Integer.parseInt(parts[1]);
-            } catch (NumberFormatException ex) {
-                origin.addLine(FORMAT_ERROR, "Invalid port specified");
-                return null;
-            }
-
-            if (port <= 0 || port > 65535) {
-                sendLine(origin, isSilent, FORMAT_ERROR,
-                        "Port must be between 1 and 65535");
-                return null;
-            }
-        } else {
-            host = args.getArguments()[offset];
-        }
-
-        // Check for password
-        if (args.getArguments().length > ++offset) {
-            pass = args.getArgumentsAsString(offset);
-        }
-
-        return new IrcAddress(host, port, pass, ssl);
     }
     
     /** {@inheritDoc} */

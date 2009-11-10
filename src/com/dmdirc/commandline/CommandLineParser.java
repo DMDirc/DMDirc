@@ -23,15 +23,16 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.LauncherComponent;
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class CommandLineParser {
     };
     
     /** A list of addresses to autoconnect to. */
-    private final List<IrcAddress> addresses = new ArrayList<IrcAddress>();
+    private final List<URI> addresses = new ArrayList<URI>();
     
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
@@ -249,12 +250,12 @@ public class CommandLineParser {
      * @param address The address the user told us to connect to
      */
     private void doConnect(final String address) {
-        IrcAddress myAddress = null;
+        URI myAddress = null;
         
         try {
-            myAddress = new IrcAddress(address);
+            myAddress = new URI(address);
             addresses.add(myAddress);
-        } catch (InvalidAddressException ex) {
+        } catch (URISyntaxException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
         }
     }
@@ -364,8 +365,8 @@ public class CommandLineParser {
      * This allows us to auto-connect to servers, etc.
      */
     public void processArguments() {
-        for (IrcAddress address : addresses)  {
-            address.connect();
+        for (URI address : addresses)  {
+            ServerManager.getServerManager().connectToAddress(address);
         }
     }
     
