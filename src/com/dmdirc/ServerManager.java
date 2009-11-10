@@ -22,12 +22,14 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.util.InvalidAddressException;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,6 +204,36 @@ public final class ServerManager {
     }
 
     /**
+     * Creates a new server which will connect to the specified URI with the
+     * default profile.
+     *
+     * @param uri The URI to connect to
+     * @return The server which will be connecting
+     * @since 0.6.3m3
+     */
+    public Server connectToAddress(final URI uri) {
+        return connectToAddress(uri, IdentityManager.getProfiles().get(0));
+    }
+
+    /**
+     * Creates a new server which will connect to the specified URI with the
+     * specified profile.
+     *
+     * @param uri The URI to connect to
+     * @param profile The profile to use
+     * @return The server which will be connecting
+     * @since 0.6.3m3
+     */
+    public Server connectToAddress(final URI uri, final Identity profile) {
+        Logger.assertTrue(profile.isProfile());
+
+        final Server server = new Server(uri, profile);
+        server.connect();
+
+        return server;
+    }
+
+    /**
      * Connects the user to Quakenet if neccessary and joins #DMDirc.
      */
     public void joinDevChat() {
@@ -222,10 +254,10 @@ public final class ServerManager {
 
         if (connectedServer == null) {
             try {
-                final Server server = new Server("irc://irc.quakenet.org/DMDirc",
+                final Server server = new Server(new URI("irc://irc.quakenet.org/DMDirc"),
                         IdentityManager.getProfiles().get(0));
                 server.connect();
-            } catch (InvalidAddressException ex) {
+            } catch (URISyntaxException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
             }
         } else {

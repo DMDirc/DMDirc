@@ -22,8 +22,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.util.IrcAddress;
-
+import java.net.URI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -40,7 +39,8 @@ public interface RemoteInterface extends Remote {
      * 
      * @param addresses The addresses to connect to.
      * @throws java.rmi.RemoteException on problems communicating
+     * @since 0.6.3m3
      */
-    void connect(List<IrcAddress> addresses) throws RemoteException;
+    void connect(List<URI> addresses) throws RemoteException;
 
 }

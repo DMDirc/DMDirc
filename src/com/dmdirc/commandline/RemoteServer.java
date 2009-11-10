@@ -22,10 +22,11 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.util.IrcAddress;
 
+import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -56,9 +57,9 @@ public class RemoteServer implements RemoteInterface {
     
     /** {@inheritDoc} */
     @Override
-    public void connect(final List<IrcAddress> addresses) throws RemoteException {
-        for (IrcAddress address : addresses) {
-            address.connect();
+    public void connect(final List<URI> addresses) throws RemoteException {
+        for (URI address : addresses) {
+            ServerManager.getServerManager().connectToAddress(address);
         }
     }    
     

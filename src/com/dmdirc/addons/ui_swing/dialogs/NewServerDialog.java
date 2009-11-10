@@ -33,14 +33,17 @@ import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
 
-import com.dmdirc.util.IrcAddress;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.awt.Dialog.ModalityType;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.KeyEvent;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -273,37 +276,42 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         final Identity profile =
                 (Identity) identityField.getSelectedItem();
-        final IrcAddress address = new IrcAddress(host, port, pass, sslCheck.isSelected());
 
-        // Open in a new window?
-        if (newServerWindowCheck.isSelected() || ServerManager.getServerManager()
-                .numServers() == 0 || mainFrame.getActiveFrame() == null) {
+        try {
+            final URI address = new URI("irc" + (sslCheck.isSelected() ? "s" : ""), pass, host, port, null, null, null);
 
-            new LoggingSwingWorker() {
-                @Override
-                protected Object doInBackground() throws Exception {
-                    final Server server = new Server(address, profile);
-                    server.connect();
-                    return null;
-                }
-            }.execute();
-        } else {
-            final com.dmdirc.ui.interfaces.Window active = mainFrame.getActiveFrame();
-            final Server server = ServerManager.getServerManager().getServerFromFrame(active);
+            // Open in a new window?
+            if (newServerWindowCheck.isSelected() || ServerManager.getServerManager()
+                    .numServers() == 0 || mainFrame.getActiveFrame() == null) {
 
-            new LoggingSwingWorker() {
-
-                @Override
-                protected Object doInBackground() throws Exception {
-                    if (server == null) {
-                        final Server newServer = new Server(address, profile);
-                        newServer.connect();
-                    } else {
-                        server.connect(address, profile);
+                new LoggingSwingWorker() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        final Server server = new Server(address, profile);
+                        server.connect();
+                        return null;
                     }
-                    return null;
-                }
-            }.execute();
+                }.execute();
+            } else {
+                final com.dmdirc.ui.interfaces.Window active = mainFrame.getActiveFrame();
+                final Server server = ServerManager.getServerManager().getServerFromFrame(active);
+
+                new LoggingSwingWorker() {
+
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        if (server == null) {
+                            final Server newServer = new Server(address, profile);
+                            newServer.connect();
+                        } else {
+                            server.connect(address, profile);
+                        }
+                        return null;
+                    }
+                }.execute();
+            }
+        } catch (URISyntaxException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to create URI", ex);
         }
     }
 

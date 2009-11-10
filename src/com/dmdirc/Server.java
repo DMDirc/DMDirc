@@ -52,10 +52,9 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -116,7 +115,7 @@ public class Server extends WritableFrameContainer implements Serializable {
     private ServerWindow window;
 
     /** The address of the server we're connecting to. */
-    private IrcAddress address;
+    private URI address;
 
     /** The profile we're using. */
     private transient Identity profile;
@@ -156,30 +155,18 @@ public class Server extends WritableFrameContainer implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Constructors">
 
     /**
-     * Creates a new instance of Server.
-     *
-     * @since 0.6.3m2
-     * @param url The address of the server to connect to
-     * @param profile The profile to use
-     * @throws InvalidAddressException If the specified URL is not valid
-     */
-    public Server(final String url, final Identity profile) throws InvalidAddressException {
-        this(new IrcAddress(url), profile);
-    }
-
-    /**
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
      *
-     * @since 0.6.3m2
-     * @param url The address of the server to connect to
+     * @since 0.6.3m3
+     * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
-    public Server(final IrcAddress url, final Identity profile) {
-        super("server-disconnected", url.getServer(),
-                new ConfigManager("", "", url.getServer()));
+    public Server(final URI uri, final Identity profile) {
+        super("server-disconnected", uri.getHost(),
+                new ConfigManager("", "", uri.getHost()));
 
-        this.address = url;
+        this.address = uri;
         this.profile = profile;
 
         window = Main.getUI().getServer(this);
@@ -232,14 +219,14 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @param address The address of the server to connect to
      * @param profile The profile to use
-     * @since 0.6.3m2
+     * @since 0.6.3m3
      */
     @Precondition({
         "The current parser is null or not connected",
         "The specified profile is not null"
     })
     @SuppressWarnings("fallthrough")
-    public void connect(final IrcAddress address, final Identity profile) {
+    public void connect(final URI address, final Identity profile) {
         assert profile != null;
 
         synchronized (myStateLock) {
@@ -274,7 +261,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                         + "is still connected.\n\nMy state:" + getState());
             }
 
-            getConfigManager().migrate("", "", address.getServer());
+            getConfigManager().migrate("", "", address.getHost());
 
             this.address = address;
             this.profile = profile;
@@ -285,11 +272,11 @@ public class Server extends WritableFrameContainer implements Serializable {
             parser = buildParser();
 
             if (parser == null) {
-                addLine("serverUnknownProtocol", address.getProtocol());
+                addLine("serverUnknownProtocol", address.getScheme());
                 return;
             }
 
-            addLine("serverConnecting", address.getServer(), address.getPort());
+            addLine("serverConnecting", address.getHost(), address.getPort());
 
             myState.transition(ServerState.CONNECTING);
 
@@ -685,7 +672,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @return A configured IRC parser.
      */
     private Parser buildParser() {
-        final CertificateManager certManager = new CertificateManager(address.getServer(),
+        final CertificateManager certManager = new CertificateManager(address.getHost(),
                 getConfigManager());
 
         final MyInfo myInfo = buildMyInfo();
@@ -741,7 +728,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     private void updateIcon() {
         final String icon = myState.getState() == ServerState.CONNECTED
-                    ? address.isSSL() ? "secure-server" : "server"
+                    ? address.getScheme().endsWith("s") ? "secure-server" : "server"
                     : "server-disconnected";
         setIcon(icon);
     }
@@ -782,7 +769,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                 }
             } else {
                 // TODO: Need to pass key
-                address.getChannels().add(channel);
+                // TODO (uris): address.getChannels().add(channel);
             }
         }
     }
@@ -805,7 +792,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                     parser.joinChannel(channel);
                 }
             } else {
-                address.getChannels().add(channel);
+                // TODO(uris): address.getChannels().add(channel);
             }
         }
     }
@@ -1120,7 +1107,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     public void updateTitle() {
         final Object[] arguments = new Object[]{
-            address.getServer(), parser == null ? "Unknown" : parser.getServerName(),
+            address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
             address.getPort(), parser == null ? "Unknown" : getNetwork(),
             parser == null ? "Unknown" : parser.getLocalClient().getNickname()
         };
@@ -1368,10 +1355,6 @@ public class Server extends WritableFrameContainer implements Serializable {
                 for (Channel chan : channels.values()) {
                     chan.join();
                 }
-            }
-
-            for (String channel : address.getChannels()) {
-                parser.joinChannel(channel);
             }
 
             checkModeAliases();
