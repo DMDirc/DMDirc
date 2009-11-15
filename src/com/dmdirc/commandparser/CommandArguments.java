@@ -22,6 +22,9 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Precondition;
+import com.dmdirc.logger.Logger;
+
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,7 +147,10 @@ public class CommandArguments {
      * @param end The index of the last word to include
      * @return A String representation of the requested words
      */
+    @Precondition("Start index is less than or equal to end index")
     public String getWordsAsString(final int start, final int end) {
+        Logger.assertTrue(start <= end);
+
         final Pattern pattern = Pattern.compile("(\\S+\\s*){" + (start) + "}"
                 + "((\\S+\\s*){" + (end - start) + "}).*?");
         final Matcher matcher = pattern.matcher(line);
