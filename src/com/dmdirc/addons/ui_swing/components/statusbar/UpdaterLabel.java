@@ -33,17 +33,15 @@ import com.dmdirc.updater.UpdateChecker.STATE;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 
 /**
  * Updater label is responsible for handling the display of updates in the
  * status bar.
  */
-public class UpdaterLabel extends JLabel implements StatusBarComponent, 
-        MouseListener, UpdateCheckerListener {
+public class UpdaterLabel extends StatusbarPopupPanel implements StatusBarComponent,
+        UpdateCheckerListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,49 +62,9 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
         
         this.mainFrame = mainFrame;
         setBorder(BorderFactory.createEtchedBorder());
-        addMouseListener(this);
         UpdateChecker.addListener(this);
         setVisible(false);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param mouseEvent Mouse event
-     */
-    @Override
-    public void mousePressed(final MouseEvent mouseEvent) {
-    //Ignore.
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param mouseEvent Mouse event
-     */
-    @Override
-    public void mouseReleased(final MouseEvent mouseEvent) {
-    //Ignore.
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param mouseEvent Mouse event
-     */
-    @Override
-    public void mouseEntered(final MouseEvent mouseEvent) {
-    //Ignore.
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param mouseEvent Mouse event
-     */
-    @Override
-    public void mouseExited(final MouseEvent mouseEvent) {
-    //Ignore.
+        label.setText(null);
     }
 
     /**
@@ -116,6 +74,8 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
+        super.mouseClicked(mouseEvent);
+        
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (UpdateChecker.getStatus().equals(UpdateChecker.STATE.RESTART_REQUIRED)) {
                 SwingRestartDialog restartDialog = new SwingRestartDialog(
@@ -138,15 +98,18 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
         }
 
         if (newStatus.equals(STATE.CHECKING)) {
-            setToolTipText("Checking for updates...");
-            setIcon(IconManager.getIconManager().
+            label.setIcon(IconManager.getIconManager().
                     getIcon("hourglass"));
         } else if (newStatus.equals(STATE.UPDATES_AVAILABLE)) {
-            setToolTipText("Updates available");
-            setIcon(IconManager.getIconManager().getIcon("update"));
+            label.setIcon(IconManager.getIconManager().getIcon("update"));
         } else if (newStatus.equals(STATE.RESTART_REQUIRED)) {
-            setToolTipText("Client restart required to finish updating");
-            setIcon(IconManager.getIconManager().getIcon("restart-needed"));
+            label.setIcon(IconManager.getIconManager().getIcon("restart-needed"));
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected StatusbarPopupWindow getWindow() {
+        return new UpdaterPopup(this, mainFrame);
     }
 }
