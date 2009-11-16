@@ -432,7 +432,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * when (visible) user modes or nicknames change.
      */
     public void refreshClients() {
-        window.updateNames();
+        if (window != null && onChannel) {
+            window.updateNames();
+        }
     }
 
     /**
