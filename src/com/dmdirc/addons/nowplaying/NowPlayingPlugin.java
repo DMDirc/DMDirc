@@ -250,15 +250,29 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         final String time = source.getTime();
         final String state = source.getState().getNiceName();
         
-        return format.replaceAll("\\$artist", artist)
-                     .replaceAll("\\$title", title)
-                     .replaceAll("\\$album", album)
-                     .replaceAll("\\$app", app)
-                     .replaceAll("\\$bitrate", bitrate)
-                     .replaceAll("\\$format", filetype)
-                     .replaceAll("\\$length", length)
-                     .replaceAll("\\$state", state)
-                     .replaceAll("\\$time", time);
+        return format.replaceAll("\\$artist", sanitise(artist))
+                     .replaceAll("\\$title", sanitise(title))
+                     .replaceAll("\\$album", sanitise(album))
+                     .replaceAll("\\$app", sanitise(app))
+                     .replaceAll("\\$bitrate", sanitise(bitrate))
+                     .replaceAll("\\$format", sanitise(filetype))
+                     .replaceAll("\\$length", sanitise(length))
+                     .replaceAll("\\$state", sanitise(state))
+                     .replaceAll("\\$time", sanitise(time));
+    }
+
+    /**
+     * Sanitises the specified String so that it may be used as the replacement
+     * in a call to String.replaceAll. Namely, at present, this method returns
+     * an empty String if it is passed a null value; otherwise the input is
+     * returned.
+     *
+     * @param input The string to be sanitised
+     * @return A sanitised version of the String
+     * @since 0.6.4
+     */
+    protected static String sanitise(final String input) {
+        return input == null ? "" : input;
     }
     
     /**
