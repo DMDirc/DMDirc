@@ -158,7 +158,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
      *
-     * @since 0.6.3m3
+     * @since 0.6.4
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -219,7 +219,7 @@ public class Server extends WritableFrameContainer implements Serializable {
      *
      * @param address The address of the server to connect to
      * @param profile The profile to use
-     * @since 0.6.3m3
+     * @since 0.6.4
      */
     @Precondition({
         "The current parser is null or not connected",
