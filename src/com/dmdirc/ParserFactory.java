@@ -49,7 +49,7 @@ public class ParserFactory {
      * @param myInfo The client information to use
      * @param address The address of the server to connect to
      * @return An appropriately configured parser
-     * @since 0.6.3m3
+     * @since 0.6.4
      */
     public Parser getParser(final MyInfo myInfo, final URI address) {
         // TODO: Hacky Hack McHack
