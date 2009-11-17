@@ -143,15 +143,15 @@ public class CertificateManager implements X509TrustManager {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
         } catch (CertificateException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (IOException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (InvalidAlgorithmParameterException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (KeyStoreException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } finally {
             if (is != null) {
                 try {
