@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -125,9 +126,30 @@ public class GlobalWindow extends WritableFrameContainer {
      * Initialises the global window if it's enabled in the config.
      */
     public static void init() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
-            globalWindow = new GlobalWindow();
-        }        
+        IdentityManager.getGlobalConfig().addChangeListener("general", "showglobalwindow",
+                new ConfigChangeListener() {
+
+            @Override
+            public void configChanged(final String domain, final String key) {
+                updateWindowState();
+            }
+        });
+
+        updateWindowState();
+    }
+
+    protected static void updateWindowState() {
+        synchronized (GlobalWindow.class) {
+            if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
+                if (globalWindow == null) {
+                    globalWindow = new GlobalWindow();
+                }
+            } else {
+                if (globalWindow != null) {
+                    globalWindow.close();
+                }
+            }
+        }
     }
 
     /**

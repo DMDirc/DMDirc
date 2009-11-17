@@ -358,6 +358,9 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "showversion", "Show version",
                 "Show DMDirc version in the titlebar?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "general", "showglobalwindow", "Show global window",
+                "Show a global window which can be used to enter commands?"));
 
         addCategory(category);
     }
