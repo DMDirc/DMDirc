@@ -32,8 +32,10 @@ import com.dmdirc.updater.UpdateChecker;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -62,6 +64,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
     private PackingTable table;
     /** Check now button. */
     private JButton checkNow;
+    /** Update channel. */
+    private JComboBox updateChannel;
 
     /**
      * Instantiates a new update config panel.
@@ -101,7 +105,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
         scrollPane = new JScrollPane();
         tableModel = new UpdateTableModel(UpdateChecker.getComponents());
         table = new PackingTable(tableModel, false, scrollPane);
-        checkNow = new JButton("Check now");
+        checkNow = new JButton("Check now");    
+        updateChannel = new JComboBox(new DefaultComboBoxModel());
 
         enable.setSelected(config.getOptionBool("updater", "enable"));
         scrollPane.setViewportView(table);
