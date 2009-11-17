@@ -167,6 +167,9 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
         } else if (!appError) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
+        } else if (dupe) {
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
         } else if (sendReports) {
             sendError(error);
         }
