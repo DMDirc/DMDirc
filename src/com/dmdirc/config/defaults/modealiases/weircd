@@ -9,6 +9,12 @@ identity:
   ircd=weircd
 
 server:
+  umodec=Receive connection notices
+  umodeh=Set host
+  umoder=Registered
+
   umodeB=Bot
+  umodeF=Flood exempt
   umodeS=Network Service
+
   moder=Registered
