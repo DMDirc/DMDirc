@@ -35,6 +35,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
@@ -99,10 +100,11 @@ public class CategoryLabel extends JLabel {
 
             hasChildren = hasChildren || index + 1 == numCats;
 
-            setBackground(Color.LIGHT_GRAY);
+            setBackground(UIManager.getColor("ToolTip.background"));
+            setForeground(UIManager.getColor("ToolTip.foreground"));
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createMatteBorder(1, 0, hasChildren ? 1 : 0, 0,
-                    Color.GRAY),
+                    UIManager.getColor("ToolTip.background").darker().darker()),
                     getBorder()));
         }
     }
