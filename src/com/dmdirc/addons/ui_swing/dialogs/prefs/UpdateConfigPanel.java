@@ -27,13 +27,18 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -62,6 +67,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
     private PackingTable table;
     /** Check now button. */
     private JButton checkNow;
+    /** Update channel. */
+    private JComboBox updateChannel;
 
     /**
      * Instantiates a new update config panel.
@@ -81,6 +88,9 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
         } else {
             identity.setOption("updater", "enable", false);
         }
+
+        IdentityManager.getConfigIdentity().setOption("updater", "channel",
+                updateChannel.getSelectedItem().toString());
 
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             final String componentName = tableModel.getComponent(i).getName();
@@ -102,8 +112,19 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
         tableModel = new UpdateTableModel(UpdateChecker.getComponents());
         table = new PackingTable(tableModel, false, scrollPane);
         checkNow = new JButton("Check now");
+        updateChannel = new JComboBox(new DefaultComboBoxModel(UpdateChannel.
+                values()));
 
         enable.setSelected(config.getOptionBool("updater", "enable"));
+        UpdateChannel channel = UpdateChannel.NONE;
+        try {
+            channel = UpdateChannel.valueOf(
+                    config.getOption("updater", "channel"));
+        } catch (IllegalArgumentException e) {
+            Logger.userError(ErrorLevel.LOW, "Invalid setting for update " +
+                    "channel, defaulting to none.");
+        }
+        updateChannel.setSelectedItem(channel);
         scrollPane.setViewportView(table);
     }
 
@@ -122,7 +143,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
                 SwingPreferencesDialog.CLIENT_HEIGHT));
 
         add(new JLabel("Update checking:"), "split");
-        add(enable, "growx, pushx, wrap");
+        add(enable, "growx");
+        add(updateChannel, "growx, pushx, wrap");
         add(scrollPane, "wrap");
         add(checkNow, "right");
     }
