@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.text;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 
@@ -34,6 +35,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 /**
  * Dyamnic text label.
@@ -76,11 +78,15 @@ public class TextLabel extends JTextPane {
         setEditorKit(new HTMLEditorKit());
         setUI(new BasicTextPaneUI());
 
+        final StyleSheet styleSheet = ((HTMLDocument) getDocument()).getStyleSheet();
         final Font font = UIManager.getFont("Label.font");
-        ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
-                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
-                font.getSize() + "pt; }");
-        ((HTMLDocument) getDocument()).getStyleSheet().addRule("p { margin: 0; }");
+        final Color colour = UIManager.getColor("Label.foreground");
+        styleSheet.addRule("body " 
+                + "{ font-family: " + font.getFamily() + "; "
+                + "font-size: " + font.getSize() + "pt; }");
+        styleSheet.addRule("p { margin: 0; }");
+        styleSheet.addRule("* { color: rgb(" + colour.getRed()
+                + ", " + colour.getGreen() + ", " + colour.getBlue()+"); }");
 
         setOpaque(false);
         setEditable(false);
