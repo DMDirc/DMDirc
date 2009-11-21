@@ -48,6 +48,7 @@ public class FontPicker extends JComboBox {
         final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().
                 getAvailableFontFamilyNames();
         final int size = getFont().getSize();
+        ((DefaultComboBoxModel) getModel()).addElement("SystemNativeFont");
         for (String font : fonts) {
             ((DefaultComboBoxModel) getModel()).addElement(new Font(font,
                     Font.PLAIN, size));

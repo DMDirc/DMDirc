@@ -82,6 +82,9 @@ public class Utils {
         } else {
             fontName = defaultFont.getName();
         }
+        if ("SystemNativeFont".equals(fontName)) {
+            fontName = defaultFont.getName();
+        }
         if (config.hasOptionString("ui", "textPaneFontSize")) {
             lineHeight = config.getOptionInt("ui", "textPaneFontSize");
         } else {

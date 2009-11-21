@@ -634,7 +634,7 @@ public final class SwingController extends Plugin implements UIController {
 
 
         defaults.setOption("ui", "textPaneFontName",
-                UIManager.getFont("TextPane.font").getFamily());
+                "SystemNativeFont");
         defaults.setOption("ui", "textPaneFontSize",
                 UIManager.getFont("TextPane.font").getSize());
     }
