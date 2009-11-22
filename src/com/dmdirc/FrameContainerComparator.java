@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.logger.Logger;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -53,7 +55,19 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @return -1 if item1 is before item2, 0 if they're equal,
      * +1 if item1 is after item2.
      */
+    @Override
+    @Precondition({
+        "item1 is non-null",
+        "item2 is non-null",
+        "item1.toString() returns a non-null value",
+        "item2.toString() returns a non-null value"
+    })
     public int compare(final FrameContainer item1, final FrameContainer item2) {
+        Logger.assertTrue(item1 != null);
+        Logger.assertTrue(item2 != null);
+        Logger.assertTrue(item1.toString() != null);
+        Logger.assertTrue(item2.toString() != null);
+
         if (sortBefore(item1, item2)) {
             return -1;
         } else if (sortAfter(item1, item2)) {
