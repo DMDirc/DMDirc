@@ -41,7 +41,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 public class GlobalWindow extends WritableFrameContainer {
 
     /** The window we're using. */
-    private final InputWindow window;
+    private InputWindow window;
 
     /** The global window that's in use, if any. */
     private static GlobalWindow globalWindow;
@@ -90,6 +90,8 @@ public class GlobalWindow extends WritableFrameContainer {
         WindowManager.removeWindow(window);
 
         // 7: Remove any references to the window and parents
+        window = null;
+        globalWindow = null;
     }
 
     /** {@inheritDoc} */
