@@ -254,7 +254,7 @@ public final class ActionsManagerDialog extends StandardDialog implements
 
         getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
-        getContentPane().add(infoLabel, "spanx 2, growx, pushx");
+        getContentPane().add(infoLabel, "spanx 2, growx");
         if (info.isVisible() && activeSettings.isVisible()) {
             getContentPane().add(groupPanel, "growy, pushy, spany 3");
         } else if (info.isVisible() || activeSettings.isVisible()) {
@@ -263,7 +263,7 @@ public final class ActionsManagerDialog extends StandardDialog implements
             getContentPane().add(groupPanel, "growy, pushy");
         }
         getContentPane().add(info, "growx, pushx");
-        getContentPane().add(actions, "grow, pushx, pushx");
+        getContentPane().add(actions, "grow, push");
         getContentPane().add(activeSettings, "growx, pushx");
         getContentPane().add(getOkButton(), "skip, right, sgx button");
     }
@@ -300,9 +300,8 @@ public final class ActionsManagerDialog extends StandardDialog implements
             final ActionGroupSettingsPanel currentSettings =
                     new ActionGroupSettingsPanel(group, this);
             settings.put(group, currentSettings);
-            currentSettings.setBorder(BorderFactory.createTitledBorder(currentSettings.
-                    getBorder(),
-                    "Settings"));
+            currentSettings.setBorder(BorderFactory.createTitledBorder(
+                    UIManager.getBorder("TitledBorder.border"), "Settings"));
         }
         activeSettings = settings.get(group);
 
