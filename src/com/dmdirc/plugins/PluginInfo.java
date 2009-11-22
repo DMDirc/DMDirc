@@ -1304,8 +1304,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * plugin directory, or an absolute path otherwise.
      */
     public String getRelativeFilename() {
-        final String dir = PluginManager.getPluginManager().getDirectory();
-        return getFullFilename().startsWith(dir) ? getFullFilename().substring(dir.length()) : getFullFilename();
+        final String dir = new File(PluginManager.getPluginManager().getDirectory())
+                .getAbsolutePath() + File.separator;
+        final String file = new File(getFullFilename()).getAbsolutePath();
+
+        return file.startsWith(dir) ? getFullFilename().substring(dir.length()) : getFullFilename();
     }
 
     /**
