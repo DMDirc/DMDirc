@@ -28,26 +28,31 @@ package com.dmdirc.plugins;
  * @author            Shane Mc Cormack
  */
 public class NoSuchProviderException extends RuntimeException {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 1;
-	
-	/**
-	 * Create a new NoSuchProviderException Exception.
-	 *
-	 * @param message Reason for exception
-	 */
-	public NoSuchProviderException(final String message) { super(message); }
-	
-	/**
-	 * Create a new NoSuchProviderException Exception.
-	 *
-	 * @param message Reason for exception
-	 * @param cause Cause of Exception
-	 */
-	public NoSuchProviderException(final String message, final Throwable cause) { super(message, cause); }
-	
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+
+    /**
+     * Create a new NoSuchProviderException Exception.
+     *
+     * @param message Reason for exception
+     */
+    public NoSuchProviderException(final String message) {
+        super(message);
+    }
+
+    /**
+     * Create a new NoSuchProviderException Exception.
+     *
+     * @param message Reason for exception
+     * @param cause Cause of Exception
+     */
+    public NoSuchProviderException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
 }

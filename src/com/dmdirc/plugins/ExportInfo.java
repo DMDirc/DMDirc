@@ -19,43 +19,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.plugins;
 
 public class ExportInfo {
-	/** Name of class the export is in. */
-	final String className;
-	
-	/** Name of method the export is in. */
-	final String methodName;
-	
-	/** The PluginInfo that defined this export. */
-	final PluginInfo pluginInfo;
 
-	/**
-	 * Create a new ExportInfo.
-	 *
-	 * @param methodName Name of method the export is in.
-	 * @param className Name of class the export is in.
-	 * @param pluginInfo The PluginInfo that defined this export.
-	 */
-	public ExportInfo(final String methodName, final String className, final PluginInfo pluginInfo) {
-		this.className = className;
-		this.methodName = methodName;
-		this.pluginInfo = pluginInfo;
-	}
-	
-	/**
-	 * Get the ExportedService for this Export.
-	 *
-	 * @return ExportedService object for this export.
-	 */
-	public ExportedService getExportedService() {
-		try {
-			final Class<?> c = pluginInfo.getPluginClassLoader().loadClass(className, false);
-			final Plugin p = className.equals(pluginInfo.getMainClass()) ? pluginInfo.getPluginObject() : null;
-			return new ExportedService(c, methodName, p);
-		} catch (ClassNotFoundException cnfe) {
-			return new ExportedService(null, null);
-		}
-	}
+    /** Name of class the export is in. */
+    final String className;
+
+    /** Name of method the export is in. */
+    final String methodName;
+
+    /** The PluginInfo that defined this export. */
+    final PluginInfo pluginInfo;
+
+    /**
+     * Create a new ExportInfo.
+     *
+     * @param methodName Name of method the export is in.
+     * @param className Name of class the export is in.
+     * @param pluginInfo The PluginInfo that defined this export.
+     */
+    public ExportInfo(final String methodName, final String className, final PluginInfo pluginInfo) {
+        this.className = className;
+        this.methodName = methodName;
+        this.pluginInfo = pluginInfo;
+    }
+
+    /**
+     * Get the ExportedService for this Export.
+     *
+     * @return ExportedService object for this export.
+     */
+    public ExportedService getExportedService() {
+        try {
+            final Class<?> c = pluginInfo.getPluginClassLoader().loadClass(className, false);
+            final Plugin p = className.equals(pluginInfo.getMainClass()) ? pluginInfo.getPluginObject() : null;
+            return new ExportedService(c, methodName, p);
+        } catch (ClassNotFoundException cnfe) {
+            return new ExportedService(null, null);
+        }
+    }
+
 }
