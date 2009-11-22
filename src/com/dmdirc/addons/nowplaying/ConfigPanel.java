@@ -27,6 +27,8 @@ import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
@@ -234,7 +236,12 @@ public class ConfigPanel extends JPanel implements PreferencesInterface,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                updatePreview();
+                try {
+                    updatePreview();
+                } catch (Throwable ex) {
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "Error when updating nowplaying preview", ex);
+                }
             }
         }, 500);
     }
