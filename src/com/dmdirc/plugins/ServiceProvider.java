@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.plugins;
 
 import java.util.List;
@@ -27,36 +28,38 @@ import java.util.List;
  * Defines a ServiceProvider.
  */
 public interface ServiceProvider {
-	/**
-	 * Is this provider active at this time.
-	 *
-	 * @return true if the provider is able to provide its services
-	 */
-	boolean isActive();
-	
-	/** Activate the services. */
-	void activateServices();
-	
-	/**
-	 * Get a list of services provided by this provider.
-	 *
-	 * @return A list of services provided by this provider.
-	 */
-	List<Service> getServices();
-	
-	/**
+
+    /**
+     * Is this provider active at this time.
+     *
+     * @return true if the provider is able to provide its services
+     */
+    boolean isActive();
+
+    /** Activate the services. */
+    void activateServices();
+
+    /**
+     * Get a list of services provided by this provider.
+     *
+     * @return A list of services provided by this provider.
+     */
+    List<Service> getServices();
+
+    /**
      * Get the name of this provider.
      * 
      * @return This provider's name
      */
-	String getProviderName();
-	
-	/**
-	 * Get an ExportedService object from this provider.
-	 *
-	 * @param name Service name
-	 * @return ExportedService object. If no such service exists, the execute
-	 *         method of this ExportedService will always return null.
-	 */
-	ExportedService getExportedService(final String name);
+    String getProviderName();
+
+    /**
+     * Get an ExportedService object from this provider.
+     *
+     * @param name Service name
+     * @return ExportedService object. If no such service exists, the execute
+     *         method of this ExportedService will always return null.
+     */
+    ExportedService getExportedService(final String name);
+
 }
