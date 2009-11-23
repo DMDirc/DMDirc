@@ -172,9 +172,16 @@ fi;
 
 # Check for some CLI params
 if [ "${ISOSX}" = "1" ]; then
-	profiledir="${HOME}/Library/Preferences/DMDirc"
+	profiledir="${HOME}/Library/Preferences/DMDirc/"
 else
 	profiledir="${HOME}/.DMDirc/"
+	if [ ! -d "${profiledir}" ]; then
+		profiledir="${XDG_CONFIG_HOME}"
+		if [ "${profiledir}" = "" ]; then
+			profiledir="${HOME}/.config"
+		fi;
+		profiledir="${profiledir}/DMDirc/"
+	fi;
 fi;
 
 USEPROFILE=1;

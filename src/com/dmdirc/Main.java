@@ -332,6 +332,14 @@ public final class Main {
                 }
             } else {
                 configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
+                final File testFile = new File(configdir);
+                if (!testFile.exists()) {
+                    final String configHome = System.getenv("XDG_CONFIG_HOME");
+                    configdir = configHome.isEmpty() ?
+                        System.getProperty("user.home") + fs + ".config" + fs :
+                        configHome;
+                    configdir += fs + "DMDirc" + fs;
+                }
             }
         }
 
