@@ -32,6 +32,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -72,7 +73,8 @@ import javax.net.ssl.TrustManager;
  *
  * @author chris
  */
-public class Server extends WritableFrameContainer implements Serializable {
+public class Server extends WritableFrameContainer implements
+        Serializable, ConfigChangeListener {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
@@ -211,6 +213,9 @@ public class Server extends WritableFrameContainer implements Serializable {
         if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "showrawwindow")) {
             addRaw();
         }
+
+        getConfigManager().addChangeListener("formatter", "serverName", this);
+        getConfigManager().addChangeListener("formatter", "serverTitle", this);
     }
 
     // </editor-fold>
@@ -1145,6 +1150,14 @@ public class Server extends WritableFrameContainer implements Serializable {
                     "serverName", arguments));
             window.setTitle(Formatter.formatMessage(getConfigManager(),
                     "serverTitle", arguments));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        if ("formatter".equals(domain)) {
+            updateTitle();
         }
     }
 
