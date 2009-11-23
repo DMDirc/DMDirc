@@ -136,6 +136,8 @@ public enum CoreActionType implements ActionType {
     CHANNEL_CLOSED(ChannelEvents.CHANNEL_EVENT, "Channel window closed"),
     /** Names reply received. */
     CHANNEL_GOTNAMES(ChannelEvents.CHANNEL_EVENT, "Channel names reply received"),
+    /** Channel topic is not set. */
+    CHANNEL_NOTOPIC(ChannelEvents.CHANNEL_EVENT, "Channel topic is not set"),
     /** Channel topic received. */
     CHANNEL_GOTTOPIC(ChannelEvents.CHANNEL_TOPICEVENT, "Channel topic received"),
     

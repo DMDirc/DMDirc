@@ -117,8 +117,12 @@ public final class ChannelEventHandler extends EventHandler implements
                 cChannel.getTopicSetter(), cChannel.getTopicTime());
 
         if (bIsJoinTopic) {
-            owner.doNotification("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
-                    newTopic);
+            if (newTopic.getTopic().isEmpty()) {
+                owner.doNotification("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
+            } else {
+                owner.doNotification("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
+                        newTopic);
+            }
         } else {
             owner.doNotification("channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
                     cChannel.getChannelClient(cChannel.getTopicSetter(), true), cChannel.getTopic());
