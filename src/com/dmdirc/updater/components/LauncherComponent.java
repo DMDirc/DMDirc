@@ -64,7 +64,7 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
             if (cpos == -1) {
                 version = Integer.parseInt(info.substring(hpos + 1));
             } else {
-                version = Integer.parseInt(info.substring(hpos + 1), cpos);
+                version = Integer.parseInt(info.substring(hpos + 1, cpos));
                 options = info.substring(cpos + 1).split(",");
             }
         } catch (NumberFormatException ex) {
