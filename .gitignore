@@ -3,7 +3,6 @@
 /build
 /dist
 /nbproject/private
-/reports
 /plugins
 /junitreports
 /junit*.properties
