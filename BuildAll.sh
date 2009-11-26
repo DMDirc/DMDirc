@@ -21,6 +21,9 @@ ANT="/usr/bin/ant"
 # Path to svn binary
 SVN="/usr/bin/svn"
 
+# Path to git binary
+GIT="/usr/bin/git"
+
 # Path to jar binary
 JAR="/usr/bin/jar"
 
@@ -29,9 +32,14 @@ BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_lo
 
 cd ${MYDIR}
 
-$SVN update
-SVNREV=`$SVN info | grep Revision`
-SVNREV=${SVNREV##*: }
+if [ -d .git ]; then
+	$GIT pull
+	SVNREV=`$GIT describe`
+else
+	$SVN update
+	SVNREV=`$SVN info | grep Revision`
+	SVNREV=${SVNREV##*: }
+fi;
 export DMDIRC_SVN=${SVNREV}
 
 # Archive old nightlies
@@ -63,9 +71,13 @@ fi;
 $ANT -Dchannel=NIGHTLY -k clean jar
 
 # Now revert the trunk so as not to break updates.
-for updatedir in ${REVERTLIST}; do
-	${SVN} revert ${updatedir}/*
-done;
+if [ -d .git ]; then
+	${GIT} checkout src/com/dmdirc/config/defaults/;
+else
+	for updatedir in ${REVERTLIST}; do
+		${SVN} revert ${updatedir}/*
+	done;
+fi;
 
 PHP=`which php`
 
@@ -138,4 +150,8 @@ else
 	fi;
 fi
 
-$SVN revert src/com/dmdirc/Main.java
+if [ -d .git ]; then
+	$GIT checkout src/com/dmdirc/Main.java
+else
+	$SVN revert src/com/dmdirc/Main.java
+fi;
