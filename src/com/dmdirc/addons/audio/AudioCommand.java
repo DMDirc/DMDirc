@@ -36,54 +36,60 @@ import java.io.File;
  */
 public final class AudioCommand extends GlobalCommand {
 
-	/**
-	 * Creates a new instance of LoggingCommand.
-	 */
-	public AudioCommand() {
-		super();
-		CommandManager.registerCommand(this);
-	}
-		
-	/** {@inheritDoc} */
-    @Override
-	public void execute(final InputWindow origin, final boolean isSilent,
-            final CommandArguments args) {
-		final String filename = args.getArgumentsAsString();
-		final File file = new File(filename);
-		if (file.exists()) {
-			if (AudioPlayer.isValid(file)) {
-				new AudioPlayer(file).play();
-			} else {
-				sendLine(origin, isSilent, FORMAT_ERROR, "Invalid file type");
-			}
-		} else {
-			sendLine(origin, isSilent, FORMAT_ERROR, "File does not exist");
-		}
-	}
+    /**
+     * Creates a new instance of LoggingCommand.
+     */
+    public AudioCommand() {
+        super();
+        CommandManager.registerCommand(this);
+    }
 
-	/**
-	 * Returns this command's name.
-	 *
-	 * @return The name of this command
-	 */
+    /** {@inheritDoc} */
     @Override
-	public String getName() { return "audio"; }
-	
-	/**
-	 * Returns whether or not this command should be shown in help messages.
-	 *
-	 * @return True iff the command should be shown, false otherwise
-	 */
+    public void execute(final InputWindow origin, final boolean isSilent,
+                        final CommandArguments args) {
+        final String filename = args.getArgumentsAsString();
+        final File file = new File(filename);
+        if (file.exists()) {
+            if (AudioPlayer.isValid(file)) {
+                new AudioPlayer(file).play();
+            } else {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Invalid file type");
+            }
+        } else {
+            sendLine(origin, isSilent, FORMAT_ERROR, "File does not exist");
+        }
+    }
+
+    /**
+     * Returns this command's name.
+     *
+     * @return The name of this command
+     */
     @Override
-	public boolean showInHelp() { return true; }
-	
-	/**
-	 * Returns a string representing the help message for this command.
-	 *
-	 * @return the help message for this command
-	 */
+    public String getName() {
+        return "audio";
+    }
+
+    /**
+     * Returns whether or not this command should be shown in help messages.
+     *
+     * @return True iff the command should be shown, false otherwise
+     */
     @Override
-	public String getHelp() { return this.getName() + " <file>"; }
-	
+    public boolean showInHelp() {
+        return true;
+    }
+
+    /**
+     * Returns a string representing the help message for this command.
+     *
+     * @return the help message for this command
+     */
+    @Override
+    public String getHelp() {
+        return this.getName() + " <file>";
+    }
+
 }
 

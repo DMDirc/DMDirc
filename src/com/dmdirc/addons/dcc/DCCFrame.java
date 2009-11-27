@@ -47,97 +47,103 @@ import javax.swing.JPopupMenu;
  * @author Shane 'Dataforce' McCormack
  */
 public abstract class DCCFrame extends WritableFrameContainer {
-	/**
-	 * Empty Frame.
-	 */
-	private class EmptyFrame extends InputTextFrame {
-			/** A version number for this class. */
-			private static final long serialVersionUID = 200711271;
-			
-			/**
-			 * Creates a new instance of EmptyFrame.
-			 *
-			 * @param owner The frame container that owns this frame
-			 */
-			public EmptyFrame(final WritableFrameContainer owner) {
-				super(owner, (SwingController) Main.getUI());
-				setTextPane(null);
-				pack();
-			}
-			
-			/**
-			 * Retrieves the command Parser for this input window.
-			 *
-			 * @return This window's command parser
-			 */
-            @Override
-			public final CommandParser getCommandParser() {
-				return GlobalCommandParser.getGlobalCommandParser();
-			}
-            
-			/** {@inheritDoc} */
-			@Override
-			public PopupType getNicknamePopupType() {
-				return null;
-			}
 
-			/** {@inheritDoc} */
-			@Override
-			public PopupType getChannelPopupType() {
-				return null;
-			}
+    /**
+     * Empty Frame.
+     */
+    private class EmptyFrame extends InputTextFrame {
 
-			/** {@inheritDoc} */
-			@Override
-			public PopupType getHyperlinkPopupType() {
-				return null;
-			}
-			
-			/** {@inheritDoc} */
-			@Override
-			public PopupType getNormalPopupType() {
-				return null;
-			}
+        /** A version number for this class. */
+        private static final long serialVersionUID = 200711271;
 
-			/** {@inheritDoc} */
-			@Override
-			public void addCustomPopupItems(final JPopupMenu popupMenu) {
-				//Add no custom popup items
-			}
-	}
+        /**
+         * Creates a new instance of EmptyFrame.
+         *
+         * @param owner The frame container that owns this frame
+         */
+        public EmptyFrame(final WritableFrameContainer owner) {
+            super(owner, (SwingController) Main.getUI());
+            setTextPane(null);
+            pack();
+        }
 
-	/** The Window we're using. */
-	protected InputWindow myWindow = null;
-	/** The dcc plugin that owns this frame */
-	protected final DCCPlugin plugin;
-	/** The Window we're using. */
-	private boolean windowClosing = false;
-	
-	/**
-	 * Creates a new instance of DCCFrame with an empty window.
-	 *
-	 * @param plugin The DCCPlugin that owns this frame
-	 * @param title The title of this window
-	 * @param icon The icon to use
-	 */
-	public DCCFrame(final DCCPlugin plugin, final String title, final String icon) {
-		this(plugin, title, icon, true);
-	}
-	
-	/**
-	 * Creates a new instance of DCCFrame.
-	 *
-	 * @param plugin The DCCPlugin that owns this frame
-	 * @param title The title of this window
-	 * @param defaultWindow Create default (empty) window. (non-default = chat frame)
-	 * @param icon The icon to use
-	 */
-	public DCCFrame(final DCCPlugin plugin, final String title, final String icon ,final boolean defaultWindow) {
-		super(icon, title, IdentityManager.getGlobalConfig());
-		this.plugin = plugin;
+        /**
+         * Retrieves the command Parser for this input window.
+         *
+         * @return This window's command parser
+         */
+        @Override
+        public final CommandParser getCommandParser() {
+            return GlobalCommandParser.getGlobalCommandParser();
+        }
 
-		if (defaultWindow) {
+        /** {@inheritDoc} */
+        @Override
+        public PopupType getNicknamePopupType() {
+            return null;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public PopupType getChannelPopupType() {
+            return null;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public PopupType getHyperlinkPopupType() {
+            return null;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public PopupType getNormalPopupType() {
+            return null;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void addCustomPopupItems(final JPopupMenu popupMenu) {
+            //Add no custom popup items
+        }
+
+    }
+
+    /** The Window we're using. */
+    protected InputWindow myWindow = null;
+
+    /** The dcc plugin that owns this frame */
+    protected final DCCPlugin plugin;
+
+    /** The Window we're using. */
+    private boolean windowClosing = false;
+
+    /**
+     * Creates a new instance of DCCFrame with an empty window.
+     *
+     * @param plugin The DCCPlugin that owns this frame
+     * @param title The title of this window
+     * @param icon The icon to use
+     */
+    public DCCFrame(final DCCPlugin plugin, final String title, final String icon) {
+        this(plugin, title, icon, true);
+    }
+
+    /**
+     * Creates a new instance of DCCFrame.
+     *
+     * @param plugin The DCCPlugin that owns this frame
+     * @param title The title of this window
+     * @param defaultWindow Create default (empty) window. (non-default = chat frame)
+     * @param icon The icon to use
+     */
+    public DCCFrame(final DCCPlugin plugin, final String title, final String icon, final boolean defaultWindow) {
+        super(icon, title, IdentityManager.getGlobalConfig());
+        this.plugin = plugin;
+
+        if (defaultWindow) {
             myWindow = UIUtilities.invokeAndWait(new ReturnableThread<EmptyFrame>() {
+
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
@@ -145,88 +151,89 @@ public abstract class DCCFrame extends WritableFrameContainer {
                     frame.setTitle(title);
                     setObject(frame);
                 }
+
             });
-		}
-	}
-	
-	/**
-	 * Sends a line of text to this container's source.
-	 *
-	 * @param line The line to be sent
-	 */
-	@Override
-	public void sendLine(final String line) {
-		
-	}
-	
-	/**
-	 * Returns the maximum length that a line passed to sendLine() should be,
-	 * in order to prevent it being truncated or causing protocol violations.
-	 *
-	 * @return The maximum line length for this container
-	 */
-	@Override
-	public int getMaxLineLength() {
-		return 512;
-	}
-	
-	/**
-	 * Returns the internal frame associated with this object.
-	 *
-	 * @return The internal frame associated with this object
-	 */
-	@Override
-	public InputWindow getFrame() {
-		return myWindow;
-	}
-	
-	/**
-	 * Returns the content pane of the internal frame associated with this object.
-	 *
-	 * @return The content pane of the internal frame associated with this object
-	 */
-	public Container getContentPane() {
-		return ((TextFrame)getFrame()).getContentPane();
-	}
-	
-	/**
-	 * Returns the server instance associated with this container.
-	 *
-	 * @return the associated server connection
-	 */
-	@Override
-	public Server getServer() {
-		return null;
-	}
-	
-	/**
-	 * Is the window closing?
-	 *
-	 * @return True if windowClosing has been called.
-	 */
-	public final boolean isWindowClosing() {
-		return windowClosing;
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public void windowClosing() {
-		windowClosing = true;
-		
-		// 1: Make the window non-visible
-		myWindow.setVisible(false);
-		
-		// 2: Remove any callbacks or listeners
-		// 3: Trigger any actions neccessary
-		// 4: Trigger action for the window closing
-		
-		// 5: Inform any parents that the window is closing
-		plugin.delWindow(this);
+        }
+    }
 
-		// 6: Remove the window from the window manager
-		WindowManager.removeWindow(myWindow);
+    /**
+     * Sends a line of text to this container's source.
+     *
+     * @param line The line to be sent
+     */
+    @Override
+    public void sendLine(final String line) {
+    }
 
-		// 7: Remove any references to the window and parents
-		myWindow = null; // NOPMD
-	}   
+    /**
+     * Returns the maximum length that a line passed to sendLine() should be,
+     * in order to prevent it being truncated or causing protocol violations.
+     *
+     * @return The maximum line length for this container
+     */
+    @Override
+    public int getMaxLineLength() {
+        return 512;
+    }
+
+    /**
+     * Returns the internal frame associated with this object.
+     *
+     * @return The internal frame associated with this object
+     */
+    @Override
+    public InputWindow getFrame() {
+        return myWindow;
+    }
+
+    /**
+     * Returns the content pane of the internal frame associated with this object.
+     *
+     * @return The content pane of the internal frame associated with this object
+     */
+    public Container getContentPane() {
+        return ((TextFrame) getFrame()).getContentPane();
+    }
+
+    /**
+     * Returns the server instance associated with this container.
+     *
+     * @return the associated server connection
+     */
+    @Override
+    public Server getServer() {
+        return null;
+    }
+
+    /**
+     * Is the window closing?
+     *
+     * @return True if windowClosing has been called.
+     */
+    public final boolean isWindowClosing() {
+        return windowClosing;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void windowClosing() {
+        windowClosing = true;
+
+        // 1: Make the window non-visible
+        myWindow.setVisible(false);
+
+        // 2: Remove any callbacks or listeners
+        // 3: Trigger any actions neccessary
+        // 4: Trigger action for the window closing
+
+        // 5: Inform any parents that the window is closing
+        plugin.delWindow(this);
+
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(myWindow);
+
+        // 7: Remove any references to the window and parents
+        myWindow = null; // NOPMD
+    }
+
 }

@@ -35,13 +35,13 @@ import com.dmdirc.ui.interfaces.Window;
  * @author Chris
  */
 public class HistoryWindow extends FrameContainer {
-    
+
     /** The window we're using. */
     private Window window;
-    
+
     /** Our parent window. */
     private Window parent;
-    
+
     /**
      * Creates a new HistoryWindow.
      *
@@ -51,13 +51,13 @@ public class HistoryWindow extends FrameContainer {
      * @param numLines The number of lines to show
      */
     public HistoryWindow(final String title, final ReverseFileReader reader,
-            final Window parent, final int numLines) {
+                         final Window parent, final int numLines) {
         super("raw", title, parent.getConfigManager());
 
         this.parent = parent;
-        
+
         window = Main.getUI().getWindow(this);
-        
+
         WindowManager.addWindow(parent, window);
         window.setTitle(title);
         window.open();
@@ -65,32 +65,32 @@ public class HistoryWindow extends FrameContainer {
                 "ui", "frameBufferSize");
         window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, numLines)), false);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Window getFrame() {
         return window;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
         window.setVisible(false);
-        
+
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
-        
+
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        
+
         // 7: Remove any references to the window and parents
         window = null; // NOPMD
         parent = null; // NOPMD
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Server getServer() {

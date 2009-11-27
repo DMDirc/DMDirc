@@ -31,56 +31,56 @@ import com.dmdirc.actions.interfaces.ActionType;
  * @author chris
  */
 public enum DCCActions implements ActionType {
-	
-	/** DCC Chat Request. */
-	DCC_CHAT_REQUEST(DCCEvents.DCC_CHAT_REQUEST, "DCC Chat Requested"),
-	/** DCC Chat Request Sent. */
-	DCC_CHAT_REQUEST_SENT(DCCEvents.DCC_CHAT_REQUEST_SENT, "DCC Chat Request Sent"),
-	/** DCC Message from another person. */
-	DCC_CHAT_MESSAGE(DCCEvents.DCC_CHAT_MESSAGE, "DCC Chat Message Recieved"),
-	/** DCC Message to another person. */
-	DCC_CHAT_SELFMESSAGE(DCCEvents.DCC_CHAT_SELFMESSAGE, "DCC Chat Message Sent"),
-	/** DCC Chat Socket Closed. */
-	DCC_CHAT_SOCKETCLOSED(DCCEvents.DCC_CHAT_SOCKETCLOSED, "DCC Chat Socket Closed"),
-	/** DCC Chat Socket Opened. */
-	DCC_CHAT_SOCKETOPENED(DCCEvents.DCC_CHAT_SOCKETOPENED, "DCC Chat Socket Opened"),
-	
-	/** DCC Send Socket Closed. */
-	DCC_SEND_SOCKETCLOSED(DCCEvents.DCC_SEND_SOCKETCLOSED, "DCC Send Socket Closed"),
-	/** DCC Send Socket Opened. */
-	DCC_SEND_SOCKETOPENED(DCCEvents.DCC_SEND_SOCKETOPENED, "DCC Send Socket Opened"),
-	/** DCC Send Data Transfered */
-	DCC_SEND_DATATRANSFERED(DCCEvents.DCC_SEND_DATATRANSFERED, "DCC Send Socket Closed"),
-	/** DCC Send Request. */
-	DCC_SEND_REQUEST(DCCEvents.DCC_SEND_REQUEST, "DCC Chat Requested"),
-	/** DCC Send Request Sent. */
-	DCC_SEND_REQUEST_SENT(DCCEvents.DCC_SEND_REQUEST_SENT, "DCC Chat Request Sent");
-	
-	/** The type of this action. */
-	private final ActionMetaType type;
-	
-	/** The name of this action. */
-	private final String name;
-	
-	/**
-	 * Constructs a new core action.
-	 * @param type The type of this action
-	 * @param name The name of this action
-	 */
-	DCCActions(final ActionMetaType type, final String name) {
-		this.type = type;
-		this.name = name;
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public ActionMetaType getType() {
-		return type;
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
-	}
+
+    /** DCC Chat Request. */
+    DCC_CHAT_REQUEST(DCCEvents.DCC_CHAT_REQUEST, "DCC Chat Requested"),
+    /** DCC Chat Request Sent. */
+    DCC_CHAT_REQUEST_SENT(DCCEvents.DCC_CHAT_REQUEST_SENT, "DCC Chat Request Sent"),
+    /** DCC Message from another person. */
+    DCC_CHAT_MESSAGE(DCCEvents.DCC_CHAT_MESSAGE, "DCC Chat Message Recieved"),
+    /** DCC Message to another person. */
+    DCC_CHAT_SELFMESSAGE(DCCEvents.DCC_CHAT_SELFMESSAGE, "DCC Chat Message Sent"),
+    /** DCC Chat Socket Closed. */
+    DCC_CHAT_SOCKETCLOSED(DCCEvents.DCC_CHAT_SOCKETCLOSED, "DCC Chat Socket Closed"),
+    /** DCC Chat Socket Opened. */
+    DCC_CHAT_SOCKETOPENED(DCCEvents.DCC_CHAT_SOCKETOPENED, "DCC Chat Socket Opened"),
+    /** DCC Send Socket Closed. */
+    DCC_SEND_SOCKETCLOSED(DCCEvents.DCC_SEND_SOCKETCLOSED, "DCC Send Socket Closed"),
+    /** DCC Send Socket Opened. */
+    DCC_SEND_SOCKETOPENED(DCCEvents.DCC_SEND_SOCKETOPENED, "DCC Send Socket Opened"),
+    /** DCC Send Data Transfered */
+    DCC_SEND_DATATRANSFERED(DCCEvents.DCC_SEND_DATATRANSFERED, "DCC Send Socket Closed"),
+    /** DCC Send Request. */
+    DCC_SEND_REQUEST(DCCEvents.DCC_SEND_REQUEST, "DCC Chat Requested"),
+    /** DCC Send Request Sent. */
+    DCC_SEND_REQUEST_SENT(DCCEvents.DCC_SEND_REQUEST_SENT, "DCC Chat Request Sent");
+
+    /** The type of this action. */
+    private final ActionMetaType type;
+
+    /** The name of this action. */
+    private final String name;
+
+    /**
+     * Constructs a new core action.
+     * @param type The type of this action
+     * @param name The name of this action
+     */
+    DCCActions(final ActionMetaType type, final String name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ActionMetaType getType() {
+        return type;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName() {
+        return name;
+    }
+
 }

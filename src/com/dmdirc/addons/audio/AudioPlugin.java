@@ -31,34 +31,37 @@ import com.dmdirc.commandparser.CommandManager;
  * @author Shane 'Dataforce' McCormack
  */
 public final class AudioPlugin extends Plugin {
-	/** The AudioCommand we created */
-	private AudioCommand audioCommand = null;
-	
-	/** The BeepCommand we created */
-	private BeepCommand beepCommand = null;
 
-	/**
-	 * Creates a new instance of the Audio Plugin.
-	 */
-	public AudioPlugin() { super(); }
-	
-	/**
-	 * Called when the plugin is loaded.
-	 */
+    /** The AudioCommand we created */
+    private AudioCommand audioCommand = null;
+
+    /** The BeepCommand we created */
+    private BeepCommand beepCommand = null;
+
+    /**
+     * Creates a new instance of the Audio Plugin.
+     */
+    public AudioPlugin() {
+        super();
+    }
+
+    /**
+     * Called when the plugin is loaded.
+     */
     @Override
-	public void onLoad() {
-		audioCommand = new AudioCommand();
-		beepCommand = new BeepCommand();
-	}
-	
-	/**
-	 * Called when this plugin is Unloaded
-	 */
+    public void onLoad() {
+        audioCommand = new AudioCommand();
+        beepCommand = new BeepCommand();
+    }
+
+    /**
+     * Called when this plugin is Unloaded
+     */
     @Override
-	public void onUnload() {
-		CommandManager.unregisterCommand(beepCommand);
-		CommandManager.unregisterCommand(audioCommand);
-	}
-	
+    public void onUnload() {
+        CommandManager.unregisterCommand(beepCommand);
+        CommandManager.unregisterCommand(audioCommand);
+    }
+
 }
 

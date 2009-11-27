@@ -41,120 +41,128 @@ import java.util.List;
  */
 public final class IdentdServer implements Runnable {
 
-	/** The Thread in use for this server */
-	private volatile Thread myThread = null;
-	/** The current socket in use for this server */
-	private ServerSocket serverSocket;
-	/** Arraylist of all the clients we have */
-	private final List<IdentClient> clientList = new ArrayList<IdentClient>();
-	/** The plugin that owns us. */
-	private final IdentdPlugin myPlugin;
-	
-	/**
-	 * Create the IdentdServer.
-	 */
-	public IdentdServer(final IdentdPlugin plugin) {
-		super();
-		myPlugin = plugin;
-	}
-	
-	/**
-	 * Run this IdentdServer.
-	 */
+    /** The Thread in use for this server */
+    private volatile Thread myThread = null;
+
+    /** The current socket in use for this server */
+    private ServerSocket serverSocket;
+
+    /** Arraylist of all the clients we have */
+    private final List<IdentClient> clientList = new ArrayList<IdentClient>();
+
+    /** The plugin that owns us. */
+    private final IdentdPlugin myPlugin;
+
+    /**
+     * Create the IdentdServer.
+     */
+    public IdentdServer(final IdentdPlugin plugin) {
+        super();
+        myPlugin = plugin;
+    }
+
+    /**
+     * Run this IdentdServer.
+     */
     @Override
-	public void run() {
-		final Thread thisThread = Thread.currentThread();
-		while (myThread == thisThread) {
-			try {
-				final Socket clientSocket = serverSocket.accept();
-				final IdentClient client = new IdentClient(this, clientSocket, myPlugin);
-				addClient(client);
-			} catch (IOException e) {
-				if (myThread == thisThread) {
-					Logger.userError(ErrorLevel.HIGH ,"Accepting client failed: "+e.getMessage());
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Add an IdentClient to the clientList
-	 *
-	 * @param client Client to add
-	 */
-	public void addClient(final IdentClient client) {
-		synchronized (clientList) {
-			clientList.add(client);
-		}
-	}
-	
-	/**
-	 * Remove an IdentClient from the clientList
-	 *
-	 * @param client Client to remove
-	 */
-	public void delClient(final IdentClient client) {
-		synchronized (clientList) {
-			for (int i = 0; i < clientList.size() ; ++i) {
-				if (clientList.get(i) == client) {
-					clientList.remove(i);
-					break;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Check if the server is currently running
-	 *
-	 * @return True if the server is running
-	 */
-	public boolean isRunning() {
-		return (myThread != null);
-	}
-	
-	/**
-	 * Start the ident server
-	 */
-	public void startServer() {
-		if (myThread == null) {
-			try {
-				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "advanced.port");
-				serverSocket = new ServerSocket(identPort);
-				myThread = new Thread(this);
-				myThread.start();
-			} catch (IOException e) {
-				Logger.userError(ErrorLevel.MEDIUM ,"Unable to start identd server: "+e.getMessage());
-				if (e.getMessage().equals("Permission denied")) {
-					final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName("identd");
-					if (plugin != null) {
-						if (PluginManager.getPluginManager().delPlugin(plugin.getRelativeFilename())) {
-							PluginManager.getPluginManager().updateAutoLoad(plugin);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Stop the ident server
-	 */
-	public void stopServer() {
-		if (myThread != null) {
-			final Thread tmpThread = myThread;
-			myThread = null;
-			if (tmpThread != null) { tmpThread.interrupt(); }
-			try { serverSocket.close(); } catch (IOException e) { }
-			
-			synchronized (clientList) {
-				for (int i = 0; i < clientList.size() ; ++i) {
-					clientList.get(i).close();
-				}
-				clientList.clear();
-			}
-		}
-	}
-	
+    public void run() {
+        final Thread thisThread = Thread.currentThread();
+        while (myThread == thisThread) {
+            try {
+                final Socket clientSocket = serverSocket.accept();
+                final IdentClient client = new IdentClient(this, clientSocket, myPlugin);
+                addClient(client);
+            } catch (IOException e) {
+                if (myThread == thisThread) {
+                    Logger.userError(ErrorLevel.HIGH, "Accepting client failed: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * Add an IdentClient to the clientList
+     *
+     * @param client Client to add
+     */
+    public void addClient(final IdentClient client) {
+        synchronized (clientList) {
+            clientList.add(client);
+        }
+    }
+
+    /**
+     * Remove an IdentClient from the clientList
+     *
+     * @param client Client to remove
+     */
+    public void delClient(final IdentClient client) {
+        synchronized (clientList) {
+            for (int i = 0; i < clientList.size(); ++i) {
+                if (clientList.get(i) == client) {
+                    clientList.remove(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the server is currently running
+     *
+     * @return True if the server is running
+     */
+    public boolean isRunning() {
+        return (myThread != null);
+    }
+
+    /**
+     * Start the ident server
+     */
+    public void startServer() {
+        if (myThread == null) {
+            try {
+                final int identPort = IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "advanced.port");
+                serverSocket = new ServerSocket(identPort);
+                myThread = new Thread(this);
+                myThread.start();
+            } catch (IOException e) {
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to start identd server: " + e.getMessage());
+                if (e.getMessage().equals("Permission denied")) {
+                    final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName("identd");
+                    if (plugin != null) {
+                        if (PluginManager.getPluginManager().delPlugin(plugin.getRelativeFilename())) {
+                            PluginManager.getPluginManager().updateAutoLoad(plugin);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Stop the ident server
+     */
+    public void stopServer() {
+        if (myThread != null) {
+            final Thread tmpThread = myThread;
+            myThread = null;
+            if (tmpThread != null) {
+                tmpThread.interrupt();
+            }
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+            }
+
+            synchronized (clientList) {
+                for (int i = 0; i < clientList.size(); ++i) {
+                    clientList.get(i).close();
+                }
+                clientList.clear();
+            }
+        }
+    }
+
 }
 

@@ -28,25 +28,27 @@ package com.dmdirc.addons.dcc;
  * @author Shane 'Dataforce' McCormack
  */
 public interface DCCSendInterface {
-	/**
-	 * Called when the socket is closed
-	 *
-	 * @param dcc The DCCSend that this message is from
-	 */
-	void socketClosed(final DCCSend dcc);
-	
-	/**
-	 * Called when the socket is opened
-	 *
-	 * @param dcc The DCCSend that this message is from
-	 */
-	void socketOpened(final DCCSend dcc);
-	
-	/**
-	 * Called when data is sent/recieved
-	 *
-	 * @param dcc The DCCSend that this message is from
-	 * @param bytes The number of new bytes that were transfered
-	 */
-	void dataTransfered(final DCCSend dcc, final int bytes);
+
+    /**
+     * Called when the socket is closed
+     *
+     * @param dcc The DCCSend that this message is from
+     */
+    void socketClosed(final DCCSend dcc);
+
+    /**
+     * Called when the socket is opened
+     *
+     * @param dcc The DCCSend that this message is from
+     */
+    void socketOpened(final DCCSend dcc);
+
+    /**
+     * Called when data is sent/recieved
+     *
+     * @param dcc The DCCSend that this message is from
+     * @param bytes The number of new bytes that were transfered
+     */
+    void dataTransfered(final DCCSend dcc, final int bytes);
+
 }
