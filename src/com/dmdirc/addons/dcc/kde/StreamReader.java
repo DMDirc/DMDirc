@@ -29,71 +29,73 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 public class StreamReader extends Thread {
-	/** This is the Input Stream we are reading */
-	private InputStream stream;
-	
-	/** This is the output Prefix */
-	private String prefix = null;
-	
-	/** List to store output in */
-	private List<String> list = null;
-	
-	/**
-	 * Create a new Stream Reader
-	 *
-	 * @param stream The stream to read
-	 * @param list The list to store the output from the stream in (null for no saving)
-	 */
-	public StreamReader(final InputStream stream, final List<String> list) {
-		this.stream = stream;
-		this.list = list;
-	}
-	
-	/**
-	 * Create a new Stream Reader that outputs what it reads
-	 *
-	 * @param stream The stream to read
-	 * @param list The list to store the output from the stream in (null for no saving)
-	 * @param prefix Prefix of outputed messages
-	 */
-	public StreamReader(final InputStream stream, final List<String> list, final String prefix) {
-		this.stream = stream;
-		this.prefix = prefix;
-		this.list = list;
-		
-		System.out.printf("[%s] Started%n", prefix);
-	}
 
-	/**
-	 * Get the list that the output is being stored in.
-	 */
-	public List<String> getList() {
-		return list;
-	}
+    /** This is the Input Stream we are reading */
+    private InputStream stream;
 
-	/**
-	 * Wait for input on stream, and output/throw away/save to list
-	 */
-	public void run() {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (prefix != null) {
-					System.out.printf("[%s] %s%n", prefix, line);
-				}
-				if (list != null) {
-					list.add(line);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    /** This is the output Prefix */
+    private String prefix = null;
+
+    /** List to store output in */
+    private List<String> list = null;
+
+    /**
+     * Create a new Stream Reader
+     *
+     * @param stream The stream to read
+     * @param list The list to store the output from the stream in (null for no saving)
+     */
+    public StreamReader(final InputStream stream, final List<String> list) {
+        this.stream = stream;
+        this.list = list;
+    }
+
+    /**
+     * Create a new Stream Reader that outputs what it reads
+     *
+     * @param stream The stream to read
+     * @param list The list to store the output from the stream in (null for no saving)
+     * @param prefix Prefix of outputed messages
+     */
+    public StreamReader(final InputStream stream, final List<String> list, final String prefix) {
+        this.stream = stream;
+        this.prefix = prefix;
+        this.list = list;
+
+        System.out.printf("[%s] Started%n", prefix);
+    }
+
+    /**
+     * Get the list that the output is being stored in.
+     */
+    public List<String> getList() {
+        return list;
+    }
+
+    /**
+     * Wait for input on stream, and output/throw away/save to list
+     */
+    public void run() {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (prefix != null) {
+                    System.out.printf("[%s] %s%n", prefix, line);
+                }
+                if (list != null) {
+                    list.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.windowstatus;
 
 import com.dmdirc.ui.interfaces.StatusBarComponent;
@@ -38,6 +39,7 @@ public class WindowStatusPanel extends JPanel implements StatusBarComponent {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3333052848780326565L;
+
     /** The label we use to show window status. */
     private final JLabel label = new JLabel("???");
 
@@ -48,7 +50,7 @@ public class WindowStatusPanel extends JPanel implements StatusBarComponent {
         setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
         add(label);
     }
-    
+
     /**
      * Sets the text for this label.
      * This will strip any formatting from the text.
@@ -58,4 +60,5 @@ public class WindowStatusPanel extends JPanel implements StatusBarComponent {
     public void setText(final String text) {
         label.setText(Styliser.stipControlCodes(text));
     }
+
 }

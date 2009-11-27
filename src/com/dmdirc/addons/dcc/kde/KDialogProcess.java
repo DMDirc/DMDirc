@@ -30,77 +30,79 @@ import java.util.ArrayList;
  * Hold a Process and stream readers for a KDialog Process
  */
 public class KDialogProcess {
-	/** Is kdialog in /bin? */
-	private final static boolean isBin = (new File("/bin/kdialog")).exists();
-	
-	/** Does KDialog exist? */
-	private final static boolean hasKDialog = (new File("/usr/bin/kdialog")).exists() || isBin;	
 
-	/** Stream for the stdout stream for this process */
-	private final StreamReader stdOutputStream;
-	
-	/** Stream for the stderr stream for this process */
-	private final StreamReader stdErrorStream;
-	
-	/** The actual process for this process */
-	private final Process process;
-	
-	/**
-	 * Execute kdialog with the Parameters in params
-	 *
-	 * @param params Parameters to pass to kdialog
-	 */
-	public KDialogProcess(final String[] params) throws IOException {
-		final String[] exec = new String[params.length+1];
-		System.arraycopy(params, 0, exec, 1, params.length);
-		exec[0] = (isBin) ? "/bin/kdialog" : "/usr/bin/kdialog";
-		process = Runtime.getRuntime().exec(exec);
-		stdOutputStream = new StreamReader(process.getInputStream(), new ArrayList<String>());
-		stdErrorStream = new StreamReader(process.getErrorStream(), new ArrayList<String>());
-		stdOutputStream.start();
-		stdErrorStream.start();
-	}
-	
-	/**
-	 * Does this system have kdialog?
-	 *
-	 * @return True if kdialog was found, else false
-	 */
-	public static boolean hasKDialog() {
-		return hasKDialog;
-	}
-	
-	/**
-	 * Get the process object for this KDialogProcess
-	 *
-	 * @return The process object for this KDialogProcess
-	 */
-	public Process getProcess() {
-		return process;
-	}
-	
-	/**
-	 * Get the StreamReader for this KDialogProcess's stdout stream
-	 *
-	 * @return The StreamReader for this KDialogProcess's stdout stream
-	 */
-	public StreamReader getStdOutStream() {
-		return stdOutputStream;
-	}
-	
-	/**
-	 * Get the StreamReader for this KDialogProcess's stderr stream
-	 *
-	 * @return The StreamReader for this KDialogProcess's stderr stream
-	 */
-	public StreamReader getStdErrStream() {
-		return stdErrorStream;
-	}
-	
-	/**
-	 * Wait for the process to finish.
-	 */
-	public void waitFor() throws InterruptedException {
-		process.waitFor();
-	}
+    /** Is kdialog in /bin? */
+    private final static boolean isBin = (new File("/bin/kdialog")).exists();
+
+    /** Does KDialog exist? */
+    private final static boolean hasKDialog = (new File("/usr/bin/kdialog")).exists() || isBin;
+
+    /** Stream for the stdout stream for this process */
+    private final StreamReader stdOutputStream;
+
+    /** Stream for the stderr stream for this process */
+    private final StreamReader stdErrorStream;
+
+    /** The actual process for this process */
+    private final Process process;
+
+    /**
+     * Execute kdialog with the Parameters in params
+     *
+     * @param params Parameters to pass to kdialog
+     */
+    public KDialogProcess(final String[] params) throws IOException {
+        final String[] exec = new String[params.length + 1];
+        System.arraycopy(params, 0, exec, 1, params.length);
+        exec[0] = (isBin) ? "/bin/kdialog" : "/usr/bin/kdialog";
+        process = Runtime.getRuntime().exec(exec);
+        stdOutputStream = new StreamReader(process.getInputStream(), new ArrayList<String>());
+        stdErrorStream = new StreamReader(process.getErrorStream(), new ArrayList<String>());
+        stdOutputStream.start();
+        stdErrorStream.start();
+    }
+
+    /**
+     * Does this system have kdialog?
+     *
+     * @return True if kdialog was found, else false
+     */
+    public static boolean hasKDialog() {
+        return hasKDialog;
+    }
+
+    /**
+     * Get the process object for this KDialogProcess
+     *
+     * @return The process object for this KDialogProcess
+     */
+    public Process getProcess() {
+        return process;
+    }
+
+    /**
+     * Get the StreamReader for this KDialogProcess's stdout stream
+     *
+     * @return The StreamReader for this KDialogProcess's stdout stream
+     */
+    public StreamReader getStdOutStream() {
+        return stdOutputStream;
+    }
+
+    /**
+     * Get the StreamReader for this KDialogProcess's stderr stream
+     *
+     * @return The StreamReader for this KDialogProcess's stderr stream
+     */
+    public StreamReader getStdErrStream() {
+        return stdErrorStream;
+    }
+
+    /**
+     * Wait for the process to finish.
+     */
+    public void waitFor() throws InterruptedException {
+        process.waitFor();
+    }
+
 }

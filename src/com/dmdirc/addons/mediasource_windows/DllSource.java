@@ -31,145 +31,150 @@ import com.dmdirc.addons.nowplaying.MediaSourceState;
  * @author Shane
  */
 public class DllSource implements MediaSource {
-	/** Player name */
-	private final String playerName;
-	
-	/** Use getArtistTitle */
-	private final boolean useArtistTitle;
-		
-	
-	/**
-	 * Instantiates the media source.
-	 *
-	 * @param playerName Name of Player and DLL
-	 */
-	public DllSource(final String playerName) {
-		this(playerName, false);
-	}
-	
-	/**
-	 * Instantiates the media source.
-	 *
-	 * @param playerName Name of Player and DLL
-	 * @param useArtistTitle True if getArtistTitle should be parsed rather than
-	 *                       using getArtist() and getTitle()
-	 */
-	public DllSource(final String playerName, final boolean useArtistTitle) {
-		this.playerName = playerName;
-		this.useArtistTitle = useArtistTitle;
-	}
-	
-	/** {@inheritDoc} */
+
+    /** Player name */
+    private final String playerName;
+
+    /** Use getArtistTitle */
+    private final boolean useArtistTitle;
+
+    /**
+     * Instantiates the media source.
+     *
+     * @param playerName Name of Player and DLL
+     */
+    public DllSource(final String playerName) {
+        this(playerName, false);
+    }
+
+    /**
+     * Instantiates the media source.
+     *
+     * @param playerName Name of Player and DLL
+     * @param useArtistTitle True if getArtistTitle should be parsed rather than
+     *                       using getArtist() and getTitle()
+     */
+    public DllSource(final String playerName, final boolean useArtistTitle) {
+        this.playerName = playerName;
+        this.useArtistTitle = useArtistTitle;
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getAppName() {
-		return playerName;
-	}
-	
-	/**
-	 * Get the "goodoutput" from GetMediaInfo for the given command
-	 *
-	 * @param command Command to run
-	 * @return "Good" Output
-	 */
-	private String getOutput(final String command) {
-		return WindowsMediaSourcePlugin.getOutput(playerName, command).getGoodOutput();
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public MediaSourceState getState() {
-		final MediaInfoOutput result = WindowsMediaSourcePlugin.getOutput(playerName, "getPlayState");
-		
-		if (result.getExitCode() == 0) {
-			final String output = result.getGoodOutput();
-			if (output.equalsIgnoreCase("stopped")) {
-				return MediaSourceState.STOPPED;
-			} else if (output.equalsIgnoreCase("playing")) {
-				return MediaSourceState.PLAYING;
-			} else if (output.equalsIgnoreCase("paused")) {
-				return MediaSourceState.PAUSED;
-			} else {
-				return MediaSourceState.NOTKNOWN;
-			}
-		} else {
-			return MediaSourceState.CLOSED;
-		}
-	}
-	
-	/** {@inheritDoc} */
+    public String getAppName() {
+        return playerName;
+    }
+
+    /**
+     * Get the "goodoutput" from GetMediaInfo for the given command
+     *
+     * @param command Command to run
+     * @return "Good" Output
+     */
+    private String getOutput(final String command) {
+        return WindowsMediaSourcePlugin.getOutput(playerName, command).getGoodOutput();
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getArtist() {
-		if (useArtistTitle) {
-			return getOutput("getArtistTitle").split("\\s-\\s", 2)[0];
-		} else {
-			return getOutput("getArtist");
-		}
-	}
-	
-	/** {@inheritDoc} */
+    public MediaSourceState getState() {
+        final MediaInfoOutput result = WindowsMediaSourcePlugin.getOutput(playerName, "getPlayState");
+
+        if (result.getExitCode() == 0) {
+            final String output = result.getGoodOutput();
+            if (output.equalsIgnoreCase("stopped")) {
+                return MediaSourceState.STOPPED;
+            } else if (output.equalsIgnoreCase("playing")) {
+                return MediaSourceState.PLAYING;
+            } else if (output.equalsIgnoreCase("paused")) {
+                return MediaSourceState.PAUSED;
+            } else {
+                return MediaSourceState.NOTKNOWN;
+            }
+        } else {
+            return MediaSourceState.CLOSED;
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getTitle() {
-		if (useArtistTitle) {
-			String bits[] = getOutput("getArtistTitle").split("\\s-\\s", 2);
-			return (bits.length > 1) ? bits[1] : "";
-		} else {
-			return getOutput("getTitle");
-		}
-	}
-	
-	/** {@inheritDoc} */
+    public String getArtist() {
+        if (useArtistTitle) {
+            return getOutput("getArtistTitle").split("\\s-\\s", 2)[0];
+        } else {
+            return getOutput("getArtist");
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getAlbum() {
-		return getOutput("getAlbum");
-	}
-	
-	/**
-	 * Get the duration in seconds as a string.
-	 *
-	 * @param secondsInput to get duration for
-	 * @return Duration as a string
-	 */
-	private String duration(final long secondsInput) {
-		final StringBuilder result = new StringBuilder();
-		final long hours = (secondsInput / 3600);
-		final long minutes = (secondsInput / 60 % 60);
-		final long seconds = (secondsInput % 60);
-		
-		if (hours > 0) { result.append(hours+":"); }
-		result.append(String.format("%0,2d:%0,2d",minutes,seconds));
-		
-		return result.toString();
-	}
-	
-	/** {@inheritDoc} */
+    public String getTitle() {
+        if (useArtistTitle) {
+            String bits[] = getOutput("getArtistTitle").split("\\s-\\s", 2);
+            return (bits.length > 1) ? bits[1] : "";
+        } else {
+            return getOutput("getTitle");
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getLength() {
-		try {
-			final int seconds = Integer.parseInt(getOutput("getLength"));
-			return duration(seconds);
-		} catch (NumberFormatException nfe) { }
-		return "Unknown";
-	}
-	
-	/** {@inheritDoc} */
+    public String getAlbum() {
+        return getOutput("getAlbum");
+    }
+
+    /**
+     * Get the duration in seconds as a string.
+     *
+     * @param secondsInput to get duration for
+     * @return Duration as a string
+     */
+    private String duration(final long secondsInput) {
+        final StringBuilder result = new StringBuilder();
+        final long hours = (secondsInput / 3600);
+        final long minutes = (secondsInput / 60 % 60);
+        final long seconds = (secondsInput % 60);
+
+        if (hours > 0) {
+            result.append(hours + ":");
+        }
+        result.append(String.format("%0,2d:%0,2d", minutes, seconds));
+
+        return result.toString();
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getTime() {
-		try {
-			final int seconds = Integer.parseInt(getOutput("getTime"));
-			return duration(seconds);
-		} catch (NumberFormatException nfe) { }
-		return "Unknown";
-	}
-	
-	/** {@inheritDoc} */
+    public String getLength() {
+        try {
+            final int seconds = Integer.parseInt(getOutput("getLength"));
+            return duration(seconds);
+        } catch (NumberFormatException nfe) {
+        }
+        return "Unknown";
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getFormat() {
-		return getOutput("getFormat");
-	}
-	
-	/** {@inheritDoc} */
+    public String getTime() {
+        try {
+            final int seconds = Integer.parseInt(getOutput("getTime"));
+            return duration(seconds);
+        } catch (NumberFormatException nfe) {
+        }
+        return "Unknown";
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public String getBitrate() {
-		return getOutput("getBitrate");
-	}
+    public String getFormat() {
+        return getOutput("getFormat");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getBitrate() {
+        return getOutput("getBitrate");
+    }
+
 }

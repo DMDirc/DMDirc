@@ -28,25 +28,27 @@ package com.dmdirc.addons.dcc;
  * @author Shane 'Dataforce' McCormack
  */
 public interface DCCChatInterface {
-	/**
-	 * Handle a received message
-	 *
-	 * @param dcc The DCCChat that this message is from
-	 * @param message The message
-	 */
-	void handleChatMessage(final DCCChat dcc, final String message);
-	
-	/**
-	 * Called when the socket is closed
-	 *
-	 * @param dcc The DCCChat that this message is from
-	 */
-	void socketClosed(final DCCChat dcc);
-	
-	/**
-	 * Called when the socket is opened
-	 *
-	 * @param dcc The DCCChat that this message is from
-	 */
-	void socketOpened(final DCCChat dcc);
+
+    /**
+     * Handle a received message
+     *
+     * @param dcc The DCCChat that this message is from
+     * @param message The message
+     */
+    void handleChatMessage(final DCCChat dcc, final String message);
+
+    /**
+     * Called when the socket is closed
+     *
+     * @param dcc The DCCChat that this message is from
+     */
+    void socketClosed(final DCCChat dcc);
+
+    /**
+     * Called when the socket is opened
+     *
+     * @param dcc The DCCChat that this message is from
+     */
+    void socketOpened(final DCCChat dcc);
+
 }

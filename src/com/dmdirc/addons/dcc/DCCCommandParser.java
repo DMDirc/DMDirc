@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.dcc;
 
 import com.dmdirc.commandparser.CommandArguments;
@@ -28,7 +29,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.interfaces.InputWindow;
-
 
 /**
  * DCC CommandParser
@@ -92,4 +92,5 @@ public class DCCCommandParser extends CommandParser {
     protected void handleNonCommand(final InputWindow origin, final String line) {
         origin.getContainer().sendLine(line);
     }
+
 }

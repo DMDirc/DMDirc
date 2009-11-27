@@ -26,41 +26,49 @@ package com.dmdirc.addons.mediasource_windows;
  * Holds Output from GetMediaInfo.exe
  */
 public class MediaInfoOutput {
-	/** Exit Code from GetMediaInfo.exe */
-	private final int exitCode;
-	
-	/** Output from GetMediaInfo.exe */
-	private final String output;
 
-	/**
-	 * Create a MediaInfoOutput
-	 *
-	 * @param exitCode Exit code from GetMediaInfo.exe
-	 * @param output Output from GetMediaInfo.exe
-	 */
-	public MediaInfoOutput(final int exitCode, final String output) {
-		this.exitCode = exitCode;
-		this.output = output;
-	}
-	
-	/**
-	 * Get the exit code
-	 *
-	 * @return exit Code
-	 */
-	public int getExitCode() { return exitCode; }
-	
-	/**
-	 * Get the output
-	 *
-	 * @return output
-	 */
-	public String getOutput() { return output; }
-	
-	/**
-	 * Get the output only if the exitCode was 0, else a blank string.
-	 *
-	 * @return The output only if the exitCode was 0, else a blank string.
-	 */
-	public String getGoodOutput() { return (getExitCode() == 0) ? output : ""; }
+    /** Exit Code from GetMediaInfo.exe */
+    private final int exitCode;
+
+    /** Output from GetMediaInfo.exe */
+    private final String output;
+
+    /**
+     * Create a MediaInfoOutput
+     *
+     * @param exitCode Exit code from GetMediaInfo.exe
+     * @param output Output from GetMediaInfo.exe
+     */
+    public MediaInfoOutput(final int exitCode, final String output) {
+        this.exitCode = exitCode;
+        this.output = output;
+    }
+
+    /**
+     * Get the exit code
+     *
+     * @return exit Code
+     */
+    public int getExitCode() {
+        return exitCode;
+    }
+
+    /**
+     * Get the output
+     *
+     * @return output
+     */
+    public String getOutput() {
+        return output;
+    }
+
+    /**
+     * Get the output only if the exitCode was 0, else a blank string.
+     *
+     * @return The output only if the exitCode was 0, else a blank string.
+     */
+    public String getGoodOutput() {
+        return (getExitCode() == 0) ? output : "";
+    }
+
 }

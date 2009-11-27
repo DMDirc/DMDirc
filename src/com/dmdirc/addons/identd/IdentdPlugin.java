@@ -46,79 +46,80 @@ import java.util.List;
 public class IdentdPlugin extends Plugin implements ActionListener {
 
     /** Array list to store all the servers in that need ident replies. */
-	private final List<Server> servers = new ArrayList<Server>();
+    private final List<Server> servers = new ArrayList<Server>();
 
     /** The IdentdServer that we use. */
-	private IdentdServer myServer;
+    private IdentdServer myServer;
 
-	/**
-	 * Creates a new instance of IdentdPlugin.
-	 */
-	public IdentdPlugin() { }
-	
-	/**
-	 * Called when the plugin is loaded.
-	 */
-	@Override
-	public void onLoad() {
-		// Add action hooks
-		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
-		
-		myServer = new IdentdServer(this);
-		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
-			myServer.startServer();
-		}
-	}
-	
-	/**
-	 * Called when this plugin is unloaded.
-	 */
-	@Override
-	public void onUnload() {
-		myServer.stopServer();
-		servers.clear();
-		ActionManager.removeListener(this);
-	}
-	
-	/**
-	 * Process an event of the specified type.
-	 *
-	 * @param type The type of the event to process
-	 * @param format Format of messages that are about to be sent. (May be null)
-	 * @param arguments The arguments for the event
-	 */
-	@Override
-	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
-		if (type == CoreActionType.SERVER_CONNECTING) {
-			synchronized (servers) {
-				if (servers.isEmpty()) {
-					myServer.startServer();
-				}
-				servers.add((Server) arguments[0]);
-			}
-		} else if (type == CoreActionType.SERVER_CONNECTED || type == CoreActionType.SERVER_CONNECTERROR) {
-			synchronized (servers) {
-				servers.remove(arguments[0]);
-			
-				if (servers.isEmpty() && !IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
-					myServer.stopServer();
-				}
-			}
-		}
-	}
-		
-	/** {@inheritDoc} */
-	@Override
-	public void showConfig(final PreferencesManager manager) {
+    /**
+     * Creates a new instance of IdentdPlugin.
+     */
+    public IdentdPlugin() {
+    }
+
+    /**
+     * Called when the plugin is loaded.
+     */
+    @Override
+    public void onLoad() {
+        // Add action hooks
+        ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
+
+        myServer = new IdentdServer(this);
+        if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
+            myServer.startServer();
+        }
+    }
+
+    /**
+     * Called when this plugin is unloaded.
+     */
+    @Override
+    public void onUnload() {
+        myServer.stopServer();
+        servers.clear();
+        ActionManager.removeListener(this);
+    }
+
+    /**
+     * Process an event of the specified type.
+     *
+     * @param type The type of the event to process
+     * @param format Format of messages that are about to be sent. (May be null)
+     * @param arguments The arguments for the event
+     */
+    @Override
+    public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+        if (type == CoreActionType.SERVER_CONNECTING) {
+            synchronized (servers) {
+                if (servers.isEmpty()) {
+                    myServer.startServer();
+                }
+                servers.add((Server) arguments[0]);
+            }
+        } else if (type == CoreActionType.SERVER_CONNECTED || type == CoreActionType.SERVER_CONNECTERROR) {
+            synchronized (servers) {
+                servers.remove(arguments[0]);
+
+                if (servers.isEmpty() && !IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
+                    myServer.stopServer();
+                }
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig(final PreferencesManager manager) {
         final PreferencesCategory general = new PreferencesCategory("Identd",
                 "General Identd Plugin config ('Lower' options take priority " +
                 "over those above them)");
-        final PreferencesCategory advanced = new PreferencesCategory("Advanced", 
+        final PreferencesCategory advanced = new PreferencesCategory("Advanced",
                 "Advanced Identd Plugin config - Only edit these if you need " +
                 "to/know what you are doing. Editing these could prevent " +
                 "access to some servers. ('Lower' options take priority over " +
                 "those above them)");
-        
+
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 getDomain(), "general.useUsername", "Use connection " +
                 "username rather than system username", "If this is enabled," +
@@ -136,7 +137,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
         general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 getDomain(), "general.customName", "Custom Name to use",
                 "The custom name to use when 'Use Custom Name' is enabled"));
-        
+
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 getDomain(), "advanced.alwaysOn", "Always have ident " +
                 "port open", "By default the identd only runs when there are " +
@@ -163,9 +164,9 @@ public class IdentdPlugin extends Plugin implements ActionListener {
                 " requests with NO-USER error", "By default the plugin will" +
                 " give a USERID response, this can force an 'ERROR : NO-USER'" +
                 " response instead. (Overrides HIDDEN-USER)"));
-		
-		manager.getCategory("Plugins").addSubCategory(general);
+
+        manager.getCategory("Plugins").addSubCategory(general);
         general.addSubCategory(advanced);
-	}
-	
+    }
+
 }

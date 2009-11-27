@@ -36,43 +36,50 @@ import java.awt.Toolkit;
  */
 public final class BeepCommand extends GlobalCommand {
 
-	/**
-	 * Creates a new instance of BeepCommand.
-	 */
-	public BeepCommand() {
-		super();
-		CommandManager.registerCommand(this);
-	}
-		
-	/** {@inheritDoc} */
-    @Override
-	public void execute(final InputWindow origin, final boolean isSilent,
-            final CommandArguments args) {
-		Toolkit.getDefaultToolkit().beep();
-	}
+    /**
+     * Creates a new instance of BeepCommand.
+     */
+    public BeepCommand() {
+        super();
+        CommandManager.registerCommand(this);
+    }
 
-	/**
-	 * Returns this command's name.
-	 *
-	 * @return The name of this command
-	 */
+    /** {@inheritDoc} */
     @Override
-	public String getName() { return "beep"; }
-	
-	/**
-	 * Returns whether or not this command should be shown in help messages.
-	 *
-	 * @return True iff the command should be shown, false otherwise
-	 */
+    public void execute(final InputWindow origin, final boolean isSilent,
+                        final CommandArguments args) {
+        Toolkit.getDefaultToolkit().beep();
+    }
+
+    /**
+     * Returns this command's name.
+     *
+     * @return The name of this command
+     */
     @Override
-	public boolean showInHelp() { return true; }
-	
-	/**
-	 * Returns a string representing the help message for this command.
-	 *
-	 * @return the help message for this command
-	 */
+    public String getName() {
+        return "beep";
+    }
+
+    /**
+     * Returns whether or not this command should be shown in help messages.
+     *
+     * @return True iff the command should be shown, false otherwise
+     */
     @Override
-	public String getHelp() { return this.getName(); }
+    public boolean showInHelp() {
+        return true;
+    }
+
+    /**
+     * Returns a string representing the help message for this command.
+     *
+     * @return the help message for this command
+     */
+    @Override
+    public String getHelp() {
+        return this.getName();
+    }
+
 }
 

@@ -33,99 +33,104 @@ import java.io.PrintWriter;
  * @author Shane 'Dataforce' McCormack
  */
 public class DCCChat extends DCC {
-	/** The handler for this DCCChat. */
-	private DCCChatInterface handler = null;
-	/** Used to send data out the socket. */
-	private PrintWriter out;
-	/** Used to read data from the socket. */
-	private BufferedReader in;
-	
-	
-	/**
-	 * Creates a new instance of DCCChat.
-	 */
-	public DCCChat() {
-		super();
-	}
-	
-	/**
-	 * Change the handler for this DCC Chat.
-	 *
-	 * @param handler A class implementing DCCChatInterface
-	 */
-	public void setHandler(final DCCChatInterface handler) {
-		this.handler = handler;
-	}
-	
-	/**
-	 * Called when the socket is first opened, before any data is handled.
-	 */
-	@Override
-	protected void socketOpened() {
-		try {
-			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			if (handler != null) {
-				handler.socketOpened(this);
-			}
-		} catch (IOException ioe) {
+
+    /** The handler for this DCCChat. */
+    private DCCChatInterface handler = null;
+
+    /** Used to send data out the socket. */
+    private PrintWriter out;
+
+    /** Used to read data from the socket. */
+    private BufferedReader in;
+
+    /**
+     * Creates a new instance of DCCChat.
+     */
+    public DCCChat() {
+        super();
+    }
+
+    /**
+     * Change the handler for this DCC Chat.
+     *
+     * @param handler A class implementing DCCChatInterface
+     */
+    public void setHandler(final DCCChatInterface handler) {
+        this.handler = handler;
+    }
+
+    /**
+     * Called when the socket is first opened, before any data is handled.
+     */
+    @Override
+    protected void socketOpened() {
+        try {
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            if (handler != null) {
+                handler.socketOpened(this);
+            }
+        } catch (IOException ioe) {
             socketClosed();
         }
-	}
-	
-	/**
-	 * Called when the socket is closed, before the thread terminates.
-	 */
-	@Override
-	protected void socketClosed() {
-		out = null;
-		in = null;
-		if (handler != null) {
-			handler.socketClosed(this);
-		}
-	}
-	
-	/**
-	 * Handle the socket.
-	 *
-	 * @return false when socket is closed, true will cause the method to be
-	 *         called again.
-	 */
-	@Override
-	protected boolean handleSocket() {
-		if (out == null || in == null) { return false; }
-		final String inLine;
-		try {
-			inLine = in.readLine();
-			if (inLine == null) {
-				return false;
-			} else {
-				if (handler != null) {
-					handler.handleChatMessage(this, inLine);
-				}
-				return true;
-			}
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * Check if this socket can be written to.
-	 */
-	@Override
-	public boolean isWriteable() {
-		return out != null;
-	}
-	
-	/**
-	 * Send a line out the socket.
-	 *
-	 * @param line The line to be sent
-	 */
-	public void sendLine(final String line) {
-		if (out != null) {
-			out.printf("%s\r\n", line);
-		}
-	}
+    }
+
+    /**
+     * Called when the socket is closed, before the thread terminates.
+     */
+    @Override
+    protected void socketClosed() {
+        out = null;
+        in = null;
+        if (handler != null) {
+            handler.socketClosed(this);
+        }
+    }
+
+    /**
+     * Handle the socket.
+     *
+     * @return false when socket is closed, true will cause the method to be
+     *         called again.
+     */
+    @Override
+    protected boolean handleSocket() {
+        if (out == null || in == null) {
+            return false;
+        }
+        final String inLine;
+        try {
+            inLine = in.readLine();
+            if (inLine == null) {
+                return false;
+            } else {
+                if (handler != null) {
+                    handler.handleChatMessage(this, inLine);
+                }
+                return true;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if this socket can be written to.
+     */
+    @Override
+    public boolean isWriteable() {
+        return out != null;
+    }
+
+    /**
+     * Send a line out the socket.
+     *
+     * @param line The line to be sent
+     */
+    public void sendLine(final String line) {
+        if (out != null) {
+            out.printf("%s\r\n", line);
+        }
+    }
+
 }
