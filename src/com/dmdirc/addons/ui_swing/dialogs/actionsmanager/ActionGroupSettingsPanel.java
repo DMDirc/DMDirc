@@ -25,8 +25,8 @@ package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
-import com.dmdirc.addons.ui_swing.components.ColourChooser;
-import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
+import com.dmdirc.addons.ui_swing.components.colours.ColourChooser;
+import com.dmdirc.addons.ui_swing.components.colours.OptionalColourChooser;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationDisplay;
 
 import java.awt.Window;
