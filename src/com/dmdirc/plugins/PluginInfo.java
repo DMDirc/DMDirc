@@ -36,6 +36,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.Version;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -306,6 +307,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * This will load a ConfigFile
      *
      * @return the ConfigFile object for this plugin, or null if the plugin has no config
+     * @throws IOException if there is an error with the ResourceManager.
      */
     private ConfigFile getConfigFile() throws IOException {
         ConfigFile file = null;
@@ -326,6 +328,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         return file;
+    }
+
+    /**
+     * Get the license for this plugin if it exists.
+     *
+     * @return An InputStream for the license of this plugin, or null if no
+     *         license found.
+     * @throws IOException if there is an error with the ResourceManager.
+     */
+    public InputStream getLicenseStream() throws IOException {
+        final ResourceManager res = getResourceManager();
+        if (res.resourceExists("META-INF/license.txt")) {
+            return res.getResourceInputStream("META-INF/license.txt");
+        }
+
+        return null;
     }
 
     /**
