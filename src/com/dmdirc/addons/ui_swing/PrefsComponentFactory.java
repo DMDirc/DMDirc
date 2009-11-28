@@ -24,14 +24,17 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
-import com.dmdirc.addons.ui_swing.components.ColourChooser;
+import com.dmdirc.addons.ui_swing.components.colours.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.FontPicker;
-import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
+import com.dmdirc.addons.ui_swing.components.OptionalJSpinner;
+import com.dmdirc.addons.ui_swing.components.colours.OptionalColourChooser;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationDisplay;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationListener;
 import com.dmdirc.addons.ui_swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
+import com.dmdirc.config.prefs.validator.OptionalValidator;
+import com.dmdirc.config.prefs.validator.Validator;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -86,6 +89,9 @@ public final class PrefsComponentFactory {
                 break;
             case INTEGER:
                 option = getIntegerOption(setting);
+                break;
+            case OPTIONALINTEGER:
+                option = getOptionalIntegerOption(setting);
                 break;
             case DURATION:
                 option = getDurationOption(setting);
@@ -207,11 +213,64 @@ public final class PrefsComponentFactory {
         }
 
         option.addChangeListener(new ChangeListener() {
-            
+
             /** {@inheritDoc} */
             @Override
             public void stateChanged(final ChangeEvent e) {
                 setting.setValue(((JSpinner) e.getSource()).getValue().
+                        toString());
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a JSpinner for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getOptionalIntegerOption(final PreferencesSetting setting) {
+        final boolean state = setting.getValue() != null
+                && !setting.getValue().startsWith("false:");
+        final String integer = setting.getValue() == null ? "0" : setting.getValue().
+                substring(1 + setting.getValue().indexOf(':'));
+        
+        OptionalJSpinner option;
+        Validator optionalValidator = setting.getValidator();
+        Validator numericalValidator = null;
+        if (optionalValidator instanceof OptionalValidator) {
+            numericalValidator = ((OptionalValidator) setting.getValidator()).
+                    getValidator();
+            if (!(numericalValidator instanceof NumericalValidator)) {
+                numericalValidator = null;
+            }
+        }
+
+        try {
+            if (numericalValidator != null) {
+                option = new OptionalJSpinner(
+                        new SpinnerNumberModel(Integer.parseInt(integer),
+                        ((NumericalValidator) numericalValidator).getMin(),
+                        ((NumericalValidator) numericalValidator).getMax(),
+                        1), state);
+            } else {
+                option = new OptionalJSpinner(new SpinnerNumberModel());
+                option.setValue(Integer.parseInt(integer));
+                option.setSelected(state);
+            }
+        } catch (NumberFormatException ex) {
+            option = new OptionalJSpinner(new SpinnerNumberModel(), state);
+        }
+
+        option.addChangeListener(new ChangeListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void stateChanged(final ChangeEvent e) {
+                setting.setValue(((OptionalJSpinner) e.getSource()).isSelected() + ":" +
+                        ((OptionalJSpinner) e.getSource()).getValue().
                         toString());
             }
         });

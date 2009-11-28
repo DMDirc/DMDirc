@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.components;
+package com.dmdirc.addons.ui_swing.components.colours;
 
+import com.dmdirc.addons.ui_swing.components.*;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 

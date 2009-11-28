@@ -157,7 +157,7 @@ ui:
   nickListAltBackgroundColour=false:f0f0f0
   nicklistbackgroundcolour=false:0
   nicklistforegroundcolour=false:1
-  pasteProtectionLimit=1
+  pasteProtectionLimit=true:1
   quickCopy=false
   shownickcoloursinnicklist=true
   shownickcoloursintext=false
