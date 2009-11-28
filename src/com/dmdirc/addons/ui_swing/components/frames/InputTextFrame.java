@@ -351,10 +351,10 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             final String inputFieldText = getInputField().getText();
             final String text = inputFieldText.substring(0, caretPosition) + clipboard + inputFieldText.substring(caretPosition);
             //check the limit
-            final int pasteTrigger = getConfigManager().getOptionInt("ui",
+            final Integer pasteTrigger = getConfigManager().getOptionInt("ui",
                     "pasteProtectionLimit");
             //check whether the number of lines is over the limit
-            if (getContainer().getNumLines(text) > pasteTrigger) {
+            if (pasteTrigger != null && getContainer().getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
                 new PasteDialog(this, text, getController().getMainFrame()).setVisible(true);
                 inputField.setText("");

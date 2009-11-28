@@ -210,11 +210,29 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
+     * @param fallbacks An ordered array of further domains and options
+     * (in pairs) to try if the specified domain/option isn't found
      * @throws NumberFormatException If the setting can't be parsed
-     * @return The integer representation of the option
+     * @return The integer representation of the option or null if optional
+     * setting is false
      */
-    public int getOptionInt(final String domain, final String option) {
-        return Integer.parseInt(getOption(domain, option).trim());
+    public Integer getOptionInt(final String domain, final String option,
+            final String ... fallbacks) {
+        String value;
+
+        if (!hasOption(domain, option) || (value = getOption(domain, option))
+                .startsWith("false:")) {
+            return fallbacks.length >= 2 ? getOptionInt(fallbacks[0], fallbacks[1],
+                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
+        }
+        if (value.startsWith("true:")) {
+            return Integer.parseInt(getOption(domain, option).trim().substring(
+                    5));
+        } else if (value.startsWith("false:")) {
+            return null;
+        } else {
+            return Integer.parseInt(getOption(domain, option).trim());
+        }
     }
 
 }
