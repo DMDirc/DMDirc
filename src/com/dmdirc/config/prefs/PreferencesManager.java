@@ -25,6 +25,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
+import com.dmdirc.config.prefs.validator.OptionalNumericalValidator;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.util.ListenerList;
@@ -166,7 +167,7 @@ public class PreferencesManager {
                 "ui", "awayindicator", "Away indicator",
                 "Shows an indicator in windows when you are marked as away"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
-                new NumericalValidator(0, 100), "ui", "pasteProtectionLimit",
+                new OptionalNumericalValidator(0, 100), "ui", "pasteProtectionLimit",
                 "Paste protection trigger", "Confirm pasting of text that " +
                 "contains more than this many lines."));
         

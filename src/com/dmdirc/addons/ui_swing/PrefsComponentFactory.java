@@ -33,6 +33,7 @@ import com.dmdirc.addons.ui_swing.components.durationeditor.DurationListener;
 import com.dmdirc.addons.ui_swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
+import com.dmdirc.config.prefs.validator.OptionalNumericalValidator;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -232,21 +233,21 @@ public final class PrefsComponentFactory {
     private static JComponent getOptionalIntegerOption(final PreferencesSetting setting) {
         final boolean state = setting.getValue() != null
                 && !setting.getValue().startsWith("false:");
-        final String colour = setting.getValue() == null ? "0" : setting.getValue().
+        final String integer = setting.getValue() == null ? "0" : setting.getValue().
                 substring(1 + setting.getValue().indexOf(':'));
         
         OptionalJSpinner option;
 
         try {
-            if (setting.getValidator() instanceof NumericalValidator) {
+            if (setting.getValidator() instanceof OptionalNumericalValidator) {
                 option = new OptionalJSpinner(
-                        new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
-                        ((NumericalValidator) setting.getValidator()).getMin(),
-                        ((NumericalValidator) setting.getValidator()).getMax(),
+                        new SpinnerNumberModel(Integer.parseInt(integer),
+                        ((OptionalNumericalValidator) setting.getValidator()).getMin(),
+                        ((OptionalNumericalValidator) setting.getValidator()).getMax(),
                         1), state);
             } else {
                 option = new OptionalJSpinner(new SpinnerNumberModel());
-                option.setValue(Integer.parseInt(setting.getValue()));
+                option.setValue(Integer.parseInt(integer));
                 option.setSelected(state);
             }
         } catch (NumberFormatException ex) {
