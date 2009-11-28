@@ -26,6 +26,7 @@ package com.dmdirc.addons.ui_swing.components.addonbrowser;
 import java.awt.Color;
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
@@ -50,13 +51,17 @@ public class AddonInfoCellRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
+        if (value instanceof AddonInfoLabel) {
+            final AddonInfoLabel label = (AddonInfoLabel) value;
 
-        final AddonInfoLabel label = (AddonInfoLabel) value;
+            label.setBackground(row % 2 == 1 ? new Color(0xEE, 0xEE, 0xFF) : Color.WHITE);
 
-        label.setBackground(row % 2 == 1 ? new Color(0xEE, 0xEE, 0xFF) : Color.WHITE);
+            table.setRowHeight(row, label.getPreferredSize().height);
 
-        table.setRowHeight(row, label.getPreferredSize().height);
-
-        return label;
+            return label;
+        } else {
+            return new JLabel(value.toString());
+        }
+    }
     }
 }
