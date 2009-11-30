@@ -86,7 +86,7 @@ public class ModeTest {
         final InputWindow origin = mock(InputWindow.class);
 
         command.execute(origin, server, "#chan", false,
-                new CommandArguments("/mode #chan +hello -bye"));
+                new CommandArguments("/mode +hello -bye"));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }
@@ -96,7 +96,7 @@ public class ModeTest {
         final InputWindow origin = mock(InputWindow.class);
 
         command.execute(origin, server, "#chan", false,
-                new CommandArguments("/mode #chan"));
+                new CommandArguments("/mode"));
 
         verify(parser).sendRawMessage("MODE #chan");
     }
