@@ -42,14 +42,14 @@ static OSErr openURLCallback(const AppleEvent *theAppleEvent, AppleEvent* reply,
 /**
  * JNI Method to register interest in callback.
  * Obtained from:
- *     javah -classpath DMDirc.jar com.dmdirc.ui.swing.Apple
+ *     javah -classpath plugins/ui_swing.jar com.dmdirc.addons.ui_swing.Apple
  * Reference:
  *     http://developer.apple.com/documentation/Carbon/Reference/Apple_Event_Manager/Reference/reference.html#//apple_ref/c/func/AEInstallEventHandler
  *
  * @param env The JNIEnvironment for this callback.
  * @param this The object that is registering the callback
  */
-JNIEXPORT jint JNICALL Java_com_dmdirc_ui_swing_Apple_registerOpenURLCallback (JNIEnv *env, jobject object) {
+JNIEXPORT jint JNICALL Java_com_dmdirc_addons_ui_1swing_Apple_registerOpenURLCallback (JNIEnv *env, jobject object) {
 	// Find the callback in the object
 	callbackMethod = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, object), "handleOpenURL", "(Ljava/lang/String;)V");
 	
