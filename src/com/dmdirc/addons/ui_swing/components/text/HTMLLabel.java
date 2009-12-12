@@ -22,12 +22,14 @@
 
 package com.dmdirc.addons.ui_swing.components.text;
 
+import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JEditorPane;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicTextPaneUI;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.StyleSheet;
 
 /**
  * Dyamnic text label with hyperlink support.
@@ -56,10 +58,13 @@ public class HTMLLabel extends JEditorPane {
     public HTMLLabel(final String text) {
         super("text/html", text);
 
+        final StyleSheet styleSheet = ((HTMLDocument) getDocument()).getStyleSheet();
         final Font font = UIManager.getFont("Label.font");
-        ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
-                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
-                font.getSize() + "pt; }");
+        final Color colour = UIManager.getColor("Label.foreground");
+        styleSheet.addRule("body { font-family: " + font.getFamily()
+                + "; " + "font-size: " + font.getSize() + "pt; }");
+        styleSheet.addRule("* { color: rgb(" + colour.getRed()
+                + ", " + colour.getGreen() + ", " + colour.getBlue()+"); }");
 
         init();
     }
