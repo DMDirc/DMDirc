@@ -252,7 +252,7 @@ public final class ActionsManagerDialog extends StandardDialog implements
      */
     private void layoutComponents() {
 
-        getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
+        getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3, wmax 800"));
 
         getContentPane().add(infoLabel, "spanx 2, growx");
         if (info.isVisible() && activeSettings.isVisible()) {
