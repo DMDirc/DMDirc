@@ -111,7 +111,22 @@ public abstract class ConfigSource {
      * false otherwise.
      */
     public boolean hasOptionColour(final String domain, final String option) {
-        return getOptionColour(domain, option) != null;
+        if (hasOption(domain, option)) {
+            String value = getOption(domain, option);
+            String colour;
+
+            if (value.startsWith("false:")) {
+                return false;
+            } else if (value.startsWith("true:")) {
+                colour = value.substring(5);
+            } else {
+                colour = value;
+            }
+
+            return ColourManager.parseColour(value, null) != null;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -148,15 +163,14 @@ public abstract class ConfigSource {
      */
     public Color getOptionColour(final String domain, final String option,
             final String ... fallbacks) {
-        String value;
-
-        if (!hasOption(domain, option) || (value = getOption(domain, option))
-                .startsWith("false:")) {
+        if (hasOptionColour(domain, option)) {
+            final String value = getOption(domain, option);
+            return ColourManager.parseColour(value.startsWith("true:")
+                    ? value.substring(5) : value, null);
+        } else {
             return fallbacks.length >= 2 ? getOptionColour(fallbacks[0], fallbacks[1],
                     Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
         }
-        return ColourManager.parseColour(value.startsWith("true:")
-                ? value.substring(5) : value, null);
     }
 
     /**
