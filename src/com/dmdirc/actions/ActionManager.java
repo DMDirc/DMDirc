@@ -407,7 +407,12 @@ public final class ActionManager {
                         actionName) : false;
 
                 if (!disabled) {
-                    action.trigger(format, arguments);
+                    try {
+                        action.trigger(format, arguments);
+                    } catch (Exception e) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
+                                + e.getMessage(), e);
+                    }
                 }
             }
         }
