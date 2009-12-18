@@ -83,6 +83,7 @@ public class SwingInputField extends JComponent implements InputField,
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
         textField.addKeyListener(this);
+        textField.setOpaque(true);
         wrapIndicator =
                 new JLabel(IconManager.getIconManager().getIcon("linewrap"));
         wrapIndicator.setVisible(false);
