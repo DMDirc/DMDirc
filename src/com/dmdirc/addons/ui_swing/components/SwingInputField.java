@@ -157,11 +157,11 @@ public class SwingInputField extends JComponent implements InputField,
                             colourPicker = null;
                         }
                     });
+                    colourPicker.display();
                     colourPicker.setLocation((int) textField.getLocationOnScreen().
                             getX(),
                             (int) textField.getLocationOnScreen().getY() -
                             colourPicker.getHeight());
-                    colourPicker.setVisible(true);
                 }
             }
         });
