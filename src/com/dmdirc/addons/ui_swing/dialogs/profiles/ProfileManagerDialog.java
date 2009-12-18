@@ -111,9 +111,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     public static void showProfileManagerDialog(final MainFrame mainFrame) {
         me = getProfileManagerDialog(mainFrame);
 
-        me.pack();
-        me.setLocationRelativeTo(mainFrame);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 
@@ -171,8 +169,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         getContentPane().add(deleteButton, "left, wmin 200, wmax 200");
         getContentPane().add(getLeftButton(), "split, right, sg button");
         getContentPane().add(getRightButton(), "right, sg button");
-
-        pack();
     }
 
     /** Adds listeners to the components. */

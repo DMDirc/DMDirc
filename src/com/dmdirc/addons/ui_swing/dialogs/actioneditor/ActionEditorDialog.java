@@ -142,9 +142,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             final String group, final Action action) {
         getActionEditorDialog(window, group, action);
 
-        me.pack();
-        me.setLocationRelativeTo(window);
-        me.setVisible(true);
+        me.display();
     }
 
     /**

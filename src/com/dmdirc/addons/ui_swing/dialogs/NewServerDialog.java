@@ -114,8 +114,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     public static void showNewServerDialog(final MainFrame mainFrame) {
         me = getNewServerDialog(mainFrame);
 
-        me.setLocationRelativeTo(mainFrame);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 

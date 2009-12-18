@@ -93,8 +93,6 @@ public final class ErrorListDialog extends StandardDialog implements
         initListeners();
 
         selectedRow.set(table.getSelectedRow());
-
-        pack();
     }
 
     /** Initialises the components. */

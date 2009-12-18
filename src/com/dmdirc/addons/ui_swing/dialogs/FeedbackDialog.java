@@ -94,8 +94,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         setTitle("DMDirc: Feedback");
         setResizable(false);
-
-        pack();
     }
 
     /**
@@ -106,8 +104,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     public static void showFeedbackDialog(final Window parentWindow) {
         me = getFeedbackDialog(parentWindow);
 
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 

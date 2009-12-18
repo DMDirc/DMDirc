@@ -158,9 +158,6 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         add(getRightButton(), "sgx button, right");
 
         setDefaultCloseOperation(DurationEditor.DISPOSE_ON_CLOSE);
-        pack();
-        setResizable(false);
-        setVisible(true);
     }
 
     /** {@inheritDoc}

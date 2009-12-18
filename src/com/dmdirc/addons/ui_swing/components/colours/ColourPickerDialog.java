@@ -94,7 +94,6 @@ public final class ColourPickerDialog extends StandardDialog {
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         add(colourChooser);
-        pack();
         setResizable(false);
         setFocusableWindowState(false);
 
@@ -106,7 +105,8 @@ public final class ColourPickerDialog extends StandardDialog {
      * @return Colour picker dialog
      */
     public static ColourPickerDialog showColourPicker() {
-        return showColourPicker(true, true);
+        final ColourPickerDialog cpd = showColourPicker(true, true);
+        return cpd;
     }
 
     /** 
@@ -118,7 +118,7 @@ public final class ColourPickerDialog extends StandardDialog {
     public static ColourPickerDialog showColourPicker(final boolean showIRC,
             final boolean showHex) {
         final ColourPickerDialog cpd = new ColourPickerDialog(showIRC, showHex);
-        cpd.setVisible(true);
+        cpd.display();
         return cpd;
     }
 

@@ -61,8 +61,6 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     private SummaryPanel summary;
     /** Informational blurb. */
     private TextLabel blurb;
-    /** Parent window. */
-    private Window parent;
     /** Selected index. */
     private int selectedIndex;
 
@@ -76,7 +74,6 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
             final SSLCertificateDialogModel model) {
         super(parent, ModalityType.MODELESS);
 
-        this.parent = parent;
         this.model = model;
         this.selectedIndex = 0;
 
@@ -86,9 +83,6 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("DMDirc: Certificate Information");
-        setResizable(false);
-        pack();
-        setLocationRelativeTo(parent);
         chain.setSelectedIndex(0);
     }
 

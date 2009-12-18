@@ -96,9 +96,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             final Window parentWindow) {
         me = getServerSettingsDialog(server, parentWindow);
         
-        me.pack();
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 

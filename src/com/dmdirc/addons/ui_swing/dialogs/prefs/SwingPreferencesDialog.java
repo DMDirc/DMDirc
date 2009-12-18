@@ -327,7 +327,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 dispose();
                 new SwingRestartDialog(parentWindow, 
                         ModalityType.APPLICATION_MODAL,
-                        "apply settings").setVisible(true);
+                        "apply settings").display();
             }
         }
     }
@@ -346,14 +346,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
         }
         tabList.setSelectedIndex(indexToSelect);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void display() {
-        pack();
-        setLocationRelativeTo(getParent());
-        setVisible(true);
     }
 
     /** {@inheritDoc} */
