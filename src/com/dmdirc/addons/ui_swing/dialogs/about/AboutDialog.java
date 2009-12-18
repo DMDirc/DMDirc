@@ -88,8 +88,7 @@ public final class AboutDialog extends StandardDialog implements
     public static void showAboutDialog(final Window parentWindow) {
         me = getAboutDialog(parentWindow);
 
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 
@@ -134,8 +133,6 @@ public final class AboutDialog extends StandardDialog implements
         getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill, wmax 550, hmax 400"));
         getContentPane().add(tabbedPane, "grow, push");
         getContentPane().add(getOkButton(), "right");
-
-        pack();
     }
 
     /** 

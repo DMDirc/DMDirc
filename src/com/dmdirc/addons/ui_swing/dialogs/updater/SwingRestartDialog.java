@@ -53,7 +53,6 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     /** Info text. */
     private String cause;
     
-
     /**
      * Dialog to restart the client.
      *
@@ -82,9 +81,6 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
         
         initComponents();
         layoutComponents();
-        
-        pack();
-        setLocationRelativeTo(mainFrame);
     }
     
     /** Initialise components. */

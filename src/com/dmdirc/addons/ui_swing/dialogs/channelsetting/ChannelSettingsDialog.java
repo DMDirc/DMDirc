@@ -44,7 +44,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Allows the user to modify channel settings (modes, topics, etc).
  */
-public final class ChannelSettingsDialog extends StandardDialog implements ActionListener {
+public final class ChannelSettingsDialog extends StandardDialog implements
+        ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,28 +53,20 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
-
     /** Channel settings dialogs, semi singleton use. */
     private static volatile ChannelSettingsDialog me;
-
     /** The channel object that this dialog belongs to. */
     private final Channel channel;
-
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
-
     /** Client settings panel. */
     private SettingsPanel channelSettingsPane;
-
     /** List modes panel. */
     private ChannelModesPane channelModesPane;
-
     /** List modes panel. */
     private TopicPane topicModesPane;
-
     /** List modes panel. */
     private ChannelListModesPane channelListModesPane;
-
     /** Channel identity file. */
     private final Identity identity;
 
@@ -82,7 +75,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      *
      * @param newChannel The channel object that we're editing settings for
      */
-    private ChannelSettingsDialog(final Channel newChannel, 
+    private ChannelSettingsDialog(final Channel newChannel,
             final Window parentWindow) {
         super(parentWindow, ModalityType.MODELESS);
 
@@ -104,9 +97,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
             final Channel channel, final Window parentWindow) {
         me = getChannelSettingsDialog(channel, parentWindow);
 
-        me.pack();
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 
@@ -139,7 +130,8 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         orderButtons(new JButton(), new JButton());
 
-        getContentPane().setLayout(new MigLayout("fill, wrap 1, ins panel, hmax 80sp"));
+        getContentPane().setLayout(new MigLayout(
+                "fill, wrap 1, ins panel, hmax 80sp"));
         getContentPane().add(tabbedPane, "growy, pushy, wmin 460, wmax 460");
         getContentPane().add(getLeftButton(), "split 3, right");
         getContentPane().add(getRightButton(), "right");
@@ -167,7 +159,8 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         channelModesPane = new ChannelModesPane(channel);
 
         final JScrollPane channelModesSP = new JScrollPane(channelModesPane);
-        channelModesSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        channelModesSP.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         channelModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
         channelModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
         channelModesSP.setBorder(null);
@@ -191,8 +184,8 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     /** Initialises the channel settings. */
     private void initSettingsPanel() {
         channelSettingsPane = new SettingsPanel(identity,
-                "These settings are specific to this channel on this network," +
-                " any settings specified here will overwrite global settings");
+                "These settings are specific to this channel on this network,"
+                + " any settings specified here will overwrite global settings");
 
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);
@@ -216,9 +209,11 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
                 "Foreground colour", OptionType.COLOUR);
         channelSettingsPane.addOption("ui.frameBufferSize",
                 "Frame buffer size", OptionType.SPINNER);
-        channelSettingsPane.addOption("ui.textPaneFontName", "Textpane font name",
+        channelSettingsPane.addOption("ui.textPaneFontName",
+                "Textpane font name",
                 OptionType.FONT);
-        channelSettingsPane.addOption("ui.textPaneFontSize", "Textpane font size",
+        channelSettingsPane.addOption("ui.textPaneFontSize",
+                "Textpane font size",
                 OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbuffersize",
                 "Input buffer size", OptionType.SPINNER);
@@ -266,7 +261,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         dispose();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {

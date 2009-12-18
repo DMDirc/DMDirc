@@ -69,8 +69,8 @@ import net.miginfocom.swing.MigLayout;
  * Allows the user to manage actions.
  */
 public final class ActionsManagerDialog extends StandardDialog implements
-        ActionListener,
-        ListSelectionListener, com.dmdirc.interfaces.ActionListener {
+        ActionListener, com.dmdirc.interfaces.ActionListener,
+        ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -130,9 +130,7 @@ public final class ActionsManagerDialog extends StandardDialog implements
         getActionsManagerDialog(parentWindow, controller);
 
         me.setIconImages(parentWindow.getIconImages());
-        me.pack();
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
 
         final int selected = IdentityManager.getGlobalConfig().

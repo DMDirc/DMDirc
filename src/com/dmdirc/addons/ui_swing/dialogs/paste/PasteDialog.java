@@ -95,9 +95,6 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         setFocusable(true);
         getOkButton().requestFocusInWindow();
         getOkButton().setSelected(true);
-
-        pack();
-        setLocationRelativeTo(parentWindow);
     }
 
     /**

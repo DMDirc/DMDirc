@@ -73,8 +73,6 @@ public class URLDialog extends StandardDialog implements ActionListener {
         addListeners();
 
         setTitle("DMDirc: Unknown URL Protocol");
-
-        pack();
     }
 
     /**
@@ -86,8 +84,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     public static void showURLDialog(final URI url, final Window parentWindow) {
         me = getURLDialog(url, parentWindow);
 
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 

@@ -92,9 +92,7 @@ public class NickColourInputDialog extends StandardDialog
         layoutComponents();
         
         setTitle("Nick colour editor");
-        
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        setVisible(true);
+        display();
     }
     
     /**

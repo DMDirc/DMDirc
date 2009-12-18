@@ -22,14 +22,11 @@
 
 package com.dmdirc.addons.ui_swing.dialogs;
 
-import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.config.prefs.validator.Validator;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -216,32 +213,6 @@ public abstract class StandardInputDialog extends StandardDialog {
         add(textField, "growx");
         add(getLeftButton(), "split 2, right");
         add(getRightButton(), "right");
-    }
-
-    /**
-     * Displays the input dialog.
-     */
-    @Override
-    public final void display() {
-        display(getParent());
-    }
-
-    /**
-     * Displays the input dialog.
-     * 
-     * @param parent Parent component
-     */
-    public final void display(final Component parent) {
-        UIUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                pack();
-                setLocationRelativeTo(parent);
-                setVisible(true);
-            }
-        });
     }
 
     /**

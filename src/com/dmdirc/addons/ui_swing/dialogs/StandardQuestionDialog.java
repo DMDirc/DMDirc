@@ -22,10 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.dialogs;
 
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -128,7 +126,6 @@ public abstract class StandardQuestionDialog extends StandardDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 cancelled();
-            //dispose();
             }
         });
 
@@ -154,31 +151,5 @@ public abstract class StandardQuestionDialog extends StandardDialog {
         add(blurb, "growx");
         add(getLeftButton(), "split 2, right");
         add(getRightButton(), "right");
-    }
-
-    /**
-     * Displays the input dialog.
-     */
-    @Override
-    public final void display() {
-        display(getParent());
-    }
-
-    /**
-     * Displays the input dialog.
-     *
-     * @param parent Parent component
-     */
-    public final void display(final Component parent) {
-        UIUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                pack();
-                setLocationRelativeTo(parent);
-                setVisible(true);
-            }
-        });
     }
 }

@@ -476,7 +476,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                new SSLCertificateDialog(me, model).setVisible(true);
+                new SSLCertificateDialog(me, model).display();
             }
         });
     }

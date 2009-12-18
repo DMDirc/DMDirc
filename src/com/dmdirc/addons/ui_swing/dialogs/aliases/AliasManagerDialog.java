@@ -112,8 +112,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     public static void showAliasManagerDialog(final Window parentWindow) {
         me = getAliasManagerDialog(parentWindow);
 
-        me.setLocationRelativeTo(parentWindow);
-        me.setVisible(true);
+        me.display();
         me.requestFocusInWindow();
     }
 

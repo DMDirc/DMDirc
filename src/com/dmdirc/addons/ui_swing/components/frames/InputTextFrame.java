@@ -356,7 +356,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             //check whether the number of lines is over the limit
             if (pasteTrigger != null && getContainer().getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
-                new PasteDialog(this, text, getController().getMainFrame()).setVisible(true);
+                new PasteDialog(this, text, getController().getMainFrame()).display();
                 inputField.setText("");
             } else {
                 //send the lines

@@ -34,7 +34,6 @@ import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
 
-import com.dmdirc.updater.components.LauncherComponent;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -191,14 +190,6 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         add(getRightButton(), "right");
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void display() {
-        setLocationRelativeTo(mainFrame);
-        setVisible(true);
-        requestFocusInWindow();
-    }
-
     /** 
      * {@inheritDoc}
      * 
@@ -223,7 +214,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
                 if (UpdateChecker.getStatus() == STATE.RESTART_REQUIRED) {
-                    new SwingRestartDialog(mainFrame, ModalityType.MODELESS).setVisible(true);
+                    new SwingRestartDialog(mainFrame, ModalityType.MODELESS).display();
                 }
             }
         } else if (e.getSource().equals(getCancelButton())) {

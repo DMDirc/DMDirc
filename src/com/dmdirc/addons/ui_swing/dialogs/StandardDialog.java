@@ -23,6 +23,7 @@
 package com.dmdirc.addons.ui_swing.dialogs;
 
 import com.dmdirc.ui.CoreUIUtils;
+import java.awt.Component;
 
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -50,14 +51,12 @@ public class StandardDialog extends JDialog {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /**
-     * The OK button for this frame.
-     */
+    /** The OK button for this frame. */
     private JButton okButton;
-    /**
-     * The cancel button for this frame.
-     */
+    /** The cancel button for this frame. */
     private JButton cancelButton;
+    /** Parent window. */
+    private Window owner;
 
     /**
      * Creates a new instance of StandardDialog.
@@ -66,6 +65,7 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Frame owner, final boolean modal) {
         super(owner, modal);
+        this.owner = owner;
         
         if (owner != null) {
             setIconImages(owner.getIconImages());
@@ -79,6 +79,7 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
+        this.owner = owner;
         
         if (owner != null) {
             setIconImages(owner.getIconImages());
@@ -92,6 +93,7 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Dialog owner, final boolean modal) {
         super(owner, modal);
+        this.owner = owner;
         
         if (owner != null) {
             setIconImages(owner.getIconImages());
@@ -99,10 +101,25 @@ public class StandardDialog extends JDialog {
     }
 
     /**
-     * Centers and displays this dialog.
+     * Displays the dialog centering on the parent window.
      */
     public void display() {
-        CoreUIUtils.centreWindow(this);
+        display(owner);
+    }
+
+    /**
+     * Displays the dialog centering on the specified window.
+     *
+     * @param owner Window to center on
+     */
+    public void display(Component owner) {
+        pack();
+        if (owner == null) {
+            CoreUIUtils.centreWindow(this);
+        } else {
+            setLocationRelativeTo(owner);
+        }
+        setVisible(false);
         setVisible(true);
     }
 
