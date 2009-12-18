@@ -196,9 +196,8 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == editButton) {
             cpd = new ColourPickerDialog(showIRC, showHex, window);
-            cpd.setLocationRelativeTo(editButton);
             cpd.addActionListener(this);
-            cpd.setVisible(true);
+            cpd.display(editButton);
         } else if (e.getSource() == enabled) {
             editButton.setEnabled(enabled.isSelected());
             fireActionEvent();

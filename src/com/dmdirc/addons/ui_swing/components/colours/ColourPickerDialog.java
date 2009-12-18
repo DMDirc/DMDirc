@@ -150,4 +150,11 @@ public final class ColourPickerDialog extends StandardDialog {
             });
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void display() {
+        super.display();
+        setSize(colourChooser.getPreferredSize());
+    }
 }
