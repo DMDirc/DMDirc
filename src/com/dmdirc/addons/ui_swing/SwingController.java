@@ -730,6 +730,10 @@ public final class SwingController extends Plugin implements UIController {
        advanced.addSetting(new PreferencesSetting(PreferencesType.INTEGER, getDomain(),
                "windowMenuScrollInterval", "Window menu scroll interval",
                "Number of milliseconds to pause when autoscrolling in the window menu"));
+       advanced.addSetting(
+                new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(),
+                "showtopicbar", "Show topic bar",
+                "Shows a graphical topic bar in channels."));
 
         return advanced;
     }
