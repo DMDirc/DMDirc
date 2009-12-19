@@ -32,6 +32,7 @@ import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.SplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
+import com.dmdirc.addons.ui_swing.components.TopicBar;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
@@ -76,6 +77,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     private Identity identity;
     /** Nicklist. */
     private NickList nicklist;
+    /** Topic bar. */
+    private TopicBar topicBar;
 
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -93,6 +96,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "channelSplitPanePosition", this);
+        IdentityManager.getGlobalConfig().addChangeListener(controller.getDomain(),
+                "showtopicbar", this);
         ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
@@ -108,6 +113,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /**
      * Retrieves the command Parser for this command window.
+     * 
      * @return This window's command Parser
      */
     @Override
@@ -141,6 +147,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /**
      * Retrieves this channel frame's nicklist component.
+     * 
      * @return This channel's nicklist
      */
     public NickList getNickList() {
@@ -154,12 +161,24 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     /**
+     * Returns the topic bar for this channel frame.
+     *
+     * @return Topic bar or null if none exists
+     */
+    public TopicBar getTopicBar() {
+        return topicBar;
+    }
+
+    /**
      * Initialises the compoents in this frame.
      */
     private void initComponents() {
+        topicBar = new TopicBar(this);
         nicklist = new NickList(this, getConfigManager());
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
+        topicBar.setVisible(getConfigManager().getOptionBool(
+                getController().getDomain(), "showtopicbar"));
 
         splitPane = new SplitPane(
                 SplitPane.Orientation.HORIZONTAL, false);
@@ -167,6 +186,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         getContentPane().setLayout(new MigLayout(
                 "fill, ins 0, hidemode 3, wrap 1"));
 
+        getContentPane().add(topicBar, "growx, pushx");
         getContentPane().add(splitPane, "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
         getContentPane().add(inputPanel, "growx, pushx");
@@ -219,6 +239,10 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                             splitPane.getDividerSize() - splitPanePosition);
                 }
             });
+        }
+        if ("showtopicbar".equals(key)) {
+            topicBar.setVisible(getConfigManager().getOptionBool(
+                getController().getDomain(), "showtopicbar"));
         }
     }
 

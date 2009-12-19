@@ -24,8 +24,6 @@ package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.actions.NoNewlinesPasteAction;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
@@ -39,7 +37,6 @@ import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
