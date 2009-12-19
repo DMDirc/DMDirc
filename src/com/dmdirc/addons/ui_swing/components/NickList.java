@@ -55,6 +55,7 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
     private static final long serialVersionUID = 10;
     /** Nick list. */
     private JList nickList;
+    /** Parent frame. */
     private final ChannelFrame frame;
     /** Config. */
     private final ConfigManager config;
@@ -80,7 +81,6 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         nickList.setForeground(config.getOptionColour(
                 "ui", "nicklistforegroundcolour",
                 "ui", "foregroundcolour"));
-
         config.addChangeListener("ui", "nicklistforegroundcolour", this);
         config.addChangeListener("ui", "foregroundcolour", this);
         config.addChangeListener("ui", "nicklistbackgroundcolour", this);
@@ -242,6 +242,11 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
+    /**
+     * Updates the names in this nicklist,
+     *
+     * @param clients Clients to show
+     */
     public void updateNames(final Collection<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -253,6 +258,9 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         });
     }
 
+    /**
+     * Updates the order of this nicklist.
+     */
     public void updateNames() {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -264,6 +272,11 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         });
     }
 
+    /**
+     * Adds a client to this nicklist.
+     *
+     * @param client Client to add
+     */
     public void addName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -275,6 +288,11 @@ public class NickList extends JScrollPane implements ConfigChangeListener,
         });
     }
 
+    /**
+     * Removes a client from the nicklist.
+     *
+     * @param client Client to remove
+     */
     public void removeName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
 

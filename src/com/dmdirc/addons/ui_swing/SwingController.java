@@ -734,6 +734,8 @@ public final class SwingController extends Plugin implements UIController {
                 new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(),
                 "showtopicbar", "Show topic bar",
                 "Shows a graphical topic bar in channels."));
+        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(),
+               "shownicklist", "Show nicklist?", "Do you want the nicklist visible"));
 
         return advanced;
     }
