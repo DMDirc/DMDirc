@@ -409,6 +409,9 @@ public final class ActionManager {
                 if (!disabled) {
                     try {
                         action.trigger(format, arguments);
+                    } catch (NoSuchMethodError e) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
+                                + e.getMessage(), e);
                     } catch (Exception e) {
                         Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
                                 + e.getMessage(), e);
