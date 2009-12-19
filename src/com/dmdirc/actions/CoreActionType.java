@@ -47,6 +47,10 @@ public enum CoreActionType implements ActionType {
     CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
     CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),
+    /** Client lost focus. */
+    CLIENT_FOCUS_LOST(ClientEvents.CLIENT_EVENT, "Client lost focus"),
+    /** Client gained focus. */
+    CLIENT_FOCUS_GAINED(ClientEvents.CLIENT_EVENT, "Client gained focus"),
     
     /** Function key pressed. */
     CLIENT_KEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
