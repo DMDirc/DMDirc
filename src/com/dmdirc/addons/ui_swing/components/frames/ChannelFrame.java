@@ -93,6 +93,9 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "channelSplitPanePosition", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(),
+                "shownicklist", this);
         ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
@@ -172,7 +175,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         getContentPane().add(inputPanel, "growx, pushx");
 
         splitPane.setLeftComponent(getTextPane());
-        splitPane.setRightComponent(nicklist);
+        if (getConfigManager().getOptionBool(getController().getDomain(),
+                "shownicklist")) {
+            splitPane.setRightComponent(nicklist);
+        } else {
+            splitPane.setRightComponent(null);
+        }
         splitPane.setResizeWeight(1);
         splitPane.setDividerLocation(-1);
 
@@ -215,10 +223,18 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 public void run() {
                     nicklist.setPreferredSize(
                             new Dimension(splitPanePosition, 0));
-                    splitPane.setDividerLocation(splitPane.getWidth() - 
-                            splitPane.getDividerSize() - splitPanePosition);
+                    splitPane.setDividerLocation(splitPane.getWidth() - splitPane.
+                            getDividerSize() - splitPanePosition);
                 }
             });
+        }
+        if ("shownicklist".equals(key)) {
+            if (getConfigManager().getOptionBool(getController().getDomain(),
+                    "shownicklist")) {
+                splitPane.setRightComponent(nicklist);
+            } else {
+                splitPane.setRightComponent(null);
+            }
         }
     }
 
