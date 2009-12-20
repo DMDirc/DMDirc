@@ -22,34 +22,43 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
-import com.dmdirc.addons.ui_swing.components.renderers.TopicCellRenderer;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
+import com.dmdirc.util.ListenerList;
 
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Topic history panel.
  */
-public class TopicHistoryPane extends JPanel {
-    
+public class TopicHistoryPane extends JPanel implements ListSelectionListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Topic history list. */
-    private JList topicHistory;
+    /** The table used to list previous topics. */
+    private final TopicTable topicHistory = new TopicTable();
+    /** The scrollpane for the list panel. */
+    private final JScrollPane scrollPane = new JScrollPane(topicHistory,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    /** Listener list. */
+    private final ListenerList listeners = new ListenerList();
 
     /**
      * Instantiates a new topic history pane.
@@ -57,30 +66,79 @@ public class TopicHistoryPane extends JPanel {
      * @param channel Parent channel
      */
     public TopicHistoryPane(final Channel channel) {
+        topicHistory.getSelectionModel().addListSelectionListener(this);
+        topicHistory.getSelectionModel().setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION);
         final List<Topic> topics = channel.getTopics();
         Collections.reverse(topics);
         if (topics.size() > 0) {
-            topics.remove(topics.size() - 1);
+            topics.remove(0);
         }
-        
-        topicHistory = new JList(new DefaultListModel());
-        topicHistory.setCellRenderer(new TopicCellRenderer());
-        
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+
         for (Topic topic : topics) {
-            ((DefaultListModel) topicHistory.getModel()).addElement(topic);
+            topicHistory.getModel().addRow(new Object[]{new TopicLabel(topic),});
         }
-        
-        if (topicHistory.getModel().getSize() == 0) {
-            ((DefaultListModel) topicHistory.getModel()).addElement("No previous topics.");
-            topicHistory.setBackground(getBackground());
-            topicHistory.setForeground(getForeground());
+
+        if (topicHistory.getModel().getRowCount() == 0) {
+            topicHistory.getModel().addRow(new Object[]{
+                        "No previous topics set.",});
         }
-        
-        setLayout(new MigLayout("ins 0"));
-        topicHistory.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(topicHistory, "grow, push");
-        
+
+        setLayout(new MigLayout("fill, ins 0"));
+        add(scrollPane, "hmin 50, hmax 200, wmax 450");
+
         this.setOpaque(UIUtilities.getTabbedPaneOpaque());
     }
 
+    /**
+     * Returns the select historical topic.
+     *
+     * @return Selected topic
+     */
+    public Topic getSelectedTopic() {
+        if (topicHistory.getSelectedRow() == -1) {
+            return null;
+        }
+        final Object topicLabel = topicHistory.getValueAt(topicHistory.
+                getSelectedRow(), 0);
+        if (topicLabel instanceof TopicLabel) {
+            return ((TopicLabel) topicLabel).getTopic();
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(final ListSelectionEvent e) {
+        fireActionEvent();
+    }
+
+    /**
+     * Adds an action listener to this object.
+     *
+     * @param listener Listener to add
+     */
+    public void addActionListener(final ActionListener listener) {
+        listeners.add(ActionListener.class, listener);
+    }
+
+    /**
+     * Removes an action listener from this object.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeActionListener(final ActionListener listener) {
+        listeners.remove(ActionListener.class, listener);
+    }
+
+    /**
+     * Fires a new action event.
+     */
+    private void fireActionEvent() {
+        for (ActionListener listener : listeners.get(ActionListener.class)) {
+            listener.actionPerformed(new ActionEvent(this,
+                    ActionEvent.ACTION_PERFORMED, ""));
+        }
+    }
 }

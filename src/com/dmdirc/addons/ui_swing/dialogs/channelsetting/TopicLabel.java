@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +21,22 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.components.renderers;
+package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
-import com.dmdirc.addons.ui_swing.dialogs.channelsetting.TopicLabel;
+import com.dmdirc.Topic;
+import com.dmdirc.addons.ui_swing.components.text.OldTextLabel;
 
-import java.awt.Component;
+import java.util.Date;
 
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
- * Topic list cell renderer.
+ * Topic Label for use in the topic history panel.
  */
-public class TopicCellRenderer implements TableCellRenderer {
+public class TopicLabel extends JPanel {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -42,28 +44,41 @@ public class TopicCellRenderer implements TableCellRenderer {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Topic this label represents. */
+    private final Topic topic;
 
     /**
-     * {@inheritDoc}
+     * Instantiates a new topic label based on the specified topic.
      *
-     * @return Returns the component for this cell
+     * @param topic Specified topic
      */
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if (value instanceof TopicLabel) {
-            final TopicLabel label = (TopicLabel) value;
-            if (isSelected) {
-                label.setBackground(UIManager.getColor(
-                        "Table.selectionBackground"));
-            } else {
-                label.setBackground(UIManager.getColor(
-                        "Table.background"));
-            }
-            table.setRowHeight(row, label.getPreferredSize().height);
-            return label;
-        } else {
-            return new JLabel(value.toString());
-        }
+    public TopicLabel(final Topic topic) {
+        this.topic = topic;
+
+        init();
+    }
+
+    private void init() {
+        setLayout(new MigLayout("fillx, ins 0"));
+
+        OldTextLabel label = new OldTextLabel(topic.getTopic());
+        add(label, "wmax 450, growy, pushy, wrap");
+
+        label = new OldTextLabel("Set on: " + new Date(topic.getTime() * 1000).toString());
+        add(label, "wmax 450, growy, pushy, wrap");
+
+        label = new OldTextLabel("By: " + topic.getClient());
+        add(label, "wmax 450, growy, pushy, wrap");
+
+        add(new JSeparator(), "newline, span, growx, pushx, gaptop 5");
+    }
+
+    /**
+     * Returns the topic for this label.
+     *
+     * @return Topic
+     */
+    public Topic getTopic() {
+        return topic;
     }
 }

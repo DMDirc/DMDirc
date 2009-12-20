@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +21,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.components.renderers;
+package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
-import com.dmdirc.addons.ui_swing.dialogs.channelsetting.TopicLabel;
+import com.dmdirc.addons.ui_swing.components.renderers.TopicCellRenderer;
 
-import java.awt.Component;
-
-import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 /**
- * Topic list cell renderer.
+ * Table for topics.
  */
-public class TopicCellRenderer implements TableCellRenderer {
+public class TopicTable extends JTable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,26 +43,38 @@ public class TopicCellRenderer implements TableCellRenderer {
     private static final long serialVersionUID = 1;
 
     /**
-     * {@inheritDoc}
-     *
-     * @return Returns the component for this cell
+     * Creates a new addon table.
      */
+    public TopicTable() {
+        super(new DefaultTableModel(0, 1));
+        setTableHeader(null);
+    }
+
+    /** {@inheritDoc} */
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if (value instanceof TopicLabel) {
-            final TopicLabel label = (TopicLabel) value;
-            if (isSelected) {
-                label.setBackground(UIManager.getColor(
-                        "Table.selectionBackground"));
-            } else {
-                label.setBackground(UIManager.getColor(
-                        "Table.background"));
-            }
-            table.setRowHeight(row, label.getPreferredSize().height);
-            return label;
-        } else {
-            return new JLabel(value.toString());
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TableCellRenderer getCellRenderer(final int row, final int column) {
+        return new TopicCellRenderer();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultTableModel getModel() {
+        return (DefaultTableModel) super.getModel();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModel(final TableModel dataModel) {
+        if (!(dataModel instanceof DefaultTableModel)) {
+            throw new IllegalArgumentException(
+                    "Data model must be of type DefaultTableModel");
         }
+        super.setModel(dataModel);
     }
 }
