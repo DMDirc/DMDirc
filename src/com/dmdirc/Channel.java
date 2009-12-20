@@ -471,6 +471,16 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         return topics.getList();
     }
 
+    /**
+     * Returns the current topic for this channel.
+     * 
+     * @return Current channel topic
+     */
+    public Topic getCurrentTopic() {
+        return new Topic(channelInfo.getTopic(), channelInfo.getTopicSetter(),
+                channelInfo.getTopicTime());
+    }
+
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {

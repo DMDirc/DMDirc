@@ -39,8 +39,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -72,8 +70,8 @@ public final class TopicPane extends JPanel implements DocumentListener,
     private TextAreaInputField topicText;
     /** Topic who. */
     private TextLabel topicWho;
-    /** Topic history. */
-    private JComboBox topicHistory;
+    /** Topic history panel. */
+    private TopicHistoryPane topicHistoryPane;
 
     /**
      * Creates a new instance of TopicModesPane.
@@ -103,7 +101,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         layoutComponents();
 
         topicText.getDocument().addDocumentListener(this);
-        topicHistory.addActionListener(this);
+        topicHistoryPane.addActionListener(this);
 
         setVisible(true);
     }
@@ -114,21 +112,15 @@ public final class TopicPane extends JPanel implements DocumentListener,
         Collections.reverse(topics);
         topicLengthLabel = new JLabel();
         topicText = new TextAreaInputField(100, 4);
-        topicHistory =
-                new JComboBox(new DefaultComboBoxModel(topics.toArray()));
-        topicHistory.setPrototypeDisplayValue("This is a substantial prototype value");
         topicWho = new TextLabel();
-
-        if (topicHistory.getModel().getSize() == 0) {
-            topicHistory.setEnabled(false);
-        }
+        topicHistoryPane = new TopicHistoryPane(channel);
 
         topicText.setText(channel.getChannelInfo().getTopic());
         topicText.setLineWrap(true);
         topicText.setWrapStyleWord(true);
         topicText.setRows(5);
         topicText.setColumns(30);
-        new SwingInputHandler(topicText, channel.getFrame().getCommandParser(), 
+        new SwingInputHandler(topicText, channel.getFrame().getCommandParser(),
                 channel.getFrame()).setTypes(false, false, true, false);
 
         topicText.getActionMap().
@@ -138,9 +130,10 @@ public final class TopicPane extends JPanel implements DocumentListener,
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
                 new EnterAction());
         topicText.getInputMap().
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.getCtrlDownMask()),
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.
+                getCtrlDownMask()),
                 new EnterAction());
-        
+
         UIUtilities.addUndoManager(topicText);
 
         topicChanged();
@@ -151,10 +144,10 @@ public final class TopicPane extends JPanel implements DocumentListener,
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 1, fill, wmax 450"));
 
-        add(topicHistory, "growx, pushx");
         add(new JScrollPane(topicText), "grow, push");
         add(topicLengthLabel, "pushx, growx, pushx");
         add(topicWho, "growx, pushx");
+        add(topicHistoryPane, "grow, pushy");
     }
 
     /** Processes the topic and changes it if necessary. */
@@ -168,17 +161,19 @@ public final class TopicPane extends JPanel implements DocumentListener,
     private void topicChanged() {
         if (topicLengthMax == 0) {
             topicLengthLabel.setForeground(Color.BLACK);
-            topicLengthLabel.setText(topicText.getText().length() + " characters");
+            topicLengthLabel.setText(topicText.getText().length()
+                    + " characters");
         } else {
             final int charsLeft = topicLengthMax - topicText.getText().length();
             if (charsLeft >= 0) {
                 topicLengthLabel.setForeground(Color.BLACK);
-                topicLengthLabel.setText(charsLeft + " of " + topicLengthMax +
-                        " available");
+                topicLengthLabel.setText(charsLeft + " of " + topicLengthMax
+                        + " available");
             } else {
                 topicLengthLabel.setForeground(Color.RED);
-                topicLengthLabel.setText(0 + " of " + topicLengthMax +
-                        " available " + (-1 * charsLeft) + " too many characters");
+                topicLengthLabel.setText(0 + " of " + topicLengthMax
+                        + " available " + (-1 * charsLeft)
+                        + " too many characters");
             }
         }
     }
@@ -208,17 +203,27 @@ public final class TopicPane extends JPanel implements DocumentListener,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final Topic topic = (Topic) topicHistory.getSelectedItem();
-        if (topic == null) {
-            topicWho.setText("No topic set.");
+        if (e != null && e.getSource() == topicHistoryPane) {
+            final Topic topic = topicHistoryPane.getSelectedTopic();
+            if (topic == null) {
+                actionPerformed(null);
+            } else {
+                topicText.setText(topic.getTopic());
+            }
         } else {
-            topicWho.setText("Set by " + topic.getClient() + "\n on " +
-                    new Date(1000 * topic.getTime()));
-            topicText.setText(topic.getTopic());
+            final Topic topic = channel.getCurrentTopic();
+            if (topic == null) {
+                topicWho.setText("No topic set.");
+            } else {
+                topicWho.setText("Current topic set by " + topic.getClient() +
+                        "<br> on " + new Date(1000 * topic.
+                        getTime()));
+                topicText.setText(topic.getTopic());
+            }
         }
     }
 
-/** Closes and saves the topic when enter is pressed. */
+    /** Closes and saves the topic when enter is pressed. */
     private class EnterAction extends AbstractAction {
 
         /**
@@ -238,4 +243,5 @@ public final class TopicPane extends JPanel implements DocumentListener,
             parent.save();
         }
     }
+
 }
