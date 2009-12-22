@@ -158,9 +158,6 @@ public class PreferencesManager {
                 "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode in channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "server", "friendlymodes", "Friendly modes",
-                "Show friendly mode names"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "hidequeries", "Hide queries",
                 "Initially hide queries so that they don't steal focus"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,

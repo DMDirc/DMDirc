@@ -82,9 +82,9 @@ public final class ParamModePanel extends JPanel implements ActionListener {
 
         text = "Mode " + mode + ": ";
 
-        if (configManager.getOptionBool("server", "friendlymodes") &&
-                configManager.hasOptionString("server", "mode" + mode)) {
-            text = configManager.getOption("server", "mode" + mode) + ": ";
+        if (configManager.hasOptionString("server", "mode" + mode)) {
+            text = configManager.getOption("server", "mode" + mode) +
+                    " [+"+mode+"]: ";
         }
 
         checkBox = new JCheckBox(text, state);

@@ -234,9 +234,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         settingsPanel.addOption("general.rejoinchannels",
                 "Rejoin channels on reconnect",
                 OptionType.CHECKBOX);
-
-        settingsPanel.addOption("general.friendlymodes", "Show friendly modes",
-                OptionType.CHECKBOX);
         settingsPanel.addOption("general.pingtimeout", "Ping timeout",
                 OptionType.SPINNER);
     }
