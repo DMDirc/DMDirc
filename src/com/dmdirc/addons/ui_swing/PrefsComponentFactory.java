@@ -180,8 +180,10 @@ public final class PrefsComponentFactory {
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent e) {
-                setting.setValue((String) ((Map.Entry)
-                        ((JComboBox) e.getSource()).getSelectedItem()).getKey());
+                final Object selected = ((JComboBox) e.getSource()).getSelectedItem();
+                if (selected != null) {
+                    setting.setValue((String) ((Map.Entry) selected).getKey());
+                }
             }
         });
 
