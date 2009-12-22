@@ -135,14 +135,14 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             public void windowGainedFocus(WindowEvent e) {
                 ActionManager.processEvent(CoreActionType.CLIENT_FOCUS_GAINED,
-                        null, (Object)null);
+                        null);
             }
 
             /** {@inheritDoc} */
             @Override
             public void windowLostFocus(WindowEvent e) {
                 ActionManager.processEvent(CoreActionType.CLIENT_FOCUS_LOST,
-                        null, (Object)null);
+                        null);
                 //TODO: Remove me when we switch to java7
                 MenuSelectionManager.defaultManager().clearSelectedPath();
             }
@@ -308,7 +308,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowIconified(final WindowEvent windowEvent) {
-        ActionManager.processEvent(CoreActionType.CLIENT_MINIMISED, null);
+            ActionManager.processEvent(CoreActionType.CLIENT_MINIMISED, null);
     }
 
     /** 
