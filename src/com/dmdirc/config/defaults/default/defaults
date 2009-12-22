@@ -197,7 +197,6 @@ logging:
   debugLoggingSysOut=true
 
 server:
-  friendlymodes=true
   pingtimeout=60000
   pingtimer=10000
   pingfrequency=60000

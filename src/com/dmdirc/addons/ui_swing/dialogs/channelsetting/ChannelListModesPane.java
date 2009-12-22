@@ -181,11 +181,9 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
                 (DefaultComboBoxModel) listModesMenu.getModel();
         for (char mode : listModesArray) {
             String modeText = mode + " list";
-            if (IdentityManager.getGlobalConfig().getOptionBool("server", "friendlymodes") &&
-                    channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
-                modeText =
-                        channel.getConfigManager().
-                        getOption("server", "mode" + mode) + " list";
+            if (channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
+                modeText = channel.getConfigManager().getOption("server",
+                        "mode" + mode) + " list [+"+mode+"]";
             }
             model.addElement(modeText);
 
