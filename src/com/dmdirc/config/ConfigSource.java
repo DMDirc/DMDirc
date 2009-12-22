@@ -123,7 +123,7 @@ public abstract class ConfigSource {
                 colour = value;
             }
 
-            return ColourManager.parseColour(value, null) != null;
+            return ColourManager.parseColour(colour, null) != null;
         } else {
             return false;
         }
