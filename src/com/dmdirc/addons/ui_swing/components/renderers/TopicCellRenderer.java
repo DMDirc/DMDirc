@@ -25,11 +25,14 @@ package com.dmdirc.addons.ui_swing.components.renderers;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.TopicLabel;
 
 import java.awt.Component;
+import java.awt.Panel;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Topic list cell renderer.
@@ -63,7 +66,10 @@ public class TopicCellRenderer implements TableCellRenderer {
             table.setRowHeight(row, label.getPreferredSize().height);
             return label;
         } else {
-            return new JLabel(value.toString());
+            final JPanel panel = new JPanel(new MigLayout());
+            panel.add(new JLabel(value.toString()));
+            table.setRowHeight(row, panel.getPreferredSize().height);
+            return panel;
         }
     }
 }
