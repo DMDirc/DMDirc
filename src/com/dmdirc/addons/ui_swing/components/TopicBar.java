@@ -27,13 +27,16 @@ import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
 import com.dmdirc.ui.IconManager;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -48,9 +51,13 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Topic text. */
     private final TextFieldInputField topicText;
+    /** Edit button. */
     private final JButton topicEdit;
+    /** Cancel button. */
     private final JButton topicCancel;
+    /** Associated channel. */
     private Channel channel;
 
     /**
@@ -59,7 +66,16 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
      * @param channelFrame Parent channel frame
      */
     public TopicBar(final ChannelFrame channelFrame) {
-        topicText = new TextFieldInputField();
+        topicText = new TextFieldInputField() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void setText(final String t) {
+                super.setText(t);
+                setCaretPosition(0);
+            }
+
+        };
         topicEdit = new ImageButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),  IconManager.getIconManager().
                 getIcon("edit"));
