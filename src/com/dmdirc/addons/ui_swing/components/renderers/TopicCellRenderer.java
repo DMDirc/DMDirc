@@ -27,9 +27,12 @@ import com.dmdirc.addons.ui_swing.dialogs.channelsetting.TopicLabel;
 import java.awt.Component;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Topic list cell renderer.
@@ -51,8 +54,10 @@ public class TopicCellRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
+        final JPanel panel;
         if (value instanceof TopicLabel) {
             final TopicLabel label = (TopicLabel) value;
+            panel = label;
             if (isSelected) {
                 label.setBackground(UIManager.getColor(
                         "Table.selectionBackground"));
@@ -60,10 +65,12 @@ public class TopicCellRenderer implements TableCellRenderer {
                 label.setBackground(UIManager.getColor(
                         "Table.background"));
             }
-            table.setRowHeight(row, label.getPreferredSize().height);
-            return label;
         } else {
-            return new JLabel(value.toString());
+            panel = new JPanel(new MigLayout());
+            panel.add(new JLabel(value.toString()));
+            
         }
+        table.setRowHeight(row, panel.getPreferredSize().height);
+        return panel;
     }
 }
