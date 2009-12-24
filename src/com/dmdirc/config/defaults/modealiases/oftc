@@ -1,0 +1,14 @@
+# Default mode settings for OFTC
+# b,k,l,imnpstrDdcCNu
+
+keysections:
+  identity
+  server
+
+identity:
+  name=OFTC mode aliases
+  ircd=oftc-hybrid
+
+server:
+  modeP=Protected, Only OPs can invite
+  enablemodeP=true
