@@ -24,7 +24,6 @@
 package com.dmdirc.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -32,10 +31,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.Semaphore;
+import javax.swing.BorderFactory;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -45,7 +46,7 @@ import javax.swing.text.html.HTMLEditorKit;
 /**
  * Simple Dialog to inform the user there are no UI plugins.
  */
-public class NoUIDialog extends JDialog {
+public class WarningDialog extends JDialog {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,32 +55,34 @@ public class NoUIDialog extends JDialog {
      */
     private static final long serialVersionUID = -528603916540455179L;
     /** Dialog heading text. */
-    public static final String TITLE = "No UIs Found";
+    public static final String NO_UIS_TITLE = "No UIs Found";
     /** Dialog body text. */
-    public static final String BODY = "DMDirc cannot find any UI plugins, " +
-            "which are required for you to use DMDirc.  You can either " +
-            "download a UI plugin or extract one from the jar. DMDirc will " +
-            "now exit";
+    public static final String NO_UIS_BODY = "DMDirc cannot find any UI " +
+            "plugins, which are required for you to use DMDirc.  You can " +
+            "either download a UI plugin or extract one from the jar. DMDirc " +
+            "will now exit";
 
     /** Alternative Dialog heading text. */
-    public static final String TITLE2 = "No compatible UIs Found";
+    public static final String NO_COMPAT_UIS_TITLE = "No compatible UIs Found";
     /** Alternative Dialog body text. */
-    public static final String BODY2 = "DMDirc did not find any compatible UI plugins, " +
-            "which are required for you to use DMDirc. The bundled UI plugins " +
-            "have automatically been extracted from the jar, and your UI has been " +
-            "reset to the default swing UI. DMDirc will now attempt to restart. " +
-            "If you are not using the launcher you will need to restart DMDirc " +
+    public static final String NO_COMPAT_UIS_BODY = "DMDirc did not find any " +
+            "compatible UI plugins, which are required for you to use " +
+            "DMDirc. The bundled UI plugins have automatically been " +
+            "extracted from the jar, and your UI has been reset to the " +
+            "default swing UI. DMDirc will now attempt to restart. If you " +
+            "are not using the launcher you will need to restart DMDirc " +
             "manually.";
 
     /** Another alternative Dialog body text! */
-    public static final String BODY3 = "DMDirc did not find any compatible UI plugins, " +
-            "which are required for you to use DMDirc.  The bundled UI plugins " +
-            "were automatically extracted from the jar, but this did not fix " +
-            "the problem. DMDirc is unable to continue and will now exit.";
+    public static final String NO_RECOV_UIS = "DMDirc did not find any " +
+            "compatible UI plugins, which are required for you to use DMDirc." +
+            "  The bundled UI plugins were automatically extracted from the " +
+            "jar, but this did not fix the problem. DMDirc is unable to " +
+            "continue and will now exit.";
 
     /** Create a new NoUIDialog */
-    public NoUIDialog() {
-        this(TITLE, BODY);
+    public WarningDialog() {
+        this(NO_UIS_TITLE, NO_UIS_BODY);
     }
 
     /**
@@ -88,11 +91,12 @@ public class NoUIDialog extends JDialog {
      * @param title Title of dialog
      * @param body Body of dialog
      */
-    public NoUIDialog(final String title, final String body) {
+    public WarningDialog(final String title, final String body) {
         super((JFrame) null, "DMDirc: "+title);
-        setResizable(false);
-        setLayout(new BorderLayout(5, 5));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        final JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         final JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
@@ -123,11 +127,13 @@ public class NoUIDialog extends JDialog {
 
         textArea.setText("<h1>" + title + "</h1><p>" + body + "</p>");
 
-        add(textArea, BorderLayout.CENTER);
-        add(button, BorderLayout.SOUTH);
-
-        setPreferredSize(new Dimension(250, 255));
-
+        panel.add(textArea, BorderLayout.CENTER);
+        panel.add(button, BorderLayout.SOUTH);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                panel.getBorder()
+                ));
+        add(panel);
     }
 
     /**
@@ -139,8 +145,8 @@ public class NoUIDialog extends JDialog {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                pack();
-                CoreUIUtils.centreWindow(NoUIDialog.this);
+                setSize(400,400);
+                CoreUIUtils.centreWindow(WarningDialog.this);
                 setVisible(true);
             }
         });
@@ -165,11 +171,9 @@ public class NoUIDialog extends JDialog {
                     }
 
                 });
-                pack();
-                CoreUIUtils.centreWindow(NoUIDialog.this);
-                setVisible(true);
             }
         });
+        display();
         semaphore.acquireUninterruptibly();
     }
 }
