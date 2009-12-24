@@ -35,7 +35,7 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
-import com.dmdirc.ui.NoUIDialog;
+import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
@@ -123,7 +123,8 @@ public final class Main {
             if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
                 System.out.println("DMDirc is unable to load any compatible UI plugins.");
                 if (!GraphicsEnvironment.isHeadless()) {
-                    new NoUIDialog(NoUIDialog.TITLE2, NoUIDialog.BODY3).displayBlocking();
+                    new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
+                            WarningDialog.NO_RECOV_UIS).displayBlocking();
                 }
                 IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
                 System.exit(1);
@@ -135,7 +136,8 @@ public final class Main {
                 System.out.println("DMDirc has updated the UI plugins and needs to restart.");
 
                 if (!GraphicsEnvironment.isHeadless()) {
-                    new NoUIDialog(NoUIDialog.TITLE2, NoUIDialog.BODY2).displayBlocking();
+                    new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
+                            WarningDialog.NO_COMPAT_UIS_BODY).displayBlocking();
                 }
 
                 // Allow the rebooted DMDirc to know that we have attempted restarting.
@@ -224,7 +226,7 @@ public final class Main {
 
         if (!GraphicsEnvironment.isHeadless()) {
             // Show a dialog informing the user that no UI was found.
-            new NoUIDialog().displayBlocking();
+            new WarningDialog().displayBlocking();
             System.exit(2);
         }
 
