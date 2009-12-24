@@ -288,13 +288,14 @@ public class Server extends WritableFrameContainer implements
                 updateIcon();
 
                 parser = buildParser();
+                final URI connectAddress = parser.getURI();
 
                 if (parser == null) {
-                    addLine("serverUnknownProtocol", address.getScheme());
+                    addLine("serverUnknownProtocol", connectAddress.getScheme());
                     return;
                 }
 
-                addLine("serverConnecting", address.getHost(), address.getPort());
+                addLine("serverConnecting", connectAddress.getHost(), connectAddress.getPort());
 
                 myState.transition(ServerState.CONNECTING);
 

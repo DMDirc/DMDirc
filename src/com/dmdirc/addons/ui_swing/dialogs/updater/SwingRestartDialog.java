@@ -25,8 +25,8 @@ package com.dmdirc.addons.ui_swing.dialogs.updater;
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.dialogs.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
-
 import com.dmdirc.updater.components.LauncherComponent;
+
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
