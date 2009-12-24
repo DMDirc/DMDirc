@@ -29,6 +29,9 @@ import com.dmdirc.util.URLBuilder;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -142,13 +145,14 @@ public final class IconManager implements ConfigChangeListener {
      * @return The URL that should be used to retrieve the specified icon
      */
     private URL getIconURL(final String type) {
+        final String iconType = getSpecialIcons(type);
         final ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        final URL defaultURL = cldr.getResource("com/dmdirc/res/" + type + ".png");
+        final URL defaultURL = cldr.getResource("com/dmdirc/res/" + iconType + ".png");
         
         //Get the path for the url
-        final String path = IdentityManager.getGlobalConfig().hasOptionString("icon", type)
-                ? IdentityManager.getGlobalConfig().getOption("icon", type)
-                : "dmdirc://com/dmdirc/res/" + type + ".png";
+        final String path = IdentityManager.getGlobalConfig().hasOptionString("icon", iconType)
+                ? IdentityManager.getGlobalConfig().getOption("icon", iconType)
+                : "dmdirc://com/dmdirc/res/" + iconType + ".png";
         
         //Get the url for the speficied path
         URL imageURL = URLBuilder.buildURL(path);
@@ -162,11 +166,24 @@ public final class IconManager implements ConfigChangeListener {
             
             if (imageURL == null) {
                 throw new IllegalArgumentException("Unable to load icon type '"
-                        + type + "', and unable to load default");
+                        + iconType + "', and unable to load default");
             }
         }
         
         return imageURL;
+    }
+
+    private String getSpecialIcons(final String type) {
+        final Calendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        if (cal.get(Calendar.MONTH) == Calendar.DECEMBER &&
+                cal.get(Calendar.DAY_OF_MONTH) >= 12 &&
+                cal.get(Calendar.DAY_OF_MONTH) <= 31) {
+           if ("icon".equals(type) || "logo".equals(type)) {
+               return "logo-special";
+            }
+        }
+        return type;
     }
 
     /** {@inheritDoc} */
