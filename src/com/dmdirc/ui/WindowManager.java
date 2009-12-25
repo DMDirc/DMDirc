@@ -63,6 +63,9 @@ public class WindowManager {
     private static final SelectionListener selectionListener
             = new WMSelectionListener();
 
+    /** The active window in the client. */
+    private static Window activeWindow = null;
+
     /**
      * Creates a new instance of WindowManager.
      */
@@ -323,6 +326,18 @@ public class WindowManager {
         final List<Window> children = childWindows.get(window);
         return children.toArray(new Window[children.size()]);
     }
+
+    /**
+     * Retrieves the currently active window in the client, or null if no window
+     * is active.
+     *
+     * @since 0.6.3
+     *
+     * @return Active window or null
+     */
+    public static Window getActiveWindow() {
+        return activeWindow;
+    }
     
     /**
      * Fires the addWindow(Window) callback.
@@ -378,6 +393,7 @@ public class WindowManager {
         /** {@inheritDoc} */
         @Override
         public void selectionChanged(final Window window) {
+            activeWindow = window;
             for (SelectionListener listener : selListeners) {
                 listener.selectionChanged(window);
             }

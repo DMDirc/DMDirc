@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
@@ -273,6 +275,9 @@ public abstract class FrameContainer {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
+        ActionManager.processEvent(
+                                    CoreActionType.CLIENT_FRAME_CHANGED,
+                                    null, this);
         LOGGER.finer(toString() + ": windowActivated(): frame = "
                 + (getFrame() == null ? null : getFrame().getClass().getName()));
 
