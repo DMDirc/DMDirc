@@ -114,8 +114,9 @@ public final class IdentityManager {
     
     /** Loads the default (built in) identities. */
     private static void loadDefaults() {
-        final String[] targets = {"default", "modealiases", "formatter"};
+        final String[] targets = {"default", "modealiases"};
         final String dir = getDirectory();
+        extractIdentities("default/formatter");
         
         for (String target : targets) {
             final File file = new File(dir + target);
