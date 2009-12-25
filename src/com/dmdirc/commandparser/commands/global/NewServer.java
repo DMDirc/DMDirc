@@ -32,6 +32,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The new server command allows users to open a new server window.
@@ -63,7 +65,7 @@ public final class NewServer extends GlobalCommand {
         } else if (args.getArguments().length == 1
                 && args.getArgumentsAsString().contains("://")) {
             try {
-                address = new URI(args.getArgumentsAsString());
+                address = getURI(args.getArgumentsAsString());
             } catch (URISyntaxException ex) {
                 address = null;
             }
@@ -78,6 +80,45 @@ public final class NewServer extends GlobalCommand {
 
         final Server server = new Server(address, IdentityManager.getProfiles().get(0));
         server.connect();
+    }
+
+    /**
+     * Get a URI from the given string.
+     * This method allows for +port in the uri (eg irc://server.host:+6668/)
+     *
+     * @param address Address to parse
+     * @return URI from address.
+     * @throws URISyntaxException If the string is not parseable.
+     */
+    public static URI getURI(final String address) throws URISyntaxException {
+        final URI uri = new URI(address);
+        int port = uri.getPort();
+
+        // Either no port specified, or a +port was used, lets try to find one.
+        // Otherwise just return the URI.
+        if (port == -1) {
+            final Matcher m = Pattern.compile(".*://[^/:]+:\\+([0-9]+).*").matcher(address);
+            // If no port is found, then again just return the uri above, the
+            // Parser can use its default.
+            if (m.matches()) {
+                m.find();
+                int newPort = -1;
+                try {
+                    newPort = Integer.parseInt(m.group(2));
+                } catch (final NumberFormatException nfe) { }
+
+                // Add 's' to scheme if not already there.
+                String scheme = uri.getScheme();
+                if (scheme.charAt(scheme.length() - 1) != 's') {
+                    scheme += "s";
+                }
+                return new URI(scheme, uri.getUserInfo(), uri.getHost(), newPort, uri.getPath(), uri.getQuery(), uri.getFragment());
+            }
+        }
+
+        // If a port already existed, or we were unable to find a port, just
+        // use the default one we had to start with.
+        return uri;
     }
     
     public static URI parseInput(final InputWindow origin, final boolean isSilent,

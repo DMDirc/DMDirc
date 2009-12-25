@@ -27,6 +27,7 @@ import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -461,7 +462,7 @@ public final class Apple implements InvocationHandler, ActionListener {
         if (isApple()) {
             try {
                 synchronized (addresses) {
-                    final URI addr = new URI(url);
+                    final URI addr = NewServer.getURI(url);
                     if (!clientOpened) {
                         addresses.add(addr);
                     } else {
