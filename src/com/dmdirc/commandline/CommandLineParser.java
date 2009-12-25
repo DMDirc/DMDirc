@@ -24,6 +24,7 @@ package com.dmdirc.commandline;
 
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -253,7 +254,7 @@ public class CommandLineParser {
         URI myAddress = null;
         
         try {
-            myAddress = new URI(address);
+            myAddress = NewServer.getURI(address);
             addresses.add(myAddress);
         } catch (URISyntaxException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());

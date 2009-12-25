@@ -60,7 +60,7 @@ public final class ChangeServer extends ServerCommand {
         } else if (args.getArguments().length == 1
                 && args.getArgumentsAsString().contains("://")) {
             try {
-                address = new URI(args.getArgumentsAsString());
+                address = NewServer.getURI(args.getArgumentsAsString());
             } catch (URISyntaxException ex) {
                 address = null;
             }
