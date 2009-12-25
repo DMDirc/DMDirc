@@ -22,9 +22,11 @@
 
 package com.dmdirc.addons.ui_swing.components.validating;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
+import java.awt.Color;
 
 import java.awt.Font;
 import java.awt.event.KeyListener;
@@ -419,5 +421,71 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     public JTextField getTextField() {
         return textField;
+    }
+
+    /**
+     * Sets the caret colour to the specified coloour.
+     *
+     * @param optionColour Colour for the caret
+     */
+    public void setCaretColor(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setCaretColor(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the foreground colour to the specified coloour.
+     *
+     * @param optionColour Colour for the foreground
+     */
+    @Override
+    public void setForeground(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setForeground(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the disabled text colour to the specified coloour.
+     *
+     * @param optionColour Colour for the disabled text
+     */
+    public void setDisabledTextColour(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setDisabledTextColor(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the background colour to the specified coloour.
+     *
+     * @param optionColour Colour for the caret
+     */
+    @Override
+    public void setBackground(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setBackground(optionColour);
+            }
+        });
     }
 }

@@ -19,19 +19,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.SearchBar;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
+import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.textpane.IRCDocument;
 import com.dmdirc.addons.ui_swing.textpane.IRCDocumentSearcher;
 import com.dmdirc.addons.ui_swing.textpane.LinePosition;
 import com.dmdirc.addons.ui_swing.textpane.TextPane;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.validator.Validator;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Window;
@@ -45,7 +50,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -57,7 +61,7 @@ import net.miginfocom.swing.MigLayout;
  * Status bar, shows message and info on the gui.
  */
 public final class SwingSearchBar extends JPanel implements ActionListener,
-        KeyListener, SearchBar, DocumentListener {
+        KeyListener, SearchBar, DocumentListener, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -76,13 +80,15 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** Case sensitive checkbox. */
     private JCheckBox caseCheck;
     /** Search text field. */
-    private JTextField searchBox;
+    private ValidatingJTextField searchBox;
     /** Line to search from. */
     private int line;
     /** Listener list. */
     private final ListenerList listeners;
     /** Parent window. */
     private Window parentWindow;
+    /** Search validate text. */
+    private SearchValidator validator;
 
     /**
      * Creates a new instance of StatusBar.
@@ -116,7 +122,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         nextButton = new JButton();
         prevButton = new JButton();
         caseCheck = new JCheckBox();
-        searchBox = new JTextField();
+        validator = new SearchValidator();
+        searchBox = new ValidatingJTextField(validator);
 
         nextButton.setText("Later");
         prevButton.setText("Earlier");
@@ -125,6 +132,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         caseCheck.setText("Case sensitive");
 
         line = -1;
+
+        setColours();
     }
 
     /** Lays out components. */
@@ -146,6 +155,11 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         prevButton.addActionListener(this);
         caseCheck.addActionListener(this);
         searchBox.getDocument().addDocumentListener(this);
+
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "backgroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "foregroundcolour", this);
     }
 
     /**
@@ -162,7 +176,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         } else if (e.getSource() == prevButton) {
             search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
         } else if (e.getSource() == caseCheck) {
-            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+            validator.setValidates(true);
+            searchBox.checkError();
             line = parent.getTextPane().getLastVisibleLine();
         }
     }
@@ -175,8 +190,9 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
+                validator.setValidates(true);
+                searchBox.checkError();
                 setVisible(true);
-                searchBox.setBackground(ColourManager.getColour("FFFFFF"));
                 getFocus();
             }
         });
@@ -192,7 +208,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             public void run() {
                 setVisible(false);
                 if (parent instanceof InputTextFrame) {
-                    ((InputTextFrame) parent).getInputField().requestFocusInWindow();
+                    ((InputTextFrame) parent).getInputField().
+                            requestFocusInWindow();
                 } else {
                     parent.requestFocusInWindow();
                 }
@@ -221,20 +238,25 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
 
         final TextPane textPane = parent.getTextPane();
         final IRCDocument document = textPane.getDocument();
-        final IRCDocumentSearcher searcher = new IRCDocumentSearcher(text, document,
+        final IRCDocumentSearcher searcher = new IRCDocumentSearcher(text,
+                document,
                 caseSensitive);
         searcher.setPosition(textPane.getSelectedRange());
 
-        final LinePosition result = up ? searcher.searchUp() : searcher.searchDown();
+        final LinePosition result = up ? searcher.searchUp() : searcher.
+                searchDown();
 
         if (result == null) {
             foundText = false;
-        } else if ((textPane.getSelectedRange().getEndLine() != 0 || 
-                textPane.getSelectedRange().getEndPos() != 0) 
-                && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine()) 
-                || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine())) 
+        } else if ((textPane.getSelectedRange().getEndLine() != 0 || textPane.
+                getSelectedRange().getEndPos() != 0)
+                && ((up && result.getEndLine() > textPane.getSelectedRange().
+                getEndLine())
+                || (!up && result.getStartLine() < textPane.getSelectedRange().
+                getStartLine()))
                 && JOptionPane.showConfirmDialog(parentWindow,
-                "Do you want to continue searching from the " + (up ? "end" : "beginning") + "?",
+                "Do you want to continue searching from the " + (up ? "end"
+                : "beginning") + "?",
                 "No more results", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {
             // It's wrapped, and they don't want to continue searching
@@ -247,11 +269,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             foundText = true;
         }
 
-        if (foundText) {
-            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
-        } else {
-            searchBox.setBackground(ColourManager.getColour("FF0000"));
-        }
+        validator.setValidates(foundText);
+        searchBox.checkError();
     }
 
     /**
@@ -266,7 +285,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 close();
             } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
                 search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
-            } else if (event.getKeyCode() != KeyEvent.VK_F3 && event.getKeyCode() != KeyEvent.VK_F) {
+            } else if (event.getKeyCode() != KeyEvent.VK_F3 && event.
+                    getKeyCode() != KeyEvent.VK_F) {
                 line = parent.getTextPane().getLastVisibleLine();
             }
         }
@@ -325,7 +345,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** {@inheritDoc}. */
     @Override
     public void insertUpdate(final DocumentEvent e) {
-        searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+        validator.setValidates(true);
+        searchBox.checkError();
         nextButton.setEnabled(!searchBox.getText().isEmpty());
         prevButton.setEnabled(!searchBox.getText().isEmpty());
     }
@@ -333,7 +354,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** {@inheritDoc}. */
     @Override
     public void removeUpdate(final DocumentEvent e) {
-        searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+        validator.setValidates(true);
+        searchBox.checkError();
         nextButton.setEnabled(!searchBox.getText().isEmpty());
         prevButton.setEnabled(!searchBox.getText().isEmpty());
     }
@@ -368,5 +390,52 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 listeners.remove(KeyListener.class, l);
             }
         });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        setColours();
+    }
+
+    private void setColours() {
+        searchBox.setForeground(IdentityManager.getGlobalConfig().
+                getOptionColour("ui", "foregroundcolour"));
+        searchBox.setBackground(IdentityManager.getGlobalConfig().
+                getOptionColour("ui", "backgroundcolour"));
+        searchBox.setCaretColor(IdentityManager.getGlobalConfig().
+                getOptionColour("ui", "foregroundcolour"));
+    }
+}
+
+/**
+ * Simple search validator.
+ */
+class SearchValidator implements Validator<String> {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    /** Validates. */
+    private boolean validates = true;
+
+    /** {@inheritDoc} */
+    @Override
+    public ValidationResponse validate(final String object) {
+        if (validates) {
+            return new ValidationResponse();
+        }
+        return new ValidationResponse("Not found.");
+    }
+
+    /**
+     * Sets whether this validator validates.
+     * @param validates
+     */
+    public void setValidates(final boolean validates) {
+        this.validates = validates;
     }
 }

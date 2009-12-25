@@ -34,9 +34,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JLabel;
@@ -108,8 +106,6 @@ public final class TopicPane extends JPanel implements DocumentListener,
 
     /** Initialises the topic panel. */
     private void initTopicsPanel() {
-        final List<Topic> topics = channel.getTopics();
-        Collections.reverse(topics);
         topicLengthLabel = new JLabel();
         topicText = new TextAreaInputField(100, 4);
         topicWho = new TextLabel();

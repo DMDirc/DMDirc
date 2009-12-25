@@ -96,11 +96,16 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "channelSplitPanePosition", this);
-        IdentityManager.getGlobalConfig().addChangeListener(controller.getDomain(),
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(),
                 "showtopicbar", this);
         IdentityManager.getGlobalConfig().addChangeListener(
                 controller.getDomain(),
                 "shownicklist", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "backgroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "foregroundcolour", this);
         ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
@@ -177,6 +182,16 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      */
     private void initComponents() {
         topicBar = new TopicBar(this);
+
+        topicBar.setBackground(getConfigManager().getOptionColour(
+                "ui", "backgroundcolour"));
+        topicBar.setForeground(getConfigManager().getOptionColour(
+                "ui", "foregroundcolour"));
+        topicBar.setDisabledTextColour(getConfigManager().getOptionColour(
+                "ui", "foregroundcolour"));
+        topicBar.setCaretColor(getConfigManager().getOptionColour(
+                "ui", "foregroundcolour"));
+
         nicklist = new NickList(this, getConfigManager());
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
@@ -233,6 +248,18 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     public void configChanged(final String domain, final String key) {
         super.configChanged(domain, key);
 
+        if ("backgroundcolour".equals(key)) {
+            topicBar.setBackground(getConfigManager().getOptionColour(
+                    "ui", "backgroundcolour"));
+        }
+        if ("foregroundcolour".equals(key)) {
+            topicBar.setForeground(getConfigManager().getOptionColour(
+                    "ui", "foregroundcolour"));
+            topicBar.setDisabledTextColour(getConfigManager().getOptionColour(
+                    "ui", "foregroundcolour"));
+            topicBar.setCaretColor(getConfigManager().getOptionColour(
+                    "ui", "foregroundcolour"));
+        }
         if ("channelSplitPanePosition".equals(key)) {
             final int splitPanePosition = getConfigManager().getOptionInt("ui",
                     "channelSplitPanePosition");
@@ -250,7 +277,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         }
         if ("showtopicbar".equals(key)) {
             topicBar.setVisible(getConfigManager().getOptionBool(
-                getController().getDomain(), "showtopicbar"));
+                    getController().getDomain(), "showtopicbar"));
         }
         if ("shownicklist".equals(key)) {
             if (getConfigManager().getOptionBool(getController().getDomain(),
@@ -267,41 +294,57 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         saveSplitPanePosition();
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public void close() {
         saveSplitPanePosition();
+
+
         super.close();
+
+
     }
 
     private void saveSplitPanePosition() {
         identity.setOption("ui", "channelSplitPanePosition", nicklist.getWidth());
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getNicknamePopupType() {
         return PopupType.CHAN_NICK;
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getChannelPopupType() {
         return PopupType.CHAN_NORMAL;
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getHyperlinkPopupType() {
         return PopupType.CHAN_HYPERLINK;
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getNormalPopupType() {
         return PopupType.CHAN_NORMAL;
+
+
     }
 
     /** {@inheritDoc} */
@@ -309,20 +352,30 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     public void addCustomPopupItems(final JPopupMenu popupMenu) {
         if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
+
+
         } else {
             settingsMI.setEnabled(false);
+
+
         }
 
         if (popupMenu.getComponentCount() > 0) {
             popupMenu.addSeparator();
+
+
         }
 
         popupMenu.add(settingsMI);
+
+
     }
 
     /** {@inheritDoc} */
     @Override
     public void redrawNicklist() {
         getNickList().repaint();
+
+
     }
 }
