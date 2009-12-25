@@ -59,16 +59,16 @@ public class TopicLabel extends JPanel {
     }
 
     private void init() {
-        setLayout(new MigLayout("fillx, ins 0"));
+        setLayout(new MigLayout("fillx, ins 0, debug", "[]0[]", "[]0[]"));
 
         OldTextLabel label = new OldTextLabel(topic.getTopic());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, gaptop 5");
+        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, gapleft 5");
 
         label = new OldTextLabel("Set on: " + new Date(topic.getTime() * 1000).toString());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5");
+        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
 
         label = new OldTextLabel("By: " + topic.getClient());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5");
+        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
 
         add(new JSeparator(), "newline, span, growx, pushx");
     }

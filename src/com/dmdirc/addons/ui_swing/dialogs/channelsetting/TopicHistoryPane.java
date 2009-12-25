@@ -59,6 +59,8 @@ public class TopicHistoryPane extends JPanel implements ListSelectionListener {
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     /** Listener list. */
     private final ListenerList listeners = new ListenerList();
+    /** Selected topic. */
+    private int selectedTopic = -1;
 
     /**
      * Instantiates a new topic history pane.
@@ -71,19 +73,12 @@ public class TopicHistoryPane extends JPanel implements ListSelectionListener {
                 ListSelectionModel.SINGLE_SELECTION);
         final List<Topic> topics = channel.getTopics();
         Collections.reverse(topics);
-        if (topics.size() > 0) {
-            topics.remove(0);
-        }
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
 
         for (Topic topic : topics) {
             topicHistory.getModel().addRow(new Object[]{new TopicLabel(topic),});
         }
-
-        if (topicHistory.getModel().getRowCount() == 0) {
-            topicHistory.getModel().addRow(new Object[]{
-                        "No previous topics set.",});
-        }
+        topicHistory.getSelectionModel().setSelectionInterval(0, 0);
 
         setLayout(new MigLayout("fill, ins 0"));
         add(scrollPane, "hmin 50, hmax 200, wmax 450");
@@ -111,7 +106,15 @@ public class TopicHistoryPane extends JPanel implements ListSelectionListener {
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
-        fireActionEvent();
+        if (!e.getValueIsAdjusting()) {
+            if (topicHistory.getSelectedRow() == -1) {
+                topicHistory.getSelectionModel().setSelectionInterval(
+                        selectedTopic, selectedTopic);
+                return;
+            }
+            selectedTopic = topicHistory.getSelectedRow();
+            fireActionEvent();
+        }
     }
 
     /**

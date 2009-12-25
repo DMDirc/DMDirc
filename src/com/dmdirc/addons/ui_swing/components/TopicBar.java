@@ -25,8 +25,10 @@ package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
 import com.dmdirc.ui.IconManager;
+import java.awt.Color;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -139,5 +141,87 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
             topicCancel.setVisible(false);
             propertyChange(null);
         }
+    }
+
+    /**
+     * Sets the caret position in this topic bar.
+     *
+     * @param position New position
+     */
+    public void setCaretPosition(final int position) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                topicText.setCaretPosition(position);
+            }
+        });
+    }
+
+    /**
+     * Sets the caret colour to the specified coloour.
+     *
+     * @param optionColour Colour for the caret
+     */
+    public void setCaretColor(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                topicText.setCaretColor(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the foreground colour to the specified coloour.
+     *
+     * @param optionColour Colour for the foreground
+     */
+    @Override
+    public void setForeground(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                topicText.setForeground(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the disabled text colour to the specified coloour.
+     *
+     * @param optionColour Colour for the disabled text
+     */
+    public void setDisabledTextColour(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                topicText.setDisabledTextColor(optionColour);
+            }
+        });
+    }
+
+    /**
+     * Sets the background colour to the specified coloour.
+     *
+     * @param optionColour Colour for the caret
+     */
+    @Override
+    public void setBackground(final Color optionColour) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                topicText.setBackground(optionColour);
+            }
+        });
     }
 }
