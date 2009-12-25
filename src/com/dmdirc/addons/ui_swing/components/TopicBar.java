@@ -130,6 +130,7 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
         if (e.getSource() == topicEdit || e.getSource() == topicText) {
             if (topicText.isEnabled()) {
                 channel.setTopic(topicText.getText());
+                topicText.setText(channel.getCurrentTopic().getTopic());
                 topicText.setEnabled(false);
                 topicCancel.setVisible(false);
             } else {
