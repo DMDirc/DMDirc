@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
 import com.dmdirc.addons.ui_swing.MainFrame;
@@ -154,7 +155,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * 
      * @return The current PluginDErrorListDialogialog instance
      */
-    public static SwingPreferencesDialog getSwingPreferencesDialog(final MainFrame parentWindow) {
+    public static SwingPreferencesDialog getSwingPreferencesDialog(
+            final MainFrame parentWindow) {
         synchronized (SwingPreferencesDialog.class) {
             if (me == null) {
                 me = new SwingPreferencesDialog(parentWindow);
@@ -175,7 +177,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tabList.addListSelectionListener(this);
         new ListScroller(tabList);
         final JScrollPane tabListScrollPane = new JScrollPane(tabList);
-        tabListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        tabListScrollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -235,7 +238,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @return The number of those categories (including children) that will be displayed
      * @since 0.6.3m1rc3
      */
-    protected int countCategories(final Collection<PreferencesCategory> categories) {
+    protected int countCategories(
+            final Collection<PreferencesCategory> categories) {
         int count = 0;
 
         for (PreferencesCategory cat : categories) {
@@ -259,18 +263,26 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             selected = null;
         }
         mainPanel.setCategory(null);
-        
+
         if (actionEvent != null && getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
-                final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
+                final PreferencesCategory node = (PreferencesCategory) tabList.
+                        getSelectedValue();
                 IdentityManager.getConfigIdentity().setOption("dialogstate",
                         "preferences", node.getPath());
             }
             saveOptions();
         }
-        
+
         if (manager != null) {
-            manager.dismiss();
+            new LoggingSwingWorker() {
+
+                @Override
+                protected Object doInBackground() throws Exception {
+                    manager.dismiss();
+                    return null;
+                }
+            }.execute();
         }
         dispose();
     }
@@ -325,7 +337,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         if (manager != null) {
             if (manager.save()) {
                 dispose();
-                new SwingRestartDialog(parentWindow, 
+                new SwingRestartDialog(parentWindow,
                         ModalityType.APPLICATION_MODAL,
                         "apply settings").display();
             }
