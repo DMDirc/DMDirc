@@ -736,6 +736,11 @@ public final class SwingController extends Plugin implements UIController {
                 "Shows a graphical topic bar in channels."));
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(),
                "shownicklist", "Show nicklist?", "Do you want the nicklist visible"));
+        //TODO issue 3251
+        //advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(),
+        //       "showfulltopic", "Show full topic in topic bar?",
+        //       "Do you want to show the full topic in the topic bar or just" +
+        //       "first line?"));
 
         return advanced;
     }
