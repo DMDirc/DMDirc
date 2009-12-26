@@ -149,6 +149,18 @@ public final class Styliser {
      * @param strings The lines to be stylised
      */
     public static void addStyledString(final StyledDocument styledDoc, final String[] strings) {
+        addStyledString(styledDoc, strings, new SimpleAttributeSet());
+    }
+
+    /**
+     * Stylises the specified strings and adds them to the specified document.
+     *
+     * @param styledDoc Document to add the styled strings to
+     * @param strings The lines to be stylised
+     * @param attribs Base attribute set
+     */
+    public static void addStyledString(final StyledDocument styledDoc,
+            final String[] strings, final SimpleAttributeSet attribs) {
         for (int i = 0; i < strings.length; i++) {
             final char[] chars = strings[i].toCharArray();
             
@@ -167,12 +179,11 @@ public final class Styliser {
                 
                 target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
-                final SimpleAttributeSet attribs = new SimpleAttributeSet();
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
                 
                 while (position < target.length()) {
                     final String next = readUntilControl(target.substring(position));
-                    
+
                     styledDoc.insertString(offset, next, attribs);
                     
                     position += next.length();
