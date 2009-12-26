@@ -24,20 +24,39 @@
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Topic;
 import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.actions.NoNewlinesPasteAction;
 import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.IconManager;
-import java.awt.Color;
+import com.dmdirc.ui.messages.Styliser;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
+import java.util.Hashtable;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.BoxView;
+import javax.swing.text.ComponentView;
+import javax.swing.text.Element;
+import javax.swing.text.GlyphView;
+import javax.swing.text.IconView;
+import javax.swing.text.LabelView;
+import javax.swing.text.ParagraphView;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.View;
+import javax.swing.text.ViewFactory;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -45,7 +64,7 @@ import net.miginfocom.swing.MigLayout;
  * Component to show and edit topics for a channel.
  */
 public class TopicBar extends JComponent implements PropertyChangeListener,
-        ActionListener {
+        ActionListener, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,13 +73,15 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
      */
     private static final long serialVersionUID = 1;
     /** Topic text. */
-    private final TextFieldInputField topicText;
+    private final TextPaneInputField topicText;
     /** Edit button. */
     private final JButton topicEdit;
     /** Cancel button. */
     private final JButton topicCancel;
     /** Associated channel. */
     private Channel channel;
+    /** Empty Attrib set. */
+    private SimpleAttributeSet as = new SimpleAttributeSet();
 
     /**
      * Instantiates a new topic bar.
@@ -68,35 +89,34 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
      * @param channelFrame Parent channel frame
      */
     public TopicBar(final ChannelFrame channelFrame) {
-        topicText = new TextFieldInputField() {
-            
-            private static final long serialVersionUID = 1;
-            
-            /** {@inheritDoc} */
-            @Override
-            public void setText(final String t) {
-                super.setText(t);
-                setCaretPosition(0);
-            }
+        topicText = new TextPaneInputField();
+        topicText.setEditorKit(new WrapEditorKit());
+        //((DefaultStyledDocument) topicText.getDocument()).setDocumentFilter(
+        //        new NewlinesDocumentFilter());
 
-        };
+        topicText.getActionMap().put("paste-from-clipboard",
+                new NoNewlinesPasteAction());
         topicEdit = new ImageButton("edit", IconManager.getIconManager().
-                getIcon("edit-inactive"),  IconManager.getIconManager().
+                getIcon("edit-inactive"), IconManager.getIconManager().
                 getIcon("edit"));
         topicCancel = new ImageButton("cancel", IconManager.getIconManager().
-                getIcon("close"),  IconManager.getIconManager().
+                getIcon("close"), IconManager.getIconManager().
                 getIcon("close-active"));
-         this .channel = channelFrame.getChannel();
+        this.channel = channelFrame.getChannel();
 
         new SwingInputHandler(topicText, channelFrame.getCommandParser(),
                 channelFrame).setTypes(false,
                 false, true, false);
 
-        topicText.setEnabled(false);
+        topicText.setEditable(false);
         topicCancel.setVisible(false);
 
-        setLayout(new MigLayout("fill, ins 0, hidemode 3"));
-        add(topicText, "growx, pushx");
+        final JScrollPane sp = new JScrollPane(topicText);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        setLayout(new MigLayout("fillx, ins 0, hidemode 3"));
+        add(sp, "growx, pushx");
         add(topicCancel, "");
         add(topicEdit, "");
 
@@ -105,19 +125,26 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
         topicText.addActionListener(this);
         topicEdit.addActionListener(this);
         topicCancel.addActionListener(this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "backgroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "foregroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "inputbackgroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                "ui", "inputforegroundcolour", this);
+        setColours();
     }
 
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        List<Topic> topics = channel.getTopics();
-        String topic;
-        if (topics.size() == 0) {
-            topic = "";
-        } else {
-            topic = topics.get(topics.size() - 1).getTopic();
-        }
-        topicText.setText(topic);
+        topicText.setText("");
+        ((StyledDocument) topicText.getDocument()).setCharacterAttributes(0,
+                Integer.MAX_VALUE, as, true);
+        Styliser.addStyledString((StyledDocument) topicText.getDocument(),
+                new String[]{channel.getCurrentTopic().getTopic(),}, as);
+        topicText.setCaretPosition(0);
     }
 
     /**
@@ -126,22 +153,45 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
      * @param e Action event
      */
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(
+            final ActionEvent e) {
         if (e.getSource() == topicEdit || e.getSource() == topicText) {
-            if (topicText.isEnabled()) {
+            if (topicText.isEditable()) {
                 channel.setTopic(topicText.getText());
-                topicText.setText(channel.getCurrentTopic().getTopic());
-                topicText.setEnabled(false);
+                propertyChange(null);
+                topicText.setEditable(false);
                 topicCancel.setVisible(false);
             } else {
-                topicText.setEnabled(true);
+                topicText.setVisible(false);
+                topicText.setText("");
+                topicText.setText(channel.getCurrentTopic().getTopic());
+                ((StyledDocument) topicText.getDocument()).
+                        setCharacterAttributes(0, Integer.MAX_VALUE, as, true);
+                topicText.setCaretPosition(0);
+                topicText.setEditable(true);
+                topicText.setVisible(true);
                 topicCancel.setVisible(true);
             }
         } else if (e.getSource() == topicCancel) {
-            topicText.setEnabled(false);
+            topicText.setEditable(false);
             topicCancel.setVisible(false);
             propertyChange(null);
         }
+    }
+
+    private void setColours() {
+        setBackground(channel.getConfigManager().getOptionColour(
+                "ui", "inputbackgroundcolour", "ui", "backgroundcolour"));
+        setForeground(channel.getConfigManager().getOptionColour(
+                "ui", "inputforegroundcolour", "ui", "foregroundcolour"));
+        setDisabledTextColour(channel.getConfigManager().getOptionColour(
+                "ui", "inputforegroundcolour", "ui", "foregroundcolour"));
+        setCaretColor(channel.getConfigManager().getOptionColour(
+                "ui", "inputforegroundcolour", "ui", "foregroundcolour"));
+        StyleConstants.setBackground(as, channel.getConfigManager().getOptionColour(
+                "ui", "inputbackgroundcolour", "ui", "backgroundcolour"));
+        StyleConstants.setForeground(as, channel.getConfigManager().getOptionColour(
+                "ui", "inputforegroundcolour", "ui", "foregroundcolour"));
     }
 
     /**
@@ -225,4 +275,144 @@ public class TopicBar extends JComponent implements PropertyChangeListener,
             }
         });
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(String domain, String key) {
+        setColours();
+    }
 }
+
+/**
+ * @author Stanislav Lapitsky
+ * @version 1.0
+ */
+class WrapEditorKit extends StyledEditorKit {
+
+    private static final long serialVersionUID = 1;
+    private ViewFactory defaultFactory = new WrapColumnFactory();
+
+    /** {@inheritDoc} */
+    @Override
+    public ViewFactory getViewFactory() {
+        return defaultFactory;
+    }
+}
+
+/**
+ * @author Stanislav Lapitsky
+ * @version 1.0
+ */
+class WrapColumnFactory implements ViewFactory {
+
+    /** {@inheritDoc} */
+    @Override
+    public View create(final Element elem) {
+        String kind = elem.getName();
+        if (kind != null) {
+            if (kind.equals(AbstractDocument.ContentElementName)) {
+                return new WrapLabelView(elem);
+            } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+                return new NoWrapParagraphView(elem);
+            } else if (kind.equals(AbstractDocument.SectionElementName)) {
+                return new BoxView(elem, View.Y_AXIS);
+            } else if (kind.equals(StyleConstants.ComponentElementName)) {
+                return new ComponentView(elem);
+            } else if (kind.equals(StyleConstants.IconElementName)) {
+                return new IconView(elem);
+            }
+        }
+
+        // default to text display
+        return new LabelView(elem);
+    }
+}
+
+/**
+ * @author Stanislav Lapitsky
+ * @version 1.0
+ */
+class NoWrapParagraphView extends ParagraphView {
+
+    /**
+     * Creates a new no wrap paragraph view.
+     *
+     * @param elem Element to view
+     */
+    public NoWrapParagraphView(final Element elem) {
+        super(elem);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void layout(final int width, final int height) {
+        super.layout(Short.MAX_VALUE, height);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public float getMinimumSpan(final int axis) {
+        return super.getPreferredSpan(axis);
+    }
+}
+
+/**
+ * @author Stanislav Lapitsky
+ * @version 1.0
+ */
+class WrapLabelView extends LabelView {
+
+    /**
+     * Creates a new wrap label view.
+     *
+     * @param elem Element to view
+     */
+    public WrapLabelView(final Element elem) {
+        super(elem);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getBreakWeight(final int axis, final float pos, final float len) {
+        if (axis == View.X_AXIS) {
+            checkPainter();
+            int p0 = getStartOffset();
+            int p1 = getGlyphPainter().getBoundedPosition(this, p0, pos, len);
+            if (p1 == p0) {
+                // can't even fit a single character
+                return View.BadBreakWeight;
+            }
+            try {
+                //if the view contains line break char return forced break
+                if (getDocument().getText(p0, p1 - p0).indexOf("\r") >= 0) {
+                    return View.ForcedBreakWeight;
+                }
+            } catch (BadLocationException ex) {
+                //should never happen
+            }
+        }
+        return super.getBreakWeight(axis, pos, len);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public View breakView(final int axis, final int p0, final float pos,
+            final float len) {
+        if (axis == View.X_AXIS) {
+            checkPainter();
+            int p1 = getGlyphPainter().getBoundedPosition(this, p0, pos, len);
+            try {
+                //if the view contains line break char break the view
+                int index = getDocument().getText(p0, p1 - p0).indexOf("\r");
+                if (index >= 0) {
+                    GlyphView v = (GlyphView) createFragment(p0, p0 + index + 1);
+                    return v;
+                }
+            } catch (BadLocationException ex) {
+                //should never happen
+            }
+        }
+        return super.breakView(axis, p0, pos, len);
+    }
+}
+       

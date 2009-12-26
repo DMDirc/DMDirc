@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.textpane;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.core.util.ExtendedAttributedString;
 import com.dmdirc.ui.core.util.Utils;
