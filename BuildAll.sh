@@ -33,6 +33,8 @@ BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_lo
 cd ${MYDIR}
 
 if [ -d .git ]; then
+	$GIT reset --hard
+	$GIT checkout master
 	$GIT pull
 	SVNREV=`$GIT describe`
 else
