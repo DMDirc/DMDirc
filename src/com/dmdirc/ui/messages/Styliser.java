@@ -472,6 +472,9 @@ public final class Styliser {
                 
                 count = count + 6;
                 
+                if (string.length() == count) {
+                    return count;
+                }
                 // Now for background
                 if (string.charAt(count) == ',' && hasHexString(string, count + 1)) {
                     count++;
