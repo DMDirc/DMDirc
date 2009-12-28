@@ -301,6 +301,22 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
         return ("" + chars[value / 16]) + chars[value % 16];
     }
 
+    private void mouseMotion(final MouseEvent e) {
+        if (showIrc && e.getY() > ircOffset && e.getY() < ircOffset + IRC_HEIGHT &&
+                e.getX() > BORDER_SIZE && e.getX() < BORDER_SIZE + 16 *
+                IRC_WIDTH) {
+            preview = getIrcColour(e);
+        } else if (showHex && e.getY() > hexOffset && e.getY() < hexOffset +
+                HEX_HEIGHT && e.getX() > BORDER_SIZE && e.getX() < BORDER_SIZE +
+                HEX_WIDTH) {
+            preview = getHexColour(e);
+        } else {
+            preview = null;
+        }
+
+        repaint(previewRect);
+    }
+
     /** 
      * {@inheritDoc}
      * 
@@ -308,7 +324,27 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
-        if (showIrc && e.getY() > ircOffset && e.getY() < ircOffset + IRC_HEIGHT &&
+    // Do nothing
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event 
+     */
+    @Override
+    public void mousePressed(final MouseEvent e) {
+    // Do nothing
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event 
+     */
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+    if (showIrc && e.getY() > ircOffset && e.getY() < ircOffset + IRC_HEIGHT &&
                 e.getX() > BORDER_SIZE && e.getX() < BORDER_SIZE + 16 *
                 IRC_WIDTH) {
 
@@ -340,26 +376,6 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
      * @param e Mouse event 
      */
     @Override
-    public void mousePressed(final MouseEvent e) {
-    // Do nothing
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event 
-     */
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-    // Do nothing
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event 
-     */
-    @Override
     public void mouseEntered(final MouseEvent e) {
     // Do nothing
     }
@@ -381,7 +397,7 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
      */
     @Override
     public void mouseDragged(final MouseEvent e) {
-    // Do nothing
+        mouseMotion(e);
     }
 
     /** 
@@ -391,19 +407,7 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
      */
     @Override
     public void mouseMoved(final MouseEvent e) {
-        if (showIrc && e.getY() > ircOffset && e.getY() < ircOffset + IRC_HEIGHT &&
-                e.getX() > BORDER_SIZE && e.getX() < BORDER_SIZE + 16 *
-                IRC_WIDTH) {
-            preview = getIrcColour(e);
-        } else if (showHex && e.getY() > hexOffset && e.getY() < hexOffset +
-                HEX_HEIGHT && e.getX() > BORDER_SIZE && e.getX() < BORDER_SIZE +
-                HEX_WIDTH) {
-            preview = getHexColour(e);
-        } else {
-            preview = null;
-        }
-
-        repaint(previewRect);
+        mouseMotion(e);
     }
 
     /** 
