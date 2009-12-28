@@ -236,6 +236,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             infoLabel.setText("This will be sent as "
                     + parent.getContainer().getNumLines(textField.getText())
                     + " lines.");
+            setResizable(true);
             pack();
             SwingUtilities.invokeLater(new Runnable(){
 
