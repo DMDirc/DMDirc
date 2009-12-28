@@ -358,6 +358,14 @@ public class TopicBar extends JComponent implements ActionListener,
             setColours();
         //}
     }
+
+    /**
+     * Closes this topic bar.
+     */
+    public void close() {
+        channel.getChannelInfo().getParser().getCallbackManager().delCallback(
+                ChannelTopicListener.class, this);
+    }
 }
 
 /**

@@ -274,6 +274,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     @Override
     public void close() {
         saveSplitPanePosition();
+        topicBar.close();
         super.close();
     }
 
