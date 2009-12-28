@@ -116,7 +116,7 @@ public final class IdentityManager {
     private static void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
         final String dir = getDirectory();
-        extractIdentities("default/formatter");
+        extractFormatters();
         
         for (String target : targets) {
             final File file = new File(dir + target);
@@ -141,6 +141,17 @@ public final class IdentityManager {
                 extractIdentities("default");
                 loadUser(new File(dir, "default"));
             }
+        }
+    }
+
+    private static void extractFormatters() {
+    try {
+            ResourceManager.getResourceManager().extractResource(
+                    "com/dmdirc/config/defaults/default/formatter",
+                    getDirectory() + "default/", false);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
+                    + "formatters: " + ex.getMessage());
         }
     }
     
