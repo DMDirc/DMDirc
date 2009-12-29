@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -59,10 +60,19 @@ public final class Message extends ServerCommand implements IntelligentCommand,
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "msg", "<target> <message>");
         } else {
-            server.getParser().sendMessage(args.getArguments()[0],
-                    args.getArgumentsAsString(1));
-            sendLine(origin, isSilent, "selfMessage", args.getArguments()[0],
-                    args.getArgumentsAsString(1));
+            final String target = args.getArguments()[0];
+            final String message = args.getArgumentsAsString(1);
+            sendLine(origin, isSilent, "selfMessage", target, message);
+
+            // If this is a known server or channel, and this is not a silent
+            // invokation, use sendLine, else send it raw to the parser.
+            if (!isSilent && server.hasChannel(target)) {
+                server.getChannel(target).sendLine(message);
+            } else if (!isSilent && server.hasQuery(target)) {
+                server.getQuery(target).sendLine(message);
+            } else {
+                server.getParser().sendMessage(target, message);
+            }
         }
     }
     
