@@ -161,6 +161,19 @@ public class TopicBar extends JComponent implements ActionListener,
                 TopicBar.this.actionPerformed(e);
             }
         });
+        topicText.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "escapeButton");
+        topicText.getActionMap().put("escapeButton", new AbstractAction(
+                "escapeButton") {
+
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                e.setSource(topicCancel);
+                TopicBar.this.actionPerformed(e);
+            }
+        });
         topicText.addHyperlinkListener(this);
         IdentityManager.getGlobalConfig().addChangeListener(
                 "ui", "backgroundcolour", this);
@@ -207,6 +220,7 @@ public class TopicBar extends JComponent implements ActionListener,
         if (e.getSource() == topicEdit || e.getSource() == topicText) {
             if (topicText.isEditable()) {
                 channel.setTopic(topicText.getText());
+                ((ChannelFrame) channel.getFrame()).getInputField().requestFocusInWindow();
                 topicChanged();
                 topicText.setEditable(false);
                 topicCancel.setVisible(false);
@@ -221,11 +235,13 @@ public class TopicBar extends JComponent implements ActionListener,
                 topicText.setCaretPosition(0);
                 topicText.setEditable(true);
                 topicText.setVisible(true);
+                topicText.requestFocusInWindow();
                 topicCancel.setVisible(true);
             }
         } else if (e.getSource() == topicCancel) {
             topicText.setEditable(false);
             topicCancel.setVisible(false);
+            ((ChannelFrame) channel.getFrame()).getInputField().requestFocusInWindow();
             topicChanged();
         }
     }
@@ -252,6 +268,8 @@ public class TopicBar extends JComponent implements ActionListener,
 
     private void setAttributes() {
         as = new SimpleAttributeSet();
+        StyleConstants.setFontFamily(as, topicText.getFont().getFamily());
+        StyleConstants.setFontSize(as, topicText.getFont().getSize());
         StyleConstants.setBackground(as, backgroundColour);
         StyleConstants.setForeground(as, foregroundColour);
         StyleConstants.setUnderline(as, false);
