@@ -106,6 +106,8 @@ public class Server extends WritableFrameContainer implements
 
     /** The Parser instance handling this server. */
     private transient Parser parser;
+    /** The Parser instance that used to be handling this server. */
+    private transient Parser oldParser;
 
     /**
      * Object used to synchronoise access to parser. This object should be
@@ -729,6 +731,27 @@ public class Server extends WritableFrameContainer implements
     }
 
     /**
+     * Compare the given URI to the URI we are currently using to see if they
+     * would both result in the server connecting to the same place, even if the
+     * URIs do not match exactly.
+     *
+     * @param uri URI to compare with the Servers own URI.
+     * @return True if the Given URI is the "same" as the one we are using.
+     * @since 0.6.4
+     */
+    public boolean compareURI(final URI uri) {
+        if (parser != null) {
+            return parser.compareURI(uri);
+        }
+
+        if (oldParser != null) {
+            return oldParser.compareURI(uri);
+        }
+        
+        return false;
+    }
+
+    /**
      * Retrieves the MyInfo object used for the IRC Parser.
      *
      * @return The MyInfo object for our profile
@@ -1046,6 +1069,7 @@ public class Server extends WritableFrameContainer implements
 
         // 7: Remove any references to the window and parents
         window = null; //NOPMD
+        oldParser = parser; //NOPMD
         parser = null; //NOPMD
     }
 
@@ -1277,6 +1301,7 @@ public class Server extends WritableFrameContainer implements
             clearChannels();
 
             synchronized (parserLock) {
+                oldParser = parser;
                 parser = null;
             }
 
@@ -1324,6 +1349,7 @@ public class Server extends WritableFrameContainer implements
             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
 
             synchronized (parserLock) {
+                oldParser = parser;
                 parser = null;
             }
 

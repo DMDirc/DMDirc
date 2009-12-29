@@ -226,10 +226,26 @@ public final class ServerManager {
      */
     public Server connectToAddress(final URI uri, final Identity profile) {
         Logger.assertTrue(profile.isProfile());
+        Server server = null;
 
-        final Server server = new Server(uri, profile);
-        server.connect();
+        synchronized (servers) {
+            for (Server loopServer : servers) {
+                if (loopServer.compareURI(uri)) {
+                    server = loopServer;
+                    break;
+                }
+            }
+        }
 
+        if (server == null) {
+            server = new Server(uri, profile);
+            server.connect();
+            return server;
+        }
+        if (server.getState().isDisconnected()) {
+            server.connect(uri, profile );
+        }
+        server.activateFrame();
         return server;
     }
 
