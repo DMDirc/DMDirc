@@ -1,5 +1,4 @@
 /*
- * 
  * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,22 +20,16 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
+package com.dmdirc.addons.ui_swing.actions;
 
-import com.dmdirc.Topic;
-import com.dmdirc.addons.ui_swing.components.text.OldTextLabel;
+import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
 
-import java.util.Date;
+import java.awt.event.ActionEvent;
 
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
+import javax.swing.AbstractAction;
 
-import net.miginfocom.swing.MigLayout;
-
-/**
- * Topic Label for use in the topic history panel.
- */
-public class TopicLabel extends JPanel {
+/** Closes and saves the topic when enter is pressed. */
+public class TopicEnterAction extends AbstractAction {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,41 +37,25 @@ public class TopicLabel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Topic this label represents. */
-    private final Topic topic;
+    /** Parent pane. */
+    private ChannelSettingsDialog parent;
 
     /**
-     * Instantiates a new topic label based on the specified topic.
+     * Creates a new topic enter action with the associated parent.
      *
-     * @param topic Specified topic
+     * @param parent Parent dialog
      */
-    public TopicLabel(final Topic topic) {
-        this.topic = topic;
-
-        init();
-    }
-
-    private void init() {
-        setLayout(new MigLayout("fillx, ins 0, debug", "[]0[]", "[]0[]"));
-
-        OldTextLabel label = new OldTextLabel(topic.getTopic());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, gapleft 5");
-
-        label = new OldTextLabel("Topic set by " + topic.getClient());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
-
-        label = new OldTextLabel("on " + new Date(topic.getTime() * 1000).toString());
-        add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
-
-        add(new JSeparator(), "newline, span, growx, pushx");
+    public TopicEnterAction(final ChannelSettingsDialog parent) {
+        this.parent = parent;
     }
 
     /**
-     * Returns the topic for this label.
+     * {@inheritDoc}
      *
-     * @return Topic
+     * @param e Action event
      */
-    public Topic getTopic() {
-        return topic;
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        parent.save();
     }
 }
