@@ -477,6 +477,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      * @return Current channel topic
      */
     public Topic getCurrentTopic() {
+        if (channelInfo.getTopic().isEmpty()) {
+            return null;
+        }
         return new Topic(channelInfo.getTopic(), channelInfo.getTopicSetter(),
                 channelInfo.getTopicTime());
     }

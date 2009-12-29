@@ -23,32 +23,17 @@
 package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Topic;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import com.dmdirc.addons.ui_swing.actions.NoNewlinesPasteAction;
-import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
-import com.dmdirc.addons.ui_swing.components.TextAreaInputField;
-import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.Date;
 
-import javax.swing.AbstractAction;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
 /** Topic panel. */
-public final class TopicPane extends JPanel implements DocumentListener,
-        ActionListener {
+public final class TopicPane extends JPanel implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -60,16 +45,10 @@ public final class TopicPane extends JPanel implements DocumentListener,
     private final Channel channel;
     /** Parent dialog. */
     private final ChannelSettingsDialog parent;
-    /** the maximum length allowed for a topic. */
-    private int topicLengthMax;
-    /** label showing the number of characters left in a topic.*/
-    private JLabel topicLengthLabel;
-    /** Topic text entry text area. */
-    private TextAreaInputField topicText;
-    /** Topic who. */
-    private TextLabel topicWho;
     /** Topic history panel. */
     private TopicHistoryPane topicHistoryPane;
+    /** Topic display pane. */
+    private TopicDisplayPane topicDisplayPane;
 
     /**
      * Creates a new instance of TopicModesPane.
@@ -85,8 +64,6 @@ public final class TopicPane extends JPanel implements DocumentListener,
         this.channel = channel;
         this.parent = parent;
 
-        topicLengthMax = channel.getServer().getParser().getMaxTopicLength();
-
         update();
     }
 
@@ -97,8 +74,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         removeAll();
         initTopicsPanel();
         layoutComponents();
-
-        topicText.getDocument().addDocumentListener(this);
+        
         topicHistoryPane.addActionListener(this);
 
         setVisible(true);
@@ -106,90 +82,25 @@ public final class TopicPane extends JPanel implements DocumentListener,
 
     /** Initialises the topic panel. */
     private void initTopicsPanel() {
-        topicLengthLabel = new JLabel();
-        topicText = new TextAreaInputField(100, 4);
-        topicWho = new TextLabel();
+        topicDisplayPane = new TopicDisplayPane(channel, parent,
+                channel.getServer().getParser().getMaxTopicLength());
         topicHistoryPane = new TopicHistoryPane(channel);
-
-        topicText.setText(channel.getChannelInfo().getTopic());
-        topicText.setLineWrap(true);
-        topicText.setWrapStyleWord(true);
-        topicText.setRows(5);
-        topicText.setColumns(30);
-        new SwingInputHandler(topicText, channel.getFrame().getCommandParser(),
-                channel.getFrame()).setTypes(false, false, true, false);
-
-        topicText.getActionMap().
-                put("paste-from-clipboard",
-                new NoNewlinesPasteAction());
-        topicText.getInputMap().
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-                new EnterAction());
-        topicText.getInputMap().
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.
-                getCtrlDownMask()),
-                new EnterAction());
-
-        UIUtilities.addUndoManager(topicText);
-
-        topicChanged();
-        actionPerformed(null);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 1, fill, wmax 450"));
 
-        add(new JScrollPane(topicText), "grow, push");
-        add(topicLengthLabel, "pushx, growx, pushx");
-        add(topicWho, "growx, pushx");
+        add(topicDisplayPane, "grow, push");
         add(topicHistoryPane, "grow, pushy");
     }
 
     /** Processes the topic and changes it if necessary. */
     protected void setChangedTopic() {
-        if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
-            channel.setTopic(topicText.getText());
+        final String topic = topicDisplayPane.getTopic();
+        if (!channel.getChannelInfo().getTopic().equals(topic)) {
+            channel.setTopic(topic);
         }
-    }
-
-    /** Handles the topic change. */
-    private void topicChanged() {
-        if (topicLengthMax == 0) {
-            topicLengthLabel.setForeground(Color.BLACK);
-            topicLengthLabel.setText(topicText.getText().length()
-                    + " characters");
-        } else {
-            final int charsLeft = topicLengthMax - topicText.getText().length();
-            if (charsLeft >= 0) {
-                topicLengthLabel.setForeground(Color.BLACK);
-                topicLengthLabel.setText(charsLeft + " of " + topicLengthMax
-                        + " available");
-            } else {
-                topicLengthLabel.setForeground(Color.RED);
-                topicLengthLabel.setText(0 + " of " + topicLengthMax
-                        + " available " + (-1 * charsLeft)
-                        + " too many characters");
-            }
-        }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void insertUpdate(final DocumentEvent e) {
-        topicChanged();
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void removeUpdate(final DocumentEvent e) {
-        topicChanged();
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void changedUpdate(final DocumentEvent e) {
-        //Ignore
     }
 
     /** 
@@ -200,44 +111,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e != null && e.getSource() == topicHistoryPane) {
-            final Topic topic = topicHistoryPane.getSelectedTopic();
-            if (topic == null) {
-                actionPerformed(null);
-            } else {
-                topicText.setText(topic.getTopic());
-            }
-        } else {
-            final Topic topic = channel.getCurrentTopic();
-            if (topic == null) {
-                topicWho.setText("No topic set.");
-            } else {
-                topicWho.setText("Current topic set by " + topic.getClient() +
-                        "<br> on " + new Date(1000 * topic.
-                        getTime()));
-                topicText.setText(topic.getTopic());
-            }
+            topicDisplayPane.setTopic(topicHistoryPane.getSelectedTopic());
         }
     }
-
-    /** Closes and saves the topic when enter is pressed. */
-    private class EnterAction extends AbstractAction {
-
-        /**
-         * A version number for this class. It should be changed whenever the class
-         * structure is changed (or anything else that would prevent serialized
-         * objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        /** 
-         * {@inheritDoc}
-         * 
-         * @param e Action event
-         */
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            parent.save();
-        }
-    }
-
 }
