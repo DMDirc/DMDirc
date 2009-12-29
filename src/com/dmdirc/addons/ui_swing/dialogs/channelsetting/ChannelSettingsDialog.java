@@ -250,7 +250,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements
     }
 
     /** Saves the settings. */
-    protected void save() {
+    public void save() {
         channelModesPane.setChangedBooleanModes();
         topicModesPane.setChangedTopic();
         channelSettingsPane.save();

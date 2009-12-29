@@ -64,10 +64,10 @@ public class TopicLabel extends JPanel {
         OldTextLabel label = new OldTextLabel(topic.getTopic());
         add(label, "wmax 450, growy, pushy, wrap, gapleft 5, gapleft 5");
 
-        label = new OldTextLabel("Set on: " + new Date(topic.getTime() * 1000).toString());
+        label = new OldTextLabel("Topic set by " + topic.getClient());
         add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
 
-        label = new OldTextLabel("By: " + topic.getClient());
+        label = new OldTextLabel("on " + new Date(topic.getTime() * 1000).toString());
         add(label, "wmax 450, growy, pushy, wrap, gapleft 5, pad 0");
 
         add(new JSeparator(), "newline, span, growx, pushx");
