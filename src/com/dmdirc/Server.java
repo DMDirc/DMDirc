@@ -483,6 +483,9 @@ public class Server extends WritableFrameContainer implements
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
+        if (parser == null) {
+            return false;
+        }
         final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
@@ -501,6 +504,9 @@ public class Server extends WritableFrameContainer implements
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
+        if (parser == null) {
+            throw new IllegalArgumentException("No such query: " + host);
+        }
         final String nick = parser.parseHostmask(host)[0];
 
         for (Query query : queries) {
