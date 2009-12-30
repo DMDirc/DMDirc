@@ -29,8 +29,6 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -221,15 +219,6 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         name.addPropertyChangeListener("validationResult", this);
         triggers.addPropertyChangeListener("validationResult", this);
         conditions.addPropertyChangeListener("validationResult", this);
-        
-        addWindowListener(new WindowAdapter() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                getCancelButton().doClick();
-            }
-        });
     }
 
     /** Lays out the components. */

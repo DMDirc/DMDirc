@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing;
 
+import com.dmdirc.addons.ui_swing.dialogs.DialogKeyListener;
 import com.dmdirc.addons.ui_swing.components.frames.ServerFrame;
 import com.dmdirc.addons.ui_swing.components.frames.CustomFrame;
 import com.dmdirc.addons.ui_swing.components.frames.QueryFrame;
@@ -73,6 +74,7 @@ import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.net.URI;
 import java.util.ArrayList;
@@ -592,6 +594,8 @@ public final class SwingController extends Plugin implements UIController {
 
         Toolkit.getDefaultToolkit().getSystemEventQueue().
                 push(new DMDircEventQueue(this));
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().
+                addKeyEventDispatcher(new DialogKeyListener());
 
         UIUtilities.invokeAndWait(new Runnable() {
 

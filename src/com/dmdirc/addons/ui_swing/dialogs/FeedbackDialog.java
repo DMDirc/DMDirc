@@ -79,6 +79,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private JCheckBox serverCheckbox;
     /** DMDirc info checkbox. */
     private JCheckBox DMDircCheckbox;
+    /** Sent. */
+    private boolean sentReport = false;
 
     /** 
      * Instantiates the feedback dialog. 
@@ -121,6 +123,10 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
                 me = new FeedbackDialog(parentWindow);
                 me.serverCheckbox.setEnabled(ServerManager.getServerManager().
                         numServers() > 0);
+            } else if (!me.isVisible()) {
+                me = new FeedbackDialog(parentWindow);
+                me.serverCheckbox.setEnabled(ServerManager.getServerManager().
+                    numServers() > 0);
             }
         }
 
@@ -214,6 +220,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** Checks and sends the feedback. */
     private void send() {
+        sentReport = true;
         getOkButton().setEnabled(false);
         getCancelButton().setEnabled(false);
         final StringBuilder serverInfo = new StringBuilder();
@@ -248,8 +255,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
             dmdircInfo.append("Look & Feel: " + SwingController.getLookAndFeel());
         }
         new SendWorker(me, name.getText().trim(),
-                email.getText().trim(), feedback.getText().trim(), serverInfo.toString().
-                trim(), dmdircInfo.toString().trim()).execute();
+                email.getText().trim(), feedback.getText().trim(), serverInfo.
+                toString().trim(), dmdircInfo.toString().trim()).execute();
     }
 
     /** Validates the input. */
@@ -269,7 +276,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("Send")) {
-            send();
+            if (!sentReport) {
+                send();
+            }
         } else if (e.getActionCommand().equals("Close")) {
             dispose();
         }
