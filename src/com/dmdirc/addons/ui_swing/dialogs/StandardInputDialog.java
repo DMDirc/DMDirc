@@ -30,13 +30,10 @@ import com.dmdirc.addons.ui_swing.components.text.TextLabel;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -182,18 +179,6 @@ public abstract class StandardInputDialog extends StandardDialog {
             //Ignore
             }
         });
-
-        final ActionListener enterListener = new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                getOkButton().doClick();
-            }
-        };
-        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        getRootPane().registerKeyboardAction(enterListener, enter,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     /**

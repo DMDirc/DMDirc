@@ -249,6 +249,13 @@ public final class ChannelSettingsDialog extends StandardDialog implements
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
     /** Saves the settings. */
     public void save() {
         channelModesPane.setChangedBooleanModes();

@@ -250,6 +250,13 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
     /**
      * Prompts and adds a new profile
      */

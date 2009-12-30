@@ -224,6 +224,13 @@ public final class SwingUpdaterDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void statusChanged(final STATE newStatus) {
         if (newStatus == STATE.UPDATING) {
             getOkButton().setEnabled(false);

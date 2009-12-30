@@ -322,6 +322,13 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
     /** Adds an alias. */
     private void add() {
         final Alias alias = new Alias("");

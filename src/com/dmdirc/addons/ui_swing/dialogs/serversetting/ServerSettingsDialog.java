@@ -270,6 +270,13 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             dispose();
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
     
     /** {@inheritDoc} */
     @Override
