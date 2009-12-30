@@ -23,22 +23,17 @@
 package com.dmdirc.addons.ui_swing.dialogs;
 
 import com.dmdirc.ui.CoreUIUtils;
-import java.awt.Component;
 
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
 
 /**
  * Provides common methods for dialogs.
@@ -66,7 +61,7 @@ public class StandardDialog extends JDialog {
     public StandardDialog(final Frame owner, final boolean modal) {
         super(owner, modal);
         this.owner = owner;
-        
+
         if (owner != null) {
             setIconImages(owner.getIconImages());
         }
@@ -80,7 +75,7 @@ public class StandardDialog extends JDialog {
     public StandardDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
         this.owner = owner;
-        
+
         if (owner != null) {
             setIconImages(owner.getIconImages());
         }
@@ -94,7 +89,7 @@ public class StandardDialog extends JDialog {
     public StandardDialog(final Dialog owner, final boolean modal) {
         super(owner, modal);
         this.owner = owner;
-        
+
         if (owner != null) {
             setIconImages(owner.getIconImages());
         }
@@ -113,6 +108,14 @@ public class StandardDialog extends JDialog {
      * @param owner Window to center on
      */
     public void display(Component owner) {
+        addWindowListener(new WindowAdapter() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                executeAction(getCancelButton());
+            }
+        });
         pack();
         if (owner == null) {
             CoreUIUtils.centreWindow(this);
@@ -192,49 +195,6 @@ public class StandardDialog extends JDialog {
     }
 
     /**
-     * Creates the root pane of this dialog. We hook in two keylisteners
-     * to send enter/escape events to our buttons.
-     * @return The new root pane
-     */
-    @Override
-    protected final JRootPane createRootPane() {
-        final ActionListener escapeListener = new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                executeAction(StandardDialog.this.cancelButton);
-            }
-        };
-
-        final ActionListener enterListener = new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                if (StandardDialog.this.getFocusOwner() instanceof JButton) {
-                    executeAction((JButton) StandardDialog.this.getFocusOwner());
-                } else {
-                    executeAction(StandardDialog.this.okButton);
-                }
-            }
-        };
-
-        final KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
-                InputEvent.CTRL_DOWN_MASK);
-
-        final JRootPane customRootPane = new JRootPane();
-
-        customRootPane.registerKeyboardAction(escapeListener, escape,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
-        customRootPane.registerKeyboardAction(enterListener, enter,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
-
-        return customRootPane;
-    }
-
-    /**
      * Retrieves the OK button for this form.
      * @return The form's OK button
      */
@@ -254,9 +214,46 @@ public class StandardDialog extends JDialog {
      * Simulates the user clicking on the specified target button.
      * @param target The button to use
      */
-    protected final void executeAction(final JButton target) {
+    public final void executeAction(final JButton target) {
         if (target != null) {
-            target.doClick();
+            if (target.isEnabled()) {
+                target.doClick();
+            }
         }
+    }
+
+    /**
+     * This method is called when enter is pressed anywhere in the dialog
+     * except on a button. By default this method does nothing.
+     *
+     * @return Returns true if the key press has been handled and is not be
+     * be forwarded on by default this is false
+     */
+    public boolean enterPressed() {
+        return false;
+    }
+
+    /**
+     * This method is called when ctrl + enter is pressed anywhere in the
+     * dialog. By default this method presses the OK button.
+     *
+     * @return Returns true if the key press has been handled and is not be
+     * be forwarded on by default this is true
+     */
+    public boolean ctrlEnterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
+    /**
+     * This method is called when enter is pressed anywhere in the dialog
+     * except on a button. By default this method presses the cancel button.
+     *
+     * @return Returns true if the key press has been handled and is not be
+     * be forwarded on by default this is true
+     */
+    public boolean escapePressed() {
+        executeAction(getCancelButton());
+        return true;
     }
 }

@@ -149,6 +149,17 @@ public class URLDialog extends StandardDialog implements ActionListener {
 
     /** {@inheritDoc} */
     @Override
+    public boolean enterPressed() {
+        if (panel.getSelection().isEmpty()) {
+            return false;
+        } else {
+            executeAction(getOkButton());
+            return true;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void validate() {
         super.validate();
 

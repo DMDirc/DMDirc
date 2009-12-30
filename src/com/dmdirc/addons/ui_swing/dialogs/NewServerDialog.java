@@ -39,7 +39,6 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -49,11 +48,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
@@ -175,17 +172,6 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         getCancelButton().addActionListener(this);
         getOkButton().addActionListener(this);
         editProfileButton.addActionListener(this);
-        final ActionListener enterListener = new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                getOkButton().doClick();
-            }
-        };
-        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        getRootPane().registerKeyboardAction(enterListener, enter,
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     /**
@@ -328,6 +314,13 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
     }
     
     /** {@inheritDoc} */

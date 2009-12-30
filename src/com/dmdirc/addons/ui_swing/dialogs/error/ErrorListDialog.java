@@ -221,6 +221,13 @@ public final class ErrorListDialog extends StandardDialog implements
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean enterPressed() {
+        executeAction(getOkButton());
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      *

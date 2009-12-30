@@ -31,9 +31,15 @@ import javax.swing.JOptionPane;
  * @author shane
  */
 public class DMDircJOptionPane extends JOptionPane {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     /** Maximum characters per line. */
     private int maxCharactersPerLineCount = Integer.MAX_VALUE;
-
     /** Title of Dialog. */
     private String title = "";
 
@@ -45,10 +51,11 @@ public class DMDircJOptionPane extends JOptionPane {
      * @param messageType Message Type.
      * @param optionType Options.
      */
-     public DMDircJOptionPane(final String title, final String message, final int messageType, final int optionType) {
-         super(message, messageType, optionType);
-         this.title = title;
-     }
+    public DMDircJOptionPane(final String title, final String message,
+            final int messageType, final int optionType) {
+        super(message, messageType, optionType);
+        this.title = title;
+    }
 
     /**
      * Set the maximum number of characters per line.
@@ -72,7 +79,7 @@ public class DMDircJOptionPane extends JOptionPane {
         final Object oldMessage = this.getMessage();
         this.setMessage("");
         this.setMessage(oldMessage);
-        
+
         final JDialog dialog = createDialog(title);
         dialog.setVisible(true);
         dialog.dispose();

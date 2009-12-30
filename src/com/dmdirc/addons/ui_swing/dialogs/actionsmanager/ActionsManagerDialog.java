@@ -46,8 +46,6 @@ import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -222,15 +220,6 @@ public final class ActionsManagerDialog extends StandardDialog implements
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
         ActionManager.addListener(this, CoreActionType.ACTION_DELETED);
-
-        addWindowListener(new WindowAdapter() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                getOkButton().doClick();
-            }
-        });
     }
 
     /**
