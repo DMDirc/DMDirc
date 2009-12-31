@@ -48,6 +48,7 @@ formatter:
   channelSelfExternalMessage=<%1$s%2$s> %5$s
   channelSelfExternalAction=6* %1$s%2$s %5$s
   channelTopicChanged=3* %1$s%2$s has changed the topic to '%5$s'.
+  channelTopicRemoved=3* %1$s%2$s has removed the topic on %6$s.
   channelModeChanged=3* %1$s%2$s sets mode: %5$s.
   channelSelfModeChanged=3* You set mode: %5$s.
 
