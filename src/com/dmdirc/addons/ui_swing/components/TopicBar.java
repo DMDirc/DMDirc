@@ -129,6 +129,7 @@ public class TopicBar extends JComponent implements ActionListener,
                 channelFrame).setTypes(false,
                 false, true, false);
 
+        topicText.setFocusable(false);
         topicText.setEditable(false);
         topicCancel.setVisible(false);
 
@@ -226,6 +227,7 @@ public class TopicBar extends JComponent implements ActionListener,
                 ((ChannelFrame) channel.getFrame()).getInputField().
                         requestFocusInWindow();
                 topicChanged();
+                topicText.setFocusable(false);
                 topicText.setEditable(false);
                 topicCancel.setVisible(false);
             } else {
@@ -237,12 +239,14 @@ public class TopicBar extends JComponent implements ActionListener,
                         0, Integer.MAX_VALUE, as, true);
                 topicText.setText(channel.getCurrentTopic().getTopic());
                 topicText.setCaretPosition(0);
+                topicText.setFocusable(true);
                 topicText.setEditable(true);
                 topicText.setVisible(true);
                 topicText.requestFocusInWindow();
                 topicCancel.setVisible(true);
             }
         } else if (e.getSource() == topicCancel) {
+            topicText.setFocusable(false);
             topicText.setEditable(false);
             topicCancel.setVisible(false);
             ((ChannelFrame) channel.getFrame()).getInputField().
