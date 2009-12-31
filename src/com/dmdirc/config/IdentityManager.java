@@ -116,7 +116,6 @@ public final class IdentityManager {
     private static void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
         final String dir = getDirectory();
-        extractFormatters();
         
         for (String target : targets) {
             final File file = new File(dir + target);
@@ -127,6 +126,8 @@ public final class IdentityManager {
 
             loadUser(file);
         }
+
+        extractFormatters();
 
         // If the bundled defaults are newer than the ones the user is
         // currently using, extract them.
