@@ -199,8 +199,11 @@ public class AddonInfo {
     public boolean isDownloadable() {
         final String channel = IdentityManager.getGlobalConfig().
                 getOption("updater", "channel");
-        return !stableDownload.isEmpty() || (!"STABLE".equals(channel) &&
-                !unstableDownload.isEmpty());
+        if ("STABLE".equals(channel)) {
+            return !stableDownload.isEmpty();
+        } else {
+            return !unstableDownload.isEmpty();
+        }
     }
 
     /**

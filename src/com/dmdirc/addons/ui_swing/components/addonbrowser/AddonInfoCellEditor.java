@@ -23,17 +23,19 @@
 
 package com.dmdirc.addons.ui_swing.components.addonbrowser;
 
+import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 /**
- * Table for addons.
+ * Addon info cell editor.
  */
-public class AddonTable extends JTable {
+public class AddonInfoCellEditor extends AbstractCellEditor implements
+        TableCellEditor {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -41,56 +43,31 @@ public class AddonTable extends JTable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Table to edit. */
+    private Object value;
 
-    /**
-     * Creates a new addon table.
-     */
-    public AddonTable() {
-        super(new DefaultTableModel(0, 1));
-        setTableHeader(null);
-    }
-
-    /** {@inheritDoc} */
+    /** {@innheritDoc} */
     @Override
-    public TableCellRenderer getCellRenderer(final int row, final int column) {
-        return new AddonInfoCellRenderer();
-    }
+    public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+        this.value = value;
+        if (value instanceof AddonInfoLabel) {
+            final AddonInfoLabel label = (AddonInfoLabel) value;
 
-    /** {@inheritDoc} */
-    @Override
-    public TableCellEditor getCellEditor(final int row, final int column) {
-        return new AddonInfoCellEditor();
-    }
+            label.setBackground(row % 2 == 1 ? new Color(0xEE, 0xEE, 0xFF)
+                    : Color.WHITE);
+            
+            table.setRowHeight(row, label.getPreferredSize().height);
 
-    /** {@inheritDoc} */
-    @Override
-    public DefaultTableModel getModel() {
-        return (DefaultTableModel) super.getModel();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setModel(final TableModel dataModel) {
-        if (!(dataModel instanceof DefaultTableModel)) {
-            throw new IllegalArgumentException("Row sorter must be of type DefaultTableModel");
+            return label;
+        } else {
+            return new JLabel(value.toString());
         }
-        super.setModel(dataModel);
     }
 
-    /** {@inheritDoc} */
+    /** {@innheritDoc} */
     @Override
-    @SuppressWarnings("unchecked")
-    public AddonSorter getRowSorter() {
-        return (AddonSorter) super.getRowSorter();
+    public Object getCellEditorValue() {
+        return value;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setRowSorter(final RowSorter<? extends TableModel> sorter) {
-        if (!(sorter instanceof AddonSorter)) {
-            throw new IllegalArgumentException("Row sorter must be of type AddonSorter");
-        }
-        super.setRowSorter(sorter);
-    }
-
 }
