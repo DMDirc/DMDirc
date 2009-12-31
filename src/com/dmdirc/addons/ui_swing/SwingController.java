@@ -745,6 +745,9 @@ public final class SwingController extends Plugin implements UIController {
         //       "showfulltopic", "Show full topic in topic bar?",
         //       "Do you want to show the full topic in the topic bar or just" +
         //       "first line?"));
+        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                getDomain(), "hideEmptyTopicBar", "Hide empty topic bar?",
+               "Do you want to hide the topic bar when there is no topic"));
 
         return advanced;
     }
