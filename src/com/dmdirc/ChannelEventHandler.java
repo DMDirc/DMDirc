@@ -124,7 +124,9 @@ public final class ChannelEventHandler extends EventHandler implements
                         newTopic);
             }
         } else {
-            owner.doNotification("channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
+            owner.doNotification(cChannel.getTopic().isEmpty()
+                    ? "channelTopicRemoved" : "channelTopicChanged",
+                    CoreActionType.CHANNEL_TOPICCHANGE,
                     cChannel.getChannelClient(cChannel.getTopicSetter(), true), cChannel.getTopic());
         }
 
