@@ -64,12 +64,13 @@ public class InstallListener implements ActionListener {
             final File file = File.createTempFile("dmdirc-addon", ".tmp");
             file.deleteOnExit();
 
-            if ("STABLE".equals(IdentityManager.getGlobalConfig().getOption("updater", "channel"))) {
+            if ("STABLE".equals(IdentityManager.getGlobalConfig().getOption(
+                    "updater", "channel"))) {
                 Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
-                    + info.getStableDownload(), file.getAbsolutePath());
+                        + info.getStableDownload(), file.getAbsolutePath());
             } else {
                 Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
-                    + info.getUnstableDownload(), file.getAbsolutePath());
+                        + info.getUnstableDownload(), file.getAbsolutePath());
             }
 
             switch (info.getType()) {
@@ -77,7 +78,16 @@ public class InstallListener implements ActionListener {
                     ActionManager.installActionPack(file.getAbsolutePath());
                     break;
                 case TYPE_PLUGIN:
-                    file.renameTo(new File(PluginManager.getPluginManager().getDirectory()));
+                    final File newFile = new File(PluginManager.getPluginManager().
+                            getDirectory(), info.getTitle() + ".jar");
+                    if (file.renameTo(newFile)) {
+                        PluginManager.getPluginManager().addPlugin(
+                                newFile.getAbsolutePath());
+                    } else {
+                        Logger.userError(ErrorLevel.MEDIUM, "Unable to "
+                                + "install addon, failed to move file: "
+                                + file.getAbsolutePath());
+                    }
                     break;
                 case TYPE_THEME:
                     file.renameTo(new File(ThemeManager.getThemeDirectory()));
