@@ -70,11 +70,19 @@ public class TopicDisplayPane extends JPanel implements DocumentListener {
     /** Topic who. */
     private TextLabel topicWho;
 
+    /**
+     * Creates a new topic display panel.  This panel shows an editable version
+     * of the current topic along with relating meta data and validates the
+     * length of the new input.
+     *
+     * @param channel Associated channel
+     * @param parent Parent channel settings dialog
+     */
     public TopicDisplayPane(final Channel channel,
-            final ChannelSettingsDialog parent, final int topicLengthMax) {
+            final ChannelSettingsDialog parent) {
         this.channel = channel;
         this.parent = parent;
-        this.topicLengthMax = topicLengthMax;
+        this.topicLengthMax = channel.getServer().getParser().getMaxTopicLength();
 
         initComponents();
         addListeners();
@@ -83,6 +91,7 @@ public class TopicDisplayPane extends JPanel implements DocumentListener {
         setTopic(channel.getCurrentTopic());
     }
 
+    /** Initialises the components. */
     private void initComponents() {
         topicLengthLabel = new JLabel();
         topicText = new TextAreaInputField(100, 4);
@@ -105,10 +114,12 @@ public class TopicDisplayPane extends JPanel implements DocumentListener {
         UIUtilities.addUndoManager(topicText);
     }
 
+    /** Adds listeners to the components. */
     private void addListeners() {
         topicText.getDocument().addDocumentListener(this);
     }
 
+    /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 1, fill, ins 0"));
 
@@ -117,6 +128,11 @@ public class TopicDisplayPane extends JPanel implements DocumentListener {
         add(topicWho, "growx, pushx");
     }
 
+    /**
+     * Sets the topic for this display panel.
+     *
+     * @param topic New topic or null
+     */
     public void setTopic(final Topic topic) {
         this.topic = topic;
 
@@ -129,6 +145,11 @@ public class TopicDisplayPane extends JPanel implements DocumentListener {
         }
     }
 
+    /**
+     * Gets the topic text currently being displayed
+     *
+     * @return Current topic text
+     */
     public String getTopic() {
         return topicText.getText();
     }
