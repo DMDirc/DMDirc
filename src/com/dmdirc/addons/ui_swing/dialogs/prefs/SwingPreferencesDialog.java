@@ -274,16 +274,16 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             saveOptions();
         }
 
-        if (manager != null) {
-            new LoggingSwingWorker() {
+        new LoggingSwingWorker() {
 
-                @Override
-                protected Object doInBackground() throws Exception {
+            @Override
+            protected Object doInBackground() throws Exception {
+                if (manager != null) {
                     manager.dismiss();
-                    return null;
                 }
-            }.execute();
-        }
+                return null;
+            }
+        }.execute();
         dispose();
     }
 
