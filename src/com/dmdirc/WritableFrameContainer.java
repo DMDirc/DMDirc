@@ -299,6 +299,21 @@ public abstract class WritableFrameContainer extends FrameContainer {
                        "Invalid notification target for type " + messageType
                        + ": channel " + channel + " doesn't exist");
            }
+        } else if (target.startsWith("comchans:")) {
+            final String user = String.format(target.substring(9), args);
+            boolean found = false;
+
+            for (String channelName : getServer().getChannels()) {
+                final Channel channel = getServer().getChannel(channelName);
+                if (channel.getChannelInfo().getChannelClient(user) != null) {
+                    channel.addLine(messageType, args);
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                addLine(messageType, args);
+            }
         } else if (!"none".equals(target)) {
             addLine(format, args);
             Logger.userError(ErrorLevel.MEDIUM,
