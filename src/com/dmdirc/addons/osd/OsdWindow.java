@@ -126,8 +126,10 @@ public final class OsdWindow extends JDialog implements MouseListener,
         panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour(plugin.getDomain(),
                 "bgcolour"));
 
+        final int width = IdentityManager.getGlobalConfig().getOptionInt(plugin.getDomain(),
+                "width");
         setContentPane(panel);
-        setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill"));
+        setLayout(new MigLayout("wmin " + width + ", wmax " + width + ", ins rel, fill"));
 
         label = new JLabel(text);
         label.setForeground(IdentityManager.getGlobalConfig().getOptionColour(plugin.getDomain(),
