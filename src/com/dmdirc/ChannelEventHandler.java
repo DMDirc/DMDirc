@@ -128,11 +128,7 @@ public final class ChannelEventHandler extends EventHandler implements
                     cChannel.getChannelClient(cChannel.getTopicSetter(), true), cChannel.getTopic());
         }
 
-        if (bIsJoinTopic) {
-            if (!newTopic.getTopic().isEmpty()) {
-                owner.addTopic(newTopic);
-            }
-        } else {
+        if (!bIsJoinTopic || !newTopic.getTopic().isEmpty()) {
             owner.addTopic(newTopic);
         }
     }
