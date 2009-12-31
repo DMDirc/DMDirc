@@ -300,6 +300,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                             /** {@inheritDoc} */
                             @Override
                             protected Object doInBackground() throws Exception {
+                                ActionManager.processEvent(
+                                    CoreActionType.CLIENT_FRAME_CHANGED,
+                                    null, getContainer());
                                 return null;
                             }
                         }.execute();
