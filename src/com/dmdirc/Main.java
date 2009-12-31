@@ -28,6 +28,7 @@ import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -37,11 +38,14 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.updater.UpdateChecker;
+import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -102,8 +106,44 @@ public final class Main {
         IdentityManager.loadVersion();
 
         final CommandLineParser clp = new CommandLineParser(args);
-        
-        IdentityManager.load();
+
+        try {
+            IdentityManager.load();
+        } catch (InvalidIdentityFileException iife) {
+            final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
+
+            final String message = "DMDirc has detected that your config file "
+                    + "has become corrupted.<br><br>DMDirc will now backup "
+                    + "your current config and try restarting with a default "
+                    + "config.<br><br>Your old config will be saved as:<br>"
+                    + "dmdirc.config." + date;
+
+            if (!GraphicsEnvironment.isHeadless()) {
+                new WarningDialog("Invalid Config File", message).displayBlocking();
+            }
+            // Let command-line users know what is happening.
+            System.out.println(message.replaceAll("<br>", "\n"));
+
+            final File configFile = new File(getConfigDir() + "dmdirc.config");
+            final File newConfigFile = new File(getConfigDir() + "dmdirc.config." + date);
+
+            if (configFile.renameTo(newConfigFile)) {
+                try {
+                    IdentityManager.load();
+                } catch (InvalidIdentityFileException iife2) {
+                    // This shouldn't happen!
+                    Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
+                }
+            } else {
+                final String newMessage = "DMDirc was unable to rename the "
+                        + "global config file and is unable to fix this issue.";
+                if (!GraphicsEnvironment.isHeadless()) {
+                    new WarningDialog("Invalid Config File", newMessage).displayBlocking();
+                }
+                System.out.println(newMessage.replaceAll("<br>", "\n"));
+                System.exit(1);
+            }
+        }
 
         final PluginManager pm = PluginManager.getPluginManager();
         
