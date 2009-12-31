@@ -110,7 +110,7 @@ public class TopicBar extends JComponent implements ActionListener,
         //        getDomain(), "showfulltopic")) {
         //    topicText.setEditorKit(new StyledEditorKit());
         //} else {
-            topicText.setEditorKit(new WrapEditorKit());
+        topicText.setEditorKit(new WrapEditorKit());
         //}
         ((DefaultStyledDocument) topicText.getDocument()).setDocumentFilter(
                 new NewlinesDocumentFilter());
@@ -161,7 +161,8 @@ public class TopicBar extends JComponent implements ActionListener,
                 TopicBar.this.actionPerformed(e);
             }
         });
-        topicText.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "escapeButton");
+        topicText.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"),
+                "escapeButton");
         topicText.getActionMap().put("escapeButton", new AbstractAction(
                 "escapeButton") {
 
@@ -183,8 +184,8 @@ public class TopicBar extends JComponent implements ActionListener,
                 "ui", "inputbackgroundcolour", this);
         IdentityManager.getGlobalConfig().addChangeListener(
                 "ui", "inputforegroundcolour", this);
-        IdentityManager.getGlobalConfig().addChangeListener(controller.
-                getDomain(), "showfulltopic", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(), "showfulltopic", this);
         setColours();
     }
 
@@ -203,10 +204,12 @@ public class TopicBar extends JComponent implements ActionListener,
         setAttributes();
         ((DefaultStyledDocument) topicText.getDocument()).setCharacterAttributes(
                 0, Integer.MAX_VALUE, as, true);
-        Styliser.addStyledString((StyledDocument) topicText.getDocument(),
-                new String[]{Styliser.CODE_HEXCOLOUR + ColourManager.getHex(
-                    foregroundColour) + channel.getCurrentTopic().getTopic(),},
-                as);
+        if (channel.getCurrentTopic() != null) {
+            Styliser.addStyledString((StyledDocument) topicText.getDocument(),
+                    new String[]{Styliser.CODE_HEXCOLOUR + ColourManager.getHex(
+                        foregroundColour) + channel.getCurrentTopic().getTopic(),},
+                    as);
+        }
         topicText.setCaretPosition(0);
     }
 
@@ -220,7 +223,8 @@ public class TopicBar extends JComponent implements ActionListener,
         if (e.getSource() == topicEdit || e.getSource() == topicText) {
             if (topicText.isEditable()) {
                 channel.setTopic(topicText.getText());
-                ((ChannelFrame) channel.getFrame()).getInputField().requestFocusInWindow();
+                ((ChannelFrame) channel.getFrame()).getInputField().
+                        requestFocusInWindow();
                 topicChanged();
                 topicText.setEditable(false);
                 topicCancel.setVisible(false);
@@ -241,7 +245,8 @@ public class TopicBar extends JComponent implements ActionListener,
         } else if (e.getSource() == topicCancel) {
             topicText.setEditable(false);
             topicCancel.setVisible(false);
-            ((ChannelFrame) channel.getFrame()).getInputField().requestFocusInWindow();
+            ((ChannelFrame) channel.getFrame()).getInputField().
+                    requestFocusInWindow();
             topicChanged();
         }
     }
@@ -373,7 +378,7 @@ public class TopicBar extends JComponent implements ActionListener,
         //    ((DefaultStyledDocument) topicText.getDocument()).setDocumentFilter(
         //            new NewlinesDocumentFilter());
         //} else {
-            setColours();
+        setColours();
         //}
     }
 
