@@ -82,8 +82,7 @@ public final class TopicPane extends JPanel implements ActionListener {
 
     /** Initialises the topic panel. */
     private void initTopicsPanel() {
-        topicDisplayPane = new TopicDisplayPane(channel, parent,
-                channel.getServer().getParser().getMaxTopicLength());
+        topicDisplayPane = new TopicDisplayPane(channel, parent);
         topicHistoryPane = new TopicHistoryPane(channel);
     }
 

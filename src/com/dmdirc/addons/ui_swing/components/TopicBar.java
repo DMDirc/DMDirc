@@ -47,8 +47,11 @@ import javax.swing.AbstractAction;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.AbstractDocument;
@@ -75,7 +78,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class TopicBar extends JComponent implements ActionListener,
         ConfigChangeListener, ChannelTopicListener, HyperlinkListener,
-        MouseListener {
+        MouseListener, DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -99,6 +102,10 @@ public class TopicBar extends JComponent implements ActionListener,
     private Color foregroundColour;
     /** Background Colour. */
     private Color backgroundColour;
+    /** the maximum length allowed for a topic. */
+    private int topicLengthMax;
+    /** Error icon. */
+    private final JLabel errorIcon;
 
     /**
      * Instantiates a new topic bar.
@@ -106,8 +113,12 @@ public class TopicBar extends JComponent implements ActionListener,
      * @param channelFrame Parent channel frame
      */
     public TopicBar(final ChannelFrame channelFrame) {
+        this.channel = channelFrame.getChannel();
         controller = channelFrame.getController();
         topicText = new TextPaneInputField();
+        topicLengthMax = channel.getServer().getParser().getMaxTopicLength();
+        errorIcon =
+                new JLabel(IconManager.getIconManager().getIcon("input-error"));
         //TODO issue 3251
         //if (channelFrame.getConfigManager().getOptionBool(controller.
         //        getDomain(), "showfulltopic")) {
@@ -126,7 +137,6 @@ public class TopicBar extends JComponent implements ActionListener,
         topicCancel = new ImageButton("cancel", IconManager.getIconManager().
                 getIcon("close"), IconManager.getIconManager().
                 getIcon("close-active"));
-        this.channel = channelFrame.getChannel();
 
         new SwingInputHandler(topicText, channelFrame.getCommandParser(),
                 channelFrame).setTypes(false,
@@ -142,6 +152,7 @@ public class TopicBar extends JComponent implements ActionListener,
 
         setLayout(new MigLayout("fillx, ins 0, hidemode 3"));
         add(sp, "growx, pushx");
+        add(errorIcon, "");
         add(topicCancel, "");
         add(topicEdit, "");
 
@@ -181,6 +192,7 @@ public class TopicBar extends JComponent implements ActionListener,
         });
         topicText.addHyperlinkListener(this);
         topicText.addMouseListener(this);
+        topicText.getDocument().addDocumentListener(this);
         IdentityManager.getGlobalConfig().addChangeListener(
                 "ui", "backgroundcolour", this);
         IdentityManager.getGlobalConfig().addChangeListener(
@@ -216,6 +228,7 @@ public class TopicBar extends JComponent implements ActionListener,
                     as);
         }
         topicText.setCaretPosition(0);
+        validateTopic();
     }
 
     /**
@@ -399,6 +412,33 @@ public class TopicBar extends JComponent implements ActionListener,
     }
 
     /**
+     * Validates the topic text and shows errors as appropriate.
+     */
+    public void validateTopic() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (topicText.isEditable()) {
+                    final int charsLeft = topicLengthMax - topicText.getText().
+                            length();
+                    if (charsLeft <  0) {
+                        errorIcon.setVisible(true);
+                        errorIcon.setToolTipText("Topic too long: " +topicText.
+                                getText().length() + " of " + topicLengthMax);
+                    } else {
+                        errorIcon.setVisible(false);
+                        errorIcon.setToolTipText(null);
+                    }
+                } else {
+                    errorIcon.setVisible(false);
+                }
+            }
+        });
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @param e Mouse event
@@ -448,6 +488,24 @@ public class TopicBar extends JComponent implements ActionListener,
     @Override
     public void mouseExited(final MouseEvent e) {
         //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void insertUpdate(final DocumentEvent e) {
+        validateTopic();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdate(final DocumentEvent e) {
+        validateTopic();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedUpdate(final DocumentEvent e) {
+        validateTopic();
     }
 }
 
