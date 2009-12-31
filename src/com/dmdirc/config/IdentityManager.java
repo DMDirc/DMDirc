@@ -70,8 +70,13 @@ public final class IdentityManager {
     private IdentityManager() {
     }
     
-    /** Loads all identity files. */
-    public static void load() {
+    /**
+     * Loads all identity files.
+     * 
+     * @throws InvalidIdentityFileException If there is an error with the config
+     *                                      file.
+     */
+    public static void load() throws InvalidIdentityFileException {
         identities.clear();
         managers.clear();
         
@@ -276,8 +281,13 @@ public final class IdentityManager {
         }
     }
     
-    /** Loads the config identity. */
-    private static void loadConfig() {
+    /**
+     * Loads the config identity.
+     * 
+     * @throws InvalidIdentityFileException if there is a problem with the
+     *                                      config file.
+     */
+    private static void loadConfig() throws InvalidIdentityFileException {
         try {
             final File file = new File(Main.getConfigDir() + "dmdirc.config");
             
@@ -288,8 +298,6 @@ public final class IdentityManager {
             config = new Identity(file, true);
             config.setOption("identity", "name", "Global config");
             addIdentity(config);
-        } catch (InvalidIdentityFileException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load global config", ex);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.FATAL, "I/O error when loading global config: "
                     + ex.getMessage(), ex);
