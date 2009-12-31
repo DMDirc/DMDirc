@@ -203,6 +203,8 @@ public class TopicBar extends JComponent implements ActionListener,
                 "ui", "inputforegroundcolour", this);
         IdentityManager.getGlobalConfig().addChangeListener(
                 controller.getDomain(), "showfulltopic", this);
+        IdentityManager.getGlobalConfig().addChangeListener(
+                controller.getDomain(), "hideEmptyTopicBar", this);
         setColours();
     }
 
@@ -226,6 +228,10 @@ public class TopicBar extends JComponent implements ActionListener,
                     new String[]{Styliser.CODE_HEXCOLOUR + ColourManager.getHex(
                         foregroundColour) + channel.getCurrentTopic().getTopic(),},
                     as);
+        }
+        if (channel.getConfigManager().getOptionBool(controller.getDomain(),
+                "hideEmptyTopicBar")) {
+            setVisible(topicText.getDocument().getLength() != 0);
         }
         topicText.setCaretPosition(0);
         validateTopic();
@@ -254,7 +260,9 @@ public class TopicBar extends JComponent implements ActionListener,
                 ((DefaultStyledDocument) topicText.getDocument()).
                         setCharacterAttributes(
                         0, Integer.MAX_VALUE, as, true);
-                topicText.setText(channel.getCurrentTopic().getTopic());
+                if (channel.getCurrentTopic() != null) {
+                    topicText.setText(channel.getCurrentTopic().getTopic());
+                }
                 topicText.setCaretPosition(0);
                 topicText.setFocusable(true);
                 topicText.setEditable(true);
@@ -398,9 +406,15 @@ public class TopicBar extends JComponent implements ActionListener,
         //    }
         //    ((DefaultStyledDocument) topicText.getDocument()).setDocumentFilter(
         //            new NewlinesDocumentFilter());
-        //} else {
-        setColours();
         //}
+        setColours();
+        if ("hideEmptyTopicBar".equals(key)) {
+            setVisible(true);
+            if (channel.getConfigManager().getOptionBool(controller.getDomain(),
+                    "hideEmptyTopicBar")) {
+                setVisible(topicText.getDocument().getLength() != 0);
+            }
+        }
     }
 
     /**
@@ -423,9 +437,9 @@ public class TopicBar extends JComponent implements ActionListener,
                 if (topicText.isEditable()) {
                     final int charsLeft = topicLengthMax - topicText.getText().
                             length();
-                    if (charsLeft <  0) {
+                    if (charsLeft < 0) {
                         errorIcon.setVisible(true);
-                        errorIcon.setToolTipText("Topic too long: " +topicText.
+                        errorIcon.setToolTipText("Topic too long: " + topicText.
                                 getText().length() + " of " + topicLengthMax);
                     } else {
                         errorIcon.setVisible(false);
