@@ -55,7 +55,8 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     private int y;
     
     /** Setting objects with registered change listeners. */
-    private PreferencesSetting fontSizeSetting, backgroundSetting, foregroundSetting;
+    private PreferencesSetting fontSizeSetting, backgroundSetting, 
+            foregroundSetting, widthSetting;
     
     /**
      * Creates a new instance of OsdPlugin.
@@ -94,10 +95,14 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         foregroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
                 getDomain(), "fgcolour", "Foreground colour",
                 "Foreground colour for the OSD").registerChangeListener(this);
+        widthSetting = new PreferencesSetting(PreferencesType.INTEGER,
+                getDomain(), "width", "OSD Width", "Width of the OSD Window").
+                registerChangeListener(this);
                 
         category.addSetting(fontSizeSetting);
         category.addSetting(backgroundSetting);
         category.addSetting(foregroundSetting);
+        category.addSetting(widthSetting);
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 getDomain(), "timeout", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
@@ -158,6 +163,14 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
             osdWindow.setBackgroundColour(setting.getValue());
         } else if (setting.equals(foregroundSetting)) {
             osdWindow.setForegroundColour(setting.getValue());
+        } else if (setting.equals(widthSetting)) {
+            int width = 500;
+            try {
+                width = Integer.parseInt(setting.getValue());
+            } catch (NumberFormatException e) {
+                //Ignore
+            }
+            osdWindow.setSize(width, osdWindow.getHeight());
         }
     }
 
