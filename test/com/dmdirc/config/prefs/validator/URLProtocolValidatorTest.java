@@ -23,13 +23,14 @@
 package com.dmdirc.config.prefs.validator;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class URLProtocolValidatorTest {
     
     @Test
-    public void testValidate() {
+    public void testValidate() throws InvalidIdentityFileException {
         IdentityManager.load();
         IdentityManager.getConfigIdentity().setOption("protocol", "unit-test-1", "BROWSER");
         

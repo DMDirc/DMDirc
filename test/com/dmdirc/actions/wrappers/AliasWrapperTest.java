@@ -29,6 +29,7 @@ import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ import static org.junit.Assert.*;
 public class AliasWrapperTest {
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
 
