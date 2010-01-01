@@ -251,7 +251,7 @@ public final class TabCompleter implements Serializable {
             if (command.getValue() instanceof IntelligentCommand) {
                 targets = ((IntelligentCommand) command.getValue())
                         .getSuggestions(args.getArguments().length,
-                        Arrays.asList(args.getArgumentsAsString()));
+                        Arrays.asList(args.getArguments()));
             }
 
             if (command.getValue() instanceof ChannelCommand) {
