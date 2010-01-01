@@ -90,7 +90,7 @@ public final class Styliser {
     private static final String URL_PUNCT = URL_PUNCT_ILLEGAL + URL_PUNCT_LEGAL;
 
     /** Defines all characters allowed in URLs that aren't treated as trailing punct. */
-    private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(\\)=/#%~";
+    private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(\\)=/#%~\\|";
 
     /** Defines all characters allowed in URLs per W3C specs. */
     private static final String URL_CHARS = "[" + URL_PUNCT_LEGAL + URL_NOPUNCT
