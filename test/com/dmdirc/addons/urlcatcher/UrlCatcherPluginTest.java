@@ -24,13 +24,14 @@ package com.dmdirc.addons.urlcatcher;
 
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class UrlCatcherPluginTest {
 
     @Test
-    public void testURLCounting() {
+    public void testURLCounting() throws InvalidIdentityFileException {
         IdentityManager.load();
         
         final UrlCatcherPlugin plugin = new UrlCatcherPlugin();
@@ -47,7 +48,7 @@ public class UrlCatcherPluginTest {
     }
     
     @Test
-    public void testURLCatching() {
+    public void testURLCatching() throws InvalidIdentityFileException {
         IdentityManager.load();
         
         final UrlCatcherPlugin plugin = new UrlCatcherPlugin();

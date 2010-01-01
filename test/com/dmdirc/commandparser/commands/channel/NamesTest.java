@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 
@@ -43,12 +44,12 @@ public class NamesTest {
     private IRCParser parser;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
         
         parser = mock(IRCParser.class);

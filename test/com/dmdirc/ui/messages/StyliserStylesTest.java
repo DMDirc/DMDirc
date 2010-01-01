@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.ui.core.util.Utils;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
@@ -41,7 +42,7 @@ public class StyliserStylesTest {
 
     protected String input, output;
 
-    public StyliserStylesTest(String input, String output) {
+    public StyliserStylesTest(String input, String output) throws InvalidIdentityFileException {
         IdentityManager.load();
         
         this.input = input;

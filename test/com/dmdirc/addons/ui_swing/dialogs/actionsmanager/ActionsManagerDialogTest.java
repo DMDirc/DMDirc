@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.harness.ui.UITestIface;
@@ -56,7 +57,7 @@ public class ActionsManagerDialogTest implements UITestIface {
     private DialogFixture window;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         Main.setUI(new SwingController());
         IdentityManager.load();
         ActionManager.init();

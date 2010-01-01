@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.UITestIface;
 
@@ -44,7 +45,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 
 @RunWith(UIClassTestRunner.class)
 public class MainFrameTest implements UITestIface {
@@ -54,7 +54,7 @@ public class MainFrameTest implements UITestIface {
     private static SwingController controller;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         IdentityManager.load();
         controller = new SwingController();
         controller.onLoad();
