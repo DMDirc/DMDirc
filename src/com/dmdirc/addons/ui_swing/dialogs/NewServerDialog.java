@@ -188,7 +188,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         identityField = new JComboBox();
         editProfileButton = new JButton();
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         orderButtons(new JButton(), new JButton());
         setTitle("Connect to a new server");
 
