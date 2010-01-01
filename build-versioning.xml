@@ -3,7 +3,7 @@
     <description>Adds automatic versioning information to DMDirc</description>
 
     <property name="version.config" value="build/classes/com/dmdirc/version.config"/>
-    <property name="defaults.path" value="src/com/dmdirc/config/defaults/default/"/>
+    <property name="defaults.path" value="src/com/dmdirc/config/defaults/"/>
     <property name="defaults.target" value="build/classes/com/dmdirc/config/defaults/default/defaults"/>
 
     <available file=".git" property="is.git"/>
