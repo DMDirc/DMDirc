@@ -203,11 +203,11 @@ public class WindowManager {
         }
 
         if (rootWindows.contains(window)) {
-            rootWindows.remove(window);
-
             fireDeleteWindow(window);
+            rootWindows.remove(window);
         } else {
             final Window parent = getParent(window);
+            fireDeleteWindow(getParent(window), window);
 
             if (parent == null) {
                 Logger.appError(ErrorLevel.MEDIUM, "Invalid window removed",
@@ -220,8 +220,6 @@ public class WindowManager {
                     childWindows.remove(parent, window);
                     childWindows.notifyAll();
                 }
-
-                fireDeleteWindow(parent, window);
             }
         }
         
