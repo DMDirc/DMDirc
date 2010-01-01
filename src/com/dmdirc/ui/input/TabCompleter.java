@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.input;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -224,7 +225,8 @@ public final class TabCompleter implements Serializable {
             targets.include(TabCompletionType.COMMAND);
             return targets;
         } else {
-            return getIntelligentResults(previousArgs.subList(offset, previousArgs.size()));
+            return getIntelligentResults(
+                    new CommandArguments(previousArgs.subList(offset, previousArgs.size())));
         }        
     }
     
@@ -232,23 +234,24 @@ public final class TabCompleter implements Serializable {
      * Retrieves the intelligent results for the command and its arguments
      * formed from args.
      * 
-     * @param args A list of "words" in the input
+     * @param args The input arguments
      * @return Additional tab targets for the text, or null if none are available
      */
-    private static AdditionalTabTargets getIntelligentResults(final List<String> args) {
-        if (args.isEmpty() || args.get(0).charAt(0) != CommandManager.getCommandChar()) {
+    private static AdditionalTabTargets getIntelligentResults(final CommandArguments args) {
+        if (!args.isCommand()) {
             return null;
         }
         
-        final String signature = args.get(0).substring(1);
-        final Map.Entry<CommandInfo, Command> command = CommandManager.getCommand(signature);
+        final Map.Entry<CommandInfo, Command> command
+                = CommandManager.getCommand(args.getCommandName());
 
         AdditionalTabTargets targets = null;
 
         if (command != null) {
             if (command.getValue() instanceof IntelligentCommand) {
                 targets = ((IntelligentCommand) command.getValue())
-                        .getSuggestions(args.size() - 1, args.subList(1, args.size()));
+                        .getSuggestions(args.getArguments().length,
+                        Arrays.asList(args.getArgumentsAsString()));
             }
 
             if (command.getValue() instanceof ChannelCommand) {
@@ -270,6 +273,6 @@ public final class TabCompleter implements Serializable {
      * @return Additional tab targets for the text, or null if none are available
      */
     public static AdditionalTabTargets getIntelligentResults(final String text) {
-        return getIntelligentResults(Arrays.asList(text.split(" ")));
+        return getIntelligentResults(new CommandArguments(text));
     }
 }
