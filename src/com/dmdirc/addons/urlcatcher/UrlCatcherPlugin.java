@@ -22,11 +22,14 @@
 
 package com.dmdirc.addons.urlcatcher;
 
+import com.dmdirc.Raw;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -34,12 +37,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A plugin which logs all observed URLs and allows the user to list them
+ * later.
  *
  * @author chris
  */
-public class UrlCatcherPlugin extends Plugin implements ActionListener {
+public class UrlCatcherPlugin extends Plugin implements ActionListener,
+        ConfigChangeListener {
     
     private final Map<String, Integer> urls = new HashMap<String, Integer>();
+
+    /** Whether to capture URLs from the raw window. */
+    private boolean captureRaw = false;
     
     private final UrlListCommand command = new UrlListCommand(this);
 
@@ -48,6 +57,8 @@ public class UrlCatcherPlugin extends Plugin implements ActionListener {
     public void onLoad() {
         ActionManager.addListener(this, CoreActionType.CLIENT_LINE_ADDED);
         CommandManager.registerCommand(command);
+        IdentityManager.getGlobalConfig().addChangeListener(getDomain(), this);
+        updateConfig();
     }
 
     /** {@inheritDoc} */
@@ -55,12 +66,24 @@ public class UrlCatcherPlugin extends Plugin implements ActionListener {
     public void onUnload() {
         ActionManager.removeListener(this);
         CommandManager.unregisterCommand(command);
+        IdentityManager.getGlobalConfig().removeListener(this);
+    }
+
+    /**
+     * Re-reads the configuration of the URL catcher plugin.
+     */
+    private void updateConfig() {
+        captureRaw = IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "captureraw");
     }
 
     /** {@inheritDoc} */
     @Override    
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
+        if (arguments[0] instanceof Raw && !captureRaw) {
+            return;
+        }
+
         final String message = Styliser.doLinks((String) arguments[1]);
         
         if (message.indexOf(Styliser.CODE_HYPERLINK) > -1) {
@@ -92,6 +115,12 @@ public class UrlCatcherPlugin extends Plugin implements ActionListener {
      */
     public Map<String, Integer> getURLS() {
         return urls;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        updateConfig();
     }
 
 }
