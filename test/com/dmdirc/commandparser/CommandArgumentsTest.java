@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.Arrays;
 import org.junit.BeforeClass;
@@ -32,7 +33,7 @@ import static org.junit.Assert.*;
 public class CommandArgumentsTest {
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void beforeClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
 

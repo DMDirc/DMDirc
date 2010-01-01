@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import static org.junit.Assert.*;
 public class ActionModelTest {
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
 

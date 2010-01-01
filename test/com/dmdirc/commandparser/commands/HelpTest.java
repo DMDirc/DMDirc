@@ -25,6 +25,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class HelpTest {
     }
 
     @Parameterized.Parameters
-    public static List<Object[]> data() {
+    public static List<Object[]> data() throws InvalidIdentityFileException {
         final List<Object[]> res = new LinkedList<Object[]>();
 
         IdentityManager.load();

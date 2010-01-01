@@ -27,6 +27,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.harness.ui.UITestIface;
@@ -34,6 +35,8 @@ import com.dmdirc.harness.ui.JRadioButtonByTextMatcher;
 
 import com.dmdirc.addons.ui_swing.components.ImageButton;
 import com.dmdirc.addons.ui_swing.components.text.TextLabel;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.awt.Component;
 
 import java.util.regex.Matcher;
@@ -62,14 +65,19 @@ public class ActionEditorDialogTest implements UITestIface {
     private DialogFixture window;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         Main.setUI(new SwingController());
     }
 
     @Before
     @Override
     public void setUp() {
-        IdentityManager.load();
+        try {
+            IdentityManager.load();
+        } catch (InvalidIdentityFileException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to load IdentityManager", 
+                    ex);
+        }
         ActionManager.init();
 
         if (!ActionManager.getGroups().containsKey("amd-ui-test1")) {

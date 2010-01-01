@@ -22,6 +22,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
@@ -41,7 +42,7 @@ public class IntelligentLinkingTest {
     }
     
     @Before
-    public void setUp() {
+    public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
     }    
     

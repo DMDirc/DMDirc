@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Enumeration;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ import static org.junit.Assert.*;
 public class StyliserTest {
     
     @Before
-    public void setUp() {
+    public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
     
