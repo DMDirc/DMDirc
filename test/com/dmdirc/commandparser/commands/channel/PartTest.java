@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -44,12 +45,12 @@ public class PartTest {
     private ConfigManager manager;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
         
         channel = mock(Channel.class);

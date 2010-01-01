@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class RedirectCommandTest {
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws InvalidIdentityFileException {
         IdentityManager.load();
         CommandManager.initCommands();
     }
