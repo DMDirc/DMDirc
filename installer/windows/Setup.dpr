@@ -2,7 +2,7 @@
  * This application launches the dmdirc java-based installer.
  *
  * DMDirc - Open Source IRC Client
- * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes,
+ * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes,
  * Michael Nixon
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
