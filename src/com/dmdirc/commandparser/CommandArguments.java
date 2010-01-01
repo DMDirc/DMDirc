@@ -26,6 +26,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.logger.Logger;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +54,28 @@ public class CommandArguments {
      */
     public CommandArguments(final String line) {
         this.line = line;
+    }
+
+    /**
+     * Creates a new command arguments parser for the specified words.
+     *
+     * @param words The words which form the line ot be parsed
+     * @since 0.6.3
+     */
+    public CommandArguments(final Collection<String> words) {
+        this.words = words.toArray(new String[words.size()]);
+
+        final StringBuilder builder = new StringBuilder();
+
+        for (String word : words) {
+            if (builder.length() > 0) {
+                builder.append(' ');
+            }
+
+            builder.append(word);
+        }
+
+        this.line = builder.toString();
     }
 
     /**
