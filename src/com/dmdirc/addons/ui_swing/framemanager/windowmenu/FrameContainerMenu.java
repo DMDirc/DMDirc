@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +27,19 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JMenuItem;
+import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 
 /**
- * Action representing a frame.
+ * Frame container JMenu.
  */
-public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListener,
+public class FrameContainerMenu extends JMenu implements FrameInfoListener,
         ActionListener, SelectionListener {
 
     /**
@@ -50,21 +50,17 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
     private static final long serialVersionUID = 1;
     /** Wrapped frame. */
     private FrameContainer frame;
-    /** Parent window menu frame manager. */
-    private final WindowMenuFrameManager manager;
 
     /**
      * Instantiates a new FrameContainer menu item wrapping the specified frame.
-     * 
+     *
      * @param frame Wrapped frame
-     * @param manager Parent window menu frame manager.
      */
-    public FrameContainerMenuItem(final FrameContainer frame,
-            final WindowMenuFrameManager manager) {
-        super(frame.toString(), IconManager.getIconManager().getIcon(frame.getIcon()));
+    public FrameContainerMenu(final FrameContainer frame) {
+        super(frame.toString());
+        setIcon(IconManager.getIconManager().getIcon(frame.getIcon()));
 
         this.frame = frame;
-        this.manager = manager;
 
         addActionListener(this);
         frame.addFrameInfoListener(this);
@@ -78,8 +74,8 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
             /** {@inheritDoc} */
             @Override
             public void run() {
-                if ((frame != null && window != null) &&
-                        frame.equals(window.getContainer())) {
+                if ((frame != null && window != null) && frame.equals(window.
+                        getContainer())) {
                     setIcon(IconManager.getIconManager().getIcon(icon));
                 }
             }
@@ -94,17 +90,17 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
             /** {@inheritDoc} */
             @Override
             public void run() {
-                if ((frame != null && window != null) &&
-                        frame.equals(window.getContainer())) {
+                if ((frame != null && window != null) && frame.equals(window.
+                        getContainer())) {
                     setText(name);
                 }
             }
         });
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param e Action event
      */
     @Override
@@ -117,18 +113,21 @@ public class FrameContainerMenuItem extends JMenuItem implements FrameInfoListen
     public void selectionChanged(final Window window) {
         if (frame.equals(window.getContainer())) {
             setFont(getFont().deriveFont(Font.BOLD));
-            final Window parentWindow = WindowManager.getParent(window);
-            if (parentWindow != null) {
-                manager.parentSelection(parentWindow.getContainer());
-            }
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
         }
     }
 
     /**
+     * Informs this menu one of its children is selected.
+     */
+    protected void childSelected() {
+        setFont(getFont().deriveFont(Font.ITALIC));
+    }
+
+    /**
      * Returns the wrapped frame container.
-     * 
+     *
      * @return Wrapped frame container
      */
     public FrameContainer getFrame() {

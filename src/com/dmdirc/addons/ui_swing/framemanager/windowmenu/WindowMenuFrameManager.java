@@ -25,20 +25,17 @@ package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.interfaces.FrameListener;
-import com.dmdirc.addons.ui_swing.components.MenuScroller;
-import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JMenu;
@@ -52,8 +49,7 @@ import javax.swing.event.MenuListener;
  * Manages the window menu window list.
  */
 public final class WindowMenuFrameManager extends JMenu implements
-        FrameListener, ActionListener, SelectionListener, MenuListener,
-        ConfigChangeListener {
+        FrameListener, ActionListener, SelectionListener, MenuListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -61,8 +57,6 @@ public final class WindowMenuFrameManager extends JMenu implements
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Menu item list. */
-    private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
     /** Comparator. */
     private final FrameContainerComparator comparator =
             new FrameContainerComparator();
@@ -78,8 +72,13 @@ public final class WindowMenuFrameManager extends JMenu implements
     private final AtomicBoolean enabledMenuItems = new AtomicBoolean(false);
     /** Swing controller. */
     private final SwingController controller;
-    /** Menu scroller. */
-    private MenuScroller scroller;
+    /** Window -> menu map. */
+    private Map<FrameContainer, FrameContainerMenu> menus =
+            new HashMap<FrameContainer, FrameContainerMenu>();
+    private Map<FrameContainer, FrameContainerMenuItem> items =
+            new HashMap<FrameContainer, FrameContainerMenuItem>();
+    private Map<FrameContainer, FrameContainerMenuItem> menuItems =
+            new HashMap<FrameContainer, FrameContainerMenuItem>();
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -89,9 +88,6 @@ public final class WindowMenuFrameManager extends JMenu implements
     public WindowMenuFrameManager(final SwingController controller) {
         super();
         this.controller = controller;
-
-        menuItemMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
 
         setText("Window");
         setMnemonic('w');
@@ -128,17 +124,7 @@ public final class WindowMenuFrameManager extends JMenu implements
         itemCount = getMenuComponentCount();
         checkToggleState();
 
-        scroller = new MenuScroller(this,
-                IdentityManager.getGlobalConfig().getOptionInt(
-                controller.getDomain(), "windowMenuItems"),
-                IdentityManager.getGlobalConfig().getOptionInt(
-                controller.getDomain(), "windowMenuScrollInterval"), 4, 0);
-        scroller.setShowSeperators(false);
-
-        IdentityManager.getGlobalConfig().addChangeListener(
-                controller.getDomain(), "windowMenuItems", this);
-        IdentityManager.getGlobalConfig().addChangeListener(
-                controller.getDomain(), "windowMenuScrollInterval", this);
+        new WindowMenuScroller(this, controller.getDomain(), 4);
     }
 
     /**
@@ -156,83 +142,96 @@ public final class WindowMenuFrameManager extends JMenu implements
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer window) {
-        addFrameContainer(window);
+        final FrameContainerMenuItem item = new FrameContainerMenuItem(window,
+                this);
+        items.put(window, item);
+        add(item, getIndex(window, this));
+        window.addSelectionListener(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer window) {
-        removeFramecontainer(window);
+        if (items.containsKey(window)) {
+            remove(items.get(window));
+            items.remove(window);
+        } else if (menus.containsKey(window)) {
+            remove(menus.get(window));
+            menus.remove(window);
+        }
+        window.removeSelectionListener(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        addFrameContainer(window);
+        final FrameContainerMenuItem item = new FrameContainerMenuItem(window,
+                this);
+        JMenu parentMenu;
+        if (!menus.containsKey(parent)) {
+            final FrameContainerMenu replacement =
+                    new FrameContainerMenu(parent);
+            replaceItemWithMenu(getParentMenu(parent), items.get(parent),
+                    replacement);
+            parentMenu = replacement;
+        } else {
+            parentMenu = menus.get(parent);
+        }
+        items.put(window, item);
+        parentMenu.add(item, getIndex(window, parentMenu));
+        window.addSelectionListener(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
-        removeFramecontainer(window);
+        if (items.containsKey(window)) {
+            final JMenu menu = getParentMenu(window);
+            menu.remove(items.get(window));
+            items.remove(window);
+            if (menu.getMenuComponentCount() == 1) {
+                System.out.println(getParentMenu(parent));
+                replaceMenuWithItem(getParentMenu(parent), menus.get(parent),
+                        new FrameContainerMenuItem(parent, this));
+            }
+        } else if (menus.containsKey(window)) {
+            menus.get(parent).remove(menus.get(window));
+            menus.remove(window);
+        }
+        window.removeSelectionListener(this);
     }
 
-    /**
-     * Adds a frame container to the list.
-     *
-     * @param window Window to add to the list
-     */
-    private void addFrameContainer(final FrameContainer window) {
-        UIUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                final FrameContainerMenuItem mi =
-                        new FrameContainerMenuItem(window);
-                synchronized (menuItemMap) {
-                    if (isShowing()) {
-                        setSelected(false);
-                        setPopupMenuVisible(false);
-                    }
-                    menuItemMap.put(window, mi);
-                    window.addSelectionListener(WindowMenuFrameManager.this);
-                    add(mi, getIndex(window));
-                    checkMenuItems();
-                }
-            }
-        });
+    private JMenu getParentMenu(final FrameContainer window) {
+        FrameContainer parent = null;
+        Window parentWindow = WindowManager.getParent(window.getFrame());
+        if (parentWindow != null) {
+            parent = parentWindow.getContainer();
+        }
+        if (parent == null) {
+            return this;
+        } else {
+            return menus.get(parent);
+        }
     }
 
-    /**
-     * Removes a frame container from the list.
-     *
-     * @param window Window to remove from list
-     */
-    private void removeFramecontainer(final FrameContainer window) {
-        UIUtilities.invokeLater(new Runnable() {
+    private void replaceItemWithMenu(final JMenu parentMenu,
+            final FrameContainerMenuItem item, final FrameContainerMenu menu) {
+        parentMenu.remove(item);
+        parentMenu.add(menu, getIndex(menu.getFrame(), parentMenu));
+        menu.add(item, getIndex(item.getFrame(), menu));
+        items.remove(item.getFrame());
+        menus.put(menu.getFrame(), menu);
+        menuItems.put(item.getFrame(), item);
+    }
 
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                synchronized (menuItemMap) {
-                    if (isShowing()) {
-                        setSelected(false);
-                        setPopupMenuVisible(false);
-                    }
-                    final FrameContainerMenuItem mi = menuItemMap.get(window);
-                    if (mi != null) {
-                        remove(mi);
-                        menuItemMap.remove(window);
-                        window.removeSelectionListener(
-                                WindowMenuFrameManager.this);
-                    }
-                    checkMenuItems();
-                }
-            }
-        });
+    private void replaceMenuWithItem(final JMenu parentMenu,
+            final FrameContainerMenu menu, final FrameContainerMenuItem item) {
+        parentMenu.remove(menu);
+        parentMenu.add(item, getIndex(item.getFrame(), parentMenu));
+        menus.remove(menu.getFrame());
+        items.put(item.getFrame(), item);
     }
 
     /** 
@@ -257,16 +256,32 @@ public final class WindowMenuFrameManager extends JMenu implements
     @Override
     public void selectionChanged(final Window window) {
         activeWindow = window;
-        final Map<FrameContainer, FrameContainerMenuItem> newMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(
-                comparator);
-        synchronized (menuItemMap) {
-            newMap.putAll(menuItemMap);
-        }
+        final Map<FrameContainer, SelectionListener> allItems =
+                new HashMap<FrameContainer, SelectionListener>();
+        synchronized (allItems) {
+            allItems.putAll(menus);
 
-        for (FrameContainerMenuItem menuItem : newMap.values()) {
-            menuItem.selectionChanged(window);
+            for (SelectionListener menuItem : allItems.values()) {
+                menuItem.selectionChanged(window);
+            }
+
+            allItems.clear();
+            allItems.putAll(items);
+            allItems.putAll(menuItems);
+
+            for (SelectionListener menuItem : allItems.values()) {
+                menuItem.selectionChanged(window);
+            }
         }
+    }
+
+    /**
+     * Tells a parent its child is selected.
+     *
+     * @param window parent to inform
+     */
+    protected void parentSelection(final FrameContainer window) {
+        menus.get(window).childSelected();
     }
 
     /**
@@ -298,27 +313,29 @@ public final class WindowMenuFrameManager extends JMenu implements
      * where it needs to be inserted.
      *
      * @param newChild new node to be inserted.
+     * @param menu Menu for the node to be inserted in
      *
      * @return index where new node is to be inserted.
      */
-    private int getIndex(final FrameContainer newChild) {
-        for (int i = itemCount; i < getMenuComponentCount(); i++) {
-            if (!(getMenuComponent(i) instanceof FrameContainerMenuItem)) {
+    private int getIndex(final FrameContainer newChild, final JMenu menu) {
+        final int count = menu == this ? itemCount : 0;
+        for (int i = count; i < menu.getMenuComponentCount(); i++) {
+            if (!(menu.getMenuComponent(i) instanceof FrameContainerMenuItem)) {
                 continue;
             }
             final FrameContainer child =
-                    ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
+                    ((FrameContainerMenuItem) menu.getMenuComponent(i)).getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) &&
-                    IdentityManager.getGlobalConfig().getOptionBool("treeview",
+            } else if (!sortAfter(newChild, child) && IdentityManager.
+                    getGlobalConfig().getOptionBool("treeview",
                     "sortwindows") && newChild.toString().compareToIgnoreCase(
                     child.toString()) < 0) {
                 return i;
             }
         }
 
-        return getMenuComponentCount();
+        return menu.getMenuComponentCount();
     }
 
     /**
@@ -367,25 +384,5 @@ public final class WindowMenuFrameManager extends JMenu implements
     @Override
     public void menuCanceled(final MenuEvent e) {
         //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void configChanged(final String domain, final String key) {
-        UIUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                scroller.dispose();
-                scroller = new MenuScroller(WindowMenuFrameManager.this,
-                        IdentityManager.getGlobalConfig().getOptionInt(
-                        controller.getDomain(), "windowMenuItems"),
-                        IdentityManager.getGlobalConfig().getOptionInt(
-                        controller.getDomain(), "windowMenuScrollInterval"), 4,
-                        0);
-                scroller.setShowSeperators(false);
-            }
-        });
     }
 }
