@@ -180,7 +180,7 @@ public class Server extends WritableFrameContainer implements
      */
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", uri.getHost(),
-                new ConfigManager("", "", uri.getHost()));
+                new ConfigManager(uri.getScheme(), "", "", uri.getHost()));
 
         this.address = uri;
         this.profile = profile;
@@ -281,7 +281,7 @@ public class Server extends WritableFrameContainer implements
                             + "is still connected.\n\nMy state:" + getState());
                 }
 
-                getConfigManager().migrate("", "", address.getHost());
+                getConfigManager().migrate(address.getScheme(), "", "", address.getHost());
 
                 this.address = address;
                 this.profile = profile;
@@ -1431,7 +1431,8 @@ public class Server extends WritableFrameContainer implements
 
             myState.transition(ServerState.CONNECTED);
 
-            getConfigManager().migrate(parser.getServerSoftwareType(), getNetwork(), getName());
+            getConfigManager().migrate(address.getScheme(),
+                    parser.getServerSoftwareType(), getNetwork(), getName());
 
             updateIcon();
             updateTitle();

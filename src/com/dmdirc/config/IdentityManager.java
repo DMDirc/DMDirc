@@ -151,7 +151,7 @@ public final class IdentityManager {
     }
 
     private static void extractFormatters() {
-    try {
+        try {
             ResourceManager.getResourceManager().extractResource(
                     "com/dmdirc/config/defaults/default/formatter",
                     getDirectory() + "default/", false);
@@ -453,7 +453,7 @@ public final class IdentityManager {
      */
     public static synchronized ConfigManager getGlobalConfig() {
         if (globalconfig == null) {
-            globalconfig = new ConfigManager("", "", "");
+            globalconfig = new ConfigManager("", "", "", "");
         }
         
         return globalconfig;

@@ -51,6 +51,8 @@ public class ConfigTarget implements Comparable, Serializable {
         SERVER,
         /** Settings for a channel. */
         CHANNEL,
+        /** Settings for a protocol (parser). */
+        PROTOCOL,
     }
 
     /**
@@ -157,6 +159,17 @@ public class ConfigTarget implements Comparable, Serializable {
     }
 
     /**
+     * Sets this target to target a protocol.
+     *
+     * @param protocol The protocol to target
+     * @since 0.6.3
+     */
+    public void setProtocol(final String protocol) {
+        type = TYPE.PROTOCOL;
+        data = protocol;
+    }
+
+    /**
      * Retrieves the type of this target.
      *
      * @return This target's type
@@ -171,24 +184,7 @@ public class ConfigTarget implements Comparable, Serializable {
      * @return A string describing this target's type
      */
     public String getTypeName() {
-        switch(type) {
-        case GLOBALDEFAULT:
-            return "globaldefault";
-        case THEME:
-            return "theme";
-        case PROFILE:
-            return "profile";
-        case IRCD:
-            return "ircd";
-        case NETWORK:
-            return "network";
-        case SERVER:
-            return "server";
-        case CHANNEL:
-            return "channel";
-        default:
-            return "global";
-        }
+        return type.toString().toLowerCase();
     }
 
     /**
@@ -224,6 +220,7 @@ public class ConfigTarget implements Comparable, Serializable {
      * @return a negative integer if this config is less specific, 0 if they're
      * equal, or a positive integer if this is more specific
      */
+    @Override
     public int compareTo(final Object target) {
         if (type.equals(((ConfigTarget) target).getType())) {
             return ((ConfigTarget) target).getOrder() - order;
@@ -254,6 +251,8 @@ public class ConfigTarget implements Comparable, Serializable {
             return "Server specific: " + data;
         case CHANNEL:
             return "Channel specific: " + data;
+        case PROTOCOL:
+            return "Protocol specific: " + data;
         default:
             return "Global config";
         }

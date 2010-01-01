@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -170,6 +169,8 @@ public class Identity extends ConfigSource implements Serializable,
 
         if (hasOption(DOMAIN, "ircd")) {
             target.setIrcd(getOption(DOMAIN, "ircd"));
+        } else if (hasOption(DOMAIN, "protocol")) {
+            target.setProtocol(getOption(DOMAIN, "protocol"));
         } else if (hasOption(DOMAIN, "network")) {
             target.setNetwork(getOption(DOMAIN, "network"));
         } else if (hasOption(DOMAIN, "server")) {
@@ -357,7 +358,7 @@ public class Identity extends ConfigSource implements Serializable,
                 // covered by global defaults.
 
                 if (globalConfig == null) {
-                    globalConfig = new ConfigManager("", "", "");
+                    globalConfig = new ConfigManager("", "", "", "");
                 }
 
                 globalConfig.removeIdentity(this);
@@ -486,7 +487,7 @@ public class Identity extends ConfigSource implements Serializable,
                 // channel.
 
                 if (globalConfig == null) {
-                    globalConfig = new ConfigManager("", "", "");
+                    globalConfig = new ConfigManager("", "", "", "");
                 }
 
                 globalConfig.removeIdentity(this);

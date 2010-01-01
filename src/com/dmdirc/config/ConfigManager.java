@@ -60,6 +60,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
     private final MapList<String, ConfigChangeListener> listeners
             = new MapList<String, ConfigChangeListener>();
 
+    /** The protocol this manager is for. */
+    private String protocol;
     /** The ircd this manager is for. */
     private String ircd;
     /** The network this manager is for. */
@@ -72,26 +74,32 @@ public class ConfigManager extends ConfigSource implements Serializable,
     /**
      * Creates a new instance of ConfigManager.
      *
+     * @param protocol The protocol for this manager
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
+     * @since 0.6.3
      */
-    public ConfigManager(final String ircd, final String network,
-            final String server) {
-        this(ircd, network, server, "<Unknown>");
+    public ConfigManager(final String protocol, final String ircd,
+            final String network, final String server) {
+        this(protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
      * Creates a new instance of ConfigManager.
      *
+     * @param protocol The protocol for this manager
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
      * @param channel The name of the channel for this manager
+     * @since 0.6.3
      */
-    public ConfigManager(final String ircd, final String network,
-            final String server, final String channel) {
+    public ConfigManager(final String protocol, final String ircd,
+            final String network, final String server, final String channel) {
         final String chanName = channel + "@" + network;
+
+        this.protocol = protocol;
         this.ircd = ircd;
         this.network = network;
         this.server = server;
@@ -219,6 +227,9 @@ public class ConfigManager extends ConfigSource implements Serializable,
         String comp;
 
         switch (identity.getTarget().getType()) {
+        case PROTOCOL:
+            comp = protocol;
+            break;
         case IRCD:
             comp = ircd;
             break;
@@ -314,12 +325,15 @@ public class ConfigManager extends ConfigSource implements Serializable,
      * appropriate one for the specified new parameters, firing listeners where
      * settings have changed.
      *
+     * @param protocol The protocol for this manager
      * @param ircd The new name of the ircd for this manager
      * @param network The new name of the network for this manager
      * @param server The new name of the server for this manager
+     * @since 0.6.3
      */
-    public void migrate(final String ircd, final String network, final String server) {
-        migrate(ircd, network, server, "<Unknown>");
+    public void migrate(final String protocol, final String ircd,
+            final String network, final String server) {
+        migrate(protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
@@ -327,13 +341,16 @@ public class ConfigManager extends ConfigSource implements Serializable,
      * appropriate one for the specified new parameters, firing listeners where
      * settings have changed.
      *
+     * @param protocol The protocol for this manager
      * @param ircd The new name of the ircd for this manager
      * @param network The new name of the network for this manager
      * @param server The new name of the server for this manager
      * @param channel The new name of the channel for this manager
+     * @since 0.6.3
      */
-    public void migrate(final String ircd, final String network, final String server,
-            final String channel) {
+    public void migrate(final String protocol, final String ircd,
+            final String network, final String server, final String channel) {
+        this.protocol = protocol;
         this.ircd = ircd;
         this.network = network;
         this.server = server;

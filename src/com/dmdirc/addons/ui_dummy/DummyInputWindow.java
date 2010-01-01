@@ -25,11 +25,11 @@ package com.dmdirc.addons.ui_dummy;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.StringTranscoder;
 
-import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
@@ -106,7 +106,7 @@ public class DummyInputWindow implements InputWindow {
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
-        return new ConfigManager("dummy", "dummy", "dummy");
+        return IdentityManager.getGlobalConfig();
     }
     
     /** {@inheritDoc} */
