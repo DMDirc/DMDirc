@@ -31,12 +31,12 @@ public class ConfigManagerTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void testNonExistantOption() {
-        new ConfigManager("", "", "").getOption("unit-test123", "foobar");
+        new ConfigManager("", "", "", "").getOption("unit-test123", "foobar");
     }
     
     @Test
     public void testStats() {
-        final ConfigManager cm = new ConfigManager("", "", "");
+        final ConfigManager cm = new ConfigManager("", "", "", "");
         assertNull(ConfigManager.getStats().get("unit-test123.baz"));
         cm.hasOption("unit-test123", "baz");
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
@@ -46,7 +46,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager("", "", "");
+        final ConfigManager cm = new ConfigManager("", "", "", "");
         cm.addChangeListener("unit-test", listener);
         
         cm.configChanged("foo", "bar");
@@ -59,7 +59,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainKeyListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager("", "", "");
+        final ConfigManager cm = new ConfigManager("", "", "", "");
         cm.addChangeListener("unit-test", "foo", listener);
         
         cm.configChanged("foo", "bar");

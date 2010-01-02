@@ -33,7 +33,7 @@ public class TestConfigManagerMap extends ConfigManager {
             new HashMap<String, String>();
 
     public TestConfigManagerMap() {
-        super("", "", "");
+        super("", "", "", "");
     }
 
     @Override
