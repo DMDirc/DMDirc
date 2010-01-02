@@ -289,18 +289,26 @@ public abstract class WritableFrameContainer extends FrameContainer {
 
             best.addLine(format, args);
         } else if (target.startsWith(NOTIFICATION_CHANNEL + ":")) {
-           final String channel = String.format(target.substring(8), args);
+            final int sp = target.indexOf(' ');
+            final String channel = String.format(
+                   target.substring(8, sp > -1 ? sp : target.length()), args);
 
            if (getServer().hasChannel(channel)) {
                getServer().getChannel(channel).addLine(messageType, args);
+           } else if (sp > -1) {
+               // They specified a fallback
+               despatchNotification(format, target.substring(sp + 1), args);
            } else {
+                // No fallback specified
                addLine(format, args);
                Logger.userError(ErrorLevel.LOW,
                        "Invalid notification target for type " + messageType
                        + ": channel " + channel + " doesn't exist");
            }
         } else if (target.startsWith("comchans:")) {
-            final String user = String.format(target.substring(9), args);
+            final int sp = target.indexOf(' ');
+            final String user = String.format(
+                   target.substring(9, sp > -1 ? sp : target.length()), args);
             boolean found = false;
 
             for (String channelName : getServer().getChannels()) {
@@ -312,7 +320,16 @@ public abstract class WritableFrameContainer extends FrameContainer {
             }
 
             if (!found) {
-                addLine(messageType, args);
+                if (sp > -1) {
+                    // They specified a fallback
+                    despatchNotification(format, target.substring(sp + 1), args);
+                } else {
+                    // No fallback specified
+                    addLine(messageType, args);
+                       Logger.userError(ErrorLevel.LOW,
+                       "Invalid notification target for type " + messageType
+                       + ": no common channels with " + user);
+                }
             }
         } else if (!"none".equals(target)) {
             addLine(format, args);
