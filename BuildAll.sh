@@ -27,9 +27,6 @@ GIT="/usr/bin/git"
 # Path to jar binary
 JAR="/usr/bin/jar"
 
-# Where are the bamboo log files?
-BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_logs/
-
 cd ${MYDIR}
 
 if [ -d .git ]; then
@@ -82,12 +79,6 @@ else
 fi;
 
 PHP=`which php`
-
-if [ "${BAMBOO_INSTALL}" != "" -a -e "${BAMBOO}" ]; then
-	export BAMBOO_DIR=${BAMBOO};
-	export BAMBOO_BUILD=`ls -cr1 ${BAMBOO} | tail -n 1 | awk -F. '{print $1}'`
-	echo "This is Bamboo build "${BAMBOO_BUILD};
-fi
 
 # Check if build failed
 if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
