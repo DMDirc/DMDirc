@@ -885,9 +885,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     public void processMouseClickEvent(final MouseEvent e,
             final MouseClickType type) {
-        final Point point = getTextPane().getMousePosition();
+        final Point point = e.getLocationOnScreen();
+        SwingUtilities.convertPointFromScreen(point, this);
         if (e.getSource() == getTextPane() && point != null) {
-            final LineInfo lineInfo = getTextPane().getClickPosition(point);
+            final LineInfo lineInfo = getTextPane().getClickPosition(textPane.
+                    getMousePosition());
             final ClickType clickType = getTextPane().getClickType(lineInfo);
             final String attribute = (String) getTextPane().
                     getAttributeValueAtPoint(lineInfo);
