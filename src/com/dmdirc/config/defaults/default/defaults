@@ -109,7 +109,7 @@ notifications:
   numeric_343=group:whois
 
   numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
-  numeric_404=channel:%4$s
+  numeric_404=channel:%4$s lastcommand:(raw priv)?msg %4$s
   numeric_405=server
   numeric_421=server
   numeric_432=lastcommand:(raw )?nick %4$s
