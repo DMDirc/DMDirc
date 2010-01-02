@@ -23,3 +23,5 @@ __history
 *.a
 *.o
 *.ppu
+/reports/findbugs/
+/reports/report-fb.html
