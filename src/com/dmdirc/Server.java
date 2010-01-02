@@ -1175,17 +1175,23 @@ public class Server extends WritableFrameContainer implements
      * Updates the name and title of this window.
      */
     public void updateTitle() {
-        synchronized (parserLock) {
-            final Object[] arguments = new Object[]{
-                address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
-                address.getPort(), parser == null ? "Unknown" : getNetwork(),
-                parser == null ? "Unknown" : parser.getLocalClient().getNickname()
-            };
-        
-            setName(Formatter.formatMessage(getConfigManager(),
-                    "serverName", arguments));
-            window.setTitle(Formatter.formatMessage(getConfigManager(),
-                    "serverTitle", arguments));
+        synchronized (myStateLock) {
+            if (myState.getState() == ServerState.CLOSING) {
+                return;
+            }
+
+            synchronized (parserLock) {
+                final Object[] arguments = new Object[]{
+                    address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
+                    address.getPort(), parser == null ? "Unknown" : getNetwork(),
+                    parser == null ? "Unknown" : parser.getLocalClient().getNickname()
+                };
+
+                setName(Formatter.formatMessage(getConfigManager(),
+                        "serverName", arguments));
+                window.setTitle(Formatter.formatMessage(getConfigManager(),
+                        "serverTitle", arguments));
+            }
         }
     }
 
