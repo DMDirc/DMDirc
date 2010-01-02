@@ -66,21 +66,15 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
     /** Initialises the components. */
     private void initComponents() {
         about = new HTMLLabel("<html>"
-                + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Main developers:</h1>"
+                + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Main developers:</h3>"
                 + "<ul style='list-style-type: circle; margin-top: 0px;'>"
                 + "<li><a href=\"http://www.md87.co.uk\">Chris 'MD87' Smith</a></li>"
                 + "<li><a href=\"http://www.greboid.com\">Gregory 'Greboid' Holmes</a></li>"
                 + "<li><a href=\"http://home.dataforce.org.uk\">Shane 'Dataforce' Mc Cormack</a></li>"
                 + "</ul>"
-                + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Additional developers:</h1>"
+                + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Additional developers:</h3>"
                 + "<ul style='list-style-type: circle; margin-top: 0px;'>"
-                + "<li><a href=\"http://www.rivernile.org.uk\">Niall 'Rivernile' Scott</a></li>"
                 + "<li><a href=\"http://www.zipplet.co.uk\">Michael 'Zipplet' Nixon</a></li>"
-                + "</ul>"
-                + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Testers:</h1>"
-                + "<ul style='list-style-type: circle; margin-top: 0px;'>"
-                + "<li><a href=\"http://www.pling.org.uk\">Chris 'laser' Northwood</a></li>"
-                + "<li><a href=\"http://simonmott.co.uk/\">Simon 'Demented-Idiot' Mott</a></li>"
                 + "</ul>"
                 + "</html>");
         about.addHyperlinkListener(this);
