@@ -35,6 +35,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
@@ -144,14 +145,21 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
 
             /** {@inheritDoc} */
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 new LoggingSwingWorker() {
 
                     /** {@inheritDoc} */
                     @Override
                     protected Object doInBackground() throws Exception {
+                        ((JTextField) e.getSource()).setEditable(false);
                         doTabCompletion();
                         return null;
+                    }
+
+                    /** {@inheritDoc} */
+                    @Override
+                    protected void done() {
+                        ((JTextField) e.getSource()).setEditable(true);
                     }
                 }.execute();
             }
@@ -188,7 +196,9 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                     /** {@inheritDoc} */
                     @Override
                     protected Object doInBackground() throws Exception {
-                        enterPressed(line);
+                        if (((JTextField) e.getSource()).isEditable()) {
+                            enterPressed(line);
+                        }
                         return null;
                     }
                     }.execute();
