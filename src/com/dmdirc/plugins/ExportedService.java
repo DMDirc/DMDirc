@@ -25,6 +25,9 @@ package com.dmdirc.plugins;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
 /**
  * Object to allow interaction with Exported methods
  */
@@ -83,10 +86,13 @@ public class ExportedService {
         try {
             return myMethod.invoke(myObject, args);
         } catch (IllegalAccessException iae) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
             return null;
         } catch (IllegalArgumentException iae) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
             return null;
         } catch (InvocationTargetException ite) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+ite+" -> "+ite.getMessage(), ite);
             return null;
         }
     }
