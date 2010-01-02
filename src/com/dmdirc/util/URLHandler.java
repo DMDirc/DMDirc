@@ -79,9 +79,9 @@ public class URLHandler {
     public void launchApp(final String urlString) {
         URI uri;
         try {
-            uri = new URI(urlString);
+            uri = new URI(urlString + urlString.replace("|", "%7C"));
             if (uri.getScheme() == null) {
-                uri = new URI("http://" + urlString);
+                uri = new URI("http://" + urlString.replace("|", "%7C"));
             }
         } catch (URISyntaxException ex) {
             Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
