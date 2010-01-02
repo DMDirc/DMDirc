@@ -32,9 +32,9 @@ import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
 import java.awt.Dialog.ModalityType;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -253,7 +253,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
             return;
         }
 
-        final String host = serverField.getText();
+        String host = serverField.getText();
         final String pass = passwordField.getText();
         final int port = Integer.parseInt(portField.getText());
 
@@ -263,7 +263,13 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
                 (Identity) identityField.getSelectedItem();
 
         try {
-            final URI address = new URI("irc" + (sslCheck.isSelected() ? "s" : ""), pass, host, port, null, null, null);
+            String protocol = "irc";
+            if (host.indexOf("://") != -1) {
+                protocol = host.substring(0, host.indexOf("://"));
+                host = host.substring(host.indexOf("://") + 3);
+            }
+            protocol += (sslCheck.isSelected() ? "s" : "");
+            final URI address = new URI(protocol, pass, host, port, null, null, null);
 
             // Open in a new window?
             if (newServerWindowCheck.isSelected() || ServerManager.getServerManager()
