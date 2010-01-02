@@ -79,7 +79,7 @@ public class URLHandler {
     public void launchApp(final String urlString) {
         URI uri;
         try {
-            uri = new URI(urlString);
+            uri = new URI(urlString.replace("|", "%7C"));
             if (uri.getScheme() == null) {
                 uri = new URI("http://" + urlString);
             }
