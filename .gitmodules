@@ -2,5 +2,5 @@
 	path = modules/parser
 	url = git://dmdirc.com/~dmdirc/parser
 [submodule "modules/plugins"]
-        path = modules/plugins
-        url = git://dmdirc.com/~dmdirc/plugins
+	path = modules/plugins
+	url = git://dmdirc.com/~dmdirc/plugins
