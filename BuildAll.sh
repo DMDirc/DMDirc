@@ -117,5 +117,3 @@ else
 		/bin/sh $MYDIR/DoReports.sh
 	fi;
 fi
-
-$GIT checkout src/com/dmdirc/Main.java
