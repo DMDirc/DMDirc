@@ -160,24 +160,6 @@ echo "Removing existing releases from output directory"
 echo "================================================================"
 rm -Rf output/*.run output/*.exe output/*.dmg
 
-# Copy default settings from www to trunk for compile (if they exist, and we are
-# building a new jar)
-REVERTLIST=""
-if [ "" = "${JARFILE}" ]; then
-	if [ -e "${HOME}/www/updates/" ]; then
-		echo "================================================================"
-		echo "Applying settings update to this source"
-		echo "================================================================"
-		for updatedir in `ls -1 ../src/com/dmdirc/config/defaults/`; do
-			src="${HOME}/www/updates/${updatedir}"
-			if [ -e ${src} ]; then
-				REVERTLIST=${REVERTLIST}" ../src/com/dmdirc/config/defaults/${updatedir}/"
-				cp -Rfv ${src}/* ../src/com/dmdirc/config/defaults/${updatedir}/
-			fi;
-		done
-	fi;
-fi;
-
 if [ "" = "${FULLJAR}" ]; then
 	echo "================================================================"
 	echo "Building Release Jar"
@@ -223,15 +205,6 @@ if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	cd ${THISDIR}
 fi;
 
-
-echo "================================================================"
-echo "Clean Up"
-echo "================================================================"
-# Now revert the trunk so as not to break updates.
-for updatedir in ${REVERTLIST}; do
-	GIT=`which git`
-	${GIT} checkout ${updatedir}
-done;
 
 if [ "1" = "${UPLOAD}" -a "" != "${TAGGED}" ]; then
 	echo "================================================================"
