@@ -3,8 +3,10 @@
     <description>Adds automatic versioning information to DMDirc</description>
 
     <property name="version.config" value="build/classes/com/dmdirc/version.config"/>
-    <property name="defaults.path" value="src/com/dmdirc/config/defaults/"/>
-    <property name="defaults.target" value="build/classes/com/dmdirc/config/defaults/default/defaults"/>
+    <property name="defaults.path" value="modules/defaults/.git/"/>
+    <property name="defaults.output" value="build/classes/com/dmdirc/config/defaults/"/>
+    <property name="defaults.target" value="${defaults.output}default/defaults"/>
+    <property name="modealiases.target" value="${defaults.output}modealiases/generic"/>
 
     <available file=".git" property="is.git"/>
 
@@ -45,13 +47,27 @@ version:
         <echo file="${version.config}" append="true">
 updater:
     channel=${channel}
-    bundleddefaultsversion=${defaults.version}</echo>
+    bundleddefaultsversion=${defaults.version}
+    bundledmodealiasesversion=${modealiases.version}
+</echo>
     </target>
 
-    <target name="-write-identities" depends="-read-identities">
+    <target name="-write-identities" depends="-read-identities, -copy-identities">
         <echo file="${defaults.target}" append="true">
 identity:
-  defaultsversion=${defaults.version}</echo>
+  defaultsversion=${defaults.version}
+</echo>
+        <echo file="${modealiases.target}" append="true">
+identity:
+  modealiasversion=${modealiases.version}
+</echo>
+    </target>
+
+    <target name="-copy-identities">
+        <mkdir dir="${defaults.output}"/>
+        <copy todir="${defaults.output}" overwrite="true">
+            <fileset dir="modules/defaults/"/>
+        </copy>
     </target>
 
     <target name="-read-identities" depends="-read-identities-git"/>
@@ -59,7 +75,11 @@ identity:
     <target name="-read-identities-git" if="is.git">
         <exec dir="." executable="/bin/bash" outputproperty="defaults.version">
             <arg value="-c"/>
-            <arg value="git rev-list --all -n 1 -- ${defaults.path} | xargs git describe --tags"/>
+            <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- default | xargs git --git-dir ${defaults.path} describe --tags"/>
+        </exec>
+        <exec dir="." executable="/bin/bash" outputproperty="modealiases.version">
+            <arg value="-c"/>
+            <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- modealiases | xargs git --git-dir ${defaults.path} describe --tags"/>
         </exec>
     </target>
 
