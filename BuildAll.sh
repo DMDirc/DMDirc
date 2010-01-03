@@ -50,23 +50,8 @@ fi
 # The date/git rev to add to the end of the file names of stuff
 FILEDATA=`date +%Y%m%d`_${GITREV}
 
-# Copy default settings from www to trunk for compile (if they exist)
-REVERTLIST=""
-if [ -e "${HOME}/www/updates/" ]; then
-	for updatedir in `ls -1 src/com/dmdirc/config/defaults/`; do
-		src="${HOME}/www/updates/${updatedir}"
-		if [ -e ${src} ]; then
-			REVERTLIST=${REVERTLIST}" src/com/dmdirc/config/defaults/${updatedir}/"
-			cp -Rfv ${src}/* src/com/dmdirc/config/defaults/${updatedir}/
-		fi;
-	done
-fi;
-
 # Build plugins/jar
 $ANT -Dchannel=NIGHTLY -k clean jar
-
-# Now revert the trunk so as not to break updates.
-${GIT} checkout src/com/dmdirc/config/defaults/;
 
 PHP=`which php`
 
