@@ -4,3 +4,6 @@
 [submodule "modules/plugins"]
 	path = modules/plugins
 	url = git://dmdirc.com/~dmdirc/plugins
+[submodule "modules/defaults"]
+	path = modules/defaults
+	url = git://dmdirc.com/~dmdirc/defaults
