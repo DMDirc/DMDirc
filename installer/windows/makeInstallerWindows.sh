@@ -35,13 +35,6 @@ INTNAME="${PWD}/${INTNAME}"
 # Get 7zip path
 ZIP=`which 7z`
 
-# Are we a git working copy, or SVN?
-if [ -e ".svn" ]; then
-	isSVN=1
-else
-	isSVN=0
-fi;
-
 if [ "" = "${ZIP}" ]; then
 	echo "7Zip not found, failing."
 	exit 1;
@@ -95,7 +88,6 @@ getFile() {
 
 # Check for some CLI params
 compileJar="false"
-updateSVN="true"
 compileSetup="false"
 useOldSetup="false"
 isRelease=""
@@ -105,13 +97,8 @@ signEXE="true"
 compilerFlags="-Xs -XX -O2 -Or -Op1"
 BRANCH="0"
 plugins=""
-if [ $isSVN -eq 1 ]; then
-	location="../../../"
-	current=""
-else
-	location="../../"
-	current="1"
-fi;
+location="../../"
+current="1"
 jarfile=""
 jre=""
 jrename="jre" # Filename for JRE without the .exe
@@ -122,7 +109,6 @@ showHelp() {
 	echo "The following command line arguments are known:"
 	echo "---------------------"
 	echo "-h, --help                Help information"
-	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b as well)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
 	echo "-o,                       If setup.exe compile fails, use old version"
@@ -139,8 +125,6 @@ showHelp() {
 # probably is Dataforce and knows about this flag anyway
 #	echo "    --upx                 UPX binary if UPX is available on the path,"
 #	echo "                          (Compression Level: 4 for signed exe, 9 for unsigned)"
-	echo "-k, --keep                Keep the existing source tree when compiling"
-	echo "                          (don't svn update beforehand)"
 	echo "---------------------"
 	exit 0;
 }
@@ -194,9 +178,6 @@ while test -n "$1"; do
 		--unsigned|-u)
 			signEXE="false"
 			;;
-		--keep|-k)
-			updateSVN="false"
-			;;
 		--help|-h)
 			showHelp;
 			;;
@@ -204,19 +185,8 @@ while test -n "$1"; do
 			BRANCH="1"
 			;;
 		--tag|-t)
-			shift
-			if [ ${isSVN} -eq 1 ]; then
-				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
-				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
-				if [ "" = "${CHECKTAG}" ]; then
-					echo "Specified tag ("${1}") is invalid."
-					exit 1;
-				fi;
-				TAGGED="${1}"
-			else
-				TAGGED=`git describe --tags`
-				TAGGED=${TAGGED%%-*}
-			fi;
+			TAGGED=`git describe --tags`
+			TAGGED=${TAGGED%%-*}
 			;;
 	esac
 	shift
@@ -239,25 +209,6 @@ if [ "" = "${current}" ]; then
 else
 	jarPath="${location}"
 fi
-if [ "${isRelease}" != "" ]; then
-	if [ $isSVN -eq 1 ]; then
-		if [ "${BRANCH}" != "0" ]; then
-			if [ -e "${location}/${isRelease}" ]; then
-				jarPath="${location}/${isRelease}"
-			else
-				echo "Branch "${isRelease}" not found."
-				exit 1;
-			fi
-		else
-			if [ -e "${location}/${isRelease}" ]; then
-				jarPath="${location}/${isRelease}"
-			else
-				echo "Tag "${isRelease}" not found."
-				exit 1;
-			fi
-		fi
-	fi
-fi
 
 if [ "" = "${jarfile}" ]; then
 	jarfile=${jarPath}"/dist/DMDirc.jar"
@@ -265,9 +216,7 @@ if [ "" = "${jarfile}" ]; then
 		echo "Creating jar.."
 		OLDPWD=${PWD}
 		cd ${jarPath}
-		if [ "${updateSVN}" = "true" ]; then
-			svn update
-		fi
+
 		rm -Rf build dist
 		ant jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
@@ -298,11 +247,7 @@ else
 	rm -Rf plugins;
 fi
 
-if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
-	echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
-else
-	echo "	ReleaseNumber: String = '${TAGGED}';" > SetupConsts.inc
-fi;
+echo "	ReleaseNumber: String = '${TAGGED}';" > SetupConsts.inc
 
 FILES=""
 # Icon Res file
@@ -317,11 +262,7 @@ echo "extractor RCDATA extractor.exe" > files.rc
 
 COMPILER_IS_BROKEN="0";
 
-if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
-	NUM="${1}"
-else
-	NUM="${TAGGED}"
-fi;
+NUM="${TAGGED}"
 
 
 
@@ -585,26 +526,16 @@ echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"
 
 doRename=0
-if [ "${isRelease}" != "" ]; then
-	doRename=1
-elif [ $isSVN -eq 0 -a "${TAGGED}" != "" ]; then
+if [ "${TAGGED}" != "" ]; then
 	doRename=1
 fi;
 
 if [ ${doRename} -eq 1 ]; then
-	if [ $isSVN -eq 1 ]; then
-		if [ "${BRANCH}" = "1" ]; then
-			releaseTag=branch-${isRelease}
-		else
-			releaseTag=${isRelease}
-		fi;
+	if [ "${TAGGED}" = "" ]; then
+		releaseTag=branch-${isRelease}
 	else
-		if [ "${TAGGED}" = "" ]; then
-			releaseTag=branch-${isRelease}
-		else
-			releaseTag=${TAGGED}
-		fi;
-	fi
+		releaseTag=${TAGGED}
+	fi;
 	ORIGNAME="DMDirc-${releaseTag}-Setup${finalTag}.exe"
 else
 	ORIGNAME="${INSTALLNAME}${finalTag}.exe"
