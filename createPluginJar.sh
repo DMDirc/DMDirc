@@ -7,7 +7,8 @@ if [ "${1}" = "" -o "${2}" = "" ]; then
 	exit;
 fi
 
-srcdir=${PWD}
+destdir=${PWD}
+srcdir=${PWD}/modules/plugins/
 pluginname=${1}
 foldername=${pluginname//.//}
 
@@ -20,7 +21,7 @@ fi
 
 echo "Creating ${2}.jar for ${pluginname} (${foldername})"
 
-if [ ! -e src/${foldername}/plugin.config ]; then
+if [ ! -e modules/plugins/src/${foldername}/plugin.config ]; then
 	echo "no plugin.config found";
 	exit 0;
 fi
@@ -75,9 +76,9 @@ mkdir -p "$foo"
 cd "${foo}"
 ln -s "${srcdir}/build/classes/${foldername}" .
 cd "$TMPDIR"
-mkdir -p "${srcdir}/plugins/"
+mkdir -p "${destdir}/plugins/"
 
-rm -Rf "${srcdir}/plugins/${2}.jar"
+rm -Rf "${destdir}/plugins/${2}.jar"
 jar -cvf "${srcdir}/src/${foldername}/${2}.jar" META-INF >/dev/null
 bit=""
 while [ 1 -eq 1 ]; do
@@ -96,7 +97,7 @@ while [ 1 -eq 1 ]; do
 	fi
 done
 
-mv "${srcdir}/src/${foldername}/${2}.jar" "${srcdir}/plugins/"
+mv "${srcdir}/src/${foldername}/${2}.jar" "${destdir}/plugins/"
 
 cd "${srcdir}"
 rm -Rf ${TMPDIR}
