@@ -26,6 +26,9 @@ is divided into following sections:
                 INITIALIZATION SECTION
                 ======================
             -->
+    <path id="plugins.libs">
+        <fileset dir="modules/plugins/lib" includes="*.jar"/>
+    </path>
     <target name="-pre-init">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
@@ -145,7 +148,7 @@ is divided into following sections:
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
-            <attribute default="${javac.classpath}" name="classpath"/>
+            <attribute default="${toString:plugins.libs}:${javac.classpath}" name="classpath"/>
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="${javac.debug}" name="debug"/>
@@ -165,7 +168,7 @@ is divided into following sections:
         <macrodef name="depend" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
-            <attribute default="${javac.classpath}" name="classpath"/>
+            <attribute default="${toString:plugins.libs}:${javac.classpath}" name="classpath"/>
             <sequential>
                 <depend cache="${build.dir}/depcache" destdir="@{destdir}" excludes="${excludes}" includes="${includes}" srcdir="@{srcdir}">
                     <classpath>
@@ -530,7 +533,7 @@ is divided into following sections:
         <mkdir dir="${dist.javadoc.dir}"/>
         <javadoc additionalparam="${javadoc.additionalparam}" author="${javadoc.author}" charset="${javadoc.encoding.used}" destdir="${dist.javadoc.dir}" docencoding="${javadoc.encoding.used}" encoding="${javadoc.encoding.used}" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
             <classpath>
-                <path path="${javac.classpath}"/>
+                <path path="${toString:plugins.libs}:${javac.classpath}"/>
             </classpath>
             <fileset dir="${main.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
@@ -558,7 +561,7 @@ is divided into following sections:
         <mkdir dir="${doccheck.dir}"/>
         <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${main.src.dir}:${parser.src.dir}:${plugins.src.dir}" useexternalfile="true" version="${javadoc.version}">
             <classpath>
-                <path path="${javac.classpath}"/>
+                <path path="${toString:plugins.libs}:${javac.classpath}"/>
             </classpath>
         </javadoc>
     </target>
@@ -591,10 +594,10 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target if="do.depend.true" name="-compile-test-depend">
-        <j2seproject3:depend classpath="${javac.test.classpath}" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:depend classpath="${toString:plugins.libs}:${javac.test.classpath}" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test,-compile-test-depend" if="have.tests" name="-do-compile-test">
-        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:javac classpath="${toString:plugins.libs}:${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
         <copy todir="${build.test.classes.dir}">
             <fileset dir="${main.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
@@ -613,7 +616,7 @@ is divided into following sections:
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single" if="have.tests" name="-do-compile-test-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <j2seproject3:force-recompile destdir="${build.test.classes.dir}"/>
-        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" excludes="" includes="${javac.includes}" sourcepath="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:javac classpath="${toString:plugins.libs}:${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" excludes="" includes="${javac.includes}" sourcepath="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
         <copy todir="${build.test.classes.dir}">
             <fileset dir="${main.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
