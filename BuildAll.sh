@@ -18,9 +18,6 @@ SCRIPTDIR="/home/dmdirc/scripts"
 # Path to ant binary
 ANT="/usr/bin/ant"
 
-# Path to svn binary
-SVN="/usr/bin/svn"
-
 # Path to git binary
 GIT="/usr/bin/git"
 
@@ -33,13 +30,12 @@ if [ -d .git ]; then
 	$GIT reset --hard
 	$GIT checkout master
 	$GIT pull
-	SVNREV=`$GIT describe`
+	GITREV=`$GIT describe`
 else
-	$SVN update
-	SVNREV=`$SVN info | grep Revision`
-	SVNREV=${SVNREV##*: }
+	echo "GIT Directory not found."
+	exit 1;
 fi;
-export DMDIRC_SVN=${SVNREV}
+export DMDIRC_GIT=${GITREV}
 
 # Archive old nightlies
 if [ `date +%d` = "01" ]; then
@@ -51,8 +47,8 @@ if [ `date +%d` = "01" ]; then
 	rm -Rf ${WWWDIR}/nightly/*_latest*
 fi
 
-# The date/svn prefix to add to the end of the file names of stuff
-FILEDATA=`date +%Y%m%d`_${SVNREV}
+# The date/git rev to add to the end of the file names of stuff
+FILEDATA=`date +%Y%m%d`_${GITREV}
 
 # Copy default settings from www to trunk for compile (if they exist)
 REVERTLIST=""
@@ -70,13 +66,7 @@ fi;
 $ANT -Dchannel=NIGHTLY -k clean jar
 
 # Now revert the trunk so as not to break updates.
-if [ -d .git ]; then
-	${GIT} checkout src/com/dmdirc/config/defaults/;
-else
-	for updatedir in ${REVERTLIST}; do
-		${SVN} revert ${updatedir}/*
-	done;
-fi;
+${GIT} checkout src/com/dmdirc/config/defaults/;
 
 PHP=`which php`
 
@@ -143,8 +133,4 @@ else
 	fi;
 fi
 
-if [ -d .git ]; then
-	$GIT checkout src/com/dmdirc/Main.java
-else
-	$SVN revert src/com/dmdirc/Main.java
-fi;
+$GIT checkout src/com/dmdirc/Main.java

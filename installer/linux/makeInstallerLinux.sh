@@ -28,13 +28,6 @@ INSTALLERNAME=DMDirc-Setup
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.run"
 
-# Are we a git working copy, or SVN?
-if [ -e ".svn" ]; then
-	isSVN=1
-else
-	isSVN=0
-fi;
-
 # Find out what params we should pass to things.
 # Solaris has a nice and ancient version of grep in /usr/bin
 grep -na "" /dev/null >/dev/null 2>&1
@@ -109,7 +102,6 @@ showHelp() {
 	echo "The following command line arguments are known:"
 	echo "---------------------"
 	echo "-h, --help                Help information"
-	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b as well)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
@@ -118,26 +110,18 @@ showHelp() {
 	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "    --current             Use the current folder as the base for the build"
 	echo "-e, --extra <tag>         Tag to add to final exe name to distinguish this build from a standard build"
-	echo "-k, --keep                Keep the existing source tree when compiling"
-	echo "                          (don't svn update beforehand)"
 	echo "---------------------"
 	exit 0;
 }
 
 # Check for some CLI params
 compileJar="false"
-updateSVN="true"
 isRelease=""
 finalTag=""
 BRANCH="0"
 plugins=""
-if [ $isSVN -eq 1 ]; then
-	location="../../../"
-	current=""
-else
-	location="../../"
-	current="1"
-fi;
+location="../../"
+current="1"
 jarfile=""
 jre=""
 jrename="jre" # Filename for JRE without the .bin
@@ -175,9 +159,6 @@ while test -n "$1"; do
 			finalTag=${1}
 			RUNNAME="${PWD}/${INSTALLERNAME}-${1}.run"
 			;;
-		--keep|-k)
-			updateSVN="false"
-			;;
 		--help|-h)
 			showHelp;
 			;;
@@ -185,19 +166,8 @@ while test -n "$1"; do
 			BRANCH="1"
 			;;
 		--tag|-t)
-			shift
-			if [ ${isSVN} -eq 1 ]; then
-				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
-				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
-				if [ "" = "${CHECKTAG}" ]; then
-					echo "Specified tag ("${1}") is invalid."
-					exit 1;
-				fi;
-				TAGGED="${1}"
-			else
-				TAGGED=`git describe --tags`
-				TAGGED=${TAGGED%%-*}
-			fi;
+			TAGGED=`git describe --tags`
+			TAGGED=${TAGGED%%-*}
 			;;
 	esac
 	shift
@@ -207,25 +177,6 @@ if [ "" = "${current}" ]; then
 else
 	jarPath="${location}"
 fi
-if [ "${isRelease}" != "" ]; then
-	if [ $isSVN -eq 1 ]; then
-		if [ "${BRANCH}" != "0" ]; then
-			if [ -e "${location}/${isRelease}" ]; then
-				jarPath="${location}/${isRelease}"
-			else
-				echo "Branch "${isRelease}" not found."
-				exit 1;
-			fi
-		else
-			if [ -e "${location}/${isRelease}" ]; then
-				jarPath="${location}/${isRelease}"
-			else
-				echo "Tag "${isRelease}" not found."
-				exit 1;
-			fi
-		fi
-	fi;
-fi
 
 if [ "" = "${jarfile}" ]; then
 	jarfile=${jarPath}"/dist/DMDirc.jar"
@@ -233,9 +184,7 @@ if [ "" = "${jarfile}" ]; then
 		echo "Creating jar.."
 		OLDPWD=${PWD}
 		cd ${jarPath}
-		if [ "${updateSVN}" = "true" ]; then
-			svn update
-		fi
+
 		rm -Rf build dist
 		ant jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
@@ -292,13 +241,8 @@ echo "" >> ${RUNNAME}
 tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) installerstub.sh >> ${RUNNAME}
 
 # Add release info.
-if [ $isSVN -eq 1 ]; then
-	awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${isRelease}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
-	mv ${RUNNAME}.tmp ${RUNNAME}
-elif [ "${TAGGED}" != "" ]; then
-	awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${TAGGED}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
-	mv ${RUNNAME}.tmp ${RUNNAME}
-fi;
+awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${TAGGED}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
+mv ${RUNNAME}.tmp ${RUNNAME}
 
 FILES="DMDirc.jar";
 echo "Compressing files.."
@@ -424,24 +368,16 @@ echo "Chmodding"
 chmod a+x ${RUNNAME}
 
 doRename=0
-if [ "${isRelease}" != "" ]; then
-	doRename=1
-elif [ $isSVN -eq 0 -a "${TAGGED}" != "" ]; then
+if [ "${TAGGED}" != "" ]; then
 	doRename=1	
 fi;
 
 if [ ${doRename} -eq 1 ]; then
-	if [ $isSVN -eq 1 ]; then
-		if [ "${BRANCH}" = "1" ]; then
-			isRelease=branch-${isRelease}
-		fi;
+	if [ "${TAGGED}" = "" ]; then
+		isRelease=branch-${isRelease}
 	else
-		if [ "${TAGGED}" = "" ]; then
-			isRelease=branch-${isRelease}
-		else
-			isRelease=${TAGGED}
-		fi;
-	fi
+		isRelease=${TAGGED}
+	fi;
 	if [ "" != "${finalTag}" ]; then
 		finalTag="-${finalTag}"
 	fi;

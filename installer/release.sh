@@ -12,29 +12,12 @@ plugins_linux=""
 # Additional Jar names of plugins to add to only osx installers. (* means all)
 plugins_osx=""
 
-# Are we a git working copy, or SVN?
-if [ -e ".svn" ]; then
-	isSVN=1
-else
-	isSVN=0
-fi;
-
-
 showHelp() {
 	echo "This will generate the different DMDirc installers."
-	if [ ${isSVN} -eq 1 ]; then
-		echo "Usage: ${0} [params] <release>"
-		echo "Release can be either 'trunk', 'this', a valid tag, or a branch (if -b is passed)"
-	else
-		echo "Usage: ${0} [params]"
-	fi;
+	echo "Usage: ${0} [params]"
 	echo "The following params are known:"
 	echo "---------------------"
-	if [ ${isSVN} -eq 1 ]; then
-		echo "-b,  --branch                       <release> is a branch"
-	else
-		echo "-t,  --tag                          This is a tagged release"
-	fi;
+	echo "-t,  --tag                          This is a tagged release"
 	echo "     --jar <file>                   Use <file> instead of compiling a jar."
 	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
 	echo "     --jre                          Include a jre in the installers."
@@ -118,18 +101,8 @@ while test -n "$1"; do
 			compileJar="--compile "
 			;;
 		--tag|-t)
-			if [ ${isSVN} -eq 1 ]; then
-				shift
-				REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
-				CHECKTAG=`echo ${1} | egrep "${REGEX}"`
-				if [ "" = "${CHECKTAG}" ]; then
-					echo "Specified tag ("${1}") is invalid."
-					exit 1;
-				fi;
-				TAGGED="-t ${1} "
-			else
-				TAGGED="-t "
-			fi;
+			TAGGED="-t "
+
 			# Always recompile if tagging
 			compileJar="--compile "
 			;;
@@ -164,61 +137,11 @@ if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*
 	if [ "${plugins_osx}" = "*" ]; then plugins_osx=${allPlugins}; fi
 fi;
 
-if [ ${isSVN} -eq 1 ]; then
-	VERSION=""
-	if [ "${LAST}" != "" ]; then
-		if [ "${LAST}" = "trunk" ]; then
-			VERSION="Trunk"
-			RELEASE=""
-		elif [ "${LAST}" = "this" ]; then
-			# Work out what type of build this is!
-			thisDIR=${PWD}
-			cd ..
-			tempDIR=${PWD##*/}
-			if [ "${tempDIR}" = "trunk" ]; then
-				VERSION="Trunk"
-				echo "This is a trunk release.";
-			else
-				echo "This is not a trunk release.";
-				VERSION=${tempDIR}
-				cd ..
-				tempDIR=${PWD##*/}
-				if [ "${tempDIR}" = "tags" ]; then
-					echo "Release of tag "${version}
-					RELEASE="-r "${VERSION}
-					TAG="1"
-				elif [ "${tempDIR}" = "branches" ]; then
-					echo "Release of branch "${version}
-					BRANCH="-b "
-					RELEASE="-r "${VERSION}
-				else
-					VERSION="Unknown"
-					echo "Unknown release target - Building as trunk build"
-					OPT="--current ${OPT}"
-				fi
-			fi;
-			cd ${thisDIR}
-		elif [ "${BRANCH}" != "" -a ! -e "../../branches/"${LAST} ]; then
-			echo "Branch '"${LAST}"' not found."
-			exit 1;
-		elif [ "${BRANCH}" = "" -a ! -e "../../tags/"${LAST} ]; then
-			echo "Tag '"${LAST}"' not found."
-			exit 1;
-		else
-			RELEASE="-r "${LAST}
-		fi
-	else
-		echo "Usage: ${0} [params] <release>"
-		echo "Release can be either 'this', 'trunk' or a valid tag. (see ${0} --help for further information)"
-		exit 1;
-	fi
+VERSION=`git branch | grep ^* | sed "s/^* //g"`
+if [ "${VERSION}" = "master" ]; then
+	RELEASE=""
 else
-	VERSION=`git branch | grep ^* | sed "s/^* //g"`
-	if [ "${VERSION}" = "master" ]; then
-		RELEASE=""
-	else
-		RELEASE="-r ${VERSION}"
-	fi;
+	RELEASE="-r ${VERSION}"
 fi;
 
 JAR=`which jar`
@@ -306,13 +229,8 @@ echo "Clean Up"
 echo "================================================================"
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
-	if [ ${isSVN} -eq 1 ]; then
-		SVN=`which svn`
-		${SVN} revert ${updatedir}/*
-	else
-		GIT=`which git`
-		${GIT} checkout ${updatedir}
-	fi;
+	GIT=`which git`
+	${GIT} checkout ${updatedir}
 done;
 
 if [ "1" = "${UPLOAD}" -a "" != "${TAGGED}" ]; then

@@ -13,8 +13,8 @@ MYDIR="/home/dmdirc/google"
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"
 
-# Path to svn binary
-SVN="/usr/bin/svn"
+# Path to git binary
+GIT="/usr/bin/git"
 
 # Path to ant binary
 ANT="/usr/bin/ant"
@@ -35,7 +35,7 @@ fi;
 
 cd $MYDIR
 
-$SVN update
+${GIT} pull
 
 # Anti-Clover stupidness!
 rm -Rf ${MYDIR}/.clover

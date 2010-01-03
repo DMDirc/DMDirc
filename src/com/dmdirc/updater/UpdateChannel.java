@@ -35,7 +35,7 @@ public enum UpdateChannel {
     UNSTABLE,
     /** Nightly update chanel. */
     NIGHTLY, 
-    /** Not an official release (e.g. SVN). */
+    /** Not an official release (e.g. GIT). */
     NONE;
 
 }
