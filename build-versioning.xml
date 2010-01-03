@@ -7,7 +7,6 @@
     <property name="defaults.target" value="build/classes/com/dmdirc/config/defaults/default/defaults"/>
 
     <available file=".git" property="is.git"/>
-    <available file=".svn" property="is.svn"/>
 
     <target name="-write-version" depends="-write-version-header, -add-version, -write-updater, -write-identities"/>
 
@@ -29,19 +28,12 @@ version:
    version=</echo>
     </target>
 
-    <target name="-add-version" depends="-add-git-version, -add-svn-version"/>
+    <target name="-add-version" depends="-add-git-version"/>
 
     <target name="-add-git-version" if="is.git">
         <exec executable="git" output="${version.config}" append="true">
             <arg value="describe"/>
             <arg value="--tags"/>
-        </exec>
-    </target>
-
-    <target name="-add-svn-version" if="is.svn">
-        <exec dir="." executable="/bin/bash" output="${version.config}" append="true">
-            <arg value="-c"/>
-            <arg value="svn log -l 1 | grep ^Git-version | cut -f 2 -d ' '"/>
         </exec>
     </target>
 
@@ -62,7 +54,7 @@ identity:
   defaultsversion=${defaults.version}</echo>
     </target>
 
-    <target name="-read-identities" depends="-read-identities-git, -read-identities-svn"/>
+    <target name="-read-identities" depends="-read-identities-git"/>
 
     <target name="-read-identities-git" if="is.git">
         <exec dir="." executable="/bin/bash" outputproperty="defaults.version">
@@ -70,12 +62,5 @@ identity:
             <arg value="git rev-list --all -n 1 -- ${defaults.path} | xargs git describe --tags"/>
         </exec>
     </target>
-
-   <target name="-read-identities-svn" if="is.svn">
-        <exec dir="." executable="/bin/bash" outputproperty="defaults.version">
-            <arg value="-c"/>
-            <arg value="svn log ${defaults.path} -l 1 | grep ^Git-version | cut -f 2 -d ' '"/>
-        </exec>
-   </target>
 
 </project>
