@@ -48,22 +48,8 @@ if [ -e META-INF/plugin.config ]; then
 		mv META-INF/plugin.config.temp META-INF/plugin.config		
 	fi;
 
-	if [ -d "${srcdir}/.git" ]; then
-		GIT=`which git`
-		REV=$(${GIT} --git-dir "${srcdir}/.git" describe --tags `${GIT} --git-dir "${srcdir}/.git" rev-list --max-count=1 HEAD -- "src/${foldername}"`);
-	else
-		cd $srcdir;
-		SVN=`which svn`	
-		SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
-		SVNREV=${SVNREV##*: }
-
-		if [ -n "$SVNREV" ]; then
-			REV=`$SVN log -r $SVNREV | grep ^Git-version: | cut -f 2 -d ' '`
-		else
-			REV=0;
-		fi;
-		cd $TMPDIR;
-	fi;
+	GIT=`which git`
+	REV=$(${GIT} --git-dir "${srcdir}/.git" describe --tags `${GIT} --git-dir "${srcdir}/.git" rev-list --max-count=1 HEAD -- "src/${foldername}"`);
 
 	echo "" >> META-INF/plugin.config
 	echo "" >> META-INF/plugin.config
@@ -74,7 +60,7 @@ fi;
 foo=`echo $foldername | sed -e 's/\/[^\/]*$//g'`
 mkdir -p "$foo"
 cd "${foo}"
-ln -s "${srcdir}/build/classes/${foldername}" .
+ln -s "${destdir}/build/classes/${foldername}" .
 cd "$TMPDIR"
 mkdir -p "${destdir}/plugins/"
 
