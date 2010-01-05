@@ -53,6 +53,10 @@ public final class IdentityManager {
     
     /** The config managers that have registered with this manager. */
     private final static List<ConfigManager> managers = new WeakList<ConfigManager>();
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(IdentityManager.class.getName());
     
     /** The identity file used for the global config. */
     private static Identity config;
@@ -360,6 +364,8 @@ public final class IdentityManager {
         synchronized (identities) {
             identities.add(identity);
         }
+
+        LOGGER.finer("Adding identity: " + identity);
         
         synchronized (managers) {
             for (ConfigManager manager : managers) {

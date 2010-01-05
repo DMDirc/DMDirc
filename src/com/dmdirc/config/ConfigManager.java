@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 /**
  * The config manager manages the various config sources for each entity.
@@ -48,10 +49,14 @@ public class ConfigManager extends ConfigSource implements Serializable,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
 
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(ConfigManager.class.getName());
 
     /** A list of sources for this config manager. */
     private final List<Identity> sources;
@@ -106,6 +111,12 @@ public class ConfigManager extends ConfigSource implements Serializable,
         this.channel = chanName;
         
         sources = IdentityManager.getSources(this);
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.fine("Found " + sources.size() + " source(s) for: "
+                    + this.protocol + ", " + this.ircd + ", " + this.network
+                    + ", " + this.server + ", " + this.channel);
+        }
 
         for (Identity identity : sources) {
             identity.addListener(this);
@@ -251,6 +262,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
             break;
         }
 
+        LOGGER.finest("Comparison: " + comp + ", target: " + identity.getTarget().getData());
+        
         return comp != null && identityTargetMatches(identity.getTarget().getData(), comp);
     }
 
@@ -350,6 +363,13 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Migrating from " + this.protocol + ", " + this.ircd
+                    + ", " + this.network + ", " + this.server + ", "
+                    + this.channel + " to " + protocol + ", " + ircd + ", "
+                    + network + ", " + server + ", " + channel);
+        }
+        
         this.protocol = protocol;
         this.ircd = ircd;
         this.network = network;
@@ -358,12 +378,14 @@ public class ConfigManager extends ConfigSource implements Serializable,
 
         for (Identity identity : new ArrayList<Identity>(sources)) {
             if (!identityApplies(identity)) {
+                LOGGER.fine("Removing identity that no longer applies: " + identity);
                 removeIdentity(identity);
             }
         }
 
         final List<Identity> newSources = IdentityManager.getSources(this);
         for (Identity identity : newSources) {
+            LOGGER.fine("Testing new identity: " + identity);
             checkIdentity(identity);
         }
     }
