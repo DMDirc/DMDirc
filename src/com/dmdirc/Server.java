@@ -1438,7 +1438,7 @@ public class Server extends WritableFrameContainer implements
             myState.transition(ServerState.CONNECTED);
 
             getConfigManager().migrate(address.getScheme(),
-                    parser.getServerSoftwareType(), getNetwork(), getName());
+                    parser.getServerSoftwareType(), getNetwork(), parser.getServerName());
 
             updateIcon();
             updateTitle();
