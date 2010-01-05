@@ -428,7 +428,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             }
         }
 
-        System.exit(-1);
+        System.exit(42);
     }
 
     /**
