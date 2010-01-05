@@ -38,7 +38,6 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.updater.UpdateChecker;
-import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.awt.GraphicsEnvironment;
