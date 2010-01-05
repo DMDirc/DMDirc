@@ -351,7 +351,7 @@ public class Identity extends ConfigSource implements Serializable,
 
         synchronized (this) {
             oldValue = getOption(domain, option);
-            LOGGER.finer(getName() + ": setting " + domain + "." + option + " to " + value);
+            LOGGER.finest(getName() + ": setting " + domain + "." + option + " to " + value);
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, don't set useless settings that are
