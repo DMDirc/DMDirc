@@ -989,6 +989,16 @@ public class Server extends WritableFrameContainer implements
     }
 
     /**
+     * Retrieves the protocol used by this server.
+     *
+     * @return This server's protocol
+     * @since 0.6.3
+     */
+    public String getProtocol() {
+        return address.getScheme();
+    }
+
+    /**
      * Returns the current away status.
      *
      * @return True if the client is marked as away, false otherwise
