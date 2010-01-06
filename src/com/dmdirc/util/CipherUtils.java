@@ -173,10 +173,7 @@ public class CipherUtils {
      * @return true if authed, false otherwise
      */
     public boolean checkAuthed() {
-        if (dcipher != null && ecipher != null) {
-            return true;
-        }
-        return false;
+        return dcipher != null && ecipher != null;
     }
     
     /**
