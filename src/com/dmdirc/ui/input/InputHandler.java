@@ -77,6 +77,11 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected static final int HANDLE_FORMATTING = 4;
     /** Flag to indicate that this input handler should handle returns. */
     protected static final int HANDLE_RETURN = 8;
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(InputHandler.class.getName());
+
     /** The flags for this particular input handler. */
     protected int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
             | HANDLE_FORMATTING | HANDLE_RETURN;
@@ -384,11 +389,15 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles tab completion of a string. Called when the user presses tab.
      */
     protected void doTabCompletion() {
-        if (tabCompleter == null || (flags & HANDLE_BACKBUFFER) == 0) {
+        if (tabCompleter == null || (flags & HANDLE_TABCOMPLETION) == 0) {
+            LOGGER.fine("Aborting tab completion. Completer: " + tabCompleter
+                    + ", flags: " + flags);
             return;
         }
         
         final String text = target.getText();
+
+        LOGGER.finer("Text for tab completion: " + text);
 
         if (text.isEmpty()) {
             doNormalTabCompletion(text, 0, 0, null);
@@ -415,6 +424,8 @@ public abstract class InputHandler implements ConfigChangeListener {
         if (start > end) {
             end = start;
         }
+
+        LOGGER.finer("Offsets: start: " + start + ", end: " + end);
 
         if (start > 0 && text.charAt(0) == CommandManager.getCommandChar()) {
             doCommandTabCompletion(text, start, end);
