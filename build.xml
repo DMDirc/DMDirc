@@ -12,18 +12,6 @@
     <import file="build-tests.xml"/>
     <import file="build-versioning.xml"/>
 
-    <target name="-submodules" unless="submodule.noupdate">
-        <exec executable="git">
-            <arg value="submodule"/>
-            <arg value="init"/>
-        </exec>
-        <exec executable="git">
-            <arg value="submodule"/>
-            <arg value="update"/>
-        </exec>
-    </target>
-
-    <target name="-pre-init" depends="-submodules"/>
     <target name="-post-compile" depends="-write-version, build-plugins, -addpluginlibs"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
     <target name="-post-jar" depends="-addjarlibs"/>
