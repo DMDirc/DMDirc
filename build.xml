@@ -15,32 +15,53 @@
     <target name="-submodules" depends="-submodules-bash, -submodules-default"/>
 
     <target name="-check-use">
-        <!-- Use script iff:
+        <!-- Auto Update if:
+               - submodule.autoupdate is set to true or none of the submodules
+                 are checked out
+          -->
+        <contition property="doautoupdate">
+            <or>
+                <equals arg1="${submodule.autoupdate}" arg2="true" />
+                <not>
+                    <or>
+                        <available file="modules/parser/.git">
+                        <available file="modules/plugins/.git">
+                        <available file="modules/defaults/.git">
+                    </or>
+                </not>
+            </or>
+        </condition>
+
+        <!-- Use script if:
                - bash is available
-               - submodule.update is set to true
-        -->
+               - autoupdating is enabled
+               - updateSubModules.sh exists
+          -->
         <condition property="use.bash.submodule">
             <and>
-                <equals arg1="${submodule.update}" arg2="true" />
                 <equals arg1="${has.bash}" arg2="true" />
+                <equals arg1="${doautoupdate}" arg2="true" />
+                <available file="updateSubModules.sh"/>
             </and>
         </condition>
-        
-        <!-- Use git's built in commands iff:
-             - submodule.update is set to true
-             - bash is not available
-        -->
+
+        <!-- Use gits built in commands if:
+               - autoupdating is enabled
+               - we aren't using bash
+          -->
         <condition property="use.default.submodule">
             <and>
-                <equals arg1="${submodule.update}" arg2="true" />
-                <equals arg1="${has.bash}" arg2="false" />
+                <equals arg1="${doautoupdate}" arg2="true" />
+                <not>
+                    <equals arg1="${use.bash.submodule}" arg2="true" />
+                </not>
             </and>
         </condition>
     </target>
 
 
     <target name="-submodules-bash" depends="-check-use" if="use.bash.submodule">
-        <exec executable="/bin/bash">
+        <exec executable="/bin/bash" failonerror="true">
             <arg value="updateSubModules.sh"/>
         </exec>
     </target>
