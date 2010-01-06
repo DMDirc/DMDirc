@@ -12,6 +12,51 @@
     <import file="build-tests.xml"/>
     <import file="build-versioning.xml"/>
 
+    <target name="-submodules" depends="-submodules-bash, -submodules-default"/>
+
+    <target name="-check-use">
+        <!-- Use script if:
+               - bash is available
+               - submodule.update is not set to true
+          -->
+        <condition property="use.bash.submodule">
+            <and>
+                <equals arg1="${submodule.update}" arg2="true" />
+                <equals arg1="${has.bash}" arg2="true" />
+            </and>
+        </condition>
+
+        <!-- Use gits built in commands if:
+             - submodule.update is not set to true
+             - bash is not available
+          -->
+        <condition property="use.default.submodule">
+            <and>
+                <equals arg1="${submodule.update}" arg2="true" />
+                <equals arg1="${has.bash}" arg2="false" />
+            </and>
+        </condition>
+    </target>
+
+
+    <target name="-submodules-bash" depends="-check-use" if="use.bash.submodule">
+        <exec executable="/bin/bash">
+            <arg value="updateSubModules.sh"/>
+        </exec>
+    </target>
+
+    <target name="-submodules-default" depends="-check-use" if="use.default.submodule">
+        <exec executable="git">
+            <arg value="submodule"/>
+            <arg value="init"/>
+        </exec>
+        <exec executable="git">
+            <arg value="submodule"/>
+            <arg value="update"/>
+        </exec>
+    </target>
+
+    <target name="-pre-init" depends="-submodules"/>
     <target name="-post-compile" depends="-write-version, build-plugins, -addpluginlibs"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
     <target name="-post-jar" depends="-addjarlibs"/>
