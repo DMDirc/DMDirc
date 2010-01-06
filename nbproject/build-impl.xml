@@ -34,6 +34,9 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="-pre-init" name="-init-private">
+        <!-- Try to set this property only after -pre-init has been called. -->
+        <property name="plugins.libs.path" value="${toString:plugins.libs}" />
+
         <property file="nbproject/private/config.properties"/>
         <property file="nbproject/private/configs/${config}.properties"/>
         <property file="nbproject/private/private.properties"/>
@@ -50,7 +53,7 @@ is divided into following sections:
         <property file="nbproject/project.properties"/>
         <!-- Echo this here to make it easy for people to copy/paste into
              private.properties. -->
-        <echo message="Found Libraries: ${toString:plugins.libs}" />
+        <echo message="Found Libraries: ${plugins.libs.path}" />
     </target>
     <target depends="-pre-init,-init-private,-init-user,-init-project,-init-macrodef-property" name="-do-init">
         <available file="${manifest.file}" property="manifest.available"/>
