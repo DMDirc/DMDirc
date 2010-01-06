@@ -27,6 +27,7 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.actions.metatypes.ActionEvents;
 import com.dmdirc.actions.metatypes.ChannelEvents;
 import com.dmdirc.actions.metatypes.ClientEvents;
+import com.dmdirc.actions.metatypes.LinkEvents;
 import com.dmdirc.actions.metatypes.PluginEvents;
 import com.dmdirc.actions.metatypes.QueryEvents;
 import com.dmdirc.actions.metatypes.ServerEvents;
@@ -216,7 +217,14 @@ public enum CoreActionType implements ActionType {
     /** Action updated. */
     ACTION_UPDATED(ActionEvents.ACTION_EVENT, "Action updated"),
     /** Action deleted. */
-    ACTION_DELETED(ActionEvents.ACTION_DELETED, "Action deleted");
+    ACTION_DELETED(ActionEvents.ACTION_DELETED, "Action deleted"),
+
+    /** Channel clicked. */
+    LINK_CHANNEL_CLICKED(LinkEvents.CHANNEL_CLICKED, "A channel link was clicked"),
+    /** Channel clicked. */
+    LINK_NICKNAME_CLICKED(LinkEvents.NICKNAME_CLICKED, "A nickname link was clicked"),
+    /** Link clicked. */
+    LINK_URL_CLICKED(LinkEvents.LINK_CLICKED, "A Link was clicked");
     
     /** The type of this action. */
     private final ActionMetaType type;
