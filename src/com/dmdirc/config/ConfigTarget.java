@@ -205,12 +205,9 @@ public class ConfigTarget implements Comparable, Serializable {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof ConfigTarget
+        return obj instanceof ConfigTarget
                 && type == ((ConfigTarget) obj).getType()
-                && data.equals(((ConfigTarget) obj).getData())) {
-            return true;
-        }
-        return false;
+                && data.equals(((ConfigTarget) obj).getData());
     }
 
     /**

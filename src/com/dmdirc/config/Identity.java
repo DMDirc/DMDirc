@@ -602,12 +602,9 @@ public class Identity extends ConfigSource implements Serializable,
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Identity
+        return obj instanceof Identity
                 && getName().equals(((Identity) obj).getName())
-                && getTarget() == ((Identity) obj).getTarget()) {
-            return true;
-        }
-        return false;
+                && getTarget() == ((Identity) obj).getTarget();
     }
 
     /**
