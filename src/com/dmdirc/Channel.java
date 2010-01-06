@@ -104,8 +104,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super("channel-inactive", newChannelInfo.getName(),
-                new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
-                newServer.getName(), newChannelInfo.getName()));
+                new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
+                newServer.getNetwork(), newServer.getName(), newChannelInfo.getName()));
 
         channelInfo = newChannelInfo;
         server = newServer;
