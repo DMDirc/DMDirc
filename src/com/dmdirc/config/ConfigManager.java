@@ -262,9 +262,16 @@ public class ConfigManager extends ConfigSource implements Serializable,
             break;
         }
 
-        LOGGER.finest("Comparison: " + comp + ", target: " + identity.getTarget().getData());
+        final boolean result = comp != null
+                && identityTargetMatches(identity.getTarget().getData(), comp);
+
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("Comparison: " + comp + ", target: "
+                    + identity.getTarget().getData() + " (" + identity + "). Result: "
+                    + result);
+        }
         
-        return comp != null && identityTargetMatches(identity.getTarget().getData(), comp);
+        return result;
     }
 
     /**
@@ -387,6 +394,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
         for (Identity identity : newSources) {
             LOGGER.fine("Testing new identity: " + identity);
             checkIdentity(identity);
+        }
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("New identities: " + sources);
         }
     }
 
