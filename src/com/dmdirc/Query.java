@@ -51,8 +51,8 @@ import java.io.Serializable;
  * corresponding QueryWindow, and handles user input for the query.
  * @author chris
  */
-public final class Query extends MessageTarget implements
-        PrivateActionListener, PrivateMessageListener, NickChangeListener, QuitListener, Serializable {
+public class Query extends MessageTarget implements PrivateActionListener,
+        PrivateMessageListener, NickChangeListener, QuitListener, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
