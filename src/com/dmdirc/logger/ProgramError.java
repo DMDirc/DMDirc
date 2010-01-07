@@ -311,8 +311,12 @@ public final class ProgramError implements Serializable {
         List<String> response = new ArrayList<String>();
         int tries = 0;
 
+        String traceString = Arrays.toString(getTrace());
+        if (traceString.isEmpty() || traceString.equals("[]")) {
+            traceString = "[No Trace]";
+        }
         postData.put("message", getMessage());
-        postData.put("trace", Arrays.toString(getTrace()));
+        postData.put("trace", traceString);
         postData.put("version", IdentityManager.getGlobalConfig().getOption("version", "version"));
 
         setReportStatus(ErrorReportStatus.SENDING);

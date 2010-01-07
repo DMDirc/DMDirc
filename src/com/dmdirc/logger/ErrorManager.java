@@ -161,7 +161,12 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
         final ProgramError error = getError(level, message, details, appError);
 
         final boolean dupe = addError(error);
-        if (!canReport || (appError && !error.isValidSource())) {
+        if (level.equals(ErrorLevel.FATAL)) {
+            if (dupe) {
+                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+                error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
+            }
+        } else if (!canReport || (appError && !error.isValidSource())) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.INVALID);
         } else if (!appError) {
