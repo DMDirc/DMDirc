@@ -27,7 +27,6 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.common.MyInfo;
-import com.dmdirc.parser.irc.ServerInfo;
 import com.dmdirc.plugins.ExportedService;
 import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.PluginManager;
@@ -56,7 +55,7 @@ public class ParserFactory {
         if ("irc-test".equals(address.getScheme())) {
             try {
                 return (Parser) Class.forName("com.dmdirc.harness.parser.TestParser")
-                        .getConstructor(MyInfo.class, ServerInfo.class)
+                        .getConstructor(MyInfo.class, URI.class)
                         .newInstance(myInfo, address);
             } catch (Exception ex) {
                 Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser", ex);
