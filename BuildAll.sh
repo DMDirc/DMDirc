@@ -30,6 +30,8 @@ if [ -d .git ]; then
 	$GIT reset --hard
 	$GIT checkout master
 	$GIT pull
+	$GIT submodule init
+	$GIT submodule update
 	GITREV=`$GIT describe`
 else
 	echo "GIT Directory not found."
@@ -39,7 +41,7 @@ export DMDIRC_GIT=${GITREV}
 
 # Archive old nightlies
 if [ `date +%d` = "01" ]; then
-	echo "Archiving Last Months Nightlies"
+	echo "Archiving last month's nightlies..."
 	OLDDIR=${WWWDIR}/nightly/old/`date -d yesterday +%B%y | tr "[:upper:]" "[:lower:]"`
 	mkdir -p ${OLDDIR}
 	mv -fv ${WWWDIR}/nightly/*_`date -d yesterday +%Y%m`??_* ${OLDDIR}
@@ -58,7 +60,7 @@ PHP=`which php`
 # Check if build failed
 if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
 	# Report failure
-	echo "Build Failure."
+	echo "Build failure"
 	if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
 		$PHP -q $SCRIPTDIR/nightly-failure.php
 	fi
@@ -73,7 +75,7 @@ else
 	
 	if [ ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" -o  ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar" ]; then
 		# Report failure
-		echo "Installer Build Failure."
+		echo "Installer build failure."
 		if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
 			export DMDIRC_INSTALLERFAILURE=true;
 			export BAMBOO_BUILD;
@@ -81,7 +83,7 @@ else
 		fi
 	fi;
 
-	# Re-Add all plugins to the jar so that the nightly .jar has everything.
+	# Re-add all plugins to the jar so that the nightly .jar has everything.
 	$JAR -uvf "dist/DMDirc.jar" plugins
 
 	# Submit plugins to addons site
