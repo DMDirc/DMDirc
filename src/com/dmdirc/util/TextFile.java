@@ -130,18 +130,26 @@ public class TextFile {
      * @throws IOException If an I/O exception occurs
      */
     public void readLines() throws IOException {
-        final BufferedReader reader = new BufferedReader(
-                new InputStreamReader(file == null ? is : new FileInputStream(file),
-                charset));
-        lines = new ArrayList<String>();
-        
-        String line;
-        
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
+        BufferedReader reader = null;
+        InputStreamReader inputReader = null;
+        InputStream inputStream = null;
+
+        try {
+            inputStream = file == null ? is : new FileInputStream(file);
+            inputReader = new InputStreamReader(inputStream, charset);
+            reader = new BufferedReader(inputReader);
+            lines = new ArrayList<String>();
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } finally {
+            StreamUtil.close(reader);
+            StreamUtil.close(inputReader);
+            StreamUtil.close(inputStream);
         }
-        
-        reader.close();
     }
     
     /**
