@@ -46,6 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -73,15 +74,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("showraw".equals(args.getArguments()[0])) {
             doShowRaw(origin, isSilent);
         } else if ("configstats".equals(args.getArguments()[0])) {
-            int cutoff = -1;
-            if (args.getArguments().length == 2) {
-                try {
-                    cutoff = Integer.parseInt(args.getArguments()[1]);
-                } catch (NumberFormatException e) {
-                    cutoff = -1;
-                }
-            }
-            doConfigStats(origin, isSilent, cutoff);
+            doConfigStats(origin, isSilent, args.getArguments());
         } else if ("configinfo".equals(args.getArguments()[0])) {
             doConfigInfo(origin, isSilent);
         } else if ("globalconfiginfo".equals(args.getArguments()[0])) {
@@ -164,19 +157,85 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
-     * @param cutoff Minimum value required to get an entry
+     * @param args Arguments array for the command
      */
     private void doConfigStats(final InputWindow origin, final boolean isSilent,
-            final int cutoff) {
-        final TreeSet<Entry<String, Integer>> sortedStats =
+            final String[] args) {
+        int arg = -1;
+        if (args.length == 2) {
+            if (args[1].startsWith("+")) {
+                try {
+                    arg = Integer.parseInt(args[1].substring(1));
+                } catch (NumberFormatException e) {
+                    arg = Integer.MAX_VALUE;
+                }
+                doConfigStatsTop(origin, isSilent, arg);
+            } else {
+                try {
+                    arg = Integer.parseInt(args[1]);
+                } catch (NumberFormatException e) {
+                    arg = -1;
+                }
+                doConfigStatsCutOff(origin, isSilent, arg);
+            }
+        } else {
+            doConfigStatsCutOff(origin, isSilent, arg);
+        }
+    }
+
+    /**
+     * Shows stats related to the config system, listing the top X number of
+     * options.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     * @param top Top number of entries to show
+     */
+    private void doConfigStatsTop(final InputWindow origin,
+            final boolean isSilent, final int top) {
+        final SortedSet<Entry<String, Integer>> sortedStats = getSortedStats();
+        int i = 0;
+        for (Map.Entry<String, Integer> entry : sortedStats) {
+            if (i == top) {
+                break;
+            }
+            i++;
+            sendLine(origin, isSilent, FORMAT_OUTPUT, entry.getKey() + " - " +
+                    entry.getValue());
+        }
+    }
+
+    /**
+     * Shows stats related to the config system, lists all values with number
+     * of usages over the specified value
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     * @param cutoff Cut off value for stats
+     */
+    private void doConfigStatsCutOff(final InputWindow origin,
+            final boolean isSilent, final int cutoff) {
+        final SortedSet<Entry<String, Integer>> sortedStats = getSortedStats();
+        for (Map.Entry<String, Integer> entry : sortedStats) {
+            if (entry.getValue() <= cutoff) {
+                break;
+            }
+            sendLine(origin, isSilent, FORMAT_OUTPUT, entry.getKey() + " - " +
+                    entry.getValue());
+        }
+    }
+
+    /**
+     * Gets a sorted Set of config options and the number of times they have
+     * been called.
+     *
+     * @return Sorted set of config options and usages
+     */
+    private SortedSet<Entry<String, Integer>> getSortedStats() {
+        final SortedSet<Entry<String, Integer>> sortedStats =
                 new TreeSet<Entry<String, Integer>>(new ValueComparator());
         sortedStats.addAll(ConfigManager.getStats().entrySet());
-        for (Map.Entry<String, Integer> entry : sortedStats) {
-            if (entry.getValue() >= cutoff) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, 
-                        entry.getKey() + " - " + entry.getValue());
-            }
-        }
+        return sortedStats;
     }
     
     /**
