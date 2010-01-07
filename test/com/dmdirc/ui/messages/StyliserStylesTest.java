@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.swing.text.DefaultStyledDocument;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -42,11 +43,14 @@ public class StyliserStylesTest {
 
     protected String input, output;
 
-    public StyliserStylesTest(String input, String output) throws InvalidIdentityFileException {
-        IdentityManager.load();
-        
+    public StyliserStylesTest(String input, String output) {
         this.input = input;
         this.output = output;
+    }
+
+    @BeforeClass
+    public static void setUp() throws InvalidIdentityFileException {
+        IdentityManager.load();
     }
         
     @Test

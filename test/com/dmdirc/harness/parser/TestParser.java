@@ -26,6 +26,7 @@ import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.QueuePriority;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.irc.*;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -43,8 +44,8 @@ public class TestParser extends IRCParser implements Parser {
         currentSocketState = SocketState.OPEN;
     }
 
-    public TestParser(MyInfo myDetails, ServerInfo serverDetails) {
-        super(myDetails, serverDetails);
+    public TestParser(MyInfo myDetails, URI address) {
+        super(myDetails, address);
         currentSocketState = SocketState.OPEN;
     }
 
