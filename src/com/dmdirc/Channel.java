@@ -145,8 +145,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
-        getConfigManager().migrate(server.getIrcd(), server.getNetwork(),
-                server.getName(), channelInfo.getName());
+        getConfigManager().migrate(server.getProtocol(), server.getIrcd(),
+                server.getNetwork(), server.getName(), channelInfo.getName());
     }
 
     /**
