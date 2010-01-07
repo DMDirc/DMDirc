@@ -87,7 +87,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("threads".equals(args.getArguments()[0])) {
             doThreads(origin, isSilent);
         } else if ("forceupdate".equals(args.getArguments()[0])) {
-            doForceUpdate();
+            doForceUpdate(origin, isSilent);
         } else if ("serverinfo".equals(args.getArguments()[0])) {
             doServerInfo(origin, isSilent);
         } else if ("serverstate".equals(args.getArguments()[0])) {
@@ -237,9 +237,19 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Forces the update checker to check for updates.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
      */
-    private void doForceUpdate() {
-        new Thread(new UpdateChecker(), "Forced update checker").start();
+    private void doForceUpdate(final InputWindow origin, final boolean isSilent) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("updater", "enable")) {
+            new Thread(new UpdateChecker(), "Forced update checker").start();
+        } else {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Update checking is currenty disabled."
+                    + " You can enable it by typing:");
+            sendLine(origin, isSilent, FORMAT_ERROR, Styliser.CODE_FIXED
+                    + "    /set updater enable true");
+        }
     }
 
     /**
