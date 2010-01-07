@@ -161,6 +161,7 @@ public final class Styliser {
      */
     public static void addStyledString(final StyledDocument styledDoc,
             final String[] strings, final SimpleAttributeSet attribs) {
+        resetAttributes(attribs);
         for (int i = 0; i < strings.length; i++) {
             final char[] chars = strings[i].toCharArray();
             
