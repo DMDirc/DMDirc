@@ -25,7 +25,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,13 +41,13 @@ public class IntelligentLinkingTest {
         this.expected = expected;
     }
     
-    @Before
-    public void setUp() throws InvalidIdentityFileException {
+    @BeforeClass
+    public static void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
     }    
     
     @Test
-    public void testLink() {
+    public void testLink() throws InterruptedException {
         assertEquals(expected, Styliser.doLinks(input).replace(Styliser.CODE_HYPERLINK, '~'));
     }
 
