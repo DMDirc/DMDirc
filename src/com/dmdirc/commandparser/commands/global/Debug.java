@@ -73,7 +73,15 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("showraw".equals(args.getArguments()[0])) {
             doShowRaw(origin, isSilent);
         } else if ("configstats".equals(args.getArguments()[0])) {
-            doConfigStats(origin, isSilent);
+            int cutoff = -1;
+            if (args.getArguments().length == 2) {
+                try {
+                    cutoff = Integer.parseInt(args.getArguments()[1]);
+                } catch (NumberFormatException e) {
+                    cutoff = -1;
+                }
+            }
+            doConfigStats(origin, isSilent, cutoff);
         } else if ("configinfo".equals(args.getArguments()[0])) {
             doConfigInfo(origin, isSilent);
         } else if ("globalconfiginfo".equals(args.getArguments()[0])) {
@@ -156,14 +164,18 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
+     * @param cutoff Minimum value required to get an entry
      */
-    private void doConfigStats(final InputWindow origin, final boolean isSilent) {
+    private void doConfigStats(final InputWindow origin, final boolean isSilent,
+            final int cutoff) {
         final TreeSet<Entry<String, Integer>> sortedStats =
                 new TreeSet<Entry<String, Integer>>(new ValueComparator());
         sortedStats.addAll(ConfigManager.getStats().entrySet());
         for (Map.Entry<String, Integer> entry : sortedStats) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT,
-                    entry.getKey() + " - " + entry.getValue());
+            if (entry.getValue() >= cutoff) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, 
+                        entry.getKey() + " - " + entry.getValue());
+            }
         }
     }
     
