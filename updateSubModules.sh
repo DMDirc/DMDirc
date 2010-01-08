@@ -14,7 +14,7 @@ ${GIT} submodule status | while read -r LINE; do
 	
 	# If the module hasn't been checked out yet, then checkout.
 	if [ "${MISSING}" != "" ]; then
-		${GIT} submodule update ${MODULE}
+		${GIT} submodule update -- ${MODULE}
 		if [ ${?} -ne 0 ]; then
 			echo "Error: Unable to update submodule ${MODULE}, aborting."
 			exit 1;
@@ -26,15 +26,22 @@ ${GIT} submodule status | while read -r LINE; do
 	#   - If there are commited revisions on top of the submodule, then they will
 	#     be rebased onto the revision used upstream,
 	elif [ "${CHANGED}" != "" ]; then
-		# Get the revision used upstream
-		OLDREV=`git diff ${MODULE} | grep -- "-Subproject" | awk '{print $3}'`
-		if [ "${OLDREV}" != "" ]; then
-			cd ${MODULE}
-			${GIT} fetch origin 
-			${GIT} rebase ${OLDREV}
-			if [ ${?} -ne 0 ]; then
-				echo "Error: Rebase failed on ${MODULE}, continuing with current HEAD."
-				${GIT} rebase --abort
+		# Try using git to do this. (1.6.4+)
+		${GIT} submodule update --rebase -- ${MODULE}
+
+		# Check to see if the above command worked, if not then do it
+                # manually.
+		if [ "${?}" -ne 0 ]; then
+			# Get the revision used upstream
+			OLDREV=`git diff ${MODULE} | grep -- "-Subproject" | awk '{print $3}'`
+			if [ "${OLDREV}" != "" ]; then
+				cd ${MODULE}
+				${GIT} fetch origin
+				${GIT} rebase ${OLDREV}
+				if [ ${?} -ne 0 ]; then
+					echo "Error: Rebase failed on ${MODULE}, continuing with current HEAD."
+					${GIT} rebase --abort
+				fi;
 			fi;
 		fi;
 	fi;
