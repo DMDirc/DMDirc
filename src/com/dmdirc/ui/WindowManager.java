@@ -63,6 +63,9 @@ public class WindowManager {
     private static final SelectionListener selectionListener
             = new WMSelectionListener();
 
+    /** Active window. */
+    private static Window activeWindow;
+
     /**
      * Creates a new instance of WindowManager.
      */
@@ -309,6 +312,15 @@ public class WindowManager {
     public static Window[] getRootWindows() {
         return rootWindows.toArray(new Window[rootWindows.size()]);
     }
+
+    /**
+     * Returns the current focused window.
+     * 
+     * @return Focused window or null
+     */
+    public Window getActiveWindow() {
+        return activeWindow;
+    }
     
     /**
      * Retrieves all children of the specified window.
@@ -376,6 +388,7 @@ public class WindowManager {
         /** {@inheritDoc} */
         @Override
         public void selectionChanged(final Window window) {
+            activeWindow = window;
             for (SelectionListener listener : selListeners) {
                 listener.selectionChanged(window);
             }
