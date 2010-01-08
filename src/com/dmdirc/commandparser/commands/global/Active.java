@@ -22,11 +22,11 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -54,7 +54,7 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
             final CommandArguments args) {
         final String command = args.getArgumentsAsString();
         
-        final InputWindow window = (InputWindow) Main.getUI().getActiveWindow();
+        final InputWindow window = (InputWindow) WindowManager.getActiveWindow();
         
         if (window != null) {
             window.getCommandParser().parseCommand(window, command);

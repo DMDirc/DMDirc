@@ -23,12 +23,12 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -124,7 +124,7 @@ public class ActionModel {
             return;
         }
 
-        final Window active = Main.getUI().getActiveWindow();
+        final Window active = WindowManager.getActiveWindow();
         InputWindow cw = null;
         CommandParser cp = null;
 
