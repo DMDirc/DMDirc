@@ -158,7 +158,9 @@ public interface UIController {
      * Returns the active server.
      * 
      * @return Active server null
+     * @deprecated Use {@link WindowManager#getActiveServer()} instead
      */
+    @Deprecated
     Server getActiveServer();
     
     /**

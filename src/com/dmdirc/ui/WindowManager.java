@@ -24,6 +24,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
+import com.dmdirc.Server;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -317,9 +318,20 @@ public class WindowManager {
      * Returns the current focused window.
      * 
      * @return Focused window or null
+     * @since 0.6.3
      */
     public static Window getActiveWindow() {
         return activeWindow;
+    }
+
+    /**
+     * Returns the server associated with the currently focused window.
+     *
+     * @return The currently active server or null
+     * @since 0.6.3
+     */
+    public static Server getActiveServer() {
+        return activeWindow == null ? null : getActiveWindow().getContainer().getServer();
     }
     
     /**
