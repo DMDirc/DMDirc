@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.net.URL;
+import java.util.TreeMap;
 
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
@@ -337,13 +338,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *         license found.
      * @throws IOException if there is an error with the ResourceManager.
      */
-    public InputStream getLicenseStream() throws IOException {
-        final ResourceManager res = getResourceManager();
-        if (res.resourceExists("META-INF/license.txt")) {
-            return res.getResourceInputStream("META-INF/license.txt");
-        }
-
-        return null;
+    public Map<String, InputStream> getLicenseStreams() throws IOException {
+        return new TreeMap<String, InputStream>(getResourceManager().
+                    getResourcesStartingWithAsInputStreams(
+                    "META-INF/licences/"));
     }
 
     /**
