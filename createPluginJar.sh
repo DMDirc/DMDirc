@@ -36,6 +36,10 @@ if [ -e "${srcdir}/src/${foldername}/plugin.config" ]; then
 	cp "${srcdir}/src/${foldername}/plugin.config" META-INF/
 fi;
 
+if [ -d "${srcdir}/src/${foldername}/licences/" ]; then
+	cp -r "${srcdir}/src/${foldername}/licences/" META-INF/licences/
+fi;
+
 # Do the same for plugin.config
 # This is rudimentary, it a version: section already exists (eg to specify
 # friendlyversion) then it won't add the number= key.
