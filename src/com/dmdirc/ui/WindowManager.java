@@ -25,6 +25,8 @@ package com.dmdirc.ui;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -209,6 +211,12 @@ public class WindowManager {
         if (rootWindows.contains(window)) {
             fireDeleteWindow(window);
             rootWindows.remove(window);
+
+            if (rootWindows.isEmpty()) {
+                // Last root window has been removed, show that the selected
+                // window is now null
+                fireSelectionChanged(null);
+            }
         } else {
             final Window parent = getParent(window);
             fireDeleteWindow(getParent(window), window);
@@ -391,6 +399,21 @@ public class WindowManager {
             listener.delWindow(parent.getContainer(), child.getContainer());
         }
     }
+
+    /**
+     * Fires the selectionChanged(Window) callback, and triggers the
+     * CLIENT_FRAME_CHANGED action.
+     *
+     * @param window The window that is now focused (or null)
+     */
+    private static void fireSelectionChanged(final Window window) {
+        for (SelectionListener listener : selListeners) {
+            listener.selectionChanged(window);
+        }
+
+        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
+                window == null ? window : window.getContainer());
+    }
         
     /**
      * Proxy for selection events.
@@ -401,9 +424,8 @@ public class WindowManager {
         @Override
         public void selectionChanged(final Window window) {
             activeWindow = window;
-            for (SelectionListener listener : selListeners) {
-                listener.selectionChanged(window);
-            }
+
+            fireSelectionChanged(window);
         }
         
     }
