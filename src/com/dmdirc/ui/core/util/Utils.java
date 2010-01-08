@@ -23,7 +23,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.IRCTextAttribute;
@@ -34,7 +33,6 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Enumeration;
 
-import javax.swing.UIManager;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -55,13 +53,13 @@ public class Utils {
      * Converts a StyledDocument into an AttributedString.
      *
      * @param lineParts Parts of a line comprising the whole
-     * @param config Config manager
-     *
+     * @param fontName Default font name to use
+     * @param fontSize Default font size to use
+     * 
      * @return AttributedString representing the specified StyledDocument
      */
     public static ExtendedAttributedString getAttributedString(String[] lineParts,
-            final ConfigManager config) {
-        final int lineHeight;
+            final String fontName, final int fontSize) {
         final StyledDocument doc = Styliser.getStyledString(lineParts);
 
         AttributedString attString = null;
@@ -74,21 +72,9 @@ public class Utils {
                     "Unable to insert styled string: " +
                     ex.getMessage());
         }
-
-        final Font defaultFont = UIManager.getFont("TextPane.font");
-        String fontName = null;
-        if (config.hasOptionString("ui", "textPaneFontName")) {
-            fontName = config.getOption("ui", "textPaneFontName");
-        } else {
-            fontName = defaultFont.getName();
-        }
-        if (config.hasOptionString("ui", "textPaneFontSize")) {
-            lineHeight = config.getOptionInt("ui", "textPaneFontSize");
-        } else {
-            lineHeight = defaultFont.getSize();
-        }
+        
         if (attString.getIterator().getEndIndex() != 0) {
-            final Font font = new Font(fontName, Font.PLAIN, lineHeight);
+            final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
             attString.addAttribute(TextAttribute.FAMILY, font.getFamily());
         }
@@ -162,9 +148,9 @@ public class Utils {
         }
 
         if (attString.getIterator().getEndIndex() == 0) {
-            return new ExtendedAttributedString(new AttributedString("\n"), lineHeight);
+            return new ExtendedAttributedString(new AttributedString("\n"), fontSize);
         }
 
-        return new ExtendedAttributedString(attString, lineHeight);
+        return new ExtendedAttributedString(attString, fontSize);
     }
 }
