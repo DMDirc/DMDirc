@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.ListenerList;
 
@@ -215,9 +216,9 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final Window activeFrame = Main.getUI().getActiveWindow();
+        final Window activeWindow = WindowManager.getActiveWindow();
 
-        if (activeFrame != null && !activeFrame.equals(getFrame())
+        if (activeWindow != null && !activeWindow.equals(getFrame())
                 && !colour.equals(notification)) {
             notification = colour;
 

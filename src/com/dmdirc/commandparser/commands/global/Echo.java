@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -56,7 +55,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             final CommandArguments args) {
         if (args.getArguments().length > 0
                 && args.getArguments()[0].equalsIgnoreCase("--active")) {
-            final Window frame = Main.getUI().getActiveWindow();
+            final Window frame = WindowManager.getActiveWindow();
             if (frame instanceof InputWindow) {
                 ((InputWindow) frame).addLine(FORMAT_OUTPUT, args.getArgumentsAsString(1));
             }
