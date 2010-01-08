@@ -63,7 +63,7 @@ public class StyliserStylesTest {
         final StringBuilder builder = new StringBuilder();
         Styliser.addStyledString(doc, new String[]{input});
         final AttributedCharacterIterator aci = Utils.getAttributedString(
-                new String[]{input, }, IdentityManager.getGlobalConfig()).
+                new String[]{input, }, "dialog", 12).
                 getAttributedString().getIterator();
          
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
