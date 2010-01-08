@@ -9,12 +9,16 @@ keysections:
   metadata
   setting 0
   setting 1
+  concurrency
 
 triggers:
   QUERY_ACTION
 
 response:
   /notify $textcolour
+
+concurrency:
+  group=windowcolours
 
 condition 0:
   argument=0

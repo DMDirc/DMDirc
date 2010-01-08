@@ -67,6 +67,9 @@ public class ActionModel {
     
     /** Whether this action has been modified or not. */
     protected boolean modified;
+
+    /** The concurrency group this action belongs to, if any. */
+    protected String concurrencyGroup;
     
     /**
      * Creates a new instance of ActionModel with the specified properties.
@@ -315,7 +318,27 @@ public class ActionModel {
     public void setConditionTree(final ConditionTree conditionTree) {
         this.conditionTree = conditionTree;
         this.modified = true;
-    }    
+    }
+
+    /**
+     * Retrieves the concurrency group of this action.
+     * 
+     * @return This action's concurrency group
+     * @since 0.6.3
+     */
+    public String getConcurrencyGroup() {
+        return concurrencyGroup;
+    }
+
+    /**
+     * Sets the concurrency group of this action.
+     *
+     * @param concurrencyGroup This action's new concurrency group
+     * @since 0.6.3
+     */
+    public void setConcurrencyGroup(final String concurrencyGroup) {
+        this.concurrencyGroup = concurrencyGroup;
+    }
     
     /**
      * Determine if this model has been modified since it was constructed or

@@ -72,6 +72,10 @@ public final class ActionManager {
     private final static Map<String, ActionGroup> groups
             = new HashMap<String, ActionGroup>();
 
+    /** A map of objects to synchronise on for concurrency groups. */
+    private final static Map<String, Object> locks
+            = new HashMap<String, Object>();
+
     /** A map of the action type groups to the action types within. */
     private final static MapList<String, ActionType> actionTypeGroups
             = new MapList<String, ActionType>();
@@ -402,13 +406,25 @@ public final class ActionManager {
                         action.getName()).replace(' ', '.');
                 final boolean hasOption = IdentityManager.getGlobalConfig()
                         .hasOptionBool("disable_action", actionName);
-                final boolean disabled = (hasOption) ? IdentityManager
+                final boolean disabled = hasOption ? IdentityManager
                         .getGlobalConfig().getOptionBool("disable_action",
                         actionName) : false;
 
                 if (!disabled) {
                     try {
-                        action.trigger(format, arguments);
+                        if (action.getConcurrencyGroup() == null) {
+                            action.trigger(format, arguments);
+                        } else {
+                            synchronized (locks) {
+                                if (!locks.containsKey(action.getConcurrencyGroup())) {
+                                    locks.put(action.getConcurrencyGroup(), new Object());
+                                }
+                            }
+
+                            synchronized (locks.get(action.getConcurrencyGroup())) {
+                                action.trigger(format, arguments);
+                            }
+                        }
                     } catch (NoSuchMethodError e) {
                         Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
                                 + e.getMessage(), e);

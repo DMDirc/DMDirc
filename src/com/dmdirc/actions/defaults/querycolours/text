@@ -6,12 +6,16 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  concurrency
 
 triggers:
   QUERY_MESSAGE
 
 response:
   /notify $textcolour
+
+concurrency:
+  group=windowcolours
 
 condition 0:
   argument=0

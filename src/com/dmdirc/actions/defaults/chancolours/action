@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  concurrency
   metadata
   setting 0
   setting 1
@@ -23,6 +24,9 @@ condition 0:
   component=CHANNEL_COLOUR
   target=$highlightcolour
   comparison=COLOUR_NEQUALS
+
+concurrency:
+  group=windowcolours
 
 metadata:
   description=Changes the colour of channel window names in the treeview (or other frame manager) when events occur.
