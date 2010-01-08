@@ -29,6 +29,7 @@ import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.prefs.PreferencesInterface;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.updater.Update;
 
@@ -148,7 +149,9 @@ public interface UIController {
      * Returns the active window.
      * 
      * @return Active window or null
+     * @deprecated Use {@link WindowManager#getActiveWindow()} instead
      */
+    @Deprecated
     Window getActiveWindow();
     
     /**
