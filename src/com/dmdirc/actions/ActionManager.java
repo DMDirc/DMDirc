@@ -372,7 +372,7 @@ public final class ActionManager {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Error processing action: "
+                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
                             + e.getMessage(), e);
                 }
             }
