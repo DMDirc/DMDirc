@@ -65,6 +65,8 @@ public class Action extends ActionModel implements Serializable {
     private static final String DOMAIN_RESPONSE = "response".intern();
     /** The domain name for triggers. */
     private static final String DOMAIN_TRIGGERS = "triggers".intern();
+    /** The domain name for concurrency. */
+    private static final String DOMAIN_CONCURRENCY = "concurrency".intern();
 
     /** The location of the file we're reading/saving. */
     private String location;
@@ -200,6 +202,12 @@ public class Action extends ActionModel implements Serializable {
             }
         }
 
+        if (config.isKeyDomain(DOMAIN_CONCURRENCY)) {
+            if (config.getKeyDomain(DOMAIN_CONCURRENCY).containsKey("group")) {
+                setConcurrencyGroup(config.getKeyDomain(DOMAIN_CONCURRENCY).get("group"));
+            }
+        }
+
         ActionManager.registerAction(this);
 
         checkMetaData();
@@ -317,6 +325,11 @@ public class Action extends ActionModel implements Serializable {
         if (newFormat != null) {
             newConfig.addDomain(DOMAIN_FORMAT, new ArrayList<String>());
             newConfig.getFlatDomain(DOMAIN_FORMAT).add(newFormat);
+        }
+
+        if (concurrencyGroup != null) {
+            newConfig.addDomain(DOMAIN_CONCURRENCY, new HashMap<String, String>());
+            newConfig.getKeyDomain(DOMAIN_CONCURRENCY).put("group", concurrencyGroup);
         }
 
         int i = 0;

@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  concurrency
 
 triggers:
   CHANNEL_ACTION
@@ -15,6 +16,9 @@ response:
 
 format:
   channelHighlightAction
+
+concurrency:
+  group=windowcolours
 
 condition 0:
   argument=2
