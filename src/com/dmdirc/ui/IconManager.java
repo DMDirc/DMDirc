@@ -82,6 +82,9 @@ public final class IconManager implements ConfigChangeListener {
      * @return The icon that should be used for the specified type
      */
     public Icon getIcon(final String type) {
+        if (icons.containsKey(type)) {
+            return icons.get(type);
+        }
         final URL iconURL = getIconURL(type);
         final Image iconImage = Toolkit.getDefaultToolkit().getImage(iconURL);
         final Image scaledIconImage = getScaledImage(iconImage, 16, 16);
