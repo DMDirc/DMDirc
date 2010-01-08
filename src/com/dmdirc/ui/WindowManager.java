@@ -318,7 +318,7 @@ public class WindowManager {
      * 
      * @return Focused window or null
      */
-    public Window getActiveWindow() {
+    public static Window getActiveWindow() {
         return activeWindow;
     }
     
