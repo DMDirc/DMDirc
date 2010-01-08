@@ -109,39 +109,7 @@ public final class Main {
         try {
             IdentityManager.load();
         } catch (InvalidIdentityFileException iife) {
-            final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
-
-            final String message = "DMDirc has detected that your config file "
-                    + "has become corrupted.<br><br>DMDirc will now backup "
-                    + "your current config and try restarting with a default "
-                    + "config.<br><br>Your old config will be saved as:<br>"
-                    + "dmdirc.config." + date;
-
-            if (!GraphicsEnvironment.isHeadless()) {
-                new WarningDialog("Invalid Config File", message).displayBlocking();
-            }
-            // Let command-line users know what is happening.
-            System.out.println(message.replaceAll("<br>", "\n"));
-
-            final File configFile = new File(getConfigDir() + "dmdirc.config");
-            final File newConfigFile = new File(getConfigDir() + "dmdirc.config." + date);
-
-            if (configFile.renameTo(newConfigFile)) {
-                try {
-                    IdentityManager.load();
-                } catch (InvalidIdentityFileException iife2) {
-                    // This shouldn't happen!
-                    Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
-                }
-            } else {
-                final String newMessage = "DMDirc was unable to rename the "
-                        + "global config file and is unable to fix this issue.";
-                if (!GraphicsEnvironment.isHeadless()) {
-                    new WarningDialog("Invalid Config File", newMessage).displayBlocking();
-                }
-                System.out.println(newMessage.replaceAll("<br>", "\n"));
-                System.exit(1);
-            }
+            handleInvalidConfigFile();
         }
 
         final PluginManager pm = PluginManager.getPluginManager();
@@ -158,34 +126,7 @@ public final class Main {
 
         loadUI(pm, IdentityManager.getGlobalConfig());
         if (getUI() == null) {
-            // Check to see if we have already tried this
-            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
-                System.out.println("DMDirc is unable to load any compatible UI plugins.");
-                if (!GraphicsEnvironment.isHeadless()) {
-                    new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
-                            WarningDialog.NO_RECOV_UIS).displayBlocking();
-                }
-                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
-                System.exit(1);
-            } else {
-                // Try to extract the UIs again incase they changed between versions
-                // and the user didn't update the UI plugin.
-                extractCorePlugins("ui_");
-
-                System.out.println("DMDirc has updated the UI plugins and needs to restart.");
-
-                if (!GraphicsEnvironment.isHeadless()) {
-                    new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
-                            WarningDialog.NO_COMPAT_UIS_BODY).displayBlocking();
-                }
-
-                // Allow the rebooted DMDirc to know that we have attempted restarting.
-                IdentityManager.getConfigIdentity().setOption("debug", "uiFixAttempted", "true");
-                // Force the UI to swing to prevent problematic 3rd party UIs.
-                IdentityManager.getConfigIdentity().setOption("general", "ui", "swing");
-                // Tell the launcher to restart!
-                System.exit(42);
-            }
+            handleMissingUI();
         } else {
             // The fix worked!
             if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
@@ -220,6 +161,85 @@ public final class Main {
                 IdentityManager.save();
             }
         }, "Shutdown thread"));        
+    }
+
+    /**
+     * Called when the UI has failed to initialise correctly. This method
+     * attempts to extract any and all UI plugins bundled with the client, and
+     * requests a restart. If this has already been attempted, it shows an error
+     * and exits.
+     */
+    private static void handleMissingUI() {
+        // Check to see if we have already tried this
+        if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+            System.out.println("DMDirc is unable to load any compatible UI plugins.");
+            if (!GraphicsEnvironment.isHeadless()) {
+                new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
+                        WarningDialog.NO_RECOV_UIS).displayBlocking();
+            }
+            IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            System.exit(1);
+        } else {
+            // Try to extract the UIs again incase they changed between versions
+            // and the user didn't update the UI plugin.
+            extractCorePlugins("ui_");
+
+            System.out.println("DMDirc has updated the UI plugins and needs to restart.");
+
+            if (!GraphicsEnvironment.isHeadless()) {
+                new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
+                        WarningDialog.NO_COMPAT_UIS_BODY).displayBlocking();
+            }
+
+            // Allow the rebooted DMDirc to know that we have attempted restarting.
+            IdentityManager.getConfigIdentity().setOption("debug", "uiFixAttempted", "true");
+            // Force the UI to swing to prevent problematic 3rd party UIs.
+            IdentityManager.getConfigIdentity().setOption("general", "ui", "swing");
+            // Tell the launcher to restart!
+            System.exit(42);
+        }
+    }
+
+    /**
+     * Called when the global config cannot be loaded due to an error. This
+     * method informs the user of the problem and installs a new default config
+     * file, backing up the old one.
+     */
+    private static void handleInvalidConfigFile() {
+        final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
+
+        final String message = "DMDirc has detected that your config file "
+                + "has become corrupted.<br><br>DMDirc will now backup "
+                + "your current config and try restarting with a default "
+                + "config.<br><br>Your old config will be saved as:<br>"
+                + "dmdirc.config." + date;
+
+        if (!GraphicsEnvironment.isHeadless()) {
+            new WarningDialog("Invalid Config File", message).displayBlocking();
+        }
+
+        // Let command-line users know what is happening.
+        System.out.println(message.replaceAll("<br>", "\n"));
+
+        final File configFile = new File(getConfigDir() + "dmdirc.config");
+        final File newConfigFile = new File(getConfigDir() + "dmdirc.config." + date);
+
+        if (configFile.renameTo(newConfigFile)) {
+            try {
+                IdentityManager.load();
+            } catch (InvalidIdentityFileException iife2) {
+                // This shouldn't happen!
+                Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
+            }
+        } else {
+            final String newMessage = "DMDirc was unable to rename the "
+                    + "global config file and is unable to fix this issue.";
+            if (!GraphicsEnvironment.isHeadless()) {
+                new WarningDialog("Invalid Config File", newMessage).displayBlocking();
+            }
+            System.out.println(newMessage.replaceAll("<br>", "\n"));
+            System.exit(1);
+        }
     }
 
     /**
