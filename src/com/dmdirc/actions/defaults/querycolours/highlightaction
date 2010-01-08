@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  concurrency
 
 triggers:
   QUERY_ACTION
@@ -15,6 +16,9 @@ response:
 
 format:
   queryActionHighlight
+
+concurrency:
+  group=windowcolours
 
 condition 0:
   argument=1

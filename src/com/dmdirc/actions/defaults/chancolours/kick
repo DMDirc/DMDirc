@@ -7,12 +7,16 @@
 keysections:
   condition 0
   condition 1
+  concurrency
 
 triggers:
   CHANNEL_KICK
 
 response:
   /notify $eventcolour
+
+concurrency:
+  group=windowcolours
 
 condition 0:
   argument=0
