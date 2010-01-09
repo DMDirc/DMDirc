@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.config.IdentityManager;
+import java.lang.management.ManagementFactory;
 
 import java.util.Locale;
 
@@ -70,5 +71,14 @@ public class Info {
                 System.getProperty("os.arch", "unknown") + "; " +
                 System.getProperty("file.encoding", "unknown") + "; " + Locale.getDefault().
                 toString();
+    }
+
+    /**
+     * Returns the uptime for the client in milliseconds.
+     *
+     * @return Uptime in milliseconds
+     */
+    public static long getUptime() {
+        return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 }
