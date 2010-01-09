@@ -67,7 +67,8 @@ public final class NewServer extends GlobalCommand {
             try {
                 address = getURI(args.getArgumentsAsString());
             } catch (URISyntaxException ex) {
-                address = null;
+                origin.addLine(FORMAT_ERROR, "URI specified was invalid.");
+                return;
             }
         }
         if (address == null) {
@@ -121,6 +122,15 @@ public final class NewServer extends GlobalCommand {
         return uri;
     }
     
+    /**
+     * Parses an input string and attempts to create a URI from it.
+     *
+     * @param origin origin input window
+     * @param isSilent is this a silent command
+     * @param args command arguments
+     *
+     * @return URI is input was valid
+     */
     public static URI parseInput(final InputWindow origin, final boolean isSilent,
             final CommandArguments args) {
 
