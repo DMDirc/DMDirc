@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -170,16 +171,42 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
                     arg = Integer.MAX_VALUE;
                 }
                 doConfigStatsTop(origin, isSilent, arg);
-            } else {
+            } else if (args[1].matches("^[0-9]+$")) {
                 try {
                     arg = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
                     arg = -1;
                 }
                 doConfigStatsCutOff(origin, isSilent, arg);
+            } else {
+                doConfigStatsOption(origin, isSilent, args[1]);
             }
         } else {
             doConfigStatsCutOff(origin, isSilent, arg);
+        }
+    }
+
+    /**
+     * Shows stats related to the config system, listing the top X number of
+     * options.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     * @param top Top number of entries to show
+     */
+    private void doConfigStatsOption(final InputWindow origin,
+            final boolean isSilent, final String option) {
+        final TreeSet<Entry<String, Integer>> sortedStats = getSortedStats();
+        boolean found = false;
+        for (Map.Entry<String, Integer> entry : sortedStats) {
+            if (entry.getKey().matches(option)) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, entry.getKey() + " - " +
+                    entry.getValue());
+                found = true;
+            }
+        }
+        if (!found) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Unable to locate option.");
         }
     }
 
@@ -231,8 +258,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      *
      * @return Sorted set of config options and usages
      */
-    private SortedSet<Entry<String, Integer>> getSortedStats() {
-        final SortedSet<Entry<String, Integer>> sortedStats =
+    private TreeSet<Entry<String, Integer>> getSortedStats() {
+        final TreeSet<Entry<String, Integer>> sortedStats =
                 new TreeSet<Entry<String, Integer>>(new ValueComparator());
         sortedStats.addAll(ConfigManager.getStats().entrySet());
         return sortedStats;
