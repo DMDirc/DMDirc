@@ -72,15 +72,32 @@ if [ "${ISKDE}" != "" -o "${ZENITY}" = "" ]; then
 	if [ "${USEDCOP}" != "" -a "${DCOP}" != "" ]; then
 		KDETYPE="dcop"
 		USEKDIALOG="1";
-	else if [ "${USEDCOP}" = "" -a "${QDBUS}" != "" ]; then
+	elif [ "${USEDCOP}" = "" -a "${QDBUS}" != "" ]; then
 		KDETYPE="qdbus"
 		USEKDIALOG="1";
-	else if [ "${USEDCOP}" = "" -a "${DBUSSEND}" != "" ]; then
+	elif [ "${USEDCOP}" = "" -a "${DBUSSEND}" != "" ]; then
 		KDETYPE="dbussend"
 		USEKDIALOG="1";
 	fi;
 fi;
 
+# Check for special watchdog mode.
+# In this mode we are used to kill ourself after a certain time limit to make sure we don't hang.
+if [ "${1}" == "--watchdog" ]; then
+	if [ "" != "${2}" ]; then
+		echo "Watchdog for: ${2}"
+		sleep 5;
+		kill -1 ${2} >/dev/null 2>&1 &
+		sleep 5;
+		kill -9 ${2} >/dev/null 2>&1 &
+		exit 0;
+	else
+		echo "No PID specified to watch."
+		exit 1;
+	fi;
+
+	exit 1;
+fi;
 
 CAPTION=${1}
 FILESIZE=${2}
@@ -124,7 +141,7 @@ readprogress() {
 					${DCOP} ${progresswindow} setProgress ${val}
 					returnVal=${?}
 				elif [ "${KDETYPE}" = "qdbus" ]; then
-					${QDBUS} ${progresswindow} org.freedesktop.DBus.Properties.Set org.kde.kdialog.ProgressDialog value 20
+					${QDBUS} ${progresswindow} org.freedesktop.DBus.Properties.Set org.kde.kdialog.ProgressDialog value ${val}
 					returnVal=${?}
 				elif [ "${KDETYPE}" = "dbussend" ]; then
 					${DBUSSEND} --print-reply --dest=${progresswindow} org.freedesktop.DBus.Properties.Set string:'org.kde.kdialog.ProgressDialog' string:'value' variant:int32:${val} > /dev/null
@@ -153,7 +170,7 @@ readprogress() {
 	done;
 }
 
-if [ "" = "${CAPTION}" -o "" = ${FILESIZE} ]; then
+if [ "" = "${CAPTION}" -o "" = "${FILESIZE}" ]; then
 	echo "Insufficient Parameters."
 	echo "Usage: ${0} <caption> <totalvalue> [pipename]"
 	exit;
@@ -173,23 +190,54 @@ fi;
 
 echo "Using pipe: "${PIPE}
 mkfifo "${PIPE}"
+EMPTYPIPE="1"
+WDPID=""
+WD2PID=""
 closeProgress() {
 	CONTINUE="0"
 	if [ "${TYPE}" = "KDE" -a ${retval} != "0" ]; then
-		dcop ${progresswindow} close
+		if [ "${KDETYPE}" = "dcop" ]; then
+			${DCOP} ${progresswindow} close
+		elif [ "${KDETYPE}" = "qdbus" ]; then
+			${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.close
+		elif [ "${KDETYPE}" = "dbussend" ]; then
+			${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.close > /dev/null
+		fi;
 	fi;
 	echo "Exiting with value: $retval"
-	if [ -e ${PIPE} ]; then
+	if [ "${WGETPID}" != "" ]; then
 		echo "Attempting to kill wget"
 		kill -9 ${WGETPID}
-		echo "Emptying pipe"
-		cat ${PIPE};
+	fi;
+	
+	if [ -e ${PIPE} ]; then
+		if [ "${EMPTYPIPE}" = "1" ]; then
+			sh ${0} --watchdog ${$} &
+			WDPID=${!}
+		
+			EMPTYPIPE="2"
+			echo "Emptying pipe (${PIPE}) this may hang if no data has been written to the pipe."
+			cat ${PIPE};
+		elif [ "${EMPTYPIPE}" = "2" ]; then
+			echo "Helping pipe (${PIPE}) this may hang if nothing is reading from the pipe."
+			sh ${0} --watchdog ${$} &
+			WD2PID=${!}
+			EMPTYPIPE="3"
+			echo "." > ${PIPE};
+		else
+			echo "Ignoring Pipe..."
+		fi;
+		echo "Killing watchdog 1."
+		kill -9 ${WDPID}
+		echo "Killing watchdog 2."
+		kill -9 ${WD2PID}
 		echo "Deleting Pipe ${PIPE}"
 		rm -Rf "${PIPE}"
 	fi;
 	exit $retval;
 }
 trap 'closeProgress' INT TERM EXIT
+
 
 # if kdialog exists, and we have a display, and we are not running gnome,
 # and either we are running kde or zenity doesn't exist..
