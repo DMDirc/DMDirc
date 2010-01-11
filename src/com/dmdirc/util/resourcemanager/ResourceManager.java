@@ -208,6 +208,35 @@ public abstract class ResourceManager {
             final String directory) throws IOException {
         extractResources(resourcesPrefix, directory, true);
     }
+
+    /**
+     * Extracts files ending with the given suffix
+     *
+     * @param newDir Directory to extract to.
+     * @param suffix Suffix to extract
+     *
+     * @throws IOException if the resources failed to extract
+     */
+    public final void extractResoucesEndingWith(final File newDir,
+            final String suffix) throws IOException {
+        final Map<String, byte[]> resources = getResourcesEndingWithAsBytes(
+                suffix);
+        for (Entry<String, byte[]> resource : resources.entrySet()) {
+            final String key = resource.getKey();
+            final String resourceName = key.substring(key.lastIndexOf('/'), key.
+                    length());
+
+            final File newFile = new File(newDir, resourceName);
+
+            if (!newFile.isDirectory()) {
+                if (newFile.exists()) {
+                    newFile.delete();
+                }
+                ResourceManager.getResourceManager().resourceToFile(resource.
+                        getValue(), newFile);
+            }
+        }
+    }
     
     /**
      * Checks if a resource exists.
