@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="13"
+LAUNCHERVERSION="14"
 LAUNCHERINFO="unix-${LAUNCHERVERSION}"
 
 params=""
@@ -72,87 +72,10 @@ if [ -e "functions.sh" ]; then
 	. `dirname $0`/functions.sh
 else
 	# TODO: Remove this and depend on functions.sh...
-	echo "Unable to find functions.sh, using old functions"
+	echo "Unable to find functions.sh, using built in functions"
 	
-	# Check for OS X
-	OSASCRIPT=`which osascript`
-	KERNEL=`uname -s`
-	ISOSX="0"
-	# Kernel is darwin, and osascript exists, probably OS X!
-	if [ "${KERNEL}" = "Darwin" -a "" != "${OSASCRIPT}" ]; then
-		ISOSX="1"
-	fi;
-
-	if [ "${ISOSX}" != "1" ]; then
-		PIDOF=`which pidof`
-		if [ "${PIDOF}" = "" ]; then
-			# For some reason some distros hide pidof...
-			if [ -e /sbin/pidof ]; then
-				PIDOF=/sbin/pidof
-			elif [ -e /usr/sbin/pidof ]; then
-				PIDOF=/usr/sbin/pidof
-			fi;
-		fi;
-		
-		## Helper Functions
-		if [ "${PIDOF}" != "" ]; then
-			ISKDE=`${PIDOF} -x -s kdeinit`
-			ISGNOME=`${PIDOF} -x -s gnome-panel`
-		else
-			ISKDE=`ps -Af | grep kdeinit | grep -v grep`
-			ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
-		fi;
-		KDIALOG=`which kdialog`
-		ZENITY=`which zenity`
-		KSUDO=`which kdesudo`
-		GSUDO=`which gksudo`
-	fi;
+	###FUNCTIONS_FILE###
 	
-	errordialog() {
-		# Send message to console.
-		echo ""
-		echo "-----------------------------------------------------------------------"
-		echo "Error: ${1}"
-		echo "-----------------------------------------------------------------------"
-		echo "${2}"
-		echo "-----------------------------------------------------------------------"
-	
-		if [ "${ISOSX}" = "1" -a "" != "${OSASCRIPT}" ]; then
-			echo "Displaying dialog.."
-			${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} with icon stop" -e 'end tell'
-		else
-			if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-				echo "Dialog on Display: ${DISPLAY}"
-				${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
-			elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-				echo "Dialog on Display: ${DISPLAY}"
-				${ZENITY} --error --title "DMDirc: ${1}" --text "${1}\n\n${2}"
-			fi
-		fi;
-	}
-	
-	messagedialog() {
-		# Send message to console.
-		echo ""
-		echo "-----------------------------------------------------------------------"
-		echo "Info: ${1}"
-		echo "-----------------------------------------------------------------------"
-		echo "${2}"
-		echo "-----------------------------------------------------------------------"
-	
-		if [ "${ISOSX}" = "1" -a "" != "${OSASCRIPT}" ]; then
-			echo "Displaying dialog.."
-			${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} giving up after 120 with icon note" -e 'end tell'
-		else
-			if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
-				echo "Dialog on Display: ${DISPLAY}"
-				${KDIALOG} --title "DMDirc: ${1}" --msgbox "${1}\n\n${2}"
-			elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
-				echo "Dialog on Display: ${DISPLAY}"
-				${ZENITY} --info --title "DMDirc: ${1}" --text "${1}\n\n${2}"
-			fi
-		fi;
-	}
 fi;
 
 # Check to see if we can bspatch things
