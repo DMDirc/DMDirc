@@ -299,6 +299,9 @@ public class PluginManager implements ActionListener {
         }
 
         PluginInfo pluginInfo = getPluginInfo(filename);
+        final boolean wasLoaded = pluginInfo.isLoaded();
+
+        if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }
 
         pluginInfo.unloadPlugin();
 
@@ -318,7 +321,11 @@ public class PluginManager implements ActionListener {
             return false;
         }
 
-        final boolean wasLoaded = getPluginInfo(filename).isLoaded();
+	final PluginInfo pluginInfo = getPluginInfo(filename);
+        final boolean wasLoaded = pluginInfo.isLoaded();
+
+        if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }
+
         delPlugin(filename);
         boolean result = addPlugin(filename);
 
