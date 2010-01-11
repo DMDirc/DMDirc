@@ -24,8 +24,8 @@ package com.dmdirc.util.resourcemanager;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-
 import com.dmdirc.util.StreamUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -207,6 +207,31 @@ public abstract class ResourceManager {
     public final void extractResources(final String resourcesPrefix,
             final String directory) throws IOException {
         extractResources(resourcesPrefix, directory, true);
+    }
+
+    /**
+     * Extracts files ending with the given suffix
+     *
+     * @param res ResourceManager
+     * @param newDir Directory to extract to.
+     * @param suffix Suffix to extract
+     *
+     * @throws IOException if the resources failed to extract
+     */
+    public void extractResoucesEndingWith(final File newDir,
+            final String suffix) throws IOException {
+        final Map<String, byte[]> resources = getResourcesEndingWithAsBytes(suffix);
+        for (Entry<String, byte[]> resource : resources.entrySet()) {
+            final String key = resource.getKey();
+            final String resourceName = key.substring(key.lastIndexOf('/'), key.length());
+
+            final File newFile = new File(newDir, resourceName);
+
+            if (!newFile.isDirectory()) {
+                if (newFile.exists()) { newFile.delete(); }
+                ResourceManager.getResourceManager().resourceToFile(resource.getValue(), newFile);
+            }
+        }
     }
     
     /**
