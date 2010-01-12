@@ -164,6 +164,7 @@ public class StyliserStylesTest {
             {"QUXmoo", "<>QUXmoo"},
             {"FFFFFQUXmoo", "<>FFFFFQUXmoo"},
             {"FF0000,FF0000moo", "<color=255,0,0,background=255,0,0>m<>oo"},
+            {"xFF0000", "<>x"}, // Issue 3248
             // Persistant hex colours
             {"FF0000mFFFFFFoo", "<color=255,0,0>m<color=255,255,255>o<color=255,0,0>o"},
             {"FF0000moo", "<color=255,0,0>moo"},
