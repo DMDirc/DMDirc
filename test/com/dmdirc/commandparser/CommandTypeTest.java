@@ -21,161 +21,45 @@
  */
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Channel;
-import com.dmdirc.MessageTarget;
-import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.QueryCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CommandTypeTest {
 
     @Test
     public void testGlobal() {
-        final Command command = new GlobalCommand() {
-
-            @Override
-            public void execute(InputWindow origin, boolean isSilent, CommandArguments args) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean showInHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-        
+        final Command command = mock(GlobalCommand.class);
         assertEquals(CommandType.TYPE_GLOBAL, CommandType.fromCommand(command));
     }
     
     @Test
     public void testServer() {
-        final Command command = new ServerCommand() {
-
-            @Override
-            public void execute(InputWindow origin, Server server, boolean isSilent, CommandArguments args) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean showInHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-        
+        final Command command = mock(ServerCommand.class);
         assertEquals(CommandType.TYPE_SERVER, CommandType.fromCommand(command));
     }
     
     @Test
     public void testChat() {
-        final Command command = new ChatCommand() {
-
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean showInHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void execute(InputWindow origin, Server server,
-                    MessageTarget target, boolean isSilent, CommandArguments args) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-        
+        final Command command = mock(ChatCommand.class);
         assertEquals(CommandType.TYPE_CHAT, CommandType.fromCommand(command));
     }    
     
     @Test
     public void testChannel() {
-        final Command command = new ChannelCommand() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean showInHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void execute(InputWindow origin, Server server,
-                    Channel channel, boolean isSilent, CommandArguments args) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-        
+        final Command command = mock(ChannelCommand.class);
         assertEquals(CommandType.TYPE_CHANNEL, CommandType.fromCommand(command));
     }
     
     @Test
     public void testQuery() {
-        final Command command = new QueryCommand() {
-
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean showInHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void execute(InputWindow origin, Server server, Query query,
-                    boolean isSilent, CommandArguments args) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-        
+        final Command command = mock(QueryCommand.class);
         assertEquals(CommandType.TYPE_QUERY, CommandType.fromCommand(command));
     }
     
