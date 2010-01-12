@@ -51,15 +51,10 @@ public class FormatterTest {
     
     @Test
     public void testCaching() {
-        try {
-            assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!"));
-            assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!", 123, null));
-            assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!", 123, null));
-            assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            assertTrue(false);
-        }
+        assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!"));
+        assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!", 123, null));
+        assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!", 123, null));
+        assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!"));
     }
     
     @Test
