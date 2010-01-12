@@ -80,7 +80,7 @@
             <arg value="-s"/>
             <arg value="-screen 0 1280x1024x24"/>
             <arg value="-w"/>
-            <arg value="-5"/>
+            <arg value="5"/>
             <arg value="/usr/bin/ant"/>
             <arg value="do-real-test"/>
         </exec>
