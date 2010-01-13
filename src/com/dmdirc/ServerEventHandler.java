@@ -47,7 +47,7 @@ public final class ServerEventHandler extends EventHandler
         PingSuccessListener, AwayStateListener, ConnectErrorListener, NickInUseListener, Post005Listener,
         AuthNoticeListener, UnknownNoticeListener, UserModeChangeListener, InviteListener, WallopListener,
         WalluserListener, WallDesyncListener, NickChangeListener, ServerErrorListener, PingSentListener,
-        UserModeDiscoveryListener {
+        UserModeDiscoveryListener, ServerNoticeListener {
 
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -180,6 +180,16 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
+                owner.getParser().getClient(sHost), sMessage);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onServerNotice(final Parser tParser, final String sMessage,
+            final String sHost) {
+        checkParser(tParser);
+
+        owner.doNotification("serverNotice", CoreActionType.SERVER_NOTICE,
                 owner.getParser().getClient(sHost), sMessage);
     }
 
@@ -391,5 +401,4 @@ public final class ServerEventHandler extends EventHandler
                     + owner.getStatus().getTransitionHistory());
         }
     }
-
 }
