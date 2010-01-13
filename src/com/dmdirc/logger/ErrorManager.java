@@ -262,7 +262,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
      * @since 0.6.3m1
      * @return Exception string array
      */
-    protected String[] getTrace(final Throwable throwable) {
+    public static String[] getTrace(final Throwable throwable) {
         String[] trace;
 
         if (throwable == null) {
