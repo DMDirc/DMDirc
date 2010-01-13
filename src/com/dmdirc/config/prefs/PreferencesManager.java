@@ -293,6 +293,9 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting("notifications", "privateNotice",
                 "Private notice", "Where to display private notices",
                 options));
+        category.addSetting(new PreferencesSetting("notifications", "serverNotice",
+                "Server notice", "Where to display server notices",
+                options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCP",
                 "CTCP request", "Where to display CTCP request notifications",
                 options));
