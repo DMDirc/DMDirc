@@ -83,7 +83,7 @@ fi;
 
 # Check for special watchdog mode.
 # In this mode we are used to kill ourself after a certain time limit to make sure we don't hang.
-if [ "${1}" == "--watchdog" ]; then
+if [ "${1}" = "--watchdog" ]; then
 	if [ "" != "${2}" ]; then
 		echo "Watchdog for: ${2}"
 		sleep 5;
