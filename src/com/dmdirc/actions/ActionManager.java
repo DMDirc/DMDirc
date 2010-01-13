@@ -402,36 +402,26 @@ public final class ActionManager {
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {
-                final String actionName = (action.getGroup() + "/" +
-                        action.getName()).replace(' ', '.');
-                final boolean hasOption = IdentityManager.getGlobalConfig()
-                        .hasOptionBool("disable_action", actionName);
-                final boolean disabled = hasOption ? IdentityManager
-                        .getGlobalConfig().getOptionBool("disable_action",
-                        actionName) : false;
-
-                if (!disabled) {
-                    try {
-                        if (action.getConcurrencyGroup() == null) {
-                            action.trigger(format, arguments);
-                        } else {
-                            synchronized (locks) {
-                                if (!locks.containsKey(action.getConcurrencyGroup())) {
-                                    locks.put(action.getConcurrencyGroup(), new Object());
-                                }
-                            }
-
-                            synchronized (locks.get(action.getConcurrencyGroup())) {
-                                action.trigger(format, arguments);
+                try {
+                    if (action.getConcurrencyGroup() == null) {
+                        action.trigger(format, arguments);
+                    } else {
+                        synchronized (locks) {
+                            if (!locks.containsKey(action.getConcurrencyGroup())) {
+                                locks.put(action.getConcurrencyGroup(), new Object());
                             }
                         }
-                    } catch (NoSuchMethodError e) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
-                                + e.getMessage(), e);
-                    } catch (Exception e) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
-                                + e.getMessage(), e);
+
+                        synchronized (locks.get(action.getConcurrencyGroup())) {
+                            action.trigger(format, arguments);
+                        }
                     }
+                } catch (NoSuchMethodError e) {
+                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
+                            + e.getMessage(), e);
+                } catch (Exception e) {
+                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
+                            + e.getMessage(), e);
                 }
             }
         }

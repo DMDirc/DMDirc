@@ -25,8 +25,10 @@ package com.dmdirc.actions;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.ConfigFile;
@@ -46,7 +48,7 @@ import java.util.Map;
  *
  * @author chris
  */
-public class Action extends ActionModel implements Serializable {
+public class Action extends ActionModel implements Serializable, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -70,6 +72,9 @@ public class Action extends ActionModel implements Serializable {
 
     /** The location of the file we're reading/saving. */
     private String location;
+
+    /** Whether or not this action is disabled. */
+    protected boolean disabled;
 
     /** The config file we're using. */
     protected ConfigFile config;
@@ -98,6 +103,10 @@ public class Action extends ActionModel implements Serializable {
             Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
                     + group + "/" + name + ": " + ex.getMessage());
         }
+
+        IdentityManager.getGlobalConfig().addChangeListener("disable_action",
+                (group + "/" + name).replace(' ', '.'), this);
+        checkDisabled();
     }
 
     /**
@@ -536,6 +545,32 @@ public class Action extends ActionModel implements Serializable {
 
         return parent.substring(0, parent.length() - 1)
                 + ",location=" + location + "]";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        checkDisabled();
+    }
+
+    /**
+     * Checks if this action is disabled or not.
+     *
+     * @since 0.6.3
+     */
+    protected void checkDisabled() {
+        disabled = IdentityManager.getGlobalConfig().hasOptionBool("disable_action",
+                (group + "/" + name).replace(' ', '.'))
+                && IdentityManager.getGlobalConfig().getOptionBool("disable_action",
+                (group + "/" + name).replace(' ', '.'));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void trigger(final StringBuffer format, final Object... arguments) {
+        if (!disabled) {
+            super.trigger(format, arguments);
+        }
     }
 
 }
