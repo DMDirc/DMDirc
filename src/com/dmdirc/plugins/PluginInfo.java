@@ -87,9 +87,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** Are we trying to load? */
     private boolean isLoading = false;
 
-    /** Is this plugin using a migrated config? */
-    private boolean migrated = false;
-
     /** List of services we provide. */
     private final List<Service> provides = new ArrayList<Service>();
 
@@ -222,88 +219,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Return a ConfigFile that has been migrated from a Properties file.
-     *
-     * @return ConfigFile object with data from plugin.info properties file
-     */
-    private ConfigFile getMigratedConfigFile() throws IOException {
-        final ResourceManager res = getResourceManager();
-        final ConfigFile file = new ConfigFile(res.getResourceInputStream("META-INF/plugin.config"));
-        migrated = true;
-
-        // Logger.userError(ErrorLevel.LOW, "Plugin '"+getFilename()+"' is using an older plugin.info file, check for updates.");
-        final Properties old = new Properties();
-        old.load(res.getResourceInputStream("META-INF/plugin.info"));
-
-        final Map<String, String> meta = new HashMap<String, String>();
-        final Map<String, String> requires = new HashMap<String, String>();
-        final Map<String, String> updates = new HashMap<String, String>();
-        final Map<String, String> version = new HashMap<String, String>();
-        final Map<String, String> misc = new HashMap<String, String>();
-        final List<String> persistent = new ArrayList<String>();
-        final List<String> provides = new ArrayList<String>();
-        final List<String> required_services = new ArrayList<String>();
-
-        meta.put("name", old.getProperty("name", ""));
-        meta.put("author", old.getProperty("author", ""));
-        meta.put("description", old.getProperty("description", ""));
-        meta.put("mainclass", old.getProperty("mainclass", ""));
-
-        if (old.containsKey("nicename")) {
-            meta.put("nicename", old.getProperty("nicename", ""));
-        }
-        if (old.containsKey("loadall")) {
-            meta.put("loadall", old.getProperty("loadall", "no"));
-        }
-
-        requires.put("os", getMetaInfo(old, new String[]{"required-os", "require-os"}, ""));
-        requires.put("files", getMetaInfo(old, new String[]{"required-files", "require-files", "required-files", "require-files"}, ""));
-        requires.put("plugins", getMetaInfo(old, new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"}, ""));
-        requires.put("ui", getMetaInfo(old, new String[]{"required-ui", "require-ui"}, ""));
-
-        requires.put("dmdirc", old.getProperty("minversion", "0") + "-" + old.getProperty("maxversion", ""));
-
-        if (old.containsKey("addonid")) {
-            updates.put("id", old.getProperty("addonid", ""));
-        }
-
-        version.put("number", old.getProperty("version", "0"));
-        if (old.containsKey("friendlyversion")) {
-            version.put("friendly", old.getProperty("friendlyversion", ""));
-        }
-
-        final boolean hasPersistent = old.containsKey("persistent");
-        if (hasPersistent) {
-            persistent.add("*");
-        }
-
-        for (Map.Entry entry : old.entrySet()) {
-            final String key = entry.getKey().toString();
-            final String value = entry.getValue().toString();
-
-            // For compatability reasons, add the contents of the file to the "misc"
-            // key section, to allow getMetaInfo() compatability for old files.
-            misc.put(key, value);
-
-            // Also handle persistent items here
-            if (!hasPersistent && key.toLowerCase().startsWith("persistent-")) {
-                persistent.add(key.substring(11));
-            }
-        }
-
-        file.addDomain("metadata", meta);
-        file.addDomain("requires", requires);
-        file.addDomain("updates", updates);
-        file.addDomain("version", version);
-        file.addDomain("misc", misc);
-        file.addDomain("persistent", persistent);
-        file.addDomain("provides", provides);
-        file.addDomain("required-services", required_services);
-
-        return file;
-    }
-
-    /**
      * Get a ConfigFile object for this plugin.
      * This will load a ConfigFile
      *
@@ -318,14 +233,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 file = new ConfigFile(res.getResourceInputStream("META-INF/plugin.config"));
                 file.read();
             } catch (InvalidConfigFileException icfe) {
-                if (res.resourceExists("META-INF/plugin.info")) {
-                    file = getMigratedConfigFile();
-                } else {
-                    throw new IOException("Unable to read plugin.config", icfe);
-                }
+                throw new IOException("Unable to read plugin.config", icfe);
             }
-        } else if (res.resourceExists("META-INF/plugin.info")) {
-            file = getMigratedConfigFile();
         }
 
         return file;
@@ -442,15 +351,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             getDefaults();
         } catch (IOException ioe) {
         }
-    }
-
-    /**
-     * Check if this plugin was migrated or not.
-     *
-     * @return true if the plugins config file was a plugin.info not a plugin.config
-     */
-    public boolean isMigrated() {
-        return migrated;
     }
 
     /**
