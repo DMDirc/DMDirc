@@ -120,6 +120,7 @@ if [ $result -eq 0 ]; then
 		wgetpid=${!}
 	fi;
 	/bin/sh ${PWD}/progressbar.sh "Downloading JRE.." ${actualLength} ${PIPE} ${wgetpid} &
+	sleep 1;
 	progressbarpid=${!}
 	while [ `ps -p ${wgetpid} | wc -l` = 2 ]; do
 		SIZE=`ls -l jre.bin | awk '{print $5}'`
