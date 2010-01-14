@@ -141,7 +141,7 @@ begin
 		end
 		else begin
 			// Not Vista
-			KillDir(GetEnvironmentVariable('USERPROFILE')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
+			KillDir(GetEnvironmentVariable('USERPROFILE')+'\Start Menu\Programs\DMDirc');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application Data\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
 			profileDir := profileDir+'\Application Data\DMDirc';
