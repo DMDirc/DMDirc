@@ -402,6 +402,8 @@ public final class Main {
                     configdir += fs + "DMDirc" + fs;
                 }
             }
+
+            configdir = new File(configdir).getAbsolutePath() + fs;
         }
 
         return configdir;
