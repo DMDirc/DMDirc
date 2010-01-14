@@ -406,7 +406,7 @@ public class PluginManager implements ActionListener {
                 String target = dir.getPath();
 
                 // Remove the plugin dir
-                target = target.substring(myDir.length(), target.length());
+                target = target.substring(dir.getParent().length() + 1, target.length());
                 if (addPlugins) {
                     addPlugin(target);
                 } else {
