@@ -85,7 +85,7 @@ showLicense() {
 		STARTLINE=$((${STARTLINE%%:*} + 1))
 		# Location of license end
 		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
-		ENDLINE=$((${ENDLINE%%:*} - 2))
+		ENDLINE=$((${ENDLINE%%:*} - 4))
 		
 		head -n ${ENDLINE} jre.bin | tail ${TAILOPTS}${STARTLINE} > ${FILE}
 	fi;
@@ -160,8 +160,8 @@ if [ $? -eq 0 ]; then
 			STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 			STARTLINE=${STARTLINE%%:*}
 			# Location of license end
-			ENDLINE=`grep ${GREPOPTS} "If you don't agree to the license you can't install this software" jre.bin`
-			ENDLINE=$((${ENDLINE%%:*} + 3))
+			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
+			ENDLINE=$((${ENDLINE%%:*} - 4))
 			# Location of checksum start
 			CSSTARTLINE=`grep ${GREPOPTS} "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
 			CSSTARTLINE=${CSSTARTLINE%%:*}

@@ -117,9 +117,9 @@ readprogress() {
 			if [ "${KDETYPE}" = "dcop" ]; then
 				wasCancelled=`${DCOP} ${progresswindow} wasCancelled`;
 			elif [ "${KDETYPE}" = "qdbus" ]; then
-				wasCancelled=` ${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled`;
+				wasCancelled=`${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled`;
 			elif [ "${KDETYPE}" = "dbussend" ]; then
-				wasCancelled=` ${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled | grep boolean | awk '{print $2}'`;
+				wasCancelled=`${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled | grep boolean | awk '{print $2}'`;
 			fi
 			if [ "${wasCancelled}" = "true" ]; then
 				break;
