@@ -39,6 +39,7 @@ procedure showError(ErrorMessage: String; Title: string; addFooter: boolean = tr
 function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
 function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
 procedure RunProgram(sProgramToRun: String; wait: boolean);
+function RunJava(arguments: String): Longword;
 { ---------------------------------------------------------------------------- }
 
 implementation
@@ -146,6 +147,49 @@ procedure RunProgram(sProgramToRun: String; wait: boolean);
 begin
   if wait then ExecAndWait(sProgramToRun)
   else Launch(sProgramToRun);
+end;
+
+{ ----------------------------------------------------------------------------
+  Launch java, allowing for 64 bit windows to be really shit.
+  ---------------------------------------------------------------------------- }
+function RunJava(arguments: String): Longword;
+type
+	TEnableRedirection = function(dwThreadId: Pointer): BOOL; stdcall;
+	TDisableRedirection = function(dwThreadId: Pointer): BOOL; stdcall;
+var
+	K32Handle: THandle;
+	EnableRedirection: TEnableRedirection;
+	DisableRedirection: TDisableRedirection;
+	hasWow64: boolean = false;
+	
+	javaCommand: String = 'javaw.exe';
+begin
+	K32Handle := GetModuleHandle('kernel32.dll');
+	if (K32Handle > 0) then begin
+		@DisableRedirection := GetProcAddress(K32Handle, 'Wow64DisableWow64FsRedirection');
+		@EnableRedirection := GetProcAddress(K32Handle, 'Wow64RevertWow64FsRedirection');
+		
+		hasWow64 := Assigned(DisableRedirection) and Assigned(EnableRedirection);
+	end;
+	
+	javaCommand := javaCommand+' '+arguments;
+	
+	if hasWow64 then begin
+		// Look for 64Bit Java.
+		DisableRedirection(nil);
+		result := ExecAndWait(javaCommand);
+		EnableRedirection(nil);
+		// If it didn't work, try 32 bit.
+		// Ideally we should only perform this check if the failure was caused
+		// by the file not being found, which I think is error codes 2 and/or 3.
+		if (result = 2 or result = 3) then begin
+			result := ExecAndWait(javaCommand);
+		end;
+	end
+	else begin
+		// 32Bit Windows just uses 32bit
+		result := ExecAndWait(javaCommand);
+	end;
 end;
 
 { ----------------------------------------------------------------------------
