@@ -182,7 +182,7 @@ begin
 		// If it didn't work, try 32 bit.
 		// Ideally we should only perform this check if the failure was caused
 		// by the file not being found, which I think is error codes 2 and/or 3.
-		if (result = 2 or result = 3) then begin
+		if ((result = 2) or (result = 3)) then begin
 			result := ExecAndWait(javaCommand);
 		end;
 	end
