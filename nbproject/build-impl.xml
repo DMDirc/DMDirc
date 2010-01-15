@@ -34,9 +34,6 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="-pre-init" name="-init-private">
-        <!-- Try to set this property only after -pre-init has been called. -->
-        <property name="plugins.libs.path" value="${toString:plugins.libs}" />
-
         <property file="nbproject/private/config.properties"/>
         <property file="nbproject/private/configs/${config}.properties"/>
         <property file="nbproject/private/private.properties"/>
@@ -163,6 +160,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" excludes="@{excludes}" includeantruntime="false" includes="@{includes}" source="${javac.source}" sourcepath="@{sourcepath}" srcdir="@{srcdir}" target="${javac.target}">
+                    <classpath refid="plugins.libs"/>
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -180,6 +178,7 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
+                    <classpath refid="plugins.libs"/>
                 </depend>
             </sequential>
         </macrodef>
@@ -212,6 +211,7 @@ is divided into following sections:
                     <classpath>
                         <pathelement path="${clover.jar}"/>
                     </classpath>
+                    <classpath refid="plugins.libs"/>
                     <batchtest todir="${build.test.results.dir}">
                         <clover-optimized-testset>
                             <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
@@ -260,6 +260,7 @@ is divided into following sections:
                     <classpath>
                         <pathelement path="${clover.jar}"/>
                     </classpath>
+                    <classpath refid="plugins.libs"/>
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="@{testincludes}"/>
@@ -296,6 +297,7 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
+                    <classpath refid="plugins.libs"/>
                 </nbjpdastart>
             </sequential>
         </macrodef>
@@ -329,6 +331,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
+                    <classpath refid="plugins.libs"/>
                     <jvmarg line="${debug-args-line}"/>
                     <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
                     <jvmarg line="${run.jvmargs}"/>
@@ -350,6 +353,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
+                    <classpath refid="plugins.libs"/>
                     <jvmarg line="${run.jvmargs}"/>
                     <classpath>
                         <path path="${run.classpath}"/>
@@ -541,6 +545,7 @@ is divided into following sections:
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
+            <classpath refid="plugins.libs"/>
             <fileset dir="${main.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
@@ -569,6 +574,7 @@ is divided into following sections:
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
+            <classpath refid="plugins.libs"/>
         </javadoc>
     </target>
 
