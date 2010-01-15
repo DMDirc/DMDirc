@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script generates the launcher updates
-LAUNCHERDIR="/home/dmdirc/google/launcher"
+LAUNCHERDIR=`dirname $0`
 LAUNCHERUPDATEDIR="/home/dmdirc/www/updates/launchers/"
 
 UNIXVERSION=`cat ${LAUNCHERDIR}/unix/DMDirc.sh | grep LAUNCHERVERSION= | awk -F\" '{print $2}'`

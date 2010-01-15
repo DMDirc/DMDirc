@@ -8,7 +8,7 @@
 env
 
 # Path to trunk
-MYDIR="/home/dmdirc/google"
+MYDIR="/home/dmdirc/working/nightly"
 
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"

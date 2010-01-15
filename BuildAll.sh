@@ -10,7 +10,7 @@ env
 WWWDIR="/home/dmdirc/www"
 
 # Path to trunk
-MYDIR="/home/dmdirc/google"
+MYDIR="/home/dmdirc/working/nightly"
 
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"
@@ -113,6 +113,10 @@ else
 	if [ -e "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" ]; then
 		ln -sf "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" $WWWDIR/nightly/DMDirc_latest.dmg
 	fi;
+	
+	# Update Launchers
+	cd ${MYDIR}/launcher
+	sh ${MYDIR}/launcher/createUpdate.sh
 	
 	# Do normal reports
 	if [ "${IS_BAMBOO}" == "" ]; then
