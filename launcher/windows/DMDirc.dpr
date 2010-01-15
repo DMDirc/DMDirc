@@ -40,10 +40,9 @@ procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonC
   MAIN PROGRAM
   ---------------------------------------------------------------------------- }
 const
-  launcherVersion: String = '3';
+  launcherVersion: String = '4';
 var
   errorMessage: String;
-  javaCommand: String = 'javaw.exe';
   cliParams: String = '';
   directory: String = '';
   i: integer;
@@ -113,7 +112,7 @@ begin
 
   if not launcherUpdate then begin
     // Check JVM
-    if (ExecAndWait(javaCommand+' -version') <> 0) then begin
+    if (RunJava('-version') <> 0) then begin
       errorMessage := 'No JVM is currently installed.';
       errorMessage := errorMessage+#13#10;
       errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
@@ -124,7 +123,7 @@ begin
     // runs on this OS, otherwise later segfaults or so would cause the error to
     // appear
     else if FileExists(jarName) then begin
-      if (ExecAndWait(javaCommand+' -jar "'+jarName+'" --help') <> 0) then begin
+      if (RunJava('-jar "'+jarName+'" --help') <> 0) then begin
         errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
         errorMessage := errorMessage+#13#10;
         errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
@@ -132,9 +131,8 @@ begin
         showError(errorMessage, 'DMDirc', True);
       end
       else begin
-        //Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
         { Need to wait so we can deal with exit code 42 to restart }
-        result := ExecAndWait(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams);
+        result := RunJava('-ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams);
         if result = 42 then begin
           { Need to restart DMDirc launcher
             We can't just rerun the EXE because it is possible for the new

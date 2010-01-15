@@ -269,6 +269,8 @@ var
    c: longint;
 begin
   dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
+  // TODO: We should probably download the 64bit version of java if we are
+  // 64bit.
   url := 'http://www.dmdirc.com/getjava/windows/all';
   Result := false;
 
@@ -413,7 +415,6 @@ end;
   ---------------------------------------------------------------------------- }
 var
   errorMessage: String;
-  javaCommand: String = 'javaw.exe';
   params: String = '';
   dir: String = '';
   Reg: TRegistry;
@@ -422,7 +423,7 @@ begin
 
   errorMessage := '';
   if FileExists('DMDirc.jar') then begin
-    {$IFDEF FORCEJREDOWNLOAD}if (1 <> 0) then begin{$ELSE}if (ExecAndWait(javaCommand+' -version') <> 0) then begin{$ENDIF}
+    {$IFDEF FORCEJREDOWNLOAD}if (1 <> 0) then begin{$ELSE}if (RunJava('-version') <> 0) then begin{$ENDIF}
       if not installJRE(false) then begin
         showError('DMDirc setup can not continue without Java. Please install Java and try again.', 'DMDirc Setup', false, false);
         exit;
@@ -443,19 +444,19 @@ begin
       params := params+' --release '+ReleaseNumber;
     end;
     // Check if the installer runs
-    if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
+    if (RunJava('-cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
       if not installJRE(true) then begin
         showError('Sorry, DMDirc setup can not continue without an updated version of java.', 'DMDirc Setup', false, false);
         exit;
       end
       else begin
         // Try again now that java is installed.
-        result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+        result := RunJava('-cp DMDirc.jar com.dmdirc.installer.Main '+params);
       end;
     end
     else begin
       // Java is the right version, run the installer
-      result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+      result := RunJava('-cp DMDirc.jar com.dmdirc.installer.Main '+params);
     end;
   end
   else begin
