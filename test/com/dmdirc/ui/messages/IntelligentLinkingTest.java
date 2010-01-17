@@ -21,6 +21,9 @@
  */
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Arrays;
@@ -30,15 +33,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class IntelligentLinkingTest {
     
-    private String input, expected;
+    private final String input, expected;
+    private final Styliser styliser;
     
     public IntelligentLinkingTest(String input, String expected) {
         this.input = input;
         this.expected = expected;
+
+        final FrameContainer container = mock(FrameContainer.class);
+        final ConfigManager manager = mock(ConfigManager.class);
+        final Server server = mock(Server.class);
+        when(server.getChannelPrefixes()).thenReturn("#&+");
+        when(container.getServer()).thenReturn(server);
+        when(container.getConfigManager()).thenReturn(manager);
+        
+        styliser = new Styliser(container);
     }
     
     @BeforeClass
@@ -48,7 +62,9 @@ public class IntelligentLinkingTest {
     
     @Test
     public void testLink() throws InterruptedException {
-        assertEquals(expected, Styliser.doLinks(input).replace(Styliser.CODE_HYPERLINK, '~'));
+        assertEquals(expected, styliser.doLinks(input)
+                .replace(Styliser.CODE_HYPERLINK, '~')
+                .replace(Styliser.CODE_CHANNEL, '@'));
     }
 
     @Parameterized.Parameters
@@ -57,6 +73,7 @@ public class IntelligentLinkingTest {
             {"no links here!", "no links here!"},
             {"www.google.com", "~www.google.com~"},
             {"www.google.com.", "~www.google.com~."},
+            {"'www.google.com'", "'~www.google.com~'"},
             {"www.google.com, foo", "~www.google.com~, foo"},
             {"http://www.google.com", "~http://www.google.com~"},
             {"www.google.com www.google.com", "~www.google.com~ ~www.google.com~"},
@@ -80,6 +97,18 @@ public class IntelligentLinkingTest {
             {"\"foo\" www.google.com \"www.google.com\"",
                      "\"foo\" ~www.google.com~ \"~www.google.com~\""},
             {"www.example.com/blah(foobar)", "~www.example.com/blah(foobar)~"},
+
+            // ------------ Channels -------------------
+            {"#test", "@#test@"},
+            {"&test", "@&test@"},
+            {"+test", "@+test@"},
+            {"(#test)", "(@#test@)"},
+            {"\"#test\"", "\"@#test@\""},
+            {"'#test'", "'@#test@'"},
+            {"(join #test)", "(join @#test@)"},
+            {"\"join #test\"", "\"join @#test@\""},
+            {"'join #test'", "'join @#test@'"},
+            {"#test.", "@#test@."},
         };
 
         return Arrays.asList(tests);
