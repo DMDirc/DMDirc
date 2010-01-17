@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.ui.core.util.Utils;
@@ -37,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class StyliserStylesTest {
@@ -61,8 +64,14 @@ public class StyliserStylesTest {
     protected static String style(final String input) {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
-        Styliser.addStyledString(doc, new String[]{input});
-        final AttributedCharacterIterator aci = Utils.getAttributedString(
+
+        final FrameContainer container = mock(FrameContainer.class);
+        final ConfigManager manager = mock(ConfigManager.class);
+        when(container.getConfigManager()).thenReturn(manager);
+
+        final Styliser styliser = new Styliser(container);
+        styliser.addStyledString(doc, new String[]{input});
+        final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
                 new String[]{input, }, "dialog", 12).
                 getAttributedString().getIterator();
          

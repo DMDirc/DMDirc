@@ -22,13 +22,21 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
 
 import java.util.Arrays;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class WritableFrameContainerTest {
+
+    @BeforeClass
+    public static void setupClass() throws InvalidIdentityFileException {
+        IdentityManager.load();
+    }
     
     @Test
     public void testGetNumLines() {
