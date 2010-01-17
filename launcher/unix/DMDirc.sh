@@ -316,7 +316,7 @@ if [ -e "${UPDATESOURCE}" ]; then
 		cp ${jar} ${jar}.bak
 		${BSPATCH} ${jar}.bak ${jar} ${UPDATESOURCE}
 		if [ "${?}" = "0" ]; then
-			FILEINFO=`which ${jar} | egrep "data$`
+			FILEINFO=`which ${jar} | egrep "data$"`
 			if [ "${FILEINFO}" = "" ]; then
 				UPDATEOK="1"
 			else
