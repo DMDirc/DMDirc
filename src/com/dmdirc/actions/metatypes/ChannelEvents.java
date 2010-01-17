@@ -38,6 +38,8 @@ public enum ChannelEvents implements ActionMetaType {
     CHANNEL_EVENT(new String[]{"channel"}, Channel.class),
     /** Channel mode event. */
     CHANNEL_MODEEVENT(new String[]{"channel", "modes"}, Channel.class, String.class),
+    /** Channel list mode event. */
+    CHANNEL_LISTMODEEVENT(new String[]{"channel", "mode"}, Channel.class, Character.class),
     /** Channel topic event type. */
     CHANNEL_TOPICEVENT(new String[]{"channel", "topic"}, Channel.class, Topic.class),
     /** Channel CTCP type. */
