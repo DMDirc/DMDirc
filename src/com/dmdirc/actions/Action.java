@@ -146,7 +146,7 @@ public class Action extends ActionModel implements Serializable, ConfigChangeLis
         super(group, name, triggers, response, conditions, conditionTree, newFormat);
 
         final String dir = ActionManager.getDirectory() + group + File.separator;
-        location = dir + name;
+        location = dir + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
         new File(dir).mkdirs();
         
