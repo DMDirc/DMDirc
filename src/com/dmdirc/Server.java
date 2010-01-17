@@ -896,6 +896,17 @@ public class Server extends WritableFrameContainer implements
     }
 
     /**
+     * Retrieves the possible channel prefixes in use on this server.
+     *
+     * @return This server's possible channel prefixes
+     */
+    public String getChannelPrefixes() {
+        synchronized (parserLock) {
+            return parser == null ? "#&" : parser.getChannelPrefixes();
+        }
+    }
+
+    /**
      * Retrieves the name of this server's network. The network name is
      * determined using the following rules:
      *

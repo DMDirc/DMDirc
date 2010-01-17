@@ -121,7 +121,7 @@ public class Styliser implements ConfigChangeListener {
             + "[^" + CODE_HYPERLINK + "]+?)([" + URL_PUNCT + "]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
-    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>])([#&]" + RESERVED_CHARS + "+)";
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>])([\\Q%s\\E]" + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
     private boolean styleLinks;
@@ -177,8 +177,11 @@ public class Styliser implements ConfigChangeListener {
                 int position = 0;
                 
                 String target = doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
-                
-                target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
+
+                final String prefixes = owner.getServer() == null ? "#&"
+                        : owner.getServer().getChannelPrefixes();
+                target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
+                        CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
                 
