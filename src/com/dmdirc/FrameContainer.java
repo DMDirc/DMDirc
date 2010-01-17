@@ -179,7 +179,7 @@ public abstract class FrameContainer {
      *
      * @return the associated config manager
      */
-    public final ConfigManager getConfigManager() {
+    public ConfigManager getConfigManager() {
         return config;
     }
 

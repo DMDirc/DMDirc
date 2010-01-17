@@ -22,12 +22,15 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Enumeration;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class StyliserTest {
     
@@ -82,11 +85,17 @@ public class StyliserTest {
     public void testNegation() {
         final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
         final String input2 = "abcdefghi";
+
+        final FrameContainer container = mock(FrameContainer.class);
+        final ConfigManager manager = mock(ConfigManager.class);
+        when(container.getConfigManager()).thenReturn(manager);
+        
+        final Styliser styliser = new Styliser(container);
         
         for (int i = 0; i < input2.length(); i++) {
-            final Enumeration<?> res1 = Styliser.getStyledString(new String[]{input1})
+            final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1})
                     .getLogicalStyle(i).getAttributeNames();
-            final Enumeration<?> res2 = Styliser.getStyledString(new String[]{input2})
+            final Enumeration<?> res2 = styliser.getStyledString(new String[]{input2})
                     .getLogicalStyle(i).getAttributeNames();
 
             while (res1.hasMoreElements()) {
