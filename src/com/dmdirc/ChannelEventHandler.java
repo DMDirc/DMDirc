@@ -42,7 +42,8 @@ public final class ChannelEventHandler extends EventHandler implements
         ChannelQuitListener, ChannelActionListener, ChannelNickChangeListener,
         ChannelModeChangeListener, ChannelUserModeChangeListener,
         ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener,
-        ChannelNonUserModeChangeListener, ChannelModeNoticeListener {
+        ChannelNonUserModeChangeListener, ChannelModeNoticeListener,
+        ChannelListModeListener {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -318,6 +319,16 @@ public final class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification("channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
                 cChannelClient, String.valueOf(prefix), sMessage);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onChannelGotListModes(final Parser tParser,
+            final ChannelInfo cChannel, final char mode) {
+        checkParser(tParser);
+
+        owner.doNotification("channelListModeRetrieved",
+                CoreActionType.CHANNEL_LISTMODERETRIEVED, Character.valueOf(mode));
     }
 
 }

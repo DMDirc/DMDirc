@@ -176,7 +176,9 @@ public enum CoreActionType implements ActionType {
     CHANNEL_USERAWAY(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'away'"),
     /** Someone marked as back. */
     CHANNEL_USERBACK(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
-    
+
+    /** Channel list mode retrieved. @since 0.6.3 */
+    CHANNEL_LISTMODERETRIEVED(ChannelEvents.CHANNEL_LISTMODEEVENT, "Channel list mode value retrieved"),
     /** Channel mode discovered. */
     CHANNEL_MODESDISCOVERED(ChannelEvents.CHANNEL_MODEEVENT, "Channel modes discovered"),
     /** Channel mode changes. */

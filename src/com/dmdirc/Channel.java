@@ -321,6 +321,15 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
     }
 
     /**
+     * Requests all available list modes for this channel.
+     *
+     * @since 0.6.3
+     */
+    public void retrieveListModes() {
+        channelInfo.requestListModes();
+    }
+
+    /**
      * Resets the window state after the client has left a channel.
      */
     public void resetWindow() {
