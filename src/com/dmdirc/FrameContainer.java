@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
@@ -63,6 +64,9 @@ public abstract class FrameContainer {
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
 
+    /** The styliser used by this container. */
+    private final Styliser styliser;
+
     /**
      * Instantiate new frame container.
      * 
@@ -74,6 +78,7 @@ public abstract class FrameContainer {
     public FrameContainer(final String icon, final String name, final ConfigManager config) {
         this.config = config;
         this.name = name;
+        this.styliser = new Styliser(this);
         
         setIcon(icon);
     }
@@ -176,6 +181,15 @@ public abstract class FrameContainer {
      */
     public final ConfigManager getConfigManager() {
         return config;
+    }
+
+    /**
+     * Retrieves the styliser which should be used by this container.
+     *
+     * @return this container's styliser
+     */
+    public Styliser getStyliser() {
+        return styliser;
     }
 
     /**

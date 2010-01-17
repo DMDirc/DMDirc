@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -44,7 +44,7 @@ import javax.swing.text.StyledDocument;
  * control codes which are a de-facto IRC standard.
  * @author chris
  */
-public final class Styliser {
+public class Styliser implements ConfigChangeListener {
     
     /** The character used for marking up bold text. */
     public static final char CODE_BOLD = 2;
@@ -124,22 +124,22 @@ public final class Styliser {
     private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>])([#&]" + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
-    private static boolean styleLinks
-            = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
+    private boolean styleLinks;
+
+    /** The container that owns this styliser. */
+    private final FrameContainer owner;
     
-    static {
-        IdentityManager.getGlobalConfig().addChangeListener("ui", "stylelinks",
-                new ConfigChangeListener() {
-            @Override
-            public void configChanged(final String domain, final String key) {
-                Styliser.styleLinks
-                        = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
-            }
-        });
-    }
-    
-    /** Creates a new instance of Styliser. */
-    private Styliser() {
+    /**
+     * Creates a new instance of Styliser.
+     *
+     * @param owner The {@link FrameContainer} that owns this styliser.
+     * @since 0.6.3
+     */
+    public Styliser(final FrameContainer owner) {
+        this.owner = owner;
+
+        owner.getConfigManager().addChangeListener("ui", "stylelinks", this);
+        styleLinks = owner.getConfigManager().getOptionBool("ui", "stylelinks");
     }
     
     /**
@@ -148,7 +148,7 @@ public final class Styliser {
      * @param styledDoc Document to add the styled strings to
      * @param strings The lines to be stylised
      */
-    public static void addStyledString(final StyledDocument styledDoc, final String[] strings) {
+    public void addStyledString(final StyledDocument styledDoc, final String[] strings) {
         addStyledString(styledDoc, strings, new SimpleAttributeSet());
     }
 
@@ -159,7 +159,7 @@ public final class Styliser {
      * @param strings The lines to be stylised
      * @param attribs Base attribute set
      */
-    public static void addStyledString(final StyledDocument styledDoc,
+    public void addStyledString(final StyledDocument styledDoc,
             final String[] strings, final SimpleAttributeSet attribs) {
         resetAttributes(attribs);
         for (int i = 0; i < strings.length; i++) {
@@ -213,7 +213,7 @@ public final class Styliser {
      *
      * @return StyledDocument for the inputted strings
      */
-    public static StyledDocument getStyledString(final String[] strings) {
+    public StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
         addStyledString(styledDoc, strings);
@@ -268,23 +268,11 @@ public final class Styliser {
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
-        int position = 0;
-        String output = "";
-        
-        while (position < input.length()) {
-            final String next = readUntilControl(input.substring(position));
-            
-            output = output.concat(next);
-            
-            position += next.length();
-            
-            if (position < input.length()) {
-                position += readControlChars(input.substring(position),
-                        new SimpleAttributeSet(), position == 0);
-            }
-        }
-        
-        return output;
+        return input.replaceAll("[" + CODE_BOLD + CODE_CHANNEL + CODE_FIXED
+                + CODE_HYPERLINK + CODE_ITALIC + CODE_NEGATE + CODE_NICKNAME
+                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]|"
+                + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
+                + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "");
     }
     
     /**
@@ -333,7 +321,7 @@ public final class Styliser {
      * @param attribs The attribute set that new attributes will be applied to
      * @param isStart Whether this is at the start of the string or not
      */
-    private static int readControlChars(final String string,
+    private int readControlChars(final String string,
             final SimpleAttributeSet attribs, final boolean isStart) {
         boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
         
@@ -570,9 +558,10 @@ public final class Styliser {
     
     /**
      * Toggles the various hyperlink-related attributes.
+     * 
      * @param attribs The attributes to be modified.
      */
-    private static void toggleLink(final SimpleAttributeSet attribs) {
+    private void toggleLink(final SimpleAttributeSet attribs) {
         if (styleLinks) {
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 // Add the hyperlink style
@@ -715,6 +704,14 @@ public final class Styliser {
     private static void setDefaultBackground(final SimpleAttributeSet attribs,
             final String background) {
         attribs.addAttribute("DefaultBackground", ColourManager.parseColour(background));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        if ("stylelinks".equals(key)) {
+            styleLinks = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+        }
     }
     
 }
