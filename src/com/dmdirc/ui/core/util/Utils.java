@@ -52,15 +52,16 @@ public class Utils {
     /**
      * Converts a StyledDocument into an AttributedString.
      *
+     * @param styliser The styliser to use to style the string
      * @param lineParts Parts of a line comprising the whole
      * @param fontName Default font name to use
      * @param fontSize Default font size to use
      * 
      * @return AttributedString representing the specified StyledDocument
      */
-    public static ExtendedAttributedString getAttributedString(String[] lineParts,
-            final String fontName, final int fontSize) {
-        final StyledDocument doc = Styliser.getStyledString(lineParts);
+    public static ExtendedAttributedString getAttributedString(final Styliser styliser,
+            final String[] lineParts, final String fontName, final int fontSize) {
+        final StyledDocument doc = styliser.getStyledString(lineParts);
 
         AttributedString attString = null;
         final Element line = doc.getParagraphElement(0);
