@@ -74,6 +74,9 @@ public class Styliser implements ConfigChangeListener {
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE;
+
+    /** Characters used for hyperlinks. */
+    private static final String HYPERLINK_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
     
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
@@ -101,27 +104,29 @@ public class Styliser implements ConfigChangeListener {
             + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
     
     /** Regular expression for intelligent handling of closing brackets. */
-    private static final String URL_INT1 = "(\\([^\\)" + CODE_HYPERLINK
-            + "]*(?:" + CODE_HYPERLINK + "[^" + CODE_HYPERLINK + "]*"
-            + CODE_HYPERLINK + ")?[^\\)" + CODE_HYPERLINK + "]*" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)(\\)['\";:!,\\.\\)]*)" + CODE_HYPERLINK;
+    private static final String URL_INT1 = "(\\([^\\)" + HYPERLINK_CHARS
+            + "]*(?:[" + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "]*["
+            + HYPERLINK_CHARS + "])?[^\\)" + HYPERLINK_CHARS + "]*[" + HYPERLINK_CHARS
+            + "][^" + HYPERLINK_CHARS + "]+)(\\)['\";:!,\\.\\)]*)([" + HYPERLINK_CHARS + "])";
     
     /** Regular expression for intelligent handling of trailing single and double quotes. */
-    private static final String URL_INT2 = "(^(?:[^" + CODE_HYPERLINK + "]+|"
-            + CODE_HYPERLINK + "[^" + CODE_HYPERLINK + "]" + CODE_HYPERLINK + "))(['\"])([^"
-            + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK + "[^" + CODE_HYPERLINK
-            + "]+)(\\1[" + URL_PUNCT + "]*)" + CODE_HYPERLINK;
+    private static final String URL_INT2 = "(^(?:[^" + HYPERLINK_CHARS + "]+|["
+            + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "][" + HYPERLINK_CHARS
+            + "]))(['\"])([^" + HYPERLINK_CHARS + "]*?[" + HYPERLINK_CHARS + "][^"
+            + HYPERLINK_CHARS + "]+)(\\1[" + URL_PUNCT + "]*)([" + HYPERLINK_CHARS + "])";
     
     /** Regular expression for intelligent handling of surrounding quotes. */
-    private static final String URL_INT3 = "(['\"])(" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+?)(\\1[^" + CODE_HYPERLINK + "]*)" + CODE_HYPERLINK;
+    private static final String URL_INT3 = "(['\"])([" + HYPERLINK_CHARS
+            + "][^" + HYPERLINK_CHARS + "]+?)(\\1[^" + HYPERLINK_CHARS + "]*)(["
+            + HYPERLINK_CHARS + "])";
     
     /** Regular expression for intelligent handling of trailing punctuation. */
-    private static final String URL_INT4 = "(" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+?)([" + URL_PUNCT + "]?)" + CODE_HYPERLINK;
+    private static final String URL_INT4 = "([" + HYPERLINK_CHARS + "][^"
+            + HYPERLINK_CHARS + "]+?)([" + URL_PUNCT + "]?)([" + HYPERLINK_CHARS + "])";
     
     /** The regular expression to use for marking up channels. */
-    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>])([\\Q%s\\E]" + RESERVED_CHARS + "+)";
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"'])([\\Q%s\\E]"
+            + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
     private boolean styleLinks;
@@ -177,11 +182,6 @@ public class Styliser implements ConfigChangeListener {
                 int position = 0;
                 
                 String target = doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
-
-                final String prefixes = owner.getServer() == null ? "#&"
-                        : owner.getServer().getChannelPrefixes();
-                target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
-                        CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
                 
@@ -231,21 +231,23 @@ public class Styliser implements ConfigChangeListener {
      * @param string The string to be linked
      * @return A copy of the string with hyperlinks marked up
      */
-    public static String doLinks(final String string) {
+    public String doLinks(final String string) {
         String target = string;
+        final String prefixes = owner.getServer() == null ? "#&"
+                : owner.getServer().getChannelPrefixes();
         
-        if (target.matches(".*" + URL_REGEXP + ".*")) {
-            target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
-            String target2 = "";
-            
-            for (int j = 0; j < 5 && !target.equals(target2); j++) {
-                target2 = target;
-                target = target
-                        .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
-                        .replaceAll(URL_INT2, "$1$2$3" + CODE_HYPERLINK + "$4")
-                        .replaceAll(URL_INT3, "$1$2" + CODE_HYPERLINK + "$3")
-                        .replaceAll(URL_INT4, "$1" + CODE_HYPERLINK + "$2");
-            }
+        String target2 = target;
+        target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+        target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
+            CODE_CHANNEL + "$0" + CODE_CHANNEL);
+
+        for (int j = 0; j < 5 && !target.equals(target2); j++) {
+            target2 = target;
+            target = target
+                    .replaceAll(URL_INT1, "$1$3$2")
+                    .replaceAll(URL_INT2, "$1$2$3$5$4")
+                    .replaceAll(URL_INT3, "$1$2$4$3")
+                    .replaceAll(URL_INT4, "$1$3$2");
         }
         
         return target;
