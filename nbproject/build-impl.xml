@@ -296,8 +296,8 @@ is divided into following sections:
                 <nbjpdastart addressproperty="jpda.address" name="@{name}" stopclassname="@{stopclassname}" transport="dt_socket">
                     <classpath>
                         <path path="@{classpath}"/>
+                        <path refid="plugins.libs"/>
                     </classpath>
-                    <classpath refid="plugins.libs"/>
                 </nbjpdastart>
             </sequential>
         </macrodef>
