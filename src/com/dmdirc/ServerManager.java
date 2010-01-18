@@ -212,7 +212,7 @@ public final class ServerManager {
      *
      * @param uri The URI to connect to
      * @return The server which will be connecting
-     * @since 0.6.4
+     * @since 0.6.3
      */
     public Server connectToAddress(final URI uri) {
         return connectToAddress(uri, IdentityManager.getProfiles().get(0));
@@ -225,7 +225,7 @@ public final class ServerManager {
      * @param uri The URI to connect to
      * @param profile The profile to use
      * @return The server which will be connecting
-     * @since 0.6.4
+     * @since 0.6.3
      */
     public Server connectToAddress(final URI uri, final Identity profile) {
         Logger.assertTrue(profile.isProfile());
