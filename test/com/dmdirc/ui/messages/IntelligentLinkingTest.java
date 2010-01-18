@@ -109,6 +109,7 @@ public class IntelligentLinkingTest {
             {"\"join #test\"", "\"join @#test@\""},
             {"'join #test'", "'join @#test@'"},
             {"#test.", "@#test@."},
+            {"(\"join #test!\")", "(\"join @#test@!\")"},
         };
 
         return Arrays.asList(tests);
