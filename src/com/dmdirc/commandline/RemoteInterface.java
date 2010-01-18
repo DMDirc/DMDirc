@@ -39,7 +39,7 @@ public interface RemoteInterface extends Remote {
      * 
      * @param addresses The addresses to connect to.
      * @throws java.rmi.RemoteException on problems communicating
-     * @since 0.6.4
+     * @since 0.6.3
      */
     void connect(List<URI> addresses) throws RemoteException;
 

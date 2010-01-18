@@ -174,7 +174,7 @@ public class Server extends WritableFrameContainer implements
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
      *
-     * @since 0.6.4
+     * @since 0.6.3
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -238,7 +238,7 @@ public class Server extends WritableFrameContainer implements
      *
      * @param address The address of the server to connect to
      * @param profile The profile to use
-     * @since 0.6.4
+     * @since 0.6.3
      */
     @Precondition({
         "The current parser is null or not connected",
@@ -743,7 +743,7 @@ public class Server extends WritableFrameContainer implements
      *
      * @param uri URI to compare with the Servers own URI.
      * @return True if the Given URI is the "same" as the one we are using.
-     * @since 0.6.4
+     * @since 0.6.3
      */
     public boolean compareURI(final URI uri) {
         if (parser != null) {
