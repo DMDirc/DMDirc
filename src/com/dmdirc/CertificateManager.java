@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
+import com.dmdirc.util.StreamUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +58,7 @@ import javax.naming.ldap.Rdn;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
+
 import net.miginfocom.Base64;
 
 /**
@@ -201,13 +203,7 @@ public class CertificateManager implements X509TrustManager {
             } catch (UnrecoverableKeyException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException ex) {
-                        // ...
-                    }
-                }
+                StreamUtil.close(fis);
             }
         }
 
