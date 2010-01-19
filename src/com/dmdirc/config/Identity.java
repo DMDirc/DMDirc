@@ -433,9 +433,11 @@ public class Identity extends ConfigSource implements Serializable,
      * @param domain domain of the option
      * @param option name of the option
      */
-    public synchronized void unsetOption(final String domain, final String option) {
-        file.getKeyDomain(domain).remove(option);
-        needSave = true;
+    public void unsetOption(final String domain, final String option) {
+        synchronized (this) {
+            file.getKeyDomain(domain).remove(option);
+            needSave = true;
+        }
 
         fireSettingChange(domain, option);
     }
