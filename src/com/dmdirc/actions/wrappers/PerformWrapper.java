@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.Precondition;
+import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.interfaces.ActionComponent;
@@ -46,6 +48,9 @@ public class PerformWrapper extends ActionGroup {
     
     /** A singleton instance of the Perform Wrapper. */
     private static PerformWrapper me = new PerformWrapper();
+
+    /** The component name for per-profile perform conditions. */
+    private static String PP_COMP_NAME = "SERVER_IDENTITY.IDENTITY_NAME";
     
     /**
      * Creates a new instance of PerformWrapper.
@@ -91,7 +96,7 @@ public class PerformWrapper extends ActionGroup {
                     && !target) {
                 target = true;
             } else if (condition.getComponent() instanceof ActionComponentChain
-                    && "SERVER_IDENTITY.IDENTITY_NAME".equals(condition.getComponent().toString())
+                    && PP_COMP_NAME.equals(condition.getComponent().toString())
                     && !profile) {
                 profile = true;
             } else {
@@ -101,7 +106,40 @@ public class PerformWrapper extends ActionGroup {
 
         return target || profile;
     }
-    
+
+    /**
+     * Determines if the specified action is a per-profile perform, as opposed
+     * to a generic perform.
+     *
+     * @param action The action to be tested
+     * @return True if the action is per-profile, false otherwise
+     * @since 0.6.3
+     */
+    public boolean isPerProfilePerform(final Action action) {
+        return contains(action) && action.getConditions().size() == 2;
+    }
+
+    /**
+     * Retrieves the name of the profile that is targetted by the specified
+     * per-profile perform action.
+     *
+     * @param action The action whose perform should be retrieved
+     * @return The action's targetted profile name
+     * @since 0.6.3
+     */
+    @Precondition("The action is a per-profile perform")
+    public String getProfileName(final Action action) {
+        Logger.assertTrue(isPerProfilePerform(action));
+
+        for (ActionCondition condition : action.getConditions()) {
+            if (PP_COMP_NAME.equals(condition.getComponent().toString())) {
+                return condition.getTarget();
+            }
+        }
+
+        throw new IllegalStateException("Profile component not found in action");
+    }
+
     /**
      * Retrieve the action that handles the perform for the specified server,
      * or null if no such action exists.
@@ -110,7 +148,21 @@ public class PerformWrapper extends ActionGroup {
      * @return The action that handles the server's perform, or null
      */
     public Action getActionForServer(final String server) {
-        return getAction(CoreActionComponent.SERVER_NAME, server);
+        return getActionForServer(server, null);
+    }
+    
+    /**
+     * Retrieve the action that handles the perform for the specified server,
+     * or null if no such action exists.
+     *
+     * @param server The server to look for
+     * @param profile The name of the profile the perform works for
+     * @return The action that handles the servers's perform for the specified
+     * profile, or null
+     * @since 0.6.3
+     */
+    public Action getActionForServer(final String server, final String profile) {
+        return getAction(CoreActionComponent.SERVER_NAME, server, profile);
     }
 
     /**
@@ -119,9 +171,23 @@ public class PerformWrapper extends ActionGroup {
      *
      * @param network The network to look for
      * @return The action that handles the network's perform, or null
-     */    
+     */
     public Action getActionForNetwork(final String network) {
-        return getAction(CoreActionComponent.SERVER_NETWORK, network);
+        return getActionForNetwork(network, null);
+    }
+
+    /**
+     * Retrieve the action that handles the perform for the specified network,
+     * or null if no such action exists.
+     *
+     * @param network The network to look for
+     * @param profile The name of the profile the perform works for
+     * @return The action that handles the network's perform for the specified
+     * profile, or null
+     * @since 0.6.3
+     */    
+    public Action getActionForNetwork(final String network, final String profile) {
+        return getAction(CoreActionComponent.SERVER_NETWORK, network, profile);
     }
     
     /**
@@ -131,7 +197,20 @@ public class PerformWrapper extends ActionGroup {
      * @return The new perform wrapper action
      */
     public Action createActionForServer(final String server) {
-        return createAction(server, "");
+        return createActionForServer(server, null);
+    }
+
+    /**
+     * Creates a new, empty, perform wrapper for the specified server, which
+     * is only applicable when the specified profile is in use.
+     *
+     * @param server The server to create the action for
+     * @param profile The name of the profile which must be in use
+     * @return The new perform wrapper action
+     * @since 0.6.3
+     */
+    public Action createActionForServer(final String server, final String profile) {
+        return createAction(server, "", profile);
     }
 
     /**
@@ -141,7 +220,20 @@ public class PerformWrapper extends ActionGroup {
      * @return The new perform wrapper action
      */    
     public Action createActionForNetwork(final String network) {
-        return createAction("", network);
+        return createActionForNetwork(network, null);
+    }
+
+    /**
+     * Creates a new, empty, perform wrapper for the specified network, which
+     * is only applicable when the specified profile is in use.
+     *
+     * @param network The network to create the action for
+     * @param profile The name of the profile which must be in use
+     * @return The new perform wrapper action
+     * @since 0.6.3
+     */
+    public Action createActionForNetwork(final String network, final String profile) {
+        return createAction("", network, profile);
     }
     
     /**
@@ -151,9 +243,12 @@ public class PerformWrapper extends ActionGroup {
      * 
      * @param server The server to create the action for
      * @param network The network to create the action for
+     * @param profile The profile the action is for (or null if "global")
+     * @since 0.6.3
      * @return The new perform wrapper action
      */    
-    private Action createAction(final String server, final String network) {
+    private Action createAction(final String server, final String network,
+            final String profile) {
         final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
         final CoreActionComponent component =
                 server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
@@ -161,6 +256,12 @@ public class PerformWrapper extends ActionGroup {
         
         conditions.add(new ActionCondition(0, component, 
                 CoreActionComparison.STRING_EQUALS, server + network));
+
+        if (profile != null) {
+            conditions.add(new ActionCondition(0,
+                    new ActionComponentChain(Server.class, PP_COMP_NAME),
+                    CoreActionComparison.STRING_EQUALS, profile));
+        }
         
         return new Action(getName(), server + network,
                 new ActionType[]{CoreActionType.SERVER_CONNECTED},
@@ -173,12 +274,28 @@ public class PerformWrapper extends ActionGroup {
      *
      * @param component The action component to look for
      * @param target The string the component is matched against
+     * @param profile The name of the profile that the action must target, or
+     * null for a non-profile specific action
+     * @since 0.6.3
      * @return The matching action if one exists, or null
      */    
-    private Action getAction(final ActionComponent component, final String target) {
+    private Action getAction(final ActionComponent component, final String target,
+            final String profile) {
         for (Action action : this) {
-            if (action.getConditions().get(0).getComponent() == component
-                    && action.getConditions().get(0).getTarget().equalsIgnoreCase(target)) {
+            int matches = profile == null ? 1 : 2;
+
+            for (ActionCondition condition : action.getConditions()) {
+                if (condition.getComponent() == component
+                        && condition.getTarget().equalsIgnoreCase(target)) {
+                    matches--;
+                } else if (profile != null
+                        && PP_COMP_NAME.equals(condition.getComponent().toString())
+                        && condition.getTarget().equalsIgnoreCase(profile)) {
+                    matches--;
+                }
+            }
+
+            if (matches == 0) {
                 return action;
             }
         }
