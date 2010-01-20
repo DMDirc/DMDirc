@@ -65,6 +65,7 @@ USEKDIALOG="0";
 QDBUS=`which qdbus`
 DBUSSEND=`which dbus-send`
 DCOP=`which dcop`
+BC=`which bc`
 KDETYPE=""
 if [ "${ISKDE}" != "" -o "${ZENITY}" = "" ]; then
 	# Check to see if we have the dcop or dbus binaries needed..
@@ -99,9 +100,16 @@ if [ "${1}" = "--watchdog" ]; then
 	exit 1;
 fi;
 
+if [ "${1}" = "--pulsate" ]; then
+	shift;
+	PULSATE="1"
+else
+	PULSATE="0"
+fi;
+
 CAPTION=${1}
 FILESIZE=${2}
-WGETPID=${3}
+WGETPID=${4}
 progresswindow=""
 TYPE=""
 PIPE="progresspipe_${$}"
@@ -125,16 +133,44 @@ readprogress() {
 				break;
 			fi;
 		fi;
+		
 		input=`cat "${PIPE}" | tail ${TAILOPTS}1`
 		if [ "${input}" = "quit" ]; then
 			break;
 		elif [ "${input}" != "" ]; then
 			data=${input}
 			input=""
-			res=`echo "scale=4 ; (${data}/${FILESIZE})*100" | bc`
-			val=${res%%.*}
-			if [ "${val}" = "" ]; then
-				val=0
+			if [ "${PULSATE}" = "1" ]; then
+				val=-1
+				
+				if [ "${data}" != "-1" ]; then
+					if [ "${TYPE}" = "KDE" ]; then
+						if [ "${KDETYPE}" = "dcop" ]; then
+							${DCOP} ${progresswindow} setLabelText "${data}"
+						elif [ "${KDETYPE}" = "qdbus" ]; then
+							${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.setLabelText "${data}"
+						elif [ "${KDETYPE}" = "dbussend" ]; then
+							${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.setLabelText "string:\'${data}\'" > /dev/null
+						fi;
+					elif [ "${TYPE}" = "GNOME" ]; then
+						echo "${data}" | sed 's/^/# /g'
+					else
+						echo "${data}"
+					fi;
+				fi;
+				
+			else
+				if [ "${BC}" != "" ]; then
+					res=`echo "scale=4 ; (${data}/${FILESIZE})*100" | bc`;
+				else
+					# Note, this will return 0 or 100, nothing else, better than spamming
+					# errors and never closing tho.
+					res=`echo $(( (${data}/${FILESIZE})*100 ))`;
+				fi;
+				val=${res%%.*}
+				if [ "${val}" = "" ]; then
+					val=0
+				fi;
 			fi;
 			if [ "${TYPE}" = "KDE" ]; then
 				if [ "${KDETYPE}" = "dcop" ]; then
@@ -161,6 +197,7 @@ readprogress() {
 					echo "-> "${val}"%"
 				fi;
 			fi;
+			echo "Val: ${val}";
 			if [ "${val}" = "100" ]; then
 				retval="0"
 				CONTINUE="0"
@@ -206,7 +243,7 @@ closeProgress() {
 	fi;
 	echo "Exiting with value: $retval"
 	if [ "${WGETPID}" != "" ]; then
-		echo "Attempting to kill wget"
+		echo "Attempting to kill wget (${WGETPID})"
 		kill -9 ${WGETPID}
 	fi;
 	
@@ -244,25 +281,34 @@ trap 'closeProgress' INT TERM EXIT
 if [ "" != "${KDIALOG}" -a "" != "${DISPLAY}" -a "" = "${ISGNOME}" -a "${USEKDIALOG}" = "1" ]; then
 	echo "Progress dialog on Display: ${DISPLAY}"
 	progresswindow=`${KDIALOG} --title "DMDirc: ${CAPTION}" --progressbar "${CAPTION}" 100`
+	if [ "${PULSATE}" = "1" ]; then
+		SHOWCANCEL="false"
+	else
+		SHOWCANCEL="true"
+	fi;
 	if [ "${KDETYPE}" = "dcop" ]; then
 		${DCOP} ${progresswindow} setAutoClose true
-		${DCOP} ${progresswindow} showCancelButton true
+		${DCOP} ${progresswindow} showCancelButton ${SHOWCANCEL}
 	elif [ "${KDETYPE}" = "qdbus" ]; then
 		${QDBUS} ${progresswindow} org.freedesktop.DBus.Properties.Set org.kde.kdialog.ProgressDialog autoClose true
-		${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton true
+		${QDBUS} ${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton ${SHOWCANCEL}
 	elif [ "${KDETYPE}" = "dbussend" ]; then
-		${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton boolean:true >/dev/null
+		${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.showCancelButton boolean:${SHOWCANCEL} >/dev/null
 		${DBUSSEND} --print-reply --dest=${progresswindow} org.freedesktop.DBus.Properties.Set string:'org.kde.kdialog.ProgressDialog' string:'autoClose' variant:boolean:true > /dev/null
 	fi;
 	TYPE="KDE"
 	readprogress
 	CONTINUE="0"
 	echo "Progress Bar Complete"
-elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+elif [ "" ! "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 	# Else, if zenity exists and we have a display
 	echo "Progress dialog on Display: ${DISPLAY}"
 	TYPE="GNOME"
-	readprogress | ${ZENITY} --progress --auto-close --auto-kill --title "DMDirc: ${CAPTION}" --text "${CAPTION}"
+	if [ "${PULSATE}" = "1" ]; then
+		readprogress | ${ZENITY} --progress --pulsate --auto-close --title "DMDirc: ${CAPTION}" --text "${CAPTION}"
+	else
+		readprogress | ${ZENITY} --progress --auto-close --auto-kill --title "DMDirc: ${CAPTION}" --text "${CAPTION}"
+	fi;
 	CONTINUE="0"
 	echo "Progress Bar Complete"
 else
