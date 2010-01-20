@@ -161,7 +161,7 @@ if [ $? -eq 0 ]; then
 			STARTLINE=${STARTLINE%%:*}
 			# Location of license end
 			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
-			ENDLINE=$((${ENDLINE%%:*} - 4))
+			ENDLINE=$((${ENDLINE%%:*} - 2))
 			# Location of checksum start
 			CSSTARTLINE=`grep ${GREPOPTS} "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
 			CSSTARTLINE=${CSSTARTLINE%%:*}
@@ -176,13 +176,21 @@ if [ $? -eq 0 ]; then
 			tail ${TAILOPTS}$((${ENDLINE})) jre.bin | head -n $((${CSSTARTLINE} -1 - ${ENDLINE})) >> jre.bin.tmp
 			echo "tail \${tail_args} +${SCENDLINE} \"\$0\" > \$outname" >> jre.bin.tmp
 			tail ${TAILOPTS}$((${CSENDLINE})) jre.bin >> jre.bin.tmp
-		
-			yes | sh jre.bin.tmp
-			rm -Rf jre.bin.tmp
+
+			PIPE=`mktemp installprogresspipe.XXXXXXXXXXXXXX`
+			/bin/sh ${PWD}/progressbar.sh --pulsate "Installing JRE. Please wait.." 100 ${PIPE} &
+			sleep 1;
+			echo "-1" > ${PIPE}
+			# This is supposed to write to the pipe as it does stuff, but it appears
+			# not to work properly.
+			yes | sh jre.bin.tmp | egrep --line-buffered -i "(extracting|inflating):" > ${PIPE};
+			echo "quit" > ${PIPE}
+			# rm -Rf jre.bin.tmp
 		fi;
 		
 		mv ${JREJAVAHOME} ${installdir}
-		
+
+		if [ 1 -eq 0 ]; then
 		if [ "0" = "${UID}" ]; then
 			# Add to global path.
 			if [ -e "/usr/bin/java" ]; then
@@ -216,6 +224,7 @@ if [ $? -eq 0 ]; then
 			
 			# This allows dmdirc launcher to find the jre if the path is not set.
 			ln -sf ${installdir} ${HOME}/jre
+		fi;
 		fi;
 		
 		messagedialog "Java Install" "Java installation complete"
