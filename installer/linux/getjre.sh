@@ -69,13 +69,16 @@ elif [ "${CURL}" != "" ]; then
 	length=`${CURL} -# -I ${URL} 2>&1 | grep "Content-Length:"| awk '{print $2}'`
 fi;
 
-# Convert the length from Bytes to something user-friendly
-if [ ${actualLength} -ge 1048576 ]; then
+# Convert the length from Bytes to something user-friendly is possible.
+BC=`which bc`
+if [ "${BC}" = "" ]; then
+	niceLength=${actualLength}"B"
+elif [ ${actualLength} -ge 1048576 ]; then
 	niceLength=`echo "scale=2; ${actualLength}/1048576" | bc`"MB"
 elif [ ${actualLength} -ge 1024 ]; then
 	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"KB"
 else
-	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"B"
+	niceLength=`echo "scale=2; ${actualLength}" | bc`"B"
 fi;
 
 if [ "${actualLength}" = "6" ]; then
@@ -132,6 +135,7 @@ if [ $result -eq 0 ]; then
 			exit 1;
 		fi;
 	done;
+	/bin/sh ${PWD}/progressbar.sh --watchdog ${progressbarpid}
 	wgetpid=""
 	if [ "${ISFREEBSD}" != "" -o "${ISAINFO}" != "" ]; then
 		echo "Killing progressbar"
