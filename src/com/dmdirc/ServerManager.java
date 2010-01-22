@@ -245,9 +245,13 @@ public final class ServerManager {
             server.connect();
             return server;
         }
+
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile );
+        } else {
+            server.getParser().updateURI(uri);
         }
+
         server.activateFrame();
         return server;
     }
