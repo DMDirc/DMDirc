@@ -88,9 +88,6 @@ public class CertificateManager implements X509TrustManager {
         }
     }
 
-    /** The password for the global java cacert file. */
-    private final String cacertpass;
-
     /** The server name the user is trying to connect to. */
     private final String serverName;
 
@@ -119,7 +116,6 @@ public class CertificateManager implements X509TrustManager {
     public CertificateManager(final String serverName, final ConfigManager config) {
         this.serverName = serverName;
         this.config = config;
-        this.cacertpass = config.getOption("ssl", "cacertpass");
         this.checkDate = config.getOptionBool("ssl", "checkdate");
         this.checkIssuer = config.getOptionBool("ssl", "checkissuer");
         this.checkHost = config.getOptionBool("ssl", "checkhost");
@@ -138,7 +134,7 @@ public class CertificateManager implements X509TrustManager {
                 + "/lib/security/cacerts".replace('/', File.separatorChar);
             is = new FileInputStream(filename);
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(is, cacertpass.toCharArray());
+            keystore.load(is, null);
 
             final PKIXParameters params = new PKIXParameters(keystore);
             for (TrustAnchor anchor : params.getTrustAnchors()) {
