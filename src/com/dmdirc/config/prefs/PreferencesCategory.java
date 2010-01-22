@@ -21,6 +21,8 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.List;
  * Represents one category of preferences. Categories can contain 0 or more
  * subcategories, and either 0 or more PreferencesSettings or exactly 1
  * PreferencesInterface object.
- * 
+ *
  * @author chris
  */
 public class PreferencesCategory {
@@ -38,40 +40,43 @@ public class PreferencesCategory {
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
             .Logger.getLogger(PreferencesCategory.class.getName());
-        
+
     /** The title (name) of this category. */
     private final String title;
-    
+
     /** A description of this category. */
     private final String description;
 
     /** The icon to use for this category. */
     private final String icon;
-    
+
+    /** The warning displayed for this category, if any. */
+    private String warning;
+
     /** Whether or not this category is inline. */
     private boolean isInline = false;
-    
+
     /** Whether or not to show inline categories before settings. */
     private boolean inlineBefore = true;
 
     /** Our parent category, if known. */
     private PreferencesCategory parent;
-    
+
     /** A list of settings in this category. */
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
-    
+
     /** A list of subcategories of this category. */
     private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
-    
+
     /** The replacement object to use for this category. */
     private final PreferencesInterface object;
-    
+
     /** A list of listeners who are interested in this category. */
     private final ListenerList listeners = new ListenerList();
 
     /**
      * Creates a new preferences category that contains settings.
-     * 
+     *
      * @param title The title of this preferences category
      * @param description The description of this category
      */
@@ -103,7 +108,7 @@ public class PreferencesCategory {
             final PreferencesInterface object) {
         this(title, description, null, object);
     }
-    
+
     /**
      * Creates a new preferences category that contains an object.
      *
@@ -119,51 +124,92 @@ public class PreferencesCategory {
         this.description = description;
         this.icon = icon;
         this.object = object;
+
+        checkForPluginCategory();
     }
-    
+
+    /**
+     * Checks to see if this plugin category has been created by a plugin.
+     * If it has, the {@link #setPlugin(com.dmdirc.plugins.PluginInfo)} method
+     * is called with the plugin that appears to have created this category.
+     *
+     * @since 0.6.3
+     */
+    private void checkForPluginCategory() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            if (element.getClassName().equals(PreferencesCategory.class.getCanonicalName())
+                    || element.getClassName().equals(Thread.class.getCanonicalName())) {
+                continue;
+            } else {
+                for (PluginInfo plugin : PluginManager.getPluginManager().getPluginInfos()) {
+                    if (plugin.getClassList().contains(element.getClassName())) {
+                        setPlugin(plugin);
+                        return;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Declares that this category has been created by the specified plugin.
+     * If the plugin is not loaded, then the category's warning field is set
+     * to a message reflecting the fact.
+     *
+     * @param plugin The plugin that owns this category
+     */
+    private void setPlugin(final PluginInfo plugin) {
+        if (!plugin.isLoaded()) {
+            warning = "These are settings for the '" + plugin.getNiceName() + "' plugin, "
+                    + "which is not currently loaded. You must enable the plugin in the "
+                    + "main 'Plugins' category for these settings to have any effect.";
+        }
+    }
+
     /**
      * Sets this as an inline category.
-     * 
+     *
      * @return A reference to this category, for convenience
      */
     public PreferencesCategory setInline() {
         isInline = true;
         return this;
     }
-    
+
     /**
      * Sets this category to show inline categories after settings, rather than
      * before.
-     * 
+     *
      * @return A reference to this category, for convenience
      */
     public PreferencesCategory setInlineAfter() {
         inlineBefore = false;
         return this;
     }
-    
+
     /**
      * Determines if this category is meant to be displayed inline or not.
-     * 
+     *
      * @return True if this category should be shown inline, false otherwise
      */
     public boolean isInline() {
         return isInline;
     }
-    
+
     /**
      * Determines whether this category wants inline subcats to be displayed
      * before the settings, or after.
-     * 
+     *
      * @return True if subcats should be displayed first, false otherwise.
      */
     public boolean isInlineBefore() {
         return inlineBefore;
     }
-    
+
     /**
      * Adds the specified setting to this category.
-     * 
+     *
      * @param setting The setting to be added
      */
     public void addSetting(final PreferencesSetting setting) {
@@ -171,13 +217,13 @@ public class PreferencesCategory {
             throw new IllegalArgumentException("Can't add settings to a " +
                     "category that uses a replacement object");
         }
-        
+
         settings.add(setting);
     }
-    
+
     /**
      * Adds the specified subcategory to this category.
-     * 
+     *
      * @param subcategory The category to be asdded
      */
     public void addSubCategory(final PreferencesCategory subcategory) {
@@ -192,7 +238,7 @@ public class PreferencesCategory {
 
     /**
      * Retrieves the description of this category.
-     * 
+     *
      * @return This category's description
      */
     public String getDescription() {
@@ -201,7 +247,7 @@ public class PreferencesCategory {
 
     /**
      * Retrieves the settings in this category.
-     * 
+     *
      * @return This category's settings
      */
     public List<PreferencesSetting> getSettings() {
@@ -210,7 +256,7 @@ public class PreferencesCategory {
 
     /**
      * Retrieves the subcategories of this category.
-     * 
+     *
      * @return This category's subcategories
      */
     public List<PreferencesCategory> getSubcats() {
@@ -219,7 +265,7 @@ public class PreferencesCategory {
 
     /**
      * Retrieves the title of this category.
-     * 
+     *
      * @return This category's title
      */
     public String getTitle() {
@@ -235,20 +281,30 @@ public class PreferencesCategory {
     public String getIcon() {
         return icon;
     }
-    
+
+    /**
+     * Retrieves the warning for this category, if any.
+     *
+     * @return This category's warning message, or null if one doesn't exist
+     * @since 0.6.3
+     */
+    public String getWarning() {
+        return warning;
+    }
+
     /**
      * Determines if this category has a replacement object.
-     * 
+     *
      * @return True if the category has a replacement object, false otherwise
      * @see #getObject()
      */
     public boolean hasObject() {
         return object != null;
     }
-    
+
     /**
      * Retrieves this category's replacement object.
-     * 
+     *
      * @return This category's replacement object.
      * @see #hasObject()
      */
@@ -323,25 +379,25 @@ public class PreferencesCategory {
             child.dismiss();
         }
     }
-    
+
     /**
      * Registers a change listener for this category.
-     * 
+     *
      * @param listener The listener to be added
      */
     public void addChangeListener(final CategoryChangeListener listener) {
         listeners.add(CategoryChangeListener.class, listener);
     }
-    
+
     /**
      * Removes a change listener from this category.
-     * 
+     *
      * @param listener The listener to be added
      */
     public void removeChangeListener(final CategoryChangeListener listener) {
         listeners.remove(CategoryChangeListener.class, listener);
     }
-    
+
     /**
      * Informs all registered listeners that this category has been selected.
      */
@@ -350,7 +406,7 @@ public class PreferencesCategory {
             listener.categorySelected(this);
         }
     }
-    
+
     /**
      * Informs all registered listeners that this category has been deselected.
      */
@@ -358,6 +414,6 @@ public class PreferencesCategory {
         for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
             listener.categoryDeselected(this);
         }
-    }    
+    }
 
 }
