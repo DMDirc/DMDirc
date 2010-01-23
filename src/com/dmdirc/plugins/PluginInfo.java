@@ -241,13 +241,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get the license for this plugin if it exists.
+     * Get the licence for this plugin if it exists.
      *
-     * @return An InputStream for the license of this plugin, or null if no
-     *         license found.
+     * @return An InputStream for the licence of this plugin, or null if no
+     *         licence found.
      * @throws IOException if there is an error with the ResourceManager.
      */
-    public Map<String, InputStream> getLicenseStreams() throws IOException {
+    public Map<String, InputStream> getLicenceStreams() throws IOException {
         return new TreeMap<String, InputStream>(getResourceManager().
                     getResourcesStartingWithAsInputStreams(
                     "META-INF/licences/"));
