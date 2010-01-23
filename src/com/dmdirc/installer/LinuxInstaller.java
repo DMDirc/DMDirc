@@ -145,19 +145,21 @@ public class LinuxInstaller extends Installer {
 					writer.println("\t"+command+" --set --type=string /desktop/gnome/url-handlers/irc/command \"\\\""+location+"/DMDirc.sh\\\" -e -c %s\"");
 					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/need-terminal false");
 					writer.println("fi");
-					writer.println("if [ -e \""+filename+"\" ]; then");
-					writer.println("\techo \"[Protocol]\" > "+filename+"irc.protocol");
-					writer.println("\techo \"exec=\""+location+"/DMDirc.sh\" -e -c %u\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"protocol=irc\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"input=none\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"output=none\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"helper=true\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"listing=false\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"reading=false\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"writing=false\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"makedir=false\" >> "+filename+"irc.protocol");
-					writer.println("\techo \"deleting=false\" >> "+filename+"irc.protocol");
-					writer.println("fi");
+					writer.println("if [ ! -e \""+filename+"\" ]; then");
+                                        writer.println("\tmkdir -p \""+filename+"\"");
+                                        writer.println("fi");
+					writer.println("echo \"[Protocol]\" > "+filename+"irc.protocol");
+					writer.println("echo \"exec=\""+location+"/DMDirc.sh\" -e -c %u\" >> "+filename+"irc.protocol");
+					writer.println("echo \"protocol=irc\" >> "+filename+"irc.protocol");
+					writer.println("echo \"input=none\" >> "+filename+"irc.protocol");
+					writer.println("echo \"output=none\" >> "+filename+"irc.protocol");
+					writer.println("echo \"helper=true\" >> "+filename+"irc.protocol");
+					writer.println("echo \"listing=false\" >> "+filename+"irc.protocol");
+					writer.println("echo \"reading=false\" >> "+filename+"irc.protocol");
+					writer.println("echo \"writing=false\" >> "+filename+"irc.protocol");
+					writer.println("echo \"makedir=false\" >> "+filename+"irc.protocol");
+					writer.println("echo \"deleting=false\" >> "+filename+"irc.protocol");
+                                        writer.println("chmod a+x "+filename+"irc.protocol");
 					writer.println("exit 0;");
 					writer.close();
 
@@ -183,12 +185,14 @@ public class LinuxInstaller extends Installer {
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
 			}
-			File temp = new File(filename);
-			if (!temp.getParentFile().exists()) {
-				temp.getParentFile().mkdir();
+			final File outFile = new File(filename);
+			if (!outFile.getParentFile().exists()) {
+				outFile.getParentFile().mkdir();
 			}
-			writer = new PrintWriter(filename);
+			writer = new PrintWriter(outFile);
 			writeFile(writer, location);
+
+                        outFile.setExecutable(true);
 		} catch (IOException e) {
 			step.addText(" - Error creating shortcut: "+e.toString());
 		} catch (SecurityException e) {
