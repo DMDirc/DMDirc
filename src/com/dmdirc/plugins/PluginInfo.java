@@ -117,7 +117,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public PluginInfo(final URL url, final boolean load) throws PluginException {
         this.url = url;
-        this.filename = (new File(url.getPath())).getName();
+        this.filename = new File(url.getPath()).getName();
 
         ResourceManager res;
 
@@ -895,6 +895,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         plugin = (Plugin) temp;
                         LOGGER.finer(getName() + ": Setting domain 'plugin-" + getName() + "'");
                         plugin.setDomain("plugin-" + getName());
+                        plugin.setPluginInfo(this);
                         if (!tempLoaded) {
                             try {
                                 plugin.onLoad();
