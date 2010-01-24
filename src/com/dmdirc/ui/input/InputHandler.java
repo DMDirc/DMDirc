@@ -399,7 +399,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles tab completion of a string. Called when the user presses
      * (shift) tab.
      *
-     * @param shiftPressed True iif shift is pressed
+     * @param shiftPressed True if shift is pressed
      */
     protected void doTabCompletion(final boolean shiftPressed) {
         if (tabCompleter == null || (flags & HANDLE_TABCOMPLETION) == 0) {
@@ -413,7 +413,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         LOGGER.finer("Text for tab completion: " + text);
 
         if (text.isEmpty()) {
-            doNormalTabCompletion(text, 0, 0, null);
+            doNormalTabCompletion(text, 0, 0, shiftPressed, null);
             return;
         }
 
@@ -441,9 +441,9 @@ public abstract class InputHandler implements ConfigChangeListener {
         LOGGER.finer("Offsets: start: " + start + ", end: " + end);
 
         if (start > 0 && text.charAt(0) == CommandManager.getCommandChar()) {
-            doCommandTabCompletion(text, start, end);
+            doCommandTabCompletion(text, start, end, shiftPressed);
         } else {
-            doNormalTabCompletion(text, start, end, null);
+            doNormalTabCompletion(text, start, end, shiftPressed,  null);
         }
     }
 
@@ -455,8 +455,8 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param end The end index of the word we're completing
      */
     private void doCommandTabCompletion(final String text, final int start,
-            final int end) {
-        doNormalTabCompletion(text, start, end,
+            final int end, final boolean shiftPressed) {
+        doNormalTabCompletion(text, start, end, shiftPressed,
                 TabCompleter.getIntelligentResults(text.substring(0, start)));
     }
 
@@ -469,9 +469,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param additional A list of additional strings to use
      */
     private void doNormalTabCompletion(final String text, final int start,
-            final int end, final AdditionalTabTargets additional) {
+            final int end, final boolean shiftPressed,
+            final AdditionalTabTargets additional) {
         final TabCompletionResult res = style.getResult(text, start, end,
-                additional);
+                shiftPressed, additional);
 
         if (res != null) {
             target.setText(res.getText());
