@@ -42,6 +42,7 @@ public interface TabCompletionStyle {
      * @return This style's proposed result
      */
     TabCompletionResult getResult(final String original, final int start,
-            final int end, final AdditionalTabTargets additional);
+            final int end, final boolean shiftPressed,
+            final AdditionalTabTargets additional);
     
 }
