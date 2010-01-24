@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -264,6 +266,16 @@ public abstract class ResourceManager {
      * @return InputStream for the resource, or null if not found
      */
     public abstract InputStream getResourceInputStream(final String resource);
+
+    /**
+     * Gets an URL for the specified resource.
+     *
+     * @param resource Name of the resource to return
+     * @return A URL for the resource, or null if not found
+     * @throws MalformedURLException If the URL created is malformed
+     * @since 0.6.3
+     */
+    public abstract URL getResourceURL(final String resource) throws MalformedURLException;
     
     /**
      * Gets a Map of byte[]s of the resources ending with the specified
