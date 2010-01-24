@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -263,14 +264,14 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onAwayStateOther(final Parser tParser,
-            final ClientInfo client, final boolean state) {
+            final ClientInfo client, final AwayState oldState, final AwayState state) {
         checkParser(tParser);
 
         final ChannelClientInfo channelClient = owner.getChannelInfo().getChannelClient(client);
 
         if (channelClient != null) {
-            owner.doNotification(state ? "channelUserAway" : "channelUserBack",
-                    state ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
+            owner.doNotification(state == AwayState.AWAY ? "channelUserAway" : "channelUserBack",
+                    state == AwayState.AWAY ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
                     channelClient);
         }
     }
