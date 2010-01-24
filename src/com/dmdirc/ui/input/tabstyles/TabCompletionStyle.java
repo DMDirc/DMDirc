@@ -38,8 +38,11 @@ public interface TabCompletionStyle {
      * @param original The original string which the user inputted
      * @param start The start offset of the word that's being tab-completed
      * @param end The end offset of the word that's being tab-completed
+     * @param shiftPressed True iff shift is pressed
      * @param additional A list of additional targets which may match
+     *
      * @return This style's proposed result
+     * @since 0.6.3
      */
     TabCompletionResult getResult(final String original, final int start,
             final int end, final boolean shiftPressed,

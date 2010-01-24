@@ -399,7 +399,8 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles tab completion of a string. Called when the user presses
      * (shift) tab.
      *
-     * @param shiftPressed True if shift is pressed
+     * @param shiftPressed True iff shift is pressed
+     * @since 0.6.3
      */
     protected void doTabCompletion(final boolean shiftPressed) {
         if (tabCompleter == null || (flags & HANDLE_TABCOMPLETION) == 0) {
@@ -453,6 +454,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param text The text that is being completed
      * @param start The start index of the word we're completing
      * @param end The end index of the word we're completing
+     * @param shiftPressed True iff shift is pressed
      */
     private void doCommandTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed) {
@@ -467,6 +469,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param start The start index of the word we're completing
      * @param end The end index of the word we're completing
      * @param additional A list of additional strings to use
+     * @param shiftPressed True iff shift is pressed
      */
     private void doNormalTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed,
