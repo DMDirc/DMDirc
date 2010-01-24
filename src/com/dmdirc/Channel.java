@@ -280,6 +280,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 
+        checkWho();
         setIcon("channel");
 
         server.removeInvites(channelInfo.getName());
