@@ -29,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -124,6 +126,16 @@ public final class FileResourceManager extends ResourceManager {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException ex) {
+            return null;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public URL getResourceURL(final String resource) throws MalformedURLException {
+        if (resourceExists(resource)) {
+            return new File(basePath, resource).toURI().toURL();
+        } else {
             return null;
         }
     }

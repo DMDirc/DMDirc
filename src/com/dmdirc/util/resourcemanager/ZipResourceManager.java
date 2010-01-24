@@ -27,6 +27,8 @@ import com.dmdirc.util.StreamUtil;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -122,7 +124,6 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public InputStream getResourceInputStream(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
-        
         if (zipEntry == null) {
             return null;
         }
@@ -133,6 +134,16 @@ public final class ZipResourceManager extends ResourceManager {
             return null;
         }
         
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public URL getResourceURL(final String resource) throws MalformedURLException {
+        if (resourceExists(resource)) {
+            return new URL("jar:" + zipFile.getName() + "!" + resource);
+        } else {
+            return null;
+        }
     }
     
     /** {@inheritDoc} */
