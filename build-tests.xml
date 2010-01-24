@@ -82,6 +82,7 @@
             <arg value="-w"/>
             <arg value="5"/>
             <arg value="/usr/bin/ant"/>
+            <arg value="with.clover"/>
             <arg value="do-real-test"/>
         </exec>
     </target>
