@@ -25,6 +25,9 @@ package com.dmdirc.plugins;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Vector;
 
 public class PluginClassLoader extends ClassLoader {
 
@@ -59,7 +62,7 @@ public class PluginClassLoader extends ClassLoader {
      * @return A classloader configured with this one as its parent
      */
     public PluginClassLoader getSubClassLoader(final PluginInfo info) {
-        return (new PluginClassLoader(info, this));
+        return new PluginClassLoader(info, this);
     }
 
     /**
@@ -84,8 +87,8 @@ public class PluginClassLoader extends ClassLoader {
     public boolean isClassLoaded(final String name, final boolean checkGlobal) {
         // Don't duplicate a class
         final Class existing = findLoadedClass(name);
-        final boolean gcl = (checkGlobal) ? GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
-        return (existing != null || gcl);
+        final boolean gcl = checkGlobal ? GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
+        return existing != null || gcl;
     }
 
     /**
@@ -170,5 +173,51 @@ public class PluginClassLoader extends ClassLoader {
 
         return loadedClass;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.6.3
+     */
+    @Override
+    protected URL findResource(final String name) {
+        try {
+            final ResourceManager res = pluginInfo.getResourceManager();
+            final URL url = res.getResourceURL(name);
+
+            if (url != null) {
+                return url;
+            }
+        } catch (IOException ioe) {
+            // Do nothing, fall through
+        }
+
+        return super.findResource(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
+    @Override
+    protected Enumeration<URL> findResources(final String name) throws IOException {
+        final URL resource = findResource(name);
+        final Vector<URL> resources = new Vector<URL>(); // URG
+
+        if (resource != null) {
+            resources.add(resource);
+        }
+
+        final Enumeration<URL> urls =  super.findResources(name);
+
+        while (urls.hasMoreElements()) { // More URG
+            resources.add(urls.nextElement());
+        }
+
+        return resources.elements();
+    }
+
+    
 
 }
