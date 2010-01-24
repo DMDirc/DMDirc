@@ -387,8 +387,21 @@ public abstract class InputHandler implements ConfigChangeListener {
 
     /**
      * Handles tab completion of a string. Called when the user presses tab.
+     *
+     * @deprecated Preferred method is {@link doTabCompletion(boolean)}
      */
+    @Deprecated
     protected void doTabCompletion() {
+        doTabCompletion(false);
+    }
+
+    /**
+     * Handles tab completion of a string. Called when the user presses
+     * (shift) tab.
+     *
+     * @param shiftPressed True iif shift is pressed
+     */
+    protected void doTabCompletion(final boolean shiftPressed) {
         if (tabCompleter == null || (flags & HANDLE_TABCOMPLETION) == 0) {
             LOGGER.fine("Aborting tab completion. Completer: " + tabCompleter
                     + ", flags: " + flags);
