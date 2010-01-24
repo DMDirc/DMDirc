@@ -83,7 +83,7 @@ while [ 1 -eq 1 ]; do
 			/bin/sh "${prepackage}"
 			cd ${DIR}
 		done;
-		jar -uvf "${srcdir}/src/${foldername}/${2}.jar" `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png ${foo}${bit}/*.exe ${foo}${bit}/*.dll 2>/dev/null` >/dev/null
+		jar -uvf "${srcdir}/src/${foldername}/${2}.jar" `ls -1 ${foo}${bit}/*.{class,png,exe,dll,html,css,js,gif} 2>/dev/null` >/dev/null
 	fi
 done
 
