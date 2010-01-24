@@ -32,7 +32,6 @@ public abstract class Plugin implements Comparable<Plugin> {
 
     /** Domain name for the settings in this plugin. */
     private String myDomain = "plugin-unknown";
-
     /** Has the domain been set? */
     private boolean domainSet = false;
 
@@ -96,6 +95,9 @@ public abstract class Plugin implements Comparable<Plugin> {
 
     /**
      * Called to allow plugins to add their configuration options to the manager.
+     * Preferences added from this method should be of type
+     * {@link com.dmdirc.config.prefs.PluginPreferencesCategory} whilst this is
+     * in no way enforced it is strongly encouraged.
      *
      * @param manager The preferences manager that configuration options
      * need to be added to.
@@ -114,5 +116,4 @@ public abstract class Plugin implements Comparable<Plugin> {
     public int compareTo(final Plugin o) {
         return toString().compareTo(o.toString());
     }
-
 }
