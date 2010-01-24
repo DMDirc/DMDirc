@@ -34,6 +34,8 @@ public abstract class Plugin implements Comparable<Plugin> {
     private String myDomain = "plugin-unknown";
     /** Has the domain been set? */
     private boolean domainSet = false;
+    /** Associated Plugin info. */
+    private PluginInfo pluginInfo;
 
     /**
      * Called when the plugin is constructed.
@@ -53,6 +55,24 @@ public abstract class Plugin implements Comparable<Plugin> {
             myDomain = newDomain;
             domainUpdated();
         }
+    }
+
+    /**
+     * Sets the associated plugin info for this plugin.
+     *
+     * @param pluginInfo Associated plugin info
+     */
+    public void setPluginInfo(final PluginInfo pluginInfo) {
+        this.pluginInfo = pluginInfo;
+    }
+
+    /**
+     * Returns the plugin info associated with this plugin.
+     *
+     * @return Plugin info or null
+     */
+    public PluginInfo getPluginInfo() {
+        return pluginInfo;
     }
 
     /**
