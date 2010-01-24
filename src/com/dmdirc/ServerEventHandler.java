@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
@@ -251,13 +252,13 @@ public final class ServerEventHandler extends EventHandler
 
     /** {@inheritDoc} */
     @Override
-    public void onAwayState(final Parser tParser, final boolean currentState,
-            final String reason) {
+    public void onAwayState(final Parser tParser, final AwayState oldState,
+            final AwayState currentState, final String reason) {
         checkParser(tParser);
 
-        owner.updateAwayState(currentState ? reason : null);
+        owner.updateAwayState(currentState == AwayState.AWAY ? reason : null);
 
-        if (currentState) {
+        if (currentState == AwayState.AWAY) {
             owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
         } else {
             owner.doNotification("back", CoreActionType.SERVER_BACK);
