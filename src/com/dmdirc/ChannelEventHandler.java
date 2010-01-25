@@ -270,8 +270,12 @@ public final class ChannelEventHandler extends EventHandler implements
         final ChannelClientInfo channelClient = owner.getChannelInfo().getChannelClient(client);
 
         if (channelClient != null) {
-            owner.doNotification(state == AwayState.AWAY ? "channelUserAway" : "channelUserBack",
-                    state == AwayState.AWAY ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
+            final boolean away = state == AwayState.AWAY;
+            final boolean discovered = oldState == AwayState.UNKNOWN;
+
+            owner.doNotification((away ? "channelUserAway" : "channelUserBack")
+                    + (discovered ? "Discovered" : ""),
+                    away ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
                     channelClient);
         }
     }

@@ -258,6 +258,11 @@ public final class ServerEventHandler extends EventHandler
 
         owner.updateAwayState(currentState == AwayState.AWAY ? reason : null);
 
+        if (oldState == AwayState.UNKNOWN) {
+            // Ignore discovered self away states
+            return;
+        }
+
         if (currentState == AwayState.AWAY) {
             owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
         } else {
