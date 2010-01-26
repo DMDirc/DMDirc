@@ -85,14 +85,12 @@ public class ExportedService {
 
         try {
             return myMethod.invoke(myObject, args);
-        } catch (IllegalAccessException iae) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
-            return null;
-        } catch (IllegalArgumentException iae) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
-            return null;
-        } catch (InvocationTargetException ite) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+ite+" -> "+ite.getMessage(), ite);
+        } catch (final OutOfMemoryError oom) {
+            throw oom; // Satisfy greg.
+        } catch (final VirtualMachineError vme) {
+            throw vme; // Satisfy greg.
+        } catch (final Throwable t) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+t+" -> "+t.getMessage(), t);
             return null;
         }
     }
