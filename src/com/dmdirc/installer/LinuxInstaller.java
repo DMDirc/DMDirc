@@ -49,7 +49,8 @@ public class LinuxInstaller extends Installer {
 		        !filename.equalsIgnoreCase("jre.bin") &&
 		        !filename.equalsIgnoreCase("java-bin") &&
 		        !filename.equalsIgnoreCase("progressbar.sh") &&
-		        !filename.equalsIgnoreCase("installjre.sh"));
+		        !filename.equalsIgnoreCase("installjre.sh") &&
+			!filename.matches(".*pipe.*"));
 	}
 
 	/** {@inheritDoc} */
