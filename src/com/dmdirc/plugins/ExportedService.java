@@ -85,14 +85,11 @@ public class ExportedService {
 
         try {
             return myMethod.invoke(myObject, args);
-        } catch (IllegalAccessException iae) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
+        } catch (final LinkageError le) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+le+" -> "+le.getMessage(), le);
             return null;
-        } catch (IllegalArgumentException iae) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+iae+" -> "+iae.getMessage(), iae);
-            return null;
-        } catch (InvocationTargetException ite) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+ite+" -> "+ite.getMessage(), ite);
+        } catch (final Exception e) {
+            Logger.userError(ErrorLevel.UNKNOWN, "Exception in exported service: "+e+" -> "+e.getMessage(), e);
             return null;
         }
     }
