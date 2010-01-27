@@ -63,7 +63,10 @@ public abstract class ConfigSource {
      * @return True iff the option exists and is not empty, false otherwise
      */
     public boolean hasOptionString(final String domain, final String option) {
-        return hasOption(domain, option) && !getOption(domain, option).isEmpty();
+        String value;
+
+        return hasOption(domain, option) && !(value = getOption(domain, option)).isEmpty()
+                && !value.startsWith("false:");
     }
 
     /**
@@ -78,8 +81,7 @@ public abstract class ConfigSource {
     public boolean hasOptionInt(final String domain, final String option) {
         if (hasOption(domain, option)) {
             try {
-                getOptionInt(domain, option);
-                return true;
+                return getOptionInt(domain, option) != null;
             } catch (NumberFormatException ex) {
                 // Do nothing
             }
@@ -115,9 +117,7 @@ public abstract class ConfigSource {
             String value = getOption(domain, option);
             String colour;
 
-            if (value.startsWith("false:")) {
-                return false;
-            } else if (value.startsWith("true:")) {
+            if (value.startsWith("true:")) {
                 colour = value.substring(5);
             } else {
                 colour = value;
@@ -138,6 +138,32 @@ public abstract class ConfigSource {
      */
     public boolean hasOptionBool(final String domain, final String option) {
         return hasOption(domain, option);
+    }
+
+    /**
+     * Retrieves the specified option as a String, if it exists
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param fallbacks An ordered array of further domains and options
+     * (in pairs) to try if the specified domain/option isn't found
+     * @return The string representation of the option or null if optional
+     * setting is not specified
+     * @since 0.6.3
+     */
+    public String getOptionString(final String domain, final String option,
+            final String ... fallbacks) {
+        String value;
+
+        if (!hasOption(domain, option) || (value = getOption(domain, option))
+                .startsWith("false:")) {
+            return fallbacks.length >= 2 ? getOptionString(fallbacks[0], fallbacks[1],
+                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
+        } else if (value.startsWith("true:")) {
+            return value.substring(5);
+        } else {
+            return value;
+        }
     }
 
     /**
@@ -163,14 +189,9 @@ public abstract class ConfigSource {
      */
     public Color getOptionColour(final String domain, final String option,
             final String ... fallbacks) {
-        if (hasOptionColour(domain, option)) {
-            final String value = getOption(domain, option);
-            return ColourManager.parseColour(value.startsWith("true:")
-                    ? value.substring(5) : value, null);
-        } else {
-            return fallbacks.length >= 2 ? getOptionColour(fallbacks[0], fallbacks[1],
-                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
-        }
+        final String value = getOptionString(domain, option, fallbacks);
+
+        return value == null ? null : ColourManager.parseColour(value, null);
     }
 
     /**
@@ -232,18 +253,9 @@ public abstract class ConfigSource {
      */
     public Integer getOptionInt(final String domain, final String option,
             final String ... fallbacks) {
-        String value;
+        final String value = getOptionString(domain, option, fallbacks);
 
-        if (!hasOption(domain, option) || (value = getOption(domain, option))
-                .startsWith("false:")) {
-            return fallbacks.length >= 2 ? getOptionInt(fallbacks[0], fallbacks[1],
-                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
-        } else if (value.startsWith("true:")) {
-            return Integer.parseInt(getOption(domain, option).trim().substring(
-                    5));
-        } else {
-            return Integer.parseInt(getOption(domain, option).trim());
-        }
+        return value == null ? null : Integer.parseInt(value.trim());
     }
 
 }
