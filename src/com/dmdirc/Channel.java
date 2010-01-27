@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -461,39 +462,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         }
     }
 
-    /**
-     * Adds the specified topic to this channel's topic list.
-     *
-     * @param topic The topic to be added.
-     */
-    public void addTopic(final Topic topic) {
-        topics.add(topic);
-        updateTitle();
-    }
-
-    /**
-     * Retrieve the topics that have been seen on this channel.
-     *
-     * @return A list of topics that have been seen on this channel, including
-     * the current one.
-     */
-    public List<Topic> getTopics() {
-        return topics.getList();
-    }
-
-    /**
-     * Returns the current topic for this channel.
-     * 
-     * @return Current channel topic
-     */
-    public Topic getCurrentTopic() {
-        if (channelInfo.getTopic().isEmpty()) {
-            return null;
-        }
-        return new Topic(channelInfo.getTopic(), channelInfo.getTopicSetter(),
-                channelInfo.getTopicTime());
-    }
-
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
@@ -592,6 +560,71 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
         messageArgs.add(channelInfo.getName());
     }
 
+    // ---------------------------------------------------- TOPIC HANDLING -----
+
+    /**
+     * Adds the specified topic to this channel's topic list.
+     *
+     * @param topic The topic to be added.
+     */
+    public void addTopic(final Topic topic) {
+        topics.add(topic);
+        updateTitle();
+
+        synchronized (listeners) {
+            for (TopicChangeListener listener : listeners.get(TopicChangeListener.class)) {
+                listener.topicChanged(this, topic);
+            }
+        }
+    }
+
+    /**
+     * Retrieve the topics that have been seen on this channel.
+     *
+     * @return A list of topics that have been seen on this channel, including
+     * the current one.
+     */
+    public List<Topic> getTopics() {
+        return topics.getList();
+    }
+
+    /**
+     * Returns the current topic for this channel.
+     *
+     * @return Current channel topic
+     */
+    public Topic getCurrentTopic() {
+        if (channelInfo.getTopic().isEmpty()) {
+            return null;
+        }
+        return new Topic(channelInfo.getTopic(), channelInfo.getTopicSetter(),
+                channelInfo.getTopicTime());
+    }
+
+    /**
+     * Adds a new topic change listener to this channel.
+     *
+     * @param listener The listener to be added
+     * @since 0.6.3
+     */
+    public void addTopicChangeListener(final TopicChangeListener listener) {
+        synchronized (listeners) {
+            listeners.add(TopicChangeListener.class, listener);
+        }
+    }
+
+    /**
+     * Removes an existing topic change listener from this channel.
+     *
+     * @param listener The listener to be removed
+     * @since 0.6.3
+     */
+    public void removeTopicChangeListener(final TopicChangeListener listener) {
+        synchronized (listeners) {
+            listeners.remove(TopicChangeListener.class, listener);
+        }
+    }
+
     // ------------------------------------------ PARSER METHOD DELEGATION -----
 
     /**
@@ -602,5 +635,15 @@ public class Channel extends MessageTarget implements ConfigChangeListener,
      */
     public void setTopic(final String topic) {
         channelInfo.setTopic(topic);
+    }
+
+    /**
+     * Retrieves the maximum length that a topic on this channel can be.
+     *
+     * @return The maximum length that this channel's topic may be
+     * @since 0.6.3
+     */
+    public int getMaxTopicLength() {
+        return server.getParser().getMaxTopicLength();
     }
 }
