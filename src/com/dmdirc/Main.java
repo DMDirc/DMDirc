@@ -380,33 +380,43 @@ public final class Main {
      */
     public static String getConfigDir() {
         if (configdir == null) {
-            final String fs = System.getProperty("file.separator");
-            final String osName = System.getProperty("os.name");
-            if (osName.startsWith("Mac OS")) {
-                configdir = System.getProperty("user.home") + fs + "Library"
-                        + fs + "Preferences" + fs + "DMDirc" + fs;
-            } else if (osName.startsWith("Windows")) {
-                if (System.getenv("APPDATA") == null) {
-                    configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
-                } else {
-                    configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-                }
-            } else {
-                configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
-                final File testFile = new File(configdir);
-                if (!testFile.exists()) {
-                    final String configHome = System.getenv("XDG_CONFIG_HOME");
-                    configdir = (configHome == null || configHome.isEmpty()) ?
-                        System.getProperty("user.home") + fs + ".config" + fs :
-                        configHome;
-                    configdir += fs + "DMDirc" + fs;
-                }
-            }
-
-            configdir = new File(configdir).getAbsolutePath() + fs;
+            initialiseConfigDir();
         }
 
         return configdir;
+    }
+
+    /**
+     * Initialises the location of the configuration directory.
+     */
+    protected static void initialiseConfigDir() {
+        final String fs = System.getProperty("file.separator");
+        final String osName = System.getProperty("os.name");
+
+        if (System.getenv("DMDIRC_HOME") != null) {
+            configdir = System.getenv("DMDIRC_HOME");
+        } else if (osName.startsWith("Mac OS")) {
+            configdir = System.getProperty("user.home") + fs + "Library"
+                    + fs + "Preferences" + fs + "DMDirc" + fs;
+        } else if (osName.startsWith("Windows")) {
+            if (System.getenv("APPDATA") == null) {
+                configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+            } else {
+                configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+            }
+        } else {
+            configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
+            final File testFile = new File(configdir);
+            if (!testFile.exists()) {
+                final String configHome = System.getenv("XDG_CONFIG_HOME");
+                configdir = (configHome == null || configHome.isEmpty()) ?
+                    System.getProperty("user.home") + fs + ".config" + fs :
+                    configHome;
+                configdir += fs + "DMDirc" + fs;
+            }
+        }
+
+        configdir = new File(configdir).getAbsolutePath() + fs;
     }
 
     /**
