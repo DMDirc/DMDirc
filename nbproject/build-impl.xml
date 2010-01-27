@@ -29,6 +29,7 @@ is divided into following sections:
     <path id="plugins.libs">
         <fileset dir="modules/plugins/lib" includes="*.jar"/>
     </path>
+    <property name="test_profile_dir" value="./test_profile"/>
     <target name="-pre-init">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
@@ -204,10 +205,12 @@ is divided into following sections:
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="**" name="testincludes"/>
             <sequential>
+                <delete dir="${test_profile_dir}"/>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
                     <classpath>
                         <pathelement path="${clover.jar}"/>
                     </classpath>
+                    <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <classpath refid="plugins.libs"/>
                     <batchtest todir="${build.test.results.dir}">
                         <clover-optimized-testset>
@@ -243,6 +246,7 @@ is divided into following sections:
                     <formatter type="xml"/>
                     <jvmarg line="${run.jvmargs}"/>
                 </junit>
+                <delete dir="${test_profile_dir}"/>
             </sequential>
         </macrodef>
     </target>
@@ -253,8 +257,10 @@ is divided into following sections:
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="**" name="testincludes"/>
             <sequential>
+                <delete dir="${test_profile_dir}"/>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
                     <classpath refid="plugins.libs"/>
+                    <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="@{testincludes}"/>
@@ -277,6 +283,7 @@ is divided into following sections:
                     <formatter type="xml"/>
                     <jvmarg line="${run.jvmargs}"/>
                 </junit>
+                <delete dir="${test_profile_dir}"/>
             </sequential>
         </macrodef>
     </target>
