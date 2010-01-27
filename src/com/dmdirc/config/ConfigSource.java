@@ -238,12 +238,9 @@ public abstract class ConfigSource {
                 .startsWith("false:")) {
             return fallbacks.length >= 2 ? getOptionInt(fallbacks[0], fallbacks[1],
                     Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
-        }
-        if (value.startsWith("true:")) {
+        } else if (value.startsWith("true:")) {
             return Integer.parseInt(getOption(domain, option).trim().substring(
                     5));
-        } else if (value.startsWith("false:")) {
-            return null;
         } else {
             return Integer.parseInt(getOption(domain, option).trim());
         }
