@@ -1,6 +1,8 @@
 #!/bin/bash
 # This script will create a plugin jar file for a given plugin.
 
+VALID_EXTS="class,png,exe,dll,html,css,js,gif,py"
+
 if [ "${1}" = "" -o "${2}" = "" ]; then
 	echo "Usage Example: ${0} com.dmdirc.addons.windowstatus WindowStatusPlugin"
 	echo "The above would create WindowStatusPlugin.jar in the plugins/ folder of the current dir"
@@ -83,7 +85,11 @@ while [ 1 -eq 1 ]; do
 			/bin/sh "${prepackage}"
 			cd ${DIR}
 		done;
-		jar -uvf "${srcdir}/src/${foldername}/${2}.jar" `ls -1 ${foo}${bit}/*.{class,png,exe,dll,html,css,js,gif} 2>/dev/null` >/dev/null
+
+		FILES="ls -1 "${foo}${bit}/"*.{${VALID_EXTS}}"
+                FILES=`eval ${FILES} 2>/dev/null`
+
+		jar -uvf "${srcdir}/src/${foldername}/${2}.jar" ${FILES} >/dev/null
 	fi
 done
 
