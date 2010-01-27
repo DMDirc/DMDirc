@@ -300,7 +300,7 @@ if [ "" != "${KDIALOG}" -a "" != "${DISPLAY}" -a "" = "${ISGNOME}" -a "${USEKDIA
 	readprogress
 	CONTINUE="0"
 	echo "Progress Bar Complete"
-elif [ "" ! "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 	# Else, if zenity exists and we have a display
 	echo "Progress dialog on Display: ${DISPLAY}"
 	TYPE="GNOME"
