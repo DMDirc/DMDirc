@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.ConfigFile;
@@ -49,6 +50,11 @@ import java.util.TimerTask;
 import java.net.URL;
 import java.util.TreeMap;
 
+/**
+ * This class is used to store meta information
+ *
+ * @author shane
+ */
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /** A logger for this class. */
@@ -95,6 +101,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /** Map of exports */
     private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
+
+    /** List of identities */
+    private final List<Identity> identities = new ArrayList<Identity>();
 
     /**
      * Create a new PluginInfo.
@@ -196,6 +205,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
+        getIdentities();
     }
 
     /**
@@ -248,9 +258,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws IOException if there is an error with the ResourceManager.
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
-        return new TreeMap<String, InputStream>(getResourceManager().
-                    getResourcesStartingWithAsInputStreams(
-                    "META-INF/licences/"));
+        return new TreeMap<String, InputStream>(getResourceManager().getResourcesStartingWithAsInputStreams("META-INF/licences/"));
     }
 
     /**
@@ -269,9 +277,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         if (metaData.isKeyDomain("defaults")) {
             final Map<String, String> keysection = metaData.getKeyDomain("defaults");
 
-            for (Map.Entry entry : keysection.entrySet()) {
-                final String key = entry.getKey().toString();
-                final String value = entry.getValue().toString();
+            for (Map.Entry<String, String> entry : keysection.entrySet()) {
+                final String key = entry.getKey();
+                final String value = entry.getValue();
 
                 defaults.setOption(domain, key, value);
             }
@@ -280,9 +288,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         if (metaData.isKeyDomain("formatters")) {
             final Map<String, String> keysection = metaData.getKeyDomain("formatters");
 
-            for (Map.Entry entry : keysection.entrySet()) {
-                final String key = entry.getKey().toString();
-                final String value = entry.getValue().toString();
+            for (Map.Entry<String, String> entry : keysection.entrySet()) {
+                final String key = entry.getKey();
+                final String value = entry.getValue();
 
                 defaults.setOption("formatter", key, value);
             }
@@ -291,13 +299,51 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         if (metaData.isKeyDomain("icons")) {
             final Map<String, String> keysection = metaData.getKeyDomain("icons");
 
-            for (Map.Entry entry : keysection.entrySet()) {
-                final String key = entry.getKey().toString();
-                final String value = entry.getValue().toString();
+            for (Map.Entry<String, String> entry : keysection.entrySet()) {
+                final String key = entry.getKey();
+                final String value = entry.getValue();
 
                 defaults.setOption("icon", key, value);
             }
         }
+    }
+
+    /**
+     * Try get the identities for this plugin.
+     * This will unload any identities previously loaded by this plugin.
+     */
+    private void getIdentities() {
+        try {
+            final Map<String, InputStream> identityStreams = new HashMap<String, InputStream>(getResourceManager().getResourcesStartingWithAsInputStreams("META-INF/identities/"));
+
+            unloadIdentities();
+
+            for (Map.Entry<String, InputStream> entry : identityStreams.entrySet()) {
+                final String name = entry.getKey();
+                final InputStream stream = entry.getValue();
+
+                try {
+                    final Identity thisIdentity = new Identity(stream, false);
+                    identities.add(thisIdentity);
+                    IdentityManager.addIdentity(thisIdentity);
+                } catch (final InvalidIdentityFileException ex) {
+                    Logger.userError(ErrorLevel.MEDIUM, "Error with identity file '" + name + "' in plugin '" + getName() + "'", ex);
+                }
+            }
+        } catch (final IOException ioe) {
+            Logger.userError(ErrorLevel.MEDIUM, "Error finding identities in plugin '" + getName() + "'", ioe);
+        }
+    }
+
+    /**
+     * Unload any identities loaded by this plugin.
+     */
+    private void unloadIdentities() {
+        for (Identity identity : identities) {
+            IdentityManager.removeIdentity(identity);
+        }
+
+        identities.clear();
     }
 
     /**
@@ -349,6 +395,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             updateMetaData();
             updateProvides();
             getDefaults();
+            getIdentities();
         } catch (IOException ioe) {
         }
     }
@@ -597,8 +644,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             return true;
         }
 
-        for (String plugin : desired.split(",")) {
-            final String[] data = plugin.split(":");
+        for (String pluginName : desired.split(",")) {
+            final String[] data = pluginName.split(":");
             final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
             if (pi == null) {
                 requirementsError = "Required plugin '" + data[0] + "' was not found";
@@ -778,8 +825,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public void loadRequired() {
         final String required = getKeyValue("requires", "plugins", "");
-        for (String plugin : required.split(",")) {
-            final String[] data = plugin.split(":");
+        for (String pluginName : required.split(",")) {
+            final String[] data = pluginName.split(":");
             if (!data[0].trim().isEmpty()) {
                 final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
 
@@ -1003,6 +1050,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     service.delProvider(this);
                 }
                 provides.clear();
+                unloadIdentities();
             }
             tempLoaded = false;
             plugin = null;
@@ -1150,9 +1198,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             try {
                 ResourceManager res = getResourceManager();
 
-                for (final String filename : res.getResourcesStartingWith("")) {
-                    if (filename.matches("^.*\\.class$")) {
-                        result.add(filename.replaceAll("\\.class$", "").replace('/', '.'));
+                for (final String resourceFilename : res.getResourcesStartingWith("")) {
+                    if (resourceFilename.matches("^.*\\.class$")) {
+                        result.add(resourceFilename.replaceAll("\\.class$", "").replace('/', '.'));
                     }
                 }
             } catch (IOException e) {
