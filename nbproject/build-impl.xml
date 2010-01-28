@@ -49,6 +49,8 @@ is divided into following sections:
     <target depends="-pre-init,-init-private,-init-user" name="-init-project">
         <property file="nbproject/configs/${config}.properties"/>
         <property file="nbproject/project.properties"/>
+        <echo message="For development purposes, adding a private.classpath value to nbproject/private/private.properties will stop netbeans complaining." />
+        <echo message="The value should (currently) be: ${toString:plugins.libs}" />
     </target>
     <target depends="-pre-init,-init-private,-init-user,-init-project,-init-macrodef-property" name="-do-init">
         <available file="${manifest.file}" property="manifest.available"/>
