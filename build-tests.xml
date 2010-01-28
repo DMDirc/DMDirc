@@ -84,11 +84,16 @@
             <arg value="/usr/bin/ant"/>
             <arg value="with.clover"/>
             <arg value="do-real-test"/>
+            <arg value="clover.snapshot"/>
         </exec>
     </target>
 
     <target name="-test-no-xvfb" unless="use.xvfb">
-        <antcall target="do-real-test"/>
+        <antcall>
+            <target>with.clover</target>
+            <target>do-real-test</target>
+            <target>clover.snapshot</target>
+        </antcall>
     </target>
 
     <target name="test-html" depends="with.clover,compile-test,test,clover.html,clover.snapshot"
