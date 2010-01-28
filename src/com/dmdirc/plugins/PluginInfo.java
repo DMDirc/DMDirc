@@ -204,7 +204,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         updateProvides();
-        loadDefaults();
+        getDefaults();
         loadIdentities();
     }
 
@@ -264,7 +264,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Get the defaults, formatters and icons for this plugin.
      */
-    private void loadDefaults() {
+    private void getDefaults() {
         if (metaData == null) {
             return;
         }
@@ -394,7 +394,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
             updateMetaData();
             updateProvides();
-            loadDefaults();
+            getDefaults();
             loadIdentities();
         } catch (IOException ioe) {
         }
