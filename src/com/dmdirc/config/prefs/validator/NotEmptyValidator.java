@@ -37,7 +37,7 @@ public class NotEmptyValidator implements Validator<String> {
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (object.isEmpty()) {
+        if (object == null || object.isEmpty()) {
             return new ValidationResponse("Cannot be an empty string.");
         } else {
             return new ValidationResponse();
