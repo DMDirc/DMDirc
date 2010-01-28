@@ -1399,11 +1399,14 @@ public class Server extends WritableFrameContainer implements
                     description = "Unknown host (unable to resolve)";
                 } else if (exception instanceof java.net.NoRouteToHostException) {
                     description = "No route to host";
+                } else if (exception instanceof java.net.SocketTimeoutException) {
+                    description = "Connection attempt timed out";
                 } else if (exception instanceof java.net.SocketException
                         || exception instanceof javax.net.ssl.SSLException) {
                     description = exception.getMessage();
                 } else {
-                    Logger.appError(ErrorLevel.LOW, "Unknown socket error", exception);
+                    Logger.appError(ErrorLevel.LOW, "Unknown socket error",
+                            new IllegalArgumentException(exception));
                     description = "Unknown error: " + exception.getMessage();
                 }
             }
