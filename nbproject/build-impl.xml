@@ -66,6 +66,7 @@ is divided into following sections:
                 <available file="${main.test.dir}"/>
                 <available file="${parser.test.dir}"/>
                 <available file="${plugins.test.dir}"/>
+                <available file="${util.test.dir}"/>
             </and>
         </condition>
         <condition property="have.sources">
@@ -73,6 +74,7 @@ is divided into following sections:
                 <available file="${main.src.dir}"/>
                 <available file="${parser.src.dir}"/>
                 <available file="${plugins.src.dir}"/>
+                <available file="${util.src.dir}"/>
             </and>
         </condition>
         <condition property="netbeans.home+have.tests">
@@ -127,6 +129,8 @@ is divided into following sections:
         <fail unless="parser.test.dir">Must set parser.test.dir</fail>
         <fail unless="plugins.src.dir">Must set plugins.src.dir</fail>
         <fail unless="plugins.test.dir">Must set plugins.test.dir</fail>
+        <fail unless="util.src.dir">Must set util.src.dir</fail>
+        <fail unless="util.test.dir">Must set util.test.dir</fail>
         <fail unless="build.dir">Must set build.dir</fail>
         <fail unless="dist.dir">Must set dist.dir</fail>
         <fail unless="build.classes.dir">Must set build.classes.dir</fail>
@@ -147,7 +151,7 @@ is divided into following sections:
     </target>
     <target name="-init-macrodef-javac">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
+            <attribute default="${util.src.dir}:${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${includes}" name="includes"/>
@@ -168,7 +172,7 @@ is divided into following sections:
             </sequential>
         </macrodef>
         <macrodef name="depend" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
+            <attribute default="${util.src.dir}:${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <sequential>
@@ -223,15 +227,12 @@ is divided into following sections:
                             <fileset dir="${plugins.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                                 <filename name="@{testincludes}"/>
                             </fileset>
+                            <fileset dir="${util.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
+                                <filename name="@{testincludes}"/>
+                            </fileset>
                         </clover-optimized-testset>
 
                         <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                            <filename name="**/DummyTest*"/>
-                        </fileset>
-                        <fileset dir="${parser.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                            <filename name="**/DummyTest*"/>
-                        </fileset>
-                        <fileset dir="${plugins.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="**/DummyTest*"/>
                         </fileset>
                     </batchtest>
@@ -269,6 +270,9 @@ is divided into following sections:
                             <filename name="@{testincludes}"/>
                         </fileset>
                         <fileset dir="${plugins.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
+                            <filename name="@{testincludes}"/>
+                        </fileset>
+                        <fileset dir="${util.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="@{testincludes}"/>
                         </fileset>
                     </batchtest>
@@ -398,6 +402,7 @@ is divided into following sections:
             <fileset dir="${main.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${plugins.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${util.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target name="-post-compile">
@@ -412,7 +417,7 @@ is divided into following sections:
     <target depends="init,deps-jar,-pre-pre-compile" name="-do-compile-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <j2seproject3:force-recompile/>
-        <j2seproject3:javac excludes="" includes="${javac.includes}" sourcepath="${main.src.dir}:${parser.src.dir}:${plugins.src.dir}"/>
+        <j2seproject3:javac excludes="" includes="${javac.includes}" sourcepath="${main.src.dir}:${parser.src.dir}:${plugins.src.dir}:${util.src.dir}"/>
     </target>
     <target name="-post-compile-single">
         <!-- Empty placeholder for easier customization. -->
@@ -556,6 +561,9 @@ is divided into following sections:
             <fileset dir="${plugins.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
+            <fileset dir="${util.src.dir}" excludes="${excludes}" includes="${includes}">
+                <filename name="**/*.java"/>
+            </fileset>
         </javadoc>
     </target>
 
@@ -571,7 +579,7 @@ is divided into following sections:
 
     <target depends="init,-doccheck-check" name="-doccheck-build" if="doccheck.run">
         <mkdir dir="${doccheck.dir}"/>
-        <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${main.src.dir}:${parser.src.dir}:${plugins.src.dir}" useexternalfile="true" version="${javadoc.version}">
+        <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${main.src.dir}:${parser.src.dir}:${plugins.src.dir}:${util.src.dir}" useexternalfile="true" version="${javadoc.version}">
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
@@ -607,14 +615,15 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target if="do.depend.true" name="-compile-test-depend">
-        <j2seproject3:depend classpath="${javac.test.classpath}" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:depend classpath="${javac.test.classpath}" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}:${util.test.dir}"/>
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test,-compile-test-depend" if="have.tests" name="-do-compile-test">
-        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}:${util.test.dir}"/>
         <copy todir="${build.test.classes.dir}">
             <fileset dir="${main.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${plugins.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${util.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target name="-post-compile-test">
@@ -629,11 +638,12 @@ is divided into following sections:
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single" if="have.tests" name="-do-compile-test-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <j2seproject3:force-recompile destdir="${build.test.classes.dir}"/>
-        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" excludes="" includes="${javac.includes}" sourcepath="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}"/>
+        <j2seproject3:javac classpath="${javac.test.classpath}" debug="true" destdir="${build.test.classes.dir}" excludes="" includes="${javac.includes}" sourcepath="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}:${util.test.dir}" srcdir="${main.test.dir}:${parser.test.dir}:${plugins.test.dir}:${util.test.dir}"/>
         <copy todir="${build.test.classes.dir}">
             <fileset dir="${main.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${plugins.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${util.test.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target name="-post-compile-test-single">

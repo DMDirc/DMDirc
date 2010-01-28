@@ -7,3 +7,6 @@
 [submodule "modules/defaults"]
 	path = modules/defaults
 	url = git://dmdirc.com/~dmdirc/defaults
+[submodule "modules/util"]
+	path = modules/util
+	url = git://dmdirc.com/~dmdirc/util
