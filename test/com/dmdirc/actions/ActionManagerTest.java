@@ -37,6 +37,7 @@ public class ActionManagerTest {
     public static void setUpClass() throws Exception {
         IdentityManager.load();
         ActionManager.init();
+        ActionManager.loadActions();
         
         tearDownClass();
     }
