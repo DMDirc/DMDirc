@@ -219,7 +219,7 @@ public final class Main {
         }
 
         // Let command-line users know what is happening.
-        System.out.println(message.replaceAll("<br>", "\n"));
+        System.out.println(message.replace("<br>", "\n"));
 
         final File configFile = new File(getConfigDir() + "dmdirc.config");
         final File newConfigFile = new File(getConfigDir() + "dmdirc.config." + date);
@@ -237,7 +237,7 @@ public final class Main {
             if (!GraphicsEnvironment.isHeadless()) {
                 new WarningDialog("Invalid Config File", newMessage).displayBlocking();
             }
-            System.out.println(newMessage.replaceAll("<br>", "\n"));
+            System.out.println(newMessage.replace("<br>", "\n"));
             System.exit(1);
         }
     }
