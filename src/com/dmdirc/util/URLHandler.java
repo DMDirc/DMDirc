@@ -37,8 +37,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -208,15 +206,15 @@ public class URLHandler {
             }
         }
 
-        newCommand = newCommand.replaceAll("\\$url", Matcher.quoteReplacement(url.toString()));
-        newCommand = newCommand.replaceAll("\\$fragment", Matcher.quoteReplacement(fragment));
-        newCommand = newCommand.replaceAll("\\$host", Matcher.quoteReplacement(host));
-        newCommand = newCommand.replaceAll("\\$path", Matcher.quoteReplacement(path));
-        newCommand = newCommand.replaceAll("\\$port", Matcher.quoteReplacement(port));
-        newCommand = newCommand.replaceAll("\\$query", Matcher.quoteReplacement(query));
-        newCommand = newCommand.replaceAll("\\$protocol", Matcher.quoteReplacement(protocol));
-        newCommand = newCommand.replaceAll("\\$username", Matcher.quoteReplacement(username));
-        newCommand = newCommand.replaceAll("\\$password", Matcher.quoteReplacement(password));
+        newCommand = newCommand.replace("$url", url.toString());
+        newCommand = newCommand.replace("$fragment", fragment);
+        newCommand = newCommand.replace("$host", host);
+        newCommand = newCommand.replace("$path", path);
+        newCommand = newCommand.replace("$port", port);
+        newCommand = newCommand.replace("$query", query);
+        newCommand = newCommand.replace("$protocol", protocol);
+        newCommand = newCommand.replace("$username", username);
+        newCommand = newCommand.replace("$password", password);
 
         return newCommand;
     }

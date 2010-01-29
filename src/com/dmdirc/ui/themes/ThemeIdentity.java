@@ -82,7 +82,7 @@ public class ThemeIdentity extends Identity {
         if (result == null) {
             return result;
         } else {
-            return result.replaceAll("\\$theme", theme.getFileName(false));
+            return result.replace("$theme", theme.getFileName(false));
         }
     }
 
