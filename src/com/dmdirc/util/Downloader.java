@@ -22,9 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -48,15 +45,15 @@ import java.util.Map;
  * @author Chris
  */
 public final class Downloader {
-    
+
     /** Creates a new instance of Downloader. */
     private Downloader() {
         // Shouldn't be used
     }
-    
+
     /**
      * Retrieves the specified page.
-     * 
+     *
      * @param url The URL to retrieve
      * @return A list of lines received from the server
      * @throws java.net.MalformedURLException If the URL is malformed
@@ -64,31 +61,31 @@ public final class Downloader {
      */
     public static List<String> getPage(final String url)
             throws MalformedURLException, IOException {
-        
+
         return getPage(url, "");
     }
 
     /**
      * Retrieves the specified page, sending the specified post data.
-     * 
+     *
      * @param url The URL to retrieve
      * @param postData The raw POST data to send
      * @return A list of lines received from the server
      * @throws java.net.MalformedURLException If the URL is malformed
      * @throws java.io.IOException If there's an I/O error while downloading
-     */    
+     */
     public static List<String> getPage(final String url, final String postData)
             throws MalformedURLException, IOException {
-        
+
         final List<String> res = new ArrayList<String>();
-        
+
         final URLConnection urlConn = getConnection(url, postData);
 
         BufferedReader in = null;
 
         try {
             in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-        
+
             String line;
 
             do {
@@ -101,61 +98,56 @@ public final class Downloader {
         } finally {
             StreamUtil.close(in);
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves the specified page, sending the specified post data.
-     * 
+     *
      * @param url The URL to retrieve
      * @param postData A map of post data that should be sent
      * @return A list of lines received from the server
      * @throws java.net.MalformedURLException If the URL is malformed
      * @throws java.io.IOException If there's an I/O error while downloading
-     */    
+     */
     public static List<String> getPage(final String url, final Map<String, String> postData)
             throws MalformedURLException, IOException {
-        
         final StringBuilder data = new StringBuilder();
-        
-        try {
-            for (Map.Entry<String, String> entry : postData.entrySet()) {
-                data.append('&');
-                data.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-                data.append('=');
-                data.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-            }
-        } catch (UnsupportedEncodingException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "URLEncoder doesn't support UTF-8", ex);
+
+        for (Map.Entry<String, String> entry : postData.entrySet()) {
+            data.append('&');
+            data.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
-        
+
         return getPage(url, data.length() == 0 ? "" : data.substring(1));
     }
-    
+
     /**
      * Downloads the specified page to disk.
-     * 
+     *
      * @param url The URL to retrieve
      * @param file The file to save the page to
      * @throws java.io.IOException If there's an I/O error while downloading
-     */    
+     */
     public static void downloadPage(final String url, final String file)
-            throws IOException {    
+            throws IOException {
         downloadPage(url, file, null);
     }
-    
+
     /**
      * Downloads the specified page to disk.
-     * 
+     *
      * @param url The URL to retrieve
      * @param file The file to save the page to
      * @param listener The progress listener for this download
      * @throws java.io.IOException If there's an I/O error while downloading
-     */    
+     */
     public static void downloadPage(final String url, final String file,
             final DownloadListener listener) throws IOException {
-                
+
         final URLConnection urlConn = getConnection(url, "");
         final File myFile = new File(file);
 
@@ -192,10 +184,10 @@ public final class Downloader {
             StreamUtil.close(output);
         }
     }
-    
+
     /**
      * Creates an URL connection for the specified URL and data.
-     * 
+     *
      * @param url The URL to connect to
      * @param postData The POST data to pass to the URL
      * @return An URLConnection for the specified URL/data
@@ -206,17 +198,17 @@ public final class Downloader {
             throws MalformedURLException, IOException {
         final URL myUrl = new URL(url);
         final URLConnection urlConn = myUrl.openConnection();
-        
+
         urlConn.setUseCaches(false);
         urlConn.setDoInput(true);
         urlConn.setDoOutput(postData.length() > 0);
         urlConn.setConnectTimeout(10000);
-        
+
         if (postData.length() > 0) {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            
+
             DataOutputStream out = null;
-            
+
             try {
                 out = new DataOutputStream(urlConn.getOutputStream());
                 out.writeBytes(postData);
@@ -225,8 +217,8 @@ public final class Downloader {
                 StreamUtil.close(out);
             }
         }
-        
+
         return urlConn;
     }
-    
+
 }
