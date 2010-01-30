@@ -348,6 +348,7 @@ public class Identity extends ConfigSource implements Serializable,
     public void setOption(final String domain, final String option,
             final String value) {
         String oldValue;
+        boolean unset = false;
 
         synchronized (this) {
             oldValue = getOption(domain, option);
@@ -365,23 +366,31 @@ public class Identity extends ConfigSource implements Serializable,
 
                 if (globalConfig.hasOption(domain, option)
                         && globalConfig.getOption(domain, option).equals(value)) {
+                    // The new value is covered by a default setting
                     if (oldValue == null) {
+                        // There was no old value, so we don't need to do anything
                         return;
                     } else {
-                        unsetOption(domain, option);
-                        return;
+                        // There was an old value, so we need to unset it so
+                        // that the default shows through.
+                        file.getKeyDomain(domain).remove(option);
+                        needSave = true;
+                        unset = true;
                     }
                 }
             }
-        }
 
-        if ((oldValue == null && value != null)
-                || (oldValue != null && !oldValue.equals(value))) {
-            synchronized (this) {
+            if (!unset && ((oldValue == null && value != null)
+                    || (oldValue != null && !oldValue.equals(value)))) {
                 file.getKeyDomain(domain).put(option, value);
                 needSave = true;
             }
+        }
 
+        // Fire any setting change listeners now we're no longer holding
+        // a lock on this identity.
+        if (unset || (oldValue == null && value != null)
+                || (oldValue != null && !oldValue.equals(value))) {
             fireSettingChange(domain, option);
         }
     }
