@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.ui.core.util;
 
 import java.net.MalformedURLException;
 import java.net.URI;
