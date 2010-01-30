@@ -1142,14 +1142,16 @@ public class Server extends WritableFrameContainer implements
      * @param args The CTCP arguments
      */
     public void sendCTCPReply(final String source, final String type, final String args) {
-        if (type.equalsIgnoreCase("VERSION")) {
-            parser.sendCTCPReply(source, "VERSION", "DMDirc " +
-                    getConfigManager().getOption("version", "version")
-                    + " - http://www.dmdirc.com/");
-        } else if (type.equalsIgnoreCase("PING")) {
-            parser.sendCTCPReply(source, "PING", args);
-        } else if (type.equalsIgnoreCase("CLIENTINFO")) {
-            parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
+        if (!getConfigManager().getOptionBool(DOMAIN_GENERAL, "sendctcpreplies"))  {
+            if (type.equalsIgnoreCase("VERSION")) {
+                parser.sendCTCPReply(source, "VERSION", "DMDirc " +
+                        getConfigManager().getOption("version", "version")
+                        + " - http://www.dmdirc.com/");
+            } else if (type.equalsIgnoreCase("PING")) {
+                parser.sendCTCPReply(source, "PING", args);
+            } else if (type.equalsIgnoreCase("CLIENTINFO")) {
+                parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
+            }
         }
     }
 
