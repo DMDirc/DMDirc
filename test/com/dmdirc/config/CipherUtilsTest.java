@@ -20,9 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.config;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestCipherUtils;
 import org.junit.Before;
 import org.junit.Test;

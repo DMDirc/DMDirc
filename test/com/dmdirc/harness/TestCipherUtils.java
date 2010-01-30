@@ -22,7 +22,7 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.util.CipherUtils;
+import com.dmdirc.config.CipherUtils;
 
 public class TestCipherUtils extends CipherUtils {
 
