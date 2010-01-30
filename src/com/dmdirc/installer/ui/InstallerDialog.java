@@ -46,7 +46,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- *
+ * Installer dialog, showing the steps required to install DMDirc.
  */
 public class InstallerDialog extends JFrame implements ActionListener {
 
@@ -178,55 +178,58 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
+     * Gets the specified step for the installer.
      *
+     * @param step Index of the step
      *
-     * @param step
-     * @return
+     * @return Requested step
      */
     public Step getStep(final int step) {
         return wizard.getStep(step);
     }
 
     /**
+     * Gets the specified step for the installer.
      *
-     * @param name
-     * @return
+     * @param name Name of the step
+     *
+     * @return Requested step
      */
     public Step getStep(final String name) {
         return wizard.getStep(name);
     }
 
     /**
+     * Returns the current step.
      *
-     *
-     * @return
+     * @return Current step
      */
     public Step getCurrentStep() {
         return wizard.getCurrentStep();
     }
 
     /**
+     * Returns the index of the current step.
      *
-     *
-     * @return
+     * @return Current step's index
      */
     public int getCurrentStepIndex() {
         return wizard.getCurrentStepIndex();
     }
 
     /**
+     * Returns the name of the current step.
      *
-     *
-     * @return
+     * @return Current step's name
      */
     public String getCurrentStepName() {
         return wizard.getCurrentStepName();
     }
 
     /**
+     * Informs listeners a step is about to be displayed.
      *
-     *
-     * @param step
+     * @param step Step to be displayed
      */
     void fireStepAboutToBeDisplayed(final Step step) {
         for (StepListener listener : listeners.get(StepListener.class)) {
@@ -235,9 +238,9 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     *
+     * Informs listeners a step is about to be hidden.
      * 
-     * @param step
+     * @param step Step to be hidden
      */
     void fireStepHidden(final Step step) {
         for (StepListener listener : listeners.get(StepListener.class)) {
@@ -246,18 +249,18 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     *
+     * Adds a step listener to this installer.
      * 
-     * @param listener
+     * @param listener Listener to add
      */
     public void addStepListener(final StepListener listener) {
         listeners.add(StepListener.class, listener);
     }
 
     /**
+     * Removes a step listener from this installer.
      *
-     *
-     * @param listener
+     * @param listener Listener to remove
      */
     public void removeStepListener(final StepListener listener) {
         listeners.remove(StepListener.class, listener);
@@ -265,7 +268,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     *
+     * Informs listeners this installer has been cancelled.
      */
     void fireWizardCancelled() {
         for (WizardListener listener : listeners.get(WizardListener.class)) {
@@ -274,7 +277,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     * 
+     * Informs listeners this installer has been completed.
      */
     void fireWizardFinished() {
         for (WizardListener listener : listeners.get(WizardListener.class)) {
@@ -283,18 +286,18 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
+     * Adds a wizard listeners to this installer.
      *
-     *
-     * @param listener
+     * @param listener Listener to add
      */
     public void addWizardListener(final WizardListener listener) {
         listeners.add(WizardListener.class, listener);
     }
 
     /**
-     *
+     * Removes  a wizard listener from this installer
      * 
-     * @param listener
+     * @param listener Listener to remove
      */
     public void removeWizardListener(final WizardListener listener) {
         listeners.remove(WizardListener.class, listener);
@@ -329,6 +332,11 @@ public class InstallerDialog extends JFrame implements ActionListener {
         UIManager.put("swing.boldMetal", false);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Action performed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         final int currentStep = wizard.getCurrentStepIndex();
