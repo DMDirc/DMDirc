@@ -20,10 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.config;
 
 import com.dmdirc.Main;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -46,6 +45,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+
 import net.miginfocom.Base64;
 
 /**
