@@ -322,6 +322,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String name = entry.getKey();
                 final InputStream stream = entry.getValue();
 
+                if (name.endsWith("/")) {
+                    // Don't try to load folders as identities
+                    continue;
+                }
+
                 try {
                     final Identity thisIdentity = new Identity(stream, false);
                     identities.add(thisIdentity);
