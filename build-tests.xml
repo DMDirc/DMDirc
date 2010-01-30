@@ -89,11 +89,9 @@
     </target>
 
     <target name="-test-no-xvfb" unless="use.xvfb">
-        <antcall>
-            <target>with.clover</target>
-            <target>do-real-test</target>
-            <target>clover.snapshot</target>
-        </antcall>
+        <antcall target="with.clover" />
+        <antcall target="do-real-test" />
+        <antcall target="clover.snapshot" />
     </target>
 
     <target name="test-html" depends="with.clover,compile-test,test,clover.html,clover.snapshot"
