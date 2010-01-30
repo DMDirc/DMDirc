@@ -27,6 +27,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.IdentityManager;
@@ -103,6 +104,8 @@ public final class ActionManager {
 
         registerGroup(AliasWrapper.getAliasWrapper());
         registerGroup(PerformWrapper.getPerformWrapper());
+
+        new WhoisNumericFormatter(IdentityManager.getAddonIdentity()).register();
        
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
