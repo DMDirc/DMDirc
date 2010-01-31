@@ -258,7 +258,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws IOException if there is an error with the ResourceManager.
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
-        return new TreeMap<String, InputStream>(getResourceManager().getResourcesStartingWithAsInputStreams("META-INF/licences/"));
+        final TreeMap<String, InputStream> licences =
+                new TreeMap<String, InputStream>(String.CASE_INSENSITIVE_ORDER);
+        licences.putAll(getResourceManager().getResourcesStartingWithAsInputStreams(
+                "META-INF/licences/"));
+        return licences;
     }
 
     /**
