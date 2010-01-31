@@ -32,12 +32,14 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.updater.UpdateChecker;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.awt.GraphicsEnvironment;
@@ -113,6 +115,7 @@ public final class Main {
         }
 
         final PluginManager pm = PluginManager.getPluginManager();
+        checkBundledPlugins(pm, IdentityManager.getGlobalConfig());
         
         ThemeManager.loadThemes();
 
@@ -255,6 +258,29 @@ public final class Main {
         if (pm.getServicesByType(serviceType).isEmpty()) {
             extractCorePlugins(serviceType + "_");
             pm.getPossiblePluginInfos(true);
+        }
+    }
+
+    /**
+     * Checks whether the plugins bundled with this release of DMDirc are newer
+     * than the plugins known by the specified {@link PluginManager}. If the
+     * bundled plugins are newer, they are automatically extracted.
+     *
+     * @param pm The plugin manager to use to check plugins
+     * @param config The configuration source for bundled versions
+     */
+    private static void checkBundledPlugins(final PluginManager pm, final ConfigManager config) {
+        for (PluginInfo plugin : pm.getPluginInfos()) {
+            if (config.hasOptionString("bundledplugins_versions", plugin.getName())) {
+                final Version bundled = new Version(config.getOption("bundledplugins_versions",
+                        plugin.getName()));
+                final Version installed = plugin.getVersion();
+
+                if (installed.compareTo(bundled) < 0) {
+                    extractCorePlugins(plugin.getName());
+                    PluginManager.getPluginManager().reloadPlugin(plugin.getFilename());
+                }
+            }
         }
     }
 
