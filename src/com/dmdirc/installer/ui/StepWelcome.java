@@ -52,7 +52,7 @@ public final class StepWelcome extends SwingStep {
                 "will install DMDirc on this computer.\n\nDMDirc is a " +
                 "cross-platform IRC client developed by Chris Smith, Shane " +
                 "Mc Cormack and Gregory Holmes. DMDirc is released for free " +
-                "under the MIT license; for more information, please visit " +
+                "under the MIT licence; for more information, please visit " +
                 "www.DMDirc.com.\n\nClick \"Next\" to continue, or close " +
                 "this program to cancel the installation."), BorderLayout.CENTER);
     }

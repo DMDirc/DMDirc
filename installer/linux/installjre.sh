@@ -60,9 +60,9 @@ else
 	exit 1;
 fi;
 
-showLicense() {
-	# Get License Text
-	FILE=`mktemp license.XXXXXXXXXXXXXX`
+showLicence() {
+	# Get Licence Text
+	FILE=`mktemp licence.XXXXXXXXXXXXXX`
 	if [ "${ISFREEBSD}" != "" ]; then
 		WGET=`which wget`
 		FETCH=`which fetch`
@@ -80,11 +80,11 @@ showLicense() {
 			${CURL} -s -o ${FILE} ${URL}
 		fi;
 	else
-		# Location of license start
+		# Location of licence start
 		STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 		STARTLINE=$((${STARTLINE%%:*} + 1))
-		# Location of license end
-		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
+		# Location of licence end
+		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above licence terms?" jre.bin`
 		ENDLINE=$((${ENDLINE%%:*} - 4))
 		
 		head -n ${ENDLINE} jre.bin | tail ${TAILOPTS}${STARTLINE} > ${FILE}
@@ -93,7 +93,7 @@ showLicense() {
 	# Send text to console.
 	echo ""
 	echo "-----------------------------------------------------------------------"
-	echo "Java License"
+	echo "Java Licence"
 	echo "-----------------------------------------------------------------------"
 	cat ${FILE}
 	echo "-----------------------------------------------------------------------"
@@ -101,10 +101,10 @@ showLicense() {
 	# Now try to use the GUI Dialogs.
 	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: Java License" --textbox ${FILE} 600 400
+		${KDIALOG} --title "DMDirc: Java Licence" --textbox ${FILE} 600 400
 	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --text-info --title "DMDirc: Java License" --filename=${FILE} --width=600 --height=400
+		${ZENITY} --text-info --title "DMDirc: Java Licence" --filename=${FILE} --width=600 --height=400
 	fi
 	
 	# Remove temp file
@@ -120,9 +120,9 @@ if [ "" != "${1}" ]; then
 	fi;
 fi;
 
-messagedialog "Java Install" "Before java can be installed, please review the following license."
-showLicense
-questiondialog "Java Install" "Do you agree to the Java License?"
+messagedialog "Java Install" "Before java can be installed, please review the following licence."
+showLicence
+questiondialog "Java Install" "Do you agree to the Java Licence?"
 if [ $? -eq 0 ]; then
 	if [ "${ISFREEBSD}" != "" ]; then
 		JREJAVAHOME="diablo-jre1.6.0_07"
@@ -153,14 +153,14 @@ if [ $? -eq 0 ]; then
 			tar -jxvf jre.tar.bz2
 			mv jre.tar.bz2 jre.bin
 		else
-			# Hack jre.bin to allow us to install without asking for a license, or failing
+			# Hack jre.bin to allow us to install without asking for a licence, or failing
 			# the checksum.
 			
-			# Location of license start
+			# Location of licence start
 			STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 			STARTLINE=${STARTLINE%%:*}
-			# Location of license end
-			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
+			# Location of licence end
+			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above licence terms?" jre.bin`
 			ENDLINE=$((${ENDLINE%%:*} - 2))
 			# Location of checksum start
 			CSSTARTLINE=`grep ${GREPOPTS} "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
@@ -171,7 +171,7 @@ if [ $? -eq 0 ]; then
 			# Location of script end
 			SCENDLINE=`grep ${GREPOPTS} "^echo \"Done.\"$" jre.bin`
 			SCENDLINE=$((${SCENDLINE%%:*} + 2 - (${ENDLINE} - ${STARTLINE}) - (${CSENDLINE} - ${CSSTARTLINE})))
-			# Remove the license and checksum stuff!
+			# Remove the licence and checksum stuff!
 			head -n $((${STARTLINE} -1)) jre.bin > jre.bin.tmp
 			tail ${TAILOPTS}$((${ENDLINE})) jre.bin | head -n $((${CSSTARTLINE} -1 - ${ENDLINE})) >> jre.bin.tmp
 			echo "tail \${tail_args} +${SCENDLINE} \"\$0\" > \$outname" >> jre.bin.tmp
@@ -234,6 +234,6 @@ if [ $? -eq 0 ]; then
 		exit 0;
 	fi;
 else
-	errordialog "Java Install" "You must agree to the license before java can be installed"
+	errordialog "Java Install" "You must agree to the licence before java can be installed"
 fi;
 exit 1;
