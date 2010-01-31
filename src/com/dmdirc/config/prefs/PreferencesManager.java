@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.Main;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -142,7 +142,7 @@ public class PreferencesManager {
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "confirmQuit", "Confirm quit",
-                "Do you want to confirm closing the client?"));
+                "Show a confirmation message when you try to close the client"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "splitusermodes", "Split user modes",
                 "Show individual mode lines for each mode change that affects" +
@@ -153,16 +153,16 @@ public class PreferencesManager {
                 "users automatically"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "general", "whotime", "Who request interval",
-                "How often to send WHO requests for a channel"));
+                "How often to send WHO requests for a channel (if enabled)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "showmodeprefix", "Show mode prefix",
-                "Prefix users' names with their mode in channels"));
+                "Prefix users' names with their mode (e.g. @) in channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "hidequeries", "Hide queries",
-                "Initially hide queries so that they don't steal focus"));
+                "Initially hide new query windows so that they don't steal focus"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "awayindicator", "Away indicator",
-                "Shows an indicator in windows when you are marked as away"));
+                "Show an indicator in windows when you are marked as away"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
                 new OptionalValidator(new NumericalValidator(0, 100)), "ui", "pasteProtectionLimit",
                 "Paste protection trigger", "Confirm pasting of text that " +
@@ -175,7 +175,7 @@ public class PreferencesManager {
         
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
                 "Tab completion style", "Determines the behaviour of " +
-                "the tab completer when there are multiple matches.", taboptions));
+                "the tab completer when there are multiple matches", taboptions));
 
         addCategory(category);
     }
@@ -189,18 +189,18 @@ public class PreferencesManager {
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsonquit", "Close channels on quit",
-                "Close channel windows when you quit the server?"));
+                "Close channel windows when you manually disconnect from the server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsondisconnect",
                 "Close channels on disconnect", "Close channel windows when " +
-                "the server is disconnected?"));
+                "the server is disconnected (because of an error)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesonquit", "Close queries on quit",
-                "Close query windows when you quit the server?"));
+                "Close query windows when you manually disconnect from the server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesondisconnect",
                 "Close queries on disconnect", "Close query windows when " +
-                "the server is disconnected?"));
+                "the server is disconnected (because of an error)"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimer", "Ping warning time",
                 "How long to wait after a ping reply is sent before showing " +
@@ -208,23 +208,23 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimeout", "Ping timeout",
                 "How long to wait for a server to reply to a PING request " +
-                "before assume it has died and disconnecting"));
+                "before assuming the server has died"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingfrequency", "Ping frequency",
                 "How often a PING request should be sent to the server (to " +
                 "check that it is still alive)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectonconnectfailure", "Reconnect on failure",
-                "Attempt to reconnect if there is an error when connecting?"));
+                "Attempt to reconnect if there is an error when connecting"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectondisconnect", "Reconnect on disconnect",
-                "Attempt to reconnect if the server is disconnected?"));
+                "Attempt to reconnect if the server is disconnected"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "general", "reconnectdelay", "Reconnect delay",
                 "How long to wait before attempting to reconnect to a server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "rejoinchannels", "Rejoin open channels",
-                "Rejoin open channels when reconnecting to a server?"));
+                "Rejoin open channels when reconnecting to a server"));
 
         addCategory(category);
     }
@@ -269,6 +269,7 @@ public class PreferencesManager {
                 "", "input-error");
 
         final Map<String, String> options = new HashMap<String, String>();
+        final Map<String, String> commonOptions = new HashMap<String, String>();
         final Map<String, String> whoisOptions = new HashMap<String, String>();
         final Map<String, String> ctcprOptions = new HashMap<String, String>();
         final Map<String, String> mapOptions = new HashMap<String, String>();
@@ -278,10 +279,14 @@ public class PreferencesManager {
         options.put("server", "Server window");
         options.put("none", "Nowhere");
 
+        commonOptions.putAll(options);
+        commonOptions.put("comchans:%1$s", "Common channels");
+
         whoisOptions.putAll(options);
         whoisOptions.put("lastcommand:(raw )?whois %4$s( %4$s)?", "Source of whois command");
+        whoisOptions.put("comchans:%4$s", "Common channels");
 
-        ctcprOptions.putAll(options);
+        ctcprOptions.putAll(commonOptions);
         ctcprOptions.put("lastcommand:ctcp %1$s %4$S", "Source of ctcp command");
 
         mapOptions.putAll(options);
@@ -292,13 +297,13 @@ public class PreferencesManager {
                 options));
         category.addSetting(new PreferencesSetting("notifications", "privateNotice",
                 "Private notice", "Where to display private notices",
-                options));
+                commonOptions));
         category.addSetting(new PreferencesSetting("notifications", "serverNotice",
                 "Server notice", "Where to display server notices",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCP",
                 "CTCP request", "Where to display CTCP request notifications",
-                options));
+                commonOptions));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCPreply",
                 "CTCP reply", "Where to display CTCP replies",
                 ctcprOptions));
@@ -340,28 +345,28 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "uselaunchdelay", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
-                " double clicking)?"));
+                " double clicking)"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "browser", "launchdelay", "Browser launch delay",
-                "Minimum time between opening of URLs"));
+                "Minimum time between opening of URLs if enabled"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "submitErrors", "Automatically submit errors",
-                "Automatically submit client errors to the developers?"));
+                "Automatically submit client errors to the developers"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "logerrors", "Log errors to disk",
-                "Save copies of all errors to disk?"));        
+                "Save copies of all client errors to disk"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "casesensitive", "Case-sensitive tab completion",
-                "Respect case when tab completing?"));
+                "Respect case when tab completing"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "quickCopy", "Quick copy", "Automatically copy" +
-                " text that's selected when the mouse button is released?"));
+                " text that's selected when the mouse button is released"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "showversion", "Show version",
-                "Show DMDirc version in the titlebar?"));
+                "Show the current DMDirc version in the titlebar"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showglobalwindow", "Show global window",
-                "Show a global window which can be used to enter commands?"));
+                "Show a global window which can be used to enter commands"));
 
         addCategory(category);
     }
@@ -379,7 +384,7 @@ public class PreferencesManager {
         }
 
         category.addSetting(new PreferencesSetting("general", "ui", "Active UI",
-                "Default user interface to use", uiOptions).setRestartNeeded());
+                "User interface to use", uiOptions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 "ui", "backgroundcolour", "Background colour", "Default " +
                 "background colour to use"));
@@ -394,19 +399,19 @@ public class PreferencesManager {
                 "Default foreground colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showcolourdialog", "Show colour dialog",
-                "Show colour picker dialog when using colour control codes?"));
+                "Show colour picker dialog when using colour control codes"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "System anti-alias",
-                "Anti-alias all fonts?").setRestartNeeded());
+                "Anti-alias all fonts").setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "maximisewindows", "Auto-maximise windows",
-                "Automatically maximise newly opened windows?"));
+                "Automatically maximise newly opened windows"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursintext", "Show nick colours in text area",
-                "Show nickname colours in text areas?"));
+                "Show nickname colours (if set) in text areas"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursinnicklist", "Show nick colours in nicklists",
-                "Show nickname colours in channel nicklists?"));
+                "Show nickname colours (if set) in channel nicklists"));
 
         addThemesCategory(category);
         addCategory(category);
