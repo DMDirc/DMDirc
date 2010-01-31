@@ -18,7 +18,7 @@
                 <include name="**/*.java" />
                 <exclude name="**/harness/**/*.java" />
             </fileset>
-            <methodContext name="private ctor" regexp="(.* )?private +[a-zA-Z0-9_$]+ *\( *\).*"/>
+            <methodContext name="private_ctor" regexp="(.* )?private +[a-zA-Z0-9_$]+ *\( *\).*"/>
         </clover-setup>
     </target>
 
@@ -31,7 +31,7 @@
         <mkdir dir="reports/clover" />
         <clover-report>
             <current outfile="reports/clover/clover.xml">
-                <format type="xml" filter="private ctor"/>
+                <format type="xml" filter="private_ctor"/>
             </current>
         </clover-report>
     </target>
@@ -43,7 +43,7 @@
         <clover-historypoint historydir="reports/clover/history" />
         <clover-report>
             <current outfile="reports/clover">
-                <format type="html" filter="private ctor"/>
+                <format type="html" filter="private_ctor"/>
              </current>
              <historical outfile="reports/clover" historydir="reports/clover/history" />
         </clover-report>
