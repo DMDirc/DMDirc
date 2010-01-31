@@ -372,7 +372,15 @@ public class PreferencesManager {
     private void addGuiCategory() {
         final PreferencesCategory category = new PreferencesCategory("GUI", "",
                 "category-gui");
+        final Map<String, String> uiOptions = new HashMap<String, String>();
+        final PluginManager pluginManager = PluginManager.getPluginManager();
 
+        for (Service uiName : pluginManager.getServicesByType("ui")) {
+            uiOptions.put(uiName.getName(), uiName.getName());
+        }
+
+        category.addSetting(new PreferencesSetting("general", "ui", "Active UI",
+                "Default User Interface to use", uiOptions));
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 "ui", "backgroundcolour", "Background colour", "Default " +
                 "background colour to use"));
