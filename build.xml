@@ -59,6 +59,6 @@
     <target name="-pre-init" depends="-submodules"/>
     <target name="-post-compile" depends="-write-version, build-plugins, -addpluginlibs"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-addjarlibs"/>
+    <target name="-post-jar" depends="-addjarlibs,-update-bundled-plugins"/>
 
 </project>

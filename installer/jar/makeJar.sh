@@ -150,8 +150,11 @@ if [ "${plugins}" != "" ]; then
 		pluginList=${pluginList}" plugins/${plugin}"
 	done
 	jar -uvf "${RUNNAME}" ${pluginList}
+
+        ../../updateBundledPlugins.sh ${RUNNAME};
 	rm -Rf plugins;
 fi;
+
 doRename=0
 if [ "${TAGGED}" != "" ]; then
 	doRename=1	

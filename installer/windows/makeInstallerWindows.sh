@@ -244,6 +244,8 @@ else
 		pluginList=${pluginList}" plugins/${plugin}"
 	done
 	jar -uvf "DMDirc.jar" ${pluginList}
+
+	../../updateBundledPlugins.sh "DMDirc.jar";
 	rm -Rf plugins;
 fi
 

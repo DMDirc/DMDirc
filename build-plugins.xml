@@ -14,5 +14,12 @@
             <arg value="${src.dir}/com/dmdirc/addons/"/>
         </exec>
     </target>
+
+    <target name="-update-bundled-plugins" if="has.bash">
+       <exec executable="/bin/bash">
+            <arg value="updateBundledPlugins.sh"/>
+            <arg value="${dist.jar}"/>
+       </exec>
+    </target>
     
 </project>
