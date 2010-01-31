@@ -22,7 +22,7 @@
         </clover-setup>
     </target>
 
-    <target name="clover.snapshot" depends="with.clover">
+    <target name="clover.snapshot" depends="with.clover" if="clover.installed">
         <clover-snapshot/>
     </target>
 
@@ -82,11 +82,11 @@
             <arg value="-w"/>
             <arg value="5"/>
             <arg value="/usr/bin/ant"/>
-            <arg value="with.clover"/>
-            <arg value="do-real-test"/>
-            <arg value="clover.snapshot"/>
+            <arg value="do-xvfb-tests"/>
         </exec>
     </target>
+
+    <target name="do-xvfb-tests" depends="with.clover,do-real-test,clover.snapshot"/>
 
     <target name="-test-no-xvfb" unless="use.xvfb">
         <antcall>
