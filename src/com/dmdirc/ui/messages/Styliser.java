@@ -223,6 +223,44 @@ public class Styliser implements ConfigChangeListener {
         
         return styledDoc;
     }
+
+    /**
+     * Retrieves the styled String contained within the unstyled offsets
+     * specified. That is, the <code>from</code> and <code>to</code> arguments
+     * correspond to indexes in an unstyled version of the <code>styled</code>
+     * string. The unstyled indices are translated to offsets within the
+     * styled String, and the return value includes all text and control codes
+     * between those indices.
+     * <p>
+     * The index translation is left-biased; that is, the indices are translated
+     * to be as far left as they possibly can be. This means that the start of
+     * the string will include any control codes immediately preceeding the
+     * desired text, and the end will not include any trailing codes.
+     *
+     * @param styled The styled String to be operated on
+     * @param from The starting index in the unstyled string
+     * @param to The ending index in the unstyled string
+     * @return The corresponding text between the two indices
+     * @since 0.6.3
+     */
+    public static String getStyledText(final String styled, final int from, final int to) {
+        final String unstyled = stipControlCodes(styled);
+        final String startBit = unstyled.substring(0, from);
+        final String middleBit = unstyled.substring(from, to);
+        int start = from;
+
+        while (!stipControlCodes(styled.substring(0, start)).equals(startBit)) {
+            start++;
+        }
+
+        int end = to + start - from;
+
+        while (!stipControlCodes(styled.substring(start, end)).equals(middleBit)) {
+            end++;
+        }
+
+        return styled.substring(start, end);
+    }
     
     /**
      * Applies the hyperlink styles and intelligent linking regexps to the
