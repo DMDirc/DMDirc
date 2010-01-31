@@ -32,6 +32,7 @@ import com.dmdirc.util.StreamUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
@@ -188,10 +189,12 @@ public class CertificateManager implements X509TrustManager {
                 kmf.init(ks, pass);
 
                 return kmf.getKeyManagers();
+            } catch (FileNotFoundException ex) {
+                Logger.userError(ErrorLevel.MEDIUM, "Certificate file not found", ex);
             } catch (KeyStoreException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (IOException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (CertificateException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (NoSuchAlgorithmException ex) {
