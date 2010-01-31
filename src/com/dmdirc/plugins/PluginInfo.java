@@ -205,7 +205,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
-        loadIdentities();
     }
 
     /**
@@ -404,7 +403,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             updateMetaData();
             updateProvides();
             getDefaults();
-            loadIdentities();
         } catch (IOException ioe) {
         }
     }
@@ -856,6 +854,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public void loadPlugin() {
         updateProvides();
+        loadIdentities();
         if (!checkRequirements(isTempLoaded() || tempLoaded)) {
             lastError = "Unable to loadPlugin, all requirements not met. (" + requirementsError + ")";
             return;
@@ -1061,6 +1060,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 provides.clear();
                 unloadIdentities();
             }
+            unloadIdentities();
             tempLoaded = false;
             plugin = null;
             classloader = null;
