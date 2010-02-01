@@ -61,7 +61,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
 
     /** Plugin Meta Data */
-    private ConfigFile metaData = null;
+    private volatile ConfigFile metaData = null;
 
     /** URL that this plugin was loaded from */
     private final URL url;
@@ -404,6 +404,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             updateProvides();
             getDefaults();
         } catch (IOException ioe) {
+            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating "+getName(), ioe);
         }
     }
 
@@ -423,6 +424,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 return true;
             }
         } catch (IOException ioe) {
+            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating the metadata for "+getName(), ioe);
         }
 
         return false;
@@ -938,6 +940,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
 
             final Class<?> c = classloader.loadClass(classname);
+            if (c == null) {
+                lastError = "Class '"+classname+"' was not able to load.";
+                return;
+            }
             final Constructor<?> constructor = c.getConstructor(new Class[]{});
 
             // Only try and construct the main class, anything else should be constructed

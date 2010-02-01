@@ -93,11 +93,23 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     @Override    
     public boolean doInstall(final String path) throws Exception {
         final File target = new File(plugin.getFullFilename());
-        
+
+        boolean returnCode = false;
+        final boolean wasLoaded = plugin.isLoaded();
+
         if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
             target.delete();
         }
-        
+
+        // Unload old version of plugin before we update the metadata.
+        if (wasLoaded && plugin.isUnloadable()) {
+            plugin.unloadPlugin();
+        }
+
+        // Try and move the downloaded plugin to the new location.
+        // If it doesn't work then keep the plugin in a .update file untill
+        // the next restart.
+        // If it does, update the metadata.
         if ((!plugin.isUnloadable() && plugin.isLoaded()) || !new File(path).renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getFullFilename() + ".update");
@@ -107,17 +119,15 @@ public class PluginComponent implements UpdateComponent, FileComponent {
             }
             
             new File(path).renameTo(newTarget);
-            return true;
+            returnCode = true;
+        } else {
+            plugin.pluginUpdated();
         }
+
+        // If the plugin was loaded before, load it again.
+        if (wasLoaded) { plugin.loadPlugin(); }
         
-        plugin.pluginUpdated();
-        
-        if (plugin.isLoaded()) {
-            plugin.unloadPlugin();
-            plugin.loadPlugin();
-        }
-        
-        return false;
+        return returnCode;
     }
 
     @Override
