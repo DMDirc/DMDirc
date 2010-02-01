@@ -283,7 +283,7 @@ if [ "" != "${KDIALOG}" -a "" != "${DISPLAY}" -a "" = "${ISGNOME}" -a "${USEKDIA
 	echo "Progress dialog on Display: ${DISPLAY}"
 	progresswindow=`${KDIALOG} --title "DMDirc: ${CAPTION}" --progressbar "${CAPTION}" 100`
 	if [ "${PULSATE}" = "1" ]; then
-		SHOCANCEL="false"
+		SHOWCANCEL="false"
 	else
 		SHOWCANCEL="true"
 	fi;
