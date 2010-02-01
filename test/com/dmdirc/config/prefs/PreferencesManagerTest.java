@@ -28,6 +28,7 @@ import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 
+import com.dmdirc.plugins.PluginManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,6 +39,7 @@ public class PreferencesManagerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
+        PluginManager.getPluginManager();
         Main.setUI(new SwingController());
     }    
 
