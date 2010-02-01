@@ -854,11 +854,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public void loadPlugin() {
         updateProvides();
-        loadIdentities();
         if (!checkRequirements(isTempLoaded() || tempLoaded)) {
             lastError = "Unable to loadPlugin, all requirements not met. (" + requirementsError + ")";
             return;
         }
+        loadIdentities();
         if (isTempLoaded()) {
             tempLoaded = false;
             loadRequired();
@@ -877,6 +877,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         } else {
             if (isLoaded() || metaData == null || isLoading) {
                 lastError = "Not Loading: (" + isLoaded() + "||" + (metaData == null) + "||" + isLoading + ")";
+                unloadIdentities();
                 return;
             }
             isLoading = true;
@@ -1058,7 +1059,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     service.delProvider(this);
                 }
                 provides.clear();
-                unloadIdentities();
             }
             unloadIdentities();
             tempLoaded = false;
