@@ -26,95 +26,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ConditionTreeTest {
-
-    @Test
-    public void testParseString() {
-        String[][] testCases = {
-            {"1", "1"},
-            {"50", "50"},
-            {"!50", "!50"},
-            {"1&1", "(1&1)"},
-            {"1&!1", "(1&!1)"},
-            {"!1&1", "(!1&1)"},
-            {"(1)", "1"},
-            {"((((1))))", "1"},
-            {"(1&1)&1", "((1&1)&1)"},
-            {"1&2&3", "((1&2)&3)"},
-            {"(1&2&3)|4", "(((1&2)&3)|4)"},
-            {"!(1|!1)", "!(1|!1)"},
-            {"!!1", "!!1"},
-            {"1 & !(2 | (3 & !4))", "(1&!(2|(3&!4)))"},
-            {"", ""},
-            {"((1|((2&!3)&(!4))|6)&7)|!8", "((((1|((2&!3)&!4))|6)&7)|!8)"},
-        };
         
-        for (String[] testCase : testCases) {
-            System.out.println("\nInput: " + testCase[0]);
-            
-            final ConditionTree res = ConditionTree.parseString(testCase[0]);
-            assertNotNull(res);
-            
-            System.out.println("  Expected: " + testCase[1]);
-            System.out.println("  Result: " + res);
-            
-            assertEquals(testCase[1], res.toString());
-        }
-    }
-    
-    @Test
-    public void testEvaluate() {
-        System.out.println();
-        
-        final String target = "((0&1&2)|3)&(!4)";
-        final ConditionTree tree = ConditionTree.parseString(target);
-        assertNotNull(tree);
-        
-        boolean[][] testCases = {
-            {true, true, true, true, true},
-            {true, true, true, true, false},
-            {true, true, true, false, true},
-            {true, true, true, false, false},
-            {true, true, false, true, true},
-            {true, true, false, true, false},
-            {true, true, false, false, true},
-            {true, true, false, false, false},   
-            {true, false, true, true, true},
-            {true, false, true, true, false},
-            {true, false, true, false, true},
-            {true, false, true, false, false},            
-            {true, false, false, true, true},
-            {true, false, false, true, false},
-            {true, false, false, false, true},
-            {true, false, false, false, false}, 
-            {false, true, true, true, true},
-            {false, true, true, true, false},
-            {false, true, true, false, true},
-            {false, true, true, false, false},
-            {false, true, false, true, true},
-            {false, true, false, true, false},
-            {false, true, false, false, true},
-            {false, true, false, false, false},   
-            {false, false, true, true, true},
-            {false, false, true, true, false},
-            {false, false, true, false, true},
-            {false, false, true, false, false},            
-            {false, false, false, true, true},
-            {false, false, false, true, false},
-            {false, false, false, false, true},
-            {false, false, false, false, false},            
-        };
-        
-        //final String target = "((0&1&2)|3)&(!4)";
-        for (boolean[] testCase : testCases) {
-            final boolean expected = 
-                    ((testCase[0] && testCase[1] && testCase[2]) || testCase[3])
-                    && !testCase[4];
-            final boolean actual = tree.evaluate(testCase);
-            
-            assertEquals(expected, actual);
-        }
-    }
-    
     @Test
     public void testGetNumArgs() {
         final String target = "((0&1&2)|3)&(!4)";
@@ -193,6 +105,13 @@ public class ConditionTreeTest {
         
         assertNull(tree);
     }
+
+    @Test
+    public void testHugeNumber() {
+        final ConditionTree tree = ConditionTree.parseString("9999999999999999");
+
+        assertNull(tree);
+    }
     
     @Test
     public void testNoopEvaluation() {
@@ -206,6 +125,25 @@ public class ConditionTreeTest {
         final ConditionTree tree = ConditionTree.parseString("(+)");
         
         assertNull(tree);
-    }    
+    }
+
+    @Test
+    public void testEquals() {
+        final ConditionTree tree1 = ConditionTree.parseString("(1&3)");
+        final ConditionTree tree2 = ConditionTree.parseString("((1&(3)))");
+
+        assertTrue(tree1.equals(tree2));
+        assertTrue(tree2.equals(tree1));
+        assertEquals(tree1.hashCode(), tree2.hashCode());
+    }
+
+    @Test
+    public void testNotEquals() {
+        final ConditionTree tree1 = ConditionTree.parseString("(1&3)");
+        final ConditionTree tree2 = ConditionTree.parseString("((1&(2)))");
+
+        assertFalse(tree1.equals(tree2));
+        assertFalse(tree2.equals(tree1));
+    }
     
 }
