@@ -50,7 +50,7 @@ public class PerformWrapper extends ActionGroup {
     private static PerformWrapper me = new PerformWrapper();
 
     /** The component name for per-profile perform conditions. */
-    private static String PP_COMP_NAME = "SERVER_IDENTITY.IDENTITY_NAME";
+    private static String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
     
     /**
      * Creates a new instance of PerformWrapper.
