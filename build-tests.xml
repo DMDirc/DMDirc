@@ -90,9 +90,9 @@
 
     <target name="-test-no-xvfb" unless="use.xvfb">
         <antcall>
-            <target>with.clover</target>
-            <target>do-real-test</target>
-            <target>clover.snapshot</target>
+            <target name="with.clover"/>
+            <target name="do-real-test"/>
+            <target name="clover.snapshot"/>
         </antcall>
     </target>
 
