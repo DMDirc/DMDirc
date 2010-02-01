@@ -52,6 +52,9 @@ fi
 # The date/git rev to add to the end of the file names of stuff
 FILEDATA=`date +%Y%m%d`_${GITREV}
 
+# Force rebuild of plugins.
+export REBUILDPLUGINS="true"
+
 # Build plugins/jar
 $ANT -Dchannel=NIGHTLY -k clean jar
 

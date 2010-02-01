@@ -14,12 +14,14 @@ srcdir=${PWD}/modules/plugins/
 pluginname=${1}
 foldername=${pluginname//.//}
 
-newer=`find ${srcdir}/src/${foldername} -type f -newer ${destdir}/plugins/${2}.jar 2>&1 | wc -l`
-
-if [ $newer -eq 0 ]; then
-	echo "${2}.jar appears to be up-to-date";
-	exit 0;
-fi
+if [ "${REBUILDPLUGINS}" != "true" ]; then
+	newer=`find ${srcdir}/src/${foldername} -type f -newer ${destdir}/plugins/${2}.jar 2>&1 | wc -l`
+	
+	if [ $newer -eq 0 ]; then
+		echo "${2}.jar appears to be up-to-date";
+		exit 0;
+	fi
+fi;
 
 echo "Creating ${2}.jar for ${pluginname} (${foldername})"
 
