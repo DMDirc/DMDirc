@@ -62,6 +62,8 @@ public class StyliserIndicesTest {
                      0, 4, "Blah"},
             {"Blah" + Styliser.CODE_COLOUR + "4,0RED blah blah",
                      4, 7, Styliser.CODE_COLOUR + "4,0RED"},
+            {"Blah" + Styliser.CODE_COLOUR + "4,0RED blah blah",
+                     5, 7, "ED"},
         };
 
         return Arrays.asList(tests);

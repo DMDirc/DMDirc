@@ -156,12 +156,14 @@ public class StyliserStylesTest {
             {"Blahblah", "<>B<underline>lah<bold,underline>b<underline>lah"},
             {"Blahblah", "<>B<underline>lahb<bold>lah"},
             {"Blahblah", "<>B<underline>lahb<bold>l<>ah"},
+            {"Blahblah", "<>B<underline>l<>ahb<bold,underline>l<>ah"},
             // IRC colours
             {"4moo", "<color=255,0,0>moo"},
             {"4moo", "<color=255,0,0>m<>oo"},
             {"4moo", "<color=255,0,0>m<>oo"},
             {"20moo", "<color=255,0,0>m<>oo"}, // Colours wrap around
             {"4,4moo", "<color=255,0,0,background=255,0,0>m<>oo"},
+            {"4,4m4,4oo", "<color=255,0,0,background=255,0,0>moo"},
             // Persistant irc colours
             {"4m0oo", "<color=255,0,0>m<color=255,255,255>o<color=255,0,0>o"},
             {"4moo", "<color=255,0,0>moo"},
@@ -189,6 +191,9 @@ public class StyliserStylesTest {
             // Negation
             {"\u0012Blah4FF0000moo", "<>Blahmoo"},
             {"\u0012Blah4FF0000moo\u0012foo", "<>Blahmoo<bold>foo"},
+            {"Blah 4\u0012BlahBlah", "<>Blah <color=255,0,0>BlahBlah"}, // Stop
+            {"Blah 4\u0012BlahBlah", "<>Blah <color=255,0,0>BlahBlah"}, // Empty colour
+            {"Blah 4\u0012BlahBlah", "<>Blah <color=255,0,0>BlahBlah"}, // Empty hex colour
         };
 
         return Arrays.asList(tests);

@@ -22,7 +22,6 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.harness.TestConfigManagerOptionToggle;
-import com.dmdirc.config.ConfigManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
