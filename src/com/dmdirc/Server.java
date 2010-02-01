@@ -135,11 +135,11 @@ public class Server extends WritableFrameContainer implements
     /** The profile we're using. */
     private transient Identity profile;
 
-    /** The current state of this server. */
-    private final ServerStatus myState = new ServerStatus(this);
-
-    /** Object used to synchronoise access to myState. */
+    /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
+
+    /** The current state of this server. */
+    private final ServerStatus myState = new ServerStatus(this, myStateLock);
 
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
@@ -262,9 +262,7 @@ public class Server extends WritableFrameContainer implements
                 case DISCONNECTING:
                     while (!myState.getState().isDisconnected()) {
                         try {
-                            synchronized (myState) {
-                                myState.wait();
-                            }
+                            myStateLock.wait();
                         } catch (InterruptedException ex) {
                             return;
                         }

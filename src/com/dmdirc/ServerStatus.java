@@ -39,6 +39,9 @@ public class ServerStatus {
     /** The server to which this status belongs. */
     protected final Server server;
 
+    /** Object to notify when the state of the server changes. */
+    protected final Object notifier;
+
     /** The current state of the server. */
     protected ServerState state = ServerState.DISCONNECTED;
 
@@ -52,10 +55,12 @@ public class ServerStatus {
      * Creates a new ServerStatus instance for the specified server.
      *
      * @param server The server to which this status belongs
-     * @since 0.6.3m2
+     * @param notifier The object to notify when the state changes
+     * @since 0.6.3
      */
-    public ServerStatus(final Server server) {
+    public ServerStatus(final Server server, final Object notifier) {
         this.server = server;
+        this.notifier = notifier;
     }
 
     /**
@@ -69,8 +74,8 @@ public class ServerStatus {
         if (state.canTransitionTo(newState)) {
             state = newState;
 
-            synchronized (this) {
-                notifyAll();
+            synchronized (notifier) {
+                notifier.notifyAll();
             }
         } else {
             throw new IllegalArgumentException("Illegal server state "
