@@ -130,6 +130,7 @@ readprogress() {
 				wasCancelled=`${DBUSSEND} --print-reply --dest=${progresswindow} org.kde.kdialog.ProgressDialog.wasCancelled | grep boolean | awk '{print $2}'`;
 			fi
 			if [ "${wasCancelled}" = "true" ]; then
+				touch .downloadWasCancelled
 				break;
 			fi;
 		fi;
@@ -197,7 +198,6 @@ readprogress() {
 					echo "-> "${val}"%"
 				fi;
 			fi;
-			echo "Val: ${val}";
 			if [ "${val}" = "100" ]; then
 				retval="0"
 				CONTINUE="0"
@@ -275,6 +275,7 @@ closeProgress() {
 }
 trap 'closeProgress' INT TERM EXIT
 
+rm .downloadWasCancelled
 
 # if kdialog exists, and we have a display, and we are not running gnome,
 # and either we are running kde or zenity doesn't exist..
@@ -282,7 +283,7 @@ if [ "" != "${KDIALOG}" -a "" != "${DISPLAY}" -a "" = "${ISGNOME}" -a "${USEKDIA
 	echo "Progress dialog on Display: ${DISPLAY}"
 	progresswindow=`${KDIALOG} --title "DMDirc: ${CAPTION}" --progressbar "${CAPTION}" 100`
 	if [ "${PULSATE}" = "1" ]; then
-		SHOWCANCEL="false"
+		SHOCANCEL="false"
 	else
 		SHOWCANCEL="true"
 	fi;
