@@ -928,7 +928,17 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         return;
                     } else {
                         pi.addChild(this);
-                        classloader = pi.getPluginClassLoader().getSubClassLoader(this);
+                        PluginClassLoader parentCL = pi.getPluginClassLoader();
+                        if (parentCL == null) {
+                            // Parent appears not to be loaded.
+                            pi.loadPlugin();
+                            parentCL = pi.getPluginClassLoader();
+                            if (parentCL == null) {
+                                lastError = "Unable to get classloader from required parent '" + parentName + "' for "+getName();
+                                return;
+                            }
+                        }
+                        classloader = parentCL.getSubClassLoader(this);
                     }
                 }
             }
