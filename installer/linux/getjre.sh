@@ -107,7 +107,7 @@ if [ "" != "${1}" ]; then
 	questiondialog "Download JRE" "${1} (Download Size: ${niceLength})"
 	result=$?
 else
-	questiondialog "Download JRE" "Would you like to download the java JRE? (Download Size: ${niceLength})"
+		questiondialog "Download JRE" "Would you like to download the java JRE? (Download Size: ${niceLength})\n(Choose no if you want to manually install or install using a package manager)"
 	result=$?
 fi;
 if [ $result -eq 0 ]; then
