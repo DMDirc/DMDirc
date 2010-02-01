@@ -135,7 +135,16 @@ if [ $result -eq 0 ]; then
 			exit 1;
 		fi;
 	done;
-	/bin/sh ${PWD}/progressbar.sh --watchdog ${progressbarpid}
+	if [ -e ".downloadWasCancelled" ]; then
+		kill -9 ${wgetpid}
+		errordialog "Download Canceled" "Download Canceled by user"
+		exit 1;
+	fi;
+	SIZE=`ls -l jre.bin | awk '{print $5}'`
+	/bin/sh ${PWD}/progressbar.sh --watchdog ${progressbarpid} &
+	if [ -e ${PIPE} ]; then
+		echo "${SIZE}" > ${PIPE}
+	fi;
 	wgetpid=""
 	if [ "${ISFREEBSD}" != "" -o "${ISAINFO}" != "" ]; then
 		echo "Killing progressbar"
