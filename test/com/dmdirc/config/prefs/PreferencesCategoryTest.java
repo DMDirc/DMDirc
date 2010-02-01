@@ -77,6 +77,22 @@ public class PreferencesCategoryTest {
     }
 
     @Test
+    public void testDefaultWarning() {
+        final PreferencesCategory category = new PreferencesCategory("unit",
+                "This is a desc.", "icon");
+
+        assertNull(category.getWarning());
+    }
+
+    @Test
+    public void testSetWarning() {
+        final PreferencesCategory category = new PreferencesCategory("unit",
+                "This is a desc.", "icon");
+        category.setWarning("warning 123");
+        assertEquals("warning 123", category.getWarning());
+    }
+
+    @Test
     public void testParent() {
         final PreferencesCategory parent = mock(PreferencesCategory.class);
         when(parent.getPath()).thenReturn("parent path");

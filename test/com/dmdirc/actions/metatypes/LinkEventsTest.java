@@ -19,38 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.actions.metatypes;
 
-package com.dmdirc.config.prefs.validator;
-
+import com.dmdirc.actions.interfaces.ActionMetaType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConditionRuleValidatorTest {
+public class LinkEventsTest {
 
     @Test
-    public void testIllegal() {
-        final ValidationResponse res = new ConditionRuleValidator(10).validate("|||");
-        assertTrue(res.isFailure());
-    }
-
-    @Test
-    public void testTooMany() {
-        final ValidationResponse res = new ConditionRuleValidator(1).validate("0|1|2");
-        assertTrue(res.isFailure());
-    }
-
-    @Test
-    public void testGood() {
-        final ValidationResponse res = new ConditionRuleValidator(3).validate("0|1|2");
-        assertFalse(res.isFailure());
-    }
-
-    @Test
-    public void testChangeArgs() {
-        final ConditionRuleValidator validator = new ConditionRuleValidator(1);
-        assertTrue(validator.validate("1|0").isFailure());
-        validator.setArgs(2);
-        assertFalse(validator.validate("1|0").isFailure());
+    public void testArity() {
+        for (ActionMetaType event : LinkEvents.values()) {
+            assertEquals("Arity and number of arg names must be equal",
+                    event.getArity(), event.getArgNames().length);
+            assertEquals("Arity and number of arg types must be equal",
+                    event.getArity(), event.getArgTypes().length);
+        }
     }
 
 }

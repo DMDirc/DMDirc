@@ -25,32 +25,36 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConditionRuleValidatorTest {
+public class OptionalValidatorTest {
 
     @Test
-    public void testIllegal() {
-        final ValidationResponse res = new ConditionRuleValidator(10).validate("|||");
+    public void testNoSeparator() {
+        final ValidationResponse res = new OptionalValidator(null).validate("foo");
         assertTrue(res.isFailure());
+        assertTrue(res.getFailureReason().contains("boolean"));
     }
 
     @Test
-    public void testTooMany() {
-        final ValidationResponse res = new ConditionRuleValidator(1).validate("0|1|2");
+    public void testIllegalPrefix() {
+        final ValidationResponse res = new OptionalValidator(null).validate("foo:bar");
         assertTrue(res.isFailure());
+        assertTrue(res.getFailureReason().contains("true"));
+        assertTrue(res.getFailureReason().contains("false"));
     }
 
     @Test
-    public void testGood() {
-        final ValidationResponse res = new ConditionRuleValidator(3).validate("0|1|2");
+    public void testTrueValidation() {
+        final ValidationResponse res = new OptionalValidator(new StringLengthValidator(0, 3))
+                .validate("true:bar");
         assertFalse(res.isFailure());
     }
 
     @Test
-    public void testChangeArgs() {
-        final ConditionRuleValidator validator = new ConditionRuleValidator(1);
-        assertTrue(validator.validate("1|0").isFailure());
-        validator.setArgs(2);
-        assertFalse(validator.validate("1|0").isFailure());
+    public void testFalseValidation() {
+        final ValidationResponse res = new OptionalValidator(new StringLengthValidator(0, 2))
+                .validate("true:bar");
+        assertTrue(res.isFailure());
+        assertTrue(res.getFailureReason().contains("at most 2"));
     }
 
 }
