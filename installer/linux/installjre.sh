@@ -84,9 +84,9 @@ showLicence() {
 		STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 		STARTLINE=$((${STARTLINE%%:*} + 1))
 		# Location of licence end
-		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above licence terms?" jre.bin`
+		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
 		ENDLINE=$((${ENDLINE%%:*} - 4))
-		
+
 		head -n ${ENDLINE} jre.bin | tail ${TAILOPTS}${STARTLINE} > ${FILE}
 	fi;
 
