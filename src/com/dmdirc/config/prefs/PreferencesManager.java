@@ -423,8 +423,6 @@ public class PreferencesManager {
      * @param parent The parent category
      */
     private void addThemesCategory(final PreferencesCategory parent) {
-        // TODO: Abstract the panel
-
         parent.addSubCategory(new PreferencesCategory("Themes", "",
                 "category-addons", Main.getUI().getThemesPrefsPanel()));
     }
@@ -433,8 +431,6 @@ public class PreferencesManager {
      * Creates and adds the "Plugins" category.
      */
     private void addPluginsCategory() {
-        // TODO: Abstract the panel
-
         addCategory(new PreferencesCategory("Plugins", "", "category-addons",
                 Main.getUI().getPluginPrefsPanel()));
     }
@@ -443,8 +439,6 @@ public class PreferencesManager {
      * Creates and adds the "Updates" category.
      */
     private void addUpdatesCategory() {
-        // TODO: Abstract the panel
-
         addCategory(new PreferencesCategory("Updates", "", "category-updates",
                 Main.getUI().getUpdatesPrefsPanel()));
     }
@@ -453,8 +447,6 @@ public class PreferencesManager {
      * Creates and adds the "URL Handlers" category.
      */
     private void addUrlHandlerCategory() {
-        // TODO: Abstract the panel
-
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
                 "category-urlhandlers", Main.getUI().getUrlHandlersPrefsPanel()));
@@ -498,7 +490,7 @@ public class PreferencesManager {
     }
 
     /**
-     * Fires the CLIENT_PREFS_CLOSED action
+     * Fires the CLIENT_PREFS_CLOSED action.
      *
      * @since 0.6
      */
