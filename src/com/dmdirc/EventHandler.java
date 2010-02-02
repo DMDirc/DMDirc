@@ -71,8 +71,7 @@ public abstract class EventHandler implements CallbackInterface {
      * @param <T> The type of callback to be added
      * @param cbm The callback manager to use
      * @param type The type of the callback to be added
-     * @throws com.dmdirc.parser.irc.callbacks.CallbackNotFoundException
-     * if the specified callback isn't found
+     * @throws CallbackNotFoundException if the specified callback isn't found
      */
     @SuppressWarnings("unchecked")
     protected abstract <T extends CallbackInterface> void addCallback(
