@@ -211,10 +211,9 @@ public class Action extends ActionModel implements Serializable, ConfigChangeLis
             }
         }
 
-        if (config.isKeyDomain(DOMAIN_CONCURRENCY)) {
-            if (config.getKeyDomain(DOMAIN_CONCURRENCY).containsKey("group")) {
-                setConcurrencyGroup(config.getKeyDomain(DOMAIN_CONCURRENCY).get("group"));
-            }
+        if (config.isKeyDomain(DOMAIN_CONCURRENCY)
+                && config.getKeyDomain(DOMAIN_CONCURRENCY).containsKey("group")) {
+            setConcurrencyGroup(config.getKeyDomain(DOMAIN_CONCURRENCY).get("group"));
         }
 
         ActionManager.registerAction(this);

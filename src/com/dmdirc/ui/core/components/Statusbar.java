@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.components;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.interfaces.ActionListener;
 

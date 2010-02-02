@@ -31,8 +31,6 @@ import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The me command sends a CTCP action to the current channel.
  * @author chris

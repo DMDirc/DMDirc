@@ -38,7 +38,7 @@ public class RawCommandParser extends ServerCommandParser {
      */
     private static final long serialVersionUID = 1;
 
-    private Server server;
+    private final Server server;
 
     /**
      * Creates a new raw command parser for the specified server.
