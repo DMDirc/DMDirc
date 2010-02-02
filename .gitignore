@@ -27,3 +27,4 @@ __history
 *.ppu
 /reports/findbugs/
 /reports/report-fb.html
+/reports/report-pmd.*

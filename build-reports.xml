@@ -149,7 +149,7 @@
     </target>
     
     <target name="pmd" description="Run PMD.">
-        <taskdef name="pmd" classpath="pmd-3.9.jar" 
+        <taskdef name="pmd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar"
                          classname="net.sourceforge.pmd.ant.PMDTask" />
         <pmd shortFilenames="true">
             
@@ -161,7 +161,7 @@
     </target>
     
     <target name="cpd" description="Run CPD.">
-        <taskdef name="cpd" classpath="pmd-3.9.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
+        <taskdef name="cpd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
         
         <cpd format="xml" minimumTokenCount="50" outputFile="reports/report-cpd.xml">
             <fileset dir="src/com/">
