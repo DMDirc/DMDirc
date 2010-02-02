@@ -31,7 +31,6 @@ import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.WeakList;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -107,7 +106,7 @@ public class Identity extends ConfigSource implements Serializable,
 
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
-        initFile(forceDefault, new FileInputStream(file));
+        initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
         if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
@@ -130,7 +129,7 @@ public class Identity extends ConfigSource implements Serializable,
 
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
-        initFile(forceDefault, stream);
+        initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
         if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
@@ -197,13 +196,13 @@ public class Identity extends ConfigSource implements Serializable,
     /**
      * Initialises this identity from a file.
      *
+     * @since 0.6.3
      * @param forceDefault Whether to force this to be a default identity
-     * @param stream The stream to load properties from if needed (or null)
      * @param file The file to load this identity from (or null)
      * @throws InvalidIdentityFileException if the identity file is invalid
      * @throws IOException On I/O exception when reading the identity
      */
-    private void initFile(final boolean forceDefault, final InputStream stream)
+    private void initFile(final boolean forceDefault)
             throws InvalidIdentityFileException, IOException {
         try {
             this.file.read();

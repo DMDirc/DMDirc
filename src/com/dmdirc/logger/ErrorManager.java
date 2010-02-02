@@ -423,14 +423,14 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             FatalErrorDialog.displayBlocking(error);
         }
 
-        while (!error.getReportStatus().isTerminal()) {
-            try {
+        try {
+            while (!error.getReportStatus().isTerminal()) {
                 synchronized (error) {
                     error.wait();
                 }
-            } catch (InterruptedException ex) {
-                // Do nothing
             }
+        } catch (InterruptedException ex) {
+            // Do nothing
         }
 
         System.exit(42);

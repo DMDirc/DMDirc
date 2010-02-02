@@ -42,7 +42,6 @@ import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
 
 import java.awt.Color;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,15 +55,7 @@ import java.util.Map;
  *
  * @author chris
  */
-public class Channel extends MessageTarget implements ConfigChangeListener,
-        Serializable {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** The parser's pChannel class. */
     private transient ChannelInfo channelInfo;

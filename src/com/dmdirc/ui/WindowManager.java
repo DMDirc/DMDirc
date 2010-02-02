@@ -193,14 +193,14 @@ public class WindowManager {
                 child.close();
             }
 
-            while (!childWindows.get(window).isEmpty()) {
-                try {
+            try {
+                while (!childWindows.get(window).isEmpty()) {
                     synchronized (childWindows) {
                         childWindows.wait();
                     }
-                } catch (InterruptedException ex) {
-                    // Ignore it
                 }
+            } catch (InterruptedException ex) {
+                // Ignore it
             }
         }
 
@@ -412,7 +412,7 @@ public class WindowManager {
         }
 
         ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
-                window == null ? window : window.getContainer());
+                window == null ? null : window.getContainer());
     }
         
     /**

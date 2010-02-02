@@ -43,7 +43,6 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 
 import java.awt.Toolkit;
-import java.io.Serializable;
 
 /**
  * The Query class represents the client's view of a query with another user.
@@ -52,14 +51,7 @@ import java.io.Serializable;
  * @author chris
  */
 public class Query extends MessageTarget implements PrivateActionListener,
-        PrivateMessageListener, NickChangeListener, QuitListener, Serializable {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+        PrivateMessageListener, NickChangeListener, QuitListener {
 
     /** The Server this Query is on. */
     private Server server;
