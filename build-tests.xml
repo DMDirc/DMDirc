@@ -14,7 +14,22 @@
         <clover-env/>
         <clover-setup>
             <fileset dir="src/com/" includes="**/*.java" />
-            <fileset dir="test/com/">
+            <fileset dir="modules/parser/src/" includes="**/*.java" />
+            <fileset dir="modules/util/src/" includes="**/*.java" />
+            <fileset dir="modules/plugins/src/" includes="**/*.java" />
+            <fileset dir="test/">
+                <include name="**/*.java" />
+                <exclude name="**/harness/**/*.java" />
+            </fileset>
+            <fileset dir="modules/parser/test/">
+                <include name="**/*.java" />
+                <exclude name="**/harness/**/*.java" />
+            </fileset>
+            <fileset dir="modules/util/test/">
+                <include name="**/*.java" />
+                <exclude name="**/harness/**/*.java" />
+            </fileset>
+            <fileset dir="modules/plugins/test/">
                 <include name="**/*.java" />
                 <exclude name="**/harness/**/*.java" />
             </fileset>
