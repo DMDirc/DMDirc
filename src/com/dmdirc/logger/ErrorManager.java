@@ -78,7 +78,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
     private final ListenerList errorListeners = new ListenerList();
 
     /** Next error ID. */
-    private AtomicLong nextErrorID;
+    private final AtomicLong nextErrorID;
 
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {

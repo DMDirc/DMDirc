@@ -218,10 +218,10 @@ public final class UpdateChecker implements Runnable {
             final String[] bits = line.split(" ");
             if (bits.length > 2) {
                 final UpdateComponent thisComponent = findComponent(bits[2]);
-                if (thisComponent != null) {
-                    if (thisComponent instanceof FileComponent) {
-                        errorMessage = errorMessage + " (" + ((FileComponent)thisComponent).getFileName() + ")";
-                    }
+
+                if (thisComponent instanceof FileComponent) {
+                    errorMessage = errorMessage + " (" + ((FileComponent) thisComponent)
+                            .getFileName() + ")";
                 }
             }
             Logger.userError(ErrorLevel.LOW, errorMessage);

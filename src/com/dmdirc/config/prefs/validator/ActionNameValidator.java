@@ -29,13 +29,15 @@ import java.util.List;
 
 /**
  * Validates action names.
+ *
+ * @since 0.6.3
  */
 public class ActionNameValidator implements Validator<String> {
 
     /** Failure reason for duplicates. */
     private static final String FAILURE_EXISTS = "Name must not already exist.";
     /** Associated action group. */
-    private ActionGroup group;
+    private final ActionGroup group;
 
     /**
      * Instantiates a new action name validator.

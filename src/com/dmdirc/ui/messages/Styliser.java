@@ -181,7 +181,8 @@ public class Styliser implements ConfigChangeListener {
                 int offset = ooffset;
                 int position = 0;
                 
-                String target = doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
+                final String target = doSmilies(doLinks(new String(chars)
+                        .replaceAll(INTERNAL_CHARS, "")));
                 
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
                 
@@ -325,7 +326,7 @@ public class Styliser implements ConfigChangeListener {
      * @param input The string to read from
      * @return A substring of the input containing no control characters
      */
-    static String readUntilControl(final String input) {
+    public static String readUntilControl(final String input) {
         int pos = input.length();
         
         pos = checkChar(pos, input.indexOf(CODE_BOLD));
@@ -366,7 +367,7 @@ public class Styliser implements ConfigChangeListener {
      */
     private int readControlChars(final String string,
             final SimpleAttributeSet attribs, final boolean isStart) {
-        boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
+        final boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
         
         // Bold
         if (string.charAt(0) == CODE_BOLD) {

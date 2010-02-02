@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;

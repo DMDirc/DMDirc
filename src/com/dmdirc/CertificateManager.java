@@ -80,7 +80,7 @@ public class CertificateManager implements X509TrustManager {
 
         private final boolean trusted;
 
-        private TrustResult(boolean trusted) {
+        private TrustResult(final boolean trusted) {
             this.trusted = trusted;
         }
 
@@ -414,7 +414,7 @@ public class CertificateManager implements X509TrustManager {
          *
          * @param msg A description of the problem
          */
-        public CertificateDoesntMatchHostException(String msg) {
+        public CertificateDoesntMatchHostException(final String msg) {
             super(msg);
         }
 
@@ -438,7 +438,7 @@ public class CertificateManager implements X509TrustManager {
          *
          * @param msg A description of the problem
          */
-        public CertificateNotTrustedException(String msg) {
+        public CertificateNotTrustedException(final String msg) {
             super(msg);
         }
 

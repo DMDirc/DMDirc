@@ -44,8 +44,6 @@ public class StepLayout implements LayoutManager2, Serializable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    /** Parent container. */
-    private Container parent;
     /** Cards vector. */
     private final List<SwingStep> steps;
     /** Current step. */
@@ -93,7 +91,6 @@ public class StepLayout implements LayoutManager2, Serializable {
         currentStep = -1;
         this.hGap = hGap;
         this.vGap = vGap;
-        this.parent = parent;
     }
 
     /**
@@ -223,9 +220,9 @@ public class StepLayout implements LayoutManager2, Serializable {
             }
         }
         synchronized (parent.getTreeLock()) {
-            int componentCount = parent.getComponentCount();
+            final int componentCount = parent.getComponentCount();
             for (int i = 0; i < componentCount; i++) {
-                Component comp = parent.getComponent(i);
+                final Component comp = parent.getComponent(i);
                 if (comp.isVisible()) {
                     comp.setVisible(false);
                     break;
@@ -303,20 +300,17 @@ public class StepLayout implements LayoutManager2, Serializable {
     @Override
     public Dimension preferredLayoutSize(final Container parent) {
         synchronized (parent.getTreeLock()) {
-            Insets insets = parent.getInsets();
-            int componentCount = parent.getComponentCount();
+            final Insets insets = parent.getInsets();
+            final int componentCount = parent.getComponentCount();
             int width = 0;
             int height = 0;
 
             for (int i = 0; i < componentCount; i++) {
-                Component comp = parent.getComponent(i);
-                Dimension preferredDimension = comp.getPreferredSize();
-                if (preferredDimension.width > width) {
-                    width = preferredDimension.width;
-                }
-                if (preferredDimension.height > height) {
-                    height = preferredDimension.height;
-                }
+                final Component comp = parent.getComponent(i);
+                final Dimension preferredDimension = comp.getPreferredSize();
+
+                width = Math.max(width, preferredDimension.width);
+                height = Math.max(height, preferredDimension.height);
             }
             return new Dimension(insets.left + insets.right + width + hGap * 2,
                                  insets.top + insets.bottom + height + vGap * 2);
@@ -331,20 +325,17 @@ public class StepLayout implements LayoutManager2, Serializable {
     @Override
     public Dimension minimumLayoutSize(final Container parent) {
         synchronized (parent.getTreeLock()) {
-            Insets insets = parent.getInsets();
-            int componentCount = parent.getComponentCount();
+            final Insets insets = parent.getInsets();
+            final int componentCount = parent.getComponentCount();
             int width = 0;
             int height = 0;
 
             for (int i = 0; i < componentCount; i++) {
-                Component comp = parent.getComponent(i);
-                Dimension minimumDimension = comp.getMinimumSize();
-                if (minimumDimension.width > width) {
-                    width = minimumDimension.width;
-                }
-                if (minimumDimension.height > height) {
-                    height = minimumDimension.height;
-                }
+                final Component comp = parent.getComponent(i);
+                final Dimension minimumDimension = comp.getMinimumSize();
+
+                width = Math.max(width, minimumDimension.width);
+                height = Math.max(height, minimumDimension.height);
             }
             return new Dimension(insets.left + insets.right + width + hGap * 2,
                                  insets.top + insets.bottom + height + vGap * 2);
@@ -401,8 +392,8 @@ public class StepLayout implements LayoutManager2, Serializable {
     @Override
     public void layoutContainer(final Container parent) {
         synchronized (parent.getTreeLock()) {
-            Insets insets = parent.getInsets();
-            int componentCount = parent.getComponentCount();
+            final Insets insets = parent.getInsets();
+            final int componentCount = parent.getComponentCount();
             Component comp = null;
             boolean currentFound = false;
 

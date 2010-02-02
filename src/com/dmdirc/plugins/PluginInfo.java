@@ -33,15 +33,14 @@ import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
-
 import com.dmdirc.updater.Version;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -205,26 +204,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
-    }
-
-    /**
-     * Get misc meta-information.
-     *
-     * @param properties The properties file to look in
-     * @param metainfo The metainfos to look for in order. If the first item in
-     *                 the array is not found, the next will be looked for, and
-     *                 so on until either one is found, or none are found.
-     * @param fallback Fallback value if requested values are not found
-     * @return Misc Meta Info (or "" if none are found);
-     */
-    private String getMetaInfo(final Properties properties, final String[] metainfo, final String fallback) {
-        for (String meta : metainfo) {
-            String result = properties.getProperty(meta);
-            if (result != null) {
-                return result;
-            }
-        }
-        return fallback;
     }
 
     /**
@@ -417,7 +396,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private boolean updateMetaData() {
         // Force a new resourcemanager just incase.
         try {
-            final ResourceManager res = getResourceManager(true);
+            getResourceManager(true);
             final ConfigFile newMetaData = getConfigFile();
             if (newMetaData != null) {
                 metaData = newMetaData;
@@ -963,7 +942,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
-                    if (!prerequisites.isFailure()) {
+                    if (prerequisites.isFailure()) {
+                        if (!tempLoaded) {
+                            lastError = "Prerequisites for plugin not met. ('" + filename + ":" + getMainClass() + "' -> '" + prerequisites.getFailureReason() + "') ";
+                            Logger.userError(ErrorLevel.LOW, lastError);
+                        }
+                    } else {
                         plugin = (Plugin) temp;
                         LOGGER.finer(getName() + ": Setting domain 'plugin-" + getName() + "'");
                         plugin.setDomain("plugin-" + getName());
@@ -980,11 +964,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                                 unloadPlugin();
                             }
-                        }
-                    } else {
-                        if (!tempLoaded) {
-                            lastError = "Prerequisites for plugin not met. ('" + filename + ":" + getMainClass() + "' -> '" + prerequisites.getFailureReason() + "') ";
-                            Logger.userError(ErrorLevel.LOW, lastError);
                         }
                     }
                 }
@@ -1068,7 +1047,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 } catch (Exception e) {
                     lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
-                    e.printStackTrace();
                 }
                 ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
                 for (Service service : provides) {
@@ -1221,7 +1199,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         if (isPersistent()) {
             try {
-                ResourceManager res = getResourceManager();
+                final ResourceManager res = getResourceManager();
 
                 for (final String resourceFilename : res.getResourcesStartingWith("")) {
                     if (resourceFilename.matches("^.*\\.class$")) {

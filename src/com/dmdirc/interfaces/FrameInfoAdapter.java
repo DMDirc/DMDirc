@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.ui.interfaces.Window;
-import javax.swing.Icon;
 
 /**
  * An adapter for {@link FrameInfoListener}.

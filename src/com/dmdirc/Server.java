@@ -858,10 +858,9 @@ public class Server extends WritableFrameContainer implements
     public void sendLine(final String line) {
         synchronized (myStateLock) {
             synchronized (parserLock) {
-                if (parser != null && myState.getState() == ServerState.CONNECTED) {
-                    if (!line.isEmpty()) {
-                        parser.sendRawMessage(window.getTranscoder().encode(line));
-                    }
+                if (parser != null && !line.isEmpty()
+                        && myState.getState() == ServerState.CONNECTED) {
+                    parser.sendRawMessage(window.getTranscoder().encode(line));
                 }
             }
         }
