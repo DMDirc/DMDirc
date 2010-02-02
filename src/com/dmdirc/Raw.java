@@ -32,22 +32,13 @@ import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.io.Serializable;
-
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
  * @author chris
  */
 public final class Raw extends WritableFrameContainer implements DataInListener,
-        DataOutListener, Serializable {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+        DataOutListener {
 
     /** The server object that's being monitored. */
     private Server server;

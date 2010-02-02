@@ -54,7 +54,6 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -73,19 +72,11 @@ import javax.net.ssl.TrustManager;
  *
  * @author chris
  */
-public class Server extends WritableFrameContainer implements
-        Serializable, ConfigChangeListener {
+public class Server extends WritableFrameContainer implements ConfigChangeListener {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
     // <editor-fold defaultstate="collapsed" desc="Static">
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
 
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general".intern();
