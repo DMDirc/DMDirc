@@ -22,7 +22,9 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Precondition;
 import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -243,6 +245,24 @@ public class ActionGroup implements Iterable<Action> {
      */
     public List<Action> getActions() {
         return new ArrayList<Action>(actions);
+    }
+
+    /**
+     * Deletes an action from this group.
+     *
+     * @param action The action to be deleted
+     * @since 0.6.3
+     */
+    @Precondition({
+        "The specified action is non-null",
+        "The specified action exists in this group"
+    })
+    @SuppressWarnings("deprecation")
+    public void deleteAction(final Action action) {
+        Logger.assertTrue(action != null);
+        Logger.assertTrue(actions.contains(action));
+
+        ActionManager.deleteAction(action);
     }
     
     /**

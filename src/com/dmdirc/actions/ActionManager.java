@@ -344,8 +344,10 @@ public final class ActionManager {
      * Deletes the specified action.
      *
      * @param action The action to be deleted
+     * @deprecated Use {@link ActionGroup#deleteAction(com.dmdirc.actions.Action)} instead.
      */
     @Precondition("The specified Action is not null")
+    @Deprecated
     public static void deleteAction(final Action action) {
         Logger.assertTrue(action != null);
 
