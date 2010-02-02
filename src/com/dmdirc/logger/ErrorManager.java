@@ -29,7 +29,6 @@ import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.GraphicsEnvironment;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,14 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Error manager.
  */
-public final class ErrorManager implements Serializable, ConfigChangeListener {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 4;
+public final class ErrorManager implements ConfigChangeListener {
 
     /** Previously instantiated instance of ErrorManager. */
     private static final ErrorManager me = new ErrorManager();

@@ -33,7 +33,6 @@ import com.dmdirc.util.WeakList;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,15 +51,7 @@ import java.util.logging.Level;
  *
  * @author chris
  */
-public class Identity extends ConfigSource implements Serializable,
-        Comparable<Identity> {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+public class Identity extends ConfigSource implements Comparable<Identity> {
 
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity".intern();

@@ -121,6 +121,21 @@ public class Version implements Comparable<Version> {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof Version && compareTo((Version) obj) == 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 17 * hash + intVersion;
+        hash = 17 * hash + (strVersion == null ? 0 : strVersion.hashCode());
+        return hash;
+    }
+
     /**
      * Determines whether or not this represents a valid version.
      *

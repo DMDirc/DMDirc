@@ -25,7 +25,6 @@ package com.dmdirc.config;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.MapList;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,15 +40,7 @@ import java.util.logging.Level;
  *
  * @author chris
  */
-public class ConfigManager extends ConfigSource implements Serializable,
-        ConfigChangeListener {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 5;
+public class ConfigManager extends ConfigSource implements ConfigChangeListener {
 
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
