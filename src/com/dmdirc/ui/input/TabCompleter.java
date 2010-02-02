@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.MapList;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -42,14 +41,7 @@ import java.util.Map;
  * 
  * @author chris
  */
-public final class TabCompleter implements Serializable {
-    
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+public class TabCompleter {
     
     /**
      * The parent TabCompleter. Results from parents are merged with results
