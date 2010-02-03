@@ -38,6 +38,8 @@ public class ActionNameValidator implements Validator<String> {
     private static final String FAILURE_EXISTS = "Name must not already exist.";
     /** Associated action group. */
     private final ActionGroup group;
+    /** Original name. */
+    private final String originalName;
 
     /**
      * Instantiates a new action name validator.
@@ -45,7 +47,19 @@ public class ActionNameValidator implements Validator<String> {
      * @param group Associated action group
      */
     public ActionNameValidator(final ActionGroup group) {
+        this (group, "");
+    }
+
+    /**
+     * Instantiates a new action name validator for an existing action.
+     *
+     * @param group Associated action group
+     * @param originalName Existing action name
+     */
+    public ActionNameValidator(final ActionGroup group,
+            final String originalName) {
         this.group = group;
+        this.originalName = originalName;
     }
 
     /** {@inheritDoc} */
@@ -53,7 +67,7 @@ public class ActionNameValidator implements Validator<String> {
     public ValidationResponse validate(final String object) {
         final List<Action> actions = group.getActions();
         for (Action action : actions) {
-            if (action.getName().equals(object)) {
+            if (action.getName().equals(object) && !action.getName().equals(originalName)) {
                 return new ValidationResponse(FAILURE_EXISTS);
             }
         }
