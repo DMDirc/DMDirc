@@ -138,7 +138,7 @@ public class WhoisNumericFormatter implements ActionListener {
             }
 
             identity.setOption("formatter", target, builder.toString());
-            identity.setOption("notification", target, "group:whois");
+            identity.setOption("notifications", target, "group:whois");
         }
     }
 
