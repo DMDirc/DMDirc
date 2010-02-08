@@ -23,11 +23,11 @@ package com.dmdirc.config.prefs;
 
 /**
  * Enumerates the possible types of preferences.
- * 
+ *
  * @author chris
  */
 public enum PreferencesType {
-    
+
     /** A free-form text preference. */
     TEXT,
     /** A free-form integer preference. */
@@ -45,6 +45,7 @@ public enum PreferencesType {
     /** A duration specified in milliseconds. */
     DURATION,
     /** Font type. */
-    FONT;
-
+    FONT,
+    /** File browse component */
+    FILE;
 }
