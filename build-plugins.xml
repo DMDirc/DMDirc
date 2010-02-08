@@ -2,9 +2,10 @@
 <project name="DMDirc-plugins" default="default" basedir=".">
 
     <!-- Netbeans property files -->
-    <property file="nbproject/project.properties"/>
+    <property file="nbproject/private/dynamic.properties"/>
     <property file="nbproject/private/private.properties"/>
     <property file="${user.properties.file}"/>
+    <property file="nbproject/project.properties"/>
     
     <target name="build-plugins" depends="-build-plugins_bash" description="Build all plugins"/>
     
