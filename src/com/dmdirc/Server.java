@@ -1719,17 +1719,24 @@ public class Server extends WritableFrameContainer implements
 
         awayMessage = message;
 
-        synchronized (listeners) {
-            if (message == null) {
-                for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                    listener.onBack();
-                }
-            } else {
-                for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                    listener.onAway(message);
+        new Thread(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (listeners) {
+                    if (message == null) {
+                        for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                            listener.onBack();
+                        }
+                    } else {
+                        for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                            listener.onAway(message);
+                        }
+                    }
                 }
             }
-        }
+        }, "Away state listener runner").start();
     }
 
     // </editor-fold>
