@@ -566,11 +566,18 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         topics.add(topic);
         updateTitle();
 
-        synchronized (listeners) {
-            for (TopicChangeListener listener : listeners.get(TopicChangeListener.class)) {
-                listener.topicChanged(this, topic);
+        new Thread(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (listeners) {
+                    for (TopicChangeListener listener : listeners.get(TopicChangeListener.class)) {
+                        listener.topicChanged(Channel.this, topic);
+                    }
+                }
             }
-        }
+        }, "Topic change listener runner").start();
     }
 
     /**
