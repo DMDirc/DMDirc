@@ -88,7 +88,11 @@ public class GlobalWindow extends WritableFrameContainer {
 
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public void windowClosed() {
         // 7: Remove any references to the window and parents
         window = null;
         globalWindow = null;

@@ -327,7 +327,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public void windowClosed() {
         // 7: Remove any references to the window and parents
         window = null;
         server = null;

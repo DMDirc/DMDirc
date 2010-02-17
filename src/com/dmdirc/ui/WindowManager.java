@@ -23,6 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
@@ -175,13 +176,38 @@ public class WindowManager {
     /**
      * Removes a window from the Window Manager. If the specified window
      * has child windows, they are recursively removed before the target window.
-     * If the window hasn't previously been added, the reques to remove it is
+     * If the window hasn't previously been added, the request to remove it is
      * ignored.
+     * <p>
+     * This method will not block, but may instead create a new thread in order
+     * to wait for child windows to be terminated. {@link FrameContainer}s
+     * calling this method should persist resource references until after the
+     * {@link FrameContainer#windowClosed()} method is called, to ensure
+     * correct state when the window deleted listeners are fired at a later
+     * time. See the documentation at {@link FrameContainer#windowClosing()} for
+     * further explanation.
      *
+     * @see FrameContainer#windowClosing()
      * @param window The window to be removed
      */
     @Precondition("The specified Window is not null")
     public static void removeWindow(final Window window) {
+        removeWindow(window, false);
+    }
+
+    /**
+     * Removes a window from the Window Manager. If the specified window
+     * has child windows, they are recursively removed before the target window.
+     * If the window hasn't previously been added, the reques to remove it is
+     * ignored.
+     *
+     * @param window The window to be removed
+     * @param canWait Whether or not this method can wait for child windows
+     * to be closed. If canWait is false, a new thread is created.
+     * @since 0.6.3
+     */
+    @Precondition("The specified Window is not null")
+    public static void removeWindow(final Window window, final boolean canWait) {
         Logger.assertTrue(window != null);
         
         if (!childWindows.containsKey(window)) {
@@ -189,6 +215,17 @@ public class WindowManager {
         }
 
         if (childWindows.get(window) != null && !childWindows.get(window).isEmpty()) {
+            if (!canWait) {
+                new Thread(new Runnable() {
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        removeWindow(window, true);
+                    }
+                }, "WindowManager removeWindow thread").start();
+                return;
+            }
+
             for (Window child : new ArrayList<Window>(childWindows.get(window))) {
                 child.close();
             }
@@ -236,6 +273,7 @@ public class WindowManager {
         }
         
         window.getContainer().removeSelectionListener(selectionListener);
+        window.getContainer().windowClosed();
     }
 
     /**
