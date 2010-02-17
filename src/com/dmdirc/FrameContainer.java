@@ -274,15 +274,43 @@ public abstract class FrameContainer {
 
     /**
      * Invoked when our window is closing.
+     * <p>
+     * Frame containers must perform the following actions in this order:
+     * <ol>
+     *  <li>Make the window non-visible (so it appears 'closed' to the user)</li>
+     *  <li>Remove any callbacks or listeners (events should not be processed
+     *      once a window has been requested to close)</li>
+     *  <li>Trigger any actions necessary (terminating any TCP connections,
+     *      disconnecting parsers, closing children, etc)</li>
+     *  <li>Trigger action for the window closing (raise a DMDirc action for
+     *      the closure of the window, if required)</li>
+     *  <li>Inform any parents that the window is closing (this includes
+     *      unregistering the window with any specific managers, or from the
+     *      parent windows if they track children)</li>
+     *  <li>Remove the window from the window manager (by calling
+     *      {@link WindowManager#removeWindow(com.dmdirc.ui.interfaces.Window)}</li>
+     * </ol>
+     * <p>
+     * While resources may be relinquished in step three, references MUST NOT
+     * be removed yet. That is, if a window holds a resource, the resource may
+     * be closed, but the relevant object MUST still be available for
+     * interrogation at the end of this method.
+     * <p>
+     * This behaviour is required so that parties receiving windowDeleted events
+     * from the WindowManager may inspect the closing window and perform actions
+     * on its frame, parser, etc. The resources should be completely freed in
+     * the {@link #windowClosed()} method.
      */
     public abstract void windowClosing();
 
     /**
      * Invoked when our window has been closed.
+     * <p>
+     * At this point, all interested parties have been told that the window
+     * has been closed, and therefore any references to frames or other
+     * resources may be completely freed.
      */
-    public void windowClosed() {
-        // Ignore.
-    }
+    public abstract void windowClosed();
 
     /**
      * Invoked when our window is activated.
