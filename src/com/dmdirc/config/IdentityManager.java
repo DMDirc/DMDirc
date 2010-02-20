@@ -127,7 +127,24 @@ public final class IdentityManager {
         final String dir = getDirectory();
         
         for (String target : targets) {
-            final File file = new File(dir + target);
+            File file = new File(dir + target);
+
+            if (file.exists() && !file.isDirectory()) {
+                boolean success = false;
+                for (int i = 0; i < 10 && !success; i++) {
+                    final String suffix = ".old" + (i > 0 ? "-" + i : "");
+                    success = file.renameTo(new File(file.getParentFile(), target + suffix));
+                }
+
+                if (!success) {
+                    Logger.userError(ErrorLevel.HIGH, "Unable to create directory for "
+                            + "default settings folder (" + target + ")", "A file "
+                            + "with that name already exists, and couldn't be renamed."
+                            + " Rename or delete " + file.getAbsolutePath());
+                    continue;
+                }
+            }
+
             if (!file.exists() || file.listFiles() == null || file.listFiles().length == 0) {
                 file.mkdirs();
                 extractIdentities(target);
