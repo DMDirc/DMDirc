@@ -263,6 +263,15 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
+     * Are we on the channel?
+     *
+     * @return true iff we're on the channel
+     */
+    public boolean isOnChannel() {
+        return onChannel;
+    }
+
+    /**
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
