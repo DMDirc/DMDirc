@@ -159,7 +159,9 @@ public class CommandArguments {
      * @return A String representation of the requested words
      */
     public String getWordsAsString(final int start) {
-        return getWordsAsString(start, words.length);
+        parse();
+        
+        return getWordsAsString(start, words.length - 1);
     }
 
     /**
@@ -172,10 +174,10 @@ public class CommandArguments {
      */
     @Precondition("Start index is less than or equal to end index")
     public String getWordsAsString(final int start, final int end) {
-        Logger.assertTrue(start <= end);
+        Logger.assertTrue(start <= end + 1);
 
         final Pattern pattern = Pattern.compile("(\\S+\\s*){" + (start) + "}"
-                + "((\\S+\\s*){" + (end - start) + "}).*?");
+                + "((\\S+\\s*){" + Math.max(0, end - start) + "}\\S+).*?");
         final Matcher matcher = pattern.matcher(line);
 
         return matcher.matches() ? matcher.group(2) : "";
