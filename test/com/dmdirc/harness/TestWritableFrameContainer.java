@@ -61,6 +61,10 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
         WindowManager.removeWindow(window);
     }
 
+    public void windowClosed() {
+        // DO nothing
+    }
+
     public Server getServer() {
         return null;
     }
