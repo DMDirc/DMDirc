@@ -27,14 +27,17 @@ import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
-import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-
 import com.dmdirc.ui.interfaces.Window;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Handles the substitution of variables into action targets and responses.
@@ -66,19 +69,6 @@ public class ActionSubstitutor {
     }
     
     /**
-     * Substitutes in config variables into the specified target.
-     *
-     * @param config The configuration manager to use for options
-     * @param target The StringBuilder to modify
-     * @since 0.6.3m2
-     */
-    private void doConfigSubstitutions(final ConfigManager config, final StringBuilder target) {
-        for (Map.Entry<String, String> option : config.getOptions("actions").entrySet()) {
-            doReplacement(target, "$" + option.getKey(), option.getValue());
-        }
-    }
-    
-    /**
      * Retrieves a list of substitutions derived from argument and component
      * combinations, along with a corresponding friendly name for them.
      * Note: does not include initial $.
@@ -104,33 +94,6 @@ public class ActionSubstitutor {
     }
     
     /**
-     * Substitutes in component-style substitutions.
-     *
-     * @param target The stringbuilder to be changed
-     * @param args The arguments passed for this action type
-     */
-    private void doComponentSubstitutions(final StringBuilder target, final Object ... args) {
-        int i = 0;
-        for (Class myClass : type.getType().getArgTypes()) {
-            if (args[i] != null) {
-                for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
-                    final String needle = "${" + i + "." + comp.toString() + "}";
-
-                    if (target.indexOf(needle) > -1) {
-                        final Object replacement = comp.get(args[i]);
-
-                        if (replacement != null) {
-                            doReplacement(target, needle, replacement.toString());
-                        }
-                    }
-                }
-            }
-            
-            i++;
-        }
-    }
-    
-    /**
      * Retrieves a list of server substitutions, if this action type supports
      * them.
      * Note: does not include initial $.
@@ -150,38 +113,6 @@ public class ActionSubstitutor {
         }
         
         return res;
-    }
-    
-    /**
-     * Substitutes in server substitutions.
-     *
-     * @param target The stringbuilder to be changed
-     * @param args The arguments passed for this action type
-     */
-    private void doServerSubstitutions(final StringBuilder target, final Object ... args) {
-        if (args.length > 0 && args[0] instanceof FrameContainer) {
-            final Server server = ((FrameContainer) args[0]).getServer();
-        
-            if (server != null) {
-                synchronized (server.getState()) {
-                    if (!server.getState().equals(ServerState.CONNECTED)) {
-                        return;
-                    }
-                    
-                    for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
-                        final String key = "${" + comp.toString() + "}";
-
-                        if (target.indexOf(key) > -1) {
-                            final Object res = comp.get(((FrameContainer) args[0]).getServer());
-
-                            if (res != null) {
-                                doReplacement(target, key, res.toString());
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
     
     /**
@@ -212,42 +143,8 @@ public class ActionSubstitutor {
      */
     public boolean usesWordSubstitutions() {
         return type.getType().getArgTypes().length > 2
-                && type.getType().getArgTypes()[2] == String[].class;
-    }
-    
-    /**
-     * Substitutes in word substitutions.
-     *
-     * @param target The stringbuilder to be changed
-     * @param args The arguments passed for this action type
-     */
-    private void doWordSubstitutions(final StringBuilder target, final Object ... args) {
-        if (args.length > 1) {
-            String[] words = null;
-            
-            if (args.length > 2 && args[2] instanceof String[]) {
-                words = (String[]) args[2];
-            } else if (args.length > 2 && args[2] instanceof String) {
-                words = ((String) args[2]).split(" ");
-            } else if (args[1] instanceof String[]) {
-                words = (String[]) args[1];
-            } else if (args[1] instanceof String) {
-                words = ((String) args[1]).split(" ");
-            } else {
-                return;
-            }
-            
-            final StringBuffer compound = new StringBuffer();
-            for (int i = words.length - 1; i >= 0; i--) {
-                if (compound.length() > 0) {
-                    compound.insert(0, ' ');
-                }
-                compound.insert(0, words[i]);
-                
-                doReplacement(target, "$" + (i + 1) + "-", compound.toString());
-                doReplacement(target, "$" + (i + 1), words[i]);
-            }
-        }
+                && (type.getType().getArgTypes()[2] == String[].class
+                || type.getType().getArgTypes()[2] == String.class);
     }
     
     /**
@@ -268,13 +165,99 @@ public class ActionSubstitutor {
         }
 
         final StringBuilder res = new StringBuilder(target);
-        
-        doConfigSubstitutions(getConfigManager(args), res);
-        doServerSubstitutions(res, args);
-        doComponentSubstitutions(res, args);
-        doWordSubstitutions(res, args);
+
+        final Pattern bracesPattern = Pattern.compile("(?<!\\\\)(\\$\\{([^{}]*?)\\})");
+        final Pattern otherPattern = Pattern.compile("(?<!\\\\)(\\$("
+                + "[0-9]+(-([0-9]+)?)?|" // Word subs - $1, $1-, $1-2
+                + "[0-9]+(\\.([A-Z_]+))+|" // Component subs - 2.FOO_BAR
+                + "[a-z0-9A-Z_\\.]+" // Config/server subs
+                + "))");
+
+        Matcher bracesMatcher = bracesPattern.matcher(res);
+        Matcher otherMatcher = otherPattern.matcher(res);
+
+        boolean first;
+
+        while ((first = bracesMatcher.find()) || otherMatcher.find()) {
+            final Matcher matcher = first ? bracesMatcher : otherMatcher;
+            doReplacement(res, matcher.group(1), getSubstitution(
+                    doSubstitution(matcher.group(2), args), args));
+            bracesMatcher = bracesPattern.matcher(res);
+            otherMatcher = otherPattern.matcher(res);
+        }
+
+        doReplacement(res, "\\$", "$");
         
         return res.toString();
+    }
+
+    /**
+     * Retrieves the value which should be used for the specified substitution.
+     *
+     * @param substitution The substitution, without leading $
+     * @param args The arguments for the action
+     * @return The substitution to be used
+     */
+    private String getSubstitution(final String substitution, final Object ... args) {
+        final Pattern numberPattern = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
+        final Matcher numberMatcher = numberPattern.matcher(substitution);
+
+        final Pattern compPattern = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
+        final Matcher compMatcher = compPattern.matcher(substitution);
+
+        if (usesWordSubstitutions() && numberMatcher.matches()) {
+            final CommandArguments words = args[2] instanceof String ?
+                new CommandArguments((String) args[2]) :
+                new CommandArguments(Arrays.asList((String[]) args[2]));
+
+            int start, end;
+
+            start = end = Integer.parseInt(numberMatcher.group(1)) - 1;
+
+            if (numberMatcher.group(3) != null) {
+                end = Integer.parseInt(numberMatcher.group(3)) - 1;
+            } else if (numberMatcher.group(2) != null) {
+                end = words.getWords().length - 1;
+            }
+
+            return words.getWordsAsString(start, end);
+        }
+
+        if (compMatcher.matches()) {
+            final int argument = Integer.parseInt(compMatcher.group(1));
+
+            try {
+                final ActionComponentChain chain = new ActionComponentChain(
+                        type.getType().getArgTypes()[argument], compMatcher.group(2));
+                return chain.get(args[argument]).toString();
+            } catch (IllegalArgumentException ex) {
+                // TODO: Log the error nicely somewhere?
+                return substitution;
+            }
+        }
+
+        final ConfigManager manager = getConfigManager(args);
+
+        if (manager.hasOptionString("actions", substitution)) {
+            return manager.getOption("actions", substitution);
+        }
+
+        if (hasFrameContainer()) {
+            final Server server = ((FrameContainer) args[0]).getServer();
+
+            if (server != null) {
+                try {
+                    final ActionComponentChain chain = new ActionComponentChain(
+                        Server.class, substitution);
+                    return chain.get(server).toString();
+                } catch (IllegalArgumentException ex) {
+                    // TODO: Log the error nicely somewhere?
+                    return substitution;
+                }
+            }
+        }
+
+        return substitution;
     }
 
     /**
@@ -311,7 +294,7 @@ public class ActionSubstitutor {
         int i = -1;
         
         do {
-            i = haystack.indexOf(needle);
+            i = haystack.indexOf(needle, i);
             
             if (i != -1) {
                 haystack.replace(i, i + needle.length(), replacement);
