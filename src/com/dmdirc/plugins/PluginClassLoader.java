@@ -161,7 +161,7 @@ public class PluginClassLoader extends ClassLoader {
             } else {
                 loadedClass = defineClass(name, data, 0, data.length);
             }
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new ClassNotFoundException(e.getMessage(), e);
         }
 
