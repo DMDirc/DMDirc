@@ -309,6 +309,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     continue;
                 }
 
+                if (stream == null) {
+                    //Don't add null streams
+                    continue;
+                }
+
                 try {
                     final Identity thisIdentity = new Identity(stream, false);
                     identities.add(thisIdentity);
