@@ -87,6 +87,11 @@ showLicence() {
 		ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
 		ENDLINE=$((${ENDLINE%%:*} - 4))
 
+		if [ ${ENDLINE} -lt 4 ]; then
+			errordialog "Installer Error" "DMDirc has been unable to figure out what to do with this jre download and can not continue. Please raise an issue about this at http://bugs.dmdirc.com"
+			exit 1;
+		fi;
+
 		head -n ${ENDLINE} jre.bin | tail ${TAILOPTS}${STARTLINE} > ${FILE}
 	fi;
 
@@ -160,8 +165,12 @@ if [ $? -eq 0 ]; then
 			STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 			STARTLINE=${STARTLINE%%:*}
 			# Location of licence end
-			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above licence terms?" jre.bin`
+			ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
 			ENDLINE=$((${ENDLINE%%:*} - 2))
+			if [ ${ENDLINE} -lt 2 ]; then
+				errordialog "Installer Error" "DMDirc has been unable to figure out what to do with this jre download and can not continue. Please raise an issue about this at http://bugs.dmdirc.com"
+				exit 1;
+			fi;
 			# Location of checksum start
 			CSSTARTLINE=`grep ${GREPOPTS} "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
 			CSSTARTLINE=${CSSTARTLINE%%:*}
