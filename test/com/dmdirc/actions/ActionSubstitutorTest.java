@@ -1,0 +1,151 @@
+/*
+ * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.actions;
+
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
+import com.dmdirc.ServerState;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(Parameterized.class)
+public class ActionSubstitutorTest {
+
+    private static final Map<String, String> settings = new HashMap<String, String>();
+    
+    private final String input, expected;
+    private final Channel channel;
+    private final ActionSubstitutor substitutor;
+    private final Object[] args;
+
+    @BeforeClass
+    public static void setup() throws InvalidIdentityFileException {
+        IdentityManager.load();
+        ActionManager.init();
+
+        settings.put("alpha", "A");
+        settings.put("bravo", "$alpha");
+        settings.put("charlie", "${bravo}");
+        settings.put("delta", "${${bravo}${bravo}}");
+        settings.put("AA", "win!");
+    }
+
+    public ActionSubstitutorTest(final String input, final String expected) {
+        this.input = input;
+        this.expected = expected;
+
+        this.channel = mock(Channel.class);
+        
+        final ConfigManager manager = mock(ConfigManager.class);
+        final Server server = mock(Server.class);
+
+        final ChannelClientInfo clientInfo = mock(ChannelClientInfo.class);
+
+        when(channel.getServer()).thenReturn(server);
+        when(channel.getConfigManager()).thenReturn(manager);
+        when(server.getState()).thenReturn(ServerState.CONNECTED);
+        when(server.getAwayMessage()).thenReturn("foo");
+
+        when(manager.getOptions(eq("actions"))).thenReturn(settings);
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            when(manager.hasOptionString("actions", entry.getKey())).thenReturn(true);
+            when(manager.getOption("actions", entry.getKey())).thenReturn(entry.getValue());
+        }
+
+        substitutor = new ActionSubstitutor(CoreActionType.CHANNEL_MESSAGE);
+
+        args = new Object[]{
+            channel,
+            clientInfo,
+            "1 2 3 fourth_word_here 5 6 7"
+        };
+    }
+
+    @Test
+    public void testSubstitution() {
+        assertEquals(expected, substitutor.doSubstitution(input, args));
+    }
+
+    @Parameterized.Parameters
+    public static List<String[]> data() {
+        final String[][] tests = {
+            // -- Existing behaviour -------------------------------------------
+            // ---- No subs at all ---------------------------------------------
+            {"no subs here!", "no subs here!"},
+            // ---- Config subs ------------------------------------------------
+            {"$alpha", "A"},
+            {"--$alpha--", "--A--"},
+            // ---- Word subs --------------------------------------------------
+            {"$1", "1"},
+            {"$4", "fourth_word_here"},
+            {"$5-", "5 6 7"},
+            // ---- Component subs ---------------------------------------------
+            {"${2.STRING_LENGTH}", "28"},
+            {"${2.STRING_STRING}", "1 2 3 fourth_word_here 5 6 7"},
+            // ---- Server subs ------------------------------------------------
+            {"${SERVER_MYAWAYREASON}", "foo"},
+            // ---- Combinations -----------------------------------------------
+            {"${1}${2.STRING_LENGTH}$alpha", "128A"},
+            {"$alpha$4${SERVER_MYAWAYREASON}", "Afourth_word_herefoo"},
+            
+            // -- New behaviour ------------------------------------------------
+            // ---- Config subs ------------------------------------------------
+            {"${alpha}", "A"},
+            {"\\$alpha", "$alpha"},
+            {"$bravo", "A"},
+            {"$charlie", "A"},
+            {"$delta", "win!"},
+            // ---- Word subs --------------------------------------------------
+            {"$5-6", "5 6"},
+            {"${5-6}", "5 6"},
+            {"${5-$6}", "5 6"},
+            {"${5-${${6}}}", "5 6"},
+            // ---- Component subs ---------------------------------------------
+            {"${2.STRING_STRING.STRING_LENGTH}", "28"},
+            // ---- Escaping ---------------------------------------------------
+            {"\\$1", "$1"},
+            {"\\$alpha $alpha", "$alpha A"},
+            {"\\$$1", "$1"},
+            {"\\\\$4", "\\fourth_word_here"},
+            {"\\\\${4}", "\\fourth_word_here"},
+            {"\\\\\\$4", "\\$4"},
+        };
+
+        return Arrays.asList(tests);
+    }
+
+}
