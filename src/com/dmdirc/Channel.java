@@ -572,7 +572,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param topic The topic to be added.
      */
     public void addTopic(final Topic topic) {
-        topics.add(topic);
+        synchronized (topics) {
+            topics.add(topic);
+        }
         updateTitle();
 
         new Thread(new Runnable() {
@@ -596,7 +598,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * the current one.
      */
     public List<Topic> getTopics() {
-        return topics.getList();
+        synchronized (topics) {
+            return new ArrayList<Topic>(topics.getList());
+        }
     }
 
     /**
@@ -605,11 +609,13 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @return Current channel topic
      */
     public Topic getCurrentTopic() {
-        if (channelInfo.getTopic().isEmpty()) {
-            return null;
+        synchronized (topics) {
+            if (topics.getList().size() == 0) {
+                return null;
+            } else {
+                return topics.get(topics.getList().size() - 1);
+            }
         }
-        return new Topic(channelInfo.getTopic(), channelInfo.getTopicSetter(),
-                channelInfo.getTopicTime());
     }
 
     /**
