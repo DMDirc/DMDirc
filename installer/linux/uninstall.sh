@@ -1,13 +1,18 @@
 #!/bin/sh
 
-if [ ! -e .uninstall.conf ]; then
+if [ ! -e `dirname $0`/.uninstall.conf ]; then
 	echo "No .uninstall.conf found, unable to continue."
 	exit 1;
 else
 	INSTALLED_AS_ROOT=""
 	INSTALL_LOCATION=""
 	
-	. .uninstall.conf
+	. `dirname $0`/.uninstall.conf
+
+	if [ "${INSTALL_LOCATION}" = "" ]; then
+		echo "Unable to read .uninstall.conf, unable to continue."
+		exit 1;
+	fi;
 fi;
 
 PIDOF=`which pidof`
@@ -29,7 +34,7 @@ else
 	exit 1;
 fi;
 
-if [ ${INSTALLED_AS_ROOT} -eq 1 ]; then
+if [ "${INSTALLED_AS_ROOT}" -eq 1 ]; then
 	USER=`whoami`
 	if [ "${USER}" != "root" ]; then
 		errordialog "Uninstaller" "Uninstall Aborted. Only root can use this script"
@@ -58,7 +63,7 @@ echo "Removing Shortcuts.."
 TOOL=`which gconftool-2`
 COMMAND=""
 FILENAME=""
-if [ ${INSTALLED_AS_ROOT} -eq 1 ]; then
+if [ "${INSTALLED_AS_ROOT}" -eq 1 ]; then
 	COMMAND="${TOOL} --config-source=`${TOOL} --get-default-source`"
 	FILENAME="/usr/share/services/irc.protocol"
 	rm -Rfv /usr/share/applications/DMDirc.desktop
