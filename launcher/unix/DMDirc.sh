@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="14"
+LAUNCHERVERSION="15"
 LAUNCHERINFO="unix-${LAUNCHERVERSION}"
 
 params=""
@@ -51,6 +51,16 @@ else
 	fi;
 fi
 
+# Find out where we are
+BASEDIR=${0%/*}
+if [ "${BASEDIR}" = "${0}" ]; then
+	BASEDIR=`which $0`
+	BASEDIR=${BASEDIR%/*}
+fi
+if [ "${BASEDIR:0:1}" != "/" ]; then
+	BASEDIR=${PWD}/${BASEDIR}
+fi;
+
 # Store params so that we can pass them back to the client
 for param in "$@"; do
 	if [ "${param}" = "--noprofile" -o "${param}" = "--updateonly" ]; then 
@@ -69,13 +79,10 @@ for param in "$@"; do
 done;
 
 if [ -e "functions.sh" ]; then
-	. `dirname $0`/functions.sh
+	. ${BASEDIR}/functions.sh
 else
-	# TODO: Remove this and depend on functions.sh...
 	echo "Unable to find functions.sh, using built in functions"
-	
 	###FUNCTIONS_FILE###
-	
 fi;
 
 # Check to see if we can bspatch things
@@ -153,10 +160,10 @@ getConfigOption() {
 }
 
 if [ "${ISOSX}" = "1" ]; then
-	jarDir=`dirname $0`/../Resources/Java/
+	jarDir=${BASEDIR}/../Resources/Java/
 	jar=${jarDir}DMDirc.jar
 else
-	jar=`dirname $0`/DMDirc.jar
+	jar=${BASEDIR}/DMDirc.jar
 fi
 launcherUpdater=${profiledir}/updateLauncher.sh
 BSDJava1="/usr/local/jdk1.6.0/jre/bin/java"
@@ -191,12 +198,14 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 	echo "Found!";
 	echo "Attempting to update..";
 
+	# The code below intentionally doesn't use the FUNCTIONS_FILE include as it
+	# wouldn't correctly escape \${0} and \${2} where needed and thus stuff would
+	# break!
 	cat <<EOF> ${launcherUpdater}
-		cd `dirname $0`
+		cd ${BASEDIR}
 		if [ -e "functions.sh" ]; then
-			. `dirname $0`/functions.sh
+			. ${BASEDIR}/functions.sh
 		else
-			# TODO: Remove this and depend on functions.sh...
 			echo "Unable to find functions.sh, using old functions"
 			errordialog() {
 				# Send message to console.
