@@ -1,13 +1,46 @@
 #!/bin/sh
 
-if [ ! -e `dirname $0`/.uninstall.conf ]; then
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+
+# Find out where we are
+BASEDIR=${0%/*}
+if [ "${BASEDIR}" = "${0}" ]; then
+	BASEDIR=`which $0`
+	BASEDIR=${BASEDIR%/*}
+fi
+if [ "${BASEDIR:0:1}" != "/" ]; then
+	BASEDIR=${PWD}/${BASEDIR}
+fi;
+
+if [ ! -e ${BASEDIR}/.uninstall.conf ]; then
 	echo "No .uninstall.conf found, unable to continue."
 	exit 1;
 else
 	INSTALLED_AS_ROOT=""
 	INSTALL_LOCATION=""
 	
-	. `dirname $0`/.uninstall.conf
+	. ${BASEDIR}/.uninstall.conf
 
 	if [ "${INSTALL_LOCATION}" = "" ]; then
 		echo "Unable to read .uninstall.conf, unable to continue."
@@ -28,7 +61,7 @@ fi;
 JAVA=`which java`
 
 if [ -e "functions.sh" ]; then
-	. `dirname $0`/functions.sh
+	. ${BASEDIR}/functions.sh
 else
 	echo "Unable to find functions.sh, unable to continue."
 	exit 1;

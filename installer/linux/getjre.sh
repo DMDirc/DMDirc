@@ -26,6 +26,16 @@ else
 	fi;
 fi
 
+# Find out where we are
+BASEDIR=${0%/*}
+if [ "${BASEDIR}" = "${0}" ]; then
+	BASEDIR=`which $0`
+	BASEDIR=${BASEDIR%/*}
+fi
+if [ "${BASEDIR:0:1}" != "/" ]; then
+	BASEDIR=${PWD}/${BASEDIR}
+fi;
+
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
@@ -37,7 +47,7 @@ if [ "${PIDOF}" = "" ]; then
 fi;
 
 if [ -e "functions.sh" ]; then
-	. `dirname $0`/functions.sh
+	. ${BASEDIR}/functions.sh
 else
 	echo "Unable to find functions.sh, unable to continue."
 	exit 1;

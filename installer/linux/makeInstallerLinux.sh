@@ -301,7 +301,29 @@ elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 fi
 
 if [ -e "${jarPath}/launcher/unix" ]; then
-	ln -sf ${jarPath}/launcher/unix/DMDirc.sh .
+	# Hax in functions.sh
+	FUNCTIONSFILE="functions.sh"
+	SRCFILE=${jarPath}/launcher/unix/DMDirc.sh
+	DESTFILE=./DMDirc.sh
+
+	if [ -e "${FUNCTIONSFILE}" ]; then
+		FUNCTIONSLINE=`grep ${GREPOPTS} "^###FUNCTIONS_FILE###$" ${SRCFILE}`
+		if [ "${FUNCTIONSLINE}" == "" ]; then
+			echo "    Functions already built into launcher."
+			cp ${SRCFILE} ${DESTFILE}
+		else
+			echo "    Including functions.sh into launcher."
+			FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
+
+			head -n ${FUNCTIONSLINE} ${SRCFILE} > ${DESTFILE}
+			cat functions.sh >> ${DESTFILE}
+			echo "" >> ${DESTFILE}
+			tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) ${SRCFILE} >> ${DESTFILE}
+		fi;
+	else
+		echo "    Unable to create unix launcher update, no functions.sh found."
+	fi;
+	
 	FILES="${FILES} DMDirc.sh"
 fi
 
