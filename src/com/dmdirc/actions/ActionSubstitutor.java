@@ -184,7 +184,6 @@ public class ActionSubstitutor {
 
             final String group = matcher.group(3);
             final int start = matcher.start() + matcher.group(1).length(), end = matcher.end();
-            System.out.println(res + ": " + start + " ->" + end);
 
             res.delete(start, end);
             res.insert(start, getSubstitution(doSubstitution(group, args), args));
