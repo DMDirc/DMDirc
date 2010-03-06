@@ -23,5 +23,5 @@ concurrency:
 condition 0:
   argument=2
   component=STRING_STRING
-  target=${SERVER_MYNICKNAME}
-  comparison=STRING_CONTAINS
+  target=$highlightregex
+  comparison=STRING_REGEX

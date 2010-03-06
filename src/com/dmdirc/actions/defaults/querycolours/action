@@ -9,6 +9,7 @@ keysections:
   metadata
   setting 0
   setting 1
+  setting 2
   concurrency
 
 triggers:
@@ -29,7 +30,7 @@ condition 0:
 metadata:
   description=Changes the colour of query window names in the treeview (or other frame manager) when events occur.
   author=Shane <shane@dmdirc.com>
-  version=1
+  version=4
   component=11
 
 setting 0:
@@ -45,3 +46,10 @@ setting 1:
   title=Text colour
   tooltip=Colour to use when someone speaks or sends an action
   default=12
+
+setting 2:
+  type=TEXT
+  setting=highlightregex
+  title=Highlight regex
+  tooltip=Regular expression to use for matching highlights
+  default=(?i).*\\Q${SERVER_MYNICKNAME}\\E.*
