@@ -27,12 +27,14 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.config.Identity;
+import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Allows the user to add/view/delete ignores.
@@ -59,90 +61,103 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
-        
-        final Identity identity = server.getNetworkIdentity();
-        
-        if (args.getArguments().length == 0
-                || args.getArguments()[0].toLowerCase().equals("view")) {
-            
-            if (identity.hasOptionString("network", "ignorelist")) {
-                final List<String> list = identity.getOptionList("network", "ignorelist");
-                
-                if (list.isEmpty()) {
-                    sendLine(origin, isSilent, FORMAT_ERROR,
-                            "No ignore list entries for this network.");
 
-                } else {
-                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Ignore list:");
-                    
-                    int i = 0;
-                    for (String line : list) {
-                        if (!line.isEmpty()) {
-                            i++;
-                            sendLine(origin, isSilent, FORMAT_OUTPUT, i + ". " + line);
-                        }
-                    }                    
-                }
-                
-            } else {
-                sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
-            }
-            
-        } else if (args.getArguments()[0].toLowerCase().equals("add")
-                && args.getArguments().length > 1) {
-            
-            final String host = args.getArgumentsAsString(1);
-            String list = host;
-            
-            if (identity.hasOptionString("network", "ignorelist")) {
-                list = identity.getOption("network", "ignorelist");
-                list = list + "\n" + host;
-            }
-            
-            identity.setOption("network", "ignorelist", list);
-            
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + host + " to the ignore list.");
-            
-        } else if (args.getArguments()[0].toLowerCase().equals("remove")
-                && args.getArguments().length > 1) {
-            
-            final String host = server.getParser().getStringConverter()
-                    .toLowerCase(args.getArgumentsAsString(1));
-            
-            final StringBuffer newlist = new StringBuffer();
-            boolean found = false;
-            
-            if (identity.hasOptionString("network", "ignorelist")) {
-                final String list = identity.getOption("network", "ignorelist");
-                
-                
-                for (String entry : list.split("\n")) {
-                    if (server.getParser().getStringConverter()
-                            .toLowerCase(entry).equals(host)) {
-                        found = true;
-                    } else {
-                        if (newlist.length() > 0) {
-                            newlist.append('\n');
-                        }
-                        newlist.append(entry);
-                    }
-                }
-            }
-            
-            if (found) {
-                identity.setOption("network", "ignorelist", newlist.toString());
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host
-                        + " from the ignore list.");
-            } else {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Host '" + host + "' not found.");
-            }
-            
+        if (args.getArguments().length == 0) {
+            executeView(origin, server, isSilent, args, false);
+        } else if ("--remove".equalsIgnoreCase(args.getArguments()[0])) {
+            executeRemove(origin, server, isSilent, args);
+        } else if ("--regex".equalsIgnoreCase(args.getArguments()[0])) {
+            executeRegex(origin, server, isSilent, args);
         } else {
-            showUsage(origin, isSilent, "ignore", "<add|remove|view> [host]");
+            executeAdd(origin, server, isSilent, args);
         }
-        
-        server.updateIgnoreList();
-        
+    }
+
+    protected void executeView(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args, final boolean forceRegex) {
+        final IgnoreList ignoreList = server.getIgnoreList();
+
+        if (ignoreList.count() == 0) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
+            return;
+        }
+
+        final List<String> entries;
+        if (ignoreList.canConvert() && !forceRegex) {
+            entries = ignoreList.getSimpleList();
+        } else {
+            if (!forceRegex) {
+                sendLine(origin, isSilent, FORMAT_ERROR,
+                        "Unable to convert ignore list to simple format");
+            }
+            entries = ignoreList.getRegexList();
+        }
+
+        int i = 0;
+        for (String line : entries) {
+            i++;
+            sendLine(origin, isSilent, FORMAT_OUTPUT, i + ". " + line);
+        }
+    }
+
+    protected void executeAdd(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args) {
+        final IgnoreList ignoreList = server.getIgnoreList();
+        final String target = args.getArgumentsAsString();
+
+        ignoreList.addSimple(target);
+        server.saveIgnoreList();
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
+    }
+
+    protected void executeRegex(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 1) {
+            executeView(origin, server, isSilent, args, true);
+            return;
+        }
+
+        final IgnoreList ignoreList = server.getIgnoreList();
+        final String target = args.getArgumentsAsString(1);
+
+        try {
+            Pattern.compile(target);
+        } catch (PatternSyntaxException ex) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Unable to compile regex: "
+                    + ex.getDescription());
+            return;
+        }
+
+        ignoreList.add(target);
+        server.saveIgnoreList();
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
+    }
+
+    protected void executeRemove(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 1) {
+            showUsage(origin, isSilent, "ignore", "--remove <host>");
+            return;
+        }
+
+        final IgnoreList ignoreList = server.getIgnoreList();
+        final String host = args.getArgumentsAsString(1);
+
+        if (ignoreList.canConvert() && ignoreList.getSimpleList().contains(host)) {
+            ignoreList.remove(ignoreList.getSimpleList().indexOf(host));
+            server.saveIgnoreList();
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
+            return;
+        }
+
+        if (ignoreList.getRegexList().contains(host)) {
+            ignoreList.remove(ignoreList.getRegexList().indexOf(host));
+            server.saveIgnoreList();
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
+            return;
+        }
+
+        sendLine(origin, isSilent, FORMAT_ERROR, "Ignore list doesn't contain '" + host + "'.");
     }
     
     /** {@inheritDoc} */
@@ -160,7 +175,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "ignore <add|remove|view> [host] - manages the network's ignore list";
+        return "ignore [--remove|--regex] [host] - manages the network's ignore list";
     }
 
     /** {@inheritDoc} */
@@ -170,12 +185,15 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         targets.excludeAll();
         
         if (arg == 0) {
-            targets.add("add");
-            targets.add("remove");
-            targets.add("view");
-        } else if (arg == 1) {
+            targets.add("--regex");
+            targets.add("--remove");
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
+        } else if (arg == 1 && previousArgs.get(0).equals("--regex")) {
+            targets.include(TabCompletionType.CHANNEL_NICK);
+            targets.include(TabCompletionType.QUERY_NICK);
+        } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
+            // TODO: If/when passed a server, include known ignore list entries
         }
         
         return targets;
