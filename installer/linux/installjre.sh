@@ -47,7 +47,8 @@ if [ "${BASEDIR}" = "${0}" ]; then
 	BASEDIR=`which $0`
 	BASEDIR=${BASEDIR%/*}
 fi
-if [ "${BASEDIR:0:1}" != "/" ]; then
+CHECKBASEDIR=`echo "${BASEDIR}" | sed 's#^/##'`
+if [ "${CHECKBASEDIR}" = "${BASEDIR}" ]; then
 	BASEDIR=${PWD}/${BASEDIR}
 fi;
 
