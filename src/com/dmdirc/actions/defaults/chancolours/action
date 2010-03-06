@@ -12,6 +12,7 @@ keysections:
   setting 1
   setting 2
   setting 3
+  setting 4
 
 triggers:
   CHANNEL_ACTION
@@ -31,7 +32,7 @@ concurrency:
 metadata:
   description=Changes the colour of channel window names in the treeview (or other frame manager) when events occur.
   author=Chris <chris@dmdirc.com>
-  version=6
+  version=9
   component=7
 
 setting 0:
@@ -61,3 +62,10 @@ setting 3:
   title=Misc. colour
   tooltip=Colour to use for other miscellaneous lines
   default=2
+
+setting 4:
+  type=TEXT
+  setting=highlightregex
+  title=Highlight regex
+  tooltip=Regular expression to use for matching highlights
+  default=(?i).*\\Q${SERVER_MYNICKNAME}\\E.*
