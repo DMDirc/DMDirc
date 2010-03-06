@@ -280,11 +280,11 @@ public class PreferencesManager {
         options.put("none", "Nowhere");
 
         commonOptions.putAll(options);
-        commonOptions.put("comchans:%1$s", "Common channels");
+        commonOptions.put("comchans:%1$s server", "Common channels");
 
         whoisOptions.putAll(options);
         whoisOptions.put("lastcommand:(raw )?whois %4$s( %4$s)?", "Source of whois command");
-        whoisOptions.put("comchans:%4$s", "Common channels");
+        whoisOptions.put("comchans:%4$s server", "Common channels");
 
         ctcprOptions.putAll(commonOptions);
         ctcprOptions.put("lastcommand:ctcp %1$s %4$S", "Source of ctcp command");
