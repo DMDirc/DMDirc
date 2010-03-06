@@ -129,7 +129,7 @@ public class Styliser implements ConfigChangeListener {
             + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
-    private boolean styleLinks;
+    private boolean styleURIs, styleChannels;
 
     /** The container that owns this styliser. */
     private final FrameContainer owner;
@@ -144,7 +144,9 @@ public class Styliser implements ConfigChangeListener {
         this.owner = owner;
 
         owner.getConfigManager().addChangeListener("ui", "stylelinks", this);
-        styleLinks = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+        owner.getConfigManager().addChangeListener("ui", "stylechannels", this);
+        styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+        styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
     }
     
     /**
@@ -399,7 +401,7 @@ public class Styliser implements ConfigChangeListener {
         // Hyperlinks
         if (string.charAt(0) == CODE_HYPERLINK) {
             if (!isNegated) {
-                toggleLink(attribs);
+                toggleURI(attribs);
             }
             
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
@@ -413,6 +415,10 @@ public class Styliser implements ConfigChangeListener {
         
         // Channel links
         if (string.charAt(0) == CODE_CHANNEL) {
+            if (!isNegated) {
+                toggleChannel(attribs);
+            }
+
             if (attribs.getAttribute(IRCTextAttribute.CHANNEL) == null) {
                 attribs.addAttribute(IRCTextAttribute.CHANNEL,
                         readUntilControl(string.substring(1)));
@@ -599,47 +605,64 @@ public class Styliser implements ConfigChangeListener {
         
         return res;
     }
+
+    /**
+     * Toggles the various channel link-related attributes.
+     *
+     * @param attribs The attributes to be modified.
+     */
+    private void toggleChannel(final SimpleAttributeSet attribs) {
+        if (styleChannels) {
+            toggleLink(attribs, IRCTextAttribute.CHANNEL, Color.green.darker().darker());
+        }
+    }
     
     /**
      * Toggles the various hyperlink-related attributes.
      * 
      * @param attribs The attributes to be modified.
      */
-    private void toggleLink(final SimpleAttributeSet attribs) {
-        if (styleLinks) {
-            if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
-                // Add the hyperlink style
-                
-                if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
-                    attribs.addAttribute("restoreUnderline", Boolean.TRUE);
-                } else {
-                    attribs.addAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE);
-                }
-                
-                final Object foreground = attribs.getAttribute(StyleConstants.FontConstants.Foreground);
-                
-                if (foreground != null) {
-                    attribs.addAttribute("restoreColour", foreground);
-                    attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-                }
-                
-                attribs.addAttribute(StyleConstants.FontConstants.Foreground, Color.BLUE);
-                
+    private void toggleURI(final SimpleAttributeSet attribs) {
+        if (styleURIs) {
+            toggleLink(attribs, IRCTextAttribute.HYPERLINK, Color.blue);
+        }
+    }
+
+    private void toggleLink(final SimpleAttributeSet attribs,
+            final IRCTextAttribute attribute, final Color colour) {
+
+        if (attribs.getAttribute(attribute) == null) {
+            // Add the hyperlink style
+
+            if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
+                attribs.addAttribute("restoreUnderline", Boolean.TRUE);
             } else {
-                // Remove the hyperlink style
-                
-                if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
-                    attribs.removeAttribute("restoreUnderline");
-                } else {
-                    attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-                }
-                
+                attribs.addAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE);
+            }
+
+            final Object foreground = attribs.getAttribute(StyleConstants.FontConstants.Foreground);
+
+            if (foreground != null) {
+                attribs.addAttribute("restoreColour", foreground);
                 attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-                final Object foreground = attribs.getAttribute("restoreColour");
-                if (foreground != null) {
-                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
-                    attribs.removeAttribute("restoreColour");
-                }
+            }
+
+            attribs.addAttribute(StyleConstants.FontConstants.Foreground, colour);
+
+        } else {
+            // Remove the hyperlink style
+
+            if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
+                attribs.removeAttribute("restoreUnderline");
+            } else {
+                attribs.removeAttribute(StyleConstants.FontConstants.Underline);
+            }
+
+            attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+            final Object foreground = attribs.getAttribute("restoreColour");
+            if (foreground != null) {
+                attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
+                attribs.removeAttribute("restoreColour");
             }
         }
     }
@@ -754,7 +777,9 @@ public class Styliser implements ConfigChangeListener {
     @Override
     public void configChanged(final String domain, final String key) {
         if ("stylelinks".equals(key)) {
-            styleLinks = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+            styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+        } else if ("stylechannels".equals(key)) {
+            styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
         }
     }
     
