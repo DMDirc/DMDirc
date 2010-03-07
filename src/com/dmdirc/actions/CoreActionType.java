@@ -94,8 +94,12 @@ public enum CoreActionType implements ActionType {
     
     /** Auth notice received. */
     SERVER_AUTHNOTICE(ServerEvents.SERVER_EVENT_WITH_ARG, "Received auth notice"),
+    /** Unknown action received. */
+    SERVER_UNKNOWNACTION(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown action"),
     /** Unknown notice received. */
     SERVER_UNKNOWNNOTICE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown notice"),
+    /** Unknown message received. */
+    SERVER_UNKNOWNMESSAGE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown message"),
     
     /** User modes changed. */
     SERVER_USERMODES(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
@@ -201,9 +205,9 @@ public enum CoreActionType implements ActionType {
     /** Query action received. */
     QUERY_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action received"),
     /** Query message sent. */
-    QUERY_SELF_MESSAGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Private message sent"),
+    QUERY_SELF_MESSAGE(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private message sent"),
     /** Query action sent. */
-    QUERY_SELF_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action sent"),
+    QUERY_SELF_ACTION(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private action sent"),
     /** Query quit event. */
     QUERY_QUIT(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user quit"),
     /** Query nick change. */

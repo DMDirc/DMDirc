@@ -41,14 +41,18 @@ import com.dmdirc.parser.irc.IRCParser;
  *
  * @author chris
  */
-public final class ServerEventHandler extends EventHandler
-        implements ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
-        ErrorInfoListener, PrivateCtcpListener, PrivateCtcpReplyListener, SocketCloseListener,
-        PrivateNoticeListener, MotdStartListener, MotdLineListener, MotdEndListener, NumericListener, PingFailureListener,
-        PingSuccessListener, AwayStateListener, ConnectErrorListener, NickInUseListener, Post005Listener,
-        AuthNoticeListener, UnknownNoticeListener, UserModeChangeListener, InviteListener, WallopListener,
-        WalluserListener, WallDesyncListener, NickChangeListener, ServerErrorListener, PingSentListener,
-        UserModeDiscoveryListener, ServerNoticeListener {
+public final class ServerEventHandler extends EventHandler implements
+        ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
+        ErrorInfoListener, PrivateCtcpListener, PrivateCtcpReplyListener,
+        SocketCloseListener, PrivateNoticeListener, MotdStartListener,
+        MotdLineListener, MotdEndListener, NumericListener, PingFailureListener,
+        PingSuccessListener, AwayStateListener, ConnectErrorListener,
+        NickInUseListener, Post005Listener, AuthNoticeListener,
+        UnknownNoticeListener, UserModeChangeListener, InviteListener,
+        WallopListener, WalluserListener, WallDesyncListener,
+        NickChangeListener, ServerErrorListener, PingSentListener,
+        UserModeDiscoveryListener, ServerNoticeListener, UnknownMessageListener,
+        UnknownActionListener {
 
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -311,6 +315,46 @@ public final class ServerEventHandler extends EventHandler
 
     /** {@inheritDoc} */
     @Override
+    public void onUnknownMessage(final Parser tParser, final String sMessage,
+            final String sTarget, final String sHost) {
+        checkParser(tParser);
+
+        if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
+            // Local client
+            if (!owner.hasQuery(sTarget)) {
+                owner.addQuery(sTarget);
+            }
+
+            owner.getQuery(sTarget).doNotification("querySelfExternalMessage",
+                    CoreActionType.QUERY_SELF_MESSAGE, tParser.getLocalClient(), sMessage);
+        } else {
+            owner.doNotification("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE,
+                    sHost, sTarget, sMessage);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnknownAction(final Parser tParser, final String sMessage,
+            final String sTarget, final String sHost) {
+        checkParser(tParser);
+
+        if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
+            // Local client
+            if (!owner.hasQuery(sTarget)) {
+                owner.addQuery(sTarget);
+            }
+
+            owner.getQuery(sTarget).doNotification("querySelfExternalAction",
+                    CoreActionType.QUERY_SELF_ACTION, tParser.getLocalClient(), sMessage);
+        } else {
+            owner.doNotification("unknownAction", CoreActionType.SERVER_UNKNOWNACTION,
+                    sHost, sTarget, sMessage);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void onUserModeChanged(final Parser tParser,
             final ClientInfo cClient, final String sSetBy, final String sModes) {
         checkParser(tParser);
@@ -407,4 +451,5 @@ public final class ServerEventHandler extends EventHandler
                     + owner.getStatus().getTransitionHistory());
         }
     }
+
 }
