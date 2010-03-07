@@ -833,10 +833,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                     }
 
                     if (hasChannel(name)) {
-                        // TODO: Need to pass key
-                        getChannel(name).join();
                         getChannel(name).activateFrame();
-                    } else {
+                    }
+
+                    if (!hasChannel(name) || !getChannel(name).isOnChannel()) {
                         pending.add(request);
                     }
                 }
@@ -1476,11 +1476,13 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             converter = parser.getStringConverter();
 
+            final List<ChannelJoinRequest> requests = new ArrayList<ChannelJoinRequest>();
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {
-                    chan.join();
+                    requests.add(new ChannelJoinRequest(chan.getName()));
                 }
             }
+            join(requests.toArray(new ChannelJoinRequest[0]));
 
             checkModeAliases();
         }
