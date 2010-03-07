@@ -32,9 +32,11 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,15 +68,20 @@ public final class JoinChannelCommand extends ServerCommand implements
             return;
         }
 
+        final List<ChannelJoinRequest> channels = new ArrayList<ChannelJoinRequest>();
+
         for (String pair : args.getArgumentsAsString().split(",")) {
             int index = pair.trim().indexOf(' ');
 
             if (index == -1) {
-                server.join(pair);
+                channels.add(new ChannelJoinRequest(pair));
             } else {
-                server.join(pair.substring(0, index), pair.substring(index + 1));
+                channels.add(new ChannelJoinRequest(pair.substring(0, index),
+                        pair.substring(index + 1)));
             }
         }
+
+        server.join(channels.toArray(new ChannelJoinRequest[0]));
     }
     
     
@@ -109,7 +116,6 @@ public final class JoinChannelCommand extends ServerCommand implements
     public AdditionalTabTargets getSuggestions(final int arg,
             final List<String> previousArgs) {
         return new AdditionalTabTargets();
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }
