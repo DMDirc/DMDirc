@@ -131,6 +131,9 @@ public class Styliser implements ConfigChangeListener {
     /** Whether or not we should style links. */
     private boolean styleURIs, styleChannels;
 
+    /** Colours to use for URI and channel links. */
+    private Color uriColour, channelColour;
+
     /** The container that owns this styliser. */
     private final FrameContainer owner;
     
@@ -143,10 +146,14 @@ public class Styliser implements ConfigChangeListener {
     public Styliser(final FrameContainer owner) {
         this.owner = owner;
 
+        owner.getConfigManager().addChangeListener("ui", "linkcolour", this);
+        owner.getConfigManager().addChangeListener("ui", "channelcolour", this);
         owner.getConfigManager().addChangeListener("ui", "stylelinks", this);
         owner.getConfigManager().addChangeListener("ui", "stylechannels", this);
         styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
         styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
+        uriColour = owner.getConfigManager().getOptionColour("ui", "linkcolour");
+        channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
     }
     
     /**
@@ -613,7 +620,7 @@ public class Styliser implements ConfigChangeListener {
      */
     private void toggleChannel(final SimpleAttributeSet attribs) {
         if (styleChannels) {
-            toggleLink(attribs, IRCTextAttribute.CHANNEL, Color.green.darker().darker());
+            toggleLink(attribs, IRCTextAttribute.CHANNEL, channelColour);
         }
     }
     
@@ -624,10 +631,18 @@ public class Styliser implements ConfigChangeListener {
      */
     private void toggleURI(final SimpleAttributeSet attribs) {
         if (styleURIs) {
-            toggleLink(attribs, IRCTextAttribute.HYPERLINK, Color.blue);
+            toggleLink(attribs, IRCTextAttribute.HYPERLINK, uriColour);
         }
     }
 
+    /**
+     * Toggles the attributes for a link.
+     *
+     * @since 0.6.4
+     * @param attribs The attributes to modify
+     * @param attribute The attribute indicating whether the link is open or closed
+     * @param colour The colour to colour the link
+     */
     private void toggleLink(final SimpleAttributeSet attribs,
             final IRCTextAttribute attribute, final Color colour) {
 
@@ -780,6 +795,10 @@ public class Styliser implements ConfigChangeListener {
             styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
         } else if ("stylechannels".equals(key)) {
             styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
+        } else if ("linkcolour".equals(key)) {
+            uriColour = owner.getConfigManager().getOptionColour("ui", "linkcolour");
+        } else if ("channelcolour".equals(key)) {
+            channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
         }
     }
     
