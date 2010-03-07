@@ -26,6 +26,7 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.net.URI;
@@ -246,13 +247,15 @@ public final class ServerManager {
             return server;
         }
 
+        server.activateFrame();
+
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile );
         } else {
-            server.getParser().updateURI(uri);
+            server.join(server.getParser().extractChannels(uri)
+                    .toArray(new ChannelJoinRequest[0]));
         }
 
-        server.activateFrame();
         return server;
     }
 

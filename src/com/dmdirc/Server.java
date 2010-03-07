@@ -36,6 +36,7 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
@@ -801,19 +802,46 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @since 0.6.3m1
      * @param channel The channel to be joined
      * @param key The key for the channel
+     * @deprecated Use {@link #join(com.dmdirc.parser.common.ChannelJoinRequest[])}
      */
+    @Deprecated
     public void join(final String channel, final String key) {
+        join(new ChannelJoinRequest(channel, key));
+    }
+
+    /**
+     * Attempts to join the specified channels. If channels with the same name
+     * already exist, they are (re)joined and their windows activated.
+     *
+     * @param requests The channel join requests to process
+     * @since 0.6.4
+     */
+    public void join(final ChannelJoinRequest ... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
-                removeInvites(channel);
+                final List<ChannelJoinRequest> pending = new ArrayList<ChannelJoinRequest>();
 
-                if (hasChannel(channel)) {
-                    // TODO: Need to pass key?
-                    getChannel(channel).join();
-                    getChannel(channel).activateFrame();
-                } else {
-                    parser.joinChannel(channel, key);
+                for (ChannelJoinRequest request : requests) {
+                    removeInvites(request.getName());
+
+                    final String name;
+                    if (parser.isValidChannelName(request.getName())) {
+                        name = request.getName();
+                    } else {
+                        name = parser.getChannelPrefixes().substring(0, 1)
+                                + request.getName();
+                    }
+
+                    if (hasChannel(name)) {
+                        // TODO: Need to pass key
+                        getChannel(name).join();
+                        getChannel(name).activateFrame();
+                    } else {
+                        pending.add(request);
+                    }
                 }
+
+                parser.joinChannels(pending.toArray(new ChannelJoinRequest[0]));
             } else {
                 // TODO: Need to pass key
                 // TODO (uris): address.getChannels().add(channel);
@@ -826,22 +854,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * server is not connected.
      *
      * @param channel The channel to be joined
+     * @deprecated Use {@link #join(com.dmdirc.parser.common.ChannelJoinRequest[])}
      */
+    @Deprecated
     public void join(final String channel) {
-        synchronized (myStateLock) {
-            if (myState.getState() == ServerState.CONNECTED) {
-                removeInvites(channel);
-
-                if (hasChannel(channel)) {
-                    getChannel(channel).join();
-                    getChannel(channel).activateFrame();
-                } else {
-                    parser.joinChannel(channel);
-                }
-            } else {
-                // TODO(uris): address.getChannels().add(channel);
-            }
-        }
+        join(new ChannelJoinRequest(channel));
     }
 
     /** {@inheritDoc} */
