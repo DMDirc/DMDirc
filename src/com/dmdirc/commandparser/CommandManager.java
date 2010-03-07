@@ -291,6 +291,7 @@ public final class CommandManager {
         new ReloadPlugin();
         new SaveConfig();
         new Set();
+        new Input();
         
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
