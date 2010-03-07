@@ -24,6 +24,7 @@ package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.Query;
 import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Defines query-related events.
@@ -35,7 +36,9 @@ public enum QueryEvents implements ActionMetaType {
     /** Query event type. */
     QUERY_EVENT(new String[]{"query"}, Query.class),
     /** Query event with argument. */
-    QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class);
+    QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class),
+    /** Query event with argument and source. */
+    QUERY_SOURCED_EVENT_WITH_ARG(new String[]{"query", "source", "message"}, Query.class, ClientInfo.class, String.class);
     
     /** The names of the arguments for this meta type. */
     private String[] argNames;

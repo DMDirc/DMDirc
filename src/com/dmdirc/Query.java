@@ -43,6 +43,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 
 import java.awt.Toolkit;
+import java.util.List;
 
 /**
  * The Query class represents the client's view of a query with another user.
@@ -130,19 +131,28 @@ public class Query extends MessageTarget implements PrivateActionListener,
             return;
         }
 
-        final ClientInfo client = server.getParser().getLocalClient();
-
         for (String part : splitLine(window.getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
                 server.getParser().sendMessage(getNickname(), part);
 
-                final StringBuffer buff = new StringBuffer("querySelfMessage");
-
-                ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
-
-                addLine(buff, client.getNickname(), client.getUsername(),
-                        client.getHostname(), part);
+                doNotification("querySelfMessage",
+                        CoreActionType.QUERY_SELF_MESSAGE,
+                        server.getParser().getLocalClient(), line);
             }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
+        if (arg instanceof ClientInfo) {
+            final ClientInfo clientInfo = (ClientInfo) arg;
+            args.add(clientInfo.getNickname());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
+            return true;
+        } else {
+            return super.processNotificationArg(arg, args);
         }
     }
 
@@ -172,12 +182,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().sendAction(getNickname(),
                     window.getTranscoder().encode(action));
 
-            final StringBuffer buff = new StringBuffer("querySelfAction");
-
-            ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
-
-            addLine(buff, client.getNickname(), client.getUsername(),
-                    client.getHostname(), window.getTranscoder().encode(action));
+            doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
+                    server.getParser().getLocalClient(), action);
         } else {
             addLine("actionTooLong", action.length());
         }
