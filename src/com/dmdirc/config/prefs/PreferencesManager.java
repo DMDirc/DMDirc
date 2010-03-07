@@ -226,7 +226,25 @@ public class PreferencesManager {
                 "general", "rejoinchannels", "Rejoin open channels",
                 "Rejoin open channels when reconnecting to a server"));
 
+        addSSLCategory(category);
         addCategory(category);
+    }
+
+    /**
+     * Creates and adds the "SSL" category.
+     */
+    private void addSSLCategory(final PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("SSL",
+                "Options relating to encrypted (SSL) connections", "secure-server");
+
+        category.addSetting(new PreferencesSetting(PreferencesType.FILE, "ssl",
+                "clientcert.file", "Client certificate", "Path to PKCS12 client "
+                + "certificate to send when connecting to servers using SSL"));
+        category.addSetting(new PreferencesSetting(PreferencesType.TEXT, "ssl",
+                "clientcert.pass", "Client password", "Password for client "
+                + "certificate file"));
+
+        parent.addSubCategory(category);
     }
 
     /**
