@@ -194,7 +194,7 @@ public final class ServerEventHandler extends EventHandler implements
             final String sHost) {
         checkParser(tParser);
 
-        owner.doNotification("serverNotice", CoreActionType.SERVER_NOTICE,
+        owner.doNotification("serverNotice", CoreActionType.SERVER_SERVERNOTICE,
                 owner.getParser().getClient(sHost), sMessage);
     }
 
