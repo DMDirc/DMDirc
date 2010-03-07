@@ -339,7 +339,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
         setIcon("channel-inactive");
 
-        window.updateNames(new ArrayList<ChannelClientInfo>());
+        synchronized (this) {
+            if (window != null) {
+                window.updateNames(new ArrayList<ChannelClientInfo>());
+            }
+        }
     }
 
     /** {@inheritDoc} */
@@ -374,8 +378,10 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null; // NOPMD
-        server = null; // NOPMD
+        synchronized (this) {
+            window = null; // NOPMD
+            server = null; // NOPMD
+        }
     }
 
     /**
