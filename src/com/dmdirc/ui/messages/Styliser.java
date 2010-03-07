@@ -81,7 +81,7 @@ public class Styliser implements ConfigChangeListener {
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
-            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\"]";
+            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
     
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
     private static final String URL_PUNCT_ILLEGAL = "\"";
@@ -125,7 +125,7 @@ public class Styliser implements ConfigChangeListener {
             + HYPERLINK_CHARS + "]+?)([" + URL_PUNCT + "]?)([" + HYPERLINK_CHARS + "])";
     
     /** The regular expression to use for marking up channels. */
-    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"'])([\\Q%s\\E]"
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"',])([\\Q%s\\E]"
             + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
