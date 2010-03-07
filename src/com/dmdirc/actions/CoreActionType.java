@@ -111,6 +111,8 @@ public enum CoreActionType implements ActionType {
     
     /** Private notice received. */
     SERVER_NOTICE(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Notice received"),
+    /** Private server notice received. */
+    SERVER_SERVERNOTICE(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Server notice received"),
     
     /** MOTD starting. */
     SERVER_MOTDSTART(ServerEvents.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
