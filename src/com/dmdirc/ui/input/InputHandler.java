@@ -563,4 +563,22 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void configChanged(final String domain, final String key) {
         setStyle();
     }
+
+    /**
+     * Inserts text to the current inputField.
+     *
+     * @param text The text to insert into the inputField
+     * @since 0.6.4
+     */
+    public void addToInputField(final String text) {
+        target.setText(text);
+    }
+
+    /**
+     * Clears the text from the inputField.
+     * @since 0.6.4
+     */
+    public void clearInputField() {
+        target.setText("");
+    }
 }
