@@ -57,7 +57,9 @@ import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -91,10 +93,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     // <editor-fold defaultstate="collapsed" desc="Instance">
 
     /** Open channels that currently exist on the server. */
-    private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
+    private final Map<String, Channel> channels = new HashMap<String, Channel>();
 
     /** Open query windows on the server. */
-    private final List<Query> queries = new ArrayList<Query>();
+    private final Map<String, Query> queries = new HashMap<String, Query>();
 
     /** The Parser instance handling this server. */
     private transient Parser parser;
@@ -473,39 +475,70 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
-        if (parser == null) {
-            return false;
-        }
-        final String nick = parser.parseHostmask(host)[0];
-
-        for (Query query : queries) {
-            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
-                return true;
+        final String nick;
+        synchronized (parserLock) {
+            if (parser == null) {
+                return false;
             }
+
+            nick = converter.toLowerCase(parser.parseHostmask(host)[0]);
         }
 
-        return false;
+        return queries.containsKey(nick);
     }
 
     /**
-     * Retrieves the specified query belonging to this server.
+     * Retrieves the specified query belonging to this server. If the query
+     * does not yet exist, it is created automatically.
      *
      * @param host The host of the query to look for
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
-        if (parser == null) {
-            throw new IllegalArgumentException("No such query: " + host);
-        }
-        final String nick = parser.parseHostmask(host)[0];
-
-        for (Query query : queries) {
-            if (converter.equalsIgnoreCase(parser.parseHostmask(query.getHost())[0], nick)) {
-                return query;
+        synchronized (myStateLock) {
+            if (myState.getState() == ServerState.CLOSING) {
+                // Can't open queries while the server is closing
+                return null;
             }
         }
+        
+        final String nick, lnick;
+        synchronized (parserLock) {
+            if (parser == null) {
+                throw new IllegalStateException("Can't retrieve query while disconnected");
+            }
 
-        throw new IllegalArgumentException("No such query: " + host);
+            nick = parser.parseHostmask(host)[0];
+            lnick = converter.toLowerCase(nick);
+        }
+
+        if (!queries.containsKey(lnick)) {
+            final Query newQuery = new Query(this, host);
+
+            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
+            queries.put(lnick, newQuery);
+        }
+
+        return queries.get(lnick);
+    }
+
+    /**
+     * Updates the state of this server following a nick change of someone
+     * that the user has a query open with. Namely, this updates the
+     * tabcompleter with the new name, and ensures that the <code>queries</code>
+     * map uses the correct nickname.
+     *
+     * @param query The query object being updated
+     * @param oldNick The old nickname of the user
+     * @param newNick The new nickname of the user
+     * @since 0.6.4
+     */
+    public void updateQuery(final Query query, final String oldNick, final String newNick) {
+        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, oldNick);
+        tabCompleter.addEntry(TabCompletionType.QUERY_NICK, newNick);
+
+        queries.put(converter.toLowerCase(newNick), query);
+        queries.remove(converter.toLowerCase(oldNick));
     }
 
     /**
@@ -513,8 +546,31 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      *
      * @return list of queries belonging to this server
      */
-    public List<Query> getQueries() {
-        return new ArrayList<Query>(queries);
+    public Collection<Query> getQueries() {
+        return Collections.unmodifiableCollection(queries.values());
+    }
+
+
+    /**
+     * Adds a query to this server.
+     *
+     * @param host host of the remote client being queried
+     * @return The query that was added (may be null if closing)
+     * @deprecated Use {@link #getQuery(java.lang.String)} instead
+     */
+    @Deprecated
+    public Query addQuery(final String host) {
+        return getQuery(host);
+    }
+
+    /**
+     * Deletes a query from this server.
+     *
+     * @param query The query that should be removed.
+     */
+    public void delQuery(final Query query) {
+        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
+        queries.remove(query.getNickname());
     }
 
     /**
@@ -589,40 +645,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return getChannel(chan.getName());
     }
 
-    /**
-     * Adds a query to this server.
-     *
-     * @param host host of the remote client being queried
-     * @return The query that was added (may be null if closing)
-     */
-    public Query addQuery(final String host) {
-        synchronized (myStateLock) {
-            if (myState.getState() == ServerState.CLOSING) {
-                // Can't open queries while the server is closing
-                return null;
-            }
-        }
-
-        if (!hasQuery(host)) {
-            final Query newQuery = new Query(this, host);
-
-            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, parser.parseHostmask(host)[0]);
-            queries.add(newQuery);
-        }
-
-        return getQuery(host);
-    }
-
-    /**
-     * Deletes a query from this server.
-     *
-     * @param query The query that should be removed.
-     */
-    public void delQuery(final Query query) {
-        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
-        queries.remove(query);
-    }
-
     /** {@inheritDoc} */
     @Override
     public boolean ownsFrame(final Window target) {
@@ -635,7 +657,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             if (channel.ownsFrame(target)) { return true; }
         }
         // Check if it's a query frame
-        for (Query query : queries) {
+        for (Query query : queries.values()) {
             if (query.ownsFrame(target)) { return true; }
         }
         return false;
@@ -663,7 +685,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
 
         res.addAll(channels.values());
-        res.addAll(queries);
+        res.addAll(queries.values());
 
         return res;
     }
@@ -690,7 +712,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        for (Query query : new ArrayList<Query>(queries)) {
+        for (Query query : new ArrayList<Query>(queries.values())) {
             query.close();
         }
     }
@@ -797,7 +819,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
         eventHandler.registerCallbacks();
 
-        for (Query query : queries) {
+        for (Query query : queries.values()) {
             query.reregister();
         }
     }
@@ -1142,7 +1164,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             channel.getFrame().addLine(messageType, args);
         }
 
-        for (Query query : queries) {
+        for (Query query : queries.values()) {
             query.getFrame().addLine(messageType, args);
         }
 
