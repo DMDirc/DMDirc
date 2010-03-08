@@ -22,13 +22,35 @@
 
 package com.dmdirc.actions.interfaces;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * The ActionComponent interface describes the methods that action components
  * are required to implement. Components are objects that allow the user to
  * pull a specific piece of information from a certain type of argument.
+ * 
  * @author chris
  */
 public interface ActionComponent {
+
+    /**
+     * An annotation which allows action components to specify options relating
+     * to their use. The annotation should be applied to the
+     * {@link #get(java.lang.Object)} method of implementing classes.
+     *
+     * @since 0.6.4
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface ComponentOptions {
+
+        /** Whether or not the component requires a connected server. */
+        boolean requireConnected() default false;
+
+    }
     
     /**
      * Retrieves the component of the specified argument that this enum
