@@ -565,12 +565,13 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * Adds a specific channel and window to this server.
      *
      * @param chan channel to add
+     * @return The channel that was added (may be null if closing)
      */
-    public void addChannel(final ChannelInfo chan) {
+    public Channel addChannel(final ChannelInfo chan) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't join channels while the server is closing
-                return;
+                return null;
             }
         }
 
@@ -584,18 +585,21 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             channels.put(converter.toLowerCase(chan.getName()), newChan);
             newChan.show();
         }
+
+        return getChannel(chan.getName());
     }
 
     /**
      * Adds a query to this server.
      *
      * @param host host of the remote client being queried
+     * @return The query that was added (may be null if closing)
      */
-    public void addQuery(final String host) {
+    public Query addQuery(final String host) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't open queries while the server is closing
-                return;
+                return null;
             }
         }
 
@@ -605,6 +609,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, parser.parseHostmask(host)[0]);
             queries.add(newQuery);
         }
+
+        return getQuery(host);
     }
 
     /**
