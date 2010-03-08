@@ -272,8 +272,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
 
-            server.getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, sOldNick);
-            server.getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, cClient.getNickname());
+            server.updateQuery(this, sOldNick, cClient.getNickname());
 
             addLine(format, sOldNick, cClient.getUsername(),
                     cClient.getHostname(), cClient.getNickname());
