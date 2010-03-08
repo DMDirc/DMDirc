@@ -124,45 +124,83 @@ public abstract class CommandParser implements Serializable {
         final CommandArguments args = new CommandArguments(line);
 
         if (args.isCommand()) {
-            final boolean silent = args.isSilent();
-            final String command = args.getCommandName();
-            final String[] cargs = args.getArguments();
-
-            if (args.getArguments().length > 0 && parseChannel && origin != null
-                    && origin.getContainer() != null
-                    && origin.getContainer().getServer() != null
-                    && origin.getContainer().getServer().isValidChannelName(cargs[0])
-                    && CommandManager.isChannelCommand(command)) {
-                final Server server = origin.getContainer().getServer();
-
-                if (server.hasChannel(cargs[0])) {
-                    server.getChannel(cargs[0]).getFrame().getCommandParser()
-                            .parseCommand(origin, CommandManager.getCommandChar()
-                            + args.getCommandName() + " " + args.getWordsAsString(2), false);
-                    return;
-                } else {
-                    final Map.Entry<CommandInfo, Command> actCommand = CommandManager.getCommand(
-                            CommandType.TYPE_CHANNEL, command);
-
-                    if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
-                        ((ExternalCommand) actCommand.getValue()).execute(
-                                origin, server, cargs[0], silent,
-                                new CommandArguments(args.getCommandName()
-                                + " " + args.getWordsAsString(2)));
-                        return;
-                    }
-                }
+            if (handleChannelCommand(origin, args, parseChannel)) {
+                return;
             }
 
-            if (commands.containsKey(command.toLowerCase())) {
+            if (commands.containsKey(args.getCommandName().toLowerCase())) {
                 addHistory(args.getStrippedLine());
-                executeCommand(origin, silent, commands.get(command.toLowerCase()), args);
-           } else {
+                executeCommand(origin, args.isSilent(),
+                        commands.get(args.getCommandName().toLowerCase()), args);
+            } else {
                 handleInvalidCommand(origin, args);
             }
         } else {
             handleNonCommand(origin, line);
         }
+    }
+
+    /**
+     * Checks to see whether the inputted command is a channel or external
+     * command, and if it is whether one or more channels have been specified
+     * for its execution. If it is a channel or external command, and channels
+     * are specified, this method invoke the appropriate command parser methods
+     * to handle the command, and will return true. If the command is not
+     * handled, the method returns false.
+     *
+     * @param origin The window the command was entered in
+     * @param args The command and its arguments
+     * @param parseChannel Whether or not to try parsing channel names
+     * @return True iff the command was handled, false otherwise
+     */
+    protected boolean handleChannelCommand(final InputWindow origin,
+            final CommandArguments args, final boolean parseChannel) {
+        final boolean silent = args.isSilent();
+        final String command = args.getCommandName();
+        final String[] cargs = args.getArguments();
+
+        if (cargs.length == 0 || !parseChannel || origin == null
+                || origin.getContainer() == null
+                || origin.getContainer().getServer() == null
+                || !CommandManager.isChannelCommand(command)) {
+            return false;
+        }
+
+        final Server server = origin.getContainer().getServer();
+        final String[] parts = cargs[0].split(",");
+        boolean someValid = false;
+        for (String part : parts) {
+            someValid |= server.isValidChannelName(part);
+        }
+
+        if (someValid) {
+            for (String channel : parts) {
+                if (!server.isValidChannelName(channel)) {
+                    origin.addLine("commandError", "Invalid channel name: " + channel);
+                    continue;
+                }
+
+                if (server.hasChannel(channel)) {
+                    server.getChannel(channel).getFrame().getCommandParser()
+                            .parseCommand(origin, CommandManager.getCommandChar()
+                            + args.getCommandName() + " " + args.getWordsAsString(2), false);
+                } else {
+                    final Map.Entry<CommandInfo, Command> actCommand
+                            = CommandManager.getCommand(CommandType.TYPE_CHANNEL, command);
+
+                    if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
+                        ((ExternalCommand) actCommand.getValue()).execute(
+                                origin, server, channel, silent,
+                                new CommandArguments(args.getCommandName()
+                                + " " + args.getWordsAsString(2)));
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
