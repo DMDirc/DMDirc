@@ -30,10 +30,9 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Allows the user to reload actions.
+ *
  * @author chris
  */
 public final class ReloadActions extends GlobalCommand implements IntelligentCommand {
@@ -48,6 +47,7 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final CommandArguments args) {
         ActionManager.loadActions();
@@ -56,23 +56,27 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "reloadactions";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
         return "reloadactions - reloads actions from disk";
     }
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     }
     

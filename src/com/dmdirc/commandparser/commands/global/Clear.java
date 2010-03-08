@@ -29,8 +29,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The clear command clears the main text area of the current window.
  * 
@@ -75,7 +73,8 @@ public final class Clear extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     } 
     

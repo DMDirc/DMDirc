@@ -31,8 +31,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
-import java.util.List;
-
 /**
  * The echo commands simply echos text to the current window.
  * 
@@ -106,13 +104,14 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         
         if (arg == 0) {
             targets.add("--active");
             targets.add("--target");
-        } else if (arg == 1 && previousArgs.get(0).equals("--target")) {
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
             targets.excludeAll();
             // TODO: Include window names
         }

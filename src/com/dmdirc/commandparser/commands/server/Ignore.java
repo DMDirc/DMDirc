@@ -180,7 +180,8 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         targets.excludeAll();
         
@@ -189,10 +190,10 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             targets.add("--remove");
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
-        } else if (arg == 1 && previousArgs.get(0).equals("--regex")) {
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--regex")) {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
-        } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             // TODO: If/when passed a server, include known ignore list entries
         }
         

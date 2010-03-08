@@ -33,8 +33,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
-import java.util.List;
-
 /**
  * Allows the user to open a query dialog with another user.
  * @author chris
@@ -103,7 +101,8 @@ public final class OpenQuery extends ServerCommand implements
     
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         
         if (arg == 0) {

@@ -32,11 +32,10 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
-import java.util.List;
-
 /**
- * @author chris
+ * Opens a new window.
  * 
+ * @author chris
  */
 public class OpenWindow extends GlobalCommand implements IntelligentCommand {
     
@@ -117,7 +116,8 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {

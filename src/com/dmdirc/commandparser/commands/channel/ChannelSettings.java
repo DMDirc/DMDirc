@@ -33,8 +33,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Opens the channel settings window for the channel.
  * @author chris
@@ -76,7 +74,8 @@ public final class ChannelSettings extends ChannelCommand implements Intelligent
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     }
 }

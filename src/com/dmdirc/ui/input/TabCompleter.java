@@ -28,7 +28,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.MapList;
 
 import java.util.Arrays;
@@ -211,25 +213,29 @@ public class TabCompleter {
      * @return Additional tab targets for the text, or null if none are available
      */
     public static AdditionalTabTargets getIntelligentResults(final int arg,
-            final List<String> previousArgs, final int offset) {
+            final IntelligentCommandContext context, final int offset) {
         if (arg == offset) {
             final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
             targets.include(TabCompletionType.COMMAND);
             return targets;
         } else {
-            return getIntelligentResults(
-                    new CommandArguments(previousArgs.subList(offset, previousArgs.size())));
+            return getIntelligentResults(context.getWindow(),
+                    new CommandArguments(context.getPreviousArgs().subList(offset,
+                    context.getPreviousArgs().size())));
         }        
     }
     
     /**
      * Retrieves the intelligent results for the command and its arguments
      * formed from args.
-     * 
+     *
+     * @param window The input window the results are required for
      * @param args The input arguments
      * @return Additional tab targets for the text, or null if none are available
+     * @since 0.6.4
      */
-    private static AdditionalTabTargets getIntelligentResults(final CommandArguments args) {
+    private static AdditionalTabTargets getIntelligentResults(final InputWindow window,
+            final CommandArguments args) {
         if (!args.isCommand()) {
             return null;
         }
@@ -243,7 +249,8 @@ public class TabCompleter {
             if (command.getValue() instanceof IntelligentCommand) {
                 targets = ((IntelligentCommand) command.getValue())
                         .getSuggestions(args.getArguments().length,
-                        Arrays.asList(args.getArguments()));
+                        new IntelligentCommandContext(window,
+                        Arrays.asList(args.getArguments())));
             }
 
             if (command.getValue() instanceof ChannelCommand) {
@@ -261,10 +268,13 @@ public class TabCompleter {
     /**
      * Handles potentially intelligent tab completion.
      *
+     * @param window The input window the results are required for
      * @param text The text that is being completed
      * @return Additional tab targets for the text, or null if none are available
+     * @since 0.6.4
      */
-    public static AdditionalTabTargets getIntelligentResults(final String text) {
-        return getIntelligentResults(new CommandArguments(text));
+    public static AdditionalTabTargets getIntelligentResults(final InputWindow window,
+            final String text) {
+        return getIntelligentResults(window, new CommandArguments(text));
     }
 }

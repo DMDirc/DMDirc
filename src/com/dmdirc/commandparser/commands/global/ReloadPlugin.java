@@ -31,8 +31,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Allows the user to reload a plugin.
  * 
@@ -88,7 +86,8 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
         
         if (arg == 0) {

@@ -32,8 +32,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Allows the user to send CTCP messages.
  * @author chris
@@ -91,7 +89,8 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {

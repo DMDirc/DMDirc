@@ -34,8 +34,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The alias command allows users to create aliases on-the-fly.
  * 
@@ -139,17 +137,17 @@ public final class AliasCommand extends GlobalCommand implements
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
-                                               final List<String> previousArgs) {
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
 
         if (arg == 0) {
             res.add("--remove");
-        } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             for (Action alias : AliasWrapper.getAliasWrapper()) {
                 res.add(AliasWrapper.getCommandName(alias));
             }
-        } else if (arg >= 1 && !previousArgs.get(0).equals("--remove")) {
-            return TabCompleter.getIntelligentResults(arg, previousArgs, 1);
+        } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
+            return TabCompleter.getIntelligentResults(arg, context, 1);
         }
 
         return res;
