@@ -114,7 +114,7 @@ public final class JoinChannelCommand extends ServerCommand implements
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
-            final List<String> previousArgs) {
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets();
     }
     

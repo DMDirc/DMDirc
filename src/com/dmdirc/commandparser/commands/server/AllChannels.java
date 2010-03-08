@@ -31,8 +31,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The AllChannels command allows the user to issue a command to all channels
  * on a server.
@@ -82,8 +80,9 @@ public final class AllChannels extends ServerCommand implements IntelligentComma
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
+        return TabCompleter.getIntelligentResults(arg, context, 0);
     }
     
 }

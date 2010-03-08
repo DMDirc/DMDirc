@@ -33,8 +33,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Sends a names request.
  * 
@@ -87,7 +85,8 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     } 
 

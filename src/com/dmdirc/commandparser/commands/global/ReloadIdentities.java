@@ -30,8 +30,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * Allows the user to reload identities.
  * 
@@ -75,7 +73,8 @@ public class ReloadIdentities extends GlobalCommand implements IntelligentComman
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     } 
 

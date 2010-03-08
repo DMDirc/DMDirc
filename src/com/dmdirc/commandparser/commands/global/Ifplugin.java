@@ -33,8 +33,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The if plugin command allows the user to execute commands based on whether
  * or not a plugin is loaded.
@@ -104,7 +102,8 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         AdditionalTabTargets res;
         
         if (arg == 0) {
@@ -116,7 +115,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
                 res.add("!" + possPlugin.getName());
             }            
         } else {
-            res = TabCompleter.getIntelligentResults(arg, previousArgs, 1);
+            res = TabCompleter.getIntelligentResults(arg, context, 1);
         }
         
         return res;

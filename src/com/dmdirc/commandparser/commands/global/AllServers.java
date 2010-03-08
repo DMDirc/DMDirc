@@ -32,8 +32,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The AllServers command allows users to issue commands to all servers.
  * @author chris
@@ -82,8 +80,9 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
+        return TabCompleter.getIntelligentResults(arg, context, 0);
     }
     
 }

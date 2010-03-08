@@ -33,8 +33,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The kick command bans a specified user or host from the channel.
  * 
@@ -89,7 +87,8 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
         
         if (arg == 0) {

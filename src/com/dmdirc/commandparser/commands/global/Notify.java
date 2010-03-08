@@ -31,7 +31,6 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
-import java.util.List;
 
 /**
  * The notify command allows the user to set the notification colour for a
@@ -92,7 +91,8 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     } 
     

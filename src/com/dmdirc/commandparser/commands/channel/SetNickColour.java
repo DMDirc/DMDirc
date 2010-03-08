@@ -37,7 +37,6 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
-import java.util.List;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
@@ -129,7 +128,8 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         targets.excludeAll();
         
@@ -137,8 +137,8 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.add("--nicklist");
             targets.add("--text");
-        } else if (arg == 1 && (previousArgs.get(0).equals("--text")
-                || previousArgs.get(0).equals("--nicklist"))) {
+        } else if (arg == 1 && (context.getPreviousArgs().get(0).equals("--text")
+                || context.getPreviousArgs().get(0).equals("--nicklist"))) {
             targets.include(TabCompletionType.CHANNEL_NICK);            
         }
         

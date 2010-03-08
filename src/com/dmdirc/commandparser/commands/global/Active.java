@@ -31,8 +31,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The Active command issues a command to the active window.
  * @author chris
@@ -83,8 +81,9 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
+        return TabCompleter.getIntelligentResults(arg, context, 0);
     }
     
 }

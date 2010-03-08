@@ -34,8 +34,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.List;
-
 /**
  * The kick command kicks a specified user from the channel.
  * This version allows the user to specify a reason.
@@ -92,7 +90,8 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {

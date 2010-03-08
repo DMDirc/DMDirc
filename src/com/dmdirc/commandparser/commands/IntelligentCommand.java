@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
 
@@ -34,12 +35,59 @@ import java.util.List;
 public interface IntelligentCommand {
 
     /**
-     * Returns a list of suggestions for the specified argument, given the list
-     * of previous arguments.
-     * @param arg The argument that is being completed
-     * @param previousArgs The contents of the previous arguments, if any
-     * @return A list of suggestions for the argument
+     * Describes the context of an intelligent tab completion request.
+     *
+     * @since 0.6.4
      */
-    AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs);
+    public static class IntelligentCommandContext {
+
+        /** The window the command is being entered in. */
+        private final InputWindow window;
+
+        /** The previously supplied arguments, if any. */
+        private final List<String> previousArgs;
+
+        /**
+         * Creates a new context with the specified arguments.
+         *
+         * @param window The window the command is being entered in
+         * @param previousArgs The previously supplied arguments, if any
+         */
+        public IntelligentCommandContext(final InputWindow window,
+                final List<String> previousArgs) {
+            this.window = window;
+            this.previousArgs = previousArgs;
+        }
+
+        /**
+         * Retrieves the window that the command was entered in.
+         * 
+         * @return The command's input window
+         */
+        public InputWindow getWindow() {
+            return window;
+        }
+
+        /**
+         * Retrieves the previously supplied arguments.
+         *
+         * @return Any arguments supplied prior to the current one
+         */
+        public List<String> getPreviousArgs() {
+            return previousArgs;
+        }
+
+    }
+
+    /**
+     * Returns a list of suggestions for the specified argument, given the
+     * specified context.
+     *
+     * @param arg The argument that is being completed
+     * @param context The context in which suggestions are being sought
+     * @return A list of suggestions for the argument
+     * @since 0.6.4
+     */
+    AdditionalTabTargets getSuggestions(int arg, IntelligentCommandContext context);
     
 }

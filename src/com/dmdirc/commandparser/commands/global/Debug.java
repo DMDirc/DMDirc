@@ -43,7 +43,6 @@ import com.dmdirc.updater.UpdateChecker;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedSet;
@@ -476,7 +475,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         res.excludeAll();
@@ -499,12 +499,12 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("migration");
             res.add("notify");
             res.add("services");
-        } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
+        } else if (arg == 1 && "error".equals(context.getPreviousArgs().get(0))) {
             res.add("user");
             res.add("app");
-        } else if (arg == 1 && "services".equals(previousArgs.get(0))) {
+        } else if (arg == 1 && "services".equals(context.getPreviousArgs().get(0))) {
             res.add("full");
-        } else if (arg == 2 && "error".equals(previousArgs.get(0))) {
+        } else if (arg == 2 && "error".equals(context.getPreviousArgs().get(0))) {
             res.add("low");
             res.add("medium");
             res.add("high");
