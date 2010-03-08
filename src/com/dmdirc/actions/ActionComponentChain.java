@@ -130,5 +130,30 @@ public class ActionComponentChain implements ActionComponent {
         
         return name.substring(1);
     }
+
+    /**
+     * Determines if any components in this chain require a server to have
+     * an established connection in order to function.
+     *
+     * @since 0.6.4
+     * @return True iff at least one component requires a connection
+     */
+    public boolean requiresConnection() {
+        boolean res = false;
+
+        for (ActionComponent component : components) {
+            try {
+                final ComponentOptions options = component.getClass()
+                        .getMethod("get", Object.class).getAnnotation(ComponentOptions.class);
+                if (options != null) {
+                    res |= options.requireConnected();
+                }
+            } catch (NoSuchMethodException ex) {
+                // Do nothing
+            }
+        }
+
+        return res;
+    }
     
 }

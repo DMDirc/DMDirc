@@ -27,6 +27,7 @@ import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -45,6 +46,13 @@ import java.util.regex.Pattern;
  * @author Chris
  */
 public class ActionSubstitutor {
+
+    /** Substitution to use when a component requires a connected server. */
+    private static final String ERR_NOT_CONNECTED = "not_connected";
+    /** Substitution to use to replace an unknown substitution. */
+    private static final String ERR_NOT_DEFINED = "not_defined";
+    /** Substitution to use to replace subs with illegal components. */
+    private static final String ERR_ILLEGAL_COMPONENT = "illegal_component";
     
     /** The action type this substitutor is for. */
     private final ActionType type;
@@ -233,10 +241,9 @@ public class ActionSubstitutor {
             try {
                 final ActionComponentChain chain = new ActionComponentChain(
                         type.getType().getArgTypes()[argument], compMatcher.group(2));
-                return chain.get(args[argument]).toString();
+                return checkConnection(chain, args, args[argument]);
             } catch (IllegalArgumentException ex) {
-                // TODO: Log the error nicely somewhere?
-                return substitution;
+                return ERR_ILLEGAL_COMPONENT;
             }
         }
 
@@ -253,15 +260,38 @@ public class ActionSubstitutor {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
                         Server.class, substitution);
-                    return chain.get(server).toString();
+                    return checkConnection(chain, args, server);
                 } catch (IllegalArgumentException ex) {
-                    // TODO: Log the error nicely somewhere?
-                    return substitution;
+                    return ERR_ILLEGAL_COMPONENT;
                 }
             }
         }
 
-        return substitution;
+        return ERR_NOT_DEFINED;
+    }
+
+    /**
+     * Checks the connection status of any server associated with the specified
+     * arguments. If the specified component chain requires a server with an
+     * established connection and no such server is present, this method
+     * returns the string <code>not_connected</code> without attempting to
+     * evaluate any components in the chain.
+     *
+     * @since 0.6.4
+     * @param chain The chain to be checked
+     * @param args The arguments for this invocation
+     * @param argument The argument used as a base for the chain
+     * @return The value of the evaluated chain, or <code>not_connected</code>
+     */
+    protected String checkConnection(final ActionComponentChain chain,
+            final Object[] args, final Object argument) {
+        if ((chain.requiresConnection() && args[0] instanceof FrameContainer
+                    && ((FrameContainer) args[0]).getServer().getState()
+                    == ServerState.CONNECTED) || !chain.requiresConnection()) {
+            return chain.get(argument).toString();
+        }
+
+        return ERR_NOT_CONNECTED;
     }
 
     /**

@@ -68,6 +68,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_NETWORK {
         /** {@inheritDoc} */
         @Override
+        @ComponentOptions(requireConnected=true)
         public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
         /** {@inheritDoc} */
         @Override
@@ -100,6 +101,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
         @Override
+        @ComponentOptions(requireConnected=true)
         public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
@@ -116,6 +118,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_MYNICKNAME {
         /** {@inheritDoc} */
         @Override
+        @ComponentOptions(requireConnected=true)
         public Object get(final Object argument) {
             final Server server = (Server) argument;
             
