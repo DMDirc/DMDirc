@@ -47,16 +47,21 @@ public interface IntelligentCommand {
         /** The previously supplied arguments, if any. */
         private final List<String> previousArgs;
 
+        /** The partially typed word, if any. */
+        private final String partial;
+
         /**
          * Creates a new context with the specified arguments.
          *
          * @param window The window the command is being entered in
          * @param previousArgs The previously supplied arguments, if any
+         * @param partial The partially-typed word being completed
          */
         public IntelligentCommandContext(final InputWindow window,
-                final List<String> previousArgs) {
+                final List<String> previousArgs, final String partial) {
             this.window = window;
             this.previousArgs = previousArgs;
+            this.partial = partial;
         }
 
         /**
@@ -75,6 +80,15 @@ public interface IntelligentCommand {
          */
         public List<String> getPreviousArgs() {
             return previousArgs;
+        }
+
+        /**
+         * Retrieves the partially typed word which is being completed.
+         *
+         * @return The partial word being completed
+         */
+        public String getPartial() {
+            return partial;
         }
 
     }
