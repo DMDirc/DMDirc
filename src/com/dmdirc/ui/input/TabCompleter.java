@@ -221,7 +221,7 @@ public class TabCompleter {
         } else {
             return getIntelligentResults(context.getWindow(),
                     new CommandArguments(context.getPreviousArgs().subList(offset,
-                    context.getPreviousArgs().size())));
+                    context.getPreviousArgs().size())), context.getPartial());
         }        
     }
     
@@ -231,11 +231,12 @@ public class TabCompleter {
      *
      * @param window The input window the results are required for
      * @param args The input arguments
+     * @param partial The partially-typed word being completed (if any)
      * @return Additional tab targets for the text, or null if none are available
      * @since 0.6.4
      */
     private static AdditionalTabTargets getIntelligentResults(final InputWindow window,
-            final CommandArguments args) {
+            final CommandArguments args, final String partial) {
         if (!args.isCommand()) {
             return null;
         }
@@ -250,7 +251,7 @@ public class TabCompleter {
                 targets = ((IntelligentCommand) command.getValue())
                         .getSuggestions(args.getArguments().length,
                         new IntelligentCommandContext(window,
-                        Arrays.asList(args.getArguments())));
+                        Arrays.asList(args.getArguments()), partial));
             }
 
             if (command.getValue() instanceof ChannelCommand) {
@@ -270,11 +271,12 @@ public class TabCompleter {
      *
      * @param window The input window the results are required for
      * @param text The text that is being completed
+     * @param partial The partially-typed word being completed (if any)
      * @return Additional tab targets for the text, or null if none are available
      * @since 0.6.4
      */
     public static AdditionalTabTargets getIntelligentResults(final InputWindow window,
-            final String text) {
-        return getIntelligentResults(window, new CommandArguments(text));
+            final String text, final String partial) {
+        return getIntelligentResults(window, new CommandArguments(text), partial);
     }
 }
