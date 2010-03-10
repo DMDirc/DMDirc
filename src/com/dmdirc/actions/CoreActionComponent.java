@@ -32,6 +32,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
@@ -79,6 +80,26 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "network"; }
+    },
+
+    /**
+     * Returns the protocol of the server.
+     *
+     * @since 0.6.4
+     */
+    SERVER_PROTOCOL {
+        /** {@inheritDoc} */
+        @Override
+        public Object get(final Object argument) { return ((Server) argument).getProtocol(); }
+        /** {@inheritDoc} */
+        @Override
+        public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
+        @Override
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        @Override
+        public String getName() { return "protocol"; }
     },
     
     /** Returns the away reason for the server. */
@@ -517,6 +538,27 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
+    },
+
+    /**
+     * Returns the server of the window.
+     * 
+     * @since 0.6.4
+     */
+    WINDOW_SERVER {
+        /** {@inheritDoc} */
+        @Override
+        public Object get(final Object argument) { return ((Window) argument)
+                .getContainer().getServer(); }
+        /** {@inheritDoc} */
+        @Override
+        public Class appliesTo() { return Window.class; }
+        /** {@inheritDoc} */
+        @Override
+        public Class getType() { return Server.class; }
+        /** {@inheritDoc} */
+        @Override
+        public String getName() { return "server"; }
     },
 
     /** Returns the name of an identity. */
