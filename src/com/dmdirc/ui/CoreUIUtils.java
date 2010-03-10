@@ -45,11 +45,20 @@ public class CoreUIUtils {
     public static void centreWindow(final Window window) {
         // Get the Location of the mouse pointer
         final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+        if (myPointerInfo == null) {
+            return;
+        }
         // Get the Device (screen) the mouse pointer is on
         final GraphicsDevice myDevice = myPointerInfo.getDevice();
+        if (myDevice == null) {
+            return;
+        }
         // Get the configuration for the device
         final GraphicsConfiguration myGraphicsConfig =
                 myDevice.getDefaultConfiguration();
+        if (myGraphicsConfig == null) {
+            return;
+        }
         // Get the bounds of the device
         final Rectangle gcBounds = myGraphicsConfig.getBounds();
         // Calculate the centre of the screen
