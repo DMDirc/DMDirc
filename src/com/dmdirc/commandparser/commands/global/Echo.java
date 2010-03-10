@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.CustomWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -112,8 +113,12 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             targets.add("--active");
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
-            targets.excludeAll();
-            // TODO: Include window names
+            Window[] rootWindows = WindowManager.getRootWindows();
+            for (Window rootWindow : rootWindows) {
+                if (rootWindow.getContainer() instanceof CustomWindow) {
+                    targets.add(rootWindow.getTitle());
+                }
+            }
         }
         
         return targets;
