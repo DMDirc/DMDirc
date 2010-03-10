@@ -80,7 +80,7 @@ public class Input extends GlobalCommand implements IntelligentCommand {
     @Override
     public String getHelp() {
         return "Allows you to add text to a window's input field (particularly" +
-                " useful in Actions)";
+                " useful in Actions)\ninput [--clear] <text to insert into inputfield>";
     }
 
     /** {@inheritDoc} */
