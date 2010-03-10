@@ -147,8 +147,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param messageType The name of the formatter to be used for the message
      * @param actionType The action type to be used
      * @param args The arguments for the message
+     * @return True if any further behaviour should be executed, false otherwise
      */
-    public void doNotification(final String messageType,
+    public boolean doNotification(final String messageType,
             final ActionType actionType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<Object>();
         final List<Object> actionArgs = new ArrayList<Object>();
@@ -166,9 +167,11 @@ public abstract class WritableFrameContainer extends FrameContainer {
         
         modifyNotificationArgs(actionArgs, messageArgs);
 
-        ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
+        final boolean res = ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
 
         handleNotification(buffer.toString(), messageArgs.toArray());
+
+        return res;
     } 
     
     /**
