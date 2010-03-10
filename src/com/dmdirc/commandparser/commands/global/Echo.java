@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.CustomWindow;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -31,9 +33,13 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The echo commands simply echos text to the current window.
- * 
+ *
  * @author chris
  */
 public final class Echo extends GlobalCommand implements IntelligentCommand {
@@ -107,15 +113,37 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             targets.add("--active");
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
+
+            final List<Window> windowList = new ArrayList<Window>();
+            final Server currentServer = context.getWindow().getContainer()
+                    .getServer();
+
+            //Active window's Children
+            windowList.addAll(Arrays.asList(WindowManager.getChildren(context
+                    .getWindow())));
+
+            //Children of Current Window's server
+            if (currentServer != null) {
+                windowList.addAll(Arrays.asList(WindowManager.getChildren(
+                        currentServer.getFrame())));
+            }
+
+            //Global Windows
+            windowList.addAll(Arrays.asList(WindowManager.getRootWindows()));
+            for (Window customWindow : windowList) {
+                if (customWindow.getContainer() instanceof CustomWindow) {
+                    targets.add(customWindow.getTitle());
+                }
+            }
+
             targets.excludeAll();
-            // TODO: Include window names
         }
-        
+
         return targets;
     }
 
