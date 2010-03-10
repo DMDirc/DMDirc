@@ -61,6 +61,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private static final String DOMAIN_TRIGGERS = "triggers".intern();
     /** The domain name for concurrency. */
     private static final String DOMAIN_CONCURRENCY = "concurrency".intern();
+    /** The domain name for misc settings. */
+    private static final String DOMAIN_MISC = "misc".intern();
 
     /** The location of the file we're reading/saving. */
     private String location;
@@ -208,6 +210,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
             setConcurrencyGroup(config.getKeyDomain(DOMAIN_CONCURRENCY).get("group"));
         }
 
+        if (config.isKeyDomain(DOMAIN_MISC)
+                && config.getKeyDomain(DOMAIN_MISC).containsKey("stopping")) {
+            setStopping(Boolean.parseBoolean(config.getKeyDomain(DOMAIN_MISC).get("stopping")));
+        }
+
         ActionManager.registerAction(this);
 
         checkMetaData();
@@ -330,6 +337,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
         if (concurrencyGroup != null) {
             newConfig.addDomain(DOMAIN_CONCURRENCY, new HashMap<String, String>());
             newConfig.getKeyDomain(DOMAIN_CONCURRENCY).put("group", concurrencyGroup);
+        }
+
+        if (stop) {
+            newConfig.addDomain(DOMAIN_MISC, new HashMap<String, String>());
+            newConfig.getKeyDomain(DOMAIN_MISC).put("stopping", "true");
         }
 
         int i = 0;
@@ -558,10 +570,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
     /** {@inheritDoc} */
     @Override
-    public void trigger(final StringBuffer format, final Object... arguments) {
+    public boolean trigger(final StringBuffer format, final Object... arguments) {
         if (!disabled) {
-            super.trigger(format, arguments);
+            return super.trigger(format, arguments);
         }
+
+        return true;
     }
 
 }

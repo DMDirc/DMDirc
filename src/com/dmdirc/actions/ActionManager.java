@@ -363,17 +363,21 @@ public final class ActionManager {
      * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.
      * @param arguments The arguments for the event
+     * @return True if the event should be processed, or false if an action
+     * listener has requested the event be skipped.
      */
     @Precondition({
         "The specified ActionType is not null",
         "The specified ActionType has a valid ActionMetaType",
         "The length of the arguments array equals the arity of the ActionType's ActionMetaType"
     })
-    public static void processEvent(final ActionType type,
+    public static boolean processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(type.getType() != null);
         Logger.assertTrue(type.getType().getArity() == arguments.length);
+
+        boolean res = false;
 
         if (listeners.containsKey(type)) {
             for (ActionListener listener :
@@ -388,8 +392,10 @@ public final class ActionManager {
         }
 
         if (!killSwitch) {
-            triggerActions(type, format, arguments);
+            res |= triggerActions(type, format, arguments);
         }
+
+        return !res;
     }
 
     /**
@@ -397,19 +403,22 @@ public final class ActionManager {
      *
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
-     * the event. Actions may change this format.*
+     * the event. Actions may change this format.
      * @param arguments The arguments for the event
+     * @return True if the event should be skipped, or false if it can continue
      */
     @Precondition("The specified ActionType is not null")
-    private static void triggerActions(final ActionType type,
+    private static boolean triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         Logger.assertTrue(type != null);
+
+        boolean res = false;
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
-                        action.trigger(format, arguments);
+                        res |= action.trigger(format, arguments);
                     } else {
                         synchronized (locks) {
                             if (!locks.containsKey(action.getConcurrencyGroup())) {
@@ -418,7 +427,7 @@ public final class ActionManager {
                         }
 
                         synchronized (locks.get(action.getConcurrencyGroup())) {
-                            action.trigger(format, arguments);
+                            res |= action.trigger(format, arguments);
                         }
                     }
                 } catch (NoSuchMethodError e) {
@@ -430,6 +439,8 @@ public final class ActionManager {
                 }
             }
         }
+
+        return res;
     }
 
     /**
