@@ -281,13 +281,16 @@ public class Styliser implements ConfigChangeListener {
      */
     public String doLinks(final String string) {
         String target = string;
-        final String prefixes = owner.getServer() == null ? "#&"
+        final String prefixes = owner.getServer() == null ? null
                 : owner.getServer().getChannelPrefixes();
         
         String target2 = target;
         target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
-        target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
-            CODE_CHANNEL + "$0" + CODE_CHANNEL);
+
+        if (prefixes != null) {
+            target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
+                CODE_CHANNEL + "$0" + CODE_CHANNEL);
+        }
 
         for (int j = 0; j < 5 && !target.equals(target2); j++) {
             target2 = target;
