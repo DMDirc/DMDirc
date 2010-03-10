@@ -68,6 +68,9 @@ public class ActionModel {
     /** Whether this action has been modified or not. */
     protected boolean modified;
 
+    /** Whether this action wishes the event to be stopped. */
+    protected boolean stop;
+
     /** The concurrency group this action belongs to, if any. */
     protected String concurrencyGroup;
     
@@ -112,19 +115,21 @@ public class ActionModel {
      *
      * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
+     * @return True if the execution of the event should be stopped, or false
+     * if the event may continue
      */
     @Precondition({
         "This action has at least one trigger",
         "This action's primary trigger is non-null"
     })
-    public void trigger(final StringBuffer format, final Object... arguments) {
+    public boolean trigger(final StringBuffer format, final Object... arguments) {
         assert(triggers.length > 0);
         assert(triggers[0] != null);
         
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
         
         if (!test(sub, arguments)) {
-            return;
+            return true;
         }
 
         final Window active = WindowManager.getActiveWindow();
@@ -153,6 +158,8 @@ public class ActionModel {
             format.setLength(0);
             format.append(newFormat);
         }
+
+        return stop;
     }
     
     /**
@@ -338,6 +345,32 @@ public class ActionModel {
      */
     public void setConcurrencyGroup(final String concurrencyGroup) {
         this.concurrencyGroup = concurrencyGroup;
+    }
+
+    /**
+     * Determines whether or not this action will stop the event execution
+     * if it is triggered.
+     * 
+     * @return The stopping preference of this action
+     * @see #setStopping(boolean)
+     * @since 0.6.4
+     */
+    public boolean isStopping() {
+        return stop;
+    }
+
+    /**
+     * Sets the stopping preference of this action. If the stopping preference
+     * is <code>true</code> then when this action is successfully triggered,
+     * it will request that execution of the event is stopped. This will
+     * prevent the default behaviour of the callee being executed.
+     *
+     * @param stop The new stopping preference of this action
+     * @see #isStopping()
+     * @since 0.6.4
+     */
+    public void setStopping(boolean stop) {
+        this.stop = stop;
     }
     
     /**
