@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.CustomWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -30,6 +31,9 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The echo commands simply echos text to the current window.
@@ -112,8 +116,28 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             targets.add("--active");
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
+
+            final List<Window> windowList = new ArrayList<Window>();
+
+            //Active window's Children
+            windowList.addAll(Arrays.asList(WindowManager.getChildren(context
+                    .getWindow())));
+
+            //Children of Current Window's server
+            if (context.getWindow().getContainer().getServer() != null) {
+                windowList.addAll(Arrays.asList(WindowManager.getChildren(context
+                        .getWindow().getContainer().getServer().getFrame())));
+            }
+
+            //Global Windows
+            windowList.addAll(Arrays.asList(WindowManager.getRootWindows()));
+
+            for (Window customWindow : windowList) {
+                if (customWindow.getContainer() instanceof CustomWindow) {
+                    targets.add(customWindow.getTitle());
+                }
+            }
             targets.excludeAll();
-            // TODO: Include window names
         }
         
         return targets;
