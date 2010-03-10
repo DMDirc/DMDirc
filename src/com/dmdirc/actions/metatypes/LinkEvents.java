@@ -23,6 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
  * Defines link-related events.
@@ -32,11 +33,11 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 public enum LinkEvents implements ActionMetaType {
 
     /** URL Link clicked. */
-    LINK_CLICKED(new String[]{"URL"}, String.class),
+    LINK_CLICKED(new String[]{"Window","URL"}, Window.class, String.class),
     /** Channel link clicked. */
-    CHANNEL_CLICKED(new String[]{"Channel"}, String.class),
+    CHANNEL_CLICKED(new String[]{"Window", "Channel"}, Window.class, String.class),
     /** Nickname link clicked. */
-    NICKNAME_CLICKED(new String[]{"Nickname"}, String.class);
+    NICKNAME_CLICKED(new String[]{"Window", "Nickname"}, Window.class, String.class);
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
