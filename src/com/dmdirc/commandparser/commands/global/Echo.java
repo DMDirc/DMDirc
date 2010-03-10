@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.CustomWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -112,8 +113,32 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             targets.add("--active");
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
+            final Window[] serverChildWindows;
+            final Window[] activeWindowChildWindows = WindowManager.getChildren(context.getWindow());
+            final Window[] rootWindows = WindowManager.getRootWindows();
+
+            //Children of current window
+            for (Window activeWindowChild : activeWindowChildWindows) {
+                if (activeWindowChild.getContainer() instanceof CustomWindow) {
+                    targets.add(activeWindowChild.getTitle());
+                }
+            }
+            //Children of the current window's server
+            if (context.getWindow().getContainer().getServer() != null) {
+                serverChildWindows = WindowManager.getChildren(context.getWindow().getContainer().getServer().getFrame());
+                for (Window serverChild : serverChildWindows) {
+                    if (serverChild.getContainer() instanceof CustomWindow) {
+                        targets.add(serverChild.getTitle());
+                    }
+                }
+            }
+            //Global custom windows
+            for (Window rootWindow : rootWindows) {
+                if (rootWindow.getContainer() instanceof CustomWindow) {
+                    targets.add(rootWindow.getTitle());
+                }
+            }
             targets.excludeAll();
-            // TODO: Include window names
         }
         
         return targets;
