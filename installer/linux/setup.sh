@@ -67,7 +67,7 @@ if [ "${PIDOF}" = "" ]; then
 	fi;
 fi;
 
-if [ -e "functions.sh" ]; then
+if [ -e "${BASEDIR}/functions.sh" ]; then
 	. ${BASEDIR}/functions.sh
 else
 	echo "Unable to find functions.sh, unable to continue."
