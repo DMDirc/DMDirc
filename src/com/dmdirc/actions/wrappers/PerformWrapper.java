@@ -71,12 +71,23 @@ public class PerformWrapper extends ActionGroup {
     /** {@inheritDoc} */
     @Override
     public void add(final Action action) {
-        if (action.getTriggers().length == 1
-                && action.getTriggers()[0] == CoreActionType.SERVER_CONNECTED
-                && checkConditions(action.getConditions())) {
-            super.add(action);
+        if (action.getTriggers().length != 1) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Invalid perform action: " + action.getName(),
+                    "Perform actions may only have one trigger");
+        } else if (action.getTriggers()[0] != CoreActionType.SERVER_CONNECTED) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Invalid perform action: " + action.getName(),
+                    "Perform actions must be triggered when a server connects");
+        } else if (!checkConditions(action.getConditions())) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Invalid perform action: " + action.getName(),
+                    "Perform actions must have exactly one or two conditions, "
+                    + "one may target the server's name or network, and one may "
+                    + "target the server's profile name. No other targets are "
+                    + "allowed.");
         } else {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid perform action: " + action.getName());
+            super.add(action);
         }
     }
 
