@@ -369,8 +369,9 @@ public final class ServerEventHandler extends EventHandler implements
              final String sModes) {
         checkParser(tParser);
 
-        owner.doNotification("userModeDiscovered", CoreActionType.SERVER_USERMODES,
-                cClient, sModes);
+        owner.doNotification(sModes.isEmpty() || "+".equals(sModes)
+                ? "userNoModes" : "userModeDiscovered",
+                CoreActionType.SERVER_USERMODES, cClient, sModes);
     }
 
     /** {@inheritDoc} */
