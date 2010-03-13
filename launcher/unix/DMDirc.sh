@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="15"
+LAUNCHERVERSION="16"
 LAUNCHERINFO="unix-${LAUNCHERVERSION}"
 
 params=""
@@ -79,7 +79,7 @@ for param in "$@"; do
 	fi;
 done;
 
-if [ -e "functions.sh" ]; then
+if [ -e "${BASEDIR}/functions.sh" ]; then
 	. ${BASEDIR}/functions.sh
 else
 	echo "Unable to find functions.sh, using built in functions"
@@ -204,7 +204,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 	# break!
 	cat <<EOF> ${launcherUpdater}
 		cd ${BASEDIR}
-		if [ -e "functions.sh" ]; then
+		if [ -e "${BASEDIR}/functions.sh" ]; then
 			. ${BASEDIR}/functions.sh
 		else
 			echo "Unable to find functions.sh, using old functions"
