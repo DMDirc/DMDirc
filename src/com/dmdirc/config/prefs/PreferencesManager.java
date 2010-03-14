@@ -100,7 +100,7 @@ public class PreferencesManager {
      */
     public boolean save() {
         fireSaveListeners();
-        
+
         boolean restart = false;
         for (PreferencesCategory category : categories) {
             if (category.save()) {
@@ -167,17 +167,36 @@ public class PreferencesManager {
                 new OptionalValidator(new NumericalValidator(0, 100)), "ui", "pasteProtectionLimit",
                 "Paste protection trigger", "Confirm pasting of text that " +
                 "contains more than this many lines."));
-        
+
+        addTabCompletionCategory(category);
+        addCategory(category);
+    }
+
+    /**
+     * Creates and adds the "Tab Completion" category.
+     * @since 0.6.4
+     */
+    private void addTabCompletionCategory(PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("Tab Completion", "");
         final Map<String, String> taboptions = new HashMap<String, String>();
-        for (Service service : PluginManager.getPluginManager().getServicesByType("tabcompletion")) {
+
+        for (Service service : PluginManager.getPluginManager()
+                .getServicesByType("tabcompletion")) {
             taboptions.put(service.getName(), service.getName());
         }
-        
+
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
                 "Tab completion style", "Determines the behaviour of " +
                 "the tab completer when there are multiple matches", taboptions));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "tabcompletion", "casesensitive", "Case-sensitive tab completion",
+                "Respect case when tab completing"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "tabcompletion", "allowempty", "Allow empty tab completion",
+                "Attempt to tab complete when the Tab key is pressed even " +
+                "if there is nothing to complete"));
 
-        addCategory(category);
+        parent.addSubCategory(category);
     }
 
     /**
@@ -357,7 +376,7 @@ public class PreferencesManager {
      * Creates and adds the "Advanced" category.
      */
     private void addAdvancedCategory() {
-        final PreferencesCategory category = new PreferencesCategory("Advanced", 
+        final PreferencesCategory category = new PreferencesCategory("Advanced",
                 "", "category-advanced");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
@@ -373,9 +392,6 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "logerrors", "Log errors to disk",
                 "Save copies of all client errors to disk"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "tabcompletion", "casesensitive", "Case-sensitive tab completion",
-                "Respect case when tab completing"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "quickCopy", "Quick copy", "Automatically copy" +
                 " text that's selected when the mouse button is released"));
