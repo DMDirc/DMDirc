@@ -124,8 +124,8 @@ public class ServerManagerTest {
     public void testGetServerByAddress() {
         final Server serverA = mock(Server.class);
         final Server serverB = mock(Server.class);
-        when(serverA.getName()).thenReturn("255.255.255.255");
-        when(serverB.getName()).thenReturn("255.255.255.254");
+        when(serverA.getAddress()).thenReturn("255.255.255.255");
+        when(serverB.getAddress()).thenReturn("255.255.255.254");
         
         final ServerManager sm = ServerManager.getServerManager();
 

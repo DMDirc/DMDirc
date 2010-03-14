@@ -198,7 +198,7 @@ public final class ServerManager {
 
         synchronized (servers) {
             for (Server server : servers) {
-                if (server.getName().equalsIgnoreCase(address)) {
+                if (server.getAddress().equalsIgnoreCase(address)) {
                     res.add(server);
                 }
             }
