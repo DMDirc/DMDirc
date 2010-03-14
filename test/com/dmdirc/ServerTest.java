@@ -37,6 +37,7 @@ public class ServerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
+        Main.extractCorePlugins("tabcompletion_");
         IdentityManager.load();
         server = new Server(new URI("irc-test://255.255.255.255"),
                 IdentityManager.getProfiles().get(0));
