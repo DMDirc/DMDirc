@@ -252,7 +252,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
-            res.addAll(IdentityManager.getGlobalConfig().getDomains());
+            res.addAll(context.getWindow().getConfigManager().getDomains());
             res.add("--unset");
             res.add("--append");
             res.add("--server");
@@ -261,15 +261,17 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             if (previousArgs.get(0).equalsIgnoreCase("--unset")
                     || previousArgs.get(0).equalsIgnoreCase("--append")
                     || previousArgs.get(0).equalsIgnoreCase("--server")) {
-                res.addAll(IdentityManager.getGlobalConfig().getDomains());
+                res.addAll(context.getWindow().getConfigManager().getDomains());
             } else {
-                res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(0)).keySet());
+                res.addAll(context.getWindow().getConfigManager().getOptions(
+                        previousArgs.get(0)).keySet());
             }
             res.excludeAll();
         } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
                 || previousArgs.get(0).equalsIgnoreCase("--append")
                 || previousArgs.get(0).equalsIgnoreCase("--server"))) {
-            res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(1)).keySet());
+            res.addAll(context.getWindow().getConfigManager().getOptions(
+                    previousArgs.get(1)).keySet());
             res.excludeAll();
         }
         
