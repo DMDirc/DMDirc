@@ -575,6 +575,22 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "name"; }
+    },
+
+    /** Returns the value of an integer. */
+    INTEGER_VALUE {
+        /** {@inheritDoc} */
+        @Override
+        public Object get(final Object argument) { return (Integer) argument; }
+        /** {@inheritDoc} */
+        @Override
+        public Class appliesTo() { return Integer.class; }
+        /** {@inheritDoc} */
+        @Override
+        public Class getType() { return Integer.class; }
+        /** {@inheritDoc} */
+        @Override
+        public String getName() { return "value"; }
     };
         
 }
