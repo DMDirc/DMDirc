@@ -1608,7 +1608,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return This server's identity
      */
     public Identity getServerIdentity() {
-        return IdentityManager.getServerConfig(getName());
+        return IdentityManager.getServerConfig(parser.getServerName());
     }
 
     /**
