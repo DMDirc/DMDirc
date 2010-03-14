@@ -110,14 +110,23 @@ public class WhoisNumericFormatter implements ActionListener {
                 targets.remove(server);
                 break;
             default:
-                if (format.length() == 0 && arguments.length > 4
+                if (arguments.length > 4
                         && targets.containsKey(server)
                         && arguments[3].equals(targets.get(server))) {
                     // This numeric should be automatically formatted.
 
-                    final String target = "numeric_auto_" + (arguments.length - 4);
-                    ensureExists(target, arguments.length);
-                    format.replace(0, format.length(), target);
+                    if (format.length() > 0) {
+                        // There's a custom format. We'll see if we need to
+                        // add a formatter or notification settings for it
+                        // anyway.
+                        ensureExists(format.toString(), arguments.length);
+                    } else {
+                        // No custom formatter, switch it to an auto whois
+                        // format and target.
+                        final String target = "numeric_autowhois_" + (arguments.length - 4);
+                        ensureExists(target, arguments.length);
+                        format.replace(0, format.length(), target);
+                    }
                 }
         }
     }
@@ -138,6 +147,9 @@ public class WhoisNumericFormatter implements ActionListener {
             }
 
             identity.setOption("formatter", target, builder.toString());
+        }
+
+        if (!identity.hasOptionString("notifications", target)) {
             identity.setOption("notifications", target, "group:whois");
         }
     }
