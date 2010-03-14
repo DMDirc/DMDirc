@@ -409,7 +409,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final int delay = Math.max(1000,
                     getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay"));
 
-            handleNotification("connectRetry", getName(), delay / 1000);
+            handleNotification("connectRetry", getAddress(), delay / 1000);
 
             reconnectTimer = new Timer("Server Reconnect Timer");
             reconnectTimer.schedule(new TimerTask() {
@@ -940,6 +940,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
+     * Retrieves the address of this server.
+     *
+     * @return This sever's address
+     */
+    public String getAddress() {
+        synchronized (parserLock) {
+            return parser == null ? address.getHost() : parser.getServerName();
+        }
+    }
+
+    /**
      * Retrieves the name of this server's network. The network name is
      * determined using the following rules:
      *
@@ -1344,7 +1355,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             return;
         }
         
-        handleNotification("socketClosed", getName());
+        handleNotification("socketClosed", getAddress());
 
         ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
 
@@ -1446,7 +1457,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null,
                     this, description);
 
-            handleNotification("connectError", getName(), description);
+            handleNotification("connectError", getAddress(), description);
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "reconnectonconnectfailure")) {
@@ -1469,7 +1480,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
         if (parser.getPingTime()
                  >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
-            handleNotification("stonedServer", getName());
+            handleNotification("stonedServer", getAddress());
             reconnect();
         }
     }

@@ -53,7 +53,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getName(); }
+        public Object get(final Object argument) { return ((Server) argument).getAddress(); }
         /** {@inheritDoc} */
         @Override
         public Class appliesTo() { return Server.class; }

@@ -97,7 +97,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super("channel-inactive", newChannelInfo.getName(),
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
-                newServer.getNetwork(), newServer.getName(), newChannelInfo.getName()));
+                newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()));
 
         channelInfo = newChannelInfo;
         server = newServer;
@@ -138,7 +138,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
         getConfigManager().migrate(server.getProtocol(), server.getIrcd(),
-                server.getNetwork(), server.getName(), channelInfo.getName());
+                server.getNetwork(), server.getAddress(), channelInfo.getName());
     }
 
     /**
