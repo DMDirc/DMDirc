@@ -22,10 +22,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.config.prefs.PreferencesType;
-import java.util.HashMap;
-import java.util.Map;
-import org.junit.Ignore;
+import com.dmdirc.updater.Version;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -74,10 +71,10 @@ public class ActionGroupTest {
     @Test
     public void testGetVersion() {
         ActionGroup instance = new ActionGroup("vtest");
-        instance.setVersion(73);
+        instance.setVersion(new Version(73));
         
-        int expResult = 73;
-        int result = instance.getVersion();
+        Version expResult = new Version(73);
+        Version result = instance.getVersion();
         assertEquals(expResult, result);
     }
 
