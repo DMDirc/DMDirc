@@ -104,6 +104,11 @@ public class Utils {
                     attString.addAttribute(IRCTextAttribute.CHANNEL,
                             as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.TOOLTIP) {
+                    //Tooltips
+                    attString.addAttribute(IRCTextAttribute.TOOLTIP,
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
                 } else if (attrib == ColorConstants.Foreground) {
                     //Foreground
                     attString.addAttribute(TextAttribute.FOREGROUND,
