@@ -272,7 +272,7 @@ public final class ServerManager {
                 connectedServer = server;
 
                 if (server.hasChannel("#DMDirc")) {
-                    server.join("#DMDirc");
+                    server.join(new ChannelJoinRequest("#DMDirc"));
                     return;
                 }
             }
@@ -287,7 +287,7 @@ public final class ServerManager {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
             }
         } else {
-            connectedServer.join("#DMDirc");
+            connectedServer.join(new ChannelJoinRequest("#DMDirc"));
         }
     }
 
