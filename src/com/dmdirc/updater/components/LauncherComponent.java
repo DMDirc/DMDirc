@@ -88,12 +88,12 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
     public String getName() {
         return "launcher-" + platform;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Launcher";
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -113,6 +113,19 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
         return options;
     }
 
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean requiresRestart() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) throws Exception {
@@ -126,13 +139,13 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
 
             tmpFile.renameTo(targetFile);
             targetFile.setExecutable(true);
-            return true;
+
         } else {
             final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
             ziprm.extractResources("", tmpFile.getParent()+ File.separator);
             new File(path).delete();
-            return true;
         }
+        return true;
     }
 
 }
