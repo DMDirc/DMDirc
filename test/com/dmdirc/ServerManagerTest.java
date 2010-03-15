@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.plugins.PluginManager;
 
 import java.net.URI;
@@ -199,7 +200,7 @@ public class ServerManagerTest {
         ServerManager.getServerManager().registerServer(serverA);
         ServerManager.getServerManager().joinDevChat();
 
-        verify(serverA).join("#DMDirc");
+        verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
 
     @Test
@@ -212,7 +213,7 @@ public class ServerManagerTest {
         ServerManager.getServerManager().registerServer(serverA);
         ServerManager.getServerManager().joinDevChat();
 
-        verify(serverA).join("#DMDirc");
+        verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
 
     @Test
