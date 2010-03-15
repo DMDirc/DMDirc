@@ -589,7 +589,7 @@ public class Styliser implements ConfigChangeListener {
                     return 1;
                 }
 
-                final String tooltip = string.substring(1, index - 1);
+                final String tooltip = string.substring(1, index);
 
                 attribs.addAttribute(IRCTextAttribute.TOOLTIP, tooltip);
 
