@@ -71,7 +71,6 @@ public final class OpenQuery extends ServerCommand implements
         if (server.hasQuery(args.getArguments()[0])) {
             server.getQuery(args.getArguments()[0]).activateFrame();
         } else {
-            server.addQuery(args.getArguments()[0]);
             server.getQuery(args.getArguments()[0]).show();
         }
 

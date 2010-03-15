@@ -96,7 +96,6 @@ public final class ServerEventHandler extends EventHandler implements
         checkParser(tParser);
 
         if (!owner.hasQuery(sHost)) {
-            owner.addQuery(sHost);
             owner.getQuery(sHost).onPrivateMessage(tParser, sMessage, sHost);
         }
     }
@@ -108,7 +107,6 @@ public final class ServerEventHandler extends EventHandler implements
         checkParser(tParser);
 
         if (!owner.hasQuery(sHost)) {
-            owner.addQuery(sHost);
             owner.getQuery(sHost).onPrivateAction(tParser, sMessage, sHost);
         }
     }
@@ -321,10 +319,6 @@ public final class ServerEventHandler extends EventHandler implements
 
         if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
             // Local client
-            if (!owner.hasQuery(sTarget)) {
-                owner.addQuery(sTarget);
-            }
-
             owner.getQuery(sTarget).doNotification("querySelfExternalMessage",
                     CoreActionType.QUERY_SELF_MESSAGE, tParser.getLocalClient(), sMessage);
         } else {
@@ -341,10 +335,6 @@ public final class ServerEventHandler extends EventHandler implements
 
         if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
             // Local client
-            if (!owner.hasQuery(sTarget)) {
-                owner.addQuery(sTarget);
-            }
-
             owner.getQuery(sTarget).doNotification("querySelfExternalAction",
                     CoreActionType.QUERY_SELF_ACTION, tParser.getLocalClient(), sMessage);
         } else {
