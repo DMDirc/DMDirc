@@ -82,7 +82,7 @@ public class Styliser implements ConfigChangeListener {
     
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
-            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC +
+            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
     
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
