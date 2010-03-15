@@ -23,7 +23,7 @@ else
 fi;
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
-	echo "Creating Launcher Update: unix-${UNIXVERSION}";
+	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: unix-${UNIXVERSION}";
 	
 	FUNCTIONSFILE="${LAUNCHERDIR}/../installer/linux/functions.sh"
 	SRCFILE=${LAUNCHERDIR}/unix/DMDirc.sh
@@ -32,10 +32,8 @@ if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
 	if [ -e "${FUNCTIONSFILE}" ]; then
 		FUNCTIONSLINE=`grep ${GREPOPTS} "^###FUNCTIONS_FILE###$" ${SRCFILE}`
 		if [ "${FUNCTIONSLINE}" == "" ]; then
-			echo "    Functions already built into launcher."
 			cp ${SRCFILE} ${DESTFILE}
 		else
-			echo "    Including functions.sh into launcher."
 			FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
 			
 			head -n ${FUNCTIONSLINE} ${SRCFILE} > ${DESTFILE}
@@ -44,12 +42,12 @@ if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
 			tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) ${SRCFILE} >> ${DESTFILE}
 		fi;
 	else
-		echo "    Unable to create unix launcher update, no functions.sh found."
+		/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Unable to create unix launcher update, no functions.sh found."
 	fi;
 fi;
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/windows-${WINDOWSVERSION}.zip" ]; then
-	echo "Creating Launcher Update: windows-${WINDOWSVERSION}";
+	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: windows-${WINDOWSVERSION}";
 	OLDDIR=${PWD}
 	cd ${LAUNCHERDIR}/windows
 	sh compile.sh
