@@ -32,7 +32,7 @@ import java.io.File;
 
 /**
  * Represents the client component, which covers the core client resources.
- * 
+ *
  * @author chris
  */
 public class ClientComponent implements UpdateComponent {
@@ -42,7 +42,7 @@ public class ClientComponent implements UpdateComponent {
     public String getName() {
         return "client";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
@@ -57,6 +57,41 @@ public class ClientComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
+    public boolean requiresRestart() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        final File targetFile = new File(new File(path).getParent() + File.separator + ".DMDirc.jar");
+
+        if (!LauncherComponent.isUsingLauncher()) {
+            if (DMDircResourceManager.isRunningFromJar()) {
+                return "A new version of DMDirc has been downloaded, but as you\n"
+                    + "do not seem to be using the DMDirc launcher, it will\n"
+                    + "not be installed automatically.\n\n"
+                    + "To install this update manually, please replace the\n"
+                    + "existing DMDirc.jar file, located at:\n"
+                    + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
+                    + "with the following file:\n"
+                    + "  " + targetFile.getAbsolutePath();
+            } else {
+                return "A new version of DMDirc has been downloaded, but as you\n"
+                    + "do not seem to be using the DMDirc launcher, it will\n"
+                    + "not be installed automatically.\n\n"
+                    + "To install this update manually, please extract the\n"
+                    + "new DMDirc.jar file, located at:\n"
+                    + " " + targetFile.getAbsolutePath() + "\n"
+                    + "over your existing DMDirc install located in:\n"
+                    + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
+            }
+        }
+        return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String getFriendlyVersion() {
         return IdentityManager.getGlobalConfig().getOption("version", "version");
     }
@@ -66,38 +101,21 @@ public class ClientComponent implements UpdateComponent {
     public boolean doInstall(final String path) {
         final File tmpFile = new File(path);
         final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
-        
+
         if (targetFile.exists()) {
             targetFile.delete();
         }
-        
+
         tmpFile.renameTo(targetFile);
-        
-        if (!LauncherComponent.isUsingLauncher()) {
-            final String message;
-            if (DMDircResourceManager.isRunningFromJar()) {
-                message = "A new version of DMDirc has been downloaded, but as you\n"
-                    + "do not seem to be using the DMDirc launcher, it will\n"
-                    + "not be installed automatically.\n\n"
-                    + "To install this update manually, please replace the\n"
-                    + "existing DMDirc.jar file, located at:\n"
-                    + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
-                    + "with the following file:\n"
-                    + "  " + targetFile.getAbsolutePath();
-            } else {
-                message = "A new version of DMDirc has been downloaded, but as you\n"
-                    + "do not seem to be using the DMDirc launcher, it will\n"
-                    + "not be installed automatically.\n\n"
-                    + "To install this update manually, please extract the\n"
-                    + "new DMDirc.jar file, located at:\n"
-                    + " " + targetFile.getAbsolutePath() + "\n"
-                    + "over your existing DMDirc install located in:\n"
-                    + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
-            }
-            
+
+        /**
+         * @depricated Should be removed when updater UI changes are implimented.
+         */
+        final String message = this.getManualInstructions(path);
+        if (!message.isEmpty()) {
             Main.getUI().showMessageDialog("Client update downloaded", message);
         }
-        
+
         return true;
     }
 

@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * Represents the default identities.
- * 
+ *
  * @author chris
  */
 public class DefaultsComponent implements UpdateComponent {
@@ -43,12 +43,12 @@ public class DefaultsComponent implements UpdateComponent {
     public String getName() {
         return "defaultsettings";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Default settings";
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -57,10 +57,10 @@ public class DefaultsComponent implements UpdateComponent {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public Version getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
-        
+
         if (globalConfig.hasOptionString("identity", "defaultsversion")) {
             return new Version(globalConfig.getOption("identity", "defaultsversion"));
         } else {
@@ -68,21 +68,33 @@ public class DefaultsComponent implements UpdateComponent {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean requiresRestart() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws java.io.IOException On i/o exception when reading zip file
      */
     @Override
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-        
+
         ziprm.extractResources("", IdentityManager.getDirectory());
-        
+
         IdentityManager.loadUser();
-        
+
         new File(path).delete();
-        
+
         return false;
     }
 
