@@ -31,6 +31,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
@@ -238,11 +239,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             }
             
             if (data.containsKey("version")) {
-                try {
-                    myGroup.setVersion(Integer.parseInt(data.get("version")));
-                } catch (NumberFormatException ex) {
-                    // Do nothing
-                }
+                myGroup.setVersion(new Version(data.get("version")));
             }
             
             if (data.containsKey("component")) {
