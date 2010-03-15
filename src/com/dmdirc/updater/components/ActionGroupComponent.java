@@ -46,7 +46,7 @@ public class ActionGroupComponent implements UpdateComponent {
     public ActionGroupComponent(final ActionGroup group) {
         this.group = group;
         
-        if (group.getComponent() != -1 && group.getVersion() != -1) {
+        if (group.getComponent() != -1 && group.getVersion() != null) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
         }
@@ -67,7 +67,7 @@ public class ActionGroupComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public Version getVersion() {
-        return new Version(group.getVersion());
+        return group.getVersion();
     }
 
     /** {@inheritDoc} */

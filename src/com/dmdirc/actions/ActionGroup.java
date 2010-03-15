@@ -25,6 +25,7 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Version;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,8 +62,8 @@ public class ActionGroup implements Iterable<Action> {
     /** The component number of this action group (for updating). */
     private int component = -1;
     
-    /** The version number of this action group. */
-    private int version = -1;
+    /** The version of this action group. */
+    private Version version = null;
     
     /** A list of settings used by this action group. */
     private final Map<String, PreferencesSetting> settings
@@ -136,18 +137,20 @@ public class ActionGroup implements Iterable<Action> {
     /**
      * Retrieves the version number of this action group.
      * 
-     * @return This action group's version number, or -1 if none is specified.
+     * @return This action group's version number, or null if none is specified.
+     * @since 0.6.4
      */
-    public int getVersion() {
+    public Version getVersion() {
         return version;
     }
 
     /**
      * Sets the version of this action group.
      * 
-     * @param version This action group's new version number.
+     * @param version This action group's new version.
+     * @since 0.6.4
      */
-    public void setVersion(final int version) {
+    public void setVersion(final Version version) {
         this.version = version;
     }
 
@@ -225,8 +228,8 @@ public class ActionGroup implements Iterable<Action> {
         settings.clear();
         description = null;
         author = null;
+        version = null;
         component = -1;
-        version = -1;
     }
 
     /**
