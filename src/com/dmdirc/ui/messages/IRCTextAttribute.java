@@ -64,6 +64,7 @@ public final class IRCTextAttribute extends Attribute {
      * @throws InvalidObjectException when the class being deserialized is not
      * an instance of IRCTextAttribute
      */
+    @Override
     protected Object readResolve() throws InvalidObjectException {
         if (this.getClass() != IRCTextAttribute.class) {
             throw new InvalidObjectException("subclass didn't correctly implement readResolve");
@@ -88,4 +89,7 @@ public final class IRCTextAttribute extends Attribute {
     
     /** Smiley attribute. */
     public static final IRCTextAttribute SMILEY = new IRCTextAttribute("smiley");
+
+    /** Tooltip attribute. */
+    public static final IRCTextAttribute TOOLTIP = new IRCTextAttribute("tooltip");
 }

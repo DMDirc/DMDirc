@@ -65,7 +65,9 @@ public class Styliser implements ConfigChangeListener {
     /** The character used for marking up fixed pitch text. */
     public static final char CODE_FIXED = 17;
     /** The character used for negating control codes. */
-    public static final char CODE_NEGATE = 18;    
+    public static final char CODE_NEGATE = 18;
+    /** The character used for tooltips. */
+    public static final char CODE_TOOLTIP = 19;
     /** The character used for marking up italic text. */
     public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
@@ -73,14 +75,14 @@ public class Styliser implements ConfigChangeListener {
     
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
-            + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE;
+            + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
 
     /** Characters used for hyperlinks. */
     private static final String HYPERLINK_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
     
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
-            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
+            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC +
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
     
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
@@ -328,7 +330,9 @@ public class Styliser implements ConfigChangeListener {
                 + CODE_HYPERLINK + CODE_ITALIC + CODE_NEGATE + CODE_NICKNAME
                 + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]|"
                 + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
-                + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "");
+                + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
+                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
+                + CODE_TOOLTIP, "$1");
     }
     
     /**
@@ -353,6 +357,7 @@ public class Styliser implements ConfigChangeListener {
         pos = checkChar(pos, input.indexOf(CODE_CHANNEL));
         pos = checkChar(pos, input.indexOf(CODE_SMILIE));
         pos = checkChar(pos, input.indexOf(CODE_NEGATE));
+        pos = checkChar(pos, input.indexOf(CODE_TOOLTIP));
         
         return input.substring(0, pos);
     }
@@ -569,6 +574,28 @@ public class Styliser implements ConfigChangeListener {
                 attribs.addAttribute(IRCTextAttribute.SMILEY, "smilie-" + smilie);
             } else {
                 attribs.removeAttribute(IRCTextAttribute.SMILEY);
+            }
+
+            return 1;
+        }
+
+        // Tooltips
+        if (string.charAt(0) == CODE_TOOLTIP) {
+            if (attribs.getAttribute(IRCTextAttribute.TOOLTIP) == null) {
+                final int index = string.indexOf(CODE_TOOLTIP, 1);
+
+                if (index == -1) {
+                    // Doesn't make much sense, let's ignore it!
+                    return 1;
+                }
+
+                final String tooltip = string.substring(1, index - 1);
+
+                attribs.addAttribute(IRCTextAttribute.TOOLTIP, tooltip);
+
+                return tooltip.length() + 2;
+            } else {
+                attribs.removeAttribute(IRCTextAttribute.TOOLTIP);
             }
 
             return 1;
