@@ -34,26 +34,26 @@ import java.io.File;
 
 /**
  * An update component for plugins.
- * 
+ *
  * @author chris
  */
 public class PluginComponent implements UpdateComponent, FileComponent {
-    
+
     /** The plugin this component is for. */
     private final PluginInfo plugin;
-    
+
     /** The config to use. */
     private static final ConfigManager config = IdentityManager.getGlobalConfig();
 
     /**
      * Creates a new PluginComponent for the specified plugin, to enable it to
      * be updated automatically.
-     * 
+     *
      * @param plugin The plugin to be added to the updater
      */
     public PluginComponent(final PluginInfo plugin) {
         this.plugin = plugin;
-        
+
         if ((plugin.getAddonID() > 0 && plugin.getVersion().isValid())
                 || (config.hasOptionInt("plugin-addonid", plugin.getName()))) {
             UpdateChecker.removeComponent(getName());
@@ -72,7 +72,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public String getFriendlyName() {
         return plugin.getNiceName();
     }
@@ -84,13 +84,25 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public Version getVersion() {
         return plugin.getVersion();
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
+    public boolean requiresRestart() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean doInstall(final String path) throws Exception {
         final File target = new File(plugin.getFullFilename());
 
@@ -113,11 +125,11 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         if ((!plugin.isUnloadable() && plugin.isLoaded()) || !new File(path).renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getFullFilename() + ".update");
-            
+
             if (newTarget.exists()) {
                 newTarget.delete();
             }
-            
+
             new File(path).renameTo(newTarget);
             returnCode = true;
         } else {
@@ -126,7 +138,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
 
         // If the plugin was loaded before, load it again.
         if (wasLoaded) { plugin.loadPlugin(); }
-        
+
         return returnCode;
     }
 

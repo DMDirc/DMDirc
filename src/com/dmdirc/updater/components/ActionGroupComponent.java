@@ -30,22 +30,22 @@ import com.dmdirc.updater.Version;
 
 /**
  * Update component for action groups.
- * 
+ *
  * @author chris
  */
 public class ActionGroupComponent implements UpdateComponent {
-    
+
     /** The group that this component represents. */
     private ActionGroup group;
-    
+
     /**
      * Creates a new ActionGroupComponent for the specified action group.
-     * 
+     *
      * @param group The action group this component is for
      */
     public ActionGroupComponent(final ActionGroup group) {
         this.group = group;
-        
+
         if (group.getComponent() != -1 && group.getVersion() != -1) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
@@ -78,9 +78,21 @@ public class ActionGroupComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
+    public boolean requiresRestart() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean doInstall(final String path) throws Exception {
         ActionManager.installActionPack(path);
-        return false;
+        return this.requiresRestart();
     }
 
 }

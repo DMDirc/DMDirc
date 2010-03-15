@@ -32,7 +32,7 @@ import java.io.File;
 
 /**
  * Represents the client component, which covers the core client resources.
- * 
+ *
  * @author chris
  */
 public class ClientComponent implements UpdateComponent {
@@ -42,7 +42,7 @@ public class ClientComponent implements UpdateComponent {
     public String getName() {
         return "client";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
@@ -57,24 +57,18 @@ public class ClientComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public String getFriendlyVersion() {
-        return IdentityManager.getGlobalConfig().getOption("version", "version");
+    public boolean requiresRestart() {
+        return true;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) {
+    public String getManualInstructions(final String path) {
         final File tmpFile = new File(path);
         final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
-        
-        if (targetFile.exists()) {
-            targetFile.delete();
-        }
-        
-        tmpFile.renameTo(targetFile);
-        
+        String message = "";
+
         if (!LauncherComponent.isUsingLauncher()) {
-            final String message;
             if (DMDircResourceManager.isRunningFromJar()) {
                 message = "A new version of DMDirc has been downloaded, but as you\n"
                     + "do not seem to be using the DMDirc launcher, it will\n"
@@ -94,11 +88,35 @@ public class ClientComponent implements UpdateComponent {
                     + "over your existing DMDirc install located in:\n"
                     + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
             }
-            
+            return message;
+        }
+        return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFriendlyVersion() {
+        return IdentityManager.getGlobalConfig().getOption("version", "version");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean doInstall(final String path) {
+        final File tmpFile = new File(path);
+        final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
+
+        if (targetFile.exists()) {
+            targetFile.delete();
+        }
+
+        tmpFile.renameTo(targetFile);
+
+        final String message = this.getManualInstructions(path);
+        if (!message.isEmpty()) {
             Main.getUI().showMessageDialog("Client update downloaded", message);
         }
-        
-        return true;
+
+        return this.requiresRestart();
     }
 
 }

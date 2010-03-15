@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * Represents the mode alias identities.
- * 
+ *
  * @author chris
  */
 public class ModeAliasesComponent implements UpdateComponent {
@@ -43,12 +43,12 @@ public class ModeAliasesComponent implements UpdateComponent {
     public String getName() {
         return "modealiases";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Mode aliases";
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -57,10 +57,10 @@ public class ModeAliasesComponent implements UpdateComponent {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public Version getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
-        
+
         if (globalConfig.hasOptionString("identity", "modealiasversion")) {
             return new Version(globalConfig.getOption("identity", "modealiasversion"));
         } else {
@@ -68,22 +68,34 @@ public class ModeAliasesComponent implements UpdateComponent {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean requiresRestart() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws java.io.IOException On i/o exception when reading zip file
      */
     @Override
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-        
+
         ziprm.extractResources("", IdentityManager.getDirectory());
-        
+
         IdentityManager.loadUser();
-        
+
         new File(path).delete();
-        
-        return false;
+
+        return this.requiresRestart();
     }
 
 }
