@@ -30,17 +30,17 @@ import com.dmdirc.updater.Version;
 
 /**
  * Update component for action groups.
- * 
+ *
  * @author chris
  */
 public class ActionGroupComponent implements UpdateComponent {
-    
+
     /** The group that this component represents. */
     private ActionGroup group;
-    
+
     /**
      * Creates a new ActionGroupComponent for the specified action group.
-     * 
+     *
      * @param group The action group this component is for
      */
     public ActionGroupComponent(final ActionGroup group) {
@@ -74,6 +74,24 @@ public class ActionGroupComponent implements UpdateComponent {
     @Override
     public String getFriendlyVersion() {
         return String.valueOf(getVersion());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean requiresRestart() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean requiresManualInstall() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getManualInstructions(final String path) {
+        return "";
     }
 
     /** {@inheritDoc} */
