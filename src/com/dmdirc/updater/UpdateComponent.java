@@ -26,25 +26,25 @@ package com.dmdirc.updater;
  * The update component interface defines the methods needed to be implemented
  * by updatable components. The components handle determining the current
  * version and installing updated files.
- * 
+ *
  * @author chris
  */
 public interface UpdateComponent {
-    
+
     /**
      * Retrieves the name of this component.
-     * 
+     *
      * @return This component's name
      */
     String getName();
-    
+
     /**
      * A user-friendly name displayed for the component.
-     * 
+     *
      * @return This component's user-friendly name
      */
     String getFriendlyName();
-    
+
     /**
      * A user-friendly version displayed for the component.
      *
@@ -55,17 +55,45 @@ public interface UpdateComponent {
 
     /**
      * Retrieves the currently installed version of this component.
-     * 
+     *
      * @return This component's current version
      * @since 0.6.3m1
      */
     Version getVersion();
-    
+
+    /**
+     * Provisionally indicates if this component will require a client
+     * restart. The result of {@link #doInstall(java.lang.String)} ultimately
+     * decides if the client requires a restart.
+     *
+     * @return True if the client requires a restart
+     * @since 0.6.4
+     */
+    boolean requiresRestart();
+
+    /**
+     * Indicates if this component will require a manual install,
+     *
+     * @return True if the component requires a manual install
+     * @since 0.6.4
+     */
+    boolean requiresManualInstall();
+
+    /**
+     * Generates manual installation instructions given that the update has been
+     * downloaded to the specified temporary path.
+     *
+     * @param path The full path to the downloaded data
+     * @return Return manual instructions for this plugin
+     * @since 0.6.4
+     */
+    String getManualInstructions(final String path);
+
     /**
      * Installs the updated version of this component. After the update has
      * been installed, the component is responsible for deleting the specified
      * file.
-     * 
+     *
      * @param path The full path to the downloaded data
      * @return True if a client restart is needed, false otherwise
      * @throws java.lang.Exception If any error occured
