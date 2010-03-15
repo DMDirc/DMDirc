@@ -177,7 +177,7 @@ public class CommandArguments {
         Logger.assertTrue(start <= end + 1);
 
         final Pattern pattern = Pattern.compile("(\\S+\\s+){" + (start) + "}"
-                + "((\\S+\\s+){" + Math.max(0, end - start) + "}\\S+).*?");
+                + "((\\S+\\s+){" + Math.max(0, end - start) + "}\\S+(\\s+$)?).*?");
         final Matcher matcher = pattern.matcher(line);
 
         return matcher.matches() ? matcher.group(2) : "";
