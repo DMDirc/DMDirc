@@ -30,7 +30,7 @@ condition 0:
 metadata:
   description=Changes the colour of query window names in the treeview (or other frame manager) when events occur.
   author=Shane <shane@dmdirc.com>
-  version=4
+  version=5
   component=11
 
 setting 0:
@@ -52,4 +52,4 @@ setting 2:
   setting=highlightregex
   title=Highlight regex
   tooltip=Regular expression to use for matching highlights
-  default=(?i).*\\Q${SERVER_MYNICKNAME}\\E.*
+  default=(?i).*\\\\Q${SERVER_MYNICKNAME}\\\\E.*
