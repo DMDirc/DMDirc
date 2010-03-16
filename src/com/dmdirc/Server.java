@@ -570,7 +570,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public void delQuery(final Query query) {
         tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
-        queries.remove(query.getNickname());
+        queries.remove(converter.toLowerCase(query.getNickname()));
     }
 
     /**
