@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="16"
+LAUNCHERVERSION="17"
 LAUNCHERINFO="unix-${LAUNCHERVERSION}"
 
 params=""
@@ -362,24 +362,24 @@ if [ -e "${UPDATESOURCE}" ]; then
 				if [ $? -eq 0 ]; then
 					echo "Password dialog on display"
 					# osascript -e "do shell script \"mv -fv \\\"${profiledir}/.DMDirc.jar\\\" \\\"${jar}\\\"\" with administrator privileges"
-					osascript -e "do shell script \"sh ${0} ${params} --updateonly\" with administrator privileges"
+					osascript -e "do shell script \"sh ${0} ${params} -d "${profiledir}" --updateonly\" with administrator privileges"
 				fi;
 			else
 				if [ "" != "${ISKDE}" -a "" != "${KSUDO}" -a "" != "${DISPLAY}" ]; then
 					echo "Password dialog on ${DISPLAY}"
 					# ${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
-					${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} --updateonly
+					${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} -d "${profiledir}" --updateonly
 				elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
 					echo "Password dialog on ${DISPLAY}"
 					# ${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
-					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} --updateonly
+					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- sh ${0} ${params} -d "${profiledir}" --updateonly
 				elif [ "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then	
 					sudo -k
-					${ZENITY} --entry --title="DMDirc" --text="DMDirc Client Updater requires root access to modify the global installation, please enter your password to continue." --entry-text="" --hide-text | sudo -S -- sh ${0} ${params} --updateonly
+					${ZENITY} --entry --title="DMDirc" --text="DMDirc Client Updater requires root access to modify the global installation, please enter your password to continue." --entry-text="" --hide-text | sudo -S -- sh ${0} ${params} -d "${profiledir}" --updateonly
 				else
 					echo "DMDirc Client Updater requires root access to modify the global installation"
 					# sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
-					sudo sh ${0} ${params} --updateonly
+					sudo sh ${0} ${params} -d "${profiledir}" --updateonly
 				fi;
 			fi;
 		elif [ "${UPDATEONLY}" = "1" ]; then
