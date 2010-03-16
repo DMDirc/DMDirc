@@ -53,6 +53,22 @@ public class ActionSubstitutor {
     private static final String ERR_NOT_DEFINED = "not_defined";
     /** Substitution to use to replace subs with illegal components. */
     private static final String ERR_ILLEGAL_COMPONENT = "illegal_component";
+
+    /** Pattern used to match braced substitutions. */
+    private static final Pattern BRACES_PATTERN = Pattern.compile("(?<!\\\\)((?:\\\\\\\\)*)"
+            + "(\\$\\{([^{}]*?)\\})");
+    /** Pattern used to match all other substitutions. */
+    private static final Pattern OTHER_PATTERN = Pattern.compile("(?<!\\\\)((?:\\\\\\\\)*)(\\$("
+            + "[0-9]+(-([0-9]+)?)?|" // Word subs - $1, $1-, $1-2
+            + "[0-9]+(\\.([A-Z_]+))+|" // Component subs - 2.FOO_BAR
+            + "[a-z0-9A-Z_\\.]+" // Config/server subs
+            + "))");
+    /** Pattern to determine if a substitution is a word number type. */
+    private final static Pattern NUMBER_PATTERN = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
+    /** Pattern to determine if a substitution is an argument+component type. */
+    private final static Pattern COMP_PATTERN = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
+    /** Pattern to determine if a substitution is a server component type. */
+    private final static Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
     
     /** The action type this substitutor is for. */
     private final ActionType type;
@@ -174,16 +190,8 @@ public class ActionSubstitutor {
 
         final StringBuilder res = new StringBuilder(target);
 
-        final Pattern bracesPattern = Pattern.compile("(?<!\\\\)((?:\\\\\\\\)*)"
-                + "(\\$\\{([^{}]*?)\\})");
-        final Pattern otherPattern = Pattern.compile("(?<!\\\\)((?:\\\\\\\\)*)(\\$("
-                + "[0-9]+(-([0-9]+)?)?|" // Word subs - $1, $1-, $1-2
-                + "[0-9]+(\\.([A-Z_]+))+|" // Component subs - 2.FOO_BAR
-                + "[a-z0-9A-Z_\\.]+" // Config/server subs
-                + "))");
-
-        Matcher bracesMatcher = bracesPattern.matcher(res);
-        Matcher otherMatcher = otherPattern.matcher(res);
+        Matcher bracesMatcher = BRACES_PATTERN.matcher(res);
+        Matcher otherMatcher = OTHER_PATTERN.matcher(res);
 
         boolean first;
 
@@ -196,8 +204,8 @@ public class ActionSubstitutor {
             res.delete(start, end);
             res.insert(start, getSubstitution(doSubstitution(group, args), args));
             
-            bracesMatcher = bracesPattern.matcher(res);
-            otherMatcher = otherPattern.matcher(res);
+            bracesMatcher = BRACES_PATTERN.matcher(res);
+            otherMatcher = OTHER_PATTERN.matcher(res);
         }
 
         return res.toString().replaceAll("\\\\(.)", "$1");
@@ -211,11 +219,9 @@ public class ActionSubstitutor {
      * @return The substitution to be used
      */
     private String getSubstitution(final String substitution, final Object ... args) {
-        final Pattern numberPattern = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
-        final Matcher numberMatcher = numberPattern.matcher(substitution);
-
-        final Pattern compPattern = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
-        final Matcher compMatcher = compPattern.matcher(substitution);
+        final Matcher numberMatcher = NUMBER_PATTERN.matcher(substitution);
+        final Matcher compMatcher = COMP_PATTERN.matcher(substitution);
+        final Matcher serverMatcher = SERVER_PATTERN.matcher(substitution);
 
         if (usesWordSubstitutions() && numberMatcher.matches()) {
             final CommandArguments words = args[2] instanceof String ?
@@ -253,7 +259,7 @@ public class ActionSubstitutor {
             return manager.getOption("actions", substitution);
         }
 
-        if (hasFrameContainer()) {
+        if (hasFrameContainer() && serverMatcher.matches()) {
             final Server server = ((FrameContainer) args[0]).getServer();
 
             if (server != null) {

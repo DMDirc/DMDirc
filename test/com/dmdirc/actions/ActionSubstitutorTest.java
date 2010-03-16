@@ -77,7 +77,7 @@ public class ActionSubstitutorTest {
 
         when(channel.getServer()).thenReturn(server);
         when(channel.getConfigManager()).thenReturn(manager);
-        when(server.getState()).thenReturn(ServerState.CONNECTED);
+        when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(server.getAwayMessage()).thenReturn("foo");
 
         when(manager.getOptions(eq("actions"))).thenReturn(settings);
@@ -129,6 +129,7 @@ public class ActionSubstitutorTest {
             {"$bravo", "A"},
             {"$charlie", "A"},
             {"$delta", "win!"},
+            {"$sigma", "not_defined"},
             // ---- Word subs --------------------------------------------------
             {"$5-6", "5 6"},
             {"${5-6}", "5 6"},
@@ -136,6 +137,9 @@ public class ActionSubstitutorTest {
             {"${5-${${6}}}", "5 6"},
             // ---- Component subs ---------------------------------------------
             {"${2.STRING_STRING.STRING_LENGTH}", "28"},
+            {"${2.STRING_FLUB.STRING_LENGTH}", "illegal_component"},
+            {"${SERVER_NETWORKFOO}", "illegal_component"},
+            {"${SERVER_NETWORK}", "not_connected"},
             // ---- Escaping ---------------------------------------------------
             {"\\$1", "$1"},
             {"\\$alpha $alpha", "$alpha A"},
