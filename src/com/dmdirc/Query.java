@@ -96,7 +96,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
         window.getInputHandler().setTabCompleter(tabCompleter);
 
-        reregister();
+        if (!server.getState().isDisconnected()) {
+            reregister();
+        }
 
         updateTitle();
     }
