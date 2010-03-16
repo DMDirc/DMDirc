@@ -205,7 +205,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
-        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this, message);
+        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this,
+                parser.getClient(remoteHost), message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -224,7 +225,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
-        ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this, message);
+        ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this,
+                parser.getClient(remoteHost), message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
