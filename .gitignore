@@ -28,3 +28,6 @@ __history
 /reports/findbugs/
 /reports/report-fb.html
 /reports/report-pmd.*
+/lib/clover.license
+/.clover
+/test_profile

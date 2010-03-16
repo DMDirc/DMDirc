@@ -2,7 +2,7 @@
 <project name="DMDirc-tests" default="default" basedir=".">
     <description>Test-related tasks for DMDirc.</description>
 
-    <property name="clover.jar" location="/home/dmdirc/clover/clover/lib/clover.jar"/>
+    <property name="clover.jar" location="lib/clover.jar"/>
     <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
     <taskdef resource="cloverjunitlib.xml" classpath="${clover.jar}"/>
     <available property="clover.installed" classname="com.cenqua.clover.CloverInstr" />
