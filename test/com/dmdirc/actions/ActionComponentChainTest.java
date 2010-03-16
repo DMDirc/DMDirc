@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
@@ -114,6 +115,27 @@ public class ActionComponentChainTest {
     public void testEmptyToString() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");
         chain.toString();
-    }      
+    }
+
+    @Test()
+    public void testRequiresConnection1() {
+        final ActionComponentChain chain = new ActionComponentChain(Server.class,
+                "SERVER_NETWORK");
+        assertTrue(chain.requiresConnection());
+    }
+
+    @Test()
+    public void testRequiresConnection2() {
+        final ActionComponentChain chain = new ActionComponentChain(Server.class,
+                "SERVER_NETWORK.STRING_LENGTH");
+        assertTrue(chain.requiresConnection());
+    }
+
+    @Test()
+    public void testRequiresConnection3() {
+        final ActionComponentChain chain = new ActionComponentChain(Server.class,
+                "SERVER_NAME.STRING_LENGTH");
+        assertFalse(chain.requiresConnection());
+    }
 
 }

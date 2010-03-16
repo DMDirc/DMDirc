@@ -39,8 +39,9 @@ public class PreferencesManagerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-        PluginManager.getPluginManager();
+        Main.extractCorePlugins("ui_");
         Main.setUI(new SwingController());
+        PluginManager.getPluginManager();
     }    
 
     @Test
