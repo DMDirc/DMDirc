@@ -203,9 +203,9 @@ public enum CoreActionType implements ActionType {
     /** Query closed. */
     QUERY_CLOSED(QueryEvents.QUERY_EVENT, "Query window closed"),
     /** Query message received. */
-    QUERY_MESSAGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Private message received"),
+    QUERY_MESSAGE(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private message received"),
     /** Query action received. */
-    QUERY_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action received"),
+    QUERY_ACTION(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private action received"),
     /** Query message sent. */
     QUERY_SELF_MESSAGE(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private message sent"),
     /** Query action sent. */
