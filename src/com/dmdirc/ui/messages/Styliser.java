@@ -685,14 +685,17 @@ public class Styliser implements ConfigChangeListener {
                 attribs.addAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE);
             }
 
-            final Object foreground = attribs.getAttribute(StyleConstants.FontConstants.Foreground);
+            if (colour != null) {
+                final Object foreground = attribs.getAttribute(
+                        StyleConstants.FontConstants.Foreground);
 
-            if (foreground != null) {
-                attribs.addAttribute("restoreColour", foreground);
-                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                if (foreground != null) {
+                    attribs.addAttribute("restoreColour", foreground);
+                    attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                }
+
+                attribs.addAttribute(StyleConstants.FontConstants.Foreground, colour);
             }
-
-            attribs.addAttribute(StyleConstants.FontConstants.Foreground, colour);
 
         } else {
             // Remove the hyperlink style
@@ -703,11 +706,13 @@ public class Styliser implements ConfigChangeListener {
                 attribs.removeAttribute(StyleConstants.FontConstants.Underline);
             }
 
-            attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-            final Object foreground = attribs.getAttribute("restoreColour");
-            if (foreground != null) {
-                attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
-                attribs.removeAttribute("restoreColour");
+            if (colour != null) {
+                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                final Object foreground = attribs.getAttribute("restoreColour");
+                if (foreground != null) {
+                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
+                    attribs.removeAttribute("restoreColour");
+                }
             }
         }
     }
