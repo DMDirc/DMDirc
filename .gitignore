@@ -25,6 +25,7 @@ __history
 *.a
 *.o
 *.ppu
+/reports/clover/
 /reports/findbugs/
 /reports/report-fb.html
 /reports/report-pmd.*

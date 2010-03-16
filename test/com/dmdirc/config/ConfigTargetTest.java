@@ -76,6 +76,17 @@ public class ConfigTargetTest {
     }
 
     @Test
+    public void testSetProtocol() {
+        final ConfigTarget target = new ConfigTarget();
+        target.setProtocol("irc");
+
+        assertEquals(target.getType(), ConfigTarget.TYPE.PROTOCOL);
+        assertEquals(target.getTypeName(), "protocol");
+        assertEquals(target.getData(), "irc");
+        assertTrue(target.toString().toLowerCase().matches("protocol.*: irc"));
+    }
+
+    @Test
     public void testSetIrcd() {
         final ConfigTarget target = new ConfigTarget();
         target.setIrcd("ircd_name");
