@@ -282,8 +282,13 @@ public abstract class WritableFrameContainer extends FrameContainer {
             containers.addAll(getServer().getChildren());
 
             for (WritableFrameContainer container : containers) {
-                final long time
-                        = container.getFrame().getCommandParser().getCommandTime(command);
+                final InputWindow window = container.getFrame();
+
+                if (window == null) {
+                    continue;
+                }
+
+                final long time = window.getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
                     best = container;
