@@ -123,9 +123,14 @@ public final class Main {
 
         CommandManager.initCommands();
 
-        for (String service : new String[]{"ui", "tabcompletion"}) {
+        for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pm, service);
         }
+
+        // The user may have an existing parser plugin (e.g. twitter) which
+        // will satisfy the service existance check above, but will render the
+        // client pretty useless, so we'll force IRC extraction for now.
+        extractCorePlugins("parser_irc");
 
         loadUI(pm, IdentityManager.getGlobalConfig());
         if (getUI() == null) {

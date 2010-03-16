@@ -25,13 +25,13 @@ package com.dmdirc;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.plugins.ExportedService;
 import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
+
 import java.net.URI;
 
 /**
@@ -41,10 +41,10 @@ import java.net.URI;
  * @author chris
  */
 public class ParserFactory {
-    
+
     /**
      * Retrieves a parser instance.
-     * 
+     *
      * @param myInfo The client information to use
      * @param address The address of the server to connect to
      * @return An appropriately configured parser
@@ -62,38 +62,34 @@ public class ParserFactory {
             }
         }
 
-        if (address.getScheme() == null || "irc".equals(address.getScheme())
-                || "ircs".equals(address.getScheme())) {
-            return new IRCParser(myInfo, address);
-        } else {
-            try {
-                final Service service = PluginManager.getPluginManager()
-                        .getService("parser", address.getScheme());
+        // TODO: Move default scheme to a setting
+        final String scheme = address.getScheme() == null ? "irc" : address.getScheme();
 
-                if (service != null && !service.getProviders().isEmpty()) {
-                    final ServiceProvider provider = service.getProviders().get(0);
+        try {
+            final Service service = PluginManager.getPluginManager().getService("parser", scheme);
 
-                    if (provider != null) {
-                        provider.activateServices();
+            if (service != null && !service.getProviders().isEmpty()) {
+                final ServiceProvider provider = service.getProviders().get(0);
 
-                        final ExportedService exportService = provider
-                                .getExportedService("getParser");
-                        final Object obj = exportService.execute(myInfo, address);
-                        if (obj != null && obj instanceof Parser) {
-                            return (Parser)obj;
-                        } else {
-                            Logger.userError(ErrorLevel.MEDIUM,
-                                    "Unable to create parser for: " + address.getScheme());
-                        }
+                if (provider != null) {
+                    provider.activateServices();
+
+                    final ExportedService exportService = provider.getExportedService("getParser");
+                    final Object obj = exportService.execute(myInfo, address);
+                    if (obj != null && obj instanceof Parser) {
+                        return (Parser) obj;
+                    } else {
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "Unable to create parser for: " + address.getScheme());
                     }
                 }
-            } catch (NoSuchProviderException nspe) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "No parser found for: " + address.getScheme(), nspe);
             }
-
-            return null;
+        } catch (NoSuchProviderException nspe) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "No parser found for: " + address.getScheme(), nspe);
         }
+
+        return null;
     }
 
 }

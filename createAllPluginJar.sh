@@ -15,7 +15,7 @@ if [ ${?} = "0" ]; then
 fi
 
 # Plugins to bundle into development jars.
-plugins="ui_swing.jar tabcompletion_bash.jar tabcompletion_mirc.jar"
+plugins="ui_swing.jar tabcompletion_bash.jar tabcompletion_mirc.jar parser_irc.jar"
 mkdir -p ${PWD}/build/classes/plugins
 for PLUGIN in ${plugins}; do
 	ln -sf ${PWD}/plugins/${PLUGIN} ${PWD}/build/classes/plugins/${PLUGIN};

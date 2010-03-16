@@ -24,6 +24,12 @@
             <zipfileset src="modules/plugins/lib/jetty-util-6.1.22.jar" includes="org/mortbay/**"/>
             <zipfileset src="modules/plugins/lib/servlet-api-2.5-20081211.jar" includes="javax/servlet/**"/>
         </jar>
+
+        <jar destfile="plugins/parser_irc.jar" compress="${jar.compress}" keepcompression="true" update="true">
+            <fileset dir="${build.classes.dir}">
+                <include name="com/dmdirc/parser/irc/**/*.class"/>
+            </fileset>
+        </jar>
     </target>
 
 </project>
