@@ -260,7 +260,8 @@ public abstract class FrameContainer {
      * @return True iff frame is owned by this container, false otherwise
      */
     public boolean ownsFrame(final Window target) {
-        return getFrame().equals(target);
+        final Window window = getFrame();
+        return window != null && window.equals(target);
     }
 
     /**
