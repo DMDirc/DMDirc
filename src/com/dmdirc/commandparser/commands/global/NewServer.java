@@ -183,14 +183,13 @@ public final class NewServer extends GlobalCommand {
             }
 
             if (port <= 0 || port > 65535) {
-                if (origin != null) {
-                    if (!isSilent) {
-                        origin.addLine(FORMAT_ERROR, "Port must be between 1 and 65535");
-                    }
-                } else {
+                if (origin == null) {
                     Logger.userError(ErrorLevel.LOW, "Port must be between 1 " +
                             "and 65535 in newserver command");
+                } else if (!isSilent) {
+                    origin.addLine(FORMAT_ERROR, "Port must be between 1 and 65535");
                 }
+
                 return null;
             }
         } else {
@@ -205,7 +204,13 @@ public final class NewServer extends GlobalCommand {
         try {
             return new URI("irc" + (ssl ? "s" : ""), pass, host, port, null, null, null);
         } catch (URISyntaxException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create URI", ex);
+            if (origin == null) {
+                Logger.userError(ErrorLevel.LOW, "Invalid address provided to "
+                        + "newserver command. Host: " + host + ", Port: " + port, ex);
+            } else if (!isSilent) {
+                origin.addLine(FORMAT_ERROR, "Invalid address specified.");
+            }
+
             return null;
         }
     }
