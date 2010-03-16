@@ -75,6 +75,10 @@ public class ActionComponentChain implements ActionComponent {
         Object res = argument;
         
         for (ActionComponent component : components) {
+            if (res == null) {
+                return null;
+            }
+            
             res = component.get(res);
         }
         
