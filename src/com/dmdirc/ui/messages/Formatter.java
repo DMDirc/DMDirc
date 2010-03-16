@@ -82,6 +82,9 @@ public final class Formatter {
             } catch (MissingFormatArgumentException ex) {
                 return "<Invalid format string for message type " + messageType
                         + "; Error: Missing format argument: " + ex.getMessage() + ">";
+            } catch (NumberFormatException ex) {
+                return "<Invalid format string for message type " + messageType
+                        + "; Error: Invalid number conversion: " + ex.getMessage() + ">";
             }
         }
     }
