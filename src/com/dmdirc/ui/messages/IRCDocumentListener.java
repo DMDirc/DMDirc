@@ -49,9 +49,10 @@ public interface IRCDocumentListener extends EventListener {
     /**
      * The textpane has been trimmed to a new size.
      *
-     * @param numLines New size
+     * @param newSize New number of lines
+     * @param numTrimmed Number of lines trimmed
      */
-    void trimmed(final int numLines);
+    void trimmed(int newSize, int numTrimmed);
     
     /**
      * The textpane has been cleared.
