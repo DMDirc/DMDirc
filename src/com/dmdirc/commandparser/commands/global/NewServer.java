@@ -26,9 +26,13 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,7 +44,7 @@ import java.util.regex.Pattern;
  * 
  * @author chris
  */
-public final class NewServer extends GlobalCommand {
+public final class NewServer extends GlobalCommand implements IntelligentCommand {
 
     /**
      * Creates a new instance of NewServer.
@@ -215,21 +219,36 @@ public final class NewServer extends GlobalCommand {
         }
     }
 
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "newserver";
     }
 
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
         return true;
     }
 
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "newserver <host[:[+]port]> [password] - connect to a new server";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg,
+            final IntelligentCommandContext context) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+
+        if (arg == 0) {
+            for (Service parserType : PluginManager.getPluginManager().getServicesByType("parser")) {
+                res.add(parserType.getName()+"://");
+            }
+        }
+        res.excludeAll();
+        return res;
     }
 }
