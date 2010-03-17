@@ -1,0 +1,353 @@
+/*
+ * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.ui.messages;
+
+import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.RollingList;
+
+import java.awt.Font;
+import java.io.Serializable;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.UIManager;
+
+/**
+ * Data contained in a TextPane.
+ */
+public final class IRCDocument implements Serializable, ConfigChangeListener {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 4;
+    /** List of lines of text. */
+    private final List<Line> lines;
+    /** Listener list. */
+    private final ListenerList listeners;
+    /** Cached lines. */
+    private transient RollingList<Line> cachedLines;
+    /** Cached attributed strings. */
+    private transient RollingList<AttributedString> cachedStrings;
+    /** Container that owns this document. */
+    private final FrameContainer container;
+    /** Font size. */
+    private int fontSize;
+    /** Font name. */
+    private String fontName;
+
+    /** 
+     * Creates a new instance of IRCDocument.
+     * 
+     * @param container The container that owns this document
+     * @since 0.6.3
+     */
+    public IRCDocument(final FrameContainer container) {
+        this.container = container;
+
+        lines = new ArrayList<Line>();
+        listeners = new ListenerList();
+
+        cachedLines = new RollingList<Line>(50);
+        cachedStrings = new RollingList<AttributedString>(50);
+
+        container.getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
+        container.getConfigManager().addChangeListener("ui", "textPaneFontName", this);
+
+        setCachedSettings();
+    }
+
+    /**
+     * Returns the number of lines in this document.
+     *
+     * @return Number of lines
+     */
+    public int getNumLines() {
+        synchronized (lines) {
+            return lines.size();
+        }
+    }
+
+    /**
+     * Returns the Line at the specified number.
+     *
+     * @param lineNumber Line number to retrieve
+     *
+     * @return Line at the specified number or null
+     */
+    public Line getLine(final int lineNumber) {
+        synchronized (lines) {
+            return lines.get(lineNumber);
+        }
+    }
+
+    /**
+     * Adds the stylised string to the canvas.
+     *
+     * @param text stylised string to add to the text
+     */
+    public void addText(final String[] text) {
+        synchronized (lines) {
+            lines.add(new Line(container.getStyliser(), text, fontSize, fontName));
+            fireLineAdded(lines.indexOf(text));
+        }
+    }
+
+    /**
+     * Adds the stylised string to the canvas.
+     *
+     * @param text stylised string to add to the text
+     * @param lineHeight Line height for the new line of text
+     */
+    public void addText(final String[] text, final int lineHeight) {
+        synchronized (lines) {
+            lines.add(new Line(container.getStyliser(), text, lineHeight, fontName));
+            fireLineAdded(lines.indexOf(text));
+        }
+    }
+
+    /**
+     * Adds the stylised string to the canvas.
+     *
+     * @param text stylised string to add to the text
+     */
+    public void addText(final List<String[]> text) {
+        synchronized (lines) {
+            final int start = lines.size();
+            for (String[] string : text) {
+                lines.add(new Line(container.getStyliser(), string, fontSize, fontName));
+            }
+            fireLinesAdded(start, text.size());
+        }
+    }
+
+    /**
+     * Adds the stylised string to the canvas.
+     *
+     * @param text stylised string to add to the text
+     * @param lineHeights line heights for the new lines
+     */
+    public void addText(final List<String[]> text,
+            final List<Integer> lineHeights) {
+        synchronized (lines) {
+            final int start = lines.size();
+            for (int i = 0; i < text.size(); i++) {
+                final String[] string = text.get(i);
+                final int lineHeight = lineHeights.get(i);
+                lines.add(new Line(container.getStyliser(), string, lineHeight, fontName));
+            }
+            fireLinesAdded(start, text.size());
+        }
+    }
+
+    /**
+     * Trims the document to the specified number of lines.
+     *
+     * @param numLines Number of lines to trim the document to
+     */
+    public void trim(final int numLines) {
+        synchronized (lines) {
+            while (lines.size() > numLines) {
+                lines.remove(0);
+            }
+            fireTrimmed();
+        }
+    }
+
+    /** Clears all lines from the document. */
+    public void clear() {
+        synchronized (lines) {
+            lines.clear();
+            fireCleared();
+        }
+    }
+
+    /**
+     * Adds a IRCDocumentListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addIRCDocumentListener(final IRCDocumentListener listener) {
+        synchronized (listeners) {
+            if (listener == null) {
+                return;
+            }
+            listeners.add(IRCDocumentListener.class, listener);
+        }
+    }
+
+    /**
+     * Removes a IRCDocumentListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeIRCDocumentListener(final IRCDocumentListener listener) {
+        listeners.remove(IRCDocumentListener.class, listener);
+    }
+
+    /**
+     * Fires the line added method on all listeners.
+     *
+     * @param index Index of the added line
+     */
+    protected void fireLineAdded(final int index) {
+        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+            listener.lineAdded(index, lines.size());
+        }
+    }
+
+    /**
+     * Fires the lines added method on all listeners.
+     *
+     * @param index Index of the added line
+     * @param size Number of lines added
+     */
+    protected void fireLinesAdded(final int index, final int size) {
+        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+                listener.linesAdded(index, size, lines.size());
+        }
+    }
+
+    /**
+     * Fires the trimmed method on all listeners.
+     */
+    protected void fireTrimmed() {
+        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+            listener.trimmed(lines.size());
+        }
+    }
+
+    /**
+     * fires the cleared method on all listeners.
+     */
+    protected void fireCleared() {
+        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+            listener.cleared();
+        }
+    }
+
+    /**
+     * fires the need repaint method on all listeners.
+     */
+    protected void fireRepaintNeeded() {
+        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+            listener.repaintNeeded();
+        }
+    }
+
+    /**
+     * Returns an attributed character iterator for a particular line,
+     * utilising the document cache where possible.
+     *
+     * @param line Line to be styled
+     *
+     * @return Styled line
+     */
+    AttributedCharacterIterator getStyledLine(final Line line) {
+        synchronized (lines) {
+            AttributedString styledLine = null;
+            if (cachedLines.contains(line)) {
+                final int index = cachedLines.getList().indexOf(line);
+                styledLine = cachedStrings.get(index);
+            }
+
+            if (styledLine == null) {
+                styledLine = line.getStyled();
+                cachedLines.add(line);
+                cachedStrings.add(styledLine);
+            }
+
+            return styledLine.getIterator();
+        }
+    }
+
+    /**
+     * Returns an attributed string for a particular line, utilising the
+     * document cache where possible.
+     *
+     * @param line Line number to be styled
+     *
+     * @return Styled line
+     */
+    public AttributedCharacterIterator getStyledLine(final int line) {
+        return getStyledLine(getLine(line));
+    }
+
+    /**
+     * Returns the line height of the specified line
+     * 
+     * @param line Line
+     * 
+     * @return Line height
+     */
+    int getLineHeight(final Line line) {
+        return line.getFontSize();
+    }
+
+    /**
+     * Returns the line height of the specified line
+     * 
+     * @param line Line
+     * 
+     * @return Line height
+     */
+    public int getLineHeight(final int line) {
+        return getLineHeight(getLine(line));
+    }
+
+    private void setCachedSettings() {
+        final Font defaultFont = UIManager.getFont("TextPane.font");
+        if (container.getConfigManager().hasOptionString("ui", "textPaneFontName")) {
+            fontName = container.getConfigManager().getOption("ui", "textPaneFontName");
+        } else {
+            fontName = defaultFont.getName();
+        }
+        if (container.getConfigManager().hasOptionString("ui", "textPaneFontSize")) {
+            fontSize = container.getConfigManager().getOptionInt("ui", "textPaneFontSize");
+        } else {
+            fontSize = defaultFont.getSize();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        setCachedSettings();
+        cachedLines.clear();
+        cachedStrings.clear();
+        synchronized (lines) {
+            for (Line line : lines) {
+                line.setFontName(fontName);
+                line.setFontSize(fontSize);
+            }
+        }
+        fireRepaintNeeded();
+    }
+}
+
