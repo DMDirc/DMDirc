@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
@@ -29,11 +31,17 @@ import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.StringTranscoder;
 
 import java.awt.Color;
+import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The frame container implements basic methods that should be present in
@@ -61,6 +69,9 @@ public abstract class FrameContainer {
 
     /** The name of this container. */
     private String name;
+
+    /** The transcoder to use for this container. */
+    private StringTranscoder transcoder;
     
     /** The config manager for this container. */
     private final ConfigManager config;
@@ -84,6 +95,13 @@ public abstract class FrameContainer {
         this.name = name;
         this.styliser = new Styliser(this);
         this.document = new IRCDocument(this);
+
+        try {
+            transcoder = new StringTranscoder(Charset.forName(
+                    config.getOption("channel", "encoding")));
+        } catch (IllegalArgumentException ex) {
+            transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+        }
         
         setIcon(icon);
     }
@@ -367,9 +385,9 @@ public abstract class FrameContainer {
      * @param type The message type to use
      * @param args The message's arguments
      */
-    protected void addLine(final String type, final Object ... args) {
-        if (getFrame() != null) {
-            getFrame().addLine(type, args);
+    public void addLine(final String type, final Object ... args) {
+        if (type != null && !type.isEmpty()) {
+            addLine(Formatter.formatMessage(getConfigManager(), type, args), true);
         }
     }
 
@@ -380,9 +398,37 @@ public abstract class FrameContainer {
      * @param type The message type to use
      * @param args The message's arguments
      */
-    protected void addLine(final StringBuffer type, final Object ... args) {
-        if (getFrame() != null) {
-            getFrame().addLine(type, args);
+    public void addLine(final StringBuffer type, final Object ... args) {
+        if (type != null) {
+            addLine(type.toString(), args);
+        }
+    }
+
+    /**
+     * Adds the specified raw line to the window, without using a formatter.
+     *
+     * @param line The line to be added
+     * @param timestamp Whether or not to display the timestamp for this line
+     */
+    public void addLine(final String line, final boolean timestamp) {
+        final String encodedLine = transcoder.decode(line);
+        final List<String[]> lines = new LinkedList<String[]>();
+        for (final String myLine : encodedLine.split("\n")) {
+            if (timestamp) {
+                lines.add(new String[]{
+                    Formatter.formatMessage(getConfigManager(), "timestamp", new Date()),
+                    myLine,
+                });
+            } else {
+                lines.add(new String[]{
+                    myLine,
+                });
+            }
+
+            ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
+                    null, this, myLine);
+
+            document.addText(lines);
         }
     }
 

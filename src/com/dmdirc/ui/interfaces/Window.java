@@ -38,7 +38,9 @@ public interface Window {
      *
      * @param messageType The type of this message
      * @param args The arguments for the message
+     * @deprecated Use corresponding methods in {@link FrameContainer} instead
      */
+    @Deprecated
     void addLine(String messageType, Object... args);
     
     /**
@@ -47,7 +49,9 @@ public interface Window {
      *
      * @param messageType The type of this message
      * @param args The arguments for the message
+     * @deprecated Use corresponding methods in {@link FrameContainer} instead
      */
+    @Deprecated
     void addLine(StringBuffer messageType, Object... args);
     
     /**
@@ -55,7 +59,9 @@ public interface Window {
      * 
      * @param line The line to be added
      * @param timestamp Whether or not to display the timestamp for this line
+     * @deprecated Use corresponding methods in {@link FrameContainer} instead
      */
+    @Deprecated
     void addLine(final String line, final boolean timestamp);
     
     /**
