@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
 
@@ -51,6 +52,9 @@ public abstract class FrameContainer {
 
     /** A list of listeners for this containers's events. */
     protected final ListenerList listeners = new ListenerList();
+
+    /** The document used to store this container's content. */
+    protected final IRCDocument document;
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
@@ -79,6 +83,7 @@ public abstract class FrameContainer {
         this.config = config;
         this.name = name;
         this.styliser = new Styliser(this);
+        this.document = new IRCDocument(this);
         
         setIcon(icon);
     }
@@ -89,6 +94,16 @@ public abstract class FrameContainer {
      * @return The internal frame associated with this object
      */
     public abstract Window getFrame();
+
+    /**
+     * Retrieves the {@link IRCDocument} used to store this frame's content.
+     *
+     * @return This frame's document
+     * @since 0.6.4
+     */
+    public IRCDocument getDocument() {
+        return document;
+    }
 
     /** {@inheritDoc} */
     @Override
