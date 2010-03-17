@@ -21,7 +21,7 @@ concurrency:
   group=windowcolours
 
 condition 0:
-  argument=1
+  argument=2
   component=STRING_STRING
   target=$highlightregex
   comparison=STRING_REGEX
