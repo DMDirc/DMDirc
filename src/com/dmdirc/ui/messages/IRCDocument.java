@@ -39,7 +39,7 @@ import javax.swing.UIManager;
 /**
  * Data contained in a TextPane.
  */
-public final class IRCDocument implements Serializable, ConfigChangeListener {
+public class IRCDocument implements Serializable, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
