@@ -85,6 +85,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
                 this);
         container.getConfigManager().addChangeListener("ui", "textPaneFontName",
                 this);
+        container.getConfigManager().addChangeListener("ui", "frameBufferSize",
+                this);
 
         setCachedSettings();
     }
