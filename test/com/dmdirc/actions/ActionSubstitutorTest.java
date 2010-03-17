@@ -79,6 +79,7 @@ public class ActionSubstitutorTest {
         when(channel.getConfigManager()).thenReturn(manager);
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(server.getAwayMessage()).thenReturn("foo");
+        when(server.getProtocol()).thenReturn("$alpha");
 
         when(manager.getOptions(eq("actions"))).thenReturn(settings);
         for (Map.Entry<String, String> entry : settings.entrySet()) {
@@ -140,6 +141,7 @@ public class ActionSubstitutorTest {
             {"${2.STRING_FLUB.STRING_LENGTH}", "illegal_component"},
             {"${SERVER_NETWORKFOO}", "illegal_component"},
             {"${SERVER_NETWORK}", "not_connected"},
+            {"${SERVER_PROTOCOL}", "$alpha"},
             // ---- Escaping ---------------------------------------------------
             {"\\$1", "$1"},
             {"\\$alpha $alpha", "$alpha A"},
