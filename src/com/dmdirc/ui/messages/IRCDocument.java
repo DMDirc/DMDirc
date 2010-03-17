@@ -61,10 +61,12 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     private int fontSize;
     /** Font name. */
     private String fontName;
+    /** Frame buffer size. */
+    private Integer frameBufferSize;
 
-    /** 
+    /**
      * Creates a new instance of IRCDocument.
-     * 
+     *
      * @param container The container that owns this document
      * @since 0.6.3
      */
@@ -76,9 +78,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
 
         cachedLines = new RollingList<Line>(50);
         cachedStrings = new RollingList<AttributedString>(50);
+        frameBufferSize = container.getConfigManager().getOptionInt("ui",
+                "frameBufferSize");
 
-        container.getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
-        container.getConfigManager().addChangeListener("ui", "textPaneFontName", this);
+        container.getConfigManager().addChangeListener("ui", "textPaneFontSize",
+                this);
+        container.getConfigManager().addChangeListener("ui", "textPaneFontName",
+                this);
 
         setCachedSettings();
     }
@@ -173,10 +179,14 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     public void trim(final int numLines) {
         synchronized (lines) {
-            while (lines.size() > numLines) {
-                lines.remove(0);
+            if (frameBufferSize != null && frameBufferSize > 0) {
+                int i = 0;
+                while (lines.size() > numLines) {
+                    i++;
+                    lines.remove(0);
+                }
+                fireTrimmed(numLines, i);
             }
-            fireTrimmed();
         }
     }
 
@@ -220,6 +230,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
             listener.lineAdded(index, lines.size());
         }
+        trim(frameBufferSize);
     }
 
     /**
@@ -232,14 +243,18 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
                 listener.linesAdded(index, size, lines.size());
         }
+        trim(frameBufferSize);
     }
 
     /**
      * Fires the trimmed method on all listeners.
+     *
+     * @param newSize New document size
+     * @param trimedLines Number of trimmed lines
      */
-    protected void fireTrimmed() {
+    protected void fireTrimmed(final int newSize, final int trimedLines) {
         for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
-            listener.trimmed(lines.size());
+            listener.trimmed(newSize, trimedLines);
         }
     }
 
@@ -301,9 +316,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
 
     /**
      * Returns the line height of the specified line
-     * 
+     *
      * @param line Line
-     * 
+     *
      * @return Line height
      */
     int getLineHeight(final Line line) {
@@ -312,9 +327,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
 
     /**
      * Returns the line height of the specified line
-     * 
+     *
      * @param line Line
-     * 
+     *
      * @return Line height
      */
     public int getLineHeight(final int line) {
@@ -333,6 +348,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         } else {
             fontSize = defaultFont.getSize();
         }
+        frameBufferSize = container.getConfigManager().getOptionInt("ui",
+                "frameBufferSize");
     }
 
     /** {@inheritDoc} */
