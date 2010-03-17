@@ -1161,7 +1161,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             activeFrame = this;
         }
 
-        activeFrame.getFrame().addLine(messageType, args);
+        activeFrame.addLine(messageType, args);
     }
 
     /**
@@ -1172,11 +1172,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public void addLineToAll(final String messageType, final Object... args) {
         for (Channel channel : channels.values()) {
-            channel.getFrame().addLine(messageType, args);
+            channel.addLine(messageType, args);
         }
 
         for (Query query : queries.values()) {
-            query.getFrame().addLine(messageType, args);
+            query.addLine(messageType, args);
         }
 
         addLine(messageType, args);
