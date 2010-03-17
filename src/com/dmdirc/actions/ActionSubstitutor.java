@@ -247,7 +247,7 @@ public class ActionSubstitutor {
             try {
                 final ActionComponentChain chain = new ActionComponentChain(
                         type.getType().getArgTypes()[argument], compMatcher.group(2));
-                return checkConnection(chain, args, args[argument]);
+                return escape(checkConnection(chain, args, args[argument]));
             } catch (IllegalArgumentException ex) {
                 return ERR_ILLEGAL_COMPONENT;
             }
@@ -266,7 +266,7 @@ public class ActionSubstitutor {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
                         Server.class, substitution);
-                    return checkConnection(chain, args, server);
+                    return escape(checkConnection(chain, args, server));
                 } catch (IllegalArgumentException ex) {
                     return ERR_ILLEGAL_COMPONENT;
                 }
@@ -320,6 +320,19 @@ public class ActionSubstitutor {
         }
 
         return IdentityManager.getGlobalConfig();
+    }
+
+    /**
+     * Escapes all special characters in the specified input. This will result
+     * in the input being treated as a plain string when passed through the
+     * substitutor (i.e., no substitutions will occur).
+     *
+     * @param input The string to be escaped
+     * @return An escaped version of the specified string
+     * @since 0.6.4
+     */
+    protected static String escape(final String input) {
+        return input.replace("\\", "\\\\").replace("$", "\\$");
     }
     
 }
