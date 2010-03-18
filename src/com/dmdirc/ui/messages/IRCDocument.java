@@ -187,7 +187,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
                     i++;
                     lines.remove(0);
                 }
-                fireTrimmed(numLines, i);
+                if (i > 0) {
+                    fireTrimmed(numLines, i);
+                }
             }
         }
     }
