@@ -160,7 +160,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         final ClientInfo me = server.getParser().getLocalClient();
         final String[] details = getDetails(channelInfo.getChannelClient(me), showColours);
 
-        for (String part : splitLine(window.getTranscoder().encode(line))) {
+        for (String part : splitLine(getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
                 final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
@@ -205,9 +205,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                     this, channelInfo.getChannelClient(me), action);
 
             addLine(buff, details[0], details[1], details[2], details[3],
-                    window.getTranscoder().encode(action), channelInfo);
+                    getTranscoder().encode(action), channelInfo);
 
-            channelInfo.sendAction(window.getTranscoder().encode(action));
+            channelInfo.sendAction(getTranscoder().encode(action));
         }
     }
 

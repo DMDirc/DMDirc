@@ -81,7 +81,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.nickname = server.getParser().parseHostmask(host)[0];
 
         window = Main.getUI().getQuery(this);
-        WindowManager.addWindow(server.getFrame(), window);
+        WindowManager.addWindow(server, this);
 
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
 
@@ -335,7 +335,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

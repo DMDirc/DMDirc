@@ -25,6 +25,7 @@ package com.dmdirc.ui.interfaces;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.ui.messages.IRCDocument;
 
 /**
  * The Window interface specifies common methods that should be implemented
@@ -66,7 +67,10 @@ public interface Window {
     
     /**
      * Clears the main text area of the command window.
+     *
+     * @deprecated Call {@link IRCDocument#clear()} via {@link FrameContainer#getDocument()}
      */
+    @Deprecated
     void clear();
     
     /**
@@ -154,7 +158,9 @@ public interface Window {
      * Returns the transcoder that is being used by the UI.
      * 
      * @return This window's transcoder
+     * @deprecated Use {@link FrameContainer#getTranscoder()} instead
      */
+    @Deprecated
     StringTranscoder getTranscoder();
     
     /** Closes this window. */

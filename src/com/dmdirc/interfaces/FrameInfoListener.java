@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.FrameContainer;
 
 import java.util.EventListener;
 
@@ -41,7 +41,7 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose icon changed
      * @param icon The new icon for the window
      */
-    void iconChanged(final Window window, final String icon);
+    void iconChanged(final FrameContainer window, final String icon);
 
     /**
      * Called when a window's name is changed.
@@ -49,6 +49,6 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose name changed
      * @param name The new name for the window
      */
-    void nameChanged(final Window window, final String name);
+    void nameChanged(final FrameContainer window, final String name);
 
 }

@@ -33,11 +33,10 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameListener;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.util.MapList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * The WindowManager maintains a list of all open windows, and their
@@ -50,10 +49,6 @@ public class WindowManager {
     /** A list of root windows. */
     private final static List<FrameContainer> rootWindows
             = new ArrayList<FrameContainer>();
-
-    /** A map of parent windows to their children. */
-    private final static MapList<FrameContainer, FrameContainer> childWindows
-            = new MapList<FrameContainer, FrameContainer>();
     
     /** A list of frame listeners. */
     private final static List<FrameListener> frameListeners
@@ -142,7 +137,6 @@ public class WindowManager {
         Logger.assertTrue(!rootWindows.contains(window));
 
         rootWindows.add(window);
-        childWindows.add(window);
         
         window.addSelectionListener(selectionListener);
 
@@ -185,18 +179,13 @@ public class WindowManager {
      * @since 0.6.4
      */
     @Precondition({
-        "The specified Windows are not null",
-        "The parent Window has already been added",
-        "The child Window has not already been added"
+        "The specified Windows are not null"
     })
     public static void addWindow(final FrameContainer parent, final FrameContainer child) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(child != null);
-        Logger.assertTrue(childWindows.containsKey(parent));
-        Logger.assertTrue(!childWindows.containsKey(child));
 
-        childWindows.add(parent, child);
-        childWindows.add(child);
+        parent.addChild(child);
         
         child.addSelectionListener(selectionListener);
 
@@ -264,12 +253,8 @@ public class WindowManager {
     @Precondition("The specified Window is not null")
     public static void removeWindow(final FrameContainer window, final boolean canWait) {
         Logger.assertTrue(window != null);
-        
-        if (!childWindows.containsKey(window)) {
-            return;
-        }
 
-        if (childWindows.get(window) != null && !childWindows.get(window).isEmpty()) {
+        if (!window.getChildren().isEmpty()) {
             if (!canWait) {
                 new Thread(new Runnable() {
                     /** {@inheritDoc} */
@@ -281,23 +266,13 @@ public class WindowManager {
                 return;
             }
 
-            for (FrameContainer child : new ArrayList<FrameContainer>(childWindows.get(window))) {
+            for (FrameContainer child : window.getChildren()) {
                 child.close();
             }
 
-            try {
-                while (!childWindows.get(window).isEmpty()) {
-                    synchronized (childWindows) {
-                        childWindows.wait();
-                    }
-                }
-            } catch (InterruptedException ex) {
-                // Ignore it
+            while (!window.getChildren().isEmpty()) {
+                Thread.yield();
             }
-        }
-
-        synchronized (childWindows) {
-            childWindows.remove(window);
         }
 
         if (rootWindows.contains(window)) {
@@ -310,8 +285,8 @@ public class WindowManager {
                 fireSelectionChanged(null);
             }
         } else {
-            final FrameContainer parent = getParent(window);
-            fireDeleteWindow(getParent(window), window);
+            final FrameContainer parent = window.getParent();
+            fireDeleteWindow(parent, window);
 
             if (parent == null) {
                 Logger.appError(ErrorLevel.MEDIUM, "Invalid window removed",
@@ -320,10 +295,7 @@ public class WindowManager {
                         " " + window.getName()));
                 return;
             } else {
-                synchronized (childWindows) {
-                    childWindows.remove(parent, window);
-                    childWindows.notifyAll();
-                }
+                parent.removeChild(window);
             }
         }
         
@@ -361,9 +333,8 @@ public class WindowManager {
     public static FrameContainer findCustomWindow(final FrameContainer parent, final String name) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(name != null);
-        Logger.assertTrue(childWindows.containsKey(parent));
 
-        return findCustomWindow(childWindows.get(parent), name);
+        return findCustomWindow(parent.getChildren(), name);
     }
 
     /**
@@ -374,7 +345,7 @@ public class WindowManager {
      * @param name The name of the custom window to search for
      * @return The custom window if found, or null otherwise
      */
-    private static FrameContainer findCustomWindow(final List<FrameContainer> windows,
+    private static FrameContainer findCustomWindow(final Collection<FrameContainer> windows,
             final String name) {
         for (FrameContainer window : windows) {
             if (window instanceof CustomWindow
@@ -393,17 +364,11 @@ public class WindowManager {
      * 
      * @param window The window whose parent is being sought
      * @return The parent of the specified window, or null if not found
+     * @deprecated Call {@link FrameContainer#getParent()} directly
      */
+    @Deprecated
     public static FrameContainer getParent(final FrameContainer window) {
-        synchronized (childWindows) {
-            for (Entry<FrameContainer, List<FrameContainer>> entry : childWindows.entrySet()) {
-                if (entry.getValue().contains(window)) {
-                    return entry.getKey();
-                }
-            }
-        }
-
-        return null;
+        return window.getParent();
     }
     
     /**
@@ -442,10 +407,11 @@ public class WindowManager {
      * @since 0.6
      * @param window The window whose children are being requested
      * @return An array of all known child windows.
+     * @deprecated Call {@link FrameContainer#getChildren()} directly
      */
+    @Deprecated
     public static FrameContainer[] getChildren(final FrameContainer window) {
-        final List<FrameContainer> children = childWindows.get(window);
-        return children.toArray(new FrameContainer[children.size()]);
+        return window.getChildren().toArray(new FrameContainer[window.getChildren().size()]);
     }
     
     /**

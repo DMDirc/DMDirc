@@ -58,7 +58,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
         this.server = newServer;
 
         window = Main.getUI().getInputWindow(this, commandParser);
-        WindowManager.addWindow(server.getFrame(), window);
+        WindowManager.addWindow(server, this);
         window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());
 
@@ -95,7 +95,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
         server.delRaw();
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */
