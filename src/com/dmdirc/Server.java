@@ -182,7 +182,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         window = Main.getUI().getServer(this);
 
         ServerManager.getServerManager().registerServer(this);
-        WindowManager.addWindow(window);
+        WindowManager.addWindow(this);
 
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
@@ -1136,7 +1136,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         ServerManager.getServerManager().unregisterServer(this);
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

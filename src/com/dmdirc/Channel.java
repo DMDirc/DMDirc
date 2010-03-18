@@ -119,7 +119,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
 
         window = Main.getUI().getChannel(Channel.this);
-        WindowManager.addWindow(server.getFrame(), window);
+        WindowManager.addWindow(server, this);
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         eventHandler = new ChannelEventHandler(this);
@@ -371,7 +371,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         server.delChannel(channelInfo.getName());
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

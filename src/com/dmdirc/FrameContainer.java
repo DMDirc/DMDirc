@@ -263,9 +263,9 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final Window activeWindow = WindowManager.getActiveWindow();
+        final FrameContainer activeWindow = WindowManager.getActiveWindow();
 
-        if (activeWindow != null && !activeWindow.equals(getFrame())
+        if (activeWindow != null && !activeWindow.equals(this)
                 && !colour.equals(notification)) {
             notification = colour;
 
@@ -359,7 +359,7 @@ public abstract class FrameContainer {
 
         synchronized (listeners) {
             for (SelectionListener listener : listeners.get(SelectionListener.class)) {
-                listener.selectionChanged(getFrame());
+                listener.selectionChanged(this);
             }
         }
 

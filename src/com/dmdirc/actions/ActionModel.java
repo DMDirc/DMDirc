@@ -132,7 +132,7 @@ public class ActionModel {
             return true;
         }
 
-        final Window active = WindowManager.getActiveWindow();
+        final Window active = WindowManager.getActiveWindow().getFrame();
         InputWindow cw = null;
         CommandParser cp = null;
 
