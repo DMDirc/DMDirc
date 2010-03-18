@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -31,7 +32,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,14 +59,12 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             final CommandArguments args) {
         if (args.getArguments().length > 0
                 && args.getArguments()[0].equalsIgnoreCase("--active")) {
-            final Window frame = WindowManager.getActiveWindow();
-            if (frame instanceof InputWindow) {
-                ((InputWindow) frame).addLine(FORMAT_OUTPUT, args.getArgumentsAsString(1));
-            }
+            final FrameContainer frame = WindowManager.getActiveWindow();
+            frame.addLine(FORMAT_OUTPUT, args.getArgumentsAsString(1));
         } else if (args.getArguments().length > 1
                 && args.getArguments()[0].equalsIgnoreCase("--target")) {
-            Window frame = null;
-            Window target = origin;
+            FrameContainer frame = null;
+            FrameContainer target = origin.getContainer();
 
             while (frame == null && target != null) {
                 frame = WindowManager.findCustomWindow(target, args.getArguments()[1]);
@@ -119,25 +117,25 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
 
-            final List<Window> windowList = new ArrayList<Window>();
+            final List<FrameContainer> windowList = new ArrayList<FrameContainer>();
             final Server currentServer = context.getWindow().getContainer()
                     .getServer();
 
             //Active window's Children
             windowList.addAll(Arrays.asList(WindowManager.getChildren(context
-                    .getWindow())));
+                    .getWindow().getContainer())));
 
             //Children of Current Window's server
             if (currentServer != null) {
                 windowList.addAll(Arrays.asList(WindowManager.getChildren(
-                        currentServer.getFrame())));
+                        currentServer)));
             }
 
             //Global Windows
             windowList.addAll(Arrays.asList(WindowManager.getRootWindows()));
-            for (Window customWindow : windowList) {
-                if (customWindow.getContainer() instanceof CustomWindow) {
-                    targets.add(customWindow.getTitle());
+            for (FrameContainer customWindow : windowList) {
+                if (customWindow instanceof CustomWindow) {
+                    targets.add(customWindow.getName());
                 }
             }
 

@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.FrameContainer;
 
 import java.util.EventListener;
 
@@ -39,6 +39,6 @@ public interface SelectionListener extends EventListener {
      *
      * @param window The window that's now selected
      */
-    void selectionChanged(final Window window);
+    void selectionChanged(final FrameContainer window);
 
 }
