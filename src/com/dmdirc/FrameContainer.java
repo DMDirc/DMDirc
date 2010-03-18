@@ -427,9 +427,9 @@ public abstract class FrameContainer {
 
             ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
                     null, this, myLine);
-
-            document.addText(lines);
         }
+
+        document.addText(lines);
     }
 
     /**
