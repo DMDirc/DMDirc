@@ -29,6 +29,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,23 +274,22 @@ public abstract class WritableFrameContainer extends FrameContainer {
             WritableFrameContainer best = this;
             long besttime = 0;
 
-            final List<WritableFrameContainer> containers
-                    = new ArrayList<WritableFrameContainer>();
+            final List<FrameContainer> containers = new ArrayList<FrameContainer>();
             
             containers.add(getServer());
             containers.addAll(getServer().getChildren());
 
-            for (WritableFrameContainer container : containers) {
-                final InputWindow window = container.getFrame();
+            for (FrameContainer container : containers) {
+                final Window window = container.getFrame();
 
-                if (window == null) {
+                if (window == null || !(window instanceof InputWindow)) {
                     continue;
                 }
 
-                final long time = window.getCommandParser().getCommandTime(command);
+                final long time = ((InputWindow) window).getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
-                    best = container;
+                    best = (WritableFrameContainer) container;
                 }
             }
 

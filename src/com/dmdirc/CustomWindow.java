@@ -78,7 +78,7 @@ public class CustomWindow extends FrameContainer {
         window = Main.getUI().getWindow(this);
         window.setTitle(title);
 
-        WindowManager.addWindow(window);
+        WindowManager.addWindow(this);
 
         window.open();
     }
@@ -101,7 +101,7 @@ public class CustomWindow extends FrameContainer {
         // 5: Inform any parents that the window is closing
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

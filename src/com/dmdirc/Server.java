@@ -673,24 +673,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
-     * Retrieves a list of all children of this server instance.
-     *
-     * @return A list of this server's children
-     */
-    public List<WritableFrameContainer> getChildren() {
-        final List<WritableFrameContainer> res = new ArrayList<WritableFrameContainer>();
-
-        if (raw != null) {
-            res.add(raw);
-        }
-
-        res.addAll(channels.values());
-        res.addAll(queries.values());
-
-        return res;
-    }
-
-    /**
      * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
@@ -896,7 +878,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             synchronized (parserLock) {
                 if (parser != null && !line.isEmpty()
                         && myState.getState() == ServerState.CONNECTED) {
-                    parser.sendRawMessage(window.getTranscoder().encode(line));
+                    parser.sendRawMessage(getTranscoder().encode(line));
                 }
             }
         }

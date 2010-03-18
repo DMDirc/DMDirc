@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.FrameContainer;
 
 /**
  * An adapter for {@link FrameInfoListener}.
@@ -33,13 +33,13 @@ public class FrameInfoAdapter implements FrameInfoListener {
 
     /** {@inheritDoc} */
     @Override
-    public void iconChanged(final Window window, final String icon) {
+    public void iconChanged(final FrameContainer window, final String icon) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void nameChanged(final Window window, final String name) {
+    public void nameChanged(final FrameContainer window, final String name) {
         // Do nothing
     }
 

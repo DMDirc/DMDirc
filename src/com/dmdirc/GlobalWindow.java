@@ -64,7 +64,7 @@ public class GlobalWindow extends WritableFrameContainer {
         window.setTitle("(Global)");
         window.getInputHandler().setTabCompleter(tabCompleter);
 
-        WindowManager.addWindow(window);
+        WindowManager.addWindow(this);
 
         window.open();
     }
@@ -87,7 +87,7 @@ public class GlobalWindow extends WritableFrameContainer {
         // 5: Inform any parents that the window is closing
 
         // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

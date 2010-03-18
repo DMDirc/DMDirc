@@ -39,6 +39,9 @@ import com.dmdirc.util.StringTranscoder;
 
 import java.awt.Color;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +67,12 @@ public abstract class FrameContainer {
     /** The document used to store this container's content. */
     protected final IRCDocument document;
 
+    /** The children of this frame. */
+    protected final Collection<FrameContainer> children = new ArrayList<FrameContainer>();
+
+    /** The parent of this frame. */
+    protected FrameContainer parent;
+
     /** The name of the icon being used for this container's frame. */
     private String icon;
 
@@ -71,7 +80,7 @@ public abstract class FrameContainer {
     private String name;
 
     /** The transcoder to use for this container. */
-    private StringTranscoder transcoder;
+    private final StringTranscoder transcoder;
     
     /** The config manager for this container. */
     private final ConfigManager config;
@@ -96,12 +105,16 @@ public abstract class FrameContainer {
         this.styliser = new Styliser(this);
         this.document = new IRCDocument(this);
 
+        // Can't assign directly to transcoder as it's final, and Java doesn't
+        // like the two paths in the try/catch.
+        StringTranscoder tempTranscoder;
         try {
-            transcoder = new StringTranscoder(Charset.forName(
+            tempTranscoder = new StringTranscoder(Charset.forName(
                     config.getOption("channel", "encoding")));
         } catch (IllegalArgumentException ex) {
-            transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+            tempTranscoder = new StringTranscoder(Charset.forName("UTF-8"));
         }
+        transcoder = tempTranscoder;
         
         setIcon(icon);
     }
@@ -114,6 +127,63 @@ public abstract class FrameContainer {
     public abstract Window getFrame();
 
     /**
+     * Returns a collection of direct children of this frame.
+     *
+     * @return This frame's children
+     * @since 0.6.4
+     */
+    public Collection<FrameContainer> getChildren() {
+        return Collections.unmodifiableCollection(children);
+    }
+
+    /**
+     * Adds a new child window to this frame.
+     *
+     * @param child The window to be added
+     * @since 0.6.4
+     */
+    public void addChild(final FrameContainer child) {
+        children.add(child);
+        child.setParent(this);
+    }
+
+    /**
+     * Removes a child window from this frame.
+     *
+     * @param child The window to be removed
+     * @since 0.6.4
+     */
+    public void removeChild(final FrameContainer child) {
+        children.remove(child);
+    }
+
+    /**
+     * Sets the parent of this container to the one specified. If this
+     * container already had a parent, it will deregister itself with the
+     * old parent.
+     *
+     * @param parent The new parent for this container
+     * @since 0.6.4
+     */
+    public synchronized void setParent(final FrameContainer parent) {
+        if (this.parent != null && !parent.equals(this.parent)) {
+            this.parent.removeChild(this);
+        }
+
+        this.parent = parent;
+    }
+
+    /**
+     * Retrieves the parent of this container, if there is one.
+     *
+     * @return This container's parent, or null if it is a top level window.
+     * @since 0.6.4
+     */
+    public FrameContainer getParent() {
+        return parent;
+    }
+
+    /**
      * Retrieves the {@link IRCDocument} used to store this frame's content.
      *
      * @return This frame's document
@@ -121,6 +191,17 @@ public abstract class FrameContainer {
      */
     public IRCDocument getDocument() {
         return document;
+    }
+
+    /**
+     * Retrieves the {@link StringTranscoder} used to transcode this frame's
+     * text.
+     *
+     * @return This frame's transcoder
+     * @since 0.6.4
+     */
+    public StringTranscoder getTranscoder() {
+        return transcoder;
     }
 
     /** {@inheritDoc} */
@@ -150,7 +231,7 @@ public abstract class FrameContainer {
 
         synchronized (listeners) {
             for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.nameChanged(getFrame(), name);
+                listener.nameChanged(this, name);
             }
         }
     }
@@ -193,7 +274,7 @@ public abstract class FrameContainer {
     private void iconUpdated() {
         synchronized (listeners) {
             for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.iconChanged(getFrame(), icon);
+                listener.iconChanged(this, icon);
             }
         }
     }
@@ -252,7 +333,7 @@ public abstract class FrameContainer {
 
         synchronized (listeners) {
             for (NotificationListener listener : listeners.get(NotificationListener.class)) {
-                listener.notificationCleared(getFrame());
+                listener.notificationCleared(this);
             }
         }
     }
@@ -271,7 +352,7 @@ public abstract class FrameContainer {
 
             synchronized (listeners) {
                 for (NotificationListener listener : listeners.get(NotificationListener.class)) {
-                    listener.notificationSet(getFrame(), colour);
+                    listener.notificationSet(this, colour);
                 }
             }
         }
