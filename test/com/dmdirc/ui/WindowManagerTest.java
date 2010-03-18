@@ -131,10 +131,10 @@ public class WindowManagerTest {
         WindowManager.addWindow(parent1, child1);
         WindowManager.addWindow(parent2, child2);
         
-        assertSame(parent1, WindowManager.getParent(child1));
-        assertSame(parent2, WindowManager.getParent(child2));
-        assertNull(WindowManager.getParent(parent1));
-        assertNull(WindowManager.getParent(parent2));
+        assertSame(parent1.getContainer(), WindowManager.getParent(child1.getContainer()));
+        assertSame(parent2.getContainer(), WindowManager.getParent(child2.getContainer()));
+        assertNull(WindowManager.getParent(parent1.getContainer()));
+        assertNull(WindowManager.getParent(parent2.getContainer()));
     }
     
 }
