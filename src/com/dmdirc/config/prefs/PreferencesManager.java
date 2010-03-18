@@ -448,9 +448,31 @@ public class PreferencesManager {
                 "Show nickname colours (if set) in channel nicklists"));
 
         addThemesCategory(category);
-        addCategory(category);
+        addStyleSubCategory(category);
+        addCategory(category.setInlineAfter());
     }
 
+    /**
+     * Creates the Style subcategory in "GUI".
+     * @since 0.6.4
+     */
+    private void addStyleSubCategory(PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("Link Styles" +
+                " and colours", "");
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "stylelinks", "Style hyperlinks", "Style hyperlinks in text areas"));
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "ui", "linkcolour", "Hyperlink colour", "Default colour to use " +
+                "for hyperlinks in the textpane"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "stylechannels", "Style channel links", "Styles channel " +
+                "links in text areas"));
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "ui", "channelcolour", "Channel link colour", "Default colour to use " +
+                "for channel links in the textpane"));
+
+        parent.addSubCategory(category.setInline());
+    }
     /**
      * Creates and adds the "Themes" category.
      *
