@@ -29,7 +29,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -254,12 +253,11 @@ public abstract class WritableFrameContainer extends FrameContainer {
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
-            Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(),
-                    windowName);
+            FrameContainer targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
 
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName,
-                        getServer().getFrame()).getFrame();
+                        getServer().getFrame());
             }
 
             targetWindow.addLine(format, args);

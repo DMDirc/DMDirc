@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * Opens a new window.
@@ -51,7 +51,7 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
     public void execute(final InputWindow origin, final boolean isSilent,
             final CommandArguments args) {
         int start = 0;
-        Window parent = null;
+        FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             if (origin.getContainer().getServer() == null) {
@@ -60,10 +60,10 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
                 return;
             }
 
-            parent = origin.getContainer().getServer().getFrame();
+            parent = origin.getContainer().getServer();
             start = 1;
         } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
-            parent = origin;
+            parent = origin.getContainer();
             start = 1;
         }
 
@@ -71,7 +71,7 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
             showUsage(origin, isSilent, "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
-            Window window;
+            FrameContainer window;
             
             if (parent == null) {
                 window = WindowManager.findCustomWindow(args.getArguments()[start]);
@@ -86,7 +86,7 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
                 if (parent == null) {
                     new CustomWindow(args.getArguments()[start], title);
                 } else {
-                    new CustomWindow(args.getArguments()[start], title, parent);
+                    new CustomWindow(args.getArguments()[start], title, parent.getFrame());
                 }
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR,
