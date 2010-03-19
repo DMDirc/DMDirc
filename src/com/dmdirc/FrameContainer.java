@@ -79,6 +79,9 @@ public abstract class FrameContainer {
     /** The name of this container. */
     private String name;
 
+    /** The title of this container. */
+    private String title;
+
     /** The transcoder to use for this container. */
     private final StringTranscoder transcoder;
     
@@ -96,12 +99,15 @@ public abstract class FrameContainer {
      * 
      * @param icon The icon to use for this container
      * @param name The name of this container
+     * @param title The title of this container
      * @param config The config manager for this container
-     * @since 0.6.3m2
+     * @since 0.6.4
      */
-    public FrameContainer(final String icon, final String name, final ConfigManager config) {
+    public FrameContainer(final String icon, final String name,
+            final String title, final ConfigManager config) {
         this.config = config;
         this.name = name;
+        this.title = title;
         this.styliser = new Styliser(this);
         this.document = new IRCDocument(this);
 
@@ -232,6 +238,32 @@ public abstract class FrameContainer {
         synchronized (listeners) {
             for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
                 listener.nameChanged(this, name);
+            }
+        }
+    }
+
+    /**
+     * Retrieves the title which should be used by this container's windows.
+     *
+     * @return This container's title
+     * @since 0.6.4
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Changes the title of this container, and notifies any
+     * {@link FrameInfoListener}s of the change.
+     *
+     * @param title The new title for this frame.
+     */
+    public void setTitle(final String title) {
+        this.title = title;
+
+        synchronized (listeners) {
+            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+                listener.titleChanged(this, name);
             }
         }
     }

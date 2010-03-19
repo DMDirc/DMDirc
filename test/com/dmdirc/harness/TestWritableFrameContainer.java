@@ -35,7 +35,7 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength, final ConfigManager cm) {
-        super("raw", "Raw", cm);
+        super("raw", "Raw", "(Raw)", cm);
 
         this.lineLength = lineLength;
     }

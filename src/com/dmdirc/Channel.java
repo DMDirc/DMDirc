@@ -96,6 +96,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super("channel-inactive", newChannelInfo.getName(),
+                Styliser.stipControlCodes(newChannelInfo.getName()),
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()));
 
@@ -298,7 +299,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
 
-        window.setTitle(temp);
+        setTitle(temp);
     }
 
     /**
@@ -507,7 +508,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         res[3] = client.getClient().getHostname();
 
         if (showColours) {
-            final Map map = client.getMap();
+            final Map<?,?> map = client.getMap();
             String prefix = null;
             Color colour;
 

@@ -51,7 +51,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon", "Global", IdentityManager.getGlobalConfig());
+        super("icon", "Global", "(Global)", IdentityManager.getGlobalConfig());
 
         tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -61,7 +61,6 @@ public class GlobalWindow extends WritableFrameContainer {
 
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
 
-        window.setTitle("(Global)");
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         WindowManager.addWindow(this);

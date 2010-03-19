@@ -33,9 +33,6 @@ import com.dmdirc.ui.interfaces.Window;
  */
 public class CustomWindow extends FrameContainer {
 
-    /** This custom window's title. */
-    private final String title;
-
     /** The window used by this container. */
     private Window window;
 
@@ -51,13 +48,11 @@ public class CustomWindow extends FrameContainer {
      */
     public CustomWindow(final String name, final String title,
             final Window parent) {
-        super("custom", name, parent.getConfigManager());
+        super("custom", name, title, parent.getConfigManager());
 
-        this.title = title;
         this.parent = parent;
 
         window = Main.getUI().getWindow(this);
-        window.setTitle(title);
 
         WindowManager.addWindow(parent, window);
 
@@ -71,12 +66,9 @@ public class CustomWindow extends FrameContainer {
      * @param title The parent of this custom window
      */
     public CustomWindow(final String name, final String title) {
-        super("custom", name, IdentityManager.getGlobalConfig());
-
-        this.title = title;
+        super("custom", name, title, IdentityManager.getGlobalConfig());
 
         window = Main.getUI().getWindow(this);
-        window.setTitle(title);
 
         WindowManager.addWindow(this);
 
@@ -116,15 +108,6 @@ public class CustomWindow extends FrameContainer {
     @Override
     public Server getServer() {
         return parent == null ? null : parent.getContainer().getServer();
-    }
-
-    /**
-     * Retrieves this custom window's title.
-     *
-     * @return This custom window's title
-     */
-    public String getTitle() {
-        return title;
     }
 
 }
