@@ -23,6 +23,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -53,7 +54,7 @@ public class RawCommandParser extends ServerCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    protected void handleNonCommand(final InputWindow origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         server.getParser().sendRawMessage(line);
     }
 

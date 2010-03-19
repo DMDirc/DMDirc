@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageNoArgs() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/foo"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -48,7 +48,7 @@ public class SetNickColourTest {
     
     @Test
     public void testUsageNicklist() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/foo --nicklist"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -56,7 +56,7 @@ public class SetNickColourTest {
     
     @Test
     public void testUsageText() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/foo --text"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

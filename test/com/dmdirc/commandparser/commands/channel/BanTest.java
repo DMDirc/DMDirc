@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class BanTest {
 
     @Test
     public void testUsage() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/ban"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -33,7 +34,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The mode command allows the user to inspect and change channel modes.
@@ -52,7 +52,7 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         final ChannelInfo cChannel = channel.getChannelInfo();
 
@@ -65,7 +65,7 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             server.getParser().sendRawMessage("MODE " + channel);

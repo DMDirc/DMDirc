@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
@@ -32,7 +33,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The alias command allows users to create aliases on-the-fly.
@@ -53,7 +53,7 @@ public final class AliasCommand extends GlobalCommand implements
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
                         final CommandArguments args) {
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");

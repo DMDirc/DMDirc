@@ -331,7 +331,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             case KeyEvent.VK_ENTER:
                 if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
-                    commandParser.parseCommandCtrl(parentWindow, line);
+                    commandParser.parseCommandCtrl(parentWindow.getContainer(), line);
                     addToBuffer(line);
                 }
                 break;
@@ -498,7 +498,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             addToBuffer(thisBuffer.toString());
 
-            commandParser.parseCommand(parentWindow, thisBuffer.toString());
+            commandParser.parseCommand(parentWindow.getContainer(), thisBuffer.toString());
         }
         fireLineWrap(0);
         fireCommandPassed();

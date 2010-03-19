@@ -23,12 +23,13 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The input command allows you to maniplulate text in a windows inputField.
@@ -49,7 +50,7 @@ public class Input extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
 
         if (args.getArguments().length == 0) {
@@ -58,9 +59,11 @@ public class Input extends GlobalCommand implements IntelligentCommand {
             return;
         } else if (args.getArguments().length == 1
                 && "--clear".equals(args.getArgumentsAsString(0))) {
-            origin.getInputHandler().clearInputField();
+            ((WritableFrameContainer) origin).getFrame()
+                    .getInputHandler().clearInputField();
         } else {
-            origin.getInputHandler().addToInputField(args.getArgumentsAsString());
+            ((WritableFrameContainer) origin).getFrame()
+                    .getInputHandler().addToInputField(args.getArgumentsAsString());
         }
     }
 

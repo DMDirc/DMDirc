@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -51,7 +51,7 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "notify", "<colour>");
@@ -67,7 +67,7 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
         } else if (origin != null) {            
             // There's not much point echoing an error if the origin isn't
             // valid, as errors go to the origin!
-            origin.getContainer().sendNotification(colour);
+            origin.sendNotification(colour);
         }
     }
     

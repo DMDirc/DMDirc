@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The away command allows the user to set their away message.
@@ -47,7 +47,7 @@ public final class Away extends ServerCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         final String line = args.getArgumentsAsString();
 

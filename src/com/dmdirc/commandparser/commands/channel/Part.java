@@ -23,12 +23,12 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.CommandOptions;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The part command parts the current channel with a specified part message.
@@ -46,7 +46,7 @@ public final class Part extends ChannelCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         channel.part(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "partmessage"));

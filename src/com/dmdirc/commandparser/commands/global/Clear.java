@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The clear command clears the main text area of the current window.
@@ -47,9 +47,9 @@ public final class Clear extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent, 
+    public void execute(final FrameContainer origin, final boolean isSilent, 
             final CommandArguments args) {
-        origin.clear();
+        origin.getDocument().clear();
     }
     
     

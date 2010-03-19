@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -31,7 +32,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Sends a names request.
@@ -52,7 +52,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server, 
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel.getChannelInfo().getName());
     }
@@ -60,7 +60,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel);
     }    

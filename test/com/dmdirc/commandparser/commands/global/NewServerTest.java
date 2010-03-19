@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class NewServerTest {
 
     @Test
     public void testUsageNoArgs() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -48,7 +48,7 @@ public class NewServerTest {
     
     @Test
     public void testInvalidPort() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:abc"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -56,7 +56,7 @@ public class NewServerTest {
     
     @Test
     public void testOutOfRangePort1() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:0"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -64,7 +64,7 @@ public class NewServerTest {
     
     @Test
     public void testOutOfRangePort2() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:65537"));
         
         verify(tiw).addLine(eq("commandError"), anyString());

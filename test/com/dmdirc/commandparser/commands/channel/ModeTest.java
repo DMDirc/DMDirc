@@ -23,13 +23,13 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -66,7 +66,7 @@ public class ModeTest {
 
     @Test
     public void testWithoutArgs() {
-        final InputWindow origin = mock(InputWindow.class);
+        final FrameContainer origin = mock(FrameContainer.class);
         
         command.execute(origin, server, channel, false, new CommandArguments("/mode"));
 
@@ -75,7 +75,7 @@ public class ModeTest {
 
     @Test
     public void testWithArgs() {
-        final InputWindow origin = mock(InputWindow.class);
+        final FrameContainer origin = mock(FrameContainer.class);
 
         command.execute(origin, server, channel, false, new CommandArguments("/mode +hello -bye"));
 
@@ -84,7 +84,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithArgs() {
-        final InputWindow origin = mock(InputWindow.class);
+        final FrameContainer origin = mock(FrameContainer.class);
 
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode +hello -bye"));
@@ -94,7 +94,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithoutArgs() {
-        final InputWindow origin = mock(InputWindow.class);
+        final FrameContainer origin = mock(FrameContainer.class);
 
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode"));

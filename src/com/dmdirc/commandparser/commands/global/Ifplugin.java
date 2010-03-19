@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -31,7 +33,6 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The if plugin command allows the user to execute commands based on whether
@@ -52,7 +53,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length <= 1) {
             showUsage(origin, isSilent, "ifplugin", "<[!]plugin> <command>");
@@ -76,7 +77,8 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
                         args.getArgumentsAsString(1));
             } else {
-                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
+                ((WritableFrameContainer) origin).getFrame().getCommandParser()
+                        .parseCommand(origin, args.getArgumentsAsString(1));
             }
         }
     }

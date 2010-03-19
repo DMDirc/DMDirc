@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -45,7 +46,7 @@ public abstract class ChannelCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(InputWindow origin, Server server, Channel channel,
+    public abstract void execute(FrameContainer origin, Server server, Channel channel,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

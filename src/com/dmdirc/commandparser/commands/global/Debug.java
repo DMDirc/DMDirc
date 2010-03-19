@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
@@ -37,7 +38,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.updater.UpdateChecker;
 
@@ -64,7 +64,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "debug", "<debug command> [options]");
@@ -102,7 +102,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             Main.getUI().showMigrationWizard();
         } else if ("notify".equals(args.getArguments()[0])) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Current notification colour is: "
-                    + origin.getContainer().getNotification());
+                    + origin.getNotification());
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
@@ -142,12 +142,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doShowRaw(final InputWindow origin, final boolean isSilent) {
-        if (origin == null || origin.getContainer() == null
-                || origin.getContainer().getServer() == null) {
+    private void doShowRaw(final FrameContainer origin, final boolean isSilent) {
+        if (origin == null || origin.getServer() == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Cannot show raw window here.");
         } else {
-            origin.getContainer().getServer().addRaw();
+            origin.getServer().addRaw();
         }
     }
     
@@ -158,7 +157,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param args Arguments array for the command
      */
-    private void doConfigStats(final InputWindow origin, final boolean isSilent,
+    private void doConfigStats(final FrameContainer origin, final boolean isSilent,
             final String[] args) {
         int arg = -1;
         if (args.length == 2) {
@@ -192,7 +191,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param regex Regex to match options against
      */
-    private void doConfigStatsOption(final InputWindow origin,
+    private void doConfigStatsOption(final FrameContainer origin,
             final boolean isSilent, final String regex) {
         final SortedSet<Entry<String, Integer>> sortedStats = getSortedStats();
         boolean found = false;
@@ -216,7 +215,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param top Top number of entries to show
      */
-    private void doConfigStatsTop(final InputWindow origin,
+    private void doConfigStatsTop(final FrameContainer origin,
             final boolean isSilent, final int top) {
         final SortedSet<Entry<String, Integer>> sortedStats = getSortedStats();
         int i = 0;
@@ -238,7 +237,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param cutoff Cut off value for stats
      */
-    private void doConfigStatsCutOff(final InputWindow origin,
+    private void doConfigStatsCutOff(final FrameContainer origin,
             final boolean isSilent, final int cutoff) {
         final SortedSet<Entry<String, Integer>> sortedStats = getSortedStats();
         for (Map.Entry<String, Integer> entry : sortedStats) {
@@ -269,7 +268,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doMemInfo(final InputWindow origin, final boolean isSilent) {
+    private void doMemInfo(final FrameContainer origin, final boolean isSilent) {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Total Memory: "
                 + Runtime.getRuntime().totalMemory());
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Free Memory: "
@@ -284,7 +283,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doColourSpam(final InputWindow origin, final boolean isSilent) {
+    private void doColourSpam(final FrameContainer origin, final boolean isSilent) {
         for (int i = 0; i < 100; i++) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, ((char) 3) + "5Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
@@ -300,7 +299,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doGarbage(final InputWindow origin, final boolean isSilent) {
+    private void doGarbage(final FrameContainer origin, final boolean isSilent) {
         System.gc();
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Invoked garbage collector.");
     }
@@ -311,7 +310,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doConfigInfo(final InputWindow origin, final boolean isSilent) {
+    private void doConfigInfo(final FrameContainer origin, final boolean isSilent) {
         for (Identity source : origin.getConfigManager().getSources()) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - "
                     + source + "(" + source.getTarget().getOrder() + ")");
@@ -324,7 +323,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doGlobalConfigInfo(final InputWindow origin, final boolean isSilent) {
+    private void doGlobalConfigInfo(final FrameContainer origin, final boolean isSilent) {
         for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - "
                     + source + "(" + source.getTarget().getOrder() + ")");
@@ -337,7 +336,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doForceUpdate(final InputWindow origin, final boolean isSilent) {
+    private void doForceUpdate(final FrameContainer origin, final boolean isSilent) {
         if (IdentityManager.getGlobalConfig().getOptionBool("updater", "enable")) {
             new Thread(new UpdateChecker(), "Forced update checker").start();
         } else {
@@ -354,7 +353,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doThreads(final InputWindow origin, final boolean isSilent) {
+    private void doThreads(final FrameContainer origin, final boolean isSilent) {
         for (Entry<Thread, StackTraceElement[]> thread: Thread.getAllStackTraces().entrySet()) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_BOLD
                     + thread.getKey().getName());
@@ -372,11 +371,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doServerState(final InputWindow origin, final boolean isSilent) {
-        if (origin.getContainer().getServer() == null) {
+    private void doServerState(final FrameContainer origin, final boolean isSilent) {
+        if (origin.getServer() == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "This window isn't connected to a server");
         } else {
-            final Server server = origin.getContainer().getServer();
+            final Server server = origin.getServer();
             sendLine(origin, isSilent, FORMAT_OUTPUT, server.getStatus().getTransitionHistory());
         }
     }
@@ -387,11 +386,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void doServerInfo(final InputWindow origin, final boolean isSilent) {
-        if (origin.getContainer().getServer() == null) {
+    private void doServerInfo(final FrameContainer origin, final boolean isSilent) {
+        if (origin.getServer() == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "This window isn't connected to a server");
         } else {
-            final Server server = origin.getContainer().getServer();
+            final Server server = origin.getServer();
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Server name: " + server.getName());
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Actual name: "
                     + server.getParser().getServerName());
@@ -412,7 +411,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * 
      * @param origin The window this command was executed in
      */
-    private void doBenchmark(final InputWindow origin) {
+    private void doBenchmark(final FrameContainer origin) {
         long[] results = new long[10];
         
         for (int i = 0; i < results.length; i++) {
@@ -440,7 +439,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param args The arguments that were passed to the command
      */
-    private void doServices(final InputWindow origin, final boolean isSilent,
+    private void doServices(final FrameContainer origin, final boolean isSilent,
             final String[] args) {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Available Services:");
         for (Service service : PluginManager.getPluginManager().getAllServices()) {

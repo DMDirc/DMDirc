@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -30,7 +31,6 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         int i = 0;
         
@@ -61,10 +61,10 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         
         if (args.getArguments().length > 0
                 && "--server".equalsIgnoreCase(args.getArguments()[0]) && origin != null
-                && origin.getContainer().getServer() != null) {
+                && origin.getServer() != null) {
             i = 1;
-            identity = origin.getContainer().getServer().getServerIdentity();
-            manager = origin.getContainer().getServer().getConfigManager();
+            identity = origin.getServer().getServerIdentity();
+            manager = origin.getServer().getConfigManager();
         }
         
         switch (args.getArguments().length - i) {
@@ -101,7 +101,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether or not the command is being silenced or not
      * @param manager The config manager to use to retrieve data
      */
-    private void doDomainList(final InputWindow origin, final boolean isSilent,
+    private void doDomainList(final FrameContainer origin, final boolean isSilent,
             final ConfigManager manager) {
         final StringBuffer output = new StringBuffer(67);
         
@@ -125,7 +125,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param manager The config manager to use to retrieve data
      * @param domain The domain to be inspected
      */
-    private void doOptionsList(final InputWindow origin,
+    private void doOptionsList(final FrameContainer origin,
             final boolean isSilent, final ConfigManager manager, final String domain) {
         final StringBuffer output = new StringBuffer(24);
         
@@ -158,7 +158,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doShowOption(final InputWindow origin,
+    private void doShowOption(final FrameContainer origin,
             final boolean isSilent, final ConfigManager manager,
             final String domain, final String option) {
         if (manager.hasOptionString(domain, option)) {
@@ -179,7 +179,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param option The name of the option
      * @param newvalue The value the option should be set to
      */
-    private void doSetOption(final InputWindow origin,
+    private void doSetOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity,
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
@@ -199,7 +199,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param option The name of the option
      * @param data The data to be appended
      */
-    private void doAppendOption(final InputWindow origin,
+    private void doAppendOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity, final ConfigManager manager,
             final String domain,final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
@@ -216,7 +216,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doUnsetOption(final InputWindow origin,
+    private void doUnsetOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity, final String domain,
             final String option) {
         identity.unsetOption(domain, option);

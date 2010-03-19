@@ -22,6 +22,7 @@
 
 package com.dmdirc.harness;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.parsers.*;
 import com.dmdirc.commandparser.CommandManager;
@@ -48,7 +49,7 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(InputWindow origin, boolean isSilent,
+    protected void executeCommand(FrameContainer origin, boolean isSilent,
                                   Command command, CommandArguments args) {
         executedCommand = command;
         wasSilent = isSilent;
@@ -56,12 +57,12 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void handleNonCommand(InputWindow origin, String line) {
+    protected void handleNonCommand(FrameContainer origin, String line) {
         nonCommandLine = line;
     }
 
     @Override
-    protected void handleInvalidCommand(InputWindow origin,
+    protected void handleInvalidCommand(FrameContainer origin,
                                         CommandArguments args) {
         invalidCommand = args.getCommandName();
     }

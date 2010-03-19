@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -33,7 +34,6 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -53,17 +53,19 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked") @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         
         int offset = 0;
         boolean nicklist = true;
         boolean text = true;
         
-        if (args.getArguments().length > offset && args.getArguments()[offset].equalsIgnoreCase("--nicklist")) {
+        if (args.getArguments().length > offset && args.getArguments()[offset]
+                .equalsIgnoreCase("--nicklist")) {
             text = false;
             offset++;
-        } else if (args.getArguments().length > offset && args.getArguments()[offset].equalsIgnoreCase("--text")) {
+        } else if (args.getArguments().length > offset && args.getArguments()[offset]
+                .equalsIgnoreCase("--text")) {
             nicklist = false;
             offset++;
         }
@@ -73,11 +75,13 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             return;
         }
         
-        final ChannelClientInfo target = channel.getChannelInfo().getChannelClient(args.getArguments()[offset]);
+        final ChannelClientInfo target = channel.getChannelInfo()
+                .getChannelClient(args.getArguments()[offset]);
         offset++;
         
         if (target == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname (" + args.getArguments()[offset - 1] + ")!");
+            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname ("
+                    + args.getArguments()[offset - 1] + ")!");
         } else if (args.getArguments().length <= offset) {
             // We're removing the colour
             if (nicklist) {

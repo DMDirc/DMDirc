@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -52,7 +53,7 @@ public final class Message extends ServerCommand implements IntelligentCommand,
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "msg", "<target> <message>");

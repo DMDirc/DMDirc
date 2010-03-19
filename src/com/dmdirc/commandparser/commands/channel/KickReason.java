@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -32,7 +33,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The kick command kicks a specified user from the channel.
@@ -51,7 +51,7 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "kick", "<user> [reason]");

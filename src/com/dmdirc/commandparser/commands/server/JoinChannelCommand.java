@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
@@ -34,7 +35,6 @@ import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public final class JoinChannelCommand extends ServerCommand implements
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "join", "join <channel [key]>[,channel [key]...]");

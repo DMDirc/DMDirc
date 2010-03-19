@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Opens a new window.
@@ -48,22 +47,22 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         int start = 0;
         FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
-            if (origin.getContainer().getServer() == null) {
+            if (origin.getServer() == null) {
                 sendLine(origin, isSilent, FORMAT_ERROR,
                         "This window doesn't have an associated server.");
                 return;
             }
 
-            parent = origin.getContainer().getServer();
+            parent = origin.getServer();
             start = 1;
         } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
-            parent = origin.getContainer();
+            parent = origin;
             start = 1;
         }
 
