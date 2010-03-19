@@ -32,7 +32,7 @@ import com.dmdirc.ui.messages.IRCDocument;
  * by all windows. It is assumed that all windows have a main text area.
  */
 public interface Window {
-    
+
     /**
      * Formats the arguments using the Formatter, then adds the result to the
      * main text area.
@@ -43,7 +43,7 @@ public interface Window {
      */
     @Deprecated
     void addLine(String messageType, Object... args);
-    
+
     /**
      * Formats the arguments using the Formatter, then adds the result to the
      * main text area.
@@ -54,17 +54,17 @@ public interface Window {
      */
     @Deprecated
     void addLine(StringBuffer messageType, Object... args);
-    
+
     /**
      * Adds the specified raw line to the window, without using a formatter.
-     * 
+     *
      * @param line The line to be added
      * @param timestamp Whether or not to display the timestamp for this line
      * @deprecated Use corresponding methods in {@link FrameContainer} instead
      */
     @Deprecated
     void addLine(final String line, final boolean timestamp);
-    
+
     /**
      * Clears the main text area of the command window.
      *
@@ -72,97 +72,98 @@ public interface Window {
      */
     @Deprecated
     void clear();
-    
+
     /**
      * Retrieves the config manager for this command window.
      *
      * @return This window's config manager
      */
     ConfigManager getConfigManager();
-    
+
     /**
      * Retrieves the container that owns this command window.
      *
      * @return The container that owns this command window.
      */
     FrameContainer getContainer();
-    
+
     /**
      * Determines if the current window is visible.
      *
      * @return boolean visibility
      */
     boolean isVisible();
-    
+
     /**
      * Sets the visibility of this window.
-     * 
+     *
      * @param isVisible Whether the window should be visible or not
      */
     void setVisible(boolean isVisible);
-    
+
     /**
      * Retrives the current title of this window.
-     * 
+     *
      * @return This window's title
      */
     String getTitle();
-    
+
     /**
      * Determines if this frame is currently maximised.
-     * 
+     *
      * @return true if the frame is maximised, false otherwise
      */
     boolean isMaximum();
-    
+
     /**
      * Sets the title of this window.
-     * 
+     *
      * @param title The new title to be used.
+     * @deprecated Should use {@link FrameContainer#setTitle(java.lang.String)}
      */
+    @Deprecated
     void setTitle(String title);
-    
+
     /**
      * Opens this window.
      */
     void open();
-    
+
     /**
      * Restores this window.
-     * 
+     *
      * @since 0.6.3m1
      */
     void restore();
-    
-    
-    /** 
+
+    /**
      * Maximises this window.
-     * 
+     *
      * @since 0.6.3m1
      */
     void maximise();
-    
+
     /**
      * Toggles Maximise State.
-     * 
+     *
      * @since 0.6.3m1
      */
     void toggleMaximise();
-    
+
     /**
      * Minimises this window.
      */
     void minimise();
-    
+
     /**
      * Returns the transcoder that is being used by the UI.
-     * 
+     *
      * @return This window's transcoder
      * @deprecated Use {@link FrameContainer#getTranscoder()} instead
      */
     @Deprecated
     StringTranscoder getTranscoder();
-    
+
     /** Closes this window. */
     void close();
 
@@ -170,5 +171,5 @@ public interface Window {
      * Requests that this object's frame be activated.
      */
     public void activateFrame();
-    
+
 }

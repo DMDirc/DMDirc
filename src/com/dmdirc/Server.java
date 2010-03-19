@@ -173,7 +173,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param profile The profile to use
      */
     public Server(final URI uri, final Identity profile) {
-        super("server-disconnected", uri.getHost(),
+        super("server-disconnected", uri.getHost(), uri.getHost(),
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()));
 
         this.address = uri;
@@ -1240,7 +1240,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
                 setName(Formatter.formatMessage(getConfigManager(),
                         "serverName", arguments));
-                window.setTitle(Formatter.formatMessage(getConfigManager(),
+                setTitle(Formatter.formatMessage(getConfigManager(),
                         "serverTitle", arguments));
             }
         }

@@ -51,4 +51,12 @@ public interface FrameInfoListener extends EventListener {
      */
     void nameChanged(final FrameContainer window, final String name);
 
+    /**
+     * Called when a window's title is changed.
+     *
+     * @param window The window whose title changed
+     * @param title The new title for the window
+     */
+    void titleChanged(final FrameContainer window, final String title);
+
 }

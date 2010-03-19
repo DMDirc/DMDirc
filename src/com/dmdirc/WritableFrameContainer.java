@@ -54,11 +54,13 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * 
      * @param icon The icon to use for this container
      * @param name The name of this container
+     * @param title The title of this container
      * @param config The config manager for this container
-     * @since 0.6.3m2
+     * @since 0.6.4
      */
-    public WritableFrameContainer(final String icon, final String name, final ConfigManager config) {
-        super(icon, name, config);
+    public WritableFrameContainer(final String icon, final String name,
+            final String title, final ConfigManager config) {
+        super(icon, name, title, config);
     }
     
     /**

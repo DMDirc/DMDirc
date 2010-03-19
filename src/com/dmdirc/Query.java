@@ -74,6 +74,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      */
     public Query(final Server newServer, final String newHost) {
         super("query", newServer.getParser().parseHostmask(newHost)[0],
+                newServer.getParser().parseHostmask(newHost)[0],
                 newServer.getConfigManager());
 
         this.server = newServer;
@@ -133,7 +134,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             return;
         }
 
-        for (String part : splitLine(window.getTranscoder().encode(line))) {
+        for (String part : splitLine(getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
                 server.getParser().sendMessage(getNickname(), part);
 
@@ -182,7 +183,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         if (maxLineLength >= action.length() + 2) {
             server.getParser().sendAction(getNickname(),
-                    window.getTranscoder().encode(action));
+                    getTranscoder().encode(action));
 
             doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
                     server.getParser().getLocalClient(), action);
@@ -235,7 +236,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * Updates the QueryWindow's title.
      */
     private void updateTitle() {
-        window.setTitle(getNickname());
+        setTitle(getNickname());
     }
 
     /**

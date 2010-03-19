@@ -53,13 +53,12 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
      * @param commandParser Command parser to use
      */
     public Raw(final Server newServer, final CommandParser commandParser) {
-        super("raw", "Raw", newServer.getConfigManager());
+        super("raw", "Raw", "(Raw log)", newServer.getConfigManager());
 
         this.server = newServer;
 
         window = Main.getUI().getInputWindow(this, commandParser);
         WindowManager.addWindow(server, this);
-        window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());
 
         window.open();
@@ -135,7 +134,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
     @Override
     public void sendLine(final String line) {
         if (!line.isEmpty()) {
-            server.sendLine(window.getTranscoder().encode(line));
+            sendLine(getTranscoder().encode(line));
         }
     }
 
