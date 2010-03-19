@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.global.NewServer;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,7 +50,7 @@ public final class ChangeServer extends ServerCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin,  final Server server,
+    public void execute(final FrameContainer origin,  final Server server,
             final boolean isSilent, final CommandArguments args) {
         URI address = null;
         if (args.getArguments().length == 0) {

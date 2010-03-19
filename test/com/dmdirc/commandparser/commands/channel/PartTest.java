@@ -23,14 +23,11 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Server;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,7 +38,7 @@ public class PartTest {
 
     private final Part command = new Part();
     private Channel channel;
-    private InputWindow origin;
+    private FrameContainer origin;
     private ConfigManager manager;
 
     @BeforeClass
@@ -54,7 +51,7 @@ public class PartTest {
         IdentityManager.load();
         
         channel = mock(Channel.class);
-        origin = mock(InputWindow.class);
+        origin = mock(FrameContainer.class);
         manager = mock(ConfigManager.class);
         
         when(origin.getConfigManager()).thenReturn(manager);

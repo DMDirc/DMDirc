@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -29,7 +30,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The command parser used for global commands.
@@ -76,7 +76,7 @@ public final class GlobalCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final InputWindow origin,
+    protected void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         ((GlobalCommand) command).execute(origin, isSilent, args);
     }
@@ -88,7 +88,7 @@ public final class GlobalCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final InputWindow origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         if (origin == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);
         } else {

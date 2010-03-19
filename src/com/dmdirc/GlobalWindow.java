@@ -108,7 +108,7 @@ public class GlobalWindow extends WritableFrameContainer {
     @Override
     public void sendLine(final String line) {
         if (!line.isEmpty()) {
-            GlobalCommandParser.getGlobalCommandParser().parseCommand(window,
+            GlobalCommandParser.getGlobalCommandParser().parseCommand(this,
                     CommandManager.getCommandChar() + line);
         }
     }

@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +54,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length > 0
                 && args.getArguments()[0].equalsIgnoreCase("--active")) {
@@ -64,11 +63,10 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
         } else if (args.getArguments().length > 1
                 && args.getArguments()[0].equalsIgnoreCase("--target")) {
             FrameContainer frame = null;
-            FrameContainer target = origin.getContainer();
+            FrameContainer target = origin;
 
             while (frame == null && target != null) {
                 frame = WindowManager.findCustomWindow(target, args.getArguments()[1]);
-                target = WindowManager.getParent(target);
             }
 
             if (frame == null) {
@@ -122,13 +120,11 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
                     .getServer();
 
             //Active window's Children
-            windowList.addAll(Arrays.asList(WindowManager.getChildren(context
-                    .getWindow().getContainer())));
+            windowList.addAll(context.getWindow().getContainer().getChildren());
 
             //Children of Current Window's server
             if (currentServer != null) {
-                windowList.addAll(Arrays.asList(WindowManager.getChildren(
-                        currentServer)));
+                windowList.addAll(currentServer.getChildren());
             }
 
             //Global Windows

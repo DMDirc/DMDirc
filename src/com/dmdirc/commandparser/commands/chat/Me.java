@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
@@ -46,7 +47,7 @@ public final class Me extends ChatCommand implements ValidatingCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final MessageTarget target, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "me", "<action>");

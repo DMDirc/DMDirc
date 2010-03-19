@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * A command parser used in the context of a server.
@@ -68,7 +68,7 @@ public class ServerCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final InputWindow origin,
+    protected void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ServerCommand) {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
@@ -93,7 +93,7 @@ public class ServerCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final InputWindow origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         server.sendLine(line);
     }
     

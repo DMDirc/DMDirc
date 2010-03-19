@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a command that can be performed in the context of a "chat" window
@@ -47,7 +47,7 @@ public abstract class ChatCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(InputWindow origin, Server server, MessageTarget target,
+    public abstract void execute(FrameContainer origin, Server server, MessageTarget target,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

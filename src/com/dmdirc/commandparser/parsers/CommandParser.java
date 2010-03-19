@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
@@ -34,7 +35,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
@@ -119,7 +119,7 @@ public abstract class CommandParser implements Serializable {
      * @param parseChannel Whether or not to try and parse the first argument
      * as a channel name
      */
-    public final void parseCommand(final InputWindow origin,
+    public final void parseCommand(final FrameContainer origin,
             final String line, final boolean parseChannel) {
         final CommandArguments args = new CommandArguments(line);
 
@@ -153,20 +153,19 @@ public abstract class CommandParser implements Serializable {
      * @param parseChannel Whether or not to try parsing channel names
      * @return True iff the command was handled, false otherwise
      */
-    protected boolean handleChannelCommand(final InputWindow origin,
+    protected boolean handleChannelCommand(final FrameContainer origin,
             final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
 
         if (cargs.length == 0 || !parseChannel || origin == null
-                || origin.getContainer() == null
-                || origin.getContainer().getServer() == null
+                || origin.getServer() == null
                 || !CommandManager.isChannelCommand(command)) {
             return false;
         }
 
-        final Server server = origin.getContainer().getServer();
+        final Server server = origin.getServer();
         final String[] parts = cargs[0].split(",");
         boolean someValid = false;
         for (String part : parts) {
@@ -243,7 +242,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommand(final InputWindow origin,
+    public final void parseCommand(final FrameContainer origin,
             final String line) {
         parseCommand(origin, line, true);
     }
@@ -254,7 +253,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommandCtrl(final InputWindow origin, final String line) {
+    public final void parseCommandCtrl(final FrameContainer origin, final String line) {
         handleNonCommand(origin, line);
     }
 
@@ -267,7 +266,7 @@ public abstract class CommandParser implements Serializable {
      * @param args The arguments to the command
      * @since 0.6.3m1
      */
-    protected abstract void executeCommand(final InputWindow origin,
+    protected abstract void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args);
 
     /**
@@ -279,7 +278,7 @@ public abstract class CommandParser implements Serializable {
      * @param args The arguments passed to the command
      * @since 0.6.3m1
      */
-    protected void handleInvalidCommand(final InputWindow origin,
+    protected void handleInvalidCommand(final FrameContainer origin,
             final CommandArguments args) {
         if (origin == null) {
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, null,
@@ -288,7 +287,7 @@ public abstract class CommandParser implements Serializable {
             final StringBuffer buff = new StringBuffer("unknownCommand");
 
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
-                    origin.getContainer(), args.getCommandName(), args.getArguments());
+                    origin, args.getCommandName(), args.getArguments());
 
             origin.addLine(buff, args.getCommandName());
         }
@@ -301,7 +300,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected abstract void handleNonCommand(final InputWindow origin,
+    protected abstract void handleNonCommand(final FrameContainer origin,
             final String line);
 
     /**

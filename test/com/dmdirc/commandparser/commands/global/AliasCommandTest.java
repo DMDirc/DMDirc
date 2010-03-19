@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class AliasCommandTest {
 
     @Test
     public void testUsageNoArgs() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo"));
         
@@ -49,7 +49,7 @@ public class AliasCommandTest {
     
     @Test
     public void testUsageOneArg() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         
         command.execute(tiw, false, new CommandArguments("/foo --remove"));
         

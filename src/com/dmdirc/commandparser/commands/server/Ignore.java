@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -59,7 +59,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
      * @param args The user supplied arguments
      */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
 
         if (args.getArguments().length == 0) {
@@ -73,7 +73,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         }
     }
 
-    protected void executeView(final InputWindow origin, final Server server,
+    protected void executeView(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args, final boolean forceRegex) {
         final IgnoreList ignoreList = server.getIgnoreList();
 
@@ -100,7 +100,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         }
     }
 
-    protected void executeAdd(final InputWindow origin, final Server server,
+    protected void executeAdd(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         final IgnoreList ignoreList = server.getIgnoreList();
         final String target = args.getArgumentsAsString();
@@ -110,7 +110,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRegex(final InputWindow origin, final Server server,
+    protected void executeRegex(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
             executeView(origin, server, isSilent, args, true);
@@ -133,7 +133,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRemove(final InputWindow origin, final Server server,
+    protected void executeRemove(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
             showUsage(origin, isSilent, "ignore", "--remove <host>");

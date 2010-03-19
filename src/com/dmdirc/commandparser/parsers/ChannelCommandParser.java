@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -32,7 +33,6 @@ import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * A command parser that is tailored for use in a channel environment. Handles
@@ -78,7 +78,7 @@ public final class ChannelCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final InputWindow origin,
+    protected void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
@@ -99,7 +99,7 @@ public final class ChannelCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final InputWindow origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         channel.sendLine(line);
     }
     

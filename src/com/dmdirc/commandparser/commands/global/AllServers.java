@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandArguments;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The AllServers command allows users to issue commands to all servers.
@@ -47,14 +47,12 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         final String command = args.getArgumentsAsString();
-        InputWindow window;
         
         for (Server target : ServerManager.getServerManager().getServers()) {
-            window = target.getFrame();
-            window.getCommandParser().parseCommand(window, command);
+            target.getFrame().getCommandParser().parseCommand(target, command);
         }
     }
     

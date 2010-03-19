@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * An external command is a channel command that can be executed from outside
@@ -43,7 +43,7 @@ public interface ExternalCommand {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    void execute(InputWindow origin, Server server, String channel,
+    void execute(FrameContainer origin, Server server, String channel,
             boolean isSilent, CommandArguments args);
 
 }

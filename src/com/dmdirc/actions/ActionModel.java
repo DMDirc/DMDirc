@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
@@ -29,8 +30,6 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,22 +131,22 @@ public class ActionModel {
             return true;
         }
 
-        final Window active = WindowManager.getActiveWindow().getFrame();
-        InputWindow cw = null;
+        final FrameContainer active = WindowManager.getActiveWindow();
+        WritableFrameContainer cw = null;
         CommandParser cp = null;
 
         if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
-            cw = ((WritableFrameContainer) arguments[0]).getFrame();
-        } else if (active instanceof InputWindow) {
-            cw = (InputWindow) active;
+            cw = (WritableFrameContainer) arguments[0];
+        } else if (active instanceof WritableFrameContainer) {
+            cw = (WritableFrameContainer) active;
         } else if (ServerManager.getServerManager().numServers() > 0) {
-            cw = ServerManager.getServerManager().getServers().get(0).getFrame();
+            cw = ServerManager.getServerManager().getServers().get(0);
         }
 
         if (cw == null) {
             cp = GlobalCommandParser.getGlobalCommandParser();
         } else {
-            cp = cw.getCommandParser();
+            cp = cw.getFrame().getCommandParser();
         }
 
         for (String command : response) {

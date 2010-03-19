@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
@@ -33,7 +34,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
@@ -57,7 +58,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         URI address = null;
 
@@ -135,7 +136,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
      *
      * @return URI is input was valid
      */
-    public static URI parseInput(final InputWindow origin, final boolean isSilent,
+    public static URI parseInput(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
 
         boolean ssl = false;

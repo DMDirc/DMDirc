@@ -22,11 +22,11 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic server command. Server commands are associated with
@@ -45,7 +45,7 @@ public abstract class ServerCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(InputWindow origin, Server server,
+    public abstract void execute(FrameContainer origin, Server server,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

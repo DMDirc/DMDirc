@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -30,7 +32,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent,
+    public void execute(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showAllCommands(origin, isSilent);
@@ -72,9 +73,9 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
      * @param origin The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void showAllCommands(final InputWindow origin, final boolean isSilent) {
-        final List<String> commands = new ArrayList<String>(origin.getCommandParser()
-                .getCommands().keySet());
+    private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
+        final List<String> commands = new ArrayList<String>(((WritableFrameContainer) origin)
+                .getFrame().getCommandParser().getCommands().keySet());
 
         Collections.sort(commands);
         
@@ -109,7 +110,7 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param name The name of the command to display info for
      */
-    private void showCommand(final InputWindow origin, final boolean isSilent,
+    private void showCommand(final FrameContainer origin, final boolean isSilent,
             final String name) {
         Map.Entry<CommandInfo, Command> command = null;
 

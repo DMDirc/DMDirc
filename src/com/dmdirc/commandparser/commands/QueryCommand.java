@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a query.
@@ -46,7 +46,7 @@ public abstract class QueryCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(InputWindow origin, Server server, Query query,
+    public abstract void execute(FrameContainer origin, Server server, Query query,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

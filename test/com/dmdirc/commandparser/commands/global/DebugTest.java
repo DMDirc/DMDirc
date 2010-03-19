@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -39,7 +39,7 @@ public class DebugTest {
 
     @Test
     public void testUsage() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo"));
         
@@ -48,7 +48,7 @@ public class DebugTest {
     
     @Test
     public void testInvalidArg() {
-        final InputWindow tiw = mock(InputWindow.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo flubadee"));
         

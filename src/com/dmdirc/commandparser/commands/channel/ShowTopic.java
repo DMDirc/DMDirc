@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The show topic command shows the user the current topic.
@@ -48,7 +48,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             final ChannelInfo cChannel = channel.getChannelInfo();
@@ -69,7 +69,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             server.getParser().sendRawMessage("TOPIC " + channel);
