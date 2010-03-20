@@ -36,9 +36,6 @@ public class CustomWindow extends FrameContainer {
     /** The window used by this container. */
     private Window window;
 
-    /** This window's parent window. */
-    private Window parent;
-
     /**
      * Creates a new custom window as a child of the specified window.
      *
@@ -47,14 +44,12 @@ public class CustomWindow extends FrameContainer {
      * @param parent The parent of this custom window
      */
     public CustomWindow(final String name, final String title,
-            final Window parent) {
+            final FrameContainer parent) {
         super("custom", name, title, parent.getConfigManager());
-
-        this.parent = parent;
 
         window = Main.getUI().getWindow(this);
 
-        WindowManager.addWindow(parent, window);
+        WindowManager.addWindow(parent, this);
 
         window.open();
     }
@@ -107,7 +102,7 @@ public class CustomWindow extends FrameContainer {
     /** {@inheritDoc} */
     @Override
     public Server getServer() {
-        return parent == null ? null : parent.getContainer().getServer();
+        return parent == null ? null : parent.getServer();
     }
 
 }

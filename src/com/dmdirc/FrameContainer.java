@@ -39,12 +39,12 @@ import com.dmdirc.util.StringTranscoder;
 
 import java.awt.Color;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * The frame container implements basic methods that should be present in
@@ -68,7 +68,7 @@ public abstract class FrameContainer {
     protected final IRCDocument document;
 
     /** The children of this frame. */
-    protected final Collection<FrameContainer> children = new ArrayList<FrameContainer>();
+    protected final Collection<FrameContainer> children = new ConcurrentSkipListSet<FrameContainer>();
 
     /** The parent of this frame. */
     protected FrameContainer parent;
@@ -235,10 +235,8 @@ public abstract class FrameContainer {
     protected void setName(final String name) {
         this.name = name;
 
-        synchronized (listeners) {
-            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.nameChanged(this, name);
-            }
+        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+            listener.nameChanged(this, name);
         }
     }
 
@@ -261,10 +259,8 @@ public abstract class FrameContainer {
     public void setTitle(final String title) {
         this.title = title;
 
-        synchronized (listeners) {
-            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.titleChanged(this, name);
-            }
+        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+            listener.titleChanged(this, name);
         }
     }
 
@@ -304,10 +300,8 @@ public abstract class FrameContainer {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        synchronized (listeners) {
-            for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-                listener.iconChanged(this, icon);
-            }
+        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+            listener.iconChanged(this, icon);
         }
     }
 
@@ -363,10 +357,8 @@ public abstract class FrameContainer {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
-        synchronized (listeners) {
-            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
-                listener.notificationCleared(this);
-            }
+        for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+            listener.notificationCleared(this);
         }
     }
 
@@ -382,10 +374,8 @@ public abstract class FrameContainer {
                 && !colour.equals(notification)) {
             notification = colour;
 
-            synchronized (listeners) {
-                for (NotificationListener listener : listeners.get(NotificationListener.class)) {
-                    listener.notificationSet(this, colour);
-                }
+            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+                listener.notificationSet(this, colour);
             }
         }
     }
@@ -470,10 +460,8 @@ public abstract class FrameContainer {
             return;
         }
 
-        synchronized (listeners) {
-            for (SelectionListener listener : listeners.get(SelectionListener.class)) {
-                listener.selectionChanged(this);
-            }
+        for (SelectionListener listener : listeners.get(SelectionListener.class)) {
+            listener.selectionChanged(this);
         }
 
         clearNotification();
@@ -551,9 +539,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addNotificationListener(final NotificationListener listener) {
-        synchronized (listeners) {
-            listeners.add(NotificationListener.class, listener);
-        }
+        listeners.add(NotificationListener.class, listener);
     }
 
     /**
@@ -562,9 +548,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeNotificationListener(final NotificationListener listener) {
-        synchronized (listeners) {
-            listeners.remove(NotificationListener.class, listener);
-        }
+        listeners.remove(NotificationListener.class, listener);
     }
 
     /**
@@ -573,9 +557,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addSelectionListener(final SelectionListener listener) {
-        synchronized (listeners) {
-            listeners.add(SelectionListener.class, listener);
-        }
+        listeners.add(SelectionListener.class, listener);
     }
 
     /**
@@ -584,9 +566,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeSelectionListener(final SelectionListener listener) {
-        synchronized (listeners) {
-            listeners.remove(SelectionListener.class, listener);
-        }
+        listeners.remove(SelectionListener.class, listener);
     }
 
     /**
@@ -595,9 +575,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addFrameInfoListener(final FrameInfoListener listener) {
-        synchronized (listeners) {
-            listeners.add(FrameInfoListener.class, listener);
-        }
+        listeners.add(FrameInfoListener.class, listener);
     }
 
     /**
@@ -606,9 +584,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeFrameInfoListener(final FrameInfoListener listener) {
-        synchronized (listeners) {
-            listeners.remove(FrameInfoListener.class, listener);
-        }
+        listeners.remove(FrameInfoListener.class, listener);
     }
     
     /**
