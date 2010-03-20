@@ -105,7 +105,9 @@ public interface Window {
      * Retrives the current title of this window.
      *
      * @return This window's title
+     * @deprecated Use {@link FrameContainer#getTitle()} instead
      */
+    @Deprecated
     String getTitle();
 
     /**

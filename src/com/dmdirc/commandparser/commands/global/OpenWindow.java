@@ -85,7 +85,7 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
                 if (parent == null) {
                     new CustomWindow(args.getArguments()[start], title);
                 } else {
-                    new CustomWindow(args.getArguments()[start], title, parent.getFrame());
+                    new CustomWindow(args.getArguments()[start], title, parent);
                 }
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR,

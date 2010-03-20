@@ -259,8 +259,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
             FrameContainer targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
 
             if (targetWindow == null) {
-                targetWindow = new CustomWindow(windowName, windowName,
-                        getServer().getFrame());
+                targetWindow = new CustomWindow(windowName, windowName, getServer());
             }
 
             targetWindow.addLine(format, args);

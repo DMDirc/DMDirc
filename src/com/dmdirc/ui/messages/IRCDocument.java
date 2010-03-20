@@ -208,12 +208,11 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param listener Listener to add
      */
     public void addIRCDocumentListener(final IRCDocumentListener listener) {
-        synchronized (listeners) {
-            if (listener == null) {
-                return;
-            }
-            listeners.add(IRCDocumentListener.class, listener);
+        if (listener == null) {
+            return;
         }
+
+        listeners.add(IRCDocumentListener.class, listener);
     }
 
     /**
@@ -245,7 +244,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     protected void fireLinesAdded(final int index, final int size) {
         for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
-                listener.linesAdded(index, size, lines.size());
+            listener.linesAdded(index, size, lines.size());
         }
         trim(frameBufferSize);
     }
@@ -288,7 +287,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      *
      * @return Styled line
      */
-    AttributedCharacterIterator getStyledLine(final Line line) {
+    protected AttributedCharacterIterator getStyledLine(final Line line) {
         synchronized (lines) {
             AttributedString styledLine = null;
             if (cachedLines.contains(line)) {
@@ -325,7 +324,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      *
      * @return Line height
      */
-    int getLineHeight(final Line line) {
+    protected int getLineHeight(final Line line) {
         return line.getFontSize();
     }
 
