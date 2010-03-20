@@ -46,7 +46,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.parser.common.MyInfo;
-import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -65,6 +64,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.TrustManager;
 
@@ -112,7 +113,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * If used in conjunction with myStateLock, the parserLock must always be
      * locked INSIDE the myStateLock to prevent deadlocks.
      */
-    private final Object parserLock = new Object();
+    private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
 
     /** The IRC Parser Thread. */
     private transient Thread parserThread;
@@ -159,7 +160,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     private StringConverter converter = new DefaultStringConverter();
 
     // </editor-fold>
-    
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -190,7 +191,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 CommandManager.getCommandNames(CommandType.TYPE_SERVER));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
-        
+
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         updateIcon();
@@ -267,7 +268,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                     break;
             }
 
-            synchronized (parserLock) {
+            final URI connectAddress;
+
+            try {
+                parserLock.writeLock().lock();
                 if (parser != null) {
                     throw new IllegalArgumentException("Connection attempt while parser "
                             + "is still connected.\n\nMy state:" + getState());
@@ -282,7 +286,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 updateIcon();
 
                 parser = buildParser();
-                final URI connectAddress;
+
                 if (parser != null) {
                     connectAddress = parser.getURI();
                 } else {
@@ -293,23 +297,25 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                     addLine("serverUnknownProtocol", connectAddress.getScheme());
                     return;
                 }
+            } finally {
+                parserLock.writeLock().unlock();
+            }
 
-                addLine("serverConnecting", connectAddress.getHost(), connectAddress.getPort());
+            addLine("serverConnecting", connectAddress.getHost(), connectAddress.getPort());
 
-                myState.transition(ServerState.CONNECTING);
+            myState.transition(ServerState.CONNECTING);
 
-                doCallbacks();
+            doCallbacks();
 
-                awayMessage = null;
-                removeInvites();
-                window.setAwayIndicator(false);
+            awayMessage = null;
+            removeInvites();
+            window.setAwayIndicator(false);
 
-                try {
-                    parserThread = new Thread(parser, "IRC Parser thread");
-                    parserThread.start();
-                } catch (IllegalThreadStateException ex) {
-                    Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
-                }
+            try {
+                parserThread = new Thread(parser, "IRC Parser thread");
+                parserThread.start();
+            } catch (IllegalThreadStateException ex) {
+                Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
             }
         }
 
@@ -328,7 +334,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             }
 
             disconnect(reason);
-            
+
             connect(address, profile);
         }
     }
@@ -369,7 +375,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             clearChannels();
 
-            synchronized (parserLock) {
+            try {
+                parserLock.readLock().lock();
                 if (parser == null) {
                     myState.transition(ServerState.DISCONNECTED);
                 } else {
@@ -381,6 +388,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                     parserThread.interrupt();
                     parser.disconnect(reason);
                 }
+            } finally {
+                parserLock.readLock().unlock();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
@@ -476,12 +485,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public boolean hasQuery(final String host) {
         final String nick;
-        synchronized (parserLock) {
+
+        try {
+            parserLock.readLock().lock();
+
             if (parser == null) {
                 return false;
             }
 
             nick = converter.toLowerCase(parser.parseHostmask(host)[0]);
+        } finally {
+            parserLock.readLock().unlock();
         }
 
         return queries.containsKey(nick);
@@ -501,15 +515,20 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 return null;
             }
         }
-        
+
         final String nick, lnick;
-        synchronized (parserLock) {
+
+        try {
+            parserLock.readLock().lock();
+
             if (parser == null) {
                 throw new IllegalStateException("Can't retrieve query while disconnected");
             }
 
             nick = parser.parseHostmask(host)[0];
             lnick = converter.toLowerCase(nick);
+        } finally {
+            parserLock.readLock().unlock();
         }
 
         if (!queries.containsKey(lnick)) {
@@ -580,10 +599,13 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         if (raw == null) {
             raw = new Raw(this, new RawCommandParser(this));
 
-            synchronized (parserLock) {
+            try {
+                parserLock.readLock().lock();
                 if (parser != null) {
                     raw.registerCallbacks();
                 }
+            } finally {
+                parserLock.readLock().unlock();
             }
         } else {
             raw.activateFrame();
@@ -704,7 +726,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     // <editor-fold defaultstate="collapsed" desc="Miscellaneous methods">
 
     /**
-     * Builds an appropriately configured {@link IRCParser} for this server.
+     * Builds an appropriately configured {@link Parser} for this server.
      *
      * @return A configured IRC parser.
      */
@@ -753,7 +775,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         if (oldParser != null) {
             return oldParser.compareURI(uri);
         }
-        
+
         return false;
     }
 
@@ -875,11 +897,14 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void sendLine(final String line) {
         synchronized (myStateLock) {
-            synchronized (parserLock) {
+            try {
+                parserLock.readLock().lock();
                 if (parser != null && !line.isEmpty()
                         && myState.getState() == ServerState.CONNECTED) {
                     parser.sendRawMessage(getTranscoder().encode(line));
                 }
+            } finally {
+                parserLock.readLock().unlock();
             }
         }
     }
@@ -887,8 +912,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
-        synchronized (parserLock) {
+        try {
+            parserLock.readLock().lock();
             return parser == null ? -1 : parser.getMaxLength();
+        } finally {
+            parserLock.readLock().unlock();
         }
     }
 
@@ -916,8 +944,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return This server's possible channel prefixes
      */
     public String getChannelPrefixes() {
-        synchronized (parserLock) {
+        try {
+            parserLock.readLock().lock();
             return parser == null ? "#&" : parser.getChannelPrefixes();
+        } finally {
+            parserLock.readLock().unlock();
         }
     }
 
@@ -927,8 +958,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return This sever's address
      */
     public String getAddress() {
-        synchronized (parserLock) {
+        try {
+            parserLock.readLock().lock();
             return parser == null ? address.getHost() : parser.getServerName();
+        } finally {
+            parserLock.readLock().unlock();
         }
     }
 
@@ -947,7 +981,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return The name of this server's network
      */
     public String getNetwork() {
-        synchronized (parserLock) {
+        try {
+            parserLock.readLock().lock();
             if (parser == null) {
                 throw new IllegalStateException("getNetwork called when "
                         + "parser is null (state: " + getState() + ")");
@@ -956,6 +991,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             } else {
                 return parser.getNetworkName();
             }
+        } finally {
+            parserLock.readLock().unlock();
         }
     }
 
@@ -969,12 +1006,15 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public boolean isNetwork(String target) {
         synchronized (myStateLock) {
-            synchronized (parserLock) {
+            try {
+                parserLock.readLock().lock();
                 if (parser == null) {
                     return false;
                 } else {
                     return getNetwork().equalsIgnoreCase(target);
                 }
+            } finally {
+                parserLock.readLock().unlock();
             }
         }
     }
@@ -1104,7 +1144,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             myState.transition(ServerState.CLOSING);
         }
-        
+
         closeChannels();
         closeQueries();
         removeInvites();
@@ -1192,9 +1232,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @return True if the channel name is valid, false otherwise
      */
     public boolean isValidChannelName(final String channelName) {
-        synchronized (parserLock) {
+        try {
+            parserLock.readLock().lock();
             return hasChannel(channelName)
                     || (parser != null && parser.isValidChannelName(channelName));
+        } finally {
+            parserLock.readLock().unlock();
         }
     }
 
@@ -1231,7 +1274,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 return;
             }
 
-            synchronized (parserLock) {
+            try {
+                parserLock.readLock().lock();
                 final Object[] arguments = new Object[]{
                     address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
                     address.getPort(), parser == null ? "Unknown" : getNetwork(),
@@ -1242,6 +1286,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                         "serverName", arguments));
                 setTitle(Formatter.formatMessage(getConfigManager(),
                         "serverTitle", arguments));
+            } finally {
+                parserLock.readLock().unlock();
             }
         }
     }
@@ -1326,7 +1372,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
-        if (Thread.holdsLock(myState)) {
+        if (Thread.holdsLock(myStateLock)) {
             new Thread(new Runnable() {
                 /** {@inheritDoc} */
                 @Override
@@ -1336,7 +1382,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             }, "Socket closed deferred thread").start();
             return;
         }
-        
+
         handleNotification("socketClosed", getAddress());
 
         ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
@@ -1358,9 +1404,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             clearChannels();
 
-            synchronized (parserLock) {
+            try {
+                parserLock.writeLock().lock();
                 oldParser = parser;
                 parser = null;
+            } finally {
+                parserLock.writeLock().unlock();
             }
 
             updateIcon();
@@ -1406,9 +1455,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
 
-            synchronized (parserLock) {
+            try {
+                parserLock.writeLock().lock();
                 oldParser = parser;
                 parser = null;
+            } finally {
+                parserLock.writeLock().unlock();
             }
 
             updateIcon();
@@ -1478,7 +1530,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 throw new IllegalStateException("Received onPost005 while not "
                         + "connecting\n\n" + myState.getTransitionHistory());
             }
-        
+
             if (myState.getState() != ServerState.CONNECTING) {
                 // We've transitioned while waiting for the lock. Just abort.
                 return;
@@ -1711,7 +1763,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Away state handling">
 
     /**
