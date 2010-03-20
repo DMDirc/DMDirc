@@ -48,13 +48,13 @@ public class WindowManagerTest {
         
         WindowManager.addFrameListener(tfm);
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject());
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
         
         WindowManager.addWindow(parent);
         
-        verify(tfm).addWindow(same(parent.getContainer()));
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm).addWindow(same(parent.getContainer()), true);
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
     }
 
     @Test
@@ -67,8 +67,8 @@ public class WindowManagerTest {
         
         WindowManager.addWindow(parent, child);
         
-        verify(tfm, never()).addWindow((FrameContainer) anyObject());
-        verify(tfm).addWindow(same(parent.getContainer()), same(child.getContainer()));
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
+        verify(tfm).addWindow(same(parent.getContainer()), same(child.getContainer()), true);
     }
 
     @Test
@@ -95,8 +95,8 @@ public class WindowManagerTest {
 
         WindowManager.removeWindow(child);
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject());
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
         verify(tfm, never()).delWindow((FrameContainer) anyObject());
         verify(tfm).delWindow(same(parent.getContainer()), same(child.getContainer()));
     }
@@ -113,8 +113,8 @@ public class WindowManagerTest {
         WindowManager.removeFrameListener(tfm);
         WindowManager.addWindow(parent, child);
         
-        verify(tfm, never()).addWindow((FrameContainer) anyObject());
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
         verify(tfm, never()).delWindow((FrameContainer) anyObject());
         verify(tfm, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
     }
