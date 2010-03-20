@@ -133,14 +133,29 @@ public class WindowManager {
         "The specified Window has not already been added"
     })
     public static void addWindow(final FrameContainer window) {
+        addWindow(window, true);
+    }
+
+    /**
+     * Adds a new root window to the Window Manager.
+     *
+     * @param window The window to be added
+     * @param focus Should this window become focused
+     * @since 0.6.4
+     */
+    @Precondition({
+        "The specified Window is not null",
+        "The specified Window has not already been added"
+    })
+    public static void addWindow(final FrameContainer window, final boolean focus) {
         Logger.assertTrue(window != null);
         Logger.assertTrue(!rootWindows.contains(window));
 
         rootWindows.add(window);
-        
+
         window.addSelectionListener(selectionListener);
 
-        fireAddWindow(window);
+        fireAddWindow(window, focus);
     }
 
     /**
@@ -181,15 +196,32 @@ public class WindowManager {
     @Precondition({
         "The specified Windows are not null"
     })
-    public static void addWindow(final FrameContainer parent, final FrameContainer child) {
+    public static void addWindow(final FrameContainer parent,
+            final FrameContainer child) {
+        addWindow(parent, child, true);
+    }
+
+    /**
+     * Adds a new child window to the Window Manager.
+     *
+     * @param parent The parent window
+     * @param child The child window to be added
+     * @param focus Should this window become focused
+     * @since 0.6.4
+     */
+    @Precondition({
+        "The specified Windows are not null"
+    })
+    public static void addWindow(final FrameContainer parent,
+            final FrameContainer child, final boolean focus) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(child != null);
 
         parent.addChild(child);
-        
+
         child.addSelectionListener(selectionListener);
 
-        fireAddWindow(parent, child);
+        fireAddWindow(parent, child, focus);
     }
 
     /**
@@ -418,10 +450,11 @@ public class WindowManager {
      * Fires the addWindow(Window) callback.
      * 
      * @param window The window that was added
+     * @param focus Should this window become focused
      */
-    private static void fireAddWindow(final FrameContainer window) {
+    private static void fireAddWindow(final FrameContainer window, final boolean focus) {
         for (FrameListener listener : frameListeners) {
-            listener.addWindow(window);
+            listener.addWindow(window, focus);
         }
     }
 
@@ -430,10 +463,13 @@ public class WindowManager {
      * 
      * @param parent The parent window
      * @param child The new child window that was added
+     * @param focus Should this window become focused
+     *
      */
-    private static void fireAddWindow(final FrameContainer parent, final FrameContainer child) {
+    private static void fireAddWindow(final FrameContainer parent, 
+            final FrameContainer child, final boolean focus) {
         for (FrameListener listener : frameListeners) {
-            listener.addWindow(parent, child);
+            listener.addWindow(parent, child, focus);
         }
     }
 
