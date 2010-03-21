@@ -63,7 +63,9 @@ public class CustomWindow extends FrameContainer<Window> {
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        getFrame().setVisible(false);
+        for (Window window : getWindows()) {
+            window.setVisible(false);
+        }
 
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
