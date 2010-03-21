@@ -77,7 +77,9 @@ public interface Window {
      * Retrieves the config manager for this command window.
      *
      * @return This window's config manager
+     * @deprecated Use {@link FrameContainer#getConfigManager()}
      */
+    @Deprecated
     ConfigManager getConfigManager();
 
     /**

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 
 /**
@@ -39,11 +40,13 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * @param name The name of this target
      * @param title The title of this target
      * @param config The config manager to use for this target
+     * @param parser The command parser for this container
      * @since 0.6.4
      */
     public MessageTarget(final String icon, final String name,
-            final String title, final ConfigManager config) {
-        super(icon, name, title, config);
+            final String title, final ConfigManager config,
+            final CommandParser parser) {
+        super(icon, name, title, config, parser);
     }
 
     /**

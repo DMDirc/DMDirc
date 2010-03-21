@@ -65,7 +65,9 @@ public interface ChannelWindow extends InputWindow {
      * Returns the channel associated with this window.
      * 
      * @return Associated Channel
+     * @deprecated Use {@link #getContainer()}
      */
+    @Deprecated
     Channel getChannel();
     
     /**

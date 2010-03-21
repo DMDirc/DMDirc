@@ -24,6 +24,7 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.ui.input.InputHandler;
 
 /**
@@ -53,7 +54,9 @@ public interface InputWindow extends Window {
      * supports it.
      * 
      * @param isAway Whether the away indicator should be displayed or not
+     * @deprecated Use {@link AwayStateListener}s to listen for changes instead
      */
+    @Deprecated
     void setAwayIndicator(boolean isAway);
     
     /**

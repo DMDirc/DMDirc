@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Command parser for raw windows, sends lines directly to the parser.
@@ -39,17 +38,20 @@ public class RawCommandParser extends ServerCommandParser {
      */
     private static final long serialVersionUID = 1;
 
-    private final Server server;
+    /** The server this parser is for. */
+    private Server server;
 
     /**
      * Creates a new raw command parser for the specified server.
-     *
-     * @param server Associated server instance
      */
-    public RawCommandParser(final Server server) {
-        super(server);
+    public RawCommandParser() {
+        super();
+    }
 
-        this.server = server;
+    /** {@inheritDoc} */
+    @Override
+    public void setOwner(final FrameContainer owner) {
+        server = owner.getServer();
     }
 
     /** {@inheritDoc} */

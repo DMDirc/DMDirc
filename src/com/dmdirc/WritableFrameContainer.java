@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -49,6 +50,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /** The name of the channel notification target. */
     protected static final String NOTIFICATION_CHANNEL = "channel".intern();
 
+    /** The command parser used for commands in this container. */
+    protected final CommandParser commandParser;
+
     /**
      * Creates a new WritableFrameContainer.
      * 
@@ -56,11 +60,15 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param name The name of this container
      * @param title The title of this container
      * @param config The config manager for this container
+     * @param parser The command parser for this container
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
-            final String title, final ConfigManager config) {
+            final String title, final ConfigManager config, final CommandParser parser) {
         super(icon, name, title, config);
+
+        this.commandParser = parser;
+        parser.setOwner(this);
     }
     
     /**
@@ -69,6 +77,15 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param line The line to be sent
      */
     public abstract void sendLine(String line);
+
+    /**
+     * Retrieves the command parser to be used for this container.
+     * 
+     * @return This container's command parser
+     */
+    public CommandParser getCommandParser() {
+        return commandParser;
+    }
     
     /**
      * Returns the internal frame associated with this object.

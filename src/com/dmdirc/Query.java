@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -75,7 +76,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public Query(final Server newServer, final String newHost) {
         super("query", newServer.getParser().parseHostmask(newHost)[0],
                 newServer.getParser().parseHostmask(newHost)[0],
-                newServer.getConfigManager());
+                newServer.getConfigManager(), new QueryCommandParser());
 
         this.server = newServer;
         this.host = newHost;

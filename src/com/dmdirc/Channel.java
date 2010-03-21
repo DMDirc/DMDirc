@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.TopicChangeListener;
@@ -98,7 +99,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
-                newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()));
+                newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
+                new ChannelCommandParser());
 
         channelInfo = newChannelInfo;
         server = newServer;
