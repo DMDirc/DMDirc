@@ -34,7 +34,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.EqualComparator;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.StringTranscoder;
 
@@ -45,7 +44,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The frame container implements basic methods that should be present in
@@ -70,7 +69,7 @@ public abstract class FrameContainer {
 
     /** The children of this frame. */
     protected final Collection<FrameContainer> children
-            = new ConcurrentSkipListSet<FrameContainer>(new EqualComparator());
+            = new CopyOnWriteArrayList<FrameContainer>();
 
     /** The parent of this frame. */
     protected FrameContainer parent;
