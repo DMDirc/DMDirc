@@ -295,7 +295,9 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        getFrame().setVisible(false);
+        for (QueryWindow window : getWindows()) {
+            window.setVisible(false);
+        }
 
         // 2: Remove any callbacks or listeners
         if (server != null && server.getParser() != null) {
@@ -339,20 +341,6 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
      */
     public String getNickname() {
         return nickname;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void activateFrame() {
-        if (getFrame() == null) {
-            return;
-        }
-
-        if (!getFrame().isVisible()) {
-            getFrame().setVisible(true);
-        }
-
-        super.activateFrame();
     }
 
 }

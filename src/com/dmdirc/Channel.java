@@ -139,13 +139,6 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
                 server.getNetwork(), server.getAddress(), channelInfo.getName());
     }
 
-    /**
-     * Shows this channel's window.
-     */
-    public void show() {
-        getFrame().open();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
@@ -324,10 +317,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
 
         setIcon("channel-inactive");
 
-        synchronized (this) {
-            if (getFrame() != null) {
-                getFrame().updateNames(new ArrayList<ChannelClientInfo>());
-            }
+        for (ChannelWindow window : getWindows()) {
+            window.updateNames(new ArrayList<ChannelClientInfo>());
         }
     }
 
@@ -335,7 +326,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        getFrame().setVisible(false);
+        for (ChannelWindow window : getWindows()) {
+            window.setVisible(false);
+        }
 
         // 2: Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
@@ -384,7 +377,10 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        getFrame().addName(client);
+        for (ChannelWindow window : getWindows()) {
+            window.addName(client);
+        }
+
         tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
     }
 
@@ -394,7 +390,10 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        getFrame().removeName(client);
+        for (ChannelWindow window : getWindows()) {
+            window.removeName(client);
+        }
+
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
 
         if (client.getClient().equals(server.getParser().getLocalClient())) {
@@ -409,7 +408,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        getFrame().updateNames(clients);
+        for (ChannelWindow window : getWindows()) {
+            window.updateNames(clients);
+        }
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
@@ -435,8 +436,12 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * when (visible) user modes or nicknames change.
      */
     public void refreshClients() {
-        if (getFrame() != null && onChannel) {
-            getFrame().updateNames();
+        if (!onChannel) {
+            return;
+        }
+
+        for (ChannelWindow window : getWindows()) {
+            window.updateNames();
         }
     }
 

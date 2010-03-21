@@ -652,7 +652,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
-            newChan.show();
+            newChan.activateFrame();
         }
 
         return getChannel(chan.getName());
@@ -660,9 +660,10 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
-        if (getFrame() != null && getFrame().equals(target)) { return true; }
+        if (windows.contains(target)) { return true; }
         // Check if it's the raw frame
         if (raw != null && raw.ownsFrame(target)) { return true; }
         // Check if it's a channel frame
@@ -1116,7 +1117,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     public void windowClosing() {
         synchronized (myStateLock) {
             // 1: Make the window non-visible
-            getFrame().setVisible(false);
+            for (Window window : getWindows()) {
+                window.setVisible(false);
+            }
 
             // 2: Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
