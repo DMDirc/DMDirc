@@ -24,6 +24,7 @@ package com.dmdirc.harness;
 
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
@@ -34,8 +35,9 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     public InputWindow window = null;
     private final int lineLength;
 
-    public TestWritableFrameContainer(final int lineLength, final ConfigManager cm) {
-        super("raw", "Raw", "(Raw)", cm);
+    public TestWritableFrameContainer(final int lineLength,
+            final ConfigManager cm) {
+        super("raw", "Raw", "(Raw)", cm, GlobalCommandParser.getGlobalCommandParser());
 
         this.lineLength = lineLength;
     }
@@ -44,27 +46,33 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
         this(lineLength, IdentityManager.getGlobalConfig());
     }
 
+    @Override
     public void sendLine(final String line) {
         // Do nothing
     }
 
+    @Override
     public InputWindow getFrame() {
         return window;
     }
 
+    @Override
     public int getMaxLineLength() {
         return lineLength;
     }
 
+    @Override
     public void windowClosing() {
         System.out.println("windowClosing");
-        WindowManager.removeWindow(window);
+        WindowManager.removeWindow(this);
     }
 
+    @Override
     public void windowClosed() {
         // DO nothing
     }
 
+    @Override
     public Server getServer() {
         return null;
     }

@@ -66,4 +66,9 @@ public class TestCommandParser extends CommandParser {
                                         CommandArguments args) {
         invalidCommand = args.getCommandName();
     }
+
+    @Override
+    public void setOwner(FrameContainer owner) {
+        // Don't care
+    }
 }
