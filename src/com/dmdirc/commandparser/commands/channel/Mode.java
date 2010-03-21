@@ -52,7 +52,7 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         final ChannelInfo cChannel = channel.getChannelInfo();
 
@@ -65,7 +65,7 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             server.getParser().sendRawMessage("MODE " + channel);

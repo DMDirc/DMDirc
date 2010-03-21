@@ -49,7 +49,7 @@ public final class ChannelSettings extends ChannelCommand implements Intelligent
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         Main.getUI().showChannelSettingsDialog(channel);
     }

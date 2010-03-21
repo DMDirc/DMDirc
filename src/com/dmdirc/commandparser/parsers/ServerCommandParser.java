@@ -59,8 +59,10 @@ public class ServerCommandParser extends CommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer owner) {
-        server = (Server) owner;
+    public void setOwner(final FrameContainer<?> owner) {
+        if (server == null) {
+            server = (Server) owner;
+        }
     }
     
     /** Loads the relevant commands into the parser. */
@@ -71,7 +73,7 @@ public class ServerCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
+    protected void executeCommand(final FrameContainer<?> origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ServerCommand) {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
@@ -96,7 +98,7 @@ public class ServerCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
         server.sendLine(line);
     }
     

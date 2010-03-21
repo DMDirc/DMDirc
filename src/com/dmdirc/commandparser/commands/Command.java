@@ -46,7 +46,7 @@ public abstract class Command {
      * @param type The type of message to send
      * @param args The arguments of the message
      */
-    protected final void sendLine(final FrameContainer target,
+    protected final void sendLine(final FrameContainer<?> target,
             final boolean isSilent, final String type, final Object ... args) {
         if (!isSilent && target != null) {
             target.addLine(type, args);
@@ -61,7 +61,7 @@ public abstract class Command {
      * @param name The name of the command that's raising the error
      * @param args The arguments that the command accepts or expects
      */
-    protected final void showUsage(final FrameContainer target,
+    protected final void showUsage(final FrameContainer<?> target,
             final boolean isSilent, final String name, final String args) {
         sendLine(target, isSilent, "commandUsage", CommandManager.getCommandChar(),
                 name, args);

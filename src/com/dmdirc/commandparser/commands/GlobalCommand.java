@@ -26,7 +26,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic global command. Global commands are associated with
@@ -45,7 +44,7 @@ public abstract class GlobalCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(FrameContainer origin, boolean isSilent, CommandArguments args);
+    public abstract void execute(FrameContainer<?> origin, boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */
     @Override

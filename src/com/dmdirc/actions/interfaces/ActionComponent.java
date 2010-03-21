@@ -64,13 +64,13 @@ public interface ActionComponent {
      * Retrieves the type of class that this component applies to.
      * @return The Class that this component can be applied to
      */
-    Class appliesTo();
+    Class<?> appliesTo();
     
     /**
      * Retrieves the type of this component.
      * @return The Class of this component.
      */
-    Class getType();
+    Class<?> getType();
     
     /**
      * Retrives a friendly name for this component.

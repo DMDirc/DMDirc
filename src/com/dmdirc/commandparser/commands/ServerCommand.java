@@ -45,7 +45,7 @@ public abstract class ServerCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(FrameContainer origin, Server server,
+    public abstract void execute(FrameContainer<?> origin, Server server,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

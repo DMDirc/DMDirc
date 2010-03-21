@@ -30,7 +30,7 @@ import java.util.Comparator;
 /**
  * Compares FrameContainers by name.
  */
-public final class FrameContainerComparator implements Comparator<FrameContainer>,
+public final class FrameContainerComparator implements Comparator<FrameContainer<?>>,
         Serializable {
 
     /**
@@ -62,7 +62,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
         "item1.toString() returns a non-null value",
         "item2.toString() returns a non-null value"
     })
-    public int compare(final FrameContainer item1, final FrameContainer item2) {
+    public int compare(final FrameContainer<?> item1, final FrameContainer<?> item2) {
         Logger.assertTrue(item1 != null);
         Logger.assertTrue(item2 != null);
         Logger.assertTrue(item1.toString() != null);
@@ -91,8 +91,8 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be before the old container
      */
-    private boolean sortBefore(final FrameContainer item1,
-            final FrameContainer item2) {
+    private boolean sortBefore(final FrameContainer<?> item1,
+            final FrameContainer<?> item2) {
 
         return getPosition(item1) < getPosition(item2);
     }
@@ -104,8 +104,8 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be after the old container
      */
-    private boolean sortAfter(final FrameContainer item1,
-            final FrameContainer item2) {
+    private boolean sortAfter(final FrameContainer<?> item1,
+            final FrameContainer<?> item2) {
         return getPosition(item1) > getPosition(item2);
     }
 
@@ -116,7 +116,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item The frame container to be tested
      * @return Position of the frame container
      */
-    private int getPosition(final FrameContainer item) {
+    private int getPosition(final FrameContainer<?> item) {
         if (item instanceof GlobalWindow) {
             return 0;
         } else if (item instanceof Server) {

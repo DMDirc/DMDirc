@@ -47,7 +47,7 @@ public final class Cycle extends ChannelCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         channel.part(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "cyclemessage"));

@@ -41,12 +41,12 @@ public interface NotificationListener extends EventListener {
      * @param window The window whose notification has changed
      * @param colour The new colour of the notification
      */
-    void notificationSet(final FrameContainer window, final Color colour);
+    void notificationSet(final FrameContainer<?> window, final Color colour);
 
     /**
      * Called when a notification has been cleared.
      *
      * @param window The window whose notification has been cleared
      */
-    void notificationCleared(final FrameContainer window);
+    void notificationCleared(final FrameContainer<?> window);
 }

@@ -115,7 +115,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             targets.add("--target");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
 
-            final List<FrameContainer> windowList = new ArrayList<FrameContainer>();
+            final List<FrameContainer<?>> windowList = new ArrayList<FrameContainer<?>>();
             final Server currentServer = context.getWindow().getContainer()
                     .getServer();
 
@@ -128,8 +128,8 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             }
 
             //Global Windows
-            windowList.addAll(Arrays.asList(WindowManager.getRootWindows()));
-            for (FrameContainer customWindow : windowList) {
+            windowList.addAll(WindowManager.getRootWindows());
+            for (FrameContainer<?> customWindow : windowList) {
                 if (customWindow instanceof CustomWindow) {
                     targets.add(customWindow.getName());
                 }

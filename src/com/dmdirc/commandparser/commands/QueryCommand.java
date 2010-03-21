@@ -46,7 +46,7 @@ public abstract class QueryCommand extends Command implements CommandInfo {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    public abstract void execute(FrameContainer origin, Server server, Query query,
+    public abstract void execute(FrameContainer<?> origin, Server server, Query query,
             boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */

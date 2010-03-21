@@ -41,7 +41,7 @@ public class BanTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/ban"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

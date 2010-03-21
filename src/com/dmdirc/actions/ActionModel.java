@@ -131,14 +131,14 @@ public class ActionModel {
             return true;
         }
 
-        final FrameContainer active = WindowManager.getActiveWindow();
-        WritableFrameContainer cw = null;
+        final FrameContainer<?> active = WindowManager.getActiveWindow();
+        WritableFrameContainer<?> cw = null;
         CommandParser cp = null;
 
-        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
-            cw = (WritableFrameContainer) arguments[0];
-        } else if (active instanceof WritableFrameContainer) {
-            cw = (WritableFrameContainer) active;
+        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer<?>) {
+            cw = (WritableFrameContainer<?>) arguments[0];
+        } else if (active instanceof WritableFrameContainer<?>) {
+            cw = (WritableFrameContainer<?>) active;
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0);
         }
@@ -146,7 +146,7 @@ public class ActionModel {
         if (cw == null) {
             cp = GlobalCommandParser.getGlobalCommandParser();
         } else {
-            cp = cw.getFrame().getCommandParser();
+            cp = cw.getCommandParser();
         }
 
         for (String command : response) {

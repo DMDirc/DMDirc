@@ -44,7 +44,7 @@ public class ChangeServerTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, false, new CommandArguments("/server"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -52,7 +52,7 @@ public class ChangeServerTest {
     
     @Test
     public void testInvalidPort() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, false, new CommandArguments("/server foo:abc"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -60,7 +60,7 @@ public class ChangeServerTest {
     
     @Test
     public void testOutOfRangePort1() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, false, new CommandArguments("/server foo:0"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -68,7 +68,7 @@ public class ChangeServerTest {
     
     @Test
     public void testOutOfRangePort2() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, false, new CommandArguments("/server foo:65537"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -76,7 +76,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteBasic() throws URISyntaxException {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
@@ -88,7 +88,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteNoPort() throws URISyntaxException {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
@@ -100,7 +100,7 @@ public class ChangeServerTest {
 
     @Test
     public void testDeprecatedSSL() throws URISyntaxException {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);
@@ -112,7 +112,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteComplex() throws URISyntaxException {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         final Identity profile = mock(Identity.class);
         final Server server = mock(Server.class);
         when(server.getProfile()).thenReturn(profile);

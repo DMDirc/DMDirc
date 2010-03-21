@@ -58,7 +58,7 @@ public final class GlobalCommandParser extends CommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final FrameContainer<?> owner) {
         // Don't care
     }
     
@@ -82,7 +82,7 @@ public final class GlobalCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
+    protected void executeCommand(final FrameContainer<?> origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         ((GlobalCommand) command).execute(origin, isSilent, args);
     }
@@ -94,7 +94,7 @@ public final class GlobalCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
         if (origin == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);
         } else {

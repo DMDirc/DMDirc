@@ -38,14 +38,14 @@ public interface FrameListener {
      * @param window The server to be added
      * @param focus Should this window become focused
      */
-    void addWindow(FrameContainer window, final boolean focus);
+    void addWindow(FrameContainer<?> window, final boolean focus);
 
     /**
      * Removes a window from this frame manager.
      *
      * @param window The server to be removed
      */
-    void delWindow(FrameContainer window);
+    void delWindow(FrameContainer<?> window);
 
     /**
      * Adds a new window to this frame manager.
@@ -54,7 +54,7 @@ public interface FrameListener {
      * @param window The custom window to be added
      * @param focus Should this window become focused
      */
-    void addWindow(FrameContainer parent, FrameContainer window, final boolean focus);
+    void addWindow(FrameContainer<?> parent, FrameContainer<?> window, final boolean focus);
 
     /**
      * Removes a window from this frame manager.
@@ -62,6 +62,6 @@ public interface FrameListener {
      * @param parent The parent to which the window belongs, or null
      * @param window The custom window to be removed
      */
-    void delWindow(FrameContainer parent, FrameContainer window);
+    void delWindow(FrameContainer<?> parent, FrameContainer<?> window);
 
 }

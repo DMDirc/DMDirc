@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
@@ -88,16 +87,15 @@ public interface UIController {
      * @param owner The owner of the input window
      * @return A new custom window
      */
-    Window getWindow(FrameContainer owner);
+    Window getWindow(FrameContainer<?> owner);
     
     /**
      * Creates a new custom input window instance.
      *
      * @param owner The owner of the input window
-     * @param commandParser The command parser to be used
      * @return A new custom input window
      */
-    InputWindow getInputWindow(WritableFrameContainer owner);
+    InputWindow getInputWindow(WritableFrameContainer<?> owner);
     
     /**
      * Returns an updater dialog for the specified updates.

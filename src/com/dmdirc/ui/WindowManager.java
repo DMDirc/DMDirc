@@ -37,6 +37,7 @@ import com.dmdirc.ui.interfaces.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The WindowManager maintains a list of all open windows, and their
@@ -47,8 +48,8 @@ import java.util.List;
 public class WindowManager {
 
     /** A list of root windows. */
-    private final static List<FrameContainer> rootWindows
-            = new ArrayList<FrameContainer>();
+    private final static List<FrameContainer<?>> rootWindows
+            = new CopyOnWriteArrayList<FrameContainer<?>>();
     
     /** A list of frame listeners. */
     private final static List<FrameListener> frameListeners
@@ -63,7 +64,7 @@ public class WindowManager {
             = new WMSelectionListener();
 
     /** Active window. */
-    private static FrameContainer activeWindow;
+    private static FrameContainer<?> activeWindow;
 
     /**
      * Creates a new instance of WindowManager.
@@ -132,7 +133,7 @@ public class WindowManager {
         "The specified Window is not null",
         "The specified Window has not already been added"
     })
-    public static void addWindow(final FrameContainer window) {
+    public static void addWindow(final FrameContainer<?> window) {
         addWindow(window, true);
     }
 
@@ -147,7 +148,7 @@ public class WindowManager {
         "The specified Window is not null",
         "The specified Window has not already been added"
     })
-    public static void addWindow(final FrameContainer window, final boolean focus) {
+    public static void addWindow(final FrameContainer<?> window, final boolean focus) {
         Logger.assertTrue(window != null);
         Logger.assertTrue(!rootWindows.contains(window));
 
@@ -196,8 +197,8 @@ public class WindowManager {
     @Precondition({
         "The specified Windows are not null"
     })
-    public static void addWindow(final FrameContainer parent,
-            final FrameContainer child) {
+    public static void addWindow(final FrameContainer<?> parent,
+            final FrameContainer<?> child) {
         addWindow(parent, child, true);
     }
 
@@ -212,8 +213,8 @@ public class WindowManager {
     @Precondition({
         "The specified Windows are not null"
     })
-    public static void addWindow(final FrameContainer parent,
-            final FrameContainer child, final boolean focus) {
+    public static void addWindow(final FrameContainer<?> parent,
+            final FrameContainer<?> child, final boolean focus) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(child != null);
 
@@ -267,7 +268,7 @@ public class WindowManager {
      * @since 0.6.4
      */
     @Precondition("The specified Window is not null")
-    public static void removeWindow(final FrameContainer window) {
+    public static void removeWindow(final FrameContainer<?> window) {
         removeWindow(window, false);
     }
 
@@ -283,7 +284,7 @@ public class WindowManager {
      * @since 0.6.3
      */
     @Precondition("The specified Window is not null")
-    public static void removeWindow(final FrameContainer window, final boolean canWait) {
+    public static void removeWindow(final FrameContainer<?> window, final boolean canWait) {
         Logger.assertTrue(window != null);
 
         if (!window.getChildren().isEmpty()) {
@@ -298,7 +299,7 @@ public class WindowManager {
                 return;
             }
 
-            for (FrameContainer child : window.getChildren()) {
+            for (FrameContainer<?> child : window.getChildren()) {
                 child.close();
             }
 
@@ -317,7 +318,7 @@ public class WindowManager {
                 fireSelectionChanged(null);
             }
         } else {
-            final FrameContainer parent = window.getParent();
+            final FrameContainer<?> parent = window.getParent();
             fireDeleteWindow(parent, window);
 
             if (parent == null) {
@@ -343,7 +344,7 @@ public class WindowManager {
      * @return The specified custom window, or null
      */
     @Precondition("The specified window name is not null")
-    public static FrameContainer findCustomWindow(final String name) {
+    public static FrameContainer<?> findCustomWindow(final String name) {
         Logger.assertTrue(name != null);
 
         return findCustomWindow(rootWindows, name);
@@ -362,7 +363,8 @@ public class WindowManager {
         "The specified parent window is not null",
         "The specified parent window has been added to the Window Manager"
     })
-    public static FrameContainer findCustomWindow(final FrameContainer parent, final String name) {
+    public static FrameContainer<?> findCustomWindow(final FrameContainer<?> parent,
+            final String name) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(name != null);
 
@@ -377,9 +379,9 @@ public class WindowManager {
      * @param name The name of the custom window to search for
      * @return The custom window if found, or null otherwise
      */
-    private static FrameContainer findCustomWindow(final Collection<FrameContainer> windows,
+    private static FrameContainer<?> findCustomWindow(final Collection<FrameContainer<?>> windows,
             final String name) {
-        for (FrameContainer window : windows) {
+        for (FrameContainer<?> window : windows) {
             if (window instanceof CustomWindow
                     && ((CustomWindow) window).getName().equals(name)) {
                 return window;
@@ -399,18 +401,18 @@ public class WindowManager {
      * @deprecated Call {@link FrameContainer#getParent()} directly
      */
     @Deprecated
-    public static FrameContainer getParent(final FrameContainer window) {
+    public static FrameContainer<?> getParent(final FrameContainer<?> window) {
         return window.getParent();
     }
     
     /**
      * Retrieves all known root (parent-less) windows.
      * 
-     * @since 0.6
-     * @return An array of all known root windows.
+     * @since 0.6.4
+     * @return A collection of all known root windows.
      */
-    public static FrameContainer[] getRootWindows() {
-        return rootWindows.toArray(new FrameContainer[rootWindows.size()]);
+    public static Collection<FrameContainer<?>> getRootWindows() {
+        return rootWindows;
     }
 
     /**
@@ -419,7 +421,7 @@ public class WindowManager {
      * @return Focused window or null
      * @since 0.6.3
      */
-    public static FrameContainer getActiveWindow() {
+    public static FrameContainer<?> getActiveWindow() {
         return activeWindow;
     }
 
@@ -436,14 +438,14 @@ public class WindowManager {
     /**
      * Retrieves all children of the specified window.
      * 
-     * @since 0.6
+     * @since 0.6.4
      * @param window The window whose children are being requested
-     * @return An array of all known child windows.
+     * @return A collection of all known child windows.
      * @deprecated Call {@link FrameContainer#getChildren()} directly
      */
     @Deprecated
-    public static FrameContainer[] getChildren(final FrameContainer window) {
-        return window.getChildren().toArray(new FrameContainer[window.getChildren().size()]);
+    public static Collection<FrameContainer<?>> getChildren(final FrameContainer<?> window) {
+        return window.getChildren();
     }
     
     /**
@@ -452,7 +454,7 @@ public class WindowManager {
      * @param window The window that was added
      * @param focus Should this window become focused
      */
-    private static void fireAddWindow(final FrameContainer window, final boolean focus) {
+    private static void fireAddWindow(final FrameContainer<?> window, final boolean focus) {
         for (FrameListener listener : frameListeners) {
             listener.addWindow(window, focus);
         }
@@ -466,8 +468,8 @@ public class WindowManager {
      * @param focus Should this window become focused
      *
      */
-    private static void fireAddWindow(final FrameContainer parent, 
-            final FrameContainer child, final boolean focus) {
+    private static void fireAddWindow(final FrameContainer<?> parent,
+            final FrameContainer<?> child, final boolean focus) {
         for (FrameListener listener : frameListeners) {
             listener.addWindow(parent, child, focus);
         }
@@ -478,7 +480,7 @@ public class WindowManager {
      * 
      * @param window The window that was removed
      */
-    private static void fireDeleteWindow(final FrameContainer window) {
+    private static void fireDeleteWindow(final FrameContainer<?> window) {
         for (FrameListener listener : frameListeners) {
             listener.delWindow(window);
         }
@@ -490,7 +492,8 @@ public class WindowManager {
      * @param parent The parent window
      * @param child The child window that was removed
      */
-    private static void fireDeleteWindow(final FrameContainer parent, final FrameContainer child) {
+    private static void fireDeleteWindow(final FrameContainer<?> parent,
+            final FrameContainer<?> child) {
         for (FrameListener listener : frameListeners) {
             listener.delWindow(parent, child);
         }
@@ -502,7 +505,7 @@ public class WindowManager {
      *
      * @param window The window that is now focused (or null)
      */
-    private static void fireSelectionChanged(final FrameContainer window) {
+    private static void fireSelectionChanged(final FrameContainer<?> window) {
         for (SelectionListener listener : selListeners) {
             listener.selectionChanged(window);
         }
@@ -517,7 +520,7 @@ public class WindowManager {
 
         /** {@inheritDoc} */
         @Override
-        public void selectionChanged(final FrameContainer window) {
+        public void selectionChanged(final FrameContainer<?> window) {
             activeWindow = window;
 
             fireSelectionChanged(window);

@@ -40,7 +40,7 @@ public class NewServerTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -48,7 +48,7 @@ public class NewServerTest {
     
     @Test
     public void testInvalidPort() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:abc"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -56,7 +56,7 @@ public class NewServerTest {
     
     @Test
     public void testOutOfRangePort1() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:0"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -64,7 +64,7 @@ public class NewServerTest {
     
     @Test
     public void testOutOfRangePort2() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, false, new CommandArguments("/foo foo:65537"));
         
         verify(tiw).addLine(eq("commandError"), anyString());

@@ -42,7 +42,7 @@ public class OptionalValidator implements Validator<String> {
      *
      * @return Secondary validator
      */
-    public Validator getValidator() {
+    public Validator<String> getValidator() {
         return validator;
     }
     

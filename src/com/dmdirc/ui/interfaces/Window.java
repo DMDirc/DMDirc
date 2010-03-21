@@ -87,7 +87,7 @@ public interface Window {
      *
      * @return The container that owns this command window.
      */
-    FrameContainer getContainer();
+    FrameContainer<?> getContainer();
 
     /**
      * Determines if the current window is visible.
@@ -174,6 +174,14 @@ public interface Window {
     /**
      * Requests that this object's frame be activated.
      */
-    public void activateFrame();
+    void activateFrame();
+
+    /**
+     * Retrieves the UI controller this window is associated with.
+     *
+     * @return This window's UI controller
+     * @since 0.6.4
+     */
+    UIController getController();
 
 }

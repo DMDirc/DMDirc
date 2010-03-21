@@ -103,7 +103,7 @@ public class ActionSubstitutor {
         final Map<String, String> res = new HashMap<String, String>();
         
         int i = 0;
-        for (Class myClass : type.getType().getArgTypes()) {
+        for (Class<?> myClass : type.getType().getArgTypes()) {
             for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
                 final String key = "{" + i + "." + comp.toString() + "}";
                 final String desc = type.getType().getArgNames()[i] + "'s " + comp.getName();
@@ -146,7 +146,7 @@ public class ActionSubstitutor {
      * @return True if this action type's first arg extends or is a FrameContainer
      */
     private boolean hasFrameContainer() {
-        Class target = null;
+        Class<?> target = null;
         
         if (type.getType().getArgTypes().length > 0) {
             target = type.getType().getArgTypes()[0];
@@ -260,7 +260,7 @@ public class ActionSubstitutor {
         }
 
         if (hasFrameContainer() && serverMatcher.matches()) {
-            final Server server = ((FrameContainer) args[0]).getServer();
+            final Server server = ((FrameContainer<?>) args[0]).getServer();
 
             if (server != null) {
                 try {
@@ -291,8 +291,8 @@ public class ActionSubstitutor {
      */
     protected String checkConnection(final ActionComponentChain chain,
             final Object[] args, final Object argument) {
-        if ((chain.requiresConnection() && args[0] instanceof FrameContainer
-                    && ((FrameContainer) args[0]).getServer().getState()
+        if ((chain.requiresConnection() && args[0] instanceof FrameContainer<?>
+                    && ((FrameContainer<?>) args[0]).getServer().getState()
                     == ServerState.CONNECTED) || !chain.requiresConnection()) {
             return chain.get(argument).toString();
         }
@@ -312,10 +312,10 @@ public class ActionSubstitutor {
      */
     protected ConfigManager getConfigManager(final Object ... args) {
         for (Object arg : args) {
-            if (arg instanceof FrameContainer) {
-                return ((FrameContainer) arg).getConfigManager();
+            if (arg instanceof FrameContainer<?>) {
+                return ((FrameContainer<?>) arg).getConfigManager();
             } else if (arg instanceof Window) {
-                return ((Window) arg).getConfigManager();
+                return ((Window) arg).getContainer().getConfigManager();
             }
         }
 

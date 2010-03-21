@@ -48,7 +48,7 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
         ActionManager.loadActions();
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Actions reloaded.");

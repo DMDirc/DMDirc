@@ -40,7 +40,6 @@ import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 
 import java.awt.Toolkit;
@@ -52,14 +51,11 @@ import java.util.List;
  * corresponding QueryWindow, and handles user input for the query.
  * @author chris
  */
-public class Query extends MessageTarget implements PrivateActionListener,
+public class Query extends MessageTarget<QueryWindow> implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener {
 
     /** The Server this Query is on. */
     private Server server;
-
-    /** The QueryWindow used for this Query. */
-    private QueryWindow window;
 
     /** The full host and nickname of the client associated with this Query. */
     private String host, nickname;
@@ -76,27 +72,23 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public Query(final Server newServer, final String newHost) {
         super("query", newServer.getParser().parseHostmask(newHost)[0],
                 newServer.getParser().parseHostmask(newHost)[0],
-                newServer.getConfigManager(), new QueryCommandParser());
+                QueryWindow.class, newServer.getConfigManager(),
+                new QueryCommandParser());
 
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.getParser().parseHostmask(host)[0];
 
-        window = Main.getUI().getQuery(this);
-        WindowManager.addWindow(server, this);
+        WindowManager.addWindow(server, this,
+                !getConfigManager().getOptionBool("general", "hidequeries"));
 
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
-
-        if (!server.getConfigManager().getOptionBool("general", "hidequeries")) {
-            window.open();
-        }
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_QUERY));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
-        window.getInputHandler().setTabCompleter(tabCompleter);
 
         if (!server.getState().isDisconnected()) {
             reregister();
@@ -105,24 +97,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
         updateTitle();
     }
 
-    /**
-     * Shows this query's window.
-     */
-    public void show() {
-        window.open();
-    }
-
     /** {@inheritDoc} */
     @Override
-    public InputWindow getFrame() {
-        return window;
-    }
-
-    /**
-     * Returns the tab completer for this query.
-     *
-     * @return This query's tab completer
-     */
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
@@ -319,7 +295,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        window.setVisible(false);
+        getFrame().setVisible(false);
 
         // 2: Remove any callbacks or listeners
         if (server != null && server.getParser() != null) {
@@ -344,7 +320,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null;
         server = null;
     }
 
@@ -369,12 +344,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
     /** {@inheritDoc} */
     @Override
     public void activateFrame() {
-        if (window == null) {
+        if (getFrame() == null) {
             return;
         }
 
-        if (!window.isVisible()) {
-            show();
+        if (!getFrame().isVisible()) {
+            getFrame().setVisible(true);
         }
 
         super.activateFrame();

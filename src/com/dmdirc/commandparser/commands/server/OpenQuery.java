@@ -52,7 +52,7 @@ public final class OpenQuery extends ServerCommand implements
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "query", "<target> <message>");
@@ -72,7 +72,7 @@ public final class OpenQuery extends ServerCommand implements
         if (server.hasQuery(args.getArguments()[0])) {
             server.getQuery(args.getArguments()[0]).activateFrame();
         } else {
-            server.getQuery(args.getArguments()[0]).show();
+            server.getQuery(args.getArguments()[0]).activateFrame();
         }
 
         if (args.getArguments().length > 1) {

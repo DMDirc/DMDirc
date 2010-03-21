@@ -51,7 +51,7 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "kick", "<user> [reason]");

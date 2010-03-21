@@ -42,12 +42,12 @@ public abstract class EventHandler implements CallbackInterface {
      */
     @SuppressWarnings("unchecked")
     public void registerCallbacks() {
-        final CallbackManager cbm = getServer().getParser().getCallbackManager();
+        final CallbackManager<?> cbm = getServer().getParser().getCallbackManager();
         
         try {
-            for (Class iface : this.getClass().getInterfaces()) {
+            for (Class<?> iface : this.getClass().getInterfaces()) {
                 if (CallbackInterface.class.isAssignableFrom(iface)) {
-                    addCallback(cbm, iface);
+                    addCallback(cbm, iface.asSubclass(CallbackInterface.class));
                 }
             }
         } catch (CallbackNotFoundException exception) {
@@ -75,7 +75,7 @@ public abstract class EventHandler implements CallbackInterface {
      */
     @SuppressWarnings("unchecked")
     protected abstract <T extends CallbackInterface> void addCallback(
-            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException;
+            final CallbackManager<?> cbm, final Class<T> type) throws CallbackNotFoundException;
     
     /**
      * Retrieves the server belonging to this EventHandler's owner.

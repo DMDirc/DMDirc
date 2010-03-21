@@ -63,7 +63,7 @@ public final class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    protected <T extends CallbackInterface> void addCallback(final CallbackManager cbm,
+    protected <T extends CallbackInterface> void addCallback(final CallbackManager<?> cbm,
             final Class<T> type) {
         if (OtherAwayStateListener.class.equals(type)) {
             cbm.addCallback(type, (T) this);
