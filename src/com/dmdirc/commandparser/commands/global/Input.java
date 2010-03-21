@@ -50,7 +50,7 @@ public class Input extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
 
         if (args.getArguments().length == 0) {
@@ -59,10 +59,10 @@ public class Input extends GlobalCommand implements IntelligentCommand {
             return;
         } else if (args.getArguments().length == 1
                 && "--clear".equals(args.getArgumentsAsString(0))) {
-            ((WritableFrameContainer) origin).getFrame()
+            ((WritableFrameContainer<?>) origin).getFrame()
                     .getInputHandler().clearInputField();
         } else {
-            ((WritableFrameContainer) origin).getFrame()
+            ((WritableFrameContainer<?>) origin).getFrame()
                     .getInputHandler().addToInputField(args.getArgumentsAsString());
         }
     }

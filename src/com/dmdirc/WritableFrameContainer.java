@@ -29,8 +29,8 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +40,10 @@ import java.util.List;
  * class that allow the sending of lines back to whatever the container's
  * data source is (e.g. an IRC channel or server).
  *
+ * @param <T> The type of window which should be used for this frame container.
  * @author chris
  */
-public abstract class WritableFrameContainer extends FrameContainer {
+public abstract class WritableFrameContainer<T extends InputWindow> extends FrameContainer<T> {
     
     /** The name of the server notification target. */
     protected static final String NOTIFICATION_SERVER = "server".intern();
@@ -59,13 +60,15 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
+     * @param windowClass The class of window to use to represent this container
      * @param config The config manager for this container
      * @param parser The command parser for this container
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
-            final String title, final ConfigManager config, final CommandParser parser) {
-        super(icon, name, title, config);
+            final String title, final Class<T> windowClass,
+            final ConfigManager config, final CommandParser parser) {
+        super(icon, name, title, windowClass, config);
 
         this.commandParser = parser;
         parser.setOwner(this);
@@ -86,14 +89,13 @@ public abstract class WritableFrameContainer extends FrameContainer {
     public CommandParser getCommandParser() {
         return commandParser;
     }
-    
+
     /**
-     * Returns the internal frame associated with this object.
+     * Retrieves the tab completer which should be used for this cotnainer.
      *
-     * @return The internal frame associated with this object
+     * @return This container's tab completer
      */
-    @Override
-    public abstract InputWindow getFrame();
+    public abstract TabCompleter getTabCompleter();
     
     /**
      * Returns the maximum length that a line passed to sendLine() should be,
@@ -273,7 +275,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
-            FrameContainer targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
+            FrameContainer<?> targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
 
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName, getServer());
@@ -289,25 +291,24 @@ public abstract class WritableFrameContainer extends FrameContainer {
 
             final String command = String.format(target.substring(12), escapedargs);
 
-            WritableFrameContainer best = this;
+            WritableFrameContainer<?> best = this;
             long besttime = 0;
 
-            final List<FrameContainer> containers = new ArrayList<FrameContainer>();
+            final List<FrameContainer<?>> containers = new ArrayList<FrameContainer<?>>();
             
             containers.add(getServer());
             containers.addAll(getServer().getChildren());
 
-            for (FrameContainer container : containers) {
-                final Window window = container.getFrame();
-
-                if (window == null || !(window instanceof InputWindow)) {
+            for (FrameContainer<?> container : containers) {
+                if (container == null || !(container instanceof WritableFrameContainer<?>)) {
                     continue;
                 }
 
-                final long time = ((InputWindow) window).getCommandParser().getCommandTime(command);
+                final long time = ((WritableFrameContainer<?>) container)
+                        .getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
-                    best = (WritableFrameContainer) container;
+                    best = (WritableFrameContainer<?>) container;
                 }
             }
 

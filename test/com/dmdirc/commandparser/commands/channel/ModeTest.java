@@ -66,7 +66,7 @@ public class ModeTest {
 
     @Test
     public void testWithoutArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
+        final FrameContainer<?> origin = mock(FrameContainer.class);
         
         command.execute(origin, server, channel, false, new CommandArguments("/mode"));
 
@@ -75,7 +75,7 @@ public class ModeTest {
 
     @Test
     public void testWithArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
+        final FrameContainer<?> origin = mock(FrameContainer.class);
 
         command.execute(origin, server, channel, false, new CommandArguments("/mode +hello -bye"));
 
@@ -84,7 +84,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
+        final FrameContainer<?> origin = mock(FrameContainer.class);
 
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode +hello -bye"));
@@ -94,7 +94,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithoutArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
+        final FrameContainer<?> origin = mock(FrameContainer.class);
 
         command.execute(origin, server, "#chan", false,
                 new CommandArguments("/mode"));

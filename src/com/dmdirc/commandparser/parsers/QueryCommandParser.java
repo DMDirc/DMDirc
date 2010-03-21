@@ -61,8 +61,10 @@ public final class QueryCommandParser extends CommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer owner) {
-        query = (Query) owner;
+    public void setOwner(final FrameContainer<?> owner) {
+        if (query == null) {
+            query = (Query) owner;
+        }
     }
     
     /** Loads the relevant commands into the parser. */
@@ -74,7 +76,7 @@ public final class QueryCommandParser extends CommandParser {
     
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
+    protected void executeCommand(final FrameContainer<?> origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, query.getServer(), query, isSilent, args);
@@ -94,7 +96,7 @@ public final class QueryCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
         query.sendLine(line);
     }
     

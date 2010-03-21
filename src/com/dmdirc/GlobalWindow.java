@@ -38,10 +38,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  *
  * @author chris
  */
-public class GlobalWindow extends WritableFrameContainer {
-
-    /** The window we're using. */
-    private InputWindow window;
+public class GlobalWindow extends WritableFrameContainer<InputWindow> {
 
     /** The global window that's in use, if any. */
     private static GlobalWindow globalWindow;
@@ -51,7 +48,8 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon", "Global", "(Global)", IdentityManager.getGlobalConfig(),
+        super("icon", "Global", "(Global)", InputWindow.class,
+                IdentityManager.getGlobalConfig(),
                 GlobalCommandParser.getGlobalCommandParser());
 
         tabCompleter = new TabCompleter();
@@ -60,26 +58,14 @@ public class GlobalWindow extends WritableFrameContainer {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
 
-        window = Main.getUI().getInputWindow(this);
-
-        window.getInputHandler().setTabCompleter(tabCompleter);
-
         WindowManager.addWindow(this);
-
-        window.open();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public InputWindow getFrame() {
-        return window;
-    }
-    
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        window.setVisible(false);
+        getFrame().setVisible(false);
 
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
@@ -94,7 +80,6 @@ public class GlobalWindow extends WritableFrameContainer {
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null;
         globalWindow = null;
     }
 

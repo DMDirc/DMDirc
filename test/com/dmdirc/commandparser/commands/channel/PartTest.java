@@ -38,7 +38,7 @@ public class PartTest {
 
     private final Part command = new Part();
     private Channel channel;
-    private FrameContainer origin;
+    private FrameContainer<?> origin;
     private ConfigManager manager;
 
     @BeforeClass

@@ -49,15 +49,15 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
         final String command = args.getArgumentsAsString();
         
-        final FrameContainer window = WindowManager.getActiveWindow();
+        final FrameContainer<?> window = WindowManager.getActiveWindow();
         
-        if (window != null && window instanceof WritableFrameContainer) {
-            ((WritableFrameContainer) window).getFrame()
-                    .getCommandParser().parseCommand(window, command);
+        if (window != null && window instanceof WritableFrameContainer<?>) {
+            ((WritableFrameContainer<?>) window).getCommandParser()
+                    .parseCommand(window, command);
         }
     }
     

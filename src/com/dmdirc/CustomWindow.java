@@ -31,10 +31,7 @@ import com.dmdirc.ui.interfaces.Window;
  *
  * @author chris
  */
-public class CustomWindow extends FrameContainer {
-
-    /** The window used by this container. */
-    private Window window;
+public class CustomWindow extends FrameContainer<Window> {
 
     /**
      * Creates a new custom window as a child of the specified window.
@@ -44,14 +41,10 @@ public class CustomWindow extends FrameContainer {
      * @param parent The parent of this custom window
      */
     public CustomWindow(final String name, final String title,
-            final FrameContainer parent) {
-        super("custom", name, title, parent.getConfigManager());
-
-        window = Main.getUI().getWindow(this);
+            final FrameContainer<?> parent) {
+        super("custom", name, title, Window.class, parent.getConfigManager());
 
         WindowManager.addWindow(parent, this);
-
-        window.open();
     }
 
     /**
@@ -61,26 +54,16 @@ public class CustomWindow extends FrameContainer {
      * @param title The parent of this custom window
      */
     public CustomWindow(final String name, final String title) {
-        super("custom", name, title, IdentityManager.getGlobalConfig());
-
-        window = Main.getUI().getWindow(this);
+        super("custom", name, title, Window.class, IdentityManager.getGlobalConfig());
 
         WindowManager.addWindow(this);
-
-        window.open();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Window getFrame() {
-        return window;
     }
 
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        window.setVisible(false);
+        getFrame().setVisible(false);
 
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
@@ -95,7 +78,6 @@ public class CustomWindow extends FrameContainer {
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null; // NOPMD
         parent = null; // NOPMD
     }
 

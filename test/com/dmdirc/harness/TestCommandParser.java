@@ -49,7 +49,7 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(FrameContainer origin, boolean isSilent,
+    protected void executeCommand(FrameContainer<?> origin, boolean isSilent,
                                   Command command, CommandArguments args) {
         executedCommand = command;
         wasSilent = isSilent;
@@ -57,18 +57,18 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void handleNonCommand(FrameContainer origin, String line) {
+    protected void handleNonCommand(FrameContainer<?> origin, String line) {
         nonCommandLine = line;
     }
 
     @Override
-    protected void handleInvalidCommand(FrameContainer origin,
+    protected void handleInvalidCommand(FrameContainer<?> origin,
                                         CommandArguments args) {
         invalidCommand = args.getCommandName();
     }
 
     @Override
-    public void setOwner(FrameContainer owner) {
+    public void setOwner(FrameContainer<?> owner) {
         // Don't care
     }
 }

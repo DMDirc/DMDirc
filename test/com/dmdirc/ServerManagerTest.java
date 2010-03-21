@@ -101,26 +101,7 @@ public class ServerManagerTest {
         
         assertEquals(instance.getServers().size(), instance.numServers());
     }
-    
-    @Test
-    public void testGetServerFromFrame() throws URISyntaxException {
-        final Server serverA = new Server(new URI("irc-test://255.255.255.255"),
-                IdentityManager.getProfiles().get(0));
-        final Server serverB = new Server(new URI("irc-test://255.255.255.254"),
-                IdentityManager.getProfiles().get(0));
-        serverA.connect();
-        serverB.connect();
         
-        final ServerManager sm = ServerManager.getServerManager();
-        
-        assertEquals(serverA, sm.getServerFromFrame(serverA.getFrame()));
-        assertEquals(serverB, sm.getServerFromFrame(serverB.getFrame()));
-        assertNull(sm.getServerFromFrame(new DummyQueryWindow(serverB)));
-        
-        serverA.close();
-        serverB.close();
-    }
-    
     @Test
     public void testGetServerByAddress() {
         final Server serverA = mock(Server.class);

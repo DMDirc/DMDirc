@@ -564,7 +564,7 @@ public final class ActionManager {
         }
 
         for (ActionType target : actionTypes) {
-            if (((Enum) target).name().equals(type)) {
+            if (((Enum<?>) target).name().equals(type)) {
                 return target;
             }
         }
@@ -601,7 +601,7 @@ public final class ActionManager {
      * @return A list of compatible action components
      */
     @Precondition("The specified target is not null")
-    public static List<ActionComponent> getCompatibleComponents(final Class target) {
+    public static List<ActionComponent> getCompatibleComponents(final Class<?> target) {
         Logger.assertTrue(target != null);
 
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
@@ -622,7 +622,7 @@ public final class ActionManager {
      * @return A list of compatible action comparisons
      */
     @Precondition("The specified target is not null")
-    public static List<ActionComparison> getCompatibleComparisons(final Class target) {
+    public static List<ActionComparison> getCompatibleComparisons(final Class<?> target) {
         Logger.assertTrue(target != null);
 
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
@@ -666,7 +666,7 @@ public final class ActionManager {
         Logger.assertTrue(!type.isEmpty());
 
         for (ActionComponent target : actionComponents) {
-            if (((Enum) target).name().equals(type)) {
+            if (((Enum<?>) target).name().equals(type)) {
                 return target;
             }
         }
@@ -687,7 +687,7 @@ public final class ActionManager {
         Logger.assertTrue(!type.isEmpty());
 
         for (ActionComparison target : actionComparisons) {
-            if (((Enum) target).name().equals(type)) {
+            if (((Enum<?>) target).name().equals(type)) {
                 return target;
             }
         }

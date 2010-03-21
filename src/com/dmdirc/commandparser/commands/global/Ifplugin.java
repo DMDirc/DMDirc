@@ -53,7 +53,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
         if (args.getArguments().length <= 1) {
             showUsage(origin, isSilent, "ifplugin", "<[!]plugin> <command>");
@@ -77,7 +77,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
                         args.getArgumentsAsString(1));
             } else {
-                ((WritableFrameContainer) origin).getFrame().getCommandParser()
+                ((WritableFrameContainer<?>) origin).getCommandParser()
                         .parseCommand(origin, args.getArgumentsAsString(1));
             }
         }

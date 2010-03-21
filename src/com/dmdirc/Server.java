@@ -27,7 +27,6 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.RawCommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
@@ -50,7 +49,6 @@ import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
@@ -77,7 +75,7 @@ import javax.net.ssl.TrustManager;
  *
  * @author chris
  */
-public class Server extends WritableFrameContainer implements ConfigChangeListener {
+public class Server extends WritableFrameContainer<ServerWindow> implements ConfigChangeListener {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
@@ -122,9 +120,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The raw frame used for this server instance. */
     private Raw raw;
 
-    /** The ServerWindow corresponding to this server. */
-    private ServerWindow window;
-
     /** The address of the server we're connecting to. */
     private URI address;
 
@@ -143,7 +138,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
     /** The last activated internal frame for this server. */
-    private FrameContainer activeFrame = this;
+    private FrameContainer<?> activeFrame = this;
 
     /** Our reason for being away, if any. */
     private String awayMessage;
@@ -176,13 +171,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", uri.getHost(), uri.getHost(),
+                ServerWindow.class,
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser());
 
         this.address = uri;
         this.profile = profile;
-
-        window = Main.getUI().getServer(this);
 
         ServerManager.getServerManager().registerServer(this);
         WindowManager.addWindow(this);
@@ -194,11 +188,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
 
-        window.getInputHandler().setTabCompleter(tabCompleter);
-
         updateIcon();
-
-        window.open();
 
         new Timer("Server Who Timer").schedule(new TimerTask() {
             @Override
@@ -672,7 +662,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
-        if (window != null && window.equals(target)) { return true; }
+        if (getFrame() != null && getFrame().equals(target)) { return true; }
         // Check if it's the raw frame
         if (raw != null && raw.ownsFrame(target)) { return true; }
         // Check if it's a channel frame
@@ -691,7 +681,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      *
      * @param source The frame that was activated
      */
-    public void setActiveFrame(final FrameContainer source) {
+    public void setActiveFrame(final FrameContainer<?> source) {
         activeFrame = source;
     }
 
@@ -1094,19 +1084,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return awayMessage;
     }
 
-    /**
-     * Returns the tab completer for this connection.
-     *
-     * @return The tab completer for this server
-     */
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
-    }
-
     /** {@inheritDoc} */
     @Override
-    public InputWindow getFrame() {
-        return window;
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
     }
 
     /**
@@ -1135,7 +1116,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public void windowClosing() {
         synchronized (myStateLock) {
             // 1: Make the window non-visible
-            window.setVisible(false);
+            getFrame().setVisible(false);
 
             // 2: Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
@@ -1166,7 +1147,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null; //NOPMD
         oldParser = null; //NOPMD
         parser = null; //NOPMD
     }

@@ -49,8 +49,8 @@ public class ActionComponentChain implements ActionComponent {
      * @param source The class that this chain needs to start with
      * @param chain The textual representation of the chain
      */
-    public ActionComponentChain(final Class source, final String chain) {
-        Class current = source;
+    public ActionComponentChain(final Class<?> source, final String chain) {
+        Class<?> current = source;
         
         for (String componentName : chain.split("\\.")) {
             final ActionComponent component = ActionManager.getActionComponent(componentName);
@@ -88,7 +88,7 @@ public class ActionComponentChain implements ActionComponent {
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
-    public Class appliesTo() {
+    public Class<?> appliesTo() {
         Logger.assertTrue(!components.isEmpty());
         
         return components.get(0).appliesTo();
@@ -97,7 +97,7 @@ public class ActionComponentChain implements ActionComponent {
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
-    public Class getType() {
+    public Class<?> getType() {
         Logger.assertTrue(!components.isEmpty());
         
         return components.get(components.size() - 1).getType();

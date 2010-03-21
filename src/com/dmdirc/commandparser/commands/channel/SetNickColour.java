@@ -53,7 +53,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked") @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         
         int offset = 0;

@@ -37,7 +37,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
@@ -56,16 +55,13 @@ import java.util.Map;
  *
  * @author chris
  */
-public class Channel extends MessageTarget implements ConfigChangeListener {
+public class Channel extends MessageTarget<ChannelWindow> implements ConfigChangeListener {
 
     /** The parser's pChannel class. */
     private transient ChannelInfo channelInfo;
 
     /** The server this channel is on. */
     private Server server;
-
-    /** The ChannelWindow used for this channel. */
-    private ChannelWindow window;
 
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
@@ -98,6 +94,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
+                ChannelWindow.class,
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
                 new ChannelCommandParser());
@@ -121,9 +118,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
 
-        window = Main.getUI().getChannel(Channel.this);
         WindowManager.addWindow(server, this);
-        window.getInputHandler().setTabCompleter(tabCompleter);
 
         eventHandler = new ChannelEventHandler(this);
 
@@ -148,7 +143,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * Shows this channel's window.
      */
     public void show() {
-        window.open();
+        getFrame().open();
     }
 
     /** {@inheritDoc} */
@@ -246,21 +241,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         registerCallbacks();
     }
 
-    /**
-     * Returns the internal window belonging to this object.
-     *
-     * @return This object's internal window
-     */
+    /** {@inheritDoc} */
     @Override
-    public InputWindow getFrame() {
-        return window;
-    }
-
-    /**
-     * Returns the tab completer for this channel.
-     *
-     * @return This channel's tab completer
-     */
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
@@ -343,8 +325,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         setIcon("channel-inactive");
 
         synchronized (this) {
-            if (window != null) {
-                window.updateNames(new ArrayList<ChannelClientInfo>());
+            if (getFrame() != null) {
+                getFrame().updateNames(new ArrayList<ChannelClientInfo>());
             }
         }
     }
@@ -353,7 +335,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        window.setVisible(false);
+        getFrame().setVisible(false);
 
         // 2: Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
@@ -382,7 +364,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     public void windowClosed() {
         // 7: Remove any references to the window and parents
         synchronized (this) {
-            window = null; // NOPMD
             server = null; // NOPMD
         }
     }
@@ -403,7 +384,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        window.addName(client);
+        getFrame().addName(client);
         tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
     }
 
@@ -413,7 +394,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        window.removeName(client);
+        getFrame().removeName(client);
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
 
         if (client.getClient().equals(server.getParser().getLocalClient())) {
@@ -428,7 +409,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        window.updateNames(clients);
+        getFrame().updateNames(clients);
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
@@ -454,8 +435,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * when (visible) user modes or nicknames change.
      */
     public void refreshClients() {
-        if (window != null && onChannel) {
-            window.updateNames();
+        if (getFrame() != null && onChannel) {
+            getFrame().updateNames();
         }
     }
 

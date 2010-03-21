@@ -39,6 +39,6 @@ public interface SelectionListener extends EventListener {
      *
      * @param window The window that's now selected
      */
-    void selectionChanged(final FrameContainer window);
+    void selectionChanged(final FrameContainer<?> window);
 
 }

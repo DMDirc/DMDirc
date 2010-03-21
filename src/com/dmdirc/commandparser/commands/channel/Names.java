@@ -52,7 +52,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final Channel channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel.getChannelInfo().getName());
     }
@@ -60,7 +60,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel);
     }    

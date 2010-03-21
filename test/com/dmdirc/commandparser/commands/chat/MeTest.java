@@ -41,7 +41,7 @@ public class MeTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, null, null, false, new CommandArguments("/foo"));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -49,7 +49,7 @@ public class MeTest {
     
     @Test
     public void testSend() {
-        final MessageTarget mtt = mock(MessageTarget.class);
+        final MessageTarget<?> mtt = mock(MessageTarget.class);
         command.execute(null, null, mtt, false, new CommandArguments("/foo hello meep moop"));
 
         verify(mtt).sendAction("hello meep moop");

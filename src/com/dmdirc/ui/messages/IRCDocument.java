@@ -56,7 +56,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Cached attributed strings. */
     private transient RollingList<AttributedString> cachedStrings;
     /** Container that owns this document. */
-    private final FrameContainer container;
+    private final FrameContainer<?> container;
     /** Font size. */
     private int fontSize;
     /** Font name. */
@@ -70,7 +70,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param container The container that owns this document
      * @since 0.6.3
      */
-    public IRCDocument(final FrameContainer container) {
+    public IRCDocument(final FrameContainer<?> container) {
         this.container = container;
 
         lines = new ArrayList<Line>();

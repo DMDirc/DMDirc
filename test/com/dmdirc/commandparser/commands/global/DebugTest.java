@@ -39,7 +39,7 @@ public class DebugTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo"));
         
@@ -48,7 +48,7 @@ public class DebugTest {
     
     @Test
     public void testInvalidArg() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo flubadee"));
         

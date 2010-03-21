@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.RawCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -31,6 +30,7 @@ import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -38,14 +38,11 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends WritableFrameContainer implements DataInListener,
-        DataOutListener {
+public final class Raw extends WritableFrameContainer<InputWindow>
+        implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
     private Server server;
-
-    /** An InputWindow used for displaying the raw data.*/
-    private InputWindow window;
 
     /**
      * Creates a new instance of Raw.
@@ -53,15 +50,12 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
-        super("raw", "Raw", "(Raw log)", newServer.getConfigManager(), new RawCommandParser());
+        super("raw", "Raw", "(Raw log)", InputWindow.class,
+                newServer.getConfigManager(), new RawCommandParser());
 
         this.server = newServer;
 
-        window = Main.getUI().getInputWindow(this);
         WindowManager.addWindow(server, this);
-        window.getInputHandler().setTabCompleter(server.getTabCompleter());
-
-        window.open();
     }
 
     /**
@@ -80,7 +74,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        window.setVisible(false);
+        getFrame().setVisible(false);
 
         // 2: Remove any callbacks or listeners
         if (server.getParser() != null) {
@@ -101,14 +95,7 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        window = null;
         server = null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public InputWindow getFrame() {
-        return window;
     }
 
     /** {@inheritDoc} */
@@ -142,6 +129,12 @@ public final class Raw extends WritableFrameContainer implements DataInListener,
     @Override
     public int getMaxLineLength() {
         return server.getMaxLineLength();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TabCompleter getTabCompleter() {
+        return server.getTabCompleter();
     }
 
 }

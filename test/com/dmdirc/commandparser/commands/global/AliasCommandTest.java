@@ -40,7 +40,7 @@ public class AliasCommandTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
 
         command.execute(tiw, false, new CommandArguments("/foo"));
         
@@ -49,7 +49,7 @@ public class AliasCommandTest {
     
     @Test
     public void testUsageOneArg() {
-        final FrameContainer tiw = mock(FrameContainer.class);
+        final FrameContainer<?> tiw = mock(FrameContainer.class);
         
         command.execute(tiw, false, new CommandArguments("/foo --remove"));
         

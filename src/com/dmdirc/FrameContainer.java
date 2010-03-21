@@ -50,9 +50,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
  *
+ * @param <T> The type of window which should be used for this frame container.
  * @author chris
  */
-public abstract class FrameContainer {
+public abstract class FrameContainer<T extends Window> {
 
     /** Logger to use. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
@@ -68,11 +69,18 @@ public abstract class FrameContainer {
     protected final IRCDocument document;
 
     /** The children of this frame. */
-    protected final Collection<FrameContainer> children
-            = new CopyOnWriteArrayList<FrameContainer>();
+    protected final Collection<FrameContainer<?>> children
+            = new CopyOnWriteArrayList<FrameContainer<?>>();
+
+    /** The windows representing of this frame. */
+    protected final Collection<T> windows
+            = new CopyOnWriteArrayList<T>();
+
+    /** The class of windows we want to represent this container. */
+    protected final Class<T> windowClass;
 
     /** The parent of this frame. */
-    protected FrameContainer parent;
+    protected FrameContainer<?> parent;
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
@@ -101,14 +109,16 @@ public abstract class FrameContainer {
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
+     * @param windowClass The class of windows required to represent this container
      * @param config The config manager for this container
      * @since 0.6.4
      */
     public FrameContainer(final String icon, final String name,
-            final String title, final ConfigManager config) {
+            final String title, final Class<T> windowClass, final ConfigManager config) {
         this.config = config;
         this.name = name;
         this.title = title;
+        this.windowClass = windowClass;
         this.styliser = new Styliser(this);
         this.document = new IRCDocument(this);
 
@@ -130,8 +140,12 @@ public abstract class FrameContainer {
      * Returns the internal frame associated with this object.
      *
      * @return The internal frame associated with this object
+     * @deprecated Use {@link #getWindows()} instead
      */
-    public abstract Window getFrame();
+    @Deprecated
+    public final T getFrame() {
+        return getWindows().isEmpty() ? null : getWindows().iterator().next();
+    }
 
     /**
      * Returns a collection of direct children of this frame.
@@ -139,7 +153,7 @@ public abstract class FrameContainer {
      * @return This frame's children
      * @since 0.6.4
      */
-    public Collection<FrameContainer> getChildren() {
+    public Collection<FrameContainer<?>> getChildren() {
         return Collections.unmodifiableCollection(children);
     }
 
@@ -149,7 +163,7 @@ public abstract class FrameContainer {
      * @param child The window to be added
      * @since 0.6.4
      */
-    public void addChild(final FrameContainer child) {
+    public void addChild(final FrameContainer<?> child) {
         children.add(child);
         child.setParent(this);
     }
@@ -160,7 +174,7 @@ public abstract class FrameContainer {
      * @param child The window to be removed
      * @since 0.6.4
      */
-    public void removeChild(final FrameContainer child) {
+    public void removeChild(final FrameContainer<?> child) {
         children.remove(child);
     }
 
@@ -172,7 +186,7 @@ public abstract class FrameContainer {
      * @param parent The new parent for this container
      * @since 0.6.4
      */
-    public synchronized void setParent(final FrameContainer parent) {
+    public synchronized void setParent(final FrameContainer<?> parent) {
         if (this.parent != null && !parent.equals(this.parent)) {
             this.parent.removeChild(this);
         }
@@ -186,7 +200,7 @@ public abstract class FrameContainer {
      * @return This container's parent, or null if it is a top level window.
      * @since 0.6.4
      */
-    public FrameContainer getParent() {
+    public FrameContainer<?> getParent() {
         return parent;
     }
 
@@ -369,7 +383,7 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final FrameContainer activeWindow = WindowManager.getActiveWindow();
+        final FrameContainer<?> activeWindow = WindowManager.getActiveWindow();
 
         if (activeWindow != null && !activeWindow.equals(this)
                 && !colour.equals(notification)) {
@@ -587,7 +601,48 @@ public abstract class FrameContainer {
     public void removeFrameInfoListener(final FrameInfoListener listener) {
         listeners.remove(FrameInfoListener.class, listener);
     }
-    
+
+    /**
+     * Adds a new window to this container.
+     *
+     * @param window The window to be added
+     * @since 0.6.4
+     */
+    public void addWindow(T window) {
+        windows.add(window);
+    }
+
+    /**
+     * Removes the specified window from this container.
+     *
+     * @param window The window to be removed
+     * @since 0.6.4
+     */
+    public void removeWindow(T window) {
+        windows.remove(window);
+    }
+
+    /**
+     * Retrieves a collection of windows that represent this container.
+     *
+     * @return The collection of windows currently representing this container
+     * @since 0.6.4
+     */
+    public Collection<T> getWindows() {
+        return windows;
+    }
+
+    /**
+     * Retrieves the class of windows which should be used to represent this
+     * container.
+     *
+     * @return This container's window class
+     * @since 0.6.4
+     */
+    public Class<T> getWindowClass() {
+        return windowClass;
+    }
+
     /**
      * Updates the icon of this frame if its config setting is changed.
      */

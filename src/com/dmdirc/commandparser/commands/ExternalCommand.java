@@ -43,7 +43,7 @@ public interface ExternalCommand {
      * @param args Arguments passed to this command
      * @since 0.6.3m1
      */
-    void execute(FrameContainer origin, Server server, String channel,
+    void execute(FrameContainer<?> origin, Server server, String channel,
             boolean isSilent, CommandArguments args);
 
 }

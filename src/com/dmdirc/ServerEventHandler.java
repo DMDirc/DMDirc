@@ -72,7 +72,7 @@ public final class ServerEventHandler extends EventHandler implements
     @Override
     @SuppressWarnings("unchecked")
     protected <T extends CallbackInterface> void addCallback(
-            final CallbackManager cbm, final Class<T> type) throws CallbackNotFoundException {
+            final CallbackManager<?> cbm, final Class<T> type) throws CallbackNotFoundException {
         cbm.addCallback(type, (T) this);
     }
 

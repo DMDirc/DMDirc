@@ -28,32 +28,27 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-public class TestWritableFrameContainer extends WritableFrameContainer {
+public class TestWritableFrameContainer<T extends InputWindow> extends WritableFrameContainer<T> {
 
-    public InputWindow window = null;
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
-            final ConfigManager cm) {
-        super("raw", "Raw", "(Raw)", cm, GlobalCommandParser.getGlobalCommandParser());
+            final ConfigManager cm, final Class<T> clazz) {
+        super("raw", "Raw", "(Raw)", clazz, cm, GlobalCommandParser.getGlobalCommandParser());
 
         this.lineLength = lineLength;
     }
 
-    public TestWritableFrameContainer(final int lineLength) {
-        this(lineLength, IdentityManager.getGlobalConfig());
+    public TestWritableFrameContainer(final int lineLength, final Class<T> clazz) {
+        this(lineLength, IdentityManager.getGlobalConfig(), clazz);
     }
 
     @Override
     public void sendLine(final String line) {
         // Do nothing
-    }
-
-    @Override
-    public InputWindow getFrame() {
-        return window;
     }
 
     @Override
@@ -75,5 +70,10 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     @Override
     public Server getServer() {
         return null;
+    }
+
+    @Override
+    public TabCompleter getTabCompleter() {
+        return new TabCompleter();
     }
 }

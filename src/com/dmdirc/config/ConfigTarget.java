@@ -31,7 +31,7 @@ import java.io.Serializable;
  *
  * @author chris
  */
-public class ConfigTarget implements Comparable, Serializable {
+public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
 
     /** The possible target types. */
     public static enum TYPE {
@@ -218,11 +218,11 @@ public class ConfigTarget implements Comparable, Serializable {
      * equal, or a positive integer if this is more specific
      */
     @Override
-    public int compareTo(final Object target) {
-        if (type.equals(((ConfigTarget) target).getType())) {
-            return ((ConfigTarget) target).getOrder() - order;
+    public int compareTo(final ConfigTarget target) {
+        if (type.equals(target.getType())) {
+            return target.getOrder() - order;
         } else {
-            return type.compareTo(((ConfigTarget) target).getType());
+            return type.compareTo(target.getType());
         }
     }
 

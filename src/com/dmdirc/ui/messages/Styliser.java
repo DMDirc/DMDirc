@@ -139,7 +139,7 @@ public class Styliser implements ConfigChangeListener {
     private Color uriColour, channelColour;
 
     /** The container that owns this styliser. */
-    private final FrameContainer owner;
+    private final FrameContainer<?> owner;
     
     /**
      * Creates a new instance of Styliser.
@@ -147,7 +147,7 @@ public class Styliser implements ConfigChangeListener {
      * @param owner The {@link FrameContainer} that owns this styliser.
      * @since 0.6.3
      */
-    public Styliser(final FrameContainer owner) {
+    public Styliser(final FrameContainer<?> owner) {
         this.owner = owner;
 
         owner.getConfigManager().addChangeListener("ui", "linkcolour", this);

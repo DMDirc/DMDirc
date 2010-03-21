@@ -53,7 +53,7 @@ public final class AliasCommand extends GlobalCommand implements
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
                         final CommandArguments args) {
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");

@@ -38,8 +38,8 @@ public class RawCommandParser extends ServerCommandParser {
      */
     private static final long serialVersionUID = 1;
 
-    /** The server this parser is for. */
-    private Server server;
+    /** The container that owns this parser. */
+    private FrameContainer<?> owner;
 
     /**
      * Creates a new raw command parser for the specified server.
@@ -50,14 +50,14 @@ public class RawCommandParser extends ServerCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer owner) {
-        server = owner.getServer();
+    public void setOwner(final FrameContainer<?> owner) {
+        this.owner = owner;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
-        server.getParser().sendRawMessage(line);
+    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
+        owner.getServer().getParser().sendRawMessage(line);
     }
 
 }

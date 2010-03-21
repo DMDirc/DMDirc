@@ -31,7 +31,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {
@@ -44,39 +43,38 @@ public class WindowManagerTest {
     @Test
     public void testAddRoot() {
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
         
         WindowManager.addFrameListener(tfm);
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), (FrameContainer<?>) anyObject(), true);
         
         WindowManager.addWindow(parent);
         
         verify(tfm).addWindow(same(parent.getContainer()), true);
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), (FrameContainer<?>) anyObject(), true);
     }
 
     @Test
     public void testAddChild() {
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
         WindowManager.addWindow(parent);
         WindowManager.addFrameListener(tfm);
         
         WindowManager.addWindow(parent, child);
         
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), true);
         verify(tfm).addWindow(same(parent.getContainer()), same(child.getContainer()), true);
     }
 
     @Test
     public void testRemoveRoot() {
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        WindowManager.addWindow(parent);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);        WindowManager.addWindow(parent);
         WindowManager.addFrameListener(tfm);
 
         WindowManager.removeWindow(parent);
@@ -87,25 +85,25 @@ public class WindowManagerTest {
     @Test
     public void testRemoveChild() {
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
         WindowManager.addWindow(parent);
         WindowManager.addWindow(parent, child);
         WindowManager.addFrameListener(tfm);
 
         WindowManager.removeWindow(child);
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
-        verify(tfm, never()).delWindow((FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), (FrameContainer<?>) anyObject(), true);
+        verify(tfm, never()).delWindow((FrameContainer<?>) anyObject());
         verify(tfm).delWindow(same(parent.getContainer()), same(child.getContainer()));
     }
 
     @Test
     public void testRemoveFrameManager() {
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
         WindowManager.addWindow(parent);
         
         WindowManager.addFrameListener(tfm);
@@ -113,28 +111,10 @@ public class WindowManagerTest {
         WindowManager.removeFrameListener(tfm);
         WindowManager.addWindow(parent, child);
         
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), true);
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), true);
-        verify(tfm, never()).delWindow((FrameContainer) anyObject());
-        verify(tfm, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
-    }
-    
-    @Test
-    public void testGetParent() {
-        final Window parent1 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window parent2 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child1 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child2 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        
-        WindowManager.addWindow(parent1);
-        WindowManager.addWindow(parent2);
-        WindowManager.addWindow(parent1, child1);
-        WindowManager.addWindow(parent2, child2);
-        
-        assertSame(parent1.getContainer(), WindowManager.getParent(child1.getContainer()));
-        assertSame(parent2.getContainer(), WindowManager.getParent(child2.getContainer()));
-        assertNull(WindowManager.getParent(parent1.getContainer()));
-        assertNull(WindowManager.getParent(parent2.getContainer()));
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), true);
+        verify(tfm, never()).addWindow((FrameContainer<?>) anyObject(), (FrameContainer<?>) anyObject(), true);
+        verify(tfm, never()).delWindow((FrameContainer<?>) anyObject());
+        verify(tfm, never()).delWindow((FrameContainer<?>) anyObject(), (FrameContainer<?>) anyObject());
     }
     
 }
