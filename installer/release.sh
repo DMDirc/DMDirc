@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Jar names of plugins to add to ALL installers. (* means all)
-plugins="ui_swing.jar tabcompletion_bash.jar tabcompletion_mirc.jar dcc.jar dns.jar identd.jar lagdisplay.jar logging.jar systray.jar time.jar osd.jar"
+plugins="ui_swing.jar tabcompletion_bash.jar tabcompletion_mirc.jar parser_irc.jar dcc.jar dns.jar identd.jar lagdisplay.jar logging.jar systray.jar time.jar osd.jar"
 
 # Additional Jar names of plugins to add to only Windows installers. (* means all)
 plugins_windows=""
