@@ -39,6 +39,14 @@ public interface FrameManager extends FrameListener {
      * @param parent The parent control
      */
     void setParent(JComponent parent);
+
+    /**
+     * Sets the UIController fot the frame manager.  This method will be called
+     * immediately after contruction of the frame manager.
+     *
+     * @param controller UIController
+     */
+    void setController(UIController controller);
     
     /**
      * Indicates whether this frame manager can be positioned vertically
