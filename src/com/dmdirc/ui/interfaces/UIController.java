@@ -62,7 +62,10 @@ public interface UIController {
      *
      * @param channel The channel that is requesting a window be made
      * @return A new channel window for the specified channel
+     * @deprecated Controllers should listen for window events using a
+     * {@link FrameListener} and create windows as needed.
      */
+    @Deprecated
     ChannelWindow getChannel(Channel channel);
     
     /**
@@ -70,7 +73,10 @@ public interface UIController {
      *
      * @param server The server that is requesting a window be made
      * @return A new server window for the specified server
+     * @deprecated Controllers should listen for window events using a
+     * {@link FrameListener} and create windows as needed.
      */
+    @Deprecated
     ServerWindow getServer(Server server);
     
     /**
@@ -78,7 +84,10 @@ public interface UIController {
      *
      * @param query The query that is requesting a window be made
      * @return A new query window for the specified query
+     * @deprecated Controllers should listen for window events using a
+     * {@link FrameListener} and create windows as needed.
      */
+    @Deprecated
     QueryWindow getQuery(Query query);
     
     /**
@@ -86,7 +95,10 @@ public interface UIController {
      *
      * @param owner The owner of the input window
      * @return A new custom window
+     * @deprecated Controllers should listen for window events using a
+     * {@link FrameListener} and create windows as needed.
      */
+    @Deprecated
     Window getWindow(FrameContainer<?> owner);
     
     /**
@@ -94,7 +106,10 @@ public interface UIController {
      *
      * @param owner The owner of the input window
      * @return A new custom input window
+     * @deprecated Controllers should listen for window events using a
+     * {@link FrameListener} and create windows as needed.
      */
+    @Deprecated
     InputWindow getInputWindow(WritableFrameContainer<?> owner);
     
     /**
