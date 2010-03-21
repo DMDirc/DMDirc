@@ -55,6 +55,12 @@ public final class GlobalCommandParser extends CommandParser {
     private GlobalCommandParser() {
         super();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setOwner(final FrameContainer owner) {
+        // Don't care
+    }
     
     /**
      * Retrieves a singleton instance of the global command parser.

@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -49,24 +48,21 @@ public final class QueryCommandParser extends CommandParser {
     private static final long serialVersionUID = 1;
     
     /**
-     * The server instance that this parser is attached to.
-     */
-    private final Server server;
-    /**
      * The query instance that this parser is attached to.
      */
-    private final Query query;
+    private Query query;
     
     /**
      * Creates a new instance of QueryCommandParser.
-     * @param newServer The server instance that this parser is attached to
-     * @param newQuery The query instance that this parser is attached to
      */
-    public QueryCommandParser(final Server newServer, final Query newQuery) {
+    public QueryCommandParser() {
         super();
-        
-        server = newServer;
-        query = newQuery;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setOwner(final FrameContainer owner) {
+        query = (Query) owner;
     }
     
     /** Loads the relevant commands into the parser. */
@@ -81,11 +77,11 @@ public final class QueryCommandParser extends CommandParser {
     protected void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof QueryCommand) {
-            ((QueryCommand) command).execute(origin, server, query, isSilent, args);
+            ((QueryCommand) command).execute(origin, query.getServer(), query, isSilent, args);
         } else if (command instanceof ChatCommand) {
-            ((ChatCommand) command).execute(origin, server, query, isSilent, args);
+            ((ChatCommand) command).execute(origin, query.getServer(), query, isSilent, args);
         } else if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, server, isSilent, args);
+            ((ServerCommand) command).execute(origin, query.getServer(), isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
         }

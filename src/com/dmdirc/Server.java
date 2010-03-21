@@ -28,6 +28,7 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.RawCommandParser;
+import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -175,7 +176,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", uri.getHost(), uri.getHost(),
-                new ConfigManager(uri.getScheme(), "", "", uri.getHost()));
+                new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
+                new ServerCommandParser());
 
         this.address = uri;
         this.profile = profile;
@@ -307,10 +309,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             doCallbacks();
 
-            awayMessage = null;
+            updateAwayState(null);
             removeInvites();
-            window.setAwayIndicator(false);
-
+            
             try {
                 parserThread = new Thread(parser, "IRC Parser thread");
                 parserThread.start();
@@ -597,7 +598,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this, new RawCommandParser(this));
+            raw = new Raw(this);
 
             try {
                 parserLock.readLock().lock();

@@ -34,6 +34,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.EqualComparator;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.StringTranscoder;
 
@@ -68,7 +69,8 @@ public abstract class FrameContainer {
     protected final IRCDocument document;
 
     /** The children of this frame. */
-    protected final Collection<FrameContainer> children = new ConcurrentSkipListSet<FrameContainer>();
+    protected final Collection<FrameContainer> children
+            = new ConcurrentSkipListSet<FrameContainer>(new EqualComparator());
 
     /** The parent of this frame. */
     protected FrameContainer parent;

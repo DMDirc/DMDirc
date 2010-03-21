@@ -97,7 +97,7 @@ public interface UIController {
      * @param commandParser The command parser to be used
      * @return A new custom input window
      */
-    InputWindow getInputWindow(WritableFrameContainer owner, CommandParser commandParser);
+    InputWindow getInputWindow(WritableFrameContainer owner);
     
     /**
      * Returns an updater dialog for the specified updates.

@@ -48,16 +48,19 @@ public class ServerCommandParser extends CommandParser {
     /**
      * The server instance that this parser is attached to.
      */
-    private final Server server;
+    private Server server;
     
     /**
      * Creates a new instance of ServerCommandParser.
-     * @param newServer The server instance that this parser is attached to
      */
-    public ServerCommandParser(final Server newServer) {
+    public ServerCommandParser() {
         super();
-        
-        server = newServer;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setOwner(final FrameContainer owner) {
+        server = (Server) owner;
     }
     
     /** Loads the relevant commands into the parser. */

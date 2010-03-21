@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -49,24 +48,21 @@ public final class ChannelCommandParser extends CommandParser {
     private static final long serialVersionUID = 1;
     
     /**
-     * The server instance that this parser is attached to.
-     */
-    private final Server server;
-    /**
      * The channel instance that this parser is attached to.
      */
-    private final Channel channel;
+    private Channel channel;
     
     /**
      * Creates a new instance of ChannelCommandParser.
-     * @param newServer The server instance that this parser is attached to
-     * @param newChannel The channel instance that this parser is attached to
      */
-    public ChannelCommandParser(final Server newServer, final Channel newChannel) {
+    public ChannelCommandParser() {
         super();
-        
-        this.server = newServer;
-        this.channel = newChannel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setOwner(final FrameContainer owner) {
+        channel = (Channel) owner;
     }
     
     /** {@inheritDoc} */
@@ -81,11 +77,11 @@ public final class ChannelCommandParser extends CommandParser {
     protected void executeCommand(final FrameContainer origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ChannelCommand) {
-            ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
+            ((ChannelCommand) command).execute(origin, channel.getServer(), channel, isSilent, args);
         } else if (command instanceof ChatCommand) {
-            ((ChatCommand) command).execute(origin, server, channel, isSilent, args);
+            ((ChatCommand) command).execute(origin, channel.getServer(), channel, isSilent, args);
         } else if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, server, isSilent, args);
+            ((ServerCommand) command).execute(origin, channel.getServer(), isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
         }
