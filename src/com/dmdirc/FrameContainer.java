@@ -158,6 +158,27 @@ public abstract class FrameContainer<T extends Window> {
     }
 
     /**
+     * Determines whether the specified target is a child of this container.
+     * Children may be indirect (i.e., a child of another child).
+     *
+     * @param target The window to be tested
+     * @return True if the specified container is a child of this one
+     */
+    public boolean isChild(final FrameContainer<?> target) {
+        if (children.contains(target)) {
+            return true;
+        }
+
+        for (FrameContainer<?> child : children) {
+            if (child.isChild(target)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Adds a new child window to this frame.
      *
      * @param child The window to be added
