@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The AllChannels command allows the user to issue a command to all channels
@@ -48,14 +47,13 @@ public final class AllChannels extends ServerCommand implements IntelligentComma
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer<?> origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         final String command = args.getArgumentsAsString();
-        InputWindow window;
         
         for (String channel : server.getChannels()) {
-            window = server.getChannel(channel).getFrame();
-            window.getCommandParser().parseCommand(server.getChannel(channel), command);
+            server.getChannel(channel).getCommandParser()
+                    .parseCommand(server.getChannel(channel), command);
         }
     }
     
