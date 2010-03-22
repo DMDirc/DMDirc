@@ -73,11 +73,11 @@ identity:
     <target name="-read-identities" depends="-read-identities-git"/>
 
     <target name="-read-identities-git" if="is.git">
-        <exec dir="." executable="/bin/bash" outputproperty="defaults.version">
+        <exec dir="." executable="bash" outputproperty="defaults.version">
             <arg value="-c"/>
             <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- default | xargs git --git-dir ${defaults.path} describe --tags"/>
         </exec>
-        <exec dir="." executable="/bin/bash" outputproperty="modealiases.version">
+        <exec dir="." executable="bash" outputproperty="modealiases.version">
             <arg value="-c"/>
             <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- modealiases | xargs git --git-dir ${defaults.path} describe --tags"/>
         </exec>
