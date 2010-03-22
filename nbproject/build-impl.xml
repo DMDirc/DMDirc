@@ -44,6 +44,7 @@ is divided into following sections:
 </echo>
         <echo file="nbproject/private/dynamic.properties" append="true">private.classpath=${toString:plugins.libs}
 </echo>
+        <replace file="nbproject/private/dynamic.properties" token="\" value="/"/> <!-- this replaces backslashes with slashes on Windows -->
         <property file="nbproject/private/dynamic.properties"/>
     </target>
     <target depends="-pre-init,-init-private" name="-init-user">
