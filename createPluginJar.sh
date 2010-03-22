@@ -31,7 +31,25 @@ if [ ! -e modules/plugins/src/${foldername}/plugin.config ]; then
 fi
 
 #echo "looking for classes"
-TMPDIR=`mktemp -d`
+if [ -x "`which mktemp`" ] ; then
+	TMPDIR=`mktemp -d`
+elif [ -d "$TMP" ] ; then
+	# We're running under Windows and have no mktemp
+	TMPDIR="$TMP/${foldername}-`date +%s`-$$-$RANDOM"
+	# this is fragile
+	if [ -d "$TMPDIR" ] ; then
+		echo "Can't build on Windows, no suitable temp folder found"
+		exit 2
+	fi
+	mkdir -p "$TMPDIR"  
+	if [ ! -d "$TMPDIR" ] ; then
+		echo "Can't build on Windows, no suitable temp folder found"
+		exit 2
+	fi
+else
+	echo "No suitable mktemp"
+	exit 2
+fi
 #echo "Using temp dir: ${TMPDIR}"
 cd $TMPDIR
 
