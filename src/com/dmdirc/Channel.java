@@ -90,8 +90,10 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param newServer The server object that this channel belongs to
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
+     * @param focus Whether or not to focus this channel
      */
-    public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
+    public Channel(final Server newServer, final ChannelInfo newChannelInfo,
+            final boolean focus) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 ChannelWindow.class,
@@ -118,7 +120,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
 
-        WindowManager.addWindow(server, this);
+        WindowManager.addWindow(server, this, focus);
 
         eventHandler = new ChannelEventHandler(this);
 
