@@ -2,8 +2,9 @@
 <project name="DMDirc-installer" default="default" basedir=".">
     <description>Tasks to build the DMDirc installer.</description>
 
-    <target name="-installer-build" if="has.bash">
-        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
+    <target name="installer"
+            description="Build the installer.">
+        <exec executable="bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
             <arg value="this"/>
         </exec>
@@ -18,9 +19,9 @@
         <echo message=""/>
     </target>
 
-
-    <target name="-installer-build-stable" if="has.bash">
-        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
+    <target name="installer-stable"
+            description="Build the installer for a stable release.">
+        <exec executable="bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
             <arg value="-t"/>
             <arg value="-c"/>
@@ -38,8 +39,9 @@
         <echo message=""/>
     </target>
 
-    <target name="-installer-build-unstable" if="has.bash">
-        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
+    <target name="installer-unstable"
+            description="Build the installer for an unstable release.">
+        <exec executable="bash" dir="installer" resultproperty="installer.result">
             <arg value="release.sh"/>
             <arg value="-t"/>
             <arg value="-c"/>
@@ -55,19 +57,6 @@
         <echo message="    ${installer.output.dir}"/>
         <echo message=""/>
     </target>
-    
-    <target name="-installer-nobuild" unless="has.bash">
-        <echo message="This task only works on linux"/>
-    </target>
-
-    <target name="installer" depends="-installer-nobuild, -installer-build"
-            description="Build the installer." />
-
-    <target name="installer-stable" depends="-installer-nobuild, -installer-build-stable"
-            description="Build the installer for a stable release." />
-
-    <target name="installer-unstable" depends="-installer-nobuild, -installer-build-unstable"
-            description="Build the installer for an unstable release." />
 
 
 </project>

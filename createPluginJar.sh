@@ -1,6 +1,8 @@
 #!/bin/bash
 # This script will create a plugin jar file for a given plugin.
 
+. build-functions.sh
+
 VALID_EXTS="class,png,exe,dll,html,css,js,gif,py"
 
 if [ "${1}" = "" -o "${2}" = "" ]; then
@@ -31,7 +33,7 @@ if [ ! -e modules/plugins/src/${foldername}/plugin.config ]; then
 fi
 
 #echo "looking for classes"
-TMPDIR=`mktemp -d`
+TMPDIR=`safe_mktemp $foldername`
 #echo "Using temp dir: ${TMPDIR}"
 cd $TMPDIR
 
