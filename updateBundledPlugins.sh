@@ -4,12 +4,16 @@
 # Reads the version of each bundled plugin in the specified jar, and writes
 # the names and versions to the jar's version.config file.
 
-jar=$1
-dir=`mktemp -d`
-config="$dir/com/dmdirc/version.config"
+. build-functions.sh
 
+jar=$1
+dir=`safe_mktemp $jar`
+config="$dir/com/dmdirc/version.config"
+jar="`pwd`/$jar"
+
+cd $dir
 # Read the jar's version.config out
-unzip -qq $jar com/dmdirc/version.config -d $dir;
+jar -xf $jar
 
 # Check for previous data
 startOffset=`grep -n "Begin updateBundledPlugins.sh" $config | head -n 1 | cut -f 1 -d ':'`
@@ -33,14 +37,13 @@ echo "" >> $config;
 echo "bundledplugins_versions:" >> $config;
 
 # For each plugin in the jar...
-for plugin in `unzip -qql $jar plugins/* | cut -f 2 -d '/'`; do
+for plugin in `ls plugins/* | cut -f 2 -d '/'`; do
  pluginName=${plugin%.jar}
 
  # Extract it to our temporary dir (can't extract zip files from stdin)
- unzip -qqj $jar plugins/$plugin -d $dir;
-
+ jar -xf plugins/$plugin;
  # Read the plugin.config file and parse out the version number
- version=`unzip -c $dir/$plugin META-INF/plugin.config | grep -C 1 version: | grep number= | cut -f 2 -d '='`;
+ version=`cat META-INF/plugin.config | grep -1 version: | grep number= | cut -f 2 -d '='`;
 
  # And add the version to our version.config
  echo "    $pluginName=$version" >> $config;
@@ -52,4 +55,5 @@ echo "# --- End updateBundledPlugins.sh --- " >> $config;
 jar uf $jar -C $dir com/dmdirc/version.config;
 
 # Remove the temporary directory
+cd ..
 rm -rf $dir;
