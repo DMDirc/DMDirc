@@ -58,9 +58,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -148,6 +150,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<Invite>();
+
+    /** A set of channels we want to join without focusing. */
+    private final Set<String> backgroundChannels = new HashSet<String>();
 
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
@@ -365,6 +370,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             }
 
             clearChannels();
+            backgroundChannels.clear();
 
             try {
                 parserLock.readLock().lock();
@@ -637,6 +643,19 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @return The channel that was added (may be null if closing)
      */
     public Channel addChannel(final ChannelInfo chan) {
+        return addChannel(chan, !backgroundChannels.contains(chan.getName())
+                || getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "hidechannels"));
+    }
+
+    /**
+     * Adds a specific channel and window to this server.
+     *
+     * @param chan channel to add
+     * @param focus Whether or not to focus the channel
+     * @return The channel that was added (may be null if closing)
+     */
+    public Channel addChannel(final ChannelInfo chan, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't join channels while the server is closing
@@ -644,15 +663,16 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             }
         }
 
+        backgroundChannels.remove(chan.getName());
+
         if (hasChannel(chan.getName())) {
             getChannel(chan.getName()).setChannelInfo(chan);
             getChannel(chan.getName()).selfJoin();
         } else {
-            final Channel newChan = new Channel(this, chan);
+            final Channel newChan = new Channel(this, chan, focus);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
-            newChan.show();
         }
 
         return getChannel(chan.getName());
@@ -660,9 +680,10 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
-        if (getFrame() != null && getFrame().equals(target)) { return true; }
+        if (windows.contains(target)) { return true; }
         // Check if it's the raw frame
         if (raw != null && raw.ownsFrame(target)) { return true; }
         // Check if it's a channel frame
@@ -840,6 +861,18 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @since 0.6.4
      */
     public void join(final ChannelJoinRequest ... requests) {
+        join(true, requests);
+    }
+
+    /**
+     * Attempts to join the specified channels. If channels with the same name
+     * already exist, they are (re)joined and their windows activated.
+     *
+     * @param focus Whether or not to focus any new channels
+     * @param requests The channel join requests to process
+     * @since 0.6.4
+     */
+    public void join(final boolean focus, final ChannelJoinRequest ... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
                 final List<ChannelJoinRequest> pending = new ArrayList<ChannelJoinRequest>();
@@ -855,11 +888,15 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                                 + request.getName();
                     }
 
-                    if (hasChannel(name)) {
+                    if (hasChannel(name) && focus) {
                         getChannel(name).activateFrame();
                     }
 
                     if (!hasChannel(name) || !getChannel(name).isOnChannel()) {
+                        if (!focus) {
+                            backgroundChannels.add(name);
+                        }
+
                         pending.add(request);
                     }
                 }
@@ -1116,7 +1153,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     public void windowClosing() {
         synchronized (myStateLock) {
             // 1: Make the window non-visible
-            getFrame().setVisible(false);
+            for (Window window : getWindows()) {
+                window.setVisible(false);
+            }
 
             // 2: Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();

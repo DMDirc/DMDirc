@@ -74,7 +74,9 @@ public final class Raw extends WritableFrameContainer<InputWindow>
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
-        getFrame().setVisible(false);
+        for (InputWindow window : getWindows()) {
+            window.setVisible(false);
+        }
 
         // 2: Remove any callbacks or listeners
         if (server.getParser() != null) {

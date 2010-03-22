@@ -158,6 +158,27 @@ public abstract class FrameContainer<T extends Window> {
     }
 
     /**
+     * Determines whether the specified target is a child of this container.
+     * Children may be indirect (i.e., a child of another child).
+     *
+     * @param target The window to be tested
+     * @return True if the specified container is a child of this one
+     */
+    public boolean isChild(final FrameContainer<?> target) {
+        if (children.contains(target)) {
+            return true;
+        }
+
+        for (FrameContainer<?> child : children) {
+            if (child.isChild(target)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Adds a new child window to this frame.
      *
      * @param child The window to be added
@@ -283,10 +304,8 @@ public abstract class FrameContainer<T extends Window> {
      * Closes this container (and it's associated frame).
      */
     public void close() {
-        if (getFrame() == null) {
-            throw new IllegalStateException("No frame associated with this container!");
-        } else {
-            getFrame().close();
+        for (Window window : getWindows()) {
+            window.close();
         }
     }
 
@@ -350,14 +369,8 @@ public abstract class FrameContainer<T extends Window> {
     /**
      * Requests that this object's frame be activated.
      */
-    @Precondition("getFrame() does not return null")
     public void activateFrame() {
-        final Window window = getFrame();
-
-        if (window == null) {
-            throw new IllegalStateException("Cannot activate frame '"
-                    + getName() + "' while window is null");
-        } else {
+        for (Window window : getWindows()) {
             window.activateFrame();
         }
     }
@@ -366,9 +379,6 @@ public abstract class FrameContainer<T extends Window> {
      * Clears any outstanding notifications this frame has set.
      */
     protected void clearNotification() {
-        LOGGER.finer(toString() + ": clearNotification(): frame = "
-                + (getFrame() == null ? null : getFrame().getClass().getName()));
-
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
@@ -410,18 +420,17 @@ public abstract class FrameContainer<T extends Window> {
      * @param target Window to check ownership of
      * @return True iff frame is owned by this container, false otherwise
      */
+    @SuppressWarnings("element-type-mismatch")
     public boolean ownsFrame(final Window target) {
-        final Window window = getFrame();
-        return window != null && window.equals(target);
+        return windows.contains(target);
     }
 
     /**
      * Invoked when our window has been opened.
+     * @deprecated Pointless. Stop calling me.
      */
+    @Deprecated
     public void windowOpened() {
-        if (config == null || getFrame() == null) {
-            return;
-        }
     }
 
     /**
@@ -468,13 +477,6 @@ public abstract class FrameContainer<T extends Window> {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
-        LOGGER.finer(toString() + ": windowActivated(): frame = "
-                + (getFrame() == null ? null : getFrame().getClass().getName()));
-
-        if (getFrame() == null) {
-            return;
-        }
-
         for (SelectionListener listener : listeners.get(SelectionListener.class)) {
             listener.selectionChanged(this);
         }
@@ -488,10 +490,10 @@ public abstract class FrameContainer<T extends Window> {
 
     /**
      * Invoked when our window is deactivated.
+     * @deprecated Not used. Stop calling me.
      */
+    @Deprecated
     public void windowDeactivated() {
-        LOGGER.finer(toString() + ": windowDeactivated(): frame = "
-                + (getFrame() == null ? null : getFrame().getClass().getName()));
     }
 
     /**

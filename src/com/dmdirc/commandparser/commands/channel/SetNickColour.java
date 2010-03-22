@@ -90,7 +90,10 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             if (text) {
                 target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
             }
-            ((ChannelWindow) channel.getFrame()).redrawNicklist();
+
+            for (ChannelWindow window : channel.getWindows()) {
+                window.redrawNicklist();
+            }
         } else {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
@@ -107,7 +110,9 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
                 target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
             }
 
-            ((ChannelWindow) channel.getFrame()).updateNames();
+            for (ChannelWindow window : channel.getWindows()) {
+                window.redrawNicklist();
+            }
         }
     }
     

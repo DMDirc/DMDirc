@@ -47,12 +47,12 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
         final String command = args.getArgumentsAsString();
         
         for (Server target : ServerManager.getServerManager().getServers()) {
-            target.getFrame().getCommandParser().parseCommand(target, command);
+            target.getCommandParser().parseCommand(target, command);
         }
     }
     
