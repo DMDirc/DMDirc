@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -89,8 +90,10 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             if (text) {
                 target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
             }
-            
-            channel.getFrame().redrawNicklist();
+
+            for (ChannelWindow window : channel.getWindows()) {
+                window.redrawNicklist();
+            }
         } else {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
@@ -107,7 +110,9 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
                 target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
             }
 
-            channel.getFrame().updateNames();
+            for (ChannelWindow window : channel.getWindows()) {
+                window.redrawNicklist();
+            }
         }
     }
     
