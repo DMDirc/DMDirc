@@ -6,17 +6,15 @@
     <property file="nbproject/private/private.properties"/>
     <property file="${user.properties.file}"/>
     
-    <target name="build-plugins" depends="-build-plugins_bash" description="Build all plugins"/>
-    
-    <target name="-build-plugins_bash" if="has.bash">
-        <exec executable="/bin/bash">
+    <target name="build-plugins" description="Build all plugins">
+        <exec executable="bash">
             <arg value="createAllPluginJar.sh"/>
             <arg value="${src.dir}/com/dmdirc/addons/"/>
         </exec>
     </target>
 
-    <target name="-update-bundled-plugins" if="has.bash">
-       <exec executable="/bin/bash">
+    <target name="-update-bundled-plugins">
+       <exec executable="bash">
             <arg value="updateBundledPlugins.sh"/>
             <arg value="${dist.jar}"/>
        </exec>
