@@ -25,8 +25,6 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
 
-import com.dmdirc.parser.interfaces.Parser;
-import java.net.URI;
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -37,7 +35,6 @@ import static org.mockito.Mockito.*;
 
 public class InviteTest {
 
-    private static Parser parser;
     private static Server server;
     private static Invite test;
     private static long ts;
@@ -48,10 +45,8 @@ public class InviteTest {
         IdentityManager.load();
         
         server = mock(Server.class);
-        parser = mock(Parser.class);
 
-        when(server.getParser()).thenReturn(parser);
-        when(parser.parseHostmask("nick!ident@host"))
+        when(server.parseHostmask("nick!ident@host"))
                 .thenReturn(new String[] { "nick", "ident", "host"});
 
         test = new Invite(server, "#channel", "nick!ident@host");

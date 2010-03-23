@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import java.util.Date;
 
 /**
@@ -90,14 +91,14 @@ public class Invite {
      * @return This invite's source
      */
     public String[] getSource() {
-        return server.getParser().parseHostmask(source);
+        return server.parseHostmask(source);
     }
     
     /**
      * Join the channel that belongs to this invite.
      */
     public void accept() {
-        server.getParser().joinChannel(channel);
+        server.join(new ChannelJoinRequest(channel));
         
         server.removeInvite(this);
     }

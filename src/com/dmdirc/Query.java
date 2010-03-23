@@ -70,14 +70,14 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
-        super("query", newServer.getParser().parseHostmask(newHost)[0],
-                newServer.getParser().parseHostmask(newHost)[0],
+        super("query", newServer.parseHostmask(newHost)[0],
+                newServer.parseHostmask(newHost)[0],
                 QueryWindow.class, newServer.getConfigManager(),
                 new QueryCommandParser());
 
         this.server = newServer;
         this.host = newHost;
-        this.nickname = server.getParser().parseHostmask(host)[0];
+        this.nickname = server.parseHostmask(host)[0];
 
         WindowManager.addWindow(server, this,
                 !getConfigManager().getOptionBool("general", "hidequeries"));
@@ -163,7 +163,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
                     getTranscoder().encode(action));
 
             doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
-                    server.getParser().getLocalClient(), action);
+                    client, action);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -179,7 +179,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     @Override
     public void onPrivateMessage(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = parser.parseHostmask(host);
+        final String[] parts = server.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
@@ -199,7 +199,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     @Override
     public void onPrivateAction(final Parser parser, final String message,
             final String remoteHost) {
-        final String[] parts = parser.parseHostmask(host);
+        final String[] parts = server.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryAction");
 

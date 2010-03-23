@@ -542,7 +542,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             // Format topics
 
             args.add("");
-            args.addAll(Arrays.asList(server.getParser().parseHostmask(((Topic) arg).getClient())));
+            args.addAll(Arrays.asList(server.parseHostmask(((Topic) arg).getClient())));
             args.add(((Topic) arg).getTopic());
             args.add(((Topic) arg).getTime() * 1000);
 
