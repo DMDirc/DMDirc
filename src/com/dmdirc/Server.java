@@ -46,6 +46,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.parser.common.MyInfo;
+import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -104,6 +105,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     private transient Parser parser;
     /** The Parser instance that used to be handling this server. */
     private transient Parser oldParser;
+    /** The parser-supplied protocol description object. */
+    private ProtocolDescription protocolDescription;
 
     /**
      * Object used to synchronoise access to parser. This object should be
@@ -181,6 +184,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 new ServerCommandParser());
 
         this.address = uri;
+        this.protocolDescription = new ParserFactory().getDescription(address);
         this.profile = profile;
 
         ServerManager.getServerManager().registerServer(this);
@@ -277,6 +281,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 getConfigManager().migrate(address.getScheme(), "", "", address.getHost());
 
                 this.address = address;
+                this.protocolDescription = new ParserFactory().getDescription(address);
                 this.profile = profile;
 
                 updateTitle();
@@ -481,21 +486,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
-        final String nick;
-
-        try {
-            parserLock.readLock().lock();
-
-            if (parser == null) {
-                return false;
-            }
-
-            nick = converter.toLowerCase(parser.parseHostmask(host)[0]);
-        } finally {
-            parserLock.readLock().unlock();
-        }
-
-        return queries.containsKey(nick);
+        return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }
 
     /**
@@ -513,20 +504,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             }
         }
 
-        final String nick, lnick;
-
-        try {
-            parserLock.readLock().lock();
-
-            if (parser == null) {
-                throw new IllegalStateException("Can't retrieve query while disconnected");
-            }
-
-            nick = parser.parseHostmask(host)[0];
-            lnick = converter.toLowerCase(nick);
-        } finally {
-            parserLock.readLock().unlock();
-        }
+        final String nick = parseHostmask(host)[0];
+        final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
             final Query newQuery = new Query(this, host);
@@ -789,6 +768,19 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         }
 
         return false;
+    }
+
+    /**
+     * Parses the specified hostmask in a manner prescribed by the protocol
+     * currently used by this server.
+     *
+     * @see ProtocolDescription#parseHostmask(java.lang.String)
+     * @param hostmask The hostmask to be parsed
+     * @return An array containing the nickname, username and hostname
+     * @since 0.6.4
+     */
+    public String[] parseHostmask(final String hostmask) {
+        return protocolDescription.parseHostmask(hostmask);
     }
 
     /**

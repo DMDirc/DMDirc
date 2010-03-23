@@ -154,7 +154,7 @@ public final class ServerEventHandler extends EventHandler implements
 
         if (owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
                 owner.getParser().getClient(sHost), sType, sMessage)) {
-            owner.sendCTCPReply(tParser.parseHostmask(sHost)[0], sType, sMessage);
+            owner.sendCTCPReply(owner.parseHostmask(sHost)[0], sType, sMessage);
         }
     }
 

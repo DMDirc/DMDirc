@@ -26,7 +26,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.common.MyInfo;
-import com.dmdirc.plugins.ExportedService;
+import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -62,6 +62,51 @@ public class ParserFactory {
             }
         }
 
+        final Object obj = getExportResult(address, "getParser", myInfo, address);
+
+        if (obj instanceof Parser) {
+            return (Parser) obj;
+        } else {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to create parser for: " + address.getScheme());
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves a protocol description.
+     *
+     * @param address The address to retrieve a description for
+     * @return A corresponding protocol description
+     * @since 0.6.4
+     */
+    public ProtocolDescription getDescription(final URI address) {
+        final Object obj = getExportResult(address, "getProtocolDescription");
+
+        if (obj instanceof ProtocolDescription) {
+            return (ProtocolDescription) obj;
+        } else {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to create protocol description for: " + address.getScheme());
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves and executes an exported service with the specified name from a
+     * {@link ServiceProvider} which can provide a parser for the specified
+     * address. If no such provider or service is found, null is returned.
+     *
+     * @param address The address a provider is required for
+     * @param serviceName The name of the service to be retrieved
+     * @param args The arguments to be passed to the exported service
+     * @return The result from a relevant exported service, or null
+     * @since 0.6.4
+     */
+    protected Object getExportResult(final URI address,
+            final String serviceName, final Object ... args) {
         // TODO: Move default scheme to a setting
         final String scheme = address.getScheme() == null ? "irc" : address.getScheme();
 
@@ -74,14 +119,8 @@ public class ParserFactory {
                 if (provider != null) {
                     provider.activateServices();
 
-                    final ExportedService exportService = provider.getExportedService("getParser");
-                    final Object obj = exportService.execute(myInfo, address);
-                    if (obj != null && obj instanceof Parser) {
-                        return (Parser) obj;
-                    } else {
-                        Logger.userError(ErrorLevel.MEDIUM,
-                                "Unable to create parser for: " + address.getScheme());
-                    }
+                    return provider.getExportedService(serviceName)
+                            .execute(args);
                 }
             }
         } catch (NoSuchProviderException nspe) {
