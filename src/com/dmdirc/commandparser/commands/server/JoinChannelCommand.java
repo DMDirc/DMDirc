@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
@@ -35,6 +34,8 @@ import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.MapList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,10 @@ import java.util.List;
  */
 public final class JoinChannelCommand extends ServerCommand implements
         ActionListener, IntelligentCommand {
+
+    /** A map of channel name mentions. */
+    private final MapList<FrameContainer<?>, String> mentions
+            = new MapList<FrameContainer<?>, String>();
     
     /**
      * Creates a new instance of the join channel command.
@@ -55,8 +60,7 @@ public final class JoinChannelCommand extends ServerCommand implements
         super();
         
         CommandManager.registerCommand(this);
-        ActionManager.addListener(this, CoreActionType.CHANNEL_MESSAGE,
-                CoreActionType.CHANNEL_ACTION);
+        ActionManager.addListener(this, CoreActionType.CLIENT_LINE_ADDED);
     }
     
     /** {@inheritDoc} */
@@ -107,15 +111,86 @@ public final class JoinChannelCommand extends ServerCommand implements
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        final Channel chan = (Channel) arguments[0];
-        final String message = (String) arguments[2];
+        final FrameContainer<?> source = (FrameContainer<?>) arguments[0];
+        final String message = (String) arguments[1];
+
+        final String[] parts = source.getStyliser().doLinks(message)
+                .split("" + Styliser.CODE_CHANNEL);
+
+        int i = 1;
+        for (i = 1; i < parts.length; i += 2) {
+            // All of the odd parts of the array are channel names
+            mentions.add(source, parts[i]);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        return new AdditionalTabTargets();
+        final FrameContainer<?> source = context.getWindow().getContainer();
+        final Server server = source.getServer();
+        final List<String> results = checkSource(source, true, true);
+
+        final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
+
+        final String prefix;
+        int index;
+        if ((index = context.getPartial().lastIndexOf(',')) > -1) {
+            // If they are tab completing something containing a comma, we
+            // add our results after the comma instead of returning them as-is.
+            prefix = context.getPartial().substring(0, index + 1);
+        } else {
+            prefix = "";
+        }
+
+        for (String result : results) {
+            // Only tab complete channels we're not already on
+            if (!server.hasChannel(result)) {
+                targets.add(prefix + result);
+            }
+        }
+
+        for (char chPrefix : server.getChannelPrefixes().toCharArray()) {
+            // Let them tab complete the prefixes as well
+            targets.add(prefix + chPrefix);
+        }
+
+        return targets;
+    }
+
+    /**
+     * Checks a hierarchy of frame containers for channels which have been
+     * mentioned.
+     *
+     * @param source The base frame container to check
+     * @param checkParents Whether or not to check that frame's parents
+     * @param checkChildren Whether or not to check that frame's children
+     * @return A list of channel names which have been mentioned in the hierarchy
+     * @since 0.6.4
+     */
+    protected List<String> checkSource(final FrameContainer<?> source,
+            final boolean checkParents, final boolean checkChildren) {
+        final List<String> results = new ArrayList<String>();
+
+        // Check the window itself
+        if (mentions.containsKey(source)) {
+            results.addAll(mentions.get(source));
+        }
+
+        // Check the parent window
+        if (checkParents && source.getParent() != null) {
+            results.addAll(checkSource(source.getParent(), true, false));
+        }
+
+        // Check the children window
+        if (checkChildren) {
+            for (FrameContainer<?> child : source.getChildren()) {
+                results.addAll(checkSource(child, false, true));
+            }
+        }
+
+        return results;
     }
     
 }
