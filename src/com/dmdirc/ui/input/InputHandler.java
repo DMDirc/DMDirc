@@ -112,8 +112,8 @@ public abstract class InputHandler implements ConfigChangeListener {
             final CommandParser thisCommandParser,
             final InputWindow thisParentWindow) {
 
-        buffer = new RollingList<String>(thisParentWindow.getConfigManager().
-                getOptionInt("ui", "inputbuffersize"), "");
+        buffer = new RollingList<String>(thisParentWindow.getContainer()
+                .getConfigManager().getOptionInt("ui", "inputbuffersize"), "");
 
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
@@ -121,8 +121,8 @@ public abstract class InputHandler implements ConfigChangeListener {
 
         setStyle();
 
-        parentWindow.getConfigManager().addChangeListener("tabcompletion",
-                "style", this);
+        parentWindow.getContainer().getConfigManager().addChangeListener(
+                "tabcompletion", "style", this);
 
         addUpHandler();
         addDownHandler();
@@ -178,8 +178,8 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     private void setStyle() {
         style = (TabCompletionStyle) PluginManager.getPluginManager()
-                .getServiceProvider("tabcompletion", parentWindow.getConfigManager()
-                .getOption("tabcompletion", "style"))
+                .getServiceProvider("tabcompletion", parentWindow.getContainer()
+                .getConfigManager().getOption("tabcompletion", "style"))
                 .getExportedService("getCompletionStyle").execute(tabCompleter, parentWindow);
     }
 
