@@ -60,7 +60,7 @@ public class ServerCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {
-        if (server == null) {
+        if (server == null && owner instanceof Server) {
             server = (Server) owner;
         }
     }
