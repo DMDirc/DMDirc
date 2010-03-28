@@ -430,7 +430,7 @@ public final class ActionManager {
                             res |= action.trigger(format, arguments);
                         }
                     }
-                } catch (NoSuchMethodError e) {
+                } catch (LinkageError e) {
                     Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
                             + e.getMessage(), e);
                 } catch (Exception e) {
