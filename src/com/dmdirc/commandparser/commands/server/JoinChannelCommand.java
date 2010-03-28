@@ -144,10 +144,15 @@ public final class JoinChannelCommand extends ServerCommand implements
             prefix = "";
         }
 
-        for (String result : results) {
-            // Only tab complete channels we're not already on
-            if (!server.hasChannel(result)) {
-                targets.add(prefix + result);
+        final boolean showExisting = source.getConfigManager()
+                .getOptionBool("commands", "join-tabexistingchannels");
+
+        if (!showExisting) {
+            for (String result : results) {
+                // Only tab complete channels we're not already on
+                if (!server.hasChannel(result)) {
+                    targets.add(prefix + result);
+                }
             }
         }
 
