@@ -33,7 +33,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,34 +54,51 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
+    public void execute(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
-        if (args.getArguments().length > 0
-                && args.getArguments()[0].equalsIgnoreCase("--active")) {
-            final FrameContainer frame = WindowManager.getActiveWindow();
-            frame.addLine(FORMAT_OUTPUT, args.getArgumentsAsString(1));
-        } else if (args.getArguments().length > 1
-                && args.getArguments()[0].equalsIgnoreCase("--target")) {
-            FrameContainer frame = null;
-            FrameContainer target = origin;
+        int offset = 0;
+        Date time = new Date();
+
+        if (args.getArguments().length > 1
+                && args.getArguments()[offset].equalsIgnoreCase("--ts")) {
+            try {
+                time = new Date(Long.parseLong(args.getWordsAsString(2, 2)));
+            } catch (NumberFormatException ex) {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Unable to process timestamp");
+                return;
+            }
+
+            offset = 2;
+        }
+
+        if (args.getArguments().length > offset
+                && args.getArguments()[offset].equalsIgnoreCase("--active")) {
+            if (!isSilent) {
+                final FrameContainer<?> frame = WindowManager.getActiveWindow();
+                frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 1));
+            }
+        } else if (args.getArguments().length > offset + 1
+                && args.getArguments()[offset].equalsIgnoreCase("--target")) {
+            FrameContainer<?> frame = null;
+            FrameContainer<?> target = origin;
 
             while (frame == null && target != null) {
-                frame = WindowManager.findCustomWindow(target, args.getArguments()[1]);
+                frame = WindowManager.findCustomWindow(target, args.getArguments()[offset + 1]);
             }
 
             if (frame == null) {
-                frame = WindowManager.findCustomWindow(args.getArguments()[1]);
+                frame = WindowManager.findCustomWindow(args.getArguments()[offset + 1]);
             }
 
             if (frame == null) {
                 sendLine(origin, isSilent, FORMAT_ERROR,
                         "Unable to find target window");
-            } else {
-                frame.addLine(FORMAT_OUTPUT, args.getArgumentsAsString(2));
+            } else if (!isSilent) {
+                frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 2));
             }
 
-        } else {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, args.getArgumentsAsString());
+        } else if (origin != null && !isSilent) {
+            origin.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset));
         }
     }
 
@@ -100,7 +117,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "echo [--active|--target <window>] <line> "
+        return "echo [--ts <timestamp>] [--active|--target <window>] <line> "
                 + "- echos the specified line to the window";
     }
 
@@ -113,7 +130,10 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
         if (arg == 0) {
             targets.add("--active");
             targets.add("--target");
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--target")) {
+            targets.add("--ts");
+        } else if ((arg == 1 && context.getPreviousArgs().get(0).equals("--target"))
+                || (arg == 3 && context.getPreviousArgs().get(2).equals("--target")
+                && context.getPreviousArgs().get(0).equals("--ts"))) {
 
             final List<FrameContainer<?>> windowList = new ArrayList<FrameContainer<?>>();
             final Server currentServer = context.getWindow().getContainer()
@@ -135,6 +155,9 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
                 }
             }
 
+            targets.excludeAll();
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--ts")) {
+            targets.add(String.valueOf(new Date().getTime()));
             targets.excludeAll();
         }
 

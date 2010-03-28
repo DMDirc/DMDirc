@@ -501,11 +501,39 @@ public abstract class FrameContainer<T extends Window> {
      * reason, the line is silently discarded.
      *
      * @param type The message type to use
+     * @param timestamp The timestamp to use for this line
+     * @param args The message's arguments
+     * @since 0.6.4
+     */
+    public void addLine(final String type, final Date timestamp, final Object ... args) {
+        if (type != null && !type.isEmpty()) {
+            addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
+        }
+    }
+
+    /**
+     * Adds a line to this container's window. If the window is null for some
+     * reason, the line is silently discarded.
+     *
+     * @param type The message type to use
      * @param args The message's arguments
      */
     public void addLine(final String type, final Object ... args) {
-        if (type != null && !type.isEmpty()) {
-            addLine(Formatter.formatMessage(getConfigManager(), type, args), true);
+        addLine(type, new Date(), args);
+    }
+
+    /**
+     * Adds a line to this container's window. If the window is null for some
+     * reason, the line is silently discarded.
+     *
+     * @param type The message type to use
+     * @param timestamp The timestamp to use for this line
+     * @param args The message's arguments
+     * @since 0.6.4
+     */
+    public void addLine(final StringBuffer type, final Date timestamp, final Object ... args) {
+        if (type != null) {
+            addLine(type.toString(), timestamp, args);
         }
     }
 
@@ -517,9 +545,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param args The message's arguments
      */
     public void addLine(final StringBuffer type, final Object ... args) {
-        if (type != null) {
-            addLine(type.toString(), args);
-        }
+        addLine(type, new Date(), args);
     }
 
     /**
@@ -529,12 +555,25 @@ public abstract class FrameContainer<T extends Window> {
      * @param timestamp Whether or not to display the timestamp for this line
      */
     public void addLine(final String line, final boolean timestamp) {
+        addLine(line, timestamp ? new Date() : null);
+    }
+
+    /**
+     * Adds the specified raw line to the window, without using a formatter,
+     * and using the specified timestamp. If the timestamp is <code>null</code>,
+     * no timestamp is added.
+     *
+     * @param line The line to be added
+     * @param timestamp The timestamp to use for the line
+     * @since 0.6.4
+     */
+    public void addLine(final String line, final Date timestamp) {
         final String encodedLine = transcoder.decode(line);
         final List<String[]> lines = new LinkedList<String[]>();
         for (final String myLine : encodedLine.split("\n")) {
-            if (timestamp) {
+            if (timestamp != null) {
                 lines.add(new String[]{
-                    Formatter.formatMessage(getConfigManager(), "timestamp", new Date()),
+                    Formatter.formatMessage(getConfigManager(), "timestamp", timestamp),
                     myLine,
                 });
             } else {
