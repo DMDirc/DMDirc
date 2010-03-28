@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.RawCommandParser;
+import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Parser;
@@ -51,9 +51,11 @@ public final class Raw extends WritableFrameContainer<InputWindow>
      */
     public Raw(final Server newServer) {
         super("raw", "Raw", "(Raw log)", InputWindow.class,
-                newServer.getConfigManager(), new RawCommandParser());
+                newServer.getConfigManager(), new ServerCommandParser());
 
         this.server = newServer;
+
+        getCommandParser().setOwner(server);
 
         WindowManager.addWindow(server, this);
     }
