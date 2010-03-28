@@ -31,6 +31,7 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.callbacks.*;
+import java.util.Date;
 
 /**
  * Handles events for channel objects.
@@ -90,49 +91,49 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelMessage(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
-            final String sMessage, final String sHost) {
-        checkParser(tParser);
+    public void onChannelMessage(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo client,
+            final String message, final String host) {
+        checkParser(parser);
 
-        owner.doNotification(
-                isMyself(cChannelClient) ? "channelSelfExternalMessage" : "channelMessage",
-                CoreActionType.CHANNEL_MESSAGE, cChannelClient, sMessage);
+        owner.doNotification(date,
+                isMyself(client) ? "channelSelfExternalMessage" : "channelMessage",
+                CoreActionType.CHANNEL_MESSAGE, client, message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelGotNames(final Parser tParser, final ChannelInfo cChannel) {
-        checkParser(tParser);
+    public void onChannelGotNames(final Parser parser, final Date date, final ChannelInfo channel) {
+        checkParser(parser);
 
-        owner.setClients(cChannel.getChannelClients());
+        owner.setClients(channel.getChannelClients());
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, owner);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelTopic(final Parser tParser,
-            final ChannelInfo cChannel, final boolean bIsJoinTopic) {
-        checkParser(tParser);
+    public void onChannelTopic(final Parser parser, final Date date,
+            final ChannelInfo channel, final boolean isJoinTopic) {
+        checkParser(parser);
 
-        final Topic newTopic = new Topic(cChannel.getTopic(),
-                cChannel.getTopicSetter(), cChannel.getTopicTime());
+        final Topic newTopic = new Topic(channel.getTopic(),
+                channel.getTopicSetter(), channel.getTopicTime());
 
-        if (bIsJoinTopic) {
+        if (isJoinTopic) {
             if (newTopic.getTopic().isEmpty()) {
-                owner.doNotification("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
+                owner.doNotification(date, "channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
             } else {
-                owner.doNotification("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
+                owner.doNotification(date, "channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
                         newTopic);
             }
         } else {
-            owner.doNotification(cChannel.getTopic().isEmpty()
+            owner.doNotification(date, channel.getTopic().isEmpty()
                     ? "channelTopicRemoved" : "channelTopicChanged",
                     CoreActionType.CHANNEL_TOPICCHANGE,
-                    cChannel.getChannelClient(cChannel.getTopicSetter(), true), cChannel.getTopic());
+                    channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
         }
 
-        if (!bIsJoinTopic 
+        if (!isJoinTopic
                 || (owner.getCurrentTopic() == null && !newTopic.getTopic().isEmpty())
                 || (owner.getCurrentTopic() != null
                 && !newTopic.getTopic().equals(owner.getCurrentTopic().getTopic()))) {
@@ -145,91 +146,91 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelJoin(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient) {
-        checkParser(tParser);
+    public void onChannelJoin(final Parser parser, final Date date, final ChannelInfo channel,
+            final ChannelClientInfo client) {
+        checkParser(parser);
 
-        owner.doNotification("channelJoin", CoreActionType.CHANNEL_JOIN, cChannelClient);
-        owner.addClient(cChannelClient);
+        owner.doNotification(date, "channelJoin", CoreActionType.CHANNEL_JOIN, client);
+        owner.addClient(client);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelPart(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sReason) {
-        checkParser(tParser);
+    public void onChannelPart(final Parser parser, final Date date, final ChannelInfo channel,
+            final ChannelClientInfo client, final String reason) {
+        checkParser(parser);
 
-        owner.doNotification("channel"
-                + (isMyself(cChannelClient) ? "Self" : "") + "Part"
-                + (sReason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
-                cChannelClient, sReason);
-        owner.removeClient(cChannelClient);
+        owner.doNotification(date, "channel"
+                + (isMyself(client) ? "Self" : "") + "Part"
+                + (reason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
+                client, reason);
+        owner.removeClient(client);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelKick(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
-            final String sReason, final String sKickedByHost) {
-        checkParser(tParser);
+    public void onChannelKick(final Parser parser, final Date date, final ChannelInfo channel,
+            final ChannelClientInfo kickedClient, final ChannelClientInfo client,
+            final String reason, final String host) {
+        checkParser(parser);
 
-        owner.doNotification("channelKick" + (sReason.isEmpty() ? "" : "Reason"),
-                CoreActionType.CHANNEL_KICK, cKickedByClient, cKickedClient, sReason);
-        owner.removeClient(cKickedClient);
+        owner.doNotification(date, "channelKick" + (reason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_KICK, client, kickedClient, reason);
+        owner.removeClient(kickedClient);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelQuit(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sReason) {
-        checkParser(tParser);
+    public void onChannelQuit(final Parser parser, final Date date, final ChannelInfo channel,
+            final ChannelClientInfo client, final String reason) {
+        checkParser(parser);
 
-        owner.doNotification("channelQuit" + (sReason.isEmpty() ? "" : "Reason"),
-                CoreActionType.CHANNEL_QUIT, cChannelClient, sReason);
-        owner.removeClient(cChannelClient);
+        owner.doNotification(date, "channelQuit" + (reason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_QUIT, client, reason);
+        owner.removeClient(client);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelAction(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onChannelAction(final Parser parser, final Date date, final ChannelInfo channel,
+            final ChannelClientInfo client, final String message,
+            final String host) {
+        checkParser(parser);
 
-        owner.doNotification(
-                isMyself(cChannelClient) ? "channelSelfExternalAction" : "channelAction",
-                CoreActionType.CHANNEL_ACTION, cChannelClient, sMessage);
+        owner.doNotification(date,
+                isMyself(client) ? "channelSelfExternalAction" : "channelAction",
+                CoreActionType.CHANNEL_ACTION, client, message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelNickChanged(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sOldNick) {
-        checkParser(tParser);
+    public void onChannelNickChanged(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
+        checkParser(parser);
 
-        owner.doNotification(
-                isMyself(cChannelClient) ? "channelSelfNickChange" : "channelNickChange",
-                CoreActionType.CHANNEL_NICKCHANGE, cChannelClient, sOldNick);
-        owner.renameClient(sOldNick, cChannelClient.getClient().getNickname());
+        owner.doNotification(date,
+                isMyself(client) ? "channelSelfNickChange" : "channelNickChange",
+                CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
+        owner.renameClient(oldNick, client.getClient().getNickname());
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelModeChanged(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sHost,
-            final String sModes) {
-        checkParser(tParser);
+    public void onChannelModeChanged(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo client, final String host,
+            final String modes) {
+        checkParser(parser);
 
         if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 || !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
-            if (sHost.isEmpty()) {
-                owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
+            if (host.isEmpty()) {
+                owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
                         : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
-                        sModes.length() <= 1 ? "" : sModes);
+                        modes.length() <= 1 ? "" : modes);
             } else {
-                owner.doNotification(isMyself(cChannelClient) ? "channelSelfModeChanged"
+                owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
                         : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
-                        cChannelClient, sModes);
+                        client, modes);
             }
         }
 
@@ -238,42 +239,42 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelUserModeChanged(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
-            final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
-        checkParser(tParser);
+    public void onChannelUserModeChanged(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo targetClient,
+            final ChannelClientInfo client, final String host, final String mode) {
+        checkParser(parser);
 
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")) {
-            String format = "channelSplitUserMode_" + sMode;
+            String format = "channelSplitUserMode_" + mode;
 
             if (!owner.getConfigManager().hasOptionString("formatter", format)) {
                 format = "channelSplitUserMode_default";
             }
 
-            owner.doNotification(format, CoreActionType.CHANNEL_USERMODECHANGE,
-                    cSetByClient, cChangedClient, sMode);
+            owner.doNotification(date, format, CoreActionType.CHANNEL_USERMODECHANGE,
+                    client, targetClient, mode);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelCTCP(final Parser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sType,
-            final String sMessage, final String sHost) {
-        checkParser(tParser);
+    public void onChannelCTCP(final Parser parser, final Date date,
+            final ChannelInfo channel,  final ChannelClientInfo client,
+            final String type, final String message, final String host) {
+        checkParser(parser);
 
-        if (owner.doNotification("channelCTCP", CoreActionType.CHANNEL_CTCP,
-                cChannelClient, sType, sMessage)) {
-            owner.getServer().sendCTCPReply(cChannelClient.getClient().getNickname(),
-                    sType, sMessage);
+        if (owner.doNotification(date, "channelCTCP", CoreActionType.CHANNEL_CTCP,
+                client, type, message)) {
+            owner.getServer().sendCTCPReply(client.getClient().getNickname(),
+                    type, message);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onAwayStateOther(final Parser tParser,
+    public void onAwayStateOther(final Parser parser, final Date date,
             final ClientInfo client, final AwayState oldState, final AwayState state) {
-        checkParser(tParser);
+        checkParser(parser);
 
         final ChannelClientInfo channelClient = owner.getChannelInfo().getChannelClient(client);
 
@@ -281,7 +282,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final boolean away = state == AwayState.AWAY;
             final boolean discovered = oldState == AwayState.UNKNOWN;
 
-            owner.doNotification((away ? "channelUserAway" : "channelUserBack")
+            owner.doNotification(date, (away ? "channelUserAway" : "channelUserBack")
                     + (discovered ? "Discovered" : ""),
                     away ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
                     channelClient);
@@ -290,32 +291,32 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelNotice(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
-            final String sMessage, final String sHost) {
-        checkParser(tParser);
+    public void onChannelNotice(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo client,
+            final String message, final String host) {
+        checkParser(parser);
 
-        owner.doNotification("channelNotice", CoreActionType.CHANNEL_NOTICE,
-                cChannelClient, sMessage);
+        owner.doNotification(date, "channelNotice", CoreActionType.CHANNEL_NOTICE,
+                client, message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelNonUserModeChanged(final Parser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
-            final String sHost, final String sModes) {
-        checkParser(tParser);
+    public void onChannelNonUserModeChanged(final Parser parser, final Date date,
+            final ChannelInfo channel, final ChannelClientInfo client,
+            final String host, final String modes) {
+        checkParser(parser);
 
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 && owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
-            if (sHost.isEmpty()) {
-                owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
+            if (host.isEmpty()) {
+                owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
                         : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
-                        sModes.length() <= 1 ? "" : sModes);
+                        modes.length() <= 1 ? "" : modes);
             } else {
-                owner.doNotification(isMyself(cChannelClient) ? "channelSelfModeChanged"
+                owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
                         : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
-                        cChannelClient, sModes);
+                        client, modes);
             }
         }
 
@@ -324,23 +325,23 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelModeNotice(final Parser tParser, 
-            final ChannelInfo cChannel, final char prefix, 
-            final ChannelClientInfo cChannelClient, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onChannelModeNotice(final Parser parser, final Date date,
+            final ChannelInfo channel, final char prefix,
+            final ChannelClientInfo client, final String message,
+            final String host) {
+        checkParser(parser);
 
-        owner.doNotification("channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
-                cChannelClient, String.valueOf(prefix), sMessage);
+        owner.doNotification(date, "channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
+                client, String.valueOf(prefix), message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelGotListModes(final Parser tParser,
-            final ChannelInfo cChannel, final char mode) {
-        checkParser(tParser);
+    public void onChannelGotListModes(final Parser parser, final Date date,
+            final ChannelInfo channel, final char mode) {
+        checkParser(parser);
 
-        owner.doNotification("channelListModeRetrieved",
+        owner.doNotification(date, "channelListModeRetrieved",
                 CoreActionType.CHANNEL_LISTMODERETRIEVED, Character.valueOf(mode));
     }
 

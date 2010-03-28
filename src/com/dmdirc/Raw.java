@@ -32,6 +32,7 @@ import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.Date;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
@@ -104,15 +105,15 @@ public final class Raw extends WritableFrameContainer<InputWindow>
 
     /** {@inheritDoc} */
     @Override
-    public void onDataIn(final Parser tParser, final String sData) {
-        addLine("rawIn", sData);
+    public void onDataIn(final Parser parser, final Date date, final String data) {
+        addLine("rawIn", data);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onDataOut(final Parser tParser, final String sData,
-            final boolean bFromParser) {
-        addLine("rawOut", sData);
+    public void onDataOut(final Parser parser, final Date date, final String data,
+            final boolean fromParser) {
+        addLine("rawOut", data);
     }
 
     /** {@inheritDoc} */

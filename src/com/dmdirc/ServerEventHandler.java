@@ -35,6 +35,7 @@ import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.callbacks.*;
 import com.dmdirc.parser.irc.IRCParser;
+import java.util.Date;
 
 /**
  * Handles parser events for a Server object.
@@ -84,36 +85,36 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelSelfJoin(final Parser tParser, final ChannelInfo cChannel) {
-        checkParser(tParser);
-        owner.addChannel(cChannel);
+    public void onChannelSelfJoin(final Parser parser, final Date date, final ChannelInfo channel) {
+        checkParser(parser);
+        owner.addChannel(channel);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPrivateMessage(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onPrivateMessage(final Parser parser, final Date date, final String message,
+            final String host) {
+        checkParser(parser);
 
-        if (!owner.hasQuery(sHost)) {
-            owner.getQuery(sHost).onPrivateMessage(tParser, sMessage, sHost);
+        if (!owner.hasQuery(host)) {
+            owner.getQuery(host).onPrivateMessage(parser, date, message, host);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPrivateAction(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onPrivateAction(final Parser parser, final Date date, final String message,
+            final String host) {
+        checkParser(parser);
 
-        if (!owner.hasQuery(sHost)) {
-            owner.getQuery(sHost).onPrivateAction(tParser, sMessage, sHost);
+        if (!owner.hasQuery(host)) {
+            owner.getQuery(host).onPrivateAction(parser, date, message, host);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onErrorInfo(final Parser tParser, final ParserError errorInfo) {
+    public void onErrorInfo(final Parser parser, final Date date, final ParserError errorInfo) {
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
 
         final StringBuilder errorString = new StringBuilder();
@@ -127,9 +128,9 @@ public final class ServerEventHandler extends EventHandler implements
         errorString.append(owner.getAddress());
         errorString.append("\n");
         
-        if (tParser instanceof IRCParser) {
+        if (parser instanceof IRCParser) {
             errorString.append("\tAdditional Information:\n");
-            for (final String line : ((IRCParser)tParser).getServerInformationLines()) {
+            for (final String line : ((IRCParser)parser).getServerInformationLines()) {
                 errorString.append("\t\t");
                 errorString.append(line);
                 errorString.append("\n");
@@ -148,105 +149,106 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onPrivateCTCP(final Parser tParser, final String sType,
-            final String sMessage, final String sHost) {
-        checkParser(tParser);
+    public void onPrivateCTCP(final Parser parser, final Date date, final String type,
+            final String message, final String host) {
+        checkParser(parser);
 
         if (owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
-                owner.getParser().getClient(sHost), sType, sMessage)) {
-            owner.sendCTCPReply(owner.parseHostmask(sHost)[0], sType, sMessage);
+                owner.getParser().getClient(host), type, message)) {
+            owner.sendCTCPReply(owner.parseHostmask(host)[0], type, message);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPrivateCTCPReply(final Parser tParser, final String sType,
-            final String sMessage, final String sHost) {
-        checkParser(tParser);
+    public void onPrivateCTCPReply(final Parser parser, final Date date, final String type,
+            final String message, final String host) {
+        checkParser(parser);
 
         owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
-                owner.getParser().getClient(sHost), sType, sMessage);
+                owner.getParser().getClient(host), type, message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onSocketClosed(final Parser tParser) {
-        if (owner.getParser() == tParser) {
+    public void onSocketClosed(final Parser parser, final Date date) {
+        if (owner.getParser() == parser) {
             owner.onSocketClosed();
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPrivateNotice(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onPrivateNotice(final Parser parser, final Date date,
+            final String message, final String host) {
+        checkParser(parser);
 
         owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
-                owner.getParser().getClient(sHost), sMessage);
+                owner.getParser().getClient(host), message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onServerNotice(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onServerNotice(final Parser parser, final Date date,
+            final String message, final String host) {
+        checkParser(parser);
 
         owner.doNotification("serverNotice", CoreActionType.SERVER_SERVERNOTICE,
-                owner.getParser().getClient(sHost), sMessage);
+                owner.getParser().getClient(host), message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onMOTDStart(final Parser tParser, final String sData) {
-        checkParser(tParser);
+    public void onMOTDStart(final Parser parser, final Date date, final String data) {
+        checkParser(parser);
 
-        owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, sData);
+        owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, data);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onMOTDLine(final Parser tParser, final String sData) {
-        checkParser(tParser);
+    public void onMOTDLine(final Parser parser, final Date date, final String data) {
+        checkParser(parser);
 
-        owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, sData);
+        owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, data);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onMOTDEnd(final Parser tParser, final boolean noMOTD, final String sData) {
-        checkParser(tParser);
+    public void onMOTDEnd(final Parser parser, final Date date,
+            final boolean noMOTD, final String data) {
+        checkParser(parser);
 
-        owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, sData);
+        owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, data);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onNumeric(final Parser tParser, final int numeric,
+    public void onNumeric(final Parser parser, final Date date, final int numeric,
             final String[] token) {
-        checkParser(tParser);
+        checkParser(parser);
         owner.onNumeric(numeric, token);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPingFailed(final Parser tParser) {
-        checkParser(tParser);
+    public void onPingFailed(final Parser parser, final Date date) {
+        checkParser(parser);
         owner.onPingFailed();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPingSent(final Parser tParser) {
-        checkParser(tParser);
+    public void onPingSent(final Parser parser, final Date date) {
+        checkParser(parser);
 
         ActionManager.processEvent(CoreActionType.SERVER_PINGSENT, null, owner);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPingSuccess(final Parser tParser) {
-        checkParser(tParser);
+    public void onPingSuccess(final Parser parser, final Date date) {
+        checkParser(parser);
 
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, owner,
                 Long.valueOf(owner.getParser().getServerLatency()));
@@ -254,9 +256,9 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onAwayState(final Parser tParser, final AwayState oldState,
+    public void onAwayState(final Parser parser, final Date date, final AwayState oldState,
             final AwayState currentState, final String reason) {
-        checkParser(tParser);
+        checkParser(parser);
 
         owner.updateAwayState(currentState == AwayState.AWAY ? reason : null);
 
@@ -274,101 +276,101 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onConnectError(final Parser tParser, final ParserError errorInfo) {
-        checkParser(tParser);
+    public void onConnectError(final Parser parser, final Date date, final ParserError errorInfo) {
+        checkParser(parser);
         owner.onConnectError(errorInfo);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onNickInUse(final Parser tParser, final String nickname) {
+    public void onNickInUse(final Parser parser, final Date date, final String nickname) {
         owner.onNickInUse(nickname);
-        checkParser(tParser);
+        checkParser(parser);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPost005(final Parser tParser) {
-        checkParser(tParser);
+    public void onPost005(final Parser parser, final Date date) {
+        checkParser(parser);
         owner.onPost005();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onNoticeAuth(final Parser tParser, final String sData) {
-        checkParser(tParser);
+    public void onNoticeAuth(final Parser parser, final Date date, final String data) {
+        checkParser(parser);
 
-        owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, sData);
+        owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onUnknownNotice(final Parser tParser, final String sMessage,
-            final String sTarget, final String sHost) {
-        checkParser(tParser);
+    public void onUnknownNotice(final Parser parser, final Date date, final String message,
+            final String target, final String host) {
+        checkParser(parser);
 
         owner.doNotification("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE,
-                sHost, sTarget, sMessage);
+                host, target, message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onUnknownMessage(final Parser tParser, final String sMessage,
-            final String sTarget, final String sHost) {
-        checkParser(tParser);
+    public void onUnknownMessage(final Parser parser, final Date date, final String message,
+            final String target, final String host) {
+        checkParser(parser);
 
-        if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
+        if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
-            owner.getQuery(sTarget).doNotification("querySelfExternalMessage",
-                    CoreActionType.QUERY_SELF_MESSAGE, tParser.getLocalClient(), sMessage);
+            owner.getQuery(target).doNotification("querySelfExternalMessage",
+                    CoreActionType.QUERY_SELF_MESSAGE, parser.getLocalClient(), message);
         } else {
             owner.doNotification("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE,
-                    sHost, sTarget, sMessage);
+                    host, target, message);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onUnknownAction(final Parser tParser, final String sMessage,
-            final String sTarget, final String sHost) {
-        checkParser(tParser);
+    public void onUnknownAction(final Parser parser, final Date date, final String message,
+            final String target, final String host) {
+        checkParser(parser);
 
-        if (tParser.getLocalClient().equals(tParser.getClient(sHost))) {
+        if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
-            owner.getQuery(sTarget).doNotification("querySelfExternalAction",
-                    CoreActionType.QUERY_SELF_ACTION, tParser.getLocalClient(), sMessage);
+            owner.getQuery(target).doNotification("querySelfExternalAction",
+                    CoreActionType.QUERY_SELF_ACTION, parser.getLocalClient(), message);
         } else {
             owner.doNotification("unknownAction", CoreActionType.SERVER_UNKNOWNACTION,
-                    sHost, sTarget, sMessage);
+                    host, target, message);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onUserModeChanged(final Parser tParser,
-            final ClientInfo cClient, final String sSetBy, final String sModes) {
-        checkParser(tParser);
+    public void onUserModeChanged(final Parser parser, final Date date,
+            final ClientInfo client, final String host, final String modes) {
+        checkParser(parser);
 
         owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
-                owner.getParser().getClient(sSetBy), sModes);
+                owner.getParser().getClient(host), modes);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onUserModeDiscovered(final Parser tParser, final ClientInfo cClient,
-             final String sModes) {
-        checkParser(tParser);
+    public void onUserModeDiscovered(final Parser parser, final Date date,
+            final ClientInfo client, final String modes) {
+        checkParser(parser);
 
-        owner.doNotification(sModes.isEmpty() || "+".equals(sModes)
+        owner.doNotification(modes.isEmpty() || "+".equals(modes)
                 ? "userNoModes" : "userModeDiscovered",
-                CoreActionType.SERVER_USERMODES, cClient, sModes);
+                CoreActionType.SERVER_USERMODES, client, modes);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onInvite(final Parser tParser, final String userHost,
+    public void onInvite(final Parser parser, final Date date, final String userHost,
             final String channel) {
-        checkParser(tParser);
+        checkParser(parser);
 
         owner.addInvite(new Invite(owner, channel, userHost));
         owner.doNotification("inviteReceived",
@@ -378,54 +380,54 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onWallop(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onWallop(final Parser parser, final Date date, final String message,
+            final String host) {
+        checkParser(parser);
 
         owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS,
-                owner.getParser().getClient(sHost), sMessage);
+                owner.getParser().getClient(host), message);
 
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onWalluser(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onWalluser(final Parser parser, final Date date, final String message,
+            final String host) {
+        checkParser(parser);
 
         owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS,
-                owner.getParser().getClient(sHost), sMessage);
+                owner.getParser().getClient(host), message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onWallDesync(final Parser tParser, final String sMessage,
-            final String sHost) {
-        checkParser(tParser);
+    public void onWallDesync(final Parser parser, final Date date, final String message,
+            final String host) {
+        checkParser(parser);
 
         owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC,
-                owner.getParser().getClient(sHost), sMessage);
+                owner.getParser().getClient(host), message);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onNickChanged(final Parser tParser, final ClientInfo cClient,
-            final String sOldNick) {
-        checkParser(tParser);
+    public void onNickChanged(final Parser parser, final Date date, final ClientInfo client,
+            final String oldNick) {
+        checkParser(parser);
 
-        if (cClient.equals(owner.getParser().getLocalClient())) {
+        if (client.equals(owner.getParser().getLocalClient())) {
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
-                    sOldNick, cClient.getNickname());
+                    oldNick, client.getNickname());
             owner.updateTitle();
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onServerError(final Parser tParser, final String sMessage) {
-        checkParser(tParser);
+    public void onServerError(final Parser parser, final Date date, final String message) {
+        checkParser(parser);
 
-        owner.doNotification("serverError", CoreActionType.SERVER_ERROR, sMessage);
+        owner.doNotification("serverError", CoreActionType.SERVER_ERROR, message);
     }
 
     /** {@inheritDoc} */
