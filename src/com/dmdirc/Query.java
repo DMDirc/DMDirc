@@ -43,6 +43,7 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.QueryWindow;
 
 import java.awt.Toolkit;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -169,42 +170,30 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         }
     }
 
-    /**
-     * Handles a private message event from the parser.
-     *
-     * @param parser Parser receiving the event
-     * @param message message received
-     * @param remoteHost remote user host
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onPrivateMessage(final Parser parser, final String message,
-            final String remoteHost) {
+    public void onPrivateMessage(final Parser parser, final Date date,
+            final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
         ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this,
-                parser.getClient(remoteHost), message);
+                parser.getClient(host), message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
 
-    /**
-     * Handles a private action event from the parser.
-     *
-     * @param parser Parser receiving the event
-     * @param message message received
-     * @param remoteHost remote host
-     */
+    /** {@inheritDoc} */
     @Override
-    public void onPrivateAction(final Parser parser, final String message,
-            final String remoteHost) {
+    public void onPrivateAction(final Parser parser, final Date date,
+            final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
         ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this,
-                parser.getClient(remoteHost), message);
+                parser.getClient(host), message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -235,49 +224,49 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
 
     /** {@inheritDoc} */
     @Override
-    public void onNickChanged(final Parser tParser, final ClientInfo cClient,
-            final String sOldNick) {
-        if (sOldNick.equals(getNickname())) {
+    public void onNickChanged(final Parser parser, final Date date,
+            final ClientInfo client, final String oldNick) {
+        if (oldNick.equals(getNickname())) {
             final CallbackManager<?> callbackManager = server.getParser().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);
 
             try {
-                callbackManager.addCallback(PrivateActionListener.class, this, cClient.getNickname());
-                callbackManager.addCallback(PrivateMessageListener.class, this, cClient.getNickname());
+                callbackManager.addCallback(PrivateActionListener.class, this, client.getNickname());
+                callbackManager.addCallback(PrivateMessageListener.class, this, client.getNickname());
             } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
 
             final StringBuffer format = new StringBuffer("queryNickChanged");
 
-            ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
+            ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, oldNick);
 
-            server.updateQuery(this, sOldNick, cClient.getNickname());
+            server.updateQuery(this, oldNick, client.getNickname());
 
-            addLine(format, sOldNick, cClient.getUsername(),
-                    cClient.getHostname(), cClient.getNickname());
-            host = cClient.getNickname() + "!" + cClient.getUsername() + "@" + cClient.getHostname();
-            nickname = cClient.getNickname();
+            addLine(format, oldNick, client.getUsername(),
+                    client.getHostname(), client.getNickname());
+            host = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname();
+            nickname = client.getNickname();
             updateTitle();
 
-            setName(cClient.getNickname());
+            setName(client.getNickname());
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onQuit(final Parser tParser, final ClientInfo cClient,
-            final String sReason) {
-        if (cClient.getNickname().equals(getNickname())) {
-            final StringBuffer format = new StringBuffer(sReason.isEmpty()
+    public void onQuit(final Parser parser, final Date date,
+            final ClientInfo client, final String reason) {
+        if (client.getNickname().equals(getNickname())) {
+            final StringBuffer format = new StringBuffer(reason.isEmpty()
                 ? "queryQuit" : "queryQuitReason");
 
-            ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
+            ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, reason);
 
-            addLine(format, cClient.getNickname(),
-                    cClient.getUsername(), cClient.getHostname(), sReason);
+            addLine(format, client.getNickname(),
+                    client.getUsername(), client.getHostname(), reason);
         }
     }
 

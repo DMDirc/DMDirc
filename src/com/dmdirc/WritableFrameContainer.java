@@ -33,6 +33,7 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -161,7 +162,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
         
         return lines;
     }
-    
+
     /**
      * Processes and displays a notification.
      *
@@ -171,6 +172,20 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
      * @return True if any further behaviour should be executed, false otherwise
      */
     public boolean doNotification(final String messageType,
+            final ActionType actionType, final Object... args) {
+        return doNotification(new Date(), messageType, actionType, args);
+    }
+    
+    /**
+     * Processes and displays a notification.
+     *
+     * @param date The date/time at which the event occured
+     * @param messageType The name of the formatter to be used for the message
+     * @param actionType The action type to be used
+     * @param args The arguments for the message
+     * @return True if any further behaviour should be executed, false otherwise
+     */
+    public boolean doNotification(final Date date, final String messageType,
             final ActionType actionType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<Object>();
         final List<Object> actionArgs = new ArrayList<Object>();
@@ -190,7 +205,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
         final boolean res = ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
 
-        handleNotification(buffer.toString(), messageArgs.toArray());
+        handleNotification(date, buffer.toString(), messageArgs.toArray());
 
         return res;
     } 
@@ -216,7 +231,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         return false;
     }
-    
+
     /**
      * Handles general server notifications (i.e., ones not tied to a
      * specific window). The user can select where the notifications should
@@ -225,8 +240,21 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
      * @param messageType The type of message that is being sent
      * @param args The arguments for the message
      */
-    public void handleNotification(final String messageType, final Object... args) {        
-        despatchNotification(messageType, getConfigManager().hasOptionString("notifications",
+    public void handleNotification(final String messageType, final Object... args) {
+        handleNotification(new Date(), messageType, args);
+    }
+    
+    /**
+     * Handles general server notifications (i.e., ones not tied to a
+     * specific window). The user can select where the notifications should
+     * go in their config.
+     *
+     * @param date The date/time at which the event occured
+     * @param messageType The type of message that is being sent
+     * @param args The arguments for the message
+     */
+    public void handleNotification(final Date date, final String messageType, final Object... args) {
+        despatchNotification(date, messageType, getConfigManager().hasOptionString("notifications",
                 messageType) ? getConfigManager().getOption("notifications", messageType)
                 : "self", args);
     }
@@ -234,11 +262,12 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
     /**
      * Despatches a notification of the specified type to the specified target.
      * 
+     * @param date The date/time at which the event occured
      * @param messageType The type of the message that is being sent
      * @param messageTarget The target of the message
      * @param args The arguments for the message
      */
-    protected void despatchNotification(final String messageType,
+    protected void despatchNotification(final Date date, final String messageType,
             final String messageTarget, final Object... args) {
         
         String target = messageTarget;
@@ -258,16 +287,16 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
         
         if (target.startsWith("fork:")) {
             for (String newtarget : target.substring(5).split("\\|")) {
-                despatchNotification(format, newtarget, args);
+                despatchNotification(date, format, newtarget, args);
             }
             
             return;
         }
 
         if ("self".equals(target)) {
-            addLine(format, args);
+            addLine(format, date, args);
         }  else if (NOTIFICATION_SERVER.equals(target)) {
-            getServer().addLine(format, args);
+            getServer().addLine(format, date, args);
         } else if ("all".equals(target)) {
             getServer().addLineToAll(format, args);
         } else if ("active".equals(target)) {
@@ -281,7 +310,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                 targetWindow = new CustomWindow(windowName, windowName, getServer());
             }
 
-            targetWindow.addLine(format, args);
+            targetWindow.addLine(format, date, args);
         } else if (target.startsWith("lastcommand:")) {
             final Object[] escapedargs = new Object[args.length];
 
@@ -312,20 +341,20 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                 }
             }
 
-            best.addLine(format, args);
+            best.addLine(format, date, args);
         } else if (target.startsWith(NOTIFICATION_CHANNEL + ":")) {
             final int sp = target.indexOf(' ');
             final String channel = String.format(
                    target.substring(8, sp > -1 ? sp : target.length()), args);
 
            if (getServer().hasChannel(channel)) {
-               getServer().getChannel(channel).addLine(messageType, args);
+               getServer().getChannel(channel).addLine(messageType, date, args);
            } else if (sp > -1) {
                // They specified a fallback
-               despatchNotification(format, target.substring(sp + 1), args);
+               despatchNotification(date, format, target.substring(sp + 1), args);
            } else {
                 // No fallback specified
-               addLine(format, args);
+               addLine(format, date, args);
                Logger.userError(ErrorLevel.LOW,
                        "Invalid notification target for type " + messageType
                        + ": channel " + channel + " doesn't exist");
@@ -339,7 +368,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             for (String channelName : getServer().getChannels()) {
                 final Channel channel = getServer().getChannel(channelName);
                 if (channel.getChannelInfo().getChannelClient(user) != null) {
-                    channel.addLine(messageType, args);
+                    channel.addLine(messageType, date, args);
                     found = true;
                 }
             }
@@ -347,17 +376,17 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             if (!found) {
                 if (sp > -1) {
                     // They specified a fallback
-                    despatchNotification(format, target.substring(sp + 1), args);
+                    despatchNotification(date, format, target.substring(sp + 1), args);
                 } else {
                     // No fallback specified
-                    addLine(messageType, args);
+                    addLine(messageType, date, args);
                        Logger.userError(ErrorLevel.LOW,
                        "Invalid notification target for type " + messageType
                        + ": no common channels with " + user);
                 }
             }
         } else if (!"none".equals(target)) {
-            addLine(format, args);
+            addLine(format, date, args);
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
         }
