@@ -46,7 +46,15 @@ is divided into following sections:
     <target depends="-init-dynamic-properties" name="-init-dynamic-properties-windows" if="is.windows">
         <replace file="nbproject/private/dynamic.properties" token="\" value="/"/> <!-- this replaces backslashes with slashes on Windows -->
     </target>
-    <target depends="-pre-init,-init-dynamic-properties,-init-dynamic-properties-windows" name="-init-private">
+    <target depends="-init-dynamic-properties,-init-dynamic-properties-windows" name="-init-dynamic-properties-netbeans">
+        <!-- Netbeans sucks and ignores dynamic.properties, lets hax it into private.properties then -->
+        <exec executable="bash">
+            <arg value="dynamicProperties.sh"/>
+            <arg value="nbproject/private/dynamic.properties"/>
+            <arg value="nbproject/private/private.properties"/>
+       </exec>
+    </target>
+    <target depends="-pre-init,-init-dynamic-properties,-init-dynamic-properties-windows,-init-dynamic-properties-netbeans" name="-init-private">
         <property file="nbproject/private/config.properties"/>
         <property file="nbproject/private/configs/${config}.properties"/>
         <property file="nbproject/private/private.properties"/>
