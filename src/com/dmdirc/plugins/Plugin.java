@@ -24,6 +24,7 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
+import java.io.File;
 
 /**
  * Defines the standard methods that should be implemented by plugins.
@@ -36,6 +37,8 @@ public abstract class Plugin implements Comparable<Plugin> {
     private boolean domainSet = false;
     /** Associated Plugin info. */
     private PluginInfo pluginInfo;
+    /** Files directory for this plugin. */
+    private File filesDir = null;
 
     /**
      * Called when the plugin is constructed.
@@ -90,6 +93,35 @@ public abstract class Plugin implements Comparable<Plugin> {
      * its config is being shown).
      */
     public void domainUpdated() {
+    }
+
+    /**
+     * Get the files directory for this plugin.
+     * This will attempt to create the directory if it doesn't exist the first
+     * time the directory name is requested.
+     *
+     * @return Files directory for this plugin.
+     */
+    public File getFilesDir() {
+        if (filesDir == null) {
+            final String fs = System.getProperty("file.separator");
+            final String dir = PluginManager.getPluginManager().getFilesDirectory();
+            filesDir = new File(dir + pluginInfo.getName() + fs);
+            if (!filesDir.exists()) {
+                filesDir.mkdirs();
+            }
+        }
+
+        return filesDir;
+    }
+
+    /**
+     * Convenience Method.
+     *
+     * @return Filesdir as a string with trailing path separator
+     */
+    public String getFilesDirString() {
+        return getFilesDir().getAbsolutePath() + System.getProperty("file.separator");
     }
 
     /**

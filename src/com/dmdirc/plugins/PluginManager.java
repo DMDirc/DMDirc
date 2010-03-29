@@ -382,6 +382,24 @@ public class PluginManager implements ActionListener {
     }
 
     /**
+     * Get directory where plugin files are stored.
+     *
+     * @return Directory where plugin files are stored.
+     */
+    public String getFilesDirectory() {
+        final String fs = System.getProperty("file.separator");
+        String filesDir = myDir + "files" + fs;
+        if (IdentityManager.getGlobalConfig().hasOptionString("plugins", "filesdir")) {
+            final String fdopt = IdentityManager.getGlobalConfig().getOptionString("plugins", "filesdir");
+            if (fdopt != null && !fdopt.isEmpty() && new File(fdopt).exists()) {
+                filesDir = fdopt;
+            }
+        }
+
+        return filesDir;
+    }
+
+    /**
      * Retrieves a list of all installed plugins.
      * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
      * that matches *.jar is deemed to be a valid plugin.
