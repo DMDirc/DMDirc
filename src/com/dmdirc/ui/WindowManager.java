@@ -211,18 +211,36 @@ public class WindowManager {
      * @since 0.6.4
      */
     @Precondition({
-        "The specified Windows are not null"
+        "The specified containers are not null",
+        "The specified parent is in the window hierarchy already",
+        "The specified child is NOT in the window hierarchy already"
     })
     public static void addWindow(final FrameContainer<?> parent,
             final FrameContainer<?> child, final boolean focus) {
         Logger.assertTrue(parent != null);
+        Logger.assertTrue(isInHierarchy(parent));
         Logger.assertTrue(child != null);
+        Logger.assertTrue(!isInHierarchy(child));
 
         parent.addChild(child);
 
         child.addSelectionListener(selectionListener);
 
         fireAddWindow(parent, child, focus);
+    }
+
+    /**
+     * Recursively determines if the specified target is in the known
+     * hierarchy of containers. That is, whether or not the specified target
+     * or any of its parents are root windows.
+     *
+     * @since 0.6.4
+     * @param target The container to be tested
+     * @return True if the target is in the hierarchy, false otherise
+     */
+    protected static boolean isInHierarchy(final FrameContainer<?> target) {
+        return target != null && (rootWindows.contains(target)
+                || isInHierarchy(target.getParent()));
     }
 
     /**
@@ -283,8 +301,12 @@ public class WindowManager {
      * to be closed. If canWait is false, a new thread is created.
      * @since 0.6.3
      */
-    @Precondition("The specified Window is not null")
+    @Precondition({
+        "The specified window is not null",
+        "The specified window is in the window hierarchy"
+    })
     public static void removeWindow(final FrameContainer<?> window, final boolean canWait) {
+        Logger.assertTrue(isInHierarchy(window));
         Logger.assertTrue(window != null);
 
         if (!window.getChildren().isEmpty()) {
