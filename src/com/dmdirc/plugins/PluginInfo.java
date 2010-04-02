@@ -955,8 +955,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     } else {
                         plugin = (Plugin) temp;
                         LOGGER.finer(getName() + ": Setting domain 'plugin-" + getName() + "'");
-                        plugin.setDomain("plugin-" + getName());
                         plugin.setPluginInfo(this);
+                        plugin.setDomain("plugin-" + getName());
                         if (!tempLoaded) {
                             try {
                                 plugin.onLoad();
