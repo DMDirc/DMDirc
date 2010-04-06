@@ -115,13 +115,13 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         boolean returnCode = false;
         final boolean wasLoaded = plugin.isLoaded();
 
-        if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
-            target.delete();
-        }
-
         // Unload old version of plugin before we update the metadata.
         if (wasLoaded && plugin.isUnloadable()) {
             plugin.unloadPlugin();
+        }
+
+        if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
+            target.delete();
         }
 
         // Try and move the downloaded plugin to the new location.
