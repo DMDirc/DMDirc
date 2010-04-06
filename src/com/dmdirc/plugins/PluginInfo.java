@@ -316,8 +316,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 try {
                     final Identity thisIdentity = new Identity(stream, false);
-                    identities.add(thisIdentity);
                     IdentityManager.addIdentity(thisIdentity);
+                    identities.add(thisIdentity);
                 } catch (final InvalidIdentityFileException ex) {
                     Logger.userError(ErrorLevel.MEDIUM, "Error with identity file '" + name + "' in plugin '" + getName() + "'", ex);
                 }
