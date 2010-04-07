@@ -314,12 +314,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     continue;
                 }
 
-                try {
-                    final Identity thisIdentity = new Identity(stream, false);
-                    IdentityManager.addIdentity(thisIdentity);
-                    identities.add(thisIdentity);
-                } catch (final InvalidIdentityFileException ex) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Error with identity file '" + name + "' in plugin '" + getName() + "'", ex);
+                synchronized (identities) {
+                    try {
+                        final Identity thisIdentity = new Identity(stream, false);
+                        IdentityManager.addIdentity(thisIdentity);
+                        identities.add(thisIdentity);
+                    } catch (final InvalidIdentityFileException ex) {
+                        Logger.userError(ErrorLevel.MEDIUM, "Error with identity file '" + name + "' in plugin '" + getName() + "'", ex);
+                    }
                 }
             }
         } catch (final IOException ioe) {
@@ -331,11 +333,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Unload any identities loaded by this plugin.
      */
     private void unloadIdentities() {
-        for (Identity identity : identities) {
-            IdentityManager.removeIdentity(identity);
-        }
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                IdentityManager.removeIdentity(identity);
+            }
 
-        identities.clear();
+            identities.clear();
+        }
     }
 
     /**
@@ -343,10 +347,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void updateProvides() {
         // Remove us from any existing provides lists.
-        for (Service service : provides) {
-            service.delProvider(this);
+        synchronized (provides) {
+            for (Service service : provides) {
+                service.delProvider(this);
+            }
+            provides.clear();
         }
-        provides.clear();
 
         // Get services provided by this plugin
         final List<String> providesList = metaData.getFlatDomain("provides");
@@ -358,8 +364,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 if (!name.equalsIgnoreCase("any") && !type.equalsIgnoreCase("export")) {
                     final Service service = PluginManager.getPluginManager().getService(type, name, true);
-                    service.addProvider(this);
-                    provides.add(service);
+                    synchronized (provides) {
+                        service.addProvider(this);
+                        provides.add(service);
+                    }
                 }
             }
         }
@@ -766,7 +774,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     @Override
     public List<Service> getServices() {
-        return new ArrayList<Service>(provides);
+        synchronized (provides) {
+            return new ArrayList<Service>(provides);
+        }
     }
 
     /**
@@ -1054,10 +1064,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 }
                 ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
-                for (Service service : provides) {
-                    service.delProvider(this);
+                synchronized (provides) {
+                    for (Service service : provides) {
+                        service.delProvider(this);
+                    }
+                    provides.clear();
                 }
-                provides.clear();
             }
             unloadIdentities();
             tempLoaded = false;
@@ -1449,8 +1461,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                     // Add a provides for this
                     final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
-                    service.addProvider(this);
-                    provides.add(service);
+                    synchronized (provides) {
+                        service.addProvider(this);
+                        provides.add(service);
+                    }
                     // Add is as an export
                     exports.put(serviceName, new ExportInfo(methodName, methodClass, this));
                 }
