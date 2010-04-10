@@ -100,7 +100,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
-        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+        if (myTarget.isCustom(PROFILE_DOMAIN)) {
             migrateProfile();
         }
     }
@@ -123,7 +123,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
-        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+        if (myTarget.isCustom(PROFILE_DOMAIN)) {
             migrateProfile();
         }
     }
@@ -141,7 +141,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         this.file.setAutomake(true);
         this.myTarget = target;
 
-        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+        if (myTarget.isCustom(PROFILE_DOMAIN)) {
             migrateProfile();
         }
     }
@@ -172,7 +172,9 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         } else if (hasOption(DOMAIN, "global") || (forceDefault && !isProfile())) {
             target.setGlobal();
         } else if (isProfile()) {
-            target.setProfile();
+            target.setCustom(PROFILE_DOMAIN);
+        } else if (hasOption(DOMAIN, "type")) {
+            target.setCustom(getOption(DOMAIN, "type"));
         } else {
             throw new InvalidIdentityFileException("No target and no profile");
         }
@@ -564,6 +566,17 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
     @Deprecated
     public ConfigFile getFile() {
         return file;
+    }
+
+    /**
+     * Determines if this identity is loaded from the specified File.
+     *
+     * @param target The file to be checked
+     * @return True if this identity comes from the target file, false otherwise
+     * @since 0.6.4
+     */
+    public boolean isFile(final File target) {
+        return file != null && file.getFile() != null && file.getFile().equals(target);
     }
 
     /**

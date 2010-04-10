@@ -40,7 +40,8 @@ import java.util.logging.Level;
  *
  * @author chris
  */
-public class ConfigManager extends ConfigSource implements ConfigChangeListener {
+public class ConfigManager extends ConfigSource implements ConfigChangeListener,
+        IdentityListener {
 
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
@@ -244,8 +245,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener 
         case CHANNEL:
             comp = channel;
             break;
-        case PROFILE:
-            // We don't want profiles
+        case CUSTOM:
+            // We don't want custom identities
             comp = null;
             break;
         default:
@@ -482,4 +483,17 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener 
             listener.configChanged(domain, key);
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void identityAdded(final Identity identity) {
+        checkIdentity(identity);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void identityRemoved(final Identity identity) {
+        removeIdentity(identity);
+    }
+    
 }
