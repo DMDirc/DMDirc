@@ -68,11 +68,12 @@ public class ConfigTargetTest {
     @Test
     public void testSetProfile() {
         final ConfigTarget target = new ConfigTarget();
-        target.setProfile();
+        target.setCustom("profile");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.PROFILE);
-        assertEquals(target.getTypeName(), "profile");
-        assertTrue(target.toString().toLowerCase().matches("profile"));
+        assertEquals(target.getType(), ConfigTarget.TYPE.CUSTOM);
+        assertEquals(target.getTypeName(), "custom");
+        assertEquals("profile", target.getData());
+        assertEquals("custom: profile", target.toString().toLowerCase());
     }
 
     @Test
