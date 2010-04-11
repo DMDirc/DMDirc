@@ -565,6 +565,22 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 (group + "/" + name).replace(' ', '.'));
     }
 
+    /**
+     * Sets whether this action is enabled or not.
+     *
+     * @param enabled true to enable, false to disable
+     */
+    public void setEnabled(final boolean enabled) {
+        if (enabled && IdentityManager.getGlobalConfig().hasOptionBool(
+                "disable_action", (group + "/" + name).replace(' ', '.'))) {
+            IdentityManager.getConfigIdentity().unsetOption("disable_action",
+                    (group + "/" + name).replace(' ', '.'));
+        } else {
+            IdentityManager.getConfigIdentity().setOption("disable_action",
+                    (group + "/" + name).replace(' ', '.'), true);
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean trigger(final StringBuffer format, final Object... arguments) {
