@@ -84,7 +84,8 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
             return;
         }
 
-        final Server server = new Server(address, IdentityManager.getProfiles().get(0));
+        final Server server = new Server(address, IdentityManager
+                .getCustomIdentities("profile").get(0));
         server.connect();
     }
 

@@ -95,13 +95,13 @@ public class ServerEntry implements ServerGroupItem {
      * @return This server's profile identity
      */
     protected Identity getProfileIdentity() {
-        for (Identity identity : IdentityManager.getProfiles()) {
+        for (Identity identity : IdentityManager.getCustomIdentities("profile")) {
             if (profile.equals(identity.getName())) {
                 return identity;
             }
         }
 
-        return IdentityManager.getProfiles().get(0);
+        return IdentityManager.getCustomIdentities("profile").get(0);
     }
 
     /** {@inheritDoc} */

@@ -114,7 +114,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
             identity.addListener(this);
         }
 
-        IdentityManager.addConfigManager(this);
+        IdentityManager.addIdentityListener(this);
     }
 
     /** {@inheritDoc} */
