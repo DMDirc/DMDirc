@@ -566,6 +566,16 @@ public class Action extends ActionModel implements ConfigChangeListener {
     }
 
     /**
+     * Determines whether this action is enabled or not.
+     *
+     * @since 0.6.4
+     * @return True if the action is enabled, false otherwise
+     */
+    public boolean isEnabled() {
+        return !disabled;
+    }
+
+    /**
      * Sets whether this action is enabled or not.
      *
      * @param enabled true to enable, false to disable
