@@ -24,11 +24,14 @@ package com.dmdirc.commandparser.commands.chat;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
+import com.dmdirc.commandparser.commands.context.ChatCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -36,38 +39,45 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * The me command sends a CTCP action to the current channel.
  * @author chris
  */
-public final class Me extends ChatCommand implements ValidatingCommand {
-    
+public final class Me extends Command implements ValidatingCommand, CommandInfo {
+
     /** Creates a new instance of Me. */
     public Me() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final MessageTarget<?> target, final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final MessageTarget<?> target = ((ChatCommandContext) context).getChat();
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "me", "<action>");
+            showUsage(origin, args.isSilent(), "me", "<action>");
         } else {
             target.sendAction(args.getArgumentsAsString());
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "me";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHAT;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -76,15 +86,15 @@ public final class Me extends ChatCommand implements ValidatingCommand {
 
     /** {@inheritDoc} */
     @Override
-    public ValidationResponse validateArguments(final InputWindow origin, 
+    public ValidationResponse validateArguments(final InputWindow origin,
             final CommandArguments arguments) {
         if (origin.getContainer().getServer() == null
                 || origin.getContainer().getServer().getParser() == null) {
             return new ValidationResponse();
         }
-        
+
         final int length = 2 + arguments.getArgumentsAsString().length();
-        
+
         if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
                 origin.getContainer().toString()) <= length) {
             return new ValidationResponse("Too long");
@@ -92,5 +102,4 @@ public final class Me extends ChatCommand implements ValidatingCommand {
             return new ValidationResponse();
         }
     }
-    
 }

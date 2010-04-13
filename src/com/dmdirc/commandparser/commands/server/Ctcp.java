@@ -25,10 +25,14 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -37,7 +41,8 @@ import com.dmdirc.ui.input.TabCompletionType;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Ctcp extends ServerCommand implements IntelligentCommand {
+public final class Ctcp extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of Ctcp.
@@ -48,22 +53,17 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length < 2) {
-            showUsage(origin, isSilent, "ctcp", "<target> <type> [arguments]");
+            showUsage(origin, args.isSilent(), "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendCTCP(args.getArguments()[0],
                     args.getArguments()[1], args.getArgumentsAsString(2));
-            sendLine(origin, isSilent, "selfCTCP", args.getArguments()[0],
+            sendLine(origin, args.isSilent(), "selfCTCP", args.getArguments()[0],
                     args.getArgumentsAsString(1));
         }
     }
@@ -79,6 +79,12 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc}. */

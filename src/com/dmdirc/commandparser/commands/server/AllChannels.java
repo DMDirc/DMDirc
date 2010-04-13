@@ -25,9 +25,13 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -36,7 +40,8 @@ import com.dmdirc.ui.input.TabCompleter;
  * on a server.
  * @author chris
  */
-public final class AllChannels extends ServerCommand implements IntelligentCommand {
+public final class AllChannels extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /** Creates a new instance of AllChannels. */
     public AllChannels() {
@@ -47,13 +52,14 @@ public final class AllChannels extends ServerCommand implements IntelligentComma
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         final String command = args.getArgumentsAsString();
         
         for (String channel : server.getChannels()) {
             server.getChannel(channel).getCommandParser()
-                    .parseCommand(server.getChannel(channel), command);
+                    .parseCommand(server.getChannel(channel), context.getSource(), command);
         }
     }
     
@@ -68,6 +74,12 @@ public final class AllChannels extends ServerCommand implements IntelligentComma
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

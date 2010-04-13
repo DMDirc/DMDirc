@@ -25,11 +25,14 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -42,7 +45,8 @@ import java.awt.Color;
  * Allows the user to set a nickname on the channel to use a custom colour.
  * @author chris
  */
-public final class SetNickColour extends ChannelCommand implements IntelligentCommand {
+public final class SetNickColour extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /** Creates a new instance of SetNickColour. */
     public SetNickColour() {
@@ -52,9 +56,11 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     }
     
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked") @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
         
         int offset = 0;
         boolean nicklist = true;
@@ -71,7 +77,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
         }
         
         if (args.getArguments().length <= offset) {
-            showUsage(origin, isSilent, "setnickcolour", "[--nicklist|--text] <nick> [colour]");
+            showUsage(origin, args.isSilent(), "setnickcolour", "[--nicklist|--text] <nick> [colour]");
             return;
         }
         
@@ -80,7 +86,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
         offset++;
         
         if (target == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname ("
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "No such nickname ("
                     + args.getArguments()[offset - 1] + ")!");
         } else if (args.getArguments().length <= offset) {
             // We're removing the colour
@@ -98,7 +104,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
             if (newColour == null) {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Invalid colour specified.");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
                 return;
             }
 
@@ -126,6 +132,12 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
     }
     
     /** {@inheritDoc} */

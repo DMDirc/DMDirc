@@ -22,10 +22,6 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 
@@ -33,26 +29,16 @@ import com.dmdirc.commandparser.CommandType;
  * Represents a command that can be performed in the context of a "chat" window
  * (i.e., a channel or a query).
  *
+ * @deprecated Commands should extend {@link Command} directly
  * @author Chris
  */
+@Deprecated
 public abstract class ChatCommand extends Command implements CommandInfo {
-    
-    /**
-     * Executes this command.
-     * 
-     * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param target The target of this command
-     * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
-     * @since 0.6.3m1
-     */
-    public abstract void execute(FrameContainer<?> origin, Server server, MessageTarget<?> target,
-            boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */
     @Override
     public CommandType getType() {
         return CommandType.TYPE_CHAT;
     }
+
 }

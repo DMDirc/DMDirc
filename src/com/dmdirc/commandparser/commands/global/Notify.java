@@ -24,9 +24,12 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -38,7 +41,8 @@ import java.awt.Color;
  * 
  * @author chris
  */
-public final class Notify extends GlobalCommand implements IntelligentCommand {
+public final class Notify extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of Notify.
@@ -51,17 +55,17 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "notify", "<colour>");
+            showUsage(origin, args.isSilent(), "notify", "<colour>");
             return;
         }
         
         final Color colour = ColourManager.parseColour(args.getArguments()[0], null);
         
         if (colour == null) {
-            showUsage(origin, isSilent, "notify",
+            showUsage(origin, args.isSilent(), "notify",
                     "<colour> - colour must be an IRC colour code (0-15) or a " +
                     "hex string (e.g. FFFF00).");
         } else if (origin != null) {            
@@ -81,6 +85,12 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc} */

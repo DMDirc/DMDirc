@@ -21,36 +21,46 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.config.IdentityManager;
+import org.junit.Before;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 public class MeTest {
+ 
+    private final Me command = new Me();
+    private MessageTarget mtt;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
-    
-    private final Me command = new Me();
+
+    @Before
+    public void setUp() {
+        mtt = mock(MessageTarget.class);
+    }
 
     @Test
     public void testUsage() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/foo"));
+        command.execute(tiw, new CommandArguments("/foo"),
+                new ChatCommandContext(null, command, mtt));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
     
     @Test
     public void testSend() {
-        final MessageTarget<?> mtt = mock(MessageTarget.class);
-        command.execute(null, null, mtt, false, new CommandArguments("/foo hello meep moop"));
+        command.execute(null, new CommandArguments("/foo hello meep moop"),
+                new ChatCommandContext(null, command, mtt));
 
         verify(mtt).sendAction("hello meep moop");
     }

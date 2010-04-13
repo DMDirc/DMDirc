@@ -23,6 +23,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,18 +31,19 @@ import static org.mockito.Mockito.*;
 
 public class DebugTest {
 
+    private final Debug command = new Debug();
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
-    
-    private final Debug command = new Debug();
 
     @Test
     public void testUsage() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
 
-        command.execute(tiw, false, new CommandArguments("/foo"));
+        command.execute(tiw, new CommandArguments("/foo"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -50,7 +52,8 @@ public class DebugTest {
     public void testInvalidArg() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
 
-        command.execute(tiw, false, new CommandArguments("/foo flubadee"));
+        command.execute(tiw, new CommandArguments("/foo flubadee"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }    

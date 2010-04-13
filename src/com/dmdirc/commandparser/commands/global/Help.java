@@ -27,9 +27,10 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -45,31 +46,31 @@ import java.util.Map;
  * are only displayed when in a channel window, for example.
  * @author chris
  */
-public final class Help extends GlobalCommand implements IntelligentCommand {
-    
+public final class Help extends Command implements IntelligentCommand, CommandInfo {
+
     /**
      * Creates a new instance of Help.
      */
     public Help() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
-            showAllCommands(origin, isSilent);
+            showAllCommands(origin, args.isSilent());
         } else {
-            showCommand(origin, isSilent, args.getArguments()[0]);
+            showCommand(origin, args.isSilent(), args.getArguments()[0]);
         }
     }
-    
+
     /**
      * Shows a list of all commands valid for the current window.
-     * 
+     *
      * @param origin The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
@@ -78,12 +79,12 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
                 .getCommandParser().getCommands().keySet());
 
         Collections.sort(commands);
-        
+
         sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                 + "----------------------- Available commands -------");
-        
+
         final StringBuilder builder = new StringBuilder();
-        
+
         for (String command : commands) {
             if (builder.length() + command.length() + 1 > 50) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
@@ -91,21 +92,21 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
             } else if (builder.length() > 0) {
                 builder.append(' ');
             }
-            
+
             builder.append(command);
         }
-        
+
         if (builder.length() > 0) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
         }
-        
+
         sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                 + "--------------------------------------------------");
     }
-    
+
     /**
      * Shows information about the specified command.
-     * 
+     *
      * @param origin The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      * @param name The name of the command to display info for
@@ -119,12 +120,12 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
         } else {
             command = CommandManager.getCommand(name);
         }
-        
+
         if (command == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Command '" + name + "' not found.");
         } else {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
-                    + "---------------------- Command information -------");            
+                    + "---------------------- Command information -------");
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                     + " Name: " + name);
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
@@ -132,22 +133,28 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                     + "Usage: " + command.getKey().getHelp());
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
-                    + "--------------------------------------------------");            
+                    + "--------------------------------------------------");
         }
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "help";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
+    }
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
@@ -163,8 +170,8 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
         if (arg == 0) {
             res.include(TabCompletionType.COMMAND);
         }
-        
+
         return res;
-    } 
-    
+    }
+
 }

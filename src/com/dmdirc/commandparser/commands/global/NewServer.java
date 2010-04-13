@@ -25,9 +25,12 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -45,7 +48,8 @@ import java.util.regex.Pattern;
  * 
  * @author chris
  */
-public final class NewServer extends GlobalCommand implements IntelligentCommand {
+public final class NewServer extends Command implements IntelligentCommand,
+        CommandInfo {
 
     /**
      * Creates a new instance of NewServer.
@@ -58,12 +62,12 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         URI address = null;
 
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "newserver",
+            showUsage(origin, args.isSilent(), "newserver",
                     "<host[:[+]port]> [password]");
             address = null;
             return;
@@ -77,7 +81,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
             }
         }
         if (address == null) {
-            address = parseInput(origin, isSilent, args);
+            address = parseInput(origin, args.isSilent(), args);
         }
 
         if (address == null) {
@@ -137,7 +141,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
      *
      * @return URI is input was valid
      */
-    public static URI parseInput(final FrameContainer origin, final boolean isSilent,
+    public static URI parseInput(final FrameContainer<?> origin, final boolean isSilent,
             final CommandArguments args) {
 
         boolean ssl = false;
@@ -192,7 +196,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
                 if (origin == null) {
                     Logger.userError(ErrorLevel.LOW, "Port must be between 1 " +
                             "and 65535 in newserver command");
-                } else if (!isSilent) {
+                } else if (!args.isSilent()) {
                     origin.addLine(FORMAT_ERROR, "Port must be between 1 and 65535");
                 }
 
@@ -213,7 +217,7 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
             if (origin == null) {
                 Logger.userError(ErrorLevel.LOW, "Invalid address provided to "
                         + "newserver command. Host: " + host + ", Port: " + port, ex);
-            } else if (!isSilent) {
+            } else if (!args.isSilent()) {
                 origin.addLine(FORMAT_ERROR, "Invalid address specified.");
             }
 
@@ -231,6 +235,12 @@ public final class NewServer extends GlobalCommand implements IntelligentCommand
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

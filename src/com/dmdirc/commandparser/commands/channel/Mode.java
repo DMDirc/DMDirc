@@ -26,11 +26,15 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -40,8 +44,8 @@ import com.dmdirc.ui.input.TabCompletionType;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Mode extends ChannelCommand implements IntelligentCommand,
-        ExternalCommand {
+public final class Mode extends Command implements IntelligentCommand,
+        ExternalCommand, CommandInfo {
 
     /** Creates a new instance of Mode. */
     public Mode() {
@@ -52,14 +56,16 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
         final ChannelInfo cChannel = channel.getChannelInfo();
 
         if (args.getArguments().length == 0) {
-            sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModes(), cChannel);
+            sendLine(origin, args.isSilent(), "channelModeDiscovered", cChannel.getModes(), cChannel);
         } else {
-            server.getParser().sendRawMessage("MODE " + cChannel + " " + args.getArgumentsAsString());
+            channel.getServer().getParser().sendRawMessage("MODE "
+                    + cChannel + " " + args.getArgumentsAsString());
         }
     }
 
@@ -84,6 +90,12 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
     }
 
     /** {@inheritDoc} */

@@ -25,8 +25,12 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.commandparser.commands.global.NewServer;
 
 import java.net.URI;
@@ -37,7 +41,7 @@ import java.net.URISyntaxException;
  * 
  * @author chris
  */
-public final class ChangeServer extends ServerCommand {
+public final class ChangeServer extends Command implements CommandInfo {
     
     /**
      * Creates a new instance of ChangeServer.
@@ -50,11 +54,12 @@ public final class ChangeServer extends ServerCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin,  final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         URI address = null;
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "server", "<host[:[+]port]> [password]");
+            showUsage(origin, args.isSilent(), "server", "<host[:[+]port]> [password]");
             address = null;
             return;
         } else if (args.getArguments().length == 1
@@ -66,7 +71,7 @@ public final class ChangeServer extends ServerCommand {
             }
         }
         if (address == null) {
-            address = NewServer.parseInput(origin, isSilent, args);
+            address = NewServer.parseInput(origin, args.isSilent(), args);
         }
 
         if (address == null) {
@@ -86,6 +91,12 @@ public final class ChangeServer extends ServerCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

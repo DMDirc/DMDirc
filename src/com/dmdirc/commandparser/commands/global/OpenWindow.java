@@ -25,9 +25,12 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -36,7 +39,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * 
  * @author chris
  */
-public class OpenWindow extends GlobalCommand implements IntelligentCommand {
+public class OpenWindow extends Command implements IntelligentCommand, CommandInfo {
     
     /**
      * Creates a new instance of OpenWindow.
@@ -47,14 +50,14 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         int start = 0;
-        FrameContainer parent = null;
+        FrameContainer<?> parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             if (origin.getServer() == null) {
-                sendLine(origin, isSilent, FORMAT_ERROR,
+                sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "This window doesn't have an associated server.");
                 return;
             }
@@ -67,10 +70,10 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
         }
 
         if (args.getArguments().length == start || args.getArguments()[start].isEmpty()) {
-            showUsage(origin, isSilent, "openwindow",
+            showUsage(origin, args.isSilent(), "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
-            FrameContainer window;
+            FrameContainer<?> window;
             
             if (parent == null) {
                 window = WindowManager.findCustomWindow(args.getArguments()[start]);
@@ -88,7 +91,7 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
                     new CustomWindow(args.getArguments()[start], title, parent);
                 }
             } else {
-                sendLine(origin, isSilent, FORMAT_ERROR,
+                sendLine(origin, args.isSilent(), FORMAT_ERROR,
                 "A custom window by that name already exists.");
             }
         }
@@ -105,6 +108,12 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
     @Override
     public String getName() {
         return "openwindow";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

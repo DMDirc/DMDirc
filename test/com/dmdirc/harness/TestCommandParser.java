@@ -24,11 +24,13 @@ package com.dmdirc.harness;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.parsers.*;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.Window;
 
 public class TestCommandParser extends CommandParser {
     private static final long serialVersionUID = 7073002401375438532L;
@@ -49,10 +51,10 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(FrameContainer<?> origin, boolean isSilent,
-                                  Command command, CommandArguments args) {
+    protected void executeCommand(FrameContainer<?> origin, Window window,
+            CommandInfo commandInfo, Command command, CommandArguments args) {
         executedCommand = command;
-        wasSilent = isSilent;
+        wasSilent = args.isSilent();
         commandArgs = args;
     }
 

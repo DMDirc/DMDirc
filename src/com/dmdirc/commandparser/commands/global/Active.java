@@ -25,9 +25,12 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
@@ -36,7 +39,8 @@ import com.dmdirc.ui.input.TabCompleter;
  * The Active command issues a command to the active window.
  * @author chris
  */
-public final class Active extends GlobalCommand implements IntelligentCommand {
+public final class Active extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of Active.
@@ -49,15 +53,15 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
         
         final FrameContainer<?> window = WindowManager.getActiveWindow();
         
         if (window != null && window instanceof WritableFrameContainer<?>) {
             ((WritableFrameContainer<?>) window).getCommandParser()
-                    .parseCommand(window, command);
+                    .parseCommand(window, context.getSource(), command);
         }
     }
     
@@ -72,6 +76,12 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc} */

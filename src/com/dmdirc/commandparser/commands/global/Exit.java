@@ -25,8 +25,11 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
@@ -34,7 +37,7 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
  * supplied) and saves the config file.
  * @author chris
  */
-public final class Exit extends GlobalCommand {
+public final class Exit extends Command implements CommandInfo {
     
     /**
      * Creates a new instance of Exit.
@@ -47,8 +50,8 @@ public final class Exit extends GlobalCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         Main.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));
     }
@@ -64,6 +67,12 @@ public final class Exit extends GlobalCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
         
     /** {@inheritDoc}. */

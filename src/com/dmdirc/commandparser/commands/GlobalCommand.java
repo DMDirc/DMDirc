@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 
@@ -31,21 +29,12 @@ import com.dmdirc.commandparser.CommandType;
  * Represents a generic global command. Global commands are associated with
  * no servers.
  *
+ * @deprecated Commands should extend {@link Command} directly
  * @author chris
  */
+@Deprecated
 public abstract class GlobalCommand extends Command implements CommandInfo {
         
-    /**
-     * Executes this command. Note that for global commands, origin may be
-     * null.
-     *
-     * @param origin The window in which the command was typed
-     * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
-     * @since 0.6.3m1
-     */
-    public abstract void execute(FrameContainer<?> origin, boolean isSilent, CommandArguments args);
-
     /** {@inheritDoc} */
     @Override
     public CommandType getType() {

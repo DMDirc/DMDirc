@@ -22,9 +22,6 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 
@@ -32,22 +29,12 @@ import com.dmdirc.commandparser.CommandType;
  * Represents a generic server command. Server commands are associated with
  * a server instance.
  *
+ * @deprecated Commands should extend {@link Command} directly
  * @author chris
  */
+@Deprecated
 public abstract class ServerCommand extends Command implements CommandInfo {
     
-    /**
-     * Executes this command.
-     *
-     * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
-     * @since 0.6.3m1
-     */
-    public abstract void execute(FrameContainer<?> origin, Server server,
-            boolean isSilent, CommandArguments args);
-
     /** {@inheritDoc} */
     @Override
     public CommandType getType() {

@@ -26,9 +26,12 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -53,7 +56,7 @@ import java.util.TreeSet;
  *
  * @author Chris
  */
-public class Debug extends GlobalCommand implements IntelligentCommand {
+public class Debug extends Command implements IntelligentCommand, CommandInfo {
     
     /**
      * Creates a new instance of Debug.
@@ -64,47 +67,47 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "debug", "<debug command> [options]");
+            showUsage(origin, args.isSilent(), "debug", "<debug command> [options]");
         } else if ("error".equals(args.getArguments()[0])) {
             doError(args.getArguments());
         } else if ("showraw".equals(args.getArguments()[0])) {
-            doShowRaw(origin, isSilent);
+            doShowRaw(origin, args.isSilent());
         } else if ("configstats".equals(args.getArguments()[0])) {
-            doConfigStats(origin, isSilent, args.getArguments());
+            doConfigStats(origin, args.isSilent(), args.getArguments());
         } else if ("configinfo".equals(args.getArguments()[0])) {
-            doConfigInfo(origin, isSilent);
+            doConfigInfo(origin, args.isSilent());
         } else if ("globalconfiginfo".equals(args.getArguments()[0])) {
-            doGlobalConfigInfo(origin, isSilent);
+            doGlobalConfigInfo(origin, args.isSilent());
         } else if ("colourspam".equals(args.getArguments()[0])) {
-            doColourSpam(origin, isSilent);
+            doColourSpam(origin, args.isSilent());
         } else if ("meminfo".equals(args.getArguments()[0])) {
-            doMemInfo(origin, isSilent);
+            doMemInfo(origin, args.isSilent());
         } else if ("rungc".equals(args.getArguments()[0])) {
-            doGarbage(origin, isSilent);
+            doGarbage(origin, args.isSilent());
         } else if ("threads".equals(args.getArguments()[0])) {
-            doThreads(origin, isSilent);
+            doThreads(origin, args.isSilent());
         } else if ("forceupdate".equals(args.getArguments()[0])) {
-            doForceUpdate(origin, isSilent);
+            doForceUpdate(origin, args.isSilent());
         } else if ("serverinfo".equals(args.getArguments()[0])) {
-            doServerInfo(origin, isSilent);
+            doServerInfo(origin, args.isSilent());
         } else if ("serverstate".equals(args.getArguments()[0])) {
-            doServerState(origin, isSilent);
+            doServerState(origin, args.isSilent());
         } else if ("benchmark".equals(args.getArguments()[0])) {
             doBenchmark(origin);
         } else if ("services".equals(args.getArguments()[0])) {
-            doServices(origin, isSilent, args.getArguments());
+            doServices(origin, args.isSilent(), args.getArguments());
         } else if ("firstrun".equals(args.getArguments()[0])) {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args.getArguments()[0])) {
             Main.getUI().showMigrationWizard();
         } else if ("notify".equals(args.getArguments()[0])) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "Current notification colour is: "
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Current notification colour is: "
                     + origin.getNotification());
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unknown debug action.");
         }
     }
     
@@ -464,6 +467,12 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc} */

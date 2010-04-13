@@ -99,7 +99,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
                 ChannelWindow.class,
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
-                new ChannelCommandParser());
+                new ChannelCommandParser(newServer));
 
         channelInfo = newChannelInfo;
         server = newServer;

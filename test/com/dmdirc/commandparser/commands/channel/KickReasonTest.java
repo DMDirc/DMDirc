@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
@@ -46,7 +47,9 @@ public class KickReasonTest {
     @Test
     public void testUsage() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/kick"));
+        final Channel channel = mock(Channel.class);
+        command.execute(tiw, new CommandArguments("/kick"),
+                new ChannelCommandContext(null, command, channel));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -60,7 +63,8 @@ public class KickReasonTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient(anyString())).thenReturn(null);
 
-        command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));
+        command.execute(tiw, new CommandArguments("/kick user1"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(tiw).addLine(eq("commandError"), matches(".*user1"));
     }
@@ -75,7 +79,8 @@ public class KickReasonTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
 
-        command.execute(tiw, null, channel, false, new CommandArguments("/kick user1 reason here"));
+        command.execute(tiw, new CommandArguments("/kick user1 reason here"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(cci).kick("reason here");
     }
@@ -93,7 +98,8 @@ public class KickReasonTest {
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
 
-        command.execute(tiw, null, channel, false, new CommandArguments("/kick user1"));
+        command.execute(tiw, new CommandArguments("/kick user1"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(cci).kick("reason here");
     }

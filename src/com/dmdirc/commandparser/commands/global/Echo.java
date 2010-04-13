@@ -26,9 +26,12 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -41,7 +44,8 @@ import java.util.List;
  *
  * @author chris
  */
-public final class Echo extends GlobalCommand implements IntelligentCommand {
+public final class Echo extends Command implements IntelligentCommand,
+        CommandInfo {
 
     /**
      * Creates a new instance of Echo.
@@ -54,8 +58,8 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         int offset = 0;
         Date time = new Date();
 
@@ -64,7 +68,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             try {
                 time = new Date(Long.parseLong(args.getWordsAsString(2, 2)));
             } catch (NumberFormatException ex) {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Unable to process timestamp");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unable to process timestamp");
                 return;
             }
 
@@ -73,7 +77,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
 
         if (args.getArguments().length > offset
                 && args.getArguments()[offset].equalsIgnoreCase("--active")) {
-            if (!isSilent) {
+            if (!args.isSilent()) {
                 final FrameContainer<?> frame = WindowManager.getActiveWindow();
                 frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 1));
             }
@@ -91,13 +95,13 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
             }
 
             if (frame == null) {
-                sendLine(origin, isSilent, FORMAT_ERROR,
+                sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Unable to find target window");
-            } else if (!isSilent) {
+            } else if (!args.isSilent()) {
                 frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 2));
             }
 
-        } else if (origin != null && !isSilent) {
+        } else if (origin != null && !args.isSilent()) {
             origin.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset));
         }
     }
@@ -112,6 +116,12 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

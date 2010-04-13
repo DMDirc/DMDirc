@@ -23,6 +23,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
@@ -41,7 +42,8 @@ public class NewServerTest {
     @Test
     public void testUsageNoArgs() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo"));
+        command.execute(tiw, new CommandArguments("/foo"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -49,7 +51,8 @@ public class NewServerTest {
     @Test
     public void testInvalidPort() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo foo:abc"));
+        command.execute(tiw, new CommandArguments("/foo foo:abc"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
@@ -57,7 +60,8 @@ public class NewServerTest {
     @Test
     public void testOutOfRangePort1() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo foo:0"));
+        command.execute(tiw, new CommandArguments("/foo foo:0"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
@@ -65,7 +69,8 @@ public class NewServerTest {
     @Test
     public void testOutOfRangePort2() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo foo:65537"));
+        command.execute(tiw, new CommandArguments("/foo foo:65537"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }

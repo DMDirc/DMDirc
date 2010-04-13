@@ -25,9 +25,13 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * Implements a raw server command (i.e., a command that is sent to the server
@@ -36,7 +40,7 @@ import com.dmdirc.commandparser.commands.ServerCommand;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class RawServerCommand extends ServerCommand {
+public final class RawServerCommand extends Command implements CommandInfo {
     
     /** The name of this raw command. */
     private final String myName;
@@ -56,8 +60,9 @@ public final class RawServerCommand extends ServerCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());
     }
     
@@ -72,6 +77,12 @@ public final class RawServerCommand extends ServerCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

@@ -20,24 +20,42 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands;
+package com.dmdirc.commandparser.commands.context;
 
+import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
- * Represents a command which can be performed only in the context of a channel.
+ * A query-specific command context.
  *
- * @deprecated Commands should extend {@link Command} directly
+ * @since 0.6.4
  * @author chris
  */
-@Deprecated
-public abstract class ChannelCommand extends Command implements CommandInfo {
+public class QueryCommandContext extends ChatCommandContext {
 
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
+    /** The query the command was executed for. */
+    private final Query query;
+
+    /**
+     * Creates a new query command context.
+     *
+     * @param source The source of the command
+     * @param commandInfo The command info object which associated the command with the input
+     * @param query The query associated with the command
+     */
+    public QueryCommandContext(final Window source, final CommandInfo commandInfo, final Query query) {
+        super(source, commandInfo, query);
+        this.query = query;
+    }
+
+    /**
+     * Retrieves the query associated with this context.
+     *
+     * @return This context's query
+     */
+    public Query getQuery() {
+        return query;
     }
 
 }

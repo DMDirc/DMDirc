@@ -53,7 +53,9 @@ public enum CommandType {
      * 
      * @param command The command to look up
      * @return The type of the specified command
+     * @deprecated Shouldn't be required any longer
      */
+    @Deprecated
     public static CommandType fromCommand(final Command command) {
         if (command instanceof GlobalCommand) {
             return TYPE_GLOBAL;

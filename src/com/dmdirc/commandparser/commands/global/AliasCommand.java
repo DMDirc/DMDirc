@@ -28,9 +28,12 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -39,8 +42,8 @@ import com.dmdirc.ui.input.TabCompleter;
  * 
  * @author chris
  */
-public final class AliasCommand extends GlobalCommand implements
-        IntelligentCommand {
+public final class AliasCommand extends Command implements
+        IntelligentCommand, CommandInfo {
 
     /**
      * Creates a new instance of Active.
@@ -53,10 +56,10 @@ public final class AliasCommand extends GlobalCommand implements
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-                        final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 2) {
-            showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");
+            showUsage(origin, args.isSilent(), "alias", "[--remove] <name> [command]");
             return;
         }
 
@@ -66,10 +69,10 @@ public final class AliasCommand extends GlobalCommand implements
                     ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
             if (doRemove(name)) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name +
                          "' removed.");
             } else {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + name +
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name +
                          "' not found.");
             }
 
@@ -82,7 +85,7 @@ public final class AliasCommand extends GlobalCommand implements
         for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
                     name)) {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + name +
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name +
                          "' already exists.");
                 return;
             }
@@ -92,7 +95,7 @@ public final class AliasCommand extends GlobalCommand implements
         myAlias.setResponse(new String[]{args.getArgumentsAsString(1)});
         myAlias.createAction().save();
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
+        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name +
                  "' created.");
     }
 
@@ -126,6 +129,12 @@ public final class AliasCommand extends GlobalCommand implements
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

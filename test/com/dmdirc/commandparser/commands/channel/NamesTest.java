@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
@@ -57,6 +58,7 @@ public class NamesTest {
         channel = mock(Channel.class);
         channelinfo = mock(IRCChannelInfo.class);
 
+        when(channel.getServer()).thenReturn(server);
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getName()).thenReturn("#chan");
@@ -64,7 +66,8 @@ public class NamesTest {
 
     @Test
     public void testNormal() {
-        command.execute(null, server, channel, false, new CommandArguments("/names"));
+        command.execute(null, new CommandArguments("/names"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(parser).sendRawMessage("NAMES #chan");
     }

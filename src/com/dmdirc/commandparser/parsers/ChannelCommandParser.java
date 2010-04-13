@@ -24,21 +24,21 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.ChannelCommand;
-import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
- * A command parser that is tailored for use in a channel environment. Handles
- * both channel and server commands.
+ * A command parser that is tailored for use in a channel environment.
+ * 
  * @author chris
  */
-public final class ChannelCommandParser extends CommandParser {
+public class ChannelCommandParser extends ChatCommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,9 +54,11 @@ public final class ChannelCommandParser extends CommandParser {
     
     /**
      * Creates a new instance of ChannelCommandParser.
+     *
+     * @param server The server this parser's query belongs to
      */
-    public ChannelCommandParser() {
-        super();
+    public ChannelCommandParser(final Server server) {
+        super(server);
     }
 
     /** {@inheritDoc} */
@@ -65,6 +67,8 @@ public final class ChannelCommandParser extends CommandParser {
         if (channel == null) {
             channel = (Channel) owner;
         }
+
+        super.setOwner(owner);
     }
     
     /** {@inheritDoc} */
@@ -77,28 +81,13 @@ public final class ChannelCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
-            final boolean isSilent, final Command command, final CommandArguments args) {
-        if (command instanceof ChannelCommand) {
-            ((ChannelCommand) command).execute(origin, channel.getServer(), channel, isSilent, args);
-        } else if (command instanceof ChatCommand) {
-            ((ChatCommand) command).execute(origin, channel.getServer(), channel, isSilent, args);
-        } else if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, channel.getServer(), isSilent, args);
+            final Window window, final CommandInfo commandInfo,
+            final Command command, final CommandArguments args) {
+        if (commandInfo.getType() == CommandType.TYPE_CHANNEL) {
+            command.execute(origin, args, new ChannelCommandContext(window, commandInfo, channel));
         } else {
-            ((GlobalCommand) command).execute(origin, isSilent, args);
+            super.executeCommand(origin, window, commandInfo, command, args);
         }
-    }
-    
-    /**
-     * Called when the input was a line of text that was not a command. This normally
-     * means it is sent to the server/channel/user as-is, with no further processing.
-     *
-     * @param origin The window in which the command was typed
-     * @param line The line input by the user
-     */
-    @Override
-    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
-        channel.sendLine(line);
     }
     
 }

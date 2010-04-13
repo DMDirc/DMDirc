@@ -25,10 +25,14 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -37,7 +41,8 @@ import com.dmdirc.ui.input.TabCompletionType;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Nick extends ServerCommand implements IntelligentCommand {
+public final class Nick extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of Nick.
@@ -50,10 +55,11 @@ public final class Nick extends ServerCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "nick", "<new nickname>");
+            showUsage(origin, args.isSilent(), "nick", "<new nickname>");
             return;
         }
         
@@ -71,6 +77,12 @@ public final class Nick extends ServerCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

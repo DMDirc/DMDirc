@@ -20,24 +20,51 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands;
+package com.dmdirc.commandparser;
 
-import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 
 /**
- * Represents a command which can be performed only in the context of a channel.
+ * A combination of a {@link Command} and the {@link CommandInfo} which
+ * triggered it.
  *
- * @deprecated Commands should extend {@link Command} directly
+ * @since 0.6.4
  * @author chris
  */
-@Deprecated
-public abstract class ChannelCommand extends Command implements CommandInfo {
+public class CommandInfoPair {
 
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
+    /** The command info which caused the command to be triggered. */
+    private final CommandInfo commandInfo;
+    /** The command in question. */
+    private final Command command;
+
+    /**
+     * Creates a new CommandInfoPair.
+     *
+     * @param commandInfo The command info associated with the command
+     * @param command The command
+     */
+    public CommandInfoPair(final CommandInfo commandInfo, final Command command) {
+        this.commandInfo = commandInfo;
+        this.command = command;
+    }
+
+    /**
+     * Retrieves the command part of this pair.
+     *
+     * @return This pair's command
+     */
+    public Command getCommand() {
+        return command;
+    }
+
+    /**
+     * Retrieves the commandinfo part of this pair.
+     *
+     * @return This pair's commandinfo
+     */
+    public CommandInfo getCommandInfo() {
+        return commandInfo;
     }
 
 }

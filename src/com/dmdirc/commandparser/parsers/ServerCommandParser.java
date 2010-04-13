@@ -26,17 +26,19 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser used in the context of a server.
+ * 
  * @author chris
  */
-public class ServerCommandParser extends CommandParser {
+public class ServerCommandParser extends GlobalCommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -63,6 +65,8 @@ public class ServerCommandParser extends CommandParser {
         if (server == null && owner instanceof Server) {
             server = (Server) owner;
         }
+
+        super.setOwner(owner);
     }
     
     /** Loads the relevant commands into the parser. */
@@ -74,20 +78,21 @@ public class ServerCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
-            final boolean isSilent, final Command command, final CommandArguments args) {
-        if (command instanceof ServerCommand) {
+            final Window window, final CommandInfo commandInfo,
+            final Command command, final CommandArguments args) {
+        if (commandInfo.getType() == CommandType.TYPE_SERVER) {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
-                    && ((server.getState() != ServerState.CONNECTED
+                    && (server == null || (server.getState() != ServerState.CONNECTED
                     && server.getState() != ServerState.CONNECTING)
                     || server.getParser() == null)) {
-                if (!isSilent) {
+                if (!args.isSilent()) {
                     origin.addLine("commandError", "You must be connected to use this command");
                 }
             } else {
-                ((ServerCommand) command).execute(origin, server, isSilent, args);
+                command.execute(origin, args, new ServerCommandContext(window, commandInfo, server));
             }
         } else {
-            ((GlobalCommand) command).execute(origin, isSilent, args);
+            super.executeCommand(origin, window, commandInfo, command, args);
         }
     }
     

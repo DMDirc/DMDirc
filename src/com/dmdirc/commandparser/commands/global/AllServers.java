@@ -26,9 +26,12 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -36,7 +39,8 @@ import com.dmdirc.ui.input.TabCompleter;
  * The AllServers command allows users to issue commands to all servers.
  * @author chris
  */
-public final class AllServers extends GlobalCommand implements IntelligentCommand {
+public final class AllServers extends Command implements IntelligentCommand,
+        CommandInfo{
     
     /** Creates a new instance of AllServers. */
     public AllServers() {
@@ -47,12 +51,12 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
         
         for (Server target : ServerManager.getServerManager().getServers()) {
-            target.getCommandParser().parseCommand(target, command);
+            target.getCommandParser().parseCommand(target, context.getSource(), command);
         }
     }
     
@@ -67,6 +71,12 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc} */

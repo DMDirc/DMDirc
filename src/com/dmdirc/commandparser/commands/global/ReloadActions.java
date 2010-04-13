@@ -25,9 +25,12 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -35,7 +38,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  *
  * @author chris
  */
-public final class ReloadActions extends GlobalCommand implements IntelligentCommand {
+public final class ReloadActions extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of ReloadActions.
@@ -48,10 +52,10 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         ActionManager.loadActions();
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "Actions reloaded.");
+        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
     }
     
     
@@ -65,6 +69,12 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc}. */

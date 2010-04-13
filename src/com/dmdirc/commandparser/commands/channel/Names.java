@@ -26,11 +26,15 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -39,7 +43,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public class Names extends ChannelCommand implements IntelligentCommand, ExternalCommand {
+public class Names extends Command implements IntelligentCommand, 
+        ExternalCommand, CommandInfo {
     
     /**
      * Creates a new instance of Names.
@@ -52,9 +57,11 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
-        server.getParser().sendRawMessage("NAMES " + channel.getChannelInfo().getName());
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
+        channel.getServer().getParser().sendRawMessage("NAMES "
+                + channel.getChannelInfo().getName());
     }
     
 
@@ -79,6 +86,12 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
 
     /** {@inheritDoc} */
     @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "names - Requests a list of users that are in the channel";
     }
@@ -88,6 +101,6 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
-    } 
+    }
 
 }

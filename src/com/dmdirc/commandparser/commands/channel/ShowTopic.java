@@ -26,10 +26,14 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 /**
@@ -37,7 +41,8 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class ShowTopic extends ChannelCommand implements ExternalCommand {
+public final class ShowTopic extends Command implements ExternalCommand,
+        CommandInfo {
 
     /** Creates a new instance of ShowTopic. */
     public ShowTopic() {
@@ -48,17 +53,18 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
             final ChannelInfo cChannel = channel.getChannelInfo();
 
             if (cChannel.getTopic().isEmpty()) {
-                sendLine(origin, isSilent, "channelNoTopic", cChannel);
+                sendLine(origin, args.isSilent(), "channelNoTopic", cChannel);
             } else {
-                final String[] parts = server.parseHostmask(cChannel.getTopicSetter());
+                final String[] parts = channel.getServer().parseHostmask(cChannel.getTopicSetter());
 
-                sendLine(origin, isSilent, "channelTopicDiscovered",
+                sendLine(origin, args.isSilent(), "channelTopicDiscovered",
                         "", parts[0], parts[1], parts[2], cChannel.getTopic(),
                         1000 * cChannel.getTopicTime(), cChannel);
             }
@@ -88,6 +94,12 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
     }
 
     /** {@inheritDoc} */

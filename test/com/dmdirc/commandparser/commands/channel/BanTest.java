@@ -22,9 +22,11 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +44,9 @@ public class BanTest {
     @Test
     public void testUsage() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/ban"));
+        final Channel channel = mock(Channel.class);
+        command.execute(tiw, new CommandArguments("/ban"), 
+                new ChannelCommandContext(null, command, channel));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }

@@ -25,10 +25,14 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -38,8 +42,8 @@ import com.dmdirc.ui.messages.Styliser;
  * Allows the user to open a query dialog with another user.
  * @author chris
  */
-public final class OpenQuery extends ServerCommand implements
-        IntelligentCommand, WrappableCommand {
+public final class OpenQuery extends Command implements IntelligentCommand,
+        WrappableCommand, CommandInfo {
     
     /**
      * Creates a new instance of Query.
@@ -52,15 +56,16 @@ public final class OpenQuery extends ServerCommand implements
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "query", "<target> <message>");
+            showUsage(origin, args.isSilent(), "query", "<target> <message>");
             return;
         }
             
         if (server.getParser().isValidChannelName(args.getArguments()[0])) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query "
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD + CommandManager.getCommandChar()
                     + (args.getArguments().length > 1 ? "msg" : "join") + " "
@@ -91,6 +96,12 @@ public final class OpenQuery extends ServerCommand implements
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

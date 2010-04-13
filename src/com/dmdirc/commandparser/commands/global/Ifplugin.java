@@ -25,10 +25,13 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -40,7 +43,8 @@ import com.dmdirc.ui.input.TabCompleter;
  *
  * @author chris
  */
-public final class Ifplugin extends GlobalCommand implements IntelligentCommand {
+public final class Ifplugin extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /**
      * Creates a new instance of Ifplugin.
@@ -53,10 +57,10 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length <= 1) {
-            showUsage(origin, isSilent, "ifplugin", "<[!]plugin> <command>");
+            showUsage(origin, args.isSilent(), "ifplugin", "<[!]plugin> <command>");
             return;
         }
         
@@ -75,10 +79,10 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         if (result != negative) {
             if (origin == null) {
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
-                        args.getArgumentsAsString(1));
+                        context.getSource(), args.getArgumentsAsString(1));
             } else {
                 ((WritableFrameContainer<?>) origin).getCommandParser()
-                        .parseCommand(origin, args.getArgumentsAsString(1));
+                        .parseCommand(origin, context.getSource(), args.getArgumentsAsString(1));
             }
         }
     }
@@ -93,6 +97,12 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
     
     /** {@inheritDoc} */

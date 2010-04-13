@@ -24,12 +24,15 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -40,7 +43,8 @@ import com.dmdirc.ui.input.TabCompletionType;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class KickReason extends ChannelCommand implements IntelligentCommand {
+public final class KickReason extends Command implements IntelligentCommand,
+        CommandInfo {
     
     /** Creates a new instance of KickReason. */
     public KickReason() {
@@ -51,10 +55,11 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "kick", "<user> [reason]");
+            showUsage(origin, args.isSilent(), "kick", "<user> [reason]");
             return;
         }
         
@@ -62,7 +67,7 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
                 .getArguments()[0]);
         
         if (victim == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "User not found: "
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "User not found: "
                     + args.getArguments()[0]);
         } else {
             victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1) :
@@ -80,6 +85,12 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
     }
     
     /** {@inheritDoc} */
@@ -100,6 +111,6 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
         }
         
         return res;
-    }    
+    }
     
 }

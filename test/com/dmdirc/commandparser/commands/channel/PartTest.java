@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
@@ -60,7 +61,8 @@ public class PartTest {
 
     @Test
     public void testWithoutArgs() {
-        command.execute(origin, null, channel, false, new CommandArguments("/part"));
+        command.execute(origin, new CommandArguments("/part"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(channel).part("config part message");
         verify(channel).close();
@@ -68,7 +70,8 @@ public class PartTest {
 
     @Test
     public void testWithArgs() {
-        command.execute(origin, null, channel, false, new CommandArguments("/part custom part"));
+        command.execute(origin, new CommandArguments("/part custom part"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(channel).part("custom part");
         verify(channel).close();

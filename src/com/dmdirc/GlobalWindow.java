@@ -94,10 +94,7 @@ public class GlobalWindow extends WritableFrameContainer<InputWindow> {
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        if (!line.isEmpty()) {
-            GlobalCommandParser.getGlobalCommandParser().parseCommand(this,
-                    CommandManager.getCommandChar() + line);
-        }
+        addLine("commandError", "You may only enter commands in the global window.");
     }
 
     /** {@inheritDoc} */
@@ -106,11 +103,8 @@ public class GlobalWindow extends WritableFrameContainer<InputWindow> {
         return -1;
     }
 
-    /**
-     * Retrieves the tab completer used by this global window.
-     *
-     * @return This global window's tab completer.
-     */
+    /** {@inheritDoc} */
+    @Override
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }

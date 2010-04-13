@@ -23,7 +23,9 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.messages.Styliser;
 
 /**
@@ -121,5 +123,16 @@ public abstract class Command {
             builder.append(' ');
         }
     }
+
+    /**
+     * Executes this command.
+     *
+     * @param origin The container which received the command
+     * @param args Arguments passed to this command
+     * @param context The context the command was executed in
+     * @since 0.6.4
+     */
+    public abstract void execute(FrameContainer<?> origin,
+            CommandArguments args, CommandContext context);
 
 }

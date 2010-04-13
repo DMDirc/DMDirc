@@ -22,15 +22,16 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -38,7 +39,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class ChannelSettings extends ChannelCommand implements IntelligentCommand {
+public final class ChannelSettings extends Command implements
+        IntelligentCommand, CommandInfo {
     
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
@@ -49,9 +51,10 @@ public final class ChannelSettings extends ChannelCommand implements Intelligent
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
-        Main.getUI().showChannelSettingsDialog(channel);
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        context.getSource().getController().showChannelSettingsDialog(
+                ((ChannelCommandContext) context).getChannel());
     }
     
     /** {@inheritDoc} */
@@ -64,6 +67,12 @@ public final class ChannelSettings extends ChannelCommand implements Intelligent
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
     }
     
     /** {@inheritDoc} */

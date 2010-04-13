@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
@@ -58,6 +59,7 @@ public class ModeTest {
         channel = mock(Channel.class);
         channelinfo = mock(IRCChannelInfo.class);
 
+        when(channel.getServer()).thenReturn(server);
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");
@@ -68,7 +70,8 @@ public class ModeTest {
     public void testWithoutArgs() {
         final FrameContainer<?> origin = mock(FrameContainer.class);
         
-        command.execute(origin, server, channel, false, new CommandArguments("/mode"));
+        command.execute(origin, new CommandArguments("/mode"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(origin).addLine("channelModeDiscovered", "my mode string!", channelinfo);
     }
@@ -77,7 +80,8 @@ public class ModeTest {
     public void testWithArgs() {
         final FrameContainer<?> origin = mock(FrameContainer.class);
 
-        command.execute(origin, server, channel, false, new CommandArguments("/mode +hello -bye"));
+        command.execute(origin, new CommandArguments("/mode +hello -bye"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }
@@ -86,8 +90,8 @@ public class ModeTest {
     public void testExternalWithArgs() {
         final FrameContainer<?> origin = mock(FrameContainer.class);
 
-        command.execute(origin, server, "#chan", false,
-                new CommandArguments("/mode +hello -bye"));
+        command.execute(origin, new CommandArguments("/mode +hello -bye"),
+                new ChannelCommandContext(null, command, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }

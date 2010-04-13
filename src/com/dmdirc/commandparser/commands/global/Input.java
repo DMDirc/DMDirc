@@ -24,12 +24,15 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The input command allows you to maniplulate text in a windows inputField.
@@ -37,7 +40,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * @author Simon
  * @since 0.6.4
  */
-public class Input extends GlobalCommand implements IntelligentCommand {
+public class Input extends Command implements IntelligentCommand, CommandInfo {
 
     /**
      * Creates a new instance of Input.
@@ -50,20 +53,19 @@ public class Input extends GlobalCommand implements IntelligentCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final boolean isSilent,
-            final CommandArguments args) {
-
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "input",
+            showUsage(origin, args.isSilent(), "input",
                     "[--clear] <text to insert into inputfield");
             return;
         } else if (args.getArguments().length == 1
                 && "--clear".equals(args.getArgumentsAsString(0))) {
-            ((WritableFrameContainer<?>) origin).getFrame()
-                    .getInputHandler().clearInputField();
+            ((InputWindow) context.getSource()).getInputHandler()
+                    .clearInputField();
         } else {
-            ((WritableFrameContainer<?>) origin).getFrame()
-                    .getInputHandler().addToInputField(args.getArgumentsAsString());
+            ((InputWindow) context.getSource()).getInputHandler()
+                    .addToInputField(args.getArgumentsAsString());
         }
     }
 
@@ -77,6 +79,12 @@ public class Input extends GlobalCommand implements IntelligentCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

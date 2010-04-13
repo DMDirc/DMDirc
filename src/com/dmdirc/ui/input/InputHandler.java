@@ -498,7 +498,8 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             addToBuffer(thisBuffer.toString());
 
-            commandParser.parseCommand(parentWindow.getContainer(), thisBuffer.toString());
+            commandParser.parseCommand(parentWindow.getContainer(),
+                    parentWindow, thisBuffer.toString());
         }
         fireLineWrap(0);
         fireCommandPassed();

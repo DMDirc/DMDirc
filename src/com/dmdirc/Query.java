@@ -74,7 +74,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 QueryWindow.class, newServer.getConfigManager(),
-                new QueryCommandParser());
+                new QueryCommandParser(newServer));
 
         this.server = newServer;
         this.host = newHost;

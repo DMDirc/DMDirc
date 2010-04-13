@@ -23,86 +23,68 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.MessageTarget;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.ui.interfaces.Window;
 
 /**
- * The command parser used for global commands.
+ * A command parser which implements common functionality for chat windows
+ * (queries and channels).
+ * 
+ * @since 0.6.4
  * @author chris
  */
-public class GlobalCommandParser extends CommandParser {
-    
+public class ChatCommandParser extends ServerCommandParser {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
+    /** The container that owns this parser. */
+    private MessageTarget<?> owner;
+
     /**
-     * The singleton instance of this command parser.
+     * Creates a new chat command parser that belongs to a child of the
+     * specified server.
+     *
+     * @param server The server which owns this parser's container
      */
-    private static GlobalCommandParser me;
-    
-    /**
-     * Creates a new instance of the GlobalCommandParser.
-     */
-    public GlobalCommandParser() {
-        super();
+    public ChatCommandParser(final Server server) {
+        super.setOwner(server);
     }
 
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {
-        // Don't care
-    }
-    
-    /**
-     * Retrieves a singleton instance of the global command parser.
-     * @return A GlobalCommandParser
-     */
-    public static synchronized GlobalCommandParser getGlobalCommandParser() {
-        if (me == null) {
-            me = new GlobalCommandParser();
+        if (this.owner == null) {
+            this.owner = (MessageTarget<?>) owner;
         }
-        
-        return me;
     }
-    
-    /** Loads the relevant commands into the parser. */
-    @Override
-    protected void loadCommands() {
-        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL);
-    }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
             final Window window, final CommandInfo commandInfo,
             final Command command, final CommandArguments args) {
-        command.execute(origin, args, new CommandContext(window, commandInfo));
-    }
-    
-    /**
-     * Called when the input was a line of text that was not a command. This normally
-     * means it is sent to the server/channel/user as-is, with no further processing.
-     * @param origin The window in which the command was typed
-     * @param line The line input by the user
-     */
-    @Override
-    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
-        if (origin == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);
+        if (commandInfo.getType() == CommandType.TYPE_CHAT) {
+            command.execute(origin, args, new ChatCommandContext(window, commandInfo, owner));
         } else {
-            origin.addLine("commandError", "Invalid global command: " + line);
+            super.executeCommand(origin, window, commandInfo, command, args);
         }
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
+        owner.sendLine(line);
+    }
+
 }

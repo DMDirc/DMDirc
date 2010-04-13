@@ -25,11 +25,15 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -39,8 +43,8 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Message extends ServerCommand implements IntelligentCommand,
-        WrappableCommand {
+public final class Message extends Command implements IntelligentCommand,
+        WrappableCommand, CommandInfo {
     
     /**
      * Creates a new instance of Message.
@@ -53,20 +57,21 @@ public final class Message extends ServerCommand implements IntelligentCommand,
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length < 2) {
-            showUsage(origin, isSilent, "msg", "<target> <message>");
+            showUsage(origin, args.isSilent(), "msg", "<target> <message>");
         } else {
             final String target = args.getArguments()[0];
             final String message = args.getArgumentsAsString(1);
-            sendLine(origin, isSilent, "selfMessage", target, message);
+            sendLine(origin, args.isSilent(), "selfMessage", target, message);
 
             // If this is a known server or channel, and this is not a silent
             // invokation, use sendLine, else send it raw to the parser.
-            if (!isSilent && server.hasChannel(target)) {
+            if (!args.isSilent() && server.hasChannel(target)) {
                 server.getChannel(target).sendLine(message);
-            } else if (!isSilent && server.hasQuery(target)) {
+            } else if (!args.isSilent() && server.hasQuery(target)) {
                 server.getQuery(target).sendLine(message);
             } else {
                 server.getParser().sendMessage(target, message);
@@ -85,6 +90,12 @@ public final class Message extends ServerCommand implements IntelligentCommand,
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

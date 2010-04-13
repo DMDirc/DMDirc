@@ -24,100 +24,97 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 public class ChangeServerTest {
 
+    private final ChangeServer command = new ChangeServer();
+    private FrameContainer<?> tiw;
+    private Identity profile;
+    private Server server;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
 
-    private final ChangeServer command = new ChangeServer();
+    @Before
+    public void setUp() {
+        tiw = mock(FrameContainer.class);
+        profile = mock(Identity.class);
+        server = mock(Server.class);
+        when(server.getProfile()).thenReturn(profile);
+    }
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, false, new CommandArguments("/server"));
+        command.execute(tiw, new CommandArguments("/server"),
+                new ServerCommandContext(null, command, server));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
     
     @Test
     public void testInvalidPort() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, false, new CommandArguments("/server foo:abc"));
+        command.execute(tiw, new CommandArguments("/server foo:abc"),
+                new ServerCommandContext(null, command, server));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
     
     @Test
     public void testOutOfRangePort1() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, false, new CommandArguments("/server foo:0"));
+        command.execute(tiw, new CommandArguments("/server foo:0"),
+                new ServerCommandContext(null, command, server));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
     
     @Test
     public void testOutOfRangePort2() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, false, new CommandArguments("/server foo:65537"));
+        command.execute(tiw, new CommandArguments("/server foo:65537"),
+                new ServerCommandContext(null, command, server));
         
         verify(tiw).addLine(eq("commandError"), anyString());
     }
 
     @Test
     public void testExecuteBasic() throws URISyntaxException {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        final Identity profile = mock(Identity.class);
-        final Server server = mock(Server.class);
-        when(server.getProfile()).thenReturn(profile);
-
-        command.execute(tiw, server, false, new CommandArguments("/server foo:1234"));
+        command.execute(tiw, new CommandArguments("/server foo:1234"),
+                new ServerCommandContext(null, command, server));
 
         verify(server).connect(eq(new URI("irc://foo:1234")), same(profile));
     }
 
     @Test
     public void testExecuteNoPort() throws URISyntaxException {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        final Identity profile = mock(Identity.class);
-        final Server server = mock(Server.class);
-        when(server.getProfile()).thenReturn(profile);
-
-        command.execute(tiw, server, false, new CommandArguments("/server foo"));
+        command.execute(tiw, new CommandArguments("/server foo"),
+                new ServerCommandContext(null, command, server));
 
         verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
     }
 
     @Test
     public void testDeprecatedSSL() throws URISyntaxException {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        final Identity profile = mock(Identity.class);
-        final Server server = mock(Server.class);
-        when(server.getProfile()).thenReturn(profile);
-
-        command.execute(tiw, server, false, new CommandArguments("/server --ssl foo"));
+        command.execute(tiw, new CommandArguments("/server --ssl foo"),
+                new ServerCommandContext(null, command, server));
 
         verify(server).connect(eq(new URI("ircs://foo:6667")), same(profile));
     }
 
     @Test
     public void testExecuteComplex() throws URISyntaxException {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
-        final Identity profile = mock(Identity.class);
-        final Server server = mock(Server.class);
-        when(server.getProfile()).thenReturn(profile);
-
-        command.execute(tiw, server, false, new CommandArguments("/server foo:+1234 password"));
+        command.execute(tiw, new CommandArguments("/server foo:+1234 password"),
+                new ServerCommandContext(null, command, server));
 
         verify(server).connect(eq(new URI("ircs://password@foo:1234")), same(profile));
     }

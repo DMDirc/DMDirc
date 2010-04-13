@@ -24,61 +24,72 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * The kick command bans a specified user or host from the channel.
- * 
+ *
  * @author chris
  */
-public final class Ban extends ChannelCommand implements IntelligentCommand {
-    
+public final class Ban extends Command implements IntelligentCommand, CommandInfo {
+
     /** Creates a new instance of Ban. */
     public Ban() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final Channel channel, final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Channel channel = ((ChannelCommandContext) context).getChannel();
+
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "ban", "<user|host>");
+            showUsage(origin, args.isSilent(), "ban", "<user|host>");
             return;
         }
-        
+
         String host = args.getArguments()[0];
         final ChannelClientInfo user = channel.getChannelInfo().getChannelClient(host);
         if (user != null && !user.getClient().getHostname().isEmpty()) {
             // TODO: Customisable ban masks, somehow.
             host = "*!*@" + user.getClient().getHostname();
         }
-        
+
         channel.getChannelInfo().alterMode(true, 'b', host);
         channel.getChannelInfo().flushModes();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "ban";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -90,12 +101,11 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
-        
+
         if (arg == 0) {
             res.include(TabCompletionType.CHANNEL_NICK);
         }
-        
+
         return res;
     }
-    
 }

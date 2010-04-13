@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandInfoPair;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
@@ -35,6 +36,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
@@ -61,7 +63,7 @@ public abstract class CommandParser implements Serializable {
     /**
      * Commands that are associated with this parser.
      */
-    private final Map<String, Command> commands;
+    private final Map<String, CommandInfoPair> commands;
 
     /**
      * A history of commands that have been entered into this parser.
@@ -70,7 +72,7 @@ public abstract class CommandParser implements Serializable {
 
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
-        commands = new Hashtable<String, Command>();
+        commands = new Hashtable<String, CommandInfoPair>();
         history = new RollingList<PreviousCommand>(
                 IdentityManager.getGlobalConfig().getOptionInt("general",
                     "commandhistory"));
@@ -96,7 +98,7 @@ public abstract class CommandParser implements Serializable {
      * @param info The information the command should be registered with
      */
     public final void registerCommand(final Command command, final CommandInfo info) {
-        commands.put(info.getName().toLowerCase(), command);
+        commands.put(info.getName().toLowerCase(), new CommandInfoPair(info, command));
     }
 
     /**
@@ -115,31 +117,33 @@ public abstract class CommandParser implements Serializable {
      * @since 0.6.3m1
      * @return A map of commands known to this parser
      */
-    public Map<String, Command> getCommands() {
-        return new HashMap<String, Command>(commands);
+    public Map<String, CommandInfoPair> getCommands() {
+        return new HashMap<String, CommandInfoPair>(commands);
     }
 
     /**
      * Parses the specified string as a command.
      *
-     * @param origin The window in which the command was typed
+     * @param origin The container which received the command
+     * @param window The window in which the line was typed
      * @param line The line to be parsed
      * @param parseChannel Whether or not to try and parse the first argument
      * as a channel name
+     * @since 0.6.4
      */
     public final void parseCommand(final FrameContainer<?> origin,
-            final String line, final boolean parseChannel) {
+            final Window window, final String line, final boolean parseChannel) {
         final CommandArguments args = new CommandArguments(line);
 
         if (args.isCommand()) {
-            if (handleChannelCommand(origin, args, parseChannel)) {
+            if (handleChannelCommand(origin, window, args, parseChannel)) {
                 return;
             }
 
             if (commands.containsKey(args.getCommandName().toLowerCase())) {
+                final CommandInfoPair pair = commands.get(args.getCommandName().toLowerCase());
                 addHistory(args.getStrippedLine());
-                executeCommand(origin, args.isSilent(),
-                        commands.get(args.getCommandName().toLowerCase()), args);
+                executeCommand(origin, window, pair.getCommandInfo(), pair.getCommand(), args);
             } else {
                 handleInvalidCommand(origin, args);
             }
@@ -156,13 +160,14 @@ public abstract class CommandParser implements Serializable {
      * to handle the command, and will return true. If the command is not
      * handled, the method returns false.
      *
-     * @param origin The window the command was entered in
+     * @param origin The container which received the command
+     * @param window The window in which the command was typed
      * @param args The command and its arguments
      * @param parseChannel Whether or not to try parsing channel names
      * @return True iff the command was handled, false otherwise
      */
     protected boolean handleChannelCommand(final FrameContainer<?> origin,
-            final CommandArguments args, final boolean parseChannel) {
+            final Window window, final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
@@ -189,7 +194,7 @@ public abstract class CommandParser implements Serializable {
 
                 if (server.hasChannel(channel)) {
                     server.getChannel(channel).getCommandParser()
-                            .parseCommand(origin, CommandManager.getCommandChar()
+                            .parseCommand(origin, window, CommandManager.getCommandChar()
                             + args.getCommandName() + " " + args.getWordsAsString(2), false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand
@@ -247,12 +252,14 @@ public abstract class CommandParser implements Serializable {
     /**
      * Parses the specified string as a command.
      *
-     * @param origin The window in which the command was typed
+     * @param origin The container which received the command
+     * @param window The window in which the command was typed
      * @param line The line to be parsed
+     * @since 0.6.4
      */
     public final void parseCommand(final FrameContainer<?> origin,
-            final String line) {
-        parseCommand(origin, line, true);
+            final Window window, final String line) {
+        parseCommand(origin, window, line, true);
     }
 
     /**
@@ -268,14 +275,16 @@ public abstract class CommandParser implements Serializable {
     /**
      * Executes the specified command with the given arguments.
      *
-     * @param origin The window in which the command was typed
-     * @param isSilent Whether the command is being silenced or not
+     * @param origin The container which received the command
+     * @param window The window in which the command was typed
+     * @param commandInfo The command information object matched by the command
      * @param command The command to be executed
      * @param args The arguments to the command
-     * @since 0.6.3m1
+     * @since 0.6.4
      */
     protected abstract void executeCommand(final FrameContainer<?> origin,
-            final boolean isSilent, final Command command, final CommandArguments args);
+            final Window window, final CommandInfo commandInfo,
+            final Command command, final CommandArguments args);
 
     /**
      * Called when the user attempted to issue a command (i.e., used the command

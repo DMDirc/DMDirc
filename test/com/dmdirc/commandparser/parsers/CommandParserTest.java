@@ -45,7 +45,7 @@ public class CommandParserTest {
     @Test
     public void testBasicCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/echo this is a test");
+        tcp.parseCommand(null, null, "/echo this is a test");
 
         assertNull(tcp.nonCommandLine);
         assertNull(tcp.invalidCommand);
@@ -57,7 +57,7 @@ public class CommandParserTest {
     @Test
     public void testBasicNoArgs() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/echo");
+        tcp.parseCommand(null, null, "/echo");
 
         assertNull(tcp.nonCommandLine);
         assertNull(tcp.invalidCommand);
@@ -69,7 +69,7 @@ public class CommandParserTest {
     @Test
     public void testSilentNoArgs() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/.echo");
+        tcp.parseCommand(null, null, "/.echo");
 
         assertNull(tcp.nonCommandLine);
         assertNull(tcp.invalidCommand);
@@ -81,7 +81,7 @@ public class CommandParserTest {
     @Test
     public void testSilentCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/.echo this is a test");
+        tcp.parseCommand(null, null, "/.echo this is a test");
 
         assertNull(tcp.nonCommandLine);
         assertNull(tcp.invalidCommand);
@@ -93,7 +93,7 @@ public class CommandParserTest {
     @Test
     public void testNonExistantCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/foobar moo bar");
+        tcp.parseCommand(null, null, "/foobar moo bar");
 
         assertNull(tcp.nonCommandLine);
         assertEquals("foobar", tcp.invalidCommand);
@@ -105,7 +105,7 @@ public class CommandParserTest {
     @Test
     public void testEmptyCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/ moo bar");
+        tcp.parseCommand(null, null, "/ moo bar");
 
         assertNull(tcp.nonCommandLine);
         assertEquals("", tcp.invalidCommand);
@@ -117,7 +117,7 @@ public class CommandParserTest {
     @Test
     public void testEmptySilentCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/. moo bar");
+        tcp.parseCommand(null, null, "/. moo bar");
 
         assertNull(tcp.nonCommandLine);
         assertEquals("", tcp.invalidCommand);
@@ -129,7 +129,7 @@ public class CommandParserTest {
     @Test
     public void testNonCommand() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "Foobar baz");
+        tcp.parseCommand(null, null, "Foobar baz");
 
         assertNotNull(tcp.nonCommandLine);
         assertEquals("Foobar baz", tcp.nonCommandLine);
@@ -141,12 +141,12 @@ public class CommandParserTest {
     @Test
     public void testCommandHistory() {
         final TestCommandParser tcp = new TestCommandParser();
-        tcp.parseCommand(null, "/echo this is a test");
+        tcp.parseCommand(null, null, "/echo this is a test");
 
         final long time1 = tcp.getCommandTime("echo this is a test");
         assertTrue(time1 > 0);
         
-        tcp.parseCommand(null, "/echo this is a test");
+        tcp.parseCommand(null, null, "/echo this is a test");
         final long time2 = tcp.getCommandTime("echo this is a test");
         assertTrue(time2 > 0);
         assertTrue(time2 >= time1);

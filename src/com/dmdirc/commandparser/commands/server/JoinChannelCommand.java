@@ -28,9 +28,13 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -46,8 +50,8 @@ import java.util.List;
  * @since 0.6.3m1
  * @author chris
  */
-public final class JoinChannelCommand extends ServerCommand implements
-        ActionListener, IntelligentCommand {
+public final class JoinChannelCommand extends Command implements
+        ActionListener, IntelligentCommand, CommandInfo {
 
     /** A map of channel name mentions. */
     private final MapList<FrameContainer<?>, String> mentions
@@ -65,10 +69,11 @@ public final class JoinChannelCommand extends ServerCommand implements
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "join", "join <channel [key]>[,channel [key]...]");
+            showUsage(origin, args.isSilent(), "join", "join <channel [key]>[,channel [key]...]");
             return;
         }
 
@@ -85,7 +90,7 @@ public final class JoinChannelCommand extends ServerCommand implements
             }
         }
 
-        server.join(!isSilent, channels.toArray(new ChannelJoinRequest[0]));
+        server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[0]));
     }
     
     
@@ -99,6 +104,12 @@ public final class JoinChannelCommand extends ServerCommand implements
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

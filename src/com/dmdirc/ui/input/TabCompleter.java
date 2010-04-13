@@ -207,7 +207,7 @@ public class TabCompleter {
      * Retrieves intelligent results for a deferred command.
      * 
      * @param arg The argument number that is being requested
-     * @param previousArgs The full list of previous arguments
+     * @param context Intelligent tab completion context
      * @param offset The number of arguments our command used before deferring
      * to this method
      * @return Additional tab targets for the text, or null if none are available

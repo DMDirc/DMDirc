@@ -25,9 +25,13 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * The raw command allows the user to send a raw line of text directly to the
@@ -35,7 +39,7 @@ import com.dmdirc.commandparser.commands.ServerCommand;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Raw extends ServerCommand {
+public final class Raw extends Command implements CommandInfo {
     
     /**
      * Creates a new instance of Raw.
@@ -48,12 +52,13 @@ public final class Raw extends ServerCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         final String line = args.getArgumentsAsString();
         
         server.getParser().sendRawMessage(line);
-        sendLine(origin, isSilent, "rawCommand", line);
+        sendLine(origin, args.isSilent(), "rawCommand", line);
     }
     
     
@@ -67,6 +72,12 @@ public final class Raw extends ServerCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
     
     /** {@inheritDoc} */

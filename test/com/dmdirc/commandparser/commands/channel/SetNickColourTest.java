@@ -21,9 +21,12 @@
  */
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.IdentityManager;
+import org.junit.Before;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,9 +34,16 @@ import static org.mockito.Mockito.*;
 
 public class SetNickColourTest {
 
+    private Channel channel;
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
+    }
+
+    @Before
+    public void setUp() {
+        channel = mock(Channel.class);
     }
     
     private final SetNickColour command = new SetNickColour();
@@ -41,7 +51,8 @@ public class SetNickColourTest {
     @Test
     public void testUsageNoArgs() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/foo"));
+        command.execute(tiw, new CommandArguments("/foo"),
+                new ChannelCommandContext(null, command, channel));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -49,7 +60,8 @@ public class SetNickColourTest {
     @Test
     public void testUsageNicklist() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/foo --nicklist"));
+        command.execute(tiw, new CommandArguments("/foo --nicklist"),
+                new ChannelCommandContext(null, command, channel));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }    
@@ -57,7 +69,8 @@ public class SetNickColourTest {
     @Test
     public void testUsageText() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, null, null, false, new CommandArguments("/foo --text"));
+        command.execute(tiw, new CommandArguments("/foo --text"),
+                new ChannelCommandContext(null, command, channel));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }       

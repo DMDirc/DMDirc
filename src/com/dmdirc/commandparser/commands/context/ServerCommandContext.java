@@ -20,24 +20,43 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands;
+package com.dmdirc.commandparser.commands.context;
 
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
- * Represents a command which can be performed only in the context of a channel.
+ * A command context for server commands.
  *
- * @deprecated Commands should extend {@link Command} directly
+ * @since 0.6.4
  * @author chris
  */
-@Deprecated
-public abstract class ChannelCommand extends Command implements CommandInfo {
+public class ServerCommandContext extends CommandContext {
 
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
+    /** The server the command was executed for. */
+    private final Server server;
+
+    /**
+     * Creates a new server command context.
+     *
+     * @param source The source of the command
+     * @param commandInfo The command info object which associated the command with the input
+     * @param server The server associated with the command
+     */
+    public ServerCommandContext(final Window source, final CommandInfo commandInfo,
+            final Server server) {
+        super(source, commandInfo);
+        this.server = server;
+    }
+
+    /**
+     * Retrieves the server associated with this context.
+     *
+     * @return This context's server
+     */
+    public Server getServer() {
+        return server;
     }
 
 }

@@ -23,6 +23,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
@@ -31,17 +32,18 @@ import static org.mockito.Mockito.*;
 
 public class IfpluginTest {
 
+    private final Ifplugin command = new Ifplugin();
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
-    
-    private final Ifplugin command = new Ifplugin();
 
     @Test
     public void testUsageNoArgs() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo"));
+        command.execute(tiw, new CommandArguments("/foo"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -49,7 +51,8 @@ public class IfpluginTest {
     @Test
     public void testUsageOneArg() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
-        command.execute(tiw, false, new CommandArguments("/foo bar"));
+        command.execute(tiw, new CommandArguments("/foo bar"),
+                new CommandContext(null, command));
         
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }    

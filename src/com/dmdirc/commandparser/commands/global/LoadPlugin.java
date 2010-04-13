@@ -24,9 +24,12 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -35,7 +38,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * Allows the user to load a plugin.
  * @author chris
  */
-public final class LoadPlugin extends GlobalCommand implements IntelligentCommand {
+public final class LoadPlugin extends Command implements IntelligentCommand,
+        CommandInfo {
 
     /**
      * Creates a new instance of LoadPlugin.
@@ -48,10 +52,10 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final boolean isSilent,
-            final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
-            showUsage(origin, isSilent, "loadplugin", "<plugin>");
+            showUsage(origin, args.isSilent(), "loadplugin", "<plugin>");
             return;
         }
 
@@ -61,16 +65,16 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
                 .getPluginInfo(args.getArguments()[0]);
         
         if (plugin == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin loading failed");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin loading failed");
         } else if (plugin.isLoaded()) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin already loaded.");
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin already loaded.");
         } else {
             plugin.loadPlugin();
             if (plugin.isLoaded()) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin loaded.");
                 PluginManager.getPluginManager().updateAutoLoad(plugin);
             } else {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Loading plugin failed. ("
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Loading plugin failed. ("
                         + plugin.getLastError() + ")");
             }
         }
@@ -87,6 +91,12 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
     }
 
     /** {@inheritDoc} */

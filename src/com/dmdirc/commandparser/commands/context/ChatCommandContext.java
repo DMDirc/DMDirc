@@ -20,24 +20,42 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands;
+package com.dmdirc.commandparser.commands.context;
 
+import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
- * Represents a command which can be performed only in the context of a channel.
+ * A command context specific to chat windows.
  *
- * @deprecated Commands should extend {@link Command} directly
+ * @since 0.6.4
  * @author chris
  */
-@Deprecated
-public abstract class ChannelCommand extends Command implements CommandInfo {
+public class ChatCommandContext extends ServerCommandContext {
 
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
+    /** The chat container associated with this context. */
+    private final MessageTarget<?> chat;
+
+    /**
+     * Creates a new chat command context.
+     *
+     * @param source The source of the command
+     * @param commandInfo The command info object which associated the command with the input
+     * @param chat The chat container associated with the command
+     */
+    public ChatCommandContext(final Window source, final CommandInfo commandInfo,
+            final MessageTarget<?> chat) {
+        super(source, commandInfo, chat.getServer());
+        this.chat = chat;
     }
 
+    /**
+     * Retrieves the chat container's associated with the command.
+     *
+     * @return This context's associated container
+     */
+    public MessageTarget<?> getChat() {
+        return chat;
+    }
 }

@@ -26,9 +26,13 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
-import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * Allows the user to change user modes.
@@ -36,7 +40,7 @@ import com.dmdirc.commandparser.commands.ServerCommand;
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public class Umode extends ServerCommand {
+public class Umode extends Command implements CommandInfo {
     
     /**
      * Creates a new instance of Umode.
@@ -49,10 +53,11 @@ public class Umode extends ServerCommand {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer origin, final Server server, 
-            final boolean isSilent, final CommandArguments args) {
+    public void execute(final FrameContainer<?> origin,
+            final CommandArguments args, final CommandContext context) {
+        final Server server = ((ServerCommandContext) context).getServer();
         if (server.getState() != ServerState.CONNECTED) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Not connected");
             return;
         }
 
@@ -71,6 +76,12 @@ public class Umode extends ServerCommand {
     @Override
     public boolean showInHelp() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
     }
 
     /** {@inheritDoc} */
