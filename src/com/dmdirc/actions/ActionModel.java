@@ -147,7 +147,7 @@ public class ActionModel {
 
         if (arguments.length > 0 && arguments[0] instanceof Window) {
             window = (Window) arguments[0];
-        } else {
+        } else if (cw != null) {
             window = cw.getFrame();
         }
 
