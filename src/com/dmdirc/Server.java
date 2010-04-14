@@ -119,7 +119,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      */
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
 
-    /** The IRC Parser Thread. */
+    /** The Parser Thread. */
     private transient Thread parserThread;
 
     /** The raw frame used for this server instance. */
@@ -289,16 +289,12 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
                 parser = buildParser();
 
-                if (parser != null) {
-                    connectAddress = parser.getURI();
-                } else {
-                    connectAddress = address;
-                }
-
                 if (parser == null) {
-                    addLine("serverUnknownProtocol", connectAddress.getScheme());
+                    addLine("serverUnknownProtocol", address.getScheme());
                     return;
                 }
+
+                connectAddress = parser.getURI();
             } finally {
                 parserLock.writeLock().unlock();
             }
@@ -313,10 +309,12 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             removeInvites();
             
             try {
-                parserThread = new Thread(parser, "IRC Parser thread");
+                parserThread = new Thread(parser, "Parser thread");
                 parserThread.start();
             } catch (IllegalThreadStateException ex) {
-                Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
+                // This won't happen. Ever. But it's a checked exception. Yay.
+                Logger.appError(ErrorLevel.HIGH, "Unable to start parser", ex);
+                return;
             }
         }
 
@@ -324,7 +322,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
-     * Reconnects to the IRC server with a specified reason.
+     * Reconnects to the server with a specified reason.
      *
      * @param reason The quit reason to send
      */
@@ -341,7 +339,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
-     * Reconnects to the IRC server.
+     * Reconnects to the server.
      */
     public void reconnect() {
         reconnect(getConfigManager().getOption(DOMAIN_GENERAL, "reconnectmessage"));
@@ -719,7 +717,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     /**
      * Builds an appropriately configured {@link Parser} for this server.
      *
-     * @return A configured IRC parser.
+     * @return A configured parser.
      */
     private Parser buildParser() {
         final CertificateManager certManager = new CertificateManager(address.getHost(),
@@ -784,7 +782,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
-     * Retrieves the MyInfo object used for the IRC Parser.
+     * Retrieves the MyInfo object used for the Parser.
      *
      * @return The MyInfo object for our profile
      */
@@ -943,7 +941,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     /**
      * Retrieves the parser used for this connection.
      *
-     * @return IRCParser this connection's parser
+     * @return this connection's parser
      */
     public Parser getParser() {
         return parser;
