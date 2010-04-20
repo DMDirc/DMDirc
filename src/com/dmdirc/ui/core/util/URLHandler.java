@@ -130,12 +130,12 @@ public class URLHandler {
             }
         }
 
-        if (!config.hasOptionString("protocol", uri.getScheme())) {
+        if (!config.hasOptionString("protocol", uri.getScheme().toLowerCase())) {
             Main.getUI().showURLDialog(uri);
             return;
         }
 
-        final String command = config.getOption("protocol", uri.getScheme());
+        final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
 
         if ("DMDIRC".equals(command)) {
             Main.getUI().getStatusBar().setMessage("Connecting to: " +
