@@ -74,14 +74,13 @@ public final class OpenQuery extends Command implements IntelligentCommand,
             return;
         }
 
-        if (server.hasQuery(args.getArguments()[0])) {
-            server.getQuery(args.getArguments()[0]).activateFrame();
-        } else {
+        if (!args.isSilent()) {
             server.getQuery(args.getArguments()[0]).activateFrame();
         }
 
         if (args.getArguments().length > 1) {
-            server.getQuery(args.getArguments()[0]).sendLine(args.getArgumentsAsString(1));
+            server.getQuery(args.getArguments()[0]).sendLine(args.getArgumentsAsString(1),
+                    args.getArguments()[0]);
         }
     }
     

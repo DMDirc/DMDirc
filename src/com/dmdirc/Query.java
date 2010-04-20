@@ -107,6 +107,23 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
+        sendLine(line, getNickname());
+    }
+
+    /**
+     * Sends a line to the recipient of this query using the specified
+     * nickname or hostmask as a target. This allows for users to send
+     * messages with a server specified (e.g. <code>nick@server</code>)
+     * as though the query wasn't open.
+     * <p>
+     * The caller is responsible for ensuring that the <code>target</code>
+     * does actually correspond to this query.
+     *
+     * @since 0.6.4
+     * @param line The line to be sent
+     * @param target The target to send the line to
+     */
+    public void sendLine(final String line, final String target) {
         if (server.getState() != ServerState.CONNECTED) {
             Toolkit.getDefaultToolkit().beep();
             return;
@@ -114,7 +131,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
 
         for (String part : splitLine(getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
-                server.getParser().sendMessage(getNickname(), part);
+                server.getParser().sendMessage(target, part);
 
                 doNotification("querySelfMessage",
                         CoreActionType.QUERY_SELF_MESSAGE,

@@ -72,7 +72,7 @@ public final class Message extends Command implements IntelligentCommand,
             if (!args.isSilent() && server.hasChannel(target)) {
                 server.getChannel(target).sendLine(message);
             } else if (!args.isSilent() && server.hasQuery(target)) {
-                server.getQuery(target).sendLine(message);
+                server.getQuery(target).sendLine(message, target);
             } else {
                 server.getParser().sendMessage(target, message);
             }
