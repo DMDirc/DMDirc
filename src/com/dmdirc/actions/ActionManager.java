@@ -564,7 +564,7 @@ public final class ActionManager {
         }
 
         for (ActionType target : actionTypes) {
-            if (((Enum<?>) target).name().equals(type)) {
+            if (target.name().equals(type)) {
                 return target;
             }
         }
@@ -666,7 +666,7 @@ public final class ActionManager {
         Logger.assertTrue(!type.isEmpty());
 
         for (ActionComponent target : actionComponents) {
-            if (((Enum<?>) target).name().equals(type)) {
+            if (target.name().equals(type)) {
                 return target;
             }
         }
@@ -687,7 +687,7 @@ public final class ActionManager {
         Logger.assertTrue(!type.isEmpty());
 
         for (ActionComparison target : actionComparisons) {
-            if (((Enum<?>) target).name().equals(type)) {
+            if (target.name().equals(type)) {
                 return target;
             }
         }

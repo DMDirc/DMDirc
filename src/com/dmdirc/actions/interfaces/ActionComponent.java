@@ -53,8 +53,9 @@ public interface ActionComponent {
     }
     
     /**
-     * Retrieves the component of the specified argument that this enum
+     * Retrieves the component of the specified argument that this component
      * represents.
+     * 
      * @param argument The object to retrieve the component from
      * @return The relevant component of the object
      */    
@@ -74,8 +75,17 @@ public interface ActionComponent {
     
     /**
      * Retrives a friendly name for this component.
-     * @return This component's name
+     *
+     * @return This component's friendly name
      */
     String getName();
+
+    /**
+     * Retrieve's the internal name of this action component.
+     *
+     * @since 0.6.4
+     * @return The internal name of this component
+     */
+    String name();
     
 }

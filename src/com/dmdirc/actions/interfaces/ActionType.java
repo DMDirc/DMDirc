@@ -30,14 +30,24 @@ public interface ActionType {
     
     /**
      * Retrieves the type of this action.
+     * 
      * @return This action's type
      */
     ActionMetaType getType();
     
     /**
-     * Retrieves this type's name.
-     * @return The name of this type
+     * Retrieves this type's friendly name.
+     *
+     * @return The friendly name of this type
      */
     String getName();
+
+    /**
+     * Retrieves this type's internal name.
+     * 
+     * @since 0.6.4
+     * @return The internal name of this type
+     */
+    String name();
     
 }

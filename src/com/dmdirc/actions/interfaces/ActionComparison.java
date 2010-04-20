@@ -47,8 +47,17 @@ public interface ActionComparison {
     
     /**
      * Returns a friendly name for this comparison.
-     * @return This comparion's name
+     *
+     * @return This comparion's friendly name
      */
     String getName();
+
+    /**
+     * Returns the internal name of this comparison.
+     *
+     * @since 0.6.4
+     * @return This comparison's internal name
+     */
+    String name();
     
 }

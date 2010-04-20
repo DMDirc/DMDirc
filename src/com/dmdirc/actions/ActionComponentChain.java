@@ -135,6 +135,12 @@ public class ActionComponentChain implements ActionComponent {
         return name.substring(1);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String name() {
+        return toString();
+    }
+
     /**
      * Determines if any components in this chain require a server to have
      * an established connection in order to function.
