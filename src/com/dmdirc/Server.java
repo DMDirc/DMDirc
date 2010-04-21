@@ -1740,7 +1740,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     /**
      * Removes all invites for all channels.
      */
-    private void removeInvites() {
+    public void removeInvites() {
         for (Invite invite : new ArrayList<Invite>(invites)) {
             removeInvite(invite);
         }
