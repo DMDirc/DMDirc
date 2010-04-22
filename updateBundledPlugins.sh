@@ -5,16 +5,7 @@
 # the names and versions to the jar's version.config file.
 
 # Find out where we are
-BASEDIR=${0%/*}
-if [ "${BASEDIR}" = "${0}" ]; then
-	BASEDIR=`which $0`
-	BASEDIR="${BASEDIR%/*}"
-fi
-CHECKBASEDIR=`echo "${BASEDIR}" | sed 's#^/##'`
-
-if [ "${CHECKBASEDIR}" = "${BASEDIR}" -a "${PWD}" != "${CHECKBASEDIR}" -a "${PWD}/." != "${CHECKBASEDIR}" ]; then
-	BASEDIR="${PWD}/${BASEDIR}"
-fi;
+BASEDIR=$(cd "${0%/*}" 2>/dev/null; echo $PWD)
 
 if [ -e "${BASEDIR}/build-functions.sh" ]; then
 	. "${BASEDIR}/build-functions.sh"

@@ -42,15 +42,7 @@ else
 fi
 
 # Find out where we are
-BASEDIR=${0%/*}
-if [ "${BASEDIR}" = "${0}" ]; then
-	BASEDIR=`which $0`
-	BASEDIR=${BASEDIR%/*}
-fi
-CHECKBASEDIR=`echo "${BASEDIR}" | sed 's#^/##'`
-if [ "${CHECKBASEDIR}" = "${BASEDIR}" ]; then
-	BASEDIR=${PWD}/${BASEDIR}
-fi;
+BASEDIR=$(cd "${0%/*}" 2>/dev/null; echo $PWD)
 
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
