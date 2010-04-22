@@ -12,8 +12,13 @@ if [ ! -e ./icon.ico ]; then
 fi
 
 rm -Rf ./*.exe
+PWDIR="${PWD}"
+# Windows binaries need real paths not cygwin-y pathhs.
+if [ "${WINDIR}" != "" ]; then
+	PWDIR=`echo "${PWDIR}" | sed 's#^/c/#c:/#'`
+fi;
 compilerFlags="-Xs -XX -O2 -Or -Op1"
-extraFlags="-Fu${PWD}/../../libwin"
+extraFlags="-Fu${PWDIR}/../../libwin"
 fpc -Sd -Twin32 ${compilerFlags} ${extraFlags} DMDirc.dpr
 fpc -Sd -Twin32 ${compilerFlags} ${extraFlags} DMDircUpdater.dpr
 rm -Rf ./*.o ./*.or ./*.ppu

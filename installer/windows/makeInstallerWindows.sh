@@ -35,6 +35,12 @@ INTNAME="${PWD}/${INTNAME}"
 # Get 7zip path
 ZIP=`which 7z`
 
+PWDIR="${PWD}"
+# Windows binaries need real paths not cygwin-y pathhs.
+if [ "${WINDIR}" != "" ]; then
+	PWDIR=`echo "${PWDIR}" | sed 's#^/c/#c:/#'`
+fi;
+
 if [ "" = "${ZIP}" ]; then
 	echo "7Zip not found, failing."
 	exit 1;
@@ -42,7 +48,12 @@ fi
 
 # Compress stuff!
 compress() {
-	${ZIP} a -yl ${INTNAME} $@ 2>/dev/null || {
+	FLAGS="-y"
+	if [ "${WINDIR}" = "" ]; then
+		FLAGS="${FLAGS}l"
+	fi;
+	
+	"${ZIP}" a ${FLAGS} "${INTNAME}" $@ 2>/dev/null || {
 		echo "Compression failed."
 		kill -15 $$;
 	};
@@ -78,11 +89,11 @@ getFile() {
 	OUTPUT=${2}
 
 	if [ "${WGET}" != "" ]; then
-		${WGET} -O ${OUTPUT} ${URL}
+		"${WGET}" -O "${OUTPUT}" ${URL}
 	elif [ "${FETCH}" != "" ]; then
-		${FETCH} -o ${OUTPUT} ${URL}
+		"${FETCH}" -o "${OUTPUT}" ${URL}
 	elif [ "${CURL}" != "" ]; then
-		${CURL} -o ${OUTPUT} ${URL}
+		"${CURL}" -o "${OUTPUT}" ${URL}
 	fi;
 }
 
@@ -255,7 +266,7 @@ FILES=""
 # Icon Res file
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
-	FILES="${FILES} icon.ico"
+	FILES="${FILES} ${PWDIR}/icon.ico"
 fi
 echo "icon.ico ICON icon.ico" > icon.rc
 
@@ -277,6 +288,7 @@ if [ "" = "${NUM}" ]; then
 	TEXTVER="${isRelease}"
 	PRIVATE="1"
 	USER=`whoami`
+	USER=`echo "${USER}" | sed 's#\\\\#\\\\\\\\#g'`
 	HOST=`hostname`
 	DATE=`date`
 else
@@ -384,14 +396,14 @@ cat icon.rc >> most.rc
 
 windres -F pe-i386 -i most.rc -o most.res
 
-FILES="${FILES} DMDirc.jar Setup.exe";
+FILES="${FILES} ${PWDIR}/DMDirc.jar ${PWDIR}/Setup.exe";
 if [ "" != "${jre}" ]; then
 	if [ ! -e "../common/${jrename}.exe" ]; then
 		echo "Downloading JRE to include in installer"
 		getFile "${jre}" "../common/${jrename}.exe"
 	fi
 	ln -sf ../common/${jrename}.exe jre.exe
-	FILES="${FILES} jre.exe"
+	FILES="${FILES} ${PWDIR}/jre.exe"
 fi;
 DELETEFILES=${FILES}
 if [ "" != "${DMDIRC_FPC}" ]; then
@@ -404,6 +416,7 @@ if [ ! -e "${lazarusDir}/lcl" ]; then
 	lazarusDir="/usr/lib/lazarus/"
 fi;
 
+
 compilerFlags="-Sd -Twin32 ${compilerFlags}";
 extraFlags=""
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
@@ -413,7 +426,8 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 		exit 1;
 	else
 		echo "Building Setup.exe..."
-		extraFlags="-dKOL -Fu${PWD}/../../libwin/kolfpc -Fu{$PWD}/../../libwin/lcore -Fu{$PWD} -Fu${PWD}/../../libwin"
+		extraFlags="-dKOL -Fu${PWDIR}/../../libwin/kolfpc -Fu{$PWDIR}/../../libwin/lcore -Fu{$PWDIR} -Fu${PWDIR}/../../libwin"
+		echo ${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
 			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
@@ -440,7 +454,7 @@ if [ ! -e Shortcut.exe ]; then
 	unzip -q Shortcut.zip Shortcut.exe
 	rm Shortcut.zip
 fi
-FILES="${FILES} Shortcut.exe"
+FILES="${FILES} ${PWDIR}/Shortcut.exe"
 DELETEFILES="${DELETEFILES} Shortcut.exe"
 
 if [ "${isRelease}" != "" ]; then
@@ -451,17 +465,17 @@ fi
 
 if [ -e "${DOCSDIR}/README.TXT" ]; then
 	ln -sf "${DOCSDIR}/README.TXT" .
-	FILES="${FILES} README.TXT"
+	FILES="${FILES} ${PWDIR}/README.TXT"
 	DELETEFILES="${DELETEFILES} README.TXT"
 fi
 
 if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
 	ln -sf "${DOCSDIR}/CHANGES.TXT" .
-	FILES="${FILES} CHANGES.TXT"
+	FILES="${FILES} ${PWDIR}/CHANGES.TXT"
 	DELETEFILES="${DELETEFILES} CHANGES.TXT"
 elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 	ln -sf "${DOCSDIR}/CHANGELOG.TXT" .
-	FILES="${FILES} CHANGELOG.TXT"
+	FILES="${FILES} ${PWDIR}/CHANGELOG.TXT"
 	DELETEFILES="${DELETEFILES} CHANGELOG.TXT"
 fi
 
@@ -474,15 +488,16 @@ if [ -e "${jarPath}/launcher/windows" ]; then
 	# Now add to file list.
 	for thisfile in `ls -1 ${jarPath}/launcher/windows/*.exe`; do
 		ln -sf ${thisfile} .
-		FILES="${FILES} ${thisfile}"
+		FILES="${FILES} ${PWDIR}/${thisfile}"
 	done
 fi
 
-extraFlags="-dKOL -Fu${PWD}/../../libwin/kolfpc -Fu{$PWD} -Fu${PWD}/../../libwin"
+extraFlags="-dKOL -Fu${PWDIR}/../../libwin/kolfpc -Fu{$PWDIR} -Fu${PWDIR}/../../libwin"
+echo ${FPC} ${compilerFlags} ${extraFlags} ${3}Uninstaller.dpr
 ${FPC} ${compilerFlags} ${extraFlags} ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
-	FILES="${FILES} Uninstaller.exe"
-#	DELETEFILES="${DELETEFILES} Uninstaller.exe"
+	FILES="${FILES} ${PWDIR}/Uninstaller.exe"
+#	DELETEFILES="${DELETEFILES} ${PWDIR}/Uninstaller.exe"
 fi
 
 # Add wget to allow downloading jre
@@ -495,7 +510,7 @@ if [ ! -e "wget.exe" ]; then
 	exit 1;
 fi;
 
-FILES="${FILES} wget.exe"
+FILES="${FILES} ${PWDIR}/wget.exe"
 
 compress $FILES
 
@@ -577,6 +592,7 @@ fi
 
 windres -F pe-i386 -i all.rc -o all.res
 
+echo ${FPC} ${compilerFlags} ${3}Launcher.dpr
 ${FPC} ${compilerFlags} ${3}Launcher.dpr
 if [ $? -ne 0 ]; then
 	if [ -e "Launcher.exe" ]; then

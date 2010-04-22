@@ -4,12 +4,35 @@
 # Reads the version of each bundled plugin in the specified jar, and writes
 # the names and versions to the jar's version.config file.
 
-. build-functions.sh
+# Find out where we are
+BASEDIR=${0%/*}
+if [ "${BASEDIR}" = "${0}" ]; then
+	BASEDIR=`which $0`
+	BASEDIR="${BASEDIR%/*}"
+fi
+CHECKBASEDIR=`echo "${BASEDIR}" | sed 's#^/##'`
+
+if [ "${CHECKBASEDIR}" = "${BASEDIR}" -a "${PWD}" != "${CHECKBASEDIR}" -a "${PWD}/." != "${CHECKBASEDIR}" ]; then
+	BASEDIR="${PWD}/${BASEDIR}"
+fi;
+
+if [ -e "${BASEDIR}/build-functions.sh" ]; then
+	. "${BASEDIR}/build-functions.sh"
+else
+	echo "Unable to find build-functions.sh. '${BASEDIR}/build-functions.sh'"
+	exit 1;
+fi;
+
 
 jar=$1
-dir=`safe_mktemp $jar`
+dir=`safe_mktemp ${jar##*/}`
 config="$dir/com/dmdirc/version.config"
-jar="`pwd`/$jar"
+
+CHECKJAR=`echo "${jar}" | sed 's#^/##'`
+if [ "${CHECKJAR}" = "$jar" ]; then
+	jar="`pwd`/$jar"
+fi;
+
 
 cd $dir
 # Read the jar's version.config out
