@@ -1725,6 +1725,35 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
+     * Attempts to accept the specified invites, and join the corresponding
+     * channels.
+     *
+     * @param invites The invites to process
+     * @since 0.6.4
+     */
+    public void acceptInvites(final Invite ... invites) {
+        final ChannelJoinRequest[] requests = new ChannelJoinRequest[invites.length];
+
+        for (int i = 0; i < invites.length; i++) {
+            requests[i] = new ChannelJoinRequest(invites[i].getChannel());
+        }
+
+        join(requests);
+    }
+
+    /**
+     * Attempts to accept all active invites for this server, and join the
+     * corresponding channels.
+     *
+     * @since 0.6.4
+     */
+    public void acceptInvites() {
+        synchronized (invites) {
+            acceptInvites(invites.toArray(new Invite[invites.size()]));
+        }
+    }
+
+    /**
      * Removes all invites for the specified channel.
      *
      * @param channel The channel to remove invites for

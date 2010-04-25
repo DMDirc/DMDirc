@@ -98,9 +98,14 @@ public class Invite {
      * Join the channel that belongs to this invite.
      */
     public void accept() {
-        server.join(new ChannelJoinRequest(channel));
-        
+        server.acceptInvites(this);
+    }
+
+
+    /**
+     * Decline this invite removing it from the invite list.
+     */
+    public void decline() {
         server.removeInvite(this);
     }
-    
 }
