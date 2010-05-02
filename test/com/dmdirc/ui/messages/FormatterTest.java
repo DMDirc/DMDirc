@@ -88,4 +88,10 @@ public class FormatterTest {
         assertEquals("1 day, 10 minutes, 1 second", Formatter.formatDuration(87001));
     }
 
+    @Test
+    public void testFormatNoSeconds() {
+        assertEquals("0 seconds", Formatter.formatDuration(0));
+        assertEquals("0 seconds", Formatter.formatDuration(-100));
+    }
+
 }

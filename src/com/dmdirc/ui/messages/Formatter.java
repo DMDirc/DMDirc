@@ -199,7 +199,7 @@ public final class Formatter {
         seconds -= doDuration(buff, seconds, 60, "minute");
         seconds -= doDuration(buff, seconds, 1, "second");
         
-        return buff.toString();
+        return buff.length() == 0 ? "0 seconds" : buff.toString();
     }
     
     /**
