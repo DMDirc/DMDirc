@@ -351,7 +351,8 @@ public class ActionModel {
      * @since 0.6.3
      */
     public void setConcurrencyGroup(final String concurrencyGroup) {
-        this.concurrencyGroup = concurrencyGroup;
+        this.concurrencyGroup = (concurrencyGroup == null
+                || concurrencyGroup.isEmpty()) ? null : concurrencyGroup;
     }
 
     /**
