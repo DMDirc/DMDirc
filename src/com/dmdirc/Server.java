@@ -1614,13 +1614,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
                     + parser.getServerSoftwareType() + "]",
-                    new Exception(missing.toString() + "\n" // NOPMD
-                    + "Network: " + getNetwork() + "\n"
-                    + "IRCd: " + parser.getServerSoftware()
-                    + " (" + parser.getServerSoftwareType() + ")\n"
-                    + "Mode alias version: "
-                    + getConfigManager().getOption("identity", "modealiasversion")
-                    + "\n\n"));
+                    new MissingModeAliasException(getNetwork(), parser,
+                    getConfigManager().getOption("identity",
+                    "modealiasversion"), missing.toString()));
         }
     }
 
