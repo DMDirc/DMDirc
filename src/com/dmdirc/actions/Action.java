@@ -598,7 +598,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             return super.trigger(format, arguments);
         }
 
-        return true;
+        return false;
     }
 
 }
