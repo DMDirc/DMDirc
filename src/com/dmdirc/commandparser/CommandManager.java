@@ -260,6 +260,7 @@ public final class CommandManager {
         new OpenQuery();
         new Raw();
         new Reconnect();
+        new ServerSettings();
         new Umode();
         
         new RawServerCommand("lusers");
