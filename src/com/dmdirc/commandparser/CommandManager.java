@@ -237,6 +237,7 @@ public final class CommandManager {
         new Ban();
         new ChannelSettings();
         new Cycle();
+        new Invite();
         new KickReason();
         new Mode();
         new Names();
@@ -261,7 +262,6 @@ public final class CommandManager {
         new Reconnect();
         new Umode();
         
-        new RawServerCommand("invite");
         new RawServerCommand("lusers");
         new RawServerCommand("map");
         new RawServerCommand("motd");
