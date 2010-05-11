@@ -104,7 +104,8 @@ public class Styliser implements ConfigChangeListener {
             + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT_LEGAL + URL_NOPUNCT + "]*";
 
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)([a-z+]+://" + URL_CHARS
+    private static final String URL_REGEXP = "(?i)((?>(?<!" + CODE_HEXCOLOUR
+            + "[a-f0-9]{5})[a-f]|[g-z+])+://" + URL_CHARS
             + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
     
     /** Regular expression for intelligent handling of closing brackets. */

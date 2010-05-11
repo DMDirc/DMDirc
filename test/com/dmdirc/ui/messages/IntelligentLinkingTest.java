@@ -98,6 +98,9 @@ public class IntelligentLinkingTest {
                      "\"foo\" ~www.google.com~ \"~www.google.com~\""},
             {"www.example.com/blah(foobar)", "~www.example.com/blah(foobar)~"},
 
+            {"000000http://www.google.com/", "000000~http://www.google.com/~"},
+            {"ABCDEFhttp://www.google.com/", "ABCDEF~http://www.google.com/~"},
+
             // ------------ Channels -------------------
             {"#test", "@#test@"},
             {"&test", "@&test@"},
