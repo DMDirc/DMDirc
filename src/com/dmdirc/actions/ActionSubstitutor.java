@@ -51,6 +51,8 @@ public class ActionSubstitutor {
     private static final String ERR_NOT_CONNECTED = "not_connected";
     /** Substitution to use to replace an unknown substitution. */
     private static final String ERR_NOT_DEFINED = "not_defined";
+    /** Substitution to use to replace a chain that evaluates to null. */
+    private static final String ERR_NULL_CHAIN = "null_component";
     /** Substitution to use to replace subs with illegal components. */
     private static final String ERR_ILLEGAL_COMPONENT = "illegal_component";
 
@@ -294,7 +296,8 @@ public class ActionSubstitutor {
         if ((chain.requiresConnection() && args[0] instanceof FrameContainer<?>
                     && ((FrameContainer<?>) args[0]).getServer().getState()
                     == ServerState.CONNECTED) || !chain.requiresConnection()) {
-            return chain.get(argument).toString();
+            final Object res = chain.get(argument);
+            return res == null ? ERR_NULL_CHAIN : res.toString();
         }
 
         return ERR_NOT_CONNECTED;
