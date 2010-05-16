@@ -45,6 +45,18 @@ import java.util.List;
  * @author Chris
  */
 public class PerformWrapper extends ActionGroup {
+
+    /**
+     * Describes the type of perform.
+     *
+     * @since 0.6.4
+     */
+    public static enum PERFORM_TYPE {
+        /** A perform targetting a server. */
+        SERVER,
+        /** A perform targetting a network. */
+        NETWORK;
+    }
     
     /** A singleton instance of the Perform Wrapper. */
     private static PerformWrapper me = new PerformWrapper();
@@ -87,8 +99,127 @@ public class PerformWrapper extends ActionGroup {
                     + "target the server's profile name. No other targets are "
                     + "allowed.");
         } else {
-            super.add(action);
+            synchronized (this) {
+                super.add(action);
+            }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void deleteAction(final Action action) {
+        synchronized (this) {
+            super.deleteAction(action);
+        }
+    }
+
+    /**
+     * Sets the perform for the specified target of the specified type.
+     * If the specified perform is empty - that is, any non-null elements are
+     * empty Strings - then the perform is removed. Performs set using this
+     * method will apply to all profiles.
+     *
+     * @param type The type of perform to set (server or network)
+     * @param target The target of the perform
+     * @param perform The perform to be set
+     * @since 0.6.4
+     */
+    public void setPerform(final PERFORM_TYPE type, final String target,
+            final String[] perform) {
+        setPerform(type, target, null, perform);
+    }
+
+    /**
+     * Sets the perform for the specified target of the specified type.
+     * If the specified perform is empty - that is, any non-null elements are
+     * empty Strings - then the perform is removed. If a profile is specified,
+     * the perform will only be executed for that profile.
+     *
+     * @param type The type of perform to set (server or network)
+     * @param target The target of the perform
+     * @param profile The profile for the perform (or null)
+     * @param perform The perform to be set
+     * @since 0.6.4
+     */
+    public void setPerform(final PERFORM_TYPE type, final String target,
+            final String profile, final String[] perform) {
+        synchronized (this) {
+            Action action = getAction(type == PERFORM_TYPE.NETWORK ?
+                CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
+                target, profile);
+
+            final boolean empty = isEmpty(perform);
+
+            if (action == null && !empty) {
+                // They want to set a perform but we don't have an action
+                action = createAction(
+                        type == PERFORM_TYPE.SERVER ? target : "",
+                        type == PERFORM_TYPE.NETWORK ? target : "", profile);
+                action.setResponse(perform);
+            } if (action != null) {
+                if (empty) {
+                    // They want to clear the perform but we have an action
+                    deleteAction(action);
+                } else {
+                    // They want to set a perform and we have an action
+                    action.setResponse(perform);
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the (non-profile-specific) perform for the relevant target.
+     * If no such perform exists, a zero-length array is returned.
+     *
+     * @param type The type of perform to get (server or network)
+     * @param target The target of the perform
+     * @return The corresponding perform, or a zero-length array if none set
+     * @since 0.6.4
+     */
+    public String[] getPerform(final PERFORM_TYPE type, final String target) {
+        return getPerform(type, target, null);
+    }
+
+    /**
+     * Retrieves the perform for the relevant target. If no such perform exists,
+     * a zero-length array is returned.
+     *
+     * @param type The type of perform to get (server or network)
+     * @param target The target of the perform
+     * @param profile The profile for the perform (or null)
+     * @return The corresponding perform, or a zero-length array if none set
+     * @since 0.6.4
+     */
+    public String[] getPerform(final PERFORM_TYPE type, final String target,
+            final String profile) {
+        final Action action = getAction(type == PERFORM_TYPE.NETWORK ?
+            CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
+            target, profile);
+
+        if (action == null) {
+            return new String[0];
+        } else {
+            return action.getResponse();
+        }
+    }
+
+    /**
+     * Determines if the specified perform is "empty". An empty perform is one
+     * that does not contain any non-empty Strings.
+     *
+     * @param perform The perform to test
+     * @return True if the perform is empty, false otherwise
+     * @since 0.6.4
+     */
+    private static boolean isEmpty(final String[] perform) {
+        for (String part : perform) {
+            if (part != null && !part.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -125,7 +256,9 @@ public class PerformWrapper extends ActionGroup {
      * @param action The action to be tested
      * @return True if the action is per-profile, false otherwise
      * @since 0.6.3
+     * @deprecated Actions shouldn't be used directly
      */
+    @Deprecated
     public boolean isPerProfilePerform(final Action action) {
         return contains(action) && action.getConditions().size() == 2;
     }
@@ -137,7 +270,9 @@ public class PerformWrapper extends ActionGroup {
      * @param action The action whose perform should be retrieved
      * @return The action's targetted profile name
      * @since 0.6.3
+     * @deprecated Actions shouldn't be used directly
      */
+    @Deprecated
     @Precondition("The action is a per-profile perform")
     public String getProfileName(final Action action) {
         Logger.assertTrue(isPerProfilePerform(action));
@@ -157,7 +292,9 @@ public class PerformWrapper extends ActionGroup {
      *
      * @param server The server to look for
      * @return The action that handles the server's perform, or null
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action getActionForServer(final String server) {
         return getActionForServer(server, null);
     }
@@ -171,7 +308,9 @@ public class PerformWrapper extends ActionGroup {
      * @return The action that handles the servers's perform for the specified
      * profile, or null
      * @since 0.6.3
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action getActionForServer(final String server, final String profile) {
         return getAction(CoreActionComponent.SERVER_NAME, server, profile);
     }
@@ -182,7 +321,9 @@ public class PerformWrapper extends ActionGroup {
      *
      * @param network The network to look for
      * @return The action that handles the network's perform, or null
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action getActionForNetwork(final String network) {
         return getActionForNetwork(network, null);
     }
@@ -196,7 +337,9 @@ public class PerformWrapper extends ActionGroup {
      * @return The action that handles the network's perform for the specified
      * profile, or null
      * @since 0.6.3
-     */    
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
+     */
+    @Deprecated
     public Action getActionForNetwork(final String network, final String profile) {
         return getAction(CoreActionComponent.SERVER_NETWORK, network, profile);
     }
@@ -206,7 +349,9 @@ public class PerformWrapper extends ActionGroup {
      * 
      * @param server The server to create the action for
      * @return The new perform wrapper action
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action createActionForServer(final String server) {
         return createActionForServer(server, null);
     }
@@ -219,7 +364,9 @@ public class PerformWrapper extends ActionGroup {
      * @param profile The name of the profile which must be in use
      * @return The new perform wrapper action
      * @since 0.6.3
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action createActionForServer(final String server, final String profile) {
         return createAction(server, "", profile);
     }
@@ -229,7 +376,9 @@ public class PerformWrapper extends ActionGroup {
      * 
      * @param network The network to create the action for
      * @return The new perform wrapper action
-     */    
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
+     */
+    @Deprecated
     public Action createActionForNetwork(final String network) {
         return createActionForNetwork(network, null);
     }
@@ -242,7 +391,9 @@ public class PerformWrapper extends ActionGroup {
      * @param profile The name of the profile which must be in use
      * @return The new perform wrapper action
      * @since 0.6.3
+     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
      */
+    @Deprecated
     public Action createActionForNetwork(final String network, final String profile) {
         return createAction("", network, profile);
     }
