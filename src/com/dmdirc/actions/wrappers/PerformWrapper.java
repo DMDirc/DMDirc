@@ -271,7 +271,7 @@ public class PerformWrapper extends ActionGroup {
             CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
             perform.getTarget(), perform.getProfile());
 
-        if (action == null) {
+        if (action == null || action.getResponse() == null) {
             return new String[0];
         } else {
             return action.getResponse();
