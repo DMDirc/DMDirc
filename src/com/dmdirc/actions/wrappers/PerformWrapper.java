@@ -51,11 +51,119 @@ public class PerformWrapper extends ActionGroup {
      *
      * @since 0.6.4
      */
-    public static enum PERFORM_TYPE {
+    public static enum PerformType {
         /** A perform targetting a server. */
         SERVER,
         /** A perform targetting a network. */
         NETWORK;
+    }
+
+    /**
+     * Describes one specific perform.
+     *
+     * @since 0.6.4
+     */
+    public static class PerformDescription {
+
+        /** The type of the perform being described. */
+        private final PerformType type;
+        /** The target of the perform. */
+        private final String target;
+        /** The profile (if any) of the perform. */
+        private final String profile;
+
+        /**
+         * Creates a new perform description with the specified arguments.
+         *
+         * @param type The type of the perform in question
+         * @param target The target of the perform
+         * @param profile The profile of the perform (or null)
+         */
+        public PerformDescription(final PerformType type, final String target,
+                final String profile) {
+            this.type = type;
+            this.target = target;
+            this.profile = profile;
+
+            if (target == null) {
+                throw new NullPointerException("Target may not be null");
+            }
+        }
+
+        /**
+         * Creates a new perform description with the specified arguments.
+         *
+         * @param type The type of the perform in question
+         * @param target The target of the perform
+         */
+        public PerformDescription(final PerformType type, final String target) {
+            this.type = type;
+            this.target = target;
+            this.profile = null;
+
+            if (target == null) {
+                throw new NullPointerException("Target may not be null");
+            }
+        }
+
+        /**
+         * Retrieves the profile of this perform.
+         *
+         * @return This perform's profile
+         */
+        public String getProfile() {
+            return profile;
+        }
+
+        /**
+         * Retrieves the target of this perform.
+         *
+         * @return This perform's target
+         */
+        public String getTarget() {
+            return target;
+        }
+
+        /**
+         * Retrieves the type of this perform.
+         *
+         * @return This perform's type
+         */
+        public PerformType getType() {
+            return type;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            final PerformDescription other = (PerformDescription) obj;
+
+            if (this.type != other.type || !this.target.equals(other.target)) {
+                return false;
+            }
+
+            if ((this.profile == null) ? (other.profile != null) :
+                !this.profile.equals(other.profile)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 89 * hash + (this.type != null ? this.type.hashCode() : 0);
+            hash = 89 * hash + (this.target != null ? this.target.hashCode() : 0);
+            hash = 89 * hash + (this.profile != null ? this.profile.hashCode() : 0);
+            return hash;
+        }
+
     }
     
     /** A singleton instance of the Perform Wrapper. */
@@ -116,86 +224,52 @@ public class PerformWrapper extends ActionGroup {
     /**
      * Sets the perform for the specified target of the specified type.
      * If the specified perform is empty - that is, any non-null elements are
-     * empty Strings - then the perform is removed. Performs set using this
-     * method will apply to all profiles.
-     *
-     * @param type The type of perform to set (server or network)
-     * @param target The target of the perform
-     * @param perform The perform to be set
-     * @since 0.6.4
-     */
-    public void setPerform(final PERFORM_TYPE type, final String target,
-            final String[] perform) {
-        setPerform(type, target, null, perform);
-    }
-
-    /**
-     * Sets the perform for the specified target of the specified type.
-     * If the specified perform is empty - that is, any non-null elements are
      * empty Strings - then the perform is removed. If a profile is specified,
      * the perform will only be executed for that profile.
      *
-     * @param type The type of perform to set (server or network)
-     * @param target The target of the perform
-     * @param profile The profile for the perform (or null)
      * @param perform The perform to be set
+     * @param content The new content of that perform
      * @since 0.6.4
      */
-    public void setPerform(final PERFORM_TYPE type, final String target,
-            final String profile, final String[] perform) {
+    public void setPerform(final PerformDescription perform, final String[] content) {
         synchronized (this) {
-            Action action = getAction(type == PERFORM_TYPE.NETWORK ?
+            Action action = getAction(perform.getType() == PerformType.NETWORK ?
                 CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
-                target, profile);
+                perform.getTarget(), perform.getProfile());
 
-            final boolean empty = isEmpty(perform);
+            final boolean empty = isEmpty(content);
 
             if (action == null && !empty) {
                 // They want to set a perform but we don't have an action
                 action = createAction(
-                        type == PERFORM_TYPE.SERVER ? target : "",
-                        type == PERFORM_TYPE.NETWORK ? target : "", profile);
-                action.setResponse(perform);
+                        perform.getType() == PerformType.SERVER ? perform.getTarget() : "",
+                        perform.getType() == PerformType.NETWORK ? perform.getTarget() : "",
+                        perform.getProfile());
+                action.setResponse(content);
             } if (action != null) {
                 if (empty) {
                     // They want to clear the perform but we have an action
                     deleteAction(action);
                 } else {
                     // They want to set a perform and we have an action
-                    action.setResponse(perform);
+                    action.setResponse(content);
                 }
             }
         }
     }
 
     /**
-     * Retrieves the (non-profile-specific) perform for the relevant target.
-     * If no such perform exists, a zero-length array is returned.
-     *
-     * @param type The type of perform to get (server or network)
-     * @param target The target of the perform
-     * @return The corresponding perform, or a zero-length array if none set
-     * @since 0.6.4
-     */
-    public String[] getPerform(final PERFORM_TYPE type, final String target) {
-        return getPerform(type, target, null);
-    }
-
-    /**
      * Retrieves the perform for the relevant target. If no such perform exists,
      * a zero-length array is returned.
      *
-     * @param type The type of perform to get (server or network)
-     * @param target The target of the perform
-     * @param profile The profile for the perform (or null)
+     * @param perform The perform to be retrieved
      * @return The corresponding perform, or a zero-length array if none set
      * @since 0.6.4
      */
-    public String[] getPerform(final PERFORM_TYPE type, final String target,
-            final String profile) {
-        final Action action = getAction(type == PERFORM_TYPE.NETWORK ?
+    public String[] getPerform(final PerformDescription perform) {
+        final Action action = getAction(perform.getType() == PerformType.NETWORK ?
             CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
-            target, profile);
+            perform.getTarget(), perform.getProfile());
 
         if (action == null) {
             return new String[0];
