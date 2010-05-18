@@ -246,6 +246,7 @@ public class PerformWrapper extends ActionGroup {
                         perform.getType() == PerformType.NETWORK ? perform.getTarget() : "",
                         perform.getProfile());
                 action.setResponse(content);
+                action.save();
             } if (action != null) {
                 if (empty) {
                     // They want to clear the perform but we have an action
@@ -253,6 +254,7 @@ public class PerformWrapper extends ActionGroup {
                 } else {
                     // They want to set a perform and we have an action
                     action.setResponse(content);
+                    action.save();
                 }
             }
         }
