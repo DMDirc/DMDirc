@@ -234,7 +234,7 @@ public class PerformWrapper extends ActionGroup {
     public void setPerform(final PerformDescription perform, final String[] content) {
         synchronized (this) {
             Action action = getAction(perform.getType() == PerformType.NETWORK ?
-                CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
+                CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
                 perform.getTarget(), perform.getProfile());
 
             final boolean empty = isEmpty(content);
