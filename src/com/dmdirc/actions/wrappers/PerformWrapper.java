@@ -268,7 +268,7 @@ public class PerformWrapper extends ActionGroup {
      */
     public String[] getPerform(final PerformDescription perform) {
         final Action action = getAction(perform.getType() == PerformType.NETWORK ?
-            CoreActionComponent.SERVER_NAME : CoreActionComponent.SERVER_NETWORK,
+            CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
             perform.getTarget(), perform.getProfile());
 
         if (action == null || action.getResponse() == null) {
