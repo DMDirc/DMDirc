@@ -24,6 +24,7 @@ package com.dmdirc.serverlists.io;
 
 import com.dmdirc.config.Identity;
 import com.dmdirc.serverlists.ServerEntry;
+import com.dmdirc.serverlists.ServerGroup;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,12 +54,13 @@ public class ServerEntryReader {
      * Attempts to read the details of the specified server from this reader's
      * identity.
      *
+     * @param group The group that owns this server
      * @param name The name of the server to be read
-     * @return A corresponding ServerGroup
+     * @return A corresponding ServerEntry
      * @throws URISyntaxException If the server doesn't specify a valid URI
      * @throws IllegalArgumentException If the server doesn't define a name or address
      */
-    public ServerEntry read(final String name) throws URISyntaxException,
+    public ServerEntry read(final ServerGroup group, final String name) throws URISyntaxException,
             IllegalArgumentException {
         if (!identity.hasOptionString(name, "name")
                 || !identity.hasOptionString(name, "address")) {
@@ -69,7 +71,7 @@ public class ServerEntryReader {
         final String serverName = identity.getOption(name, "name");
         final URI serverURI = new URI(identity.getOption(name, "address"));
 
-        return new ServerEntry(serverName, serverURI, null);
+        return new ServerEntry(group, serverName, serverURI, null);
     }
 
 }

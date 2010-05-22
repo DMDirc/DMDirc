@@ -41,18 +41,28 @@ public class ServerEntry implements ServerGroupItem {
     private String name;
     /** The name of the profile to use. */
     private String profile;
+    /** The group that owns this entry. */
+    private ServerGroup group;
 
     /**
      * Creates a new server entry.
      *
+     * @param group The group that owns this entry
      * @param name The name of this server
      * @param address The address of this server
      * @param profile The name of the profile to be used by this server
      */
-    public ServerEntry(final String name, final URI address, final String profile) {
+    public ServerEntry(final ServerGroup group, final String name,
+            final URI address, final String profile) {
         this.name = name;
         this.address = address;
         this.profile = profile;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ServerGroup getGroup() {
+        return group;
     }
 
     /** {@inheritDoc} */

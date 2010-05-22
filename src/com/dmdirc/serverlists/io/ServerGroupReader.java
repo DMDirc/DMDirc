@@ -100,7 +100,7 @@ public class ServerGroupReader {
                 }
             } else if (item.endsWith(" server")) {
                 try {
-                    group.addItem(entryReader.read(item));
+                    group.addItem(entryReader.read(group, item));
                 } catch (URISyntaxException ex) {
                     // TODO: Raise an error about malformed server
                 } catch (IllegalArgumentException ex) {
@@ -129,6 +129,15 @@ public class ServerGroupReader {
                 // TODO: Raise an error about illegal URI?
             }
         }
+    }
+
+    /**
+     * Returns a writer which may be used to write updated data.
+     *
+     * @return An appropriately configured {@link ServerGroupWriter}
+     */
+    public ServerGroupWriter getWriter() {
+        return new ServerGroupWriter(identity);
     }
 
 }

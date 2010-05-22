@@ -41,6 +41,9 @@ public class ServerGroup implements ServerGroupItem {
     /** The name of the group. */
     private String name;
 
+    /** The name of the network for the group. */
+    private String network;
+
     /** A description of this group. */
     private String description = "";
 
@@ -61,6 +64,12 @@ public class ServerGroup implements ServerGroupItem {
 
     /** {@inheritDoc} */
     @Override
+    public ServerGroup getGroup() {
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return name;
     }
@@ -72,6 +81,15 @@ public class ServerGroup implements ServerGroupItem {
      */
     public void setName(final String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets the network name of this group.
+     *
+     * @param network The new network name for the group
+     */
+    public void setNetwork(final String network) {
+        this.network = network;
     }
 
     /**
@@ -116,6 +134,16 @@ public class ServerGroup implements ServerGroupItem {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Retrieves the network that this group represents, if any.
+     *
+     * @return This group's network name, or null if the group does not
+     * correspond to a known network.
+     */
+    public String getNetwork() {
+        return network;
     }
 
     /**

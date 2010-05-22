@@ -33,6 +33,14 @@ import java.net.URI;
 public interface ServerGroupItem {
 
     /**
+     * Retrieves a group that is either the same as this item, or contains this
+     * item.
+     *
+     * @return A group containing or equal to this item
+     */
+    ServerGroup getGroup();
+
+    /**
      * Retrieves the name of this item.
      *
      * @return A string containing this item's name

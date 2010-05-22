@@ -22,15 +22,18 @@
 
 package com.dmdirc.serverlists;
 
+import com.dmdirc.Precondition;
 import com.dmdirc.serverlists.io.ServerGroupReader;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.serverlists.io.ServerGroupWriter;
 import com.dmdirc.serverlists.service.ServerListServiceProvider;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Maintains a list of top level {@link ServerGroup}s and handles reading and
@@ -42,7 +45,8 @@ import java.util.List;
 public class ServerList implements IdentityListener {
 
     /** A list of all known groups. */
-    private final List<ServerGroup> groups = new ArrayList<ServerGroup>();
+    private final Map<ServerGroup, ServerGroupWriter> groups
+            = new HashMap<ServerGroup, ServerGroupWriter>();
 
     /**
      * Creates a new ServerList and loads groups and servers.
@@ -61,9 +65,29 @@ public class ServerList implements IdentityListener {
      * Adds a server group to the master server list.
      *
      * @param group The group to be added
+     * @param writer The writer to use to write the group to disk
      */
-    public void addServerGroup(final ServerGroup group) {
-        groups.add(group);
+    public void addServerGroup(final ServerGroup group, final ServerGroupWriter writer) {
+        groups.put(group, writer);
+    }
+
+    /**
+     * Saves all entries in this list.
+     */
+    public void save() {
+        for (Map.Entry<ServerGroup, ServerGroupWriter> pair : groups.entrySet()) {
+            pair.getValue().write(pair.getKey());
+        }
+    }
+
+    /**
+     * Saves the specified group.
+     *
+     * @param group The group to be saved
+     */
+    @Precondition("Specified group is a known top-level group in this list")
+    public void save(final ServerGroup group) {
+        groups.get(group).write(group);
     }
 
     /**
@@ -71,8 +95,8 @@ public class ServerList implements IdentityListener {
      *
      * @return An immutable list of server groups.
      */
-    public List<ServerGroup> getServerGroups() {
-        return Collections.unmodifiableList(groups);
+    public Collection<ServerGroup> getServerGroups() {
+        return Collections.unmodifiableCollection(groups.keySet());
     }
 
     /**
@@ -95,7 +119,8 @@ public class ServerList implements IdentityListener {
     /** {@inheritDoc} */
     @Override
     public void identityAdded(final Identity identity) {
-        addServerGroup(new ServerGroupReader(identity).read());
+        final ServerGroupReader reader = new ServerGroupReader(identity);
+        addServerGroup(reader.read(), reader.getWriter());
     }
 
     /** {@inheritDoc} */
