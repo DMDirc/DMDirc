@@ -501,7 +501,8 @@ public class PerformWrapper extends ActionGroup {
                     CoreActionComparison.STRING_EQUALS, profile));
         }
         
-        return new Action(getName(), server + network,
+        return new Action(getName(), server + network
+                + (profile == null ? "" : " - " + profile),
                 new ActionType[]{CoreActionType.SERVER_CONNECTED},
                 new String[0], conditions, null);
     }
