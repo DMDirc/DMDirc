@@ -29,10 +29,10 @@ import com.dmdirc.plugins.ExportedService;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
-
 import com.dmdirc.serverlists.ServerGroup;
 import com.dmdirc.serverlists.ServerGroupItem;
 import com.dmdirc.serverlists.ServerList;
+
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;

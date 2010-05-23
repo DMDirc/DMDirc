@@ -38,6 +38,9 @@ import java.util.Map;
  */
 public class ServerGroup implements ServerGroupItem {
 
+    /** Whether or not this group has been modified. */
+    private boolean isModified;
+
     /** The name of the group. */
     private String name;
 
@@ -64,6 +67,18 @@ public class ServerGroup implements ServerGroupItem {
 
     /** {@inheritDoc} */
     @Override
+    public boolean isModified() {
+        return isModified;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModified(final boolean isModified) {
+        this.isModified = isModified;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public ServerGroup getGroup() {
         return this;
     }
@@ -80,6 +95,7 @@ public class ServerGroup implements ServerGroupItem {
      * @param name The new name for the group
      */
     public void setName(final String name) {
+        setModified(true);
         this.name = name;
     }
 
@@ -89,6 +105,7 @@ public class ServerGroup implements ServerGroupItem {
      * @param network The new network name for the group
      */
     public void setNetwork(final String network) {
+        setModified(true);
         this.network = network;
     }
 
@@ -98,6 +115,8 @@ public class ServerGroup implements ServerGroupItem {
      * @param item The item to be added
      */
     public void addItem(final ServerGroupItem item) {
+        setModified(true);
+        item.setModified(true);
         entries.add(item);
     }
 
@@ -152,6 +171,7 @@ public class ServerGroup implements ServerGroupItem {
      * @param description The new description for this group.
      */
     public void setDescription(final String description) {
+        setModified(true);
         this.description = description;
     }
 
@@ -174,6 +194,7 @@ public class ServerGroup implements ServerGroupItem {
      * @param address The address of the link
      */
     public void addLink(final String title, final URI address) {
+        setModified(true);
         links.put(title, address);
     }
 

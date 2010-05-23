@@ -700,7 +700,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
     }
 
     /**
-     * Generates an empty profile witht he specified name. Note the name is used
+     * Generates an empty profile with the specified name. Note the name is used
      * as a file name, so should be sanitised.
      *
      * @param name The name of the profile to create
@@ -719,6 +719,32 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         settings.get(DOMAIN).put("name", name);
         settings.get(PROFILE_DOMAIN).put("nicknames", nick);
         settings.get(PROFILE_DOMAIN).put("realname", nick);
+
+        try {
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            return null;
+        }
+    }
+
+    /**
+     * Generates a custom identity with the specified name and type. Note the
+     * name is used as a file name, so should be sanitised.
+     *
+     * @param type The type of the identity to create
+     * @param name The name of the identity to create
+     * @return A new custom identity with the specified name
+     * @throws IOException If the file can't be written
+     */
+    public static Identity buildIdentity(final String name, final String type)
+            throws IOException {
+        final Map<String, Map<String, String>> settings
+                = new HashMap<String, Map<String, String>>();
+        settings.put(DOMAIN, new HashMap<String, String>(2));
+
+        settings.get(DOMAIN).put("name", name);
+        settings.get(DOMAIN).put("type", type);
 
         try {
             return createIdentity(settings);

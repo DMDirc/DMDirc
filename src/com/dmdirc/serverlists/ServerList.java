@@ -29,6 +29,7 @@ import com.dmdirc.config.IdentityListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.serverlists.io.ServerGroupWriter;
 import com.dmdirc.serverlists.service.ServerListServiceProvider;
+import java.io.IOException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -72,11 +73,27 @@ public class ServerList implements IdentityListener {
     }
 
     /**
+     * Adds a server group to the master server list, and creates a new
+     * writer which will write the group to an identity.
+     *
+     * @param group The group to be added
+     * @throws IOException if the new identity cannot be written
+     */
+    public void addServerGroup(final ServerGroup group) throws IOException {
+        final ServerGroupWriter writer = new ServerGroupWriter(
+                Identity.buildIdentity(group.getName(), "servergroup"));
+        group.setModified(true);
+        addServerGroup(group, writer);
+    }
+
+    /**
      * Saves all entries in this list.
      */
     public void save() {
         for (Map.Entry<ServerGroup, ServerGroupWriter> pair : groups.entrySet()) {
-            pair.getValue().write(pair.getKey());
+            if (pair.getKey().isModified()) {
+                pair.getValue().write(pair.getKey());
+            }
         }
     }
 

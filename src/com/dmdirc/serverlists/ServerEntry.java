@@ -25,6 +25,7 @@ package com.dmdirc.serverlists;
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+
 import java.net.URI;
 
 /**
@@ -35,6 +36,8 @@ import java.net.URI;
  */
 public class ServerEntry implements ServerGroupItem {
 
+    /** Whether or not this entry has been modified. */
+    private boolean isModified;
     /** The address of the server in question. */
     private URI address;
     /** The user-friendly name of the server. */
@@ -57,6 +60,18 @@ public class ServerEntry implements ServerGroupItem {
         this.name = name;
         this.address = address;
         this.profile = profile;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isModified() {
+        return isModified;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setModified(final boolean isModified) {
+        this.isModified = isModified;
     }
 
     /** {@inheritDoc} */
@@ -89,6 +104,36 @@ public class ServerEntry implements ServerGroupItem {
      */
     public String getProfile() {
         return profile;
+    }
+
+    /**
+     * Sets the address for this server entry.
+     *
+     * @param address The new address for this entry
+     */
+    public void setAddress(final URI address) {
+        setModified(true);
+        this.address = address;
+    }
+
+    /**
+     * Sets the name for this server entry.
+     *
+     * @param name The new name for this entry
+     */
+    public void setName(final String name) {
+        setModified(true);
+        this.name = name;
+    }
+
+    /**
+     * Sets the profile to be used for this server entry.
+     *
+     * @param profile The new profile for this entry
+     */
+    public void setProfile(final String profile) {
+        setModified(true);
+        this.profile = profile;
     }
 
     /** {@inheritDoc} */

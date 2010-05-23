@@ -85,11 +85,6 @@ public class ServerGroupWriter {
     protected void writeGroup(final ServerGroup group, final Set<String> sections) {
         final String domain = group.getName() + " servergroup";
 
-        if (!group.getLinks().isEmpty()) {
-            writeLinks(group.getName(), group.getLinks());
-            sections.remove(group + " links");
-        }
-
         final List<String> children = new ArrayList<String>();
         
         for (ServerGroupItem item : group.getItems()) {
@@ -101,6 +96,19 @@ public class ServerGroupWriter {
                 children.add(item.getName() + " server");
             }
         }
+        
+        final boolean needsUpdating = group.isModified();
+        sections.remove(domain);
+        group.setModified(false);
+        
+        if (!needsUpdating) {
+            return;
+        }
+
+        if (!group.getLinks().isEmpty()) {
+            writeLinks(group.getName(), group.getLinks());
+            sections.remove(group + " links");
+        }
 
         if (group.getNetwork() == null) {
             identity.unsetOption(domain, "network");
@@ -111,8 +119,6 @@ public class ServerGroupWriter {
         identity.setOption(domain, "description", group.getDescription());
         identity.setOption(domain, "contents", children);
         identity.setOption(domain, "name", group.getName());
-
-        sections.remove(domain);
     }
 
     /**
@@ -146,11 +152,17 @@ public class ServerGroupWriter {
      */
     protected void writeEntry(final ServerEntry entry, final Set<String> sections) {
         final String domain = entry.getName() + " server";
+        final boolean needsUpdating = entry.isModified();
+
+        sections.remove(domain);
+        entry.setModified(false);
+
+        if (!needsUpdating) {
+            return;
+        }
 
         identity.setOption(domain, "name", entry.getName());
         identity.setOption(domain, "address", entry.getAddress().toString());
-        
-        sections.remove(domain);
     }
 
 }

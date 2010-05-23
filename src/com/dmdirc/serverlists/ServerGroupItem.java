@@ -60,4 +60,20 @@ public interface ServerGroupItem {
      */
     URI getAddress();
 
+    /**
+     * Determines whether this item has been modified since the last time
+     * {@link #setModified(boolean)} was called with a <code>false</code>
+     * argument (or since this item was created).
+     *
+     * @return True if the item has been modified, false otherwise
+     */
+    boolean isModified();
+
+    /**
+     * Sets the modified status of this item.
+     *
+     * @param isModified The new status of the 'modified' property of this item
+     */
+    void setModified(final boolean isModified);
+
 }
