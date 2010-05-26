@@ -24,10 +24,10 @@ package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -100,9 +100,7 @@ public final class Alias implements Serializable {
         if (!this.command.equals(command)) {
             this.command = command;
             
-            ActionCondition argument;
-            
-            argument = arguments.get(0);
+            ActionCondition argument = arguments.get(0);
             
             if (argument.getComparison() != CoreActionComparison.STRING_EQUALS) {
                 argument = arguments.get(1);
@@ -151,9 +149,7 @@ public final class Alias implements Serializable {
      * @return Number of arguments ActionCondition or null
      */
     public ActionCondition getArgsArgument() {
-        ActionCondition argument;
-        
-        argument = arguments.get(0);
+        ActionCondition argument = arguments.get(0);
         
         if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
             if (arguments.size() > 1) {

@@ -45,7 +45,7 @@ public interface ActionComponent {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface ComponentOptions {
+    @interface ComponentOptions {
 
         /** Whether or not the component requires a connected server. */
         boolean requireConnected() default false;

@@ -22,8 +22,8 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
@@ -66,11 +66,11 @@ public class ActionSubstitutor {
             + "[a-z0-9A-Z_\\.]+" // Config/server subs
             + "))");
     /** Pattern to determine if a substitution is a word number type. */
-    private final static Pattern NUMBER_PATTERN = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
     /** Pattern to determine if a substitution is an argument+component type. */
-    private final static Pattern COMP_PATTERN = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
+    private static final Pattern COMP_PATTERN = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
     /** Pattern to determine if a substitution is a server component type. */
-    private final static Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
+    private static final Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
     
     /** The action type this substitutor is for. */
     private final ActionType type;

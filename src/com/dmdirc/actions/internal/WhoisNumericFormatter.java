@@ -128,6 +128,7 @@ public class WhoisNumericFormatter implements ActionListener {
                         format.replace(0, format.length(), target);
                     }
                 }
+                break;
         }
     }
 

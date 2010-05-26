@@ -22,11 +22,11 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -56,10 +56,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getAddress(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "name"; }
@@ -73,10 +73,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "network"; }
@@ -93,10 +93,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getProtocol(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "protocol"; }
@@ -109,10 +109,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getAwayMessage(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "away reason"; }
@@ -126,10 +126,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "list of channel usermodes"; }
@@ -157,10 +157,10 @@ public enum CoreActionComponent implements ActionComponent {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "nickname"; }
@@ -173,10 +173,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Server) argument).getProfile(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Identity.class; }
+        public Class<?> getType() { return Identity.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "profile"; }
@@ -189,10 +189,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Channel.class; }
+        public Class<?> appliesTo() { return Channel.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "name"; }
@@ -205,10 +205,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Channel.class; }
+        public Class<?> appliesTo() { return Channel.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Color.class; }
+        public Class<?> getType() { return Color.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
@@ -221,10 +221,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((ClientInfo) argument).getNickname(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ClientInfo.class; }
+        public Class<?> appliesTo() { return ClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "nickname"; }
@@ -237,10 +237,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((ClientInfo) argument).getHostname(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ClientInfo.class; }
+        public Class<?> appliesTo() { return ClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "host"; }
@@ -253,10 +253,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getNickname(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class<?> appliesTo() { return ChannelClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "nickname"; }
@@ -269,10 +269,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getAllModes(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class<?> appliesTo() { return ChannelClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "modes"; }
@@ -285,10 +285,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHostname(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class<?> appliesTo() { return ChannelClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "host"; }
@@ -301,10 +301,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().getChannelCount()); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class<?> appliesTo() { return ChannelClientInfo.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Integer.class; }
+        public Class<?> getType() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "number of common channels"; }
@@ -317,10 +317,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return argument; }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "content"; }
@@ -333,10 +333,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return Styliser.stipControlCodes((String) argument); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "content (without formatting)"; }
@@ -349,10 +349,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((String) argument).length(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Integer.class; }
+        public Class<?> getType() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "length"; }
@@ -365,10 +365,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String[].class; }
+        public Class<?> appliesTo() { return String[].class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Integer.class; }
+        public Class<?> getType() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "size"; }
@@ -381,10 +381,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Calendar.class; }
+        public Class<?> appliesTo() { return Calendar.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "full date"; }
@@ -397,10 +397,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return KeyEvent.getKeyText(((KeyStroke) argument).getKeyCode()); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return KeyStroke.class; }
+        public Class<?> appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "key name"; }
@@ -415,10 +415,10 @@ public enum CoreActionComponent implements ActionComponent {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return KeyStroke.class; }
+        public Class<?> appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Boolean.class; }
+        public Class<?> getType() { return Boolean.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "control key state"; }
@@ -433,10 +433,10 @@ public enum CoreActionComponent implements ActionComponent {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return KeyStroke.class; }
+        public Class<?> appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Boolean.class; }
+        public Class<?> getType() { return Boolean.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "shift key state"; }
@@ -451,10 +451,10 @@ public enum CoreActionComponent implements ActionComponent {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return KeyStroke.class; }
+        public Class<?> appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Boolean.class; }
+        public Class<?> getType() { return Boolean.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "alt key state"; }
@@ -467,10 +467,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Query) argument).getHost(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Query.class; }
+        public Class<?> appliesTo() { return Query.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "host"; }
@@ -483,10 +483,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Query) argument).toString(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Query.class; }
+        public Class<?> appliesTo() { return Query.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "nick"; }
@@ -499,10 +499,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Query) argument).getNotification(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Query.class; }
+        public Class<?> appliesTo() { return Query.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Color.class; }
+        public Class<?> getType() { return Color.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
@@ -515,10 +515,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((FrameContainer) argument).toString(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return FrameContainer.class; }
+        public Class<?> appliesTo() { return FrameContainer.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "name"; }
@@ -531,10 +531,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((FrameContainer) argument).getNotification(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return FrameContainer.class; }
+        public Class<?> appliesTo() { return FrameContainer.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Color.class; }
+        public Class<?> getType() { return Color.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
@@ -552,10 +552,10 @@ public enum CoreActionComponent implements ActionComponent {
                 .getContainer().getServer(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Window.class; }
+        public Class<?> appliesTo() { return Window.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Server.class; }
+        public Class<?> getType() { return Server.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "server"; }
@@ -568,10 +568,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Identity) argument).getName(); }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Identity.class; }
+        public Class<?> appliesTo() { return Identity.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return String.class; }
+        public Class<?> getType() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "name"; }
@@ -584,10 +584,10 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return (Integer) argument; }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Integer.class; }
+        public Class<?> appliesTo() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
-        public Class getType() { return Integer.class; }
+        public Class<?> getType() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "value"; }

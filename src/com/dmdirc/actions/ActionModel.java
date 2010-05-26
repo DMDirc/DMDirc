@@ -23,10 +23,10 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.ui.WindowManager;

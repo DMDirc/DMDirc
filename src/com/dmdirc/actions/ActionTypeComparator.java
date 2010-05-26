@@ -40,13 +40,6 @@ public final class ActionTypeComparator implements Comparator<ActionType>, Seria
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;        
-    
-    /**
-     * Creates a new instance of ActionTypeComparator.
-     */
-    public ActionTypeComparator() {
-        // Do nothing
-    }
 
     /** {@inheritDoc} */
     @Override

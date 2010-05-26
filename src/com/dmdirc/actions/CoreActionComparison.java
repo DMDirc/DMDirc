@@ -48,7 +48,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "matches regex"; }
@@ -63,7 +63,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "equals"; }
@@ -78,7 +78,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "does not equal"; }
@@ -93,7 +93,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "starts with"; }
@@ -108,7 +108,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "contains"; }
@@ -123,7 +123,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return String.class; }
+        public Class<?> appliesTo() { return String.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "doesn't contain"; }
@@ -138,7 +138,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Boolean.class; }
+        public Class<?> appliesTo() { return Boolean.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "is"; }
@@ -153,7 +153,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Color.class; }
+        public Class<?> appliesTo() { return Color.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "equals"; }
@@ -168,7 +168,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Color.class; }
+        public Class<?> appliesTo() { return Color.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "does not equal"; }
@@ -187,7 +187,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Integer.class; }
+        public Class<?> appliesTo() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "equals"; }
@@ -206,7 +206,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Integer.class; }
+        public Class<?> appliesTo() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "is greater than"; }
@@ -225,7 +225,7 @@ public enum CoreActionComparison implements ActionComparison {
         }
         /** {@inheritDoc} */
         @Override
-        public Class appliesTo() { return Integer.class; }
+        public Class<?> appliesTo() { return Integer.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "is less than"; }
