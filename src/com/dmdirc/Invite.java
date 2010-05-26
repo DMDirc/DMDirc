@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.common.ChannelJoinRequest;
 import java.util.Date;
 
 /**

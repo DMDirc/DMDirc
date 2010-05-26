@@ -71,7 +71,7 @@ public abstract class CommandParser implements Serializable {
     private final RollingList<PreviousCommand> history;
 
     /** Creates a new instance of CommandParser. */
-    public CommandParser() {
+    protected CommandParser() {
         commands = new Hashtable<String, CommandInfoPair>();
         history = new RollingList<PreviousCommand>(
                 IdentityManager.getGlobalConfig().getOptionInt("general",

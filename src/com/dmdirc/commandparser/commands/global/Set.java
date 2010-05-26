@@ -94,6 +94,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
                 doSetOption(origin, args.isSilent(), identity, args.getArguments()[i],
                         args.getArguments()[1 + i], args.getArgumentsAsString(2 + i));
             }
+            break;
         }
     }
 

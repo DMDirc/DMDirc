@@ -105,7 +105,7 @@ public final class AliasCommand extends Command implements
      * @param name The name of the alias to remove
      * @return True if the alias was deleted, false otherwise
      */
-    private boolean doRemove(final String name) {
+    private static boolean doRemove(final String name) {
         for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
                     name)) {

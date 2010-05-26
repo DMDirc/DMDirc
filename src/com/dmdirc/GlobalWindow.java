@@ -125,6 +125,10 @@ public class GlobalWindow extends WritableFrameContainer<InputWindow> {
         updateWindowState();
     }
 
+    /**
+     * Updates the state of the global window in line with the
+     * general.showglobalwindow config setting.
+     */
     protected static void updateWindowState() {
         synchronized (GlobalWindow.class) {
             if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {

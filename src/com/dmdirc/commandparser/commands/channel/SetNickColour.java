@@ -56,7 +56,6 @@ public final class SetNickColour extends Command implements IntelligentCommand,
     }
     
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {

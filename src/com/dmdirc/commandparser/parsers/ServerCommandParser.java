@@ -52,13 +52,6 @@ public class ServerCommandParser extends GlobalCommandParser {
      */
     private Server server;
     
-    /**
-     * Creates a new instance of ServerCommandParser.
-     */
-    public ServerCommandParser() {
-        super();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {

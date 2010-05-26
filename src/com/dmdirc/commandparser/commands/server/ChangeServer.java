@@ -60,7 +60,6 @@ public final class ChangeServer extends Command implements CommandInfo {
         URI address = null;
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "server", "<host[:[+]port]> [password]");
-            address = null;
             return;
         } else if (args.getArguments().length == 1
                 && args.getArgumentsAsString().contains("://")) {

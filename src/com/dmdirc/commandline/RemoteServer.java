@@ -48,13 +48,6 @@ public class RemoteServer implements RemoteInterface {
     /** The interface we're exposing. */
     private static final RemoteServer SERVER = new RemoteServer();
     
-    /**
-     * Creates a new instance of RemoteServer.
-     */
-    public RemoteServer() {
-        super();
-    }
-    
     /** {@inheritDoc} */
     @Override
     public void connect(final List<URI> addresses) throws RemoteException {

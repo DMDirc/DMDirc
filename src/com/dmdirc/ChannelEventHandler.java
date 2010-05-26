@@ -25,12 +25,13 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.common.AwayState;
+import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.callbacks.*;
+
 import java.util.Date;
 
 /**
@@ -38,7 +39,7 @@ import java.util.Date;
  *
  * @author chris
  */
-public final class ChannelEventHandler extends EventHandler implements
+public class ChannelEventHandler extends EventHandler implements
         ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
         ChannelJoinListener, ChannelPartListener, ChannelKickListener,
         ChannelQuitListener, ChannelActionListener, ChannelNickChangeListener,

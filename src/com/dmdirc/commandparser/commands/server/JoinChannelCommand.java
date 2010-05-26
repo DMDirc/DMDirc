@@ -50,7 +50,7 @@ import java.util.List;
  * @since 0.6.3m1
  * @author chris
  */
-public final class JoinChannelCommand extends Command implements
+public class JoinChannelCommand extends Command implements
         ActionListener, IntelligentCommand, CommandInfo {
 
     /** A map of channel name mentions. */
@@ -146,7 +146,7 @@ public final class JoinChannelCommand extends Command implements
         final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
 
         final String prefix;
-        int index;
+        final int index;
         if ((index = context.getPartial().lastIndexOf(',')) > -1) {
             // If they are tab completing something containing a comma, we
             // add our results after the comma instead of returning them as-is.

@@ -88,8 +88,8 @@ public abstract class Command {
         for (int i = 0; i < headers.length; i++) {
             maxsizes[i] = headers[i].length() + 3;
             
-            for (int j = 0; j < data.length; j++) {
-                maxsizes[i] = Math.max(maxsizes[i], data[j][i].length() + 3);
+            for (String[] row : data) {
+                maxsizes[i] = Math.max(maxsizes[i], row[i].length() + 3);
             }
             
             doPadding(res, headers[i], maxsizes[i]);

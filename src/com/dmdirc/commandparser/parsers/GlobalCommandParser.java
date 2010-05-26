@@ -51,13 +51,6 @@ public class GlobalCommandParser extends CommandParser {
      */
     private static GlobalCommandParser me;
     
-    /**
-     * Creates a new instance of the GlobalCommandParser.
-     */
-    public GlobalCommandParser() {
-        super();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {

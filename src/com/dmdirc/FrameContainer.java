@@ -55,10 +55,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class FrameContainer<T extends Window> {
 
-    /** Logger to use. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(FrameContainer.class.getName());
-
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
 
@@ -113,7 +109,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param config The config manager for this container
      * @since 0.6.4
      */
-    public FrameContainer(final String icon, final String name,
+    protected FrameContainer(final String icon, final String name,
             final String title, final Class<T> windowClass, final ConfigManager config) {
         this.config = config;
         this.name = name;

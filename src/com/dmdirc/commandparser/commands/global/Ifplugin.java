@@ -29,9 +29,9 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -116,7 +116,7 @@ public final class Ifplugin extends Command implements IntelligentCommand,
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        AdditionalTabTargets res;
+        final AdditionalTabTargets res;
         
         if (arg == 0) {
             res = new AdditionalTabTargets().excludeAll();

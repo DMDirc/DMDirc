@@ -73,7 +73,7 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
             showUsage(origin, args.isSilent(), "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
-            FrameContainer<?> window;
+            final FrameContainer<?> window;
             
             if (parent == null) {
                 window = WindowManager.findCustomWindow(args.getArguments()[start]);

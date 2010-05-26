@@ -52,7 +52,7 @@ public final class Reconnect extends Command implements CommandInfo {
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
-        String line;
+        final String line;
         
         if (args.getArguments().length == 0) {
             line = origin.getConfigManager().getOption("general", "reconnectmessage");

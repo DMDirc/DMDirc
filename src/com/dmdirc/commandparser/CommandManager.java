@@ -32,8 +32,8 @@ import com.dmdirc.commandparser.commands.global.*;
 //import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.MapList;
@@ -151,11 +151,12 @@ public final class CommandManager {
     }
     
     /**
-     * Registers the specified command with all of the specified parsers.
+     * Registers or unregisters the specified command with all of the specified parsers.
      *
      * @param info The command information object
-     * @param command The command to be reigstered
-     * @param parsers The parsers to register the command with
+     * @param command The command to be registered
+     * @param myParsers The parsers to register the command with
+     * @param register Whether to register or unregister the commands
      * @since 0.6.3m1
      */
     private static void registerCommand(final CommandInfo info, final Command command,

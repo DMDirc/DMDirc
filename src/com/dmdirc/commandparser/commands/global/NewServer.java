@@ -69,7 +69,6 @@ public final class NewServer extends Command implements IntelligentCommand,
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "newserver",
                     "<host[:[+]port]> [password]");
-            address = null;
             return;
         } else if (args.getArguments().length == 1
                 && args.getArgumentsAsString().contains("://")) {

@@ -39,14 +39,14 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
+import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
-import com.dmdirc.parser.common.MyInfo;
-import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -102,9 +102,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     private final Map<String, Query> queries = new HashMap<String, Query>();
 
     /** The Parser instance handling this server. */
-    private transient Parser parser;
+    private Parser parser;
     /** The Parser instance that used to be handling this server. */
-    private transient Parser oldParser;
+    private Parser oldParser;
     /** The parser-supplied protocol description object. */
     private ProtocolDescription protocolDescription;
 
@@ -120,7 +120,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
 
     /** The Parser Thread. */
-    private transient Thread parserThread;
+    private Thread parserThread;
 
     /** The raw frame used for this server instance. */
     private Raw raw;
@@ -129,7 +129,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     private URI address;
 
     /** The profile we're using. */
-    private transient Identity profile;
+    private Identity profile;
 
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
@@ -1402,7 +1402,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTED) {
-                // This has been triggered via .disconect()
+                // This has been triggered via .disconnect()
                 return;
             }
 
@@ -1572,7 +1572,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
-     * Checks that we have the neccessary mode aliases for this server.
+     * Checks that we have the necessary mode aliases for this server.
      */
     private void checkModeAliases() {
         // Check we have mode aliases

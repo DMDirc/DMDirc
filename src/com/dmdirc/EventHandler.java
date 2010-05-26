@@ -24,9 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 /**
@@ -40,7 +40,6 @@ public abstract class EventHandler implements CallbackInterface {
      * Registers all callbacks that this event handler implements with the
      * owner's parser.
      */
-    @SuppressWarnings("unchecked")
     public void registerCallbacks() {
         final CallbackManager<?> cbm = getServer().getParser().getCallbackManager();
         
@@ -73,7 +72,6 @@ public abstract class EventHandler implements CallbackInterface {
      * @param type The type of the callback to be added
      * @throws CallbackNotFoundException if the specified callback isn't found
      */
-    @SuppressWarnings("unchecked")
     protected abstract <T extends CallbackInterface> void addCallback(
             final CallbackManager<?> cbm, final Class<T> type) throws CallbackNotFoundException;
     

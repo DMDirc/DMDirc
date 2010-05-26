@@ -41,13 +41,6 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
     private static final long serialVersionUID = 1;
 
     /**
-     * Creates a new instance of FrameContainerComparator.
-     */
-    public FrameContainerComparator() {
-        super();
-    }
-
-    /**
      * Compares two frame containers names.
      *
      * @param item1 The first container to compare
@@ -91,7 +84,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be before the old container
      */
-    private boolean sortBefore(final FrameContainer<?> item1,
+    private static boolean sortBefore(final FrameContainer<?> item1,
             final FrameContainer<?> item2) {
 
         return getPosition(item1) < getPosition(item2);
@@ -104,7 +97,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be after the old container
      */
-    private boolean sortAfter(final FrameContainer<?> item1,
+    private static boolean sortAfter(final FrameContainer<?> item1,
             final FrameContainer<?> item2) {
         return getPosition(item1) > getPosition(item2);
     }
@@ -116,7 +109,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item The frame container to be tested
      * @return Position of the frame container
      */
-    private int getPosition(final FrameContainer<?> item) {
+    private static int getPosition(final FrameContainer<?> item) {
         if (item instanceof GlobalWindow) {
             return 0;
         } else if (item instanceof Server) {

@@ -35,8 +35,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
-import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.Version;
@@ -59,7 +59,7 @@ import java.util.logging.Level;
  *
  * @author chris
  */
-public final class Main {
+public class Main {
 
     /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;

@@ -128,9 +128,9 @@ public class CommandLineParser {
     private boolean checkArgument(final char argument) {
         boolean needsArg = false;
         
-        for (int i = 0; i < ARGUMENTS.length; i++) {
-            if (argument == ARGUMENTS[i][0]) {
-                needsArg = (Boolean) ARGUMENTS[i][3];
+        for (Object[] target : ARGUMENTS) {
+            if ((Character) argument == target[0]) {
+                needsArg = (Boolean) target[3];
                 break;
             }
         }
@@ -151,9 +151,9 @@ public class CommandLineParser {
      * @return The short form of the corresponding argument
      */
     private char processLongArg(final String arg) {
-        for (int i = 0; i < ARGUMENTS.length; i++) {
-            if (arg.equalsIgnoreCase((String) ARGUMENTS[i][1])) {
-                return (Character) ARGUMENTS[i][0];
+        for (Object[] target : ARGUMENTS) {
+            if (arg.equalsIgnoreCase((String) target[1])) {
+                return (Character) target[0];
             }
         }
         
@@ -170,9 +170,9 @@ public class CommandLineParser {
      * @return The short form of the corresponding argument
      */
     private char processShortArg(final String arg) {
-        for (int i = 0; i < ARGUMENTS.length; i++) {
-            if (arg.equals(String.valueOf(ARGUMENTS[i][0]))) {
-                return (Character) ARGUMENTS[i][0];
+        for (Object[] target : ARGUMENTS) {
+            if (arg.equals(String.valueOf(target[0]))) {
+                return (Character) target[0];
             }
         }
         
@@ -183,7 +183,7 @@ public class CommandLineParser {
     }
     
     /**
-     * Processes the sepcified command-line argument.
+     * Processes the specified command-line argument.
      *
      * @param arg The short form of the argument used
      * @param param The (optional) string parameter for the option
@@ -232,7 +232,7 @@ public class CommandLineParser {
      *
      * @param message The message about the unknown argument to be displayed
      */
-    private void doUnknownArg(final String message) {
+    private static void doUnknownArg(final String message) {
         System.out.println(message);
         System.out.println();
         doHelp();
@@ -241,7 +241,7 @@ public class CommandLineParser {
     /**
      * Exits DMDirc.
      */
-    private void exit() {
+    private static void exit() {
         System.exit(0);
     }
     
@@ -275,7 +275,7 @@ public class CommandLineParser {
     /**
      * Handles the --check argument.
      */
-    private void doExistingCheck() {
+    private static void doExistingCheck() {
         if (RemoteServer.getServer() == null) {
             System.out.println("Existing instance not found.");
             System.exit(1);
@@ -290,7 +290,7 @@ public class CommandLineParser {
      *
      * @param dir The new config directory
      */
-    private void doDirectory(final String dir) {
+    private static void doDirectory(final String dir) {
         if (dir.endsWith(File.separator)) {
             Main.setConfigDir(dir);
         } else {
@@ -301,7 +301,7 @@ public class CommandLineParser {
     /**
      * Prints out the client version and exits.
      */
-    private void doVersion() {
+    private static void doVersion() {
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
         System.out.println("        Version: "
@@ -314,7 +314,7 @@ public class CommandLineParser {
     /**
      * Prints out client help and exits.
      */
-    private void doHelp() {
+    private static void doHelp() {
         System.out.println("Usage: java -jar DMDirc.jar [options]");
         System.out.println();
         System.out.println("Valid options:");

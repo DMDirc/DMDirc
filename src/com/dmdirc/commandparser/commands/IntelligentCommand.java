@@ -39,7 +39,7 @@ public interface IntelligentCommand {
      *
      * @since 0.6.4
      */
-    public static class IntelligentCommandContext {
+    class IntelligentCommandContext {
 
         /** The window the command is being entered in. */
         private final InputWindow window;

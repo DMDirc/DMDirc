@@ -58,7 +58,7 @@ import java.util.Map;
 public class Channel extends MessageTarget<ChannelWindow> implements ConfigChangeListener {
 
     /** The parser's pChannel class. */
-    private transient ChannelInfo channelInfo;
+    private ChannelInfo channelInfo;
 
     /** The server this channel is on. */
     private Server server;
@@ -151,7 +151,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         }
 
         final ClientInfo me = server.getParser().getLocalClient();
-        final String[] details = getDetails(channelInfo.getChannelClient(me), showColours);
+        final String[] details = getDetails(channelInfo.getChannelClient(me));
 
         for (String part : splitLine(getTranscoder().encode(line))) {
             if (!part.isEmpty()) {
@@ -186,7 +186,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         }
 
         final ClientInfo me = server.getParser().getLocalClient();
-        final String[] details = getDetails(channelInfo.getChannelClient(me), showColours);
+        final String[] details = getDetails(channelInfo.getChannelClient(me));
 
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
@@ -275,7 +275,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         String temp = Styliser.stipControlCodes(channelInfo.getName());
 
         if (!channelInfo.getTopic().isEmpty()) {
-            temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
+            temp += " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
 
         setTitle(temp);
@@ -480,11 +480,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * client.
      *
      * @param client The channel client to check
-     * @param showColours Whether or not to show colours
      * @return A string[] containing displayable components
      */
-    private String[] getDetails(final ChannelClientInfo client,
-            final boolean showColours) {
+    private String[] getDetails(final ChannelClientInfo client) {
         if (client == null) {
             // WTF?
             throw new UnsupportedOperationException("getDetails called with"
@@ -500,10 +498,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         if (showColours) {
             final Map<?,?> map = client.getMap();
             String prefix = null;
-            Color colour;
 
             if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
-                colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
+                Color colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
                 prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
                 if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
                     colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
@@ -535,7 +532,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             // Format ChannelClientInfos
 
             final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
-            args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
+            args.addAll(Arrays.asList(getDetails(clientInfo)));
 
             return true;
         } else if (arg instanceof Topic) {

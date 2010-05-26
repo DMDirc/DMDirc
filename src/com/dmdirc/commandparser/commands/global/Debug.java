@@ -47,9 +47,9 @@ import com.dmdirc.updater.UpdateChecker;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 /**
  * Provides various handy ways to test or debug the client.
@@ -116,7 +116,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
      *
      * @param args The arguments that were passed to the command
      */
-    private void doError(final String ... args) {
+    private static void doError(final String ... args) {
         ErrorLevel el = ErrorLevel.HIGH;
         if (args.length > 2) {
             final String level = args[2];
@@ -258,7 +258,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
      *
      * @return Sorted set of config options and usages
      */
-    private SortedSet<Entry<String, Integer>> getSortedStats() {
+    private static SortedSet<Entry<String, Integer>> getSortedStats() {
         final SortedSet<Entry<String, Integer>> sortedStats =
                 new TreeSet<Entry<String, Integer>>(new ValueComparator());
         sortedStats.addAll(ConfigManager.getStats().entrySet());
@@ -414,7 +414,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
      * 
      * @param origin The window this command was executed in
      */
-    private void doBenchmark(final FrameContainer<?> origin) {
+    private static void doBenchmark(final FrameContainer<?> origin) {
         long[] results = new long[10];
         
         for (int i = 0; i < results.length; i++) {
@@ -533,11 +533,6 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
          * serialized objects being unserialized with the new class).
          */
         private static final long serialVersionUID = 1;
-        
-        /** Instantiates a new ValueComparator. */
-        public ValueComparator() {
-            super();
-        }
         
         /** {@inheritDoc} */
         @Override
