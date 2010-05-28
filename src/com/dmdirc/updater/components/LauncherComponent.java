@@ -22,9 +22,9 @@
 
 package com.dmdirc.updater.components;
 
+import com.dmdirc.updater.OptionsComponent;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
-import com.dmdirc.updater.OptionsComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 

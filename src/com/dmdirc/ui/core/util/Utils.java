@@ -36,10 +36,10 @@ import java.util.Enumeration;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
+import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
-import javax.swing.text.StyledDocument;
 
 /**
  * Core UI Utilities.

@@ -23,9 +23,9 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.messages.IRCDocument;
+import com.dmdirc.util.StringTranscoder;
 
 /**
  * The Window interface specifies common methods that should be implemented

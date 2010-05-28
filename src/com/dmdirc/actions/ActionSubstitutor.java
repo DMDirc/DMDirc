@@ -22,12 +22,12 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;

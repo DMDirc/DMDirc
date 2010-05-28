@@ -22,10 +22,10 @@
 
 package com.dmdirc.plugins;
 
-import java.lang.reflect.Method;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
+import java.lang.reflect.Method;
 
 /**
  * Object to allow interaction with Exported methods

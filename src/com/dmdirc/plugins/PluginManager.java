@@ -29,20 +29,20 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.PluginComponent;
 
 import java.io.File;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Searches for and manages plugins and services.

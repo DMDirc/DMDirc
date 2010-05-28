@@ -28,25 +28,25 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
-import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.updater.Version;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.net.URL;
 import java.util.TreeMap;
 
 /**

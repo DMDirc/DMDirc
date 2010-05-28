@@ -23,14 +23,14 @@
 package com.dmdirc.serverlists;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.serverlists.io.ServerGroupReader;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.serverlists.io.ServerGroupReader;
 import com.dmdirc.serverlists.io.ServerGroupWriter;
 import com.dmdirc.serverlists.service.ServerListServiceProvider;
-import java.io.IOException;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

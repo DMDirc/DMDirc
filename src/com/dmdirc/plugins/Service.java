@@ -22,8 +22,8 @@
 
 package com.dmdirc.plugins;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines a service provided by a ServiceProvider.

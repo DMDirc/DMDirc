@@ -25,13 +25,12 @@ package com.dmdirc.installer;
 import com.dmdirc.installer.cliparser.BooleanParam;
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.StringParam;
-
 import com.dmdirc.installer.ui.InstallerDialog;
-import com.dmdirc.installer.ui.StepWelcome;
-import com.dmdirc.installer.ui.StepError;
-import com.dmdirc.installer.ui.StepSettings;
 import com.dmdirc.installer.ui.StepConfirm;
+import com.dmdirc.installer.ui.StepError;
 import com.dmdirc.installer.ui.StepInstall;
+import com.dmdirc.installer.ui.StepSettings;
+import com.dmdirc.installer.ui.StepWelcome;
 
 /**
  * Main installer entry point.

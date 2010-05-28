@@ -22,15 +22,16 @@
 
 package com.dmdirc.installer.ui;
 
+import com.dmdirc.installer.DefaultSettings;
 import com.dmdirc.installer.Main;
 import com.dmdirc.installer.Settings;
-import com.dmdirc.installer.DefaultSettings;
 import com.dmdirc.installer.Installer.ShortcutType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
