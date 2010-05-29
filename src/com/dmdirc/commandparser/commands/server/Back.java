@@ -41,16 +41,16 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  */
 @CommandOptions(allowOffline=false)
 public final class Back extends Command implements IntelligentCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of Back.
      */
     public Back() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -58,14 +58,14 @@ public final class Back extends Command implements IntelligentCommand, CommandIn
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().getLocalClient().setBack();
     }
-    
-    
+
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "back";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
@@ -77,7 +77,7 @@ public final class Back extends Command implements IntelligentCommand, CommandIn
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
@@ -90,5 +90,5 @@ public final class Back extends Command implements IntelligentCommand, CommandIn
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     }
-    
+
 }

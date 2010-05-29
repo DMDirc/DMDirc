@@ -57,14 +57,14 @@ import java.util.Map.Entry;
  * @author Chris
  */
 public class Debug extends Command implements IntelligentCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of Debug.
      */
     public Debug() {
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -110,7 +110,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unknown debug action.");
         }
     }
-    
+
     /**
      * Generates a fake error.
      *
@@ -120,7 +120,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         ErrorLevel el = ErrorLevel.HIGH;
         if (args.length > 2) {
             final String level = args[2];
-            
+
             if (level.equals("low")) {
                 el = ErrorLevel.LOW;
             } else if (level.equals("medium")) {
@@ -131,14 +131,14 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
                 el = ErrorLevel.UNKNOWN;
             }
         }
-        
+
         if (args.length > 1 && args[1].equals("user")) {
             Logger.userError(el, "Debug error message");
         } else {
             Logger.appError(el, "Debug error message", new Exception());
         }
     }
-    
+
     /**
      * Attempts to show the server's raw window.
      *
@@ -152,7 +152,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             origin.getServer().addRaw();
         }
     }
-    
+
     /**
      * Shows stats related to the config system.
      *
@@ -264,7 +264,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         sortedStats.addAll(ConfigManager.getStats().entrySet());
         return sortedStats;
     }
-    
+
     /**
      * Shows memory usage information.
      *
@@ -279,7 +279,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Used Memory: "
                 + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
     }
-    
+
     /**
      * Outputs 100 lines containing various colours.
      *
@@ -295,7 +295,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
         }
     }
-    
+
     /**
      * Manually runs the garbage collector.
      *
@@ -306,7 +306,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         System.gc();
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Invoked garbage collector.");
     }
-    
+
     /**
      * Shows information about the config manager.
      *
@@ -319,7 +319,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
                     + source + "(" + source.getTarget().getOrder() + ")");
         }
     }
-    
+
     /**
      * Shows information about the global config manager.
      *
@@ -332,7 +332,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
                     + source + "(" + source.getTarget().getOrder() + ")");
         }
     }
-    
+
     /**
      * Forces the update checker to check for updates.
      *
@@ -382,10 +382,10 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             sendLine(origin, isSilent, FORMAT_OUTPUT, server.getStatus().getTransitionHistory());
         }
     }
-    
+
     /**
      * Shows information about the current server.
-     * 
+     *
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
@@ -408,36 +408,36 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
                     + server.getParser().getDoubleParameterChannelModes());
         }
     }
-    
+
     /**
      * Benchmarks the textpane.
-     * 
+     *
      * @param origin The window this command was executed in
      */
     private static void doBenchmark(final FrameContainer<?> origin) {
         long[] results = new long[10];
-        
+
         for (int i = 0; i < results.length; i++) {
             final long start = System.nanoTime();
-            
+
             for (int j = 0; j < 5000; j++) {
                 origin.addLine(FORMAT_OUTPUT, "This is a benchmark. Lorem ipsum doler...");
             }
-            
+
             final long end = System.nanoTime();
-            
+
             results[i] = end - start;
         }
-        
+
         for (int i = 0; i < results.length; i++) {
             origin.addLine(FORMAT_OUTPUT, "Iteration " + i + ": " + results[i]
                     + " nanoseconds.");
         }
     }
-    
+
     /**
      * Shows information about all the current services available to plugins.
-     * 
+     *
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
      * @param args The arguments that were passed to the command
@@ -456,13 +456,13 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "debug";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -474,21 +474,21 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         res.excludeAll();
-        
+
         if (arg == 0) {
             res.add("error");
             res.add("showraw");
@@ -519,33 +519,33 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             res.add("fatal");
             res.add("unknown");
         }
-        
+
         return res;
     }
-    
+
     /** Reverse value comparator for a map entry. */
     private static class ValueComparator implements
             Comparator<Entry<String, Integer>>, Serializable {
-        
+
         /**
          * A version number for this class. It should be changed whenever the
          * class structure is changed (or anything else that would prevent
          * serialized objects being unserialized with the new class).
          */
         private static final long serialVersionUID = 1;
-        
+
         /** {@inheritDoc} */
         @Override
         public int compare(final Entry<String, Integer> o1,
                 final Entry<String, Integer> o2) {
             int returnValue = o1.getValue().compareTo(o2.getValue()) * -1;
-            
+
             if (returnValue == 0) {
                 returnValue = o1.getKey().compareToIgnoreCase(o2.getKey());
             }
-            
+
             return returnValue;
         }
     }
-    
+
 }

@@ -48,7 +48,7 @@ import javax.swing.KeyStroke;
  * @author chris
  */
 public enum CoreActionComponent implements ActionComponent {
-    
+
     /** Returns the name of the server. */
     SERVER_NAME {
         /** {@inheritDoc} */
@@ -64,7 +64,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "name"; }
     },
-    
+
     /** Returns the network of the server. */
     SERVER_NETWORK {
         /** {@inheritDoc} */
@@ -101,7 +101,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "protocol"; }
     },
-    
+
     /** Returns the away reason for the server. */
     SERVER_MYAWAYREASON {
         /** {@inheritDoc} */
@@ -117,7 +117,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "away reason"; }
     },
-    
+
     /** Returns the channel umodes for the server. */
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
@@ -133,8 +133,8 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "list of channel usermodes"; }
-    },    
-    
+    },
+
     /** Returns the nickname for the server. */
     SERVER_MYNICKNAME {
         /** {@inheritDoc} */
@@ -142,14 +142,14 @@ public enum CoreActionComponent implements ActionComponent {
         @ComponentOptions(requireConnected=true)
         public Object get(final Object argument) {
             final Server server = (Server) argument;
-            
+
             if (server == null || server.getParser() == null) {
                 Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
                         new UnsupportedOperationException(
                         server == null ? "Server was null" :
                             server.getParser() == null ? "Parser was null" : "Unknown"
                         ));
-                
+
                 return "null";
             } else {
                 return server.getParser().getLocalClient().getNickname();
@@ -181,7 +181,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "profile"; }
     },
-    
+
     /** Returns the name of the channel. */
     CHANNEL_NAME {
         /** {@inheritDoc} */
@@ -197,7 +197,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "name"; }
     },
-    
+
     /** Returns the notification colour of the channel. */
     CHANNEL_COLOUR {
         /** {@inheritDoc} */
@@ -213,7 +213,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "notification colour"; }
     },
-    
+
     /** Returns the name of a client. */
     CLIENT_NAME {
         /** {@inheritDoc} */
@@ -229,7 +229,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "nickname"; }
     },
-    
+
     /** Returns the host of a client. */
     CLIENT_HOST {
         /** {@inheritDoc} */
@@ -245,7 +245,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "host"; }
     },
-    
+
     /** Returns the name of a client. */
     USER_NAME {
         /** {@inheritDoc} */
@@ -261,7 +261,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "nickname"; }
     },
-    
+
     /** Returns the modes of a client. */
     USER_MODES {
         /** {@inheritDoc} */
@@ -277,7 +277,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "modes"; }
     },
-    
+
     /** Returns the host of a client. */
     USER_HOST {
         /** {@inheritDoc} */
@@ -293,7 +293,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "host"; }
     },
-    
+
     /** Returns the number of common channels the client is on. */
     USER_COMCHANS {
         /** {@inheritDoc} */
@@ -309,7 +309,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "number of common channels"; }
     },
-    
+
     /** Returns the content of a string. */
     STRING_STRING {
         /** {@inheritDoc} */
@@ -325,7 +325,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "content"; }
     },
-    
+
     /** Returns the content of a string, stripped of formatting. */
     STRING_STRIPPED {
         /** {@inheritDoc} */
@@ -340,8 +340,8 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "content (without formatting)"; }
-    },    
-    
+    },
+
     /** Returns the length of a string. */
     STRING_LENGTH {
         /** {@inheritDoc} */
@@ -357,7 +357,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "length"; }
     },
-    
+
     /** Returns the size of a string array. */
     STRINGARRAY_LENGTH {
         /** {@inheritDoc} */
@@ -373,7 +373,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "size"; }
     },
-    
+
     /** Returns the readable representation of a date. */
     CALENDAR_FULLSTRING {
         /** {@inheritDoc} */
@@ -389,7 +389,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "full date"; }
     },
-    
+
     /** Returns the name of the key that was pressed. */
     KEYEVENT_KEYNAME {
         /** {@inheritDoc} */
@@ -405,7 +405,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "key name"; }
     },
-    
+
     /** Returns the state of the control key for a key press event. */
     KEYEVENT_CTRLSTATE {
         /** {@inheritDoc} */
@@ -423,7 +423,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "control key state"; }
     },
-    
+
     /** Returns the state of the shift key for a key press event. */
     KEYEVENT_SHIFTSTATE {
         /** {@inheritDoc} */
@@ -441,7 +441,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "shift key state"; }
     },
-    
+
     /** Returns the state of the shift key for a key press event. */
     KEYEVENT_ALTSTATE {
         /** {@inheritDoc} */
@@ -459,7 +459,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "alt key state"; }
     },
-    
+
     /** Returns the host of the query. */
     QUERY_HOST {
         /** {@inheritDoc} */
@@ -475,7 +475,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "host"; }
     },
-    
+
     /** Returns the host of the query. */
     QUERY_NICK {
         /** {@inheritDoc} */
@@ -491,7 +491,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "nick"; }
     },
-    
+
     /** Returns the notification colour of the query. */
     QUERY_COLOUR {
         /** {@inheritDoc} */
@@ -523,7 +523,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "name"; }
     },
-    
+
     /** Returns the notification colour of the window. */
     WINDOW_COLOUR {
         /** {@inheritDoc} */
@@ -542,7 +542,7 @@ public enum CoreActionComponent implements ActionComponent {
 
     /**
      * Returns the server of the window.
-     * 
+     *
      * @since 0.6.4
      */
     WINDOW_SERVER {
@@ -592,5 +592,5 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() { return "value"; }
     };
-        
+
 }

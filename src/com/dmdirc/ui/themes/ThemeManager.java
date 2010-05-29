@@ -39,13 +39,13 @@ import java.util.Map;
  * @author Chris
  */
 public final class ThemeManager {
-    
+
     /** The directory to look for themes in. */
     private static final String THEME_DIR = Main.getConfigDir() + "themes/";
-    
+
     /** Available themes. */
     private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
-    
+
     static {
         IdentityManager.getGlobalConfig().addChangeListener("themes", "enabled",
                 new ConfigChangeListener() {
@@ -56,14 +56,14 @@ public final class ThemeManager {
             }
         });
     }
-    
+
     /**
      * Creates a new instance of theme manager.
      */
     private ThemeManager() {
         // Do nothing
     }
-    
+
     /**
      * Scans for available themes and loads any themes that the user has enabled.
      */
@@ -73,15 +73,15 @@ public final class ThemeManager {
         if (!dir.exists() && !dir.mkdirs()) {
             Logger.userError(ErrorLevel.HIGH, "Could not create themes directory");
         }
-        
+
         final List<String> enabled
                 = IdentityManager.getGlobalConfig().getOptionList("themes", "enabled");
-            
+
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
             return;
         }
-        
+
         synchronized (THEMES) {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
@@ -90,15 +90,15 @@ public final class ThemeManager {
 
                 loadTheme(file, enabled.contains(file.getName()));
             }
-        }            
+        }
     }
-    
+
     /**
-     * Attempts to load the theme from the specified file. If the enabled 
+     * Attempts to load the theme from the specified file. If the enabled
      * argument is true, the theme will be applied automatically. If it
-     * has been previously applied and is no longer enabled, it will be 
+     * has been previously applied and is no longer enabled, it will be
      * unapplied.
-     * 
+     *
      * @param file The file pointing to the theme to be loaded
      * @param enabled Whether this theme is enabled or not
      */
@@ -121,25 +121,25 @@ public final class ThemeManager {
             theme.applyTheme();
         } else if (theme.isEnabled() && !enabled) {
             theme.removeTheme();
-        }        
+        }
     }
-    
+
     /**
      * Retrieves a list of available themes.
      *
      * @return A list of available themes
-     */    
+     */
     public static Map<String, Theme> getAvailableThemes() {
         loadThemes();
-        
+
         synchronized (THEMES) {
             return new HashMap<String, Theme>(THEMES);
         }
     }
-    
+
     /**
      * Retrieves the directory used for storing themes.
-     * 
+     *
      * @return The directory used for storing themes
      */
     public static String getThemeDirectory() {

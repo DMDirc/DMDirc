@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * The ActionComponent interface describes the methods that action components
  * are required to implement. Components are objects that allow the user to
  * pull a specific piece of information from a certain type of argument.
- * 
+ *
  * @author chris
  */
 public interface ActionComponent {
@@ -51,28 +51,28 @@ public interface ActionComponent {
         boolean requireConnected() default false;
 
     }
-    
+
     /**
      * Retrieves the component of the specified argument that this component
      * represents.
-     * 
+     *
      * @param argument The object to retrieve the component from
      * @return The relevant component of the object
-     */    
+     */
     Object get(Object argument);
-    
+
     /**
      * Retrieves the type of class that this component applies to.
      * @return The Class that this component can be applied to
      */
     Class<?> appliesTo();
-    
+
     /**
      * Retrieves the type of this component.
      * @return The Class of this component.
      */
     Class<?> getType();
-    
+
     /**
      * Retrives a friendly name for this component.
      *
@@ -87,5 +87,5 @@ public interface ActionComponent {
      * @return The internal name of this component
      */
     String name();
-    
+
 }

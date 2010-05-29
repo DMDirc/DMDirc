@@ -31,18 +31,18 @@ import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 /**
  * Abstracts some behaviour used by Event Handlers.
- * 
+ *
  * @author chris
  */
 public abstract class EventHandler implements CallbackInterface {
-    
+
     /**
      * Registers all callbacks that this event handler implements with the
      * owner's parser.
      */
     public void registerCallbacks() {
         final CallbackManager<?> cbm = getServer().getParser().getCallbackManager();
-        
+
         try {
             for (Class<?> iface : this.getClass().getInterfaces()) {
                 if (CallbackInterface.class.isAssignableFrom(iface)) {
@@ -54,7 +54,7 @@ public abstract class EventHandler implements CallbackInterface {
                     exception);
         }
     }
-    
+
     /**
      * Unregisters all callbacks that have been registered by this event handler.
      */
@@ -63,10 +63,10 @@ public abstract class EventHandler implements CallbackInterface {
             getServer().getParser().getCallbackManager().delAllCallback(this);
         }
     }
-    
+
     /**
      * Adds a callback to this event handler.
-     * 
+     *
      * @param <T> The type of callback to be added
      * @param cbm The callback manager to use
      * @param type The type of the callback to be added
@@ -74,7 +74,7 @@ public abstract class EventHandler implements CallbackInterface {
      */
     protected abstract <T extends CallbackInterface> void addCallback(
             final CallbackManager<?> cbm, final Class<T> type) throws CallbackNotFoundException;
-    
+
     /**
      * Retrieves the server belonging to this EventHandler's owner.
      *
@@ -82,12 +82,12 @@ public abstract class EventHandler implements CallbackInterface {
      * @return This EventHandler's expected server
      */
     protected abstract Server getServer();
-    
+
     /**
      * Checks that the specified parser is the same as the one the server is
      * currently claiming to be using. If it isn't, we raise an exception to
      * prevent further (erroneous) processing.
-     * 
+     *
      * @param parser The parser to check
      */
     protected void checkParser(final Parser parser) {
@@ -97,6 +97,6 @@ public abstract class EventHandler implements CallbackInterface {
                     + getServer().getStatus().getParserID(parser)
                     + ").\n\n " + getServer().getStatus().getTransitionHistory());
         }
-    }    
+    }
 
 }

@@ -38,25 +38,25 @@ import com.dmdirc.ui.interfaces.Window;
  * @author chris
  */
 public class GlobalCommandParser extends CommandParser {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * The singleton instance of this command parser.
      */
     private static GlobalCommandParser me;
-    
+
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {
         // Don't care
     }
-    
+
     /**
      * Retrieves a singleton instance of the global command parser.
      * @return A GlobalCommandParser
@@ -65,16 +65,16 @@ public class GlobalCommandParser extends CommandParser {
         if (me == null) {
             me = new GlobalCommandParser();
         }
-        
+
         return me;
     }
-    
+
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
         CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
@@ -82,7 +82,7 @@ public class GlobalCommandParser extends CommandParser {
             final Command command, final CommandArguments args) {
         command.execute(origin, args, new CommandContext(window, commandInfo));
     }
-    
+
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
@@ -97,5 +97,5 @@ public class GlobalCommandParser extends CommandParser {
             origin.addLine("commandError", "Invalid global command: " + line);
         }
     }
-    
+
 }

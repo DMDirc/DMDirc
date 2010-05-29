@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 /**
  * Installs DMDirc on windows
- * 
+ *
  * @author Shane Mc Cormack
  */
 public class WindowsInstaller extends Installer {
@@ -70,7 +70,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Are we running vista? -_-
-     * 
+     *
      * @return True if this is vista.
      */
     public boolean isVista() {
@@ -79,7 +79,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Are we running NT?
-     * 
+     *
      * @return True if this is NT.
      */
     public boolean isNT() {
@@ -118,7 +118,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Add a registry key.
-     * 
+     *
      * @param key
      *            Key to add.
      */
@@ -130,7 +130,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Modify a registry value.
-     * 
+     *
      * @param key
      *            Key to use.
      * @param value
@@ -145,7 +145,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Modify a registry value.
-     * 
+     *
      * @param key
      *            Key to use.
      * @param value
@@ -181,7 +181,7 @@ public class WindowsInstaller extends Installer {
 
     /**
      * Execute and wait for the requested command
-     * 
+     *
      * @param cmd
      *            Command array to execute/
      * @return return value from command, or -1 if there was an error.

@@ -23,14 +23,14 @@ package com.dmdirc.config.prefs.validator;
 
 /**
  * Validates a port number.
- * 
+ *
  * @author chris
  */
 public class PortValidator extends NumericalValidator {
-    
+
     /** The minimum port number. */
     private static final int MIN_PORT = 1;
-    
+
     /** The maximum port number. */
     private static final int MAX_PORT = 65535;
 

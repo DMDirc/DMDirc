@@ -87,8 +87,8 @@ public final class Active extends Command implements IntelligentCommand,
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "active <command> - executes the command as though it had been" +
-                " typed in the active window";
+        return "active <command> - executes the command as though it had been"
+                + " typed in the active window";
     }
 
     /** {@inheritDoc} */

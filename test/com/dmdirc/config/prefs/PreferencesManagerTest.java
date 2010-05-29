@@ -35,14 +35,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
         Main.extractCorePlugins("ui_");
         Main.setUI(new SwingController());
         PluginManager.getPluginManager();
-    }    
+    }
 
     @Test
     public void testDefaults() {
@@ -71,7 +71,7 @@ public class PreferencesManagerTest {
     public void testSaveNoRestart() {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(false);
-        
+
         final PreferencesManager pm = new PreferencesManager();
         pm.addCategory(category);
         assertFalse(pm.save());
@@ -90,57 +90,57 @@ public class PreferencesManagerTest {
 
         verify(category).save();
     }
-    
+
     @Test
     public void testGetCategory() {
         final PreferencesManager pm = new PreferencesManager();
         assertNull(pm.getCategory("unittest123"));
     }
-    
+
     @Test
     public void testGetCategories() {
         final PreferencesManager pm = new PreferencesManager();
         assertNotNull(pm.getCategories());
         assertFalse(pm.getCategories().isEmpty());
-        
+
         for (PreferencesCategory cat : pm.getCategories()) {
             assertNotNull(pm.getCategory(cat.getTitle()));
         }
     }
-    
+
     @Test
-    public void testSaveListener() {        
+    public void testSaveListener() {
         final PreferencesManager pm = new PreferencesManager();
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
-        
+
         pm.registerSaveListener(tpi);
         pm.fireSaveListeners();
         verify(tpi).save();
     }
-    
+
     @Test
     public void testOpenAction() {
         final ActionListener tal = mock(ActionListener.class);
 
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
-        
+
         final PreferencesManager pm = new PreferencesManager();
 
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
                 (StringBuffer) same(null), same(pm));
     }
-    
+
     @Test
     public void testCloseAction() {
         final ActionListener tal = mock(ActionListener.class);
-        
+
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
 
         final PreferencesManager pm = new PreferencesManager();
         pm.close();
-        
+
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),
                 (StringBuffer) same(null));
     }

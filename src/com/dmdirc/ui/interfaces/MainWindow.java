@@ -28,53 +28,53 @@ import javax.swing.ImageIcon;
  * Main window interface.
  */
 public interface MainWindow {
-        
+
     /**
      * Retrieves the application icon.
      *
      * @return The application icon
      */
     ImageIcon getIcon();
-    
+
     /**
      * Quits the client.
      */
     void quit();
-    
+
     /**
      * Sets whether or not the internal frame state is currently maximised.
-     * 
+     *
      * @param max whether the frame is maxomised
      */
     void setMaximised(final boolean max);
-    
+
     /**
      * Gets whether or not the internal frame state is currently maximised.
-     * 
+     *
      * @return True iff frames should be maximised, false otherwise
      */
     boolean getMaximised();
-    
+
     /**
      * Returns a prefix for use in the titlebar. Includes the version number
      * if the config option is set.
-     * 
+     *
      * @return Titlebar prefix
      */
     String getTitlePrefix();
-    
+
     /**
      * Shows or hides the main window.
      *
      * @param visible The new visibility of the main window
      */
     void setVisible(final boolean visible);
-    
+
     /**
      * Returns whether the window is visible.
      *
      * @return Whether the main window is visible
      */
     boolean isVisible();
-    
+
 }

@@ -24,7 +24,7 @@ package com.dmdirc.ui.interfaces;
 
 /**
  * Defines the standard interface for a query window.
- * 
+ *
  * @author Chris
  */
 public interface QueryWindow extends InputWindow {

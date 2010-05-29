@@ -66,7 +66,7 @@ public interface IntelligentCommand {
 
         /**
          * Retrieves the window that the command was entered in.
-         * 
+         *
          * @return The command's input window
          */
         public InputWindow getWindow() {
@@ -103,5 +103,5 @@ public interface IntelligentCommand {
      * @since 0.6.4
      */
     AdditionalTabTargets getSuggestions(int arg, IntelligentCommandContext context);
-    
+
 }

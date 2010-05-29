@@ -38,23 +38,23 @@ import java.util.List;
  * Actions alias wrapper.
  */
 public final class Alias implements Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** Alias command. */
     private String command;
-    
+
     /** Alias arguments. */
     private List<ActionCondition> arguments;
-    
+
     /** Alias response. */
     private String[] response;
-    
+
     /**
      * Creates a new Alias wrapper.
      *
@@ -67,7 +67,7 @@ public final class Alias implements Serializable {
                 CoreActionComparison.STRING_EQUALS, command));
         this.response = new String[]{"", };
     }
-    
+
     /**
      * Wraps an existing Action in an Alias.
      *
@@ -81,7 +81,7 @@ public final class Alias implements Serializable {
         this.arguments = new ArrayList<ActionCondition>(arguments);
         this.response = response.clone();
     }
-    
+
     /**
      * Returns the aliases command.
      *
@@ -90,7 +90,7 @@ public final class Alias implements Serializable {
     public String getCommand() {
         return command;
     }
-    
+
     /**
      * Sets the aliases command.
      *
@@ -99,17 +99,17 @@ public final class Alias implements Serializable {
     public void setCommand(final String command) {
         if (!this.command.equals(command)) {
             this.command = command;
-            
+
             ActionCondition argument = arguments.get(0);
-            
+
             if (argument.getComparison() != CoreActionComparison.STRING_EQUALS) {
                 argument = arguments.get(1);
             }
-            
+
             argument.setTarget(command);
         }
     }
-    
+
     /**
      * Returns the aliases name.
      *
@@ -133,7 +133,7 @@ public final class Alias implements Serializable {
             return command + "-" + comparison + "-" + condition.getTarget();
         }
     }
-    
+
     /**
      * Gets the aliases arguments.
      *
@@ -142,7 +142,7 @@ public final class Alias implements Serializable {
     public List<ActionCondition> getArguments() {
         return new ArrayList<ActionCondition>(arguments);
     }
-    
+
     /**
      * Gets the aliases number of arguments argument.
      *
@@ -150,7 +150,7 @@ public final class Alias implements Serializable {
      */
     public ActionCondition getArgsArgument() {
         ActionCondition argument = arguments.get(0);
-        
+
         if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
             if (arguments.size() > 1) {
                 argument = arguments.get(1);
@@ -158,10 +158,10 @@ public final class Alias implements Serializable {
                 argument = null;
             }
         }
-        
+
         return argument;
     }
-    
+
     /**
      * Sets the aliases arguments.
      *
@@ -172,7 +172,7 @@ public final class Alias implements Serializable {
             this.arguments = new ArrayList<ActionCondition>(arguments);
         }
     }
-    
+
     /**
      * Gets the aliases response.
      *
@@ -181,7 +181,7 @@ public final class Alias implements Serializable {
     public String[] getResponse() {
         return response.clone();
     }
-    
+
     /**
      * Sets the aliases response.
      *
@@ -192,7 +192,7 @@ public final class Alias implements Serializable {
             this.response = response.clone();
         }
     }
-    
+
     /**
      * Updates this alias with the details of another alias.
      *
@@ -203,7 +203,7 @@ public final class Alias implements Serializable {
         setCommand(alias.getCommand());
         setResponse(alias.getResponse());
     }
-    
+
     /**
      * Checks if the specified alias matches this one
      *
@@ -212,13 +212,13 @@ public final class Alias implements Serializable {
      * @return true iif the alias matches this one
      */
     public boolean matches(final Alias alias) {
-        return alias.getCommand().equalsIgnoreCase(command) 
+        return alias.getCommand().equalsIgnoreCase(command)
                 && alias.getArguments().equals(arguments);
     }
-    
+
     /**
      * Creates an action corresponding to this alias.
-     * 
+     *
      * @return A new action for this alias.
      */
     public Action createAction() {
@@ -230,7 +230,7 @@ public final class Alias implements Serializable {
                 getArguments(),
                 "");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

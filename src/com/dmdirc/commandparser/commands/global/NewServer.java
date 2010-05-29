@@ -152,8 +152,8 @@ public final class NewServer extends Command implements IntelligentCommand,
         // Check for SSL
         if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
             Logger.userError(ErrorLevel.LOW,
-                    "Using /newserver --ssl is deprecated, and may be removed in the future." +
-                    " Use /newserver <host>:+<port> instead.");
+                    "Using /newserver --ssl is deprecated, and may be removed in the future."
+                    + " Use /newserver <host>:+<port> instead.");
 
             ssl = true;
             offset++;
@@ -167,8 +167,8 @@ public final class NewServer extends Command implements IntelligentCommand,
                 if (origin != null) {
                     origin.addLine(FORMAT_ERROR, "Invalid port specified");
                 } else {
-                    Logger.userError(ErrorLevel.LOW, "Invalid port specified " +
-                            "in newserver command");
+                    Logger.userError(ErrorLevel.LOW, "Invalid port specified "
+                            + "in newserver command");
                 }
                 return null;
             }
@@ -185,16 +185,16 @@ public final class NewServer extends Command implements IntelligentCommand,
                 if (origin != null) {
                     origin.addLine(FORMAT_ERROR, "Invalid port specified");
                 } else {
-                    Logger.userError(ErrorLevel.LOW, "Invalid port specified " +
-                            "in newserver command");
+                    Logger.userError(ErrorLevel.LOW, "Invalid port specified "
+                            + "in newserver command");
                 }
                 return null;
             }
 
             if (port <= 0 || port > 65535) {
                 if (origin == null) {
-                    Logger.userError(ErrorLevel.LOW, "Port must be between 1 " +
-                            "and 65535 in newserver command");
+                    Logger.userError(ErrorLevel.LOW, "Port must be between 1 "
+                            + "and 65535 in newserver command");
                 } else if (!args.isSilent()) {
                     origin.addLine(FORMAT_ERROR, "Port must be between 1 and 65535");
                 }

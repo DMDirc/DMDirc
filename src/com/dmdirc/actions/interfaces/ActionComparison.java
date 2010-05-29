@@ -29,7 +29,7 @@ package com.dmdirc.actions.interfaces;
  * @author chris
  */
 public interface ActionComparison {
-    
+
     /**
      * Tests the specified arguments against each other.
      * @param arg1 The first argument
@@ -38,13 +38,13 @@ public interface ActionComparison {
      * otherwise
      */
     boolean test(final Object arg1, final Object arg2);
-    
+
     /**
      * Returns the class that this comparison deals with.
      * @return The Class that this comparison can compare
      */
     Class<?> appliesTo();
-    
+
     /**
      * Returns a friendly name for this comparison.
      *
@@ -59,5 +59,5 @@ public interface ActionComparison {
      * @return This comparison's internal name
      */
     String name();
-    
+
 }

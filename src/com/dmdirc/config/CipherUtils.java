@@ -52,41 +52,41 @@ import net.miginfocom.Base64;
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
  */
 public class CipherUtils {
-    
+
     /** Singleton instance. */
     private static CipherUtils me;
-    
+
     /** Encryption cipher. */
     private Cipher ecipher;
-    
+
     /** Decryption cipher. */
     private Cipher dcipher;
-    
+
     /** Salt. */
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };
-    
+
     /** Iteration count. */
     private static final int ITERATIONS = 19;
-    
+
     /** Number of auth attemps before failing the attempt. */
     private static final int AUTH_TRIES = 4;
-    
+
     /** User password. */
     private String password;
-    
+
     /**
      * Prevents creation of a new instance of Encipher.
      */
     protected CipherUtils() {
         // Do nothing
     }
-    
+
     /**
      * Retrieves a singleton instance of CipherUtils.
-     * 
+     *
      * @return A singleton cipher utils instance.
      */
     public static CipherUtils getCipherUtils() {
@@ -94,11 +94,11 @@ public class CipherUtils {
             if (me == null) {
                 me = new CipherUtils();
             }
-            
+
             return me;
         }
     }
-    
+
     /**
      * Encrypts a string using the stored settings. Will return null if the
      * automatic user authentication fails - use checkauth and auth.
@@ -125,7 +125,7 @@ public class CipherUtils {
 
         return null;
     }
-    
+
     /**
      * Encrypts a string using the stored settings. Will return null if the
      * automatic user authentication fails - use checkauth and auth.
@@ -149,7 +149,7 @@ public class CipherUtils {
         }
         return null;
     }
-    
+
     /**
      * Performs a SHA-512 hash.
      * @param data String to hashed
@@ -166,7 +166,7 @@ public class CipherUtils {
         }
         return null;
     }
-    
+
     /**
      * Checks if a user is authed.
      *
@@ -175,7 +175,7 @@ public class CipherUtils {
     public boolean checkAuthed() {
         return dcipher != null && ecipher != null;
     }
-    
+
     /**
      * creates ciphers.
      */
@@ -213,7 +213,7 @@ public class CipherUtils {
             dcipher = null;
         }
     }
-    
+
     /**
      * Auths a user and sets the password.
      *
@@ -236,7 +236,7 @@ public class CipherUtils {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    IdentityManager.getConfigIdentity().setOption("encryption", 
+                    IdentityManager.getConfigIdentity().setOption("encryption",
                             "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {
@@ -252,10 +252,10 @@ public class CipherUtils {
         }
         return true;
     }
-    
+
     /**
      * Requests the encryption password from the user.
-     * 
+     *
      * @param prompt The prompt to show
      * @return The user-specified password
      */

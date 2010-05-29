@@ -38,21 +38,21 @@ import java.awt.Color;
 /**
  * The notify command allows the user to set the notification colour for a
  * window.
- * 
+ *
  * @author chris
  */
 public final class Notify extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Notify.
      */
     public Notify() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -61,26 +61,26 @@ public final class Notify extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "notify", "<colour>");
             return;
         }
-        
+
         final Color colour = ColourManager.parseColour(args.getArguments()[0], null);
-        
+
         if (colour == null) {
             showUsage(origin, args.isSilent(), "notify",
-                    "<colour> - colour must be an IRC colour code (0-15) or a " +
-                    "hex string (e.g. FFFF00).");
-        } else if (origin != null) {            
+                    "<colour> - colour must be an IRC colour code (0-15) or a "
+                    + "hex string (e.g. FFFF00).");
+        } else if (origin != null) {
             // There's not much point echoing an error if the origin isn't
             // valid, as errors go to the origin!
             origin.sendNotification(colour);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "notify";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -92,7 +92,7 @@ public final class Notify extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -104,6 +104,6 @@ public final class Notify extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
-    } 
-    
+    }
+
 }

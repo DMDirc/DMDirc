@@ -24,42 +24,42 @@ package com.dmdirc.config.prefs.validator;
 /**
  * Describes the response from a Validator. The response may be either positive
  * or negative. Negative responses have an associated failure reason.
- * 
+ *
  * @author chris
  */
 public class ValidationResponse {
-   
+
     /** The failure reason, or null if the validation passed. */
     private final String failure;
-    
+
     /**
      * Creates a new ValidationResponse for a positive response.
      */
     public ValidationResponse() {
         this.failure = null;
     }
-    
+
     /**
      * Creates a new ValidationResponse for a negative response.
-     * 
+     *
      * @param failure The reason for the negative response.
      */
     public ValidationResponse(final String failure) {
         this.failure = failure;
     }
-    
+
     /**
      * Determines whether or not this response indicates that a failure occured.
-     * 
+     *
      * @return True if a failure occured, false otherwise.
      */
     public boolean isFailure() {
         return failure != null;
     }
-    
+
     /**
      * Retrieves the reason for the validation failure.
-     * 
+     *
      * @return The reason for the validation failure.
      */
     public String getFailureReason() {

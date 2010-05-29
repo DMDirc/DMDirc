@@ -29,22 +29,22 @@ import java.util.List;
 /**
  * The AdditionalTabTargets class is a basic wrapper around an arraylist that
  * adds an additional property to determine what types of results to include.
- * 
+ *
  * @author chris
  */
 public final class AdditionalTabTargets extends ArrayList<String> {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** Whether to include normal targets. */
     private List<TabCompletionType> includes
             = new ArrayList<TabCompletionType>(Arrays.asList(TabCompletionType.values()));
-    
+
     /** Initialises the AdditionalTabTargets. */
     public AdditionalTabTargets() {
         super();
@@ -53,7 +53,7 @@ public final class AdditionalTabTargets extends ArrayList<String> {
 
     /**
      * Determines if the specified type of completion should be used.
-     * 
+     *
      * @param type The type to check for
      * @return True if the specified targets are included, false otherwise
      */
@@ -63,7 +63,7 @@ public final class AdditionalTabTargets extends ArrayList<String> {
 
     /**
      * Includes the specified target type.
-     * 
+     *
      * @param type The type to be included
      */
     public void include(final TabCompletionType type) {
@@ -71,25 +71,25 @@ public final class AdditionalTabTargets extends ArrayList<String> {
             includes.add(type);
         }
     }
-    
+
     /**
      * Excludes the specified target type.
-     * 
+     *
      * @param type The type to be excluded
      */
     public void exclude(final TabCompletionType type) {
         includes.remove(type);
     }
-    
+
     /**
      * Excludes all types of targets except ADDITIONAL.
-     * 
+     *
      * @return A reference to this object.
      */
     public AdditionalTabTargets excludeAll() {
         includes.clear();
         includes.add(TabCompletionType.ADDITIONAL);
-        
+
         return this;
     }
 

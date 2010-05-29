@@ -40,11 +40,11 @@ import java.util.Map;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
- * 
+ *
  * @author chris
  */
 public class TabCompleter {
-    
+
     /**
      * The parent TabCompleter. Results from parents are merged with results
      * from this completer.
@@ -56,12 +56,12 @@ public class TabCompleter {
      */
     private final MapList<TabCompletionType, String> entries
             = new MapList<TabCompletionType, String>();
-    
+
     /** Creates a new instance of TabCompleter. */
     public TabCompleter() {
         //Do nothing.
     }
-    
+
     /**
      * Creates a new instance of TabCompleter, with a designated parent.
      * @param newParent The parent TabCompleter, which is checked for matches if
@@ -70,7 +70,7 @@ public class TabCompleter {
     public TabCompleter(final TabCompleter newParent) {
         this.parent = newParent;
     }
-    
+
     /**
      * Attempts to complete the partial string.
      *
@@ -81,10 +81,10 @@ public class TabCompleter {
     public TabCompleterResult complete(final String partial,
             final AdditionalTabTargets additionals) {
         final TabCompleterResult result = new TabCompleterResult();
-        
+
         final MapList<TabCompletionType, String> targets
                 = new MapList<TabCompletionType, String>(entries);
-        
+
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
                 .getOptionBool("tabcompletion", "casesensitive");
         final boolean allowEmpty = IdentityManager.getGlobalConfig()
@@ -93,17 +93,17 @@ public class TabCompleter {
         if (partial.isEmpty() && !allowEmpty) {
             return result;
         }
-                
+
         if (additionals != null) {
             targets.safeGet(TabCompletionType.ADDITIONAL).addAll(additionals);
         }
-        
+
         for (Map.Entry<TabCompletionType, List<String>> typeEntry : targets.entrySet()) {
             if (additionals != null && !additionals.shouldInclude(typeEntry.getKey())) {
                 // If we're not including this type, skip to the next.
                 continue;
             }
-            
+
             for (String entry : typeEntry.getValue()) {
                 // Skip over duplicates
                 if (result.hasResult(entry)) {
@@ -118,21 +118,21 @@ public class TabCompleter {
                 }
             }
         }
-        
+
         if (parent != null) {
             if (additionals != null) {
                 additionals.clear();
             }
-            
+
             result.merge(parent.complete(partial, additionals));
         }
-        
+
         return result;
     }
-    
+
     /**
      * Adds a new entry to this tab completer's list.
-     * 
+     *
      * @param type The type of the entry that's being added
      * @param entry The new entry to be added
      */
@@ -149,10 +149,10 @@ public class TabCompleter {
                     + entry.substring(1));
         }
     }
-    
+
     /**
      * Adds multiple new entries to this tab completer's list.
-     * 
+     *
      * @param type The type of the entries that're being added
      * @param newEntries Entries to be added
      */
@@ -160,25 +160,25 @@ public class TabCompleter {
         if (newEntries == null) {
             return;
         }
-        
+
         for (String entry : newEntries) {
             addEntry(type, entry);
         }
     }
-    
+
     /**
      * Removes a specified entry from this tab completer's list.
-     * 
+     *
      * @param type The type of the entry that should be removed
      * @param entry The entry to be removed
      */
     public void removeEntry(final TabCompletionType type, final String entry) {
         entries.remove(type, entry);
     }
-    
+
     /**
      * Replaces the current entries with the new list.
-     * 
+     *
      * @param type The type of entry which should be replaced
      * @param newEntries the new entries to use
      */
@@ -186,26 +186,26 @@ public class TabCompleter {
         entries.clear(type);
         entries.add(type, newEntries);
     }
-    
+
     /**
      * Clears all entries in this tab completer.
      */
     public void clear() {
         entries.clear();
     }
-    
+
     /**
      * Clears all entries of the specified type in this tab completer.
-     * 
+     *
      * @param type The type of entry to clear
      */
     public void clear(final TabCompletionType type) {
         entries.clear(type);
     }
-    
+
     /**
      * Retrieves intelligent results for a deferred command.
-     * 
+     *
      * @param arg The argument number that is being requested
      * @param context Intelligent tab completion context
      * @param offset The number of arguments our command used before deferring
@@ -222,9 +222,9 @@ public class TabCompleter {
             return getIntelligentResults(context.getWindow(),
                     new CommandArguments(context.getPreviousArgs().subList(offset,
                     context.getPreviousArgs().size())), context.getPartial());
-        }        
+        }
     }
-    
+
     /**
      * Retrieves the intelligent results for the command and its arguments
      * formed from args.
@@ -240,7 +240,7 @@ public class TabCompleter {
         if (!args.isCommand()) {
             return null;
         }
-        
+
         final Map.Entry<CommandInfo, Command> command
                 = CommandManager.getCommand(args.getCommandName());
 
@@ -265,7 +265,7 @@ public class TabCompleter {
 
         return targets;
     }
-    
+
     /**
      * Handles potentially intelligent tab completion.
      *

@@ -1,17 +1,17 @@
 /*
- * 
+ *
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,13 +54,13 @@ public class WizardControlPanel extends JPanel {
     /**
      * Instantiates a new wizard control panel using the specified number of
      * steps.
-     * 
+     *
      * @param total Total number of steps
      */
     public WizardControlPanel(final int total) {
         this.total = total;
         this.step = 0;
-        
+
         prev = new JButton("\u00AB Previous");
         next = new JButton("Next \u00BB");
         progress = new JLabel();
@@ -89,7 +89,7 @@ public class WizardControlPanel extends JPanel {
 
     /**
      * Returns the next button.
-     * 
+     *
      * @return Next button
      */
     public JButton getNextButton() {
@@ -98,7 +98,7 @@ public class WizardControlPanel extends JPanel {
 
     /**
      * Returns the progress label.
-     * 
+     *
      * @return Progress Label
      */
     public JLabel getProgressLabel() {
@@ -114,7 +114,7 @@ public class WizardControlPanel extends JPanel {
 
     /**
      * Sets the new total number of steps.
-     * 
+     *
      * @param total New total number of steps
      */
     public void setTotal(final int total) {
@@ -124,7 +124,7 @@ public class WizardControlPanel extends JPanel {
 
     /**
      * Sets the current progress step.
-     * 
+     *
      * @param step Progress step
      */
     public void setProgress(final int step) {

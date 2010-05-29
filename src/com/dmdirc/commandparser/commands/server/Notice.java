@@ -43,16 +43,16 @@ import com.dmdirc.ui.input.TabCompletionType;
 @CommandOptions(allowOffline=false)
 public final class Notice extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Notice.
      */
     public Notice() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -67,14 +67,14 @@ public final class Notice extends Command implements IntelligentCommand,
                     args.getArgumentsAsString(1));
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "notice";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -86,7 +86,7 @@ public final class Notice extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -98,12 +98,12 @@ public final class Notice extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             targets.exclude(TabCompletionType.COMMAND);
         }
-        
+
         return targets;
     }
-    
+
 }

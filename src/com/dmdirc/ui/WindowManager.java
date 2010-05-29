@@ -50,15 +50,15 @@ public class WindowManager {
     /** A list of root windows. */
     private static final List<FrameContainer<?>> ROOT_WINDOWS
             = new CopyOnWriteArrayList<FrameContainer<?>>();
-    
+
     /** A list of frame listeners. */
     private static final List<FrameListener> FRAME_LISTENERS
             = new ArrayList<FrameListener>();
-    
+
     /** A list of selection listeners. */
     private static final List<SelectionListener> SELECTION_LISTENERS
             = new ArrayList<SelectionListener>();
-    
+
     /** Our selection listener proxy. */
     private static final SelectionListener SELECTION_LISTENER
             = new WMSelectionListener();
@@ -104,19 +104,19 @@ public class WindowManager {
 
         FRAME_LISTENERS.remove(frameListener);
     }
-    
+
     /**
      * Registers the specified SelectionListener with the WindowManager.
-     * 
+     *
      * @param listener The listener to be added
      */
     public static void addSelectionListener(final SelectionListener listener) {
         SELECTION_LISTENERS.add(listener);
     }
-    
+
     /**
      * Unregisters the specified SelectionListener with the WindowManager.
-     * 
+     *
      * @param listener The listener to be removed
      */
     public static void removeSelectionListener(final SelectionListener listener) {
@@ -345,15 +345,15 @@ public class WindowManager {
 
             if (parent == null) {
                 Logger.appError(ErrorLevel.MEDIUM, "Invalid window removed",
-                        new IllegalArgumentException("Tried to remove a" +
-                        " non-root window that has no known parent.\nWindow:" +
-                        " " + window.getName()));
+                        new IllegalArgumentException("Tried to remove a"
+                        + " non-root window that has no known parent.\nWindow:"
+                        + " " + window.getName()));
                 return;
             } else {
                 parent.removeChild(window);
             }
         }
-        
+
         window.removeSelectionListener(SELECTION_LISTENER);
         window.windowClosed();
     }
@@ -361,7 +361,7 @@ public class WindowManager {
     /**
      * Finds and returns a global custom window with the specified name.
      * If a custom window with the specified name isn't found, null is returned.
-     * 
+     *
      * @param name The name of the custom window to search for
      * @return The specified custom window, or null
      */
@@ -375,7 +375,7 @@ public class WindowManager {
     /**
      * Finds and returns a non-global custom window with the specified name.
      * If a custom window with the specified name isn't found, null is returned.
-     * 
+     *
      * @param parent The parent whose children should be searched
      * @param name The name of the custom window to search for
      * @return The specified custom window, or null
@@ -396,7 +396,7 @@ public class WindowManager {
     /**
      * Finds a custom window with the specified name among the specified list
      * of windows. If the custom window is not found, returns null.
-     * 
+     *
      * @param windows The list of windows to search
      * @param name The name of the custom window to search for
      * @return The custom window if found, or null otherwise
@@ -417,7 +417,7 @@ public class WindowManager {
      * Retrieves the parent window of the specified window. If the window
      * has no parent (i.e., it is a root window or it has not been added),
      * returns null.
-     * 
+     *
      * @param window The window whose parent is being sought
      * @return The parent of the specified window, or null if not found
      * @deprecated Call {@link FrameContainer#getParent()} directly
@@ -426,10 +426,10 @@ public class WindowManager {
     public static FrameContainer<?> getParent(final FrameContainer<?> window) {
         return window.getParent();
     }
-    
+
     /**
      * Retrieves all known root (parent-less) windows.
-     * 
+     *
      * @since 0.6.4
      * @return A collection of all known root windows.
      */
@@ -439,7 +439,7 @@ public class WindowManager {
 
     /**
      * Returns the current focused window.
-     * 
+     *
      * @return Focused window or null
      * @since 0.6.3
      */
@@ -456,10 +456,10 @@ public class WindowManager {
     public static Server getActiveServer() {
         return activeWindow == null ? null : getActiveWindow().getServer();
     }
-    
+
     /**
      * Retrieves all children of the specified window.
-     * 
+     *
      * @since 0.6.4
      * @param window The window whose children are being requested
      * @return A collection of all known child windows.
@@ -469,10 +469,10 @@ public class WindowManager {
     public static Collection<FrameContainer<?>> getChildren(final FrameContainer<?> window) {
         return window.getChildren();
     }
-    
+
     /**
      * Fires the addWindow(Window) callback.
-     * 
+     *
      * @param window The window that was added
      * @param focus Should this window become focused
      */
@@ -484,7 +484,7 @@ public class WindowManager {
 
     /**
      * Fires the addWindow(Window, Window) callback.
-     * 
+     *
      * @param parent The parent window
      * @param child The new child window that was added
      * @param focus Should this window become focused
@@ -499,7 +499,7 @@ public class WindowManager {
 
     /**
      * Fires the delWindow(Window) callback.
-     * 
+     *
      * @param window The window that was removed
      */
     private static void fireDeleteWindow(final FrameContainer<?> window) {
@@ -510,7 +510,7 @@ public class WindowManager {
 
     /**
      * Fires the delWindow(Window, Window) callback.
-     * 
+     *
      * @param parent The parent window
      * @param child The child window that was removed
      */
@@ -534,7 +534,7 @@ public class WindowManager {
 
         ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, window);
     }
-        
+
     /**
      * Proxy for selection events.
      */
@@ -547,7 +547,7 @@ public class WindowManager {
 
             fireSelectionChanged(window);
         }
-        
+
     }
 
 }

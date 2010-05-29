@@ -44,7 +44,7 @@ import java.util.List;
  * @author Chris
  */
 public class CommandLineParser {
-    
+
     /**
      * The arguments that the client supports, in groups of four, in the
      * following order: short option, long option, description, whether or not
@@ -61,19 +61,19 @@ public class CommandLineParser {
         {'v', "version", "Display client version and exit", Boolean.FALSE},
         {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE},
     };
-    
+
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<URI>();
-    
+
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
-    
+
     /** The version string passed for the launcher. */
     private String launcherVersion = "";
-    
+
     /** The RMI server we're using. */
     private RemoteInterface server;
-    
+
     /**
      * Creates a new instance of CommandLineParser.
      *
@@ -82,7 +82,7 @@ public class CommandLineParser {
     public CommandLineParser(final String ... arguments) {
         boolean inArg = false;
         char previousArg = '.';
-        
+
         for (String arg : arguments) {
             if (inArg) {
                 processArgument(previousArg, arg);
@@ -99,11 +99,11 @@ public class CommandLineParser {
                 }
             }
         }
-        
+
         if (inArg) {
             doUnknownArg("Missing parameter for argument: " + previousArg);
         }
-        
+
         if (server != null) {
             try {
                 server.connect(addresses);
@@ -113,10 +113,10 @@ public class CommandLineParser {
                         "Unable to execute remote connection", ex);
             }
         }
-        
+
         RemoteServer.bind();
     }
-    
+
     /**
      * Checks whether the specified arg type takes an argument. If it does,
      * this method returns true. If it doesn't, the method processes the
@@ -127,23 +127,23 @@ public class CommandLineParser {
      */
     private boolean checkArgument(final char argument) {
         boolean needsArg = false;
-        
+
         for (Object[] target : ARGUMENTS) {
             if ((Character) argument == target[0]) {
                 needsArg = (Boolean) target[3];
                 break;
             }
         }
-        
+
         if (needsArg) {
             return true;
         } else {
             processArgument(argument, null);
-            
+
             return false;
         }
     }
-    
+
     /**
      * Processes the specified string as a single long argument.
      *
@@ -156,13 +156,13 @@ public class CommandLineParser {
                 return (Character) target[0];
             }
         }
-        
+
         doUnknownArg("Unknown argument: " + arg);
         exit();
-        
+
         return '.';
     }
-    
+
     /**
      * Processes the specified string as a single short argument.
      *
@@ -175,13 +175,13 @@ public class CommandLineParser {
                 return (Character) target[0];
             }
         }
-        
+
         doUnknownArg("Unknown argument: " + arg);
         exit();
-        
+
         return '.';
     }
-    
+
     /**
      * Processes the specified command-line argument.
      *
@@ -220,12 +220,12 @@ public class CommandLineParser {
         default:
             // This really shouldn't ever happen, but we'll handle it nicely
             // anyway.
-            
+
             doUnknownArg("Unknown argument: " + arg);
             break;
         }
     }
-    
+
     /**
      * Informs the user that they entered an unknown argument, prints the
      * client help, and exits.
@@ -237,14 +237,14 @@ public class CommandLineParser {
         System.out.println();
         doHelp();
     }
-    
+
     /**
      * Exits DMDirc.
      */
     private static void exit() {
         System.exit(0);
     }
-    
+
     /**
      * Handles the --connect argument.
      *
@@ -252,7 +252,7 @@ public class CommandLineParser {
      */
     private void doConnect(final String address) {
         URI myAddress = null;
-        
+
         try {
             myAddress = NewServer.getURI(address);
             addresses.add(myAddress);
@@ -260,18 +260,18 @@ public class CommandLineParser {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Handles the --existing argument.
      */
     private void doExisting() {
         server = RemoteServer.getServer();
-        
+
         if (server == null) {
             System.err.println("Unable to connect to existing instance");
         }
     }
-    
+
     /**
      * Handles the --check argument.
      */
@@ -284,7 +284,7 @@ public class CommandLineParser {
             System.exit(0);
         }
     }
-    
+
     /**
      * Sets the config directory to the one specified.
      *
@@ -297,7 +297,7 @@ public class CommandLineParser {
             Main.setConfigDir(dir + File.separator);
         }
     }
-    
+
     /**
      * Prints out the client version and exits.
      */
@@ -310,7 +310,7 @@ public class CommandLineParser {
                 + IdentityManager.getGlobalConfig().getOption("updater", "channel"));
         exit();
     }
-    
+
     /**
      * Prints out client help and exits.
      */
@@ -319,35 +319,35 @@ public class CommandLineParser {
         System.out.println();
         System.out.println("Valid options:");
         System.out.println();
-        
+
         int maxLength = 0;
-        
+
         for (Object[] arg : ARGUMENTS) {
             final String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
-            
+
             if ((arg[1] + needsArg).length() > maxLength) {
                 maxLength = (arg[1] + needsArg).length();
             }
         }
-        
+
         for (Object[] arg : ARGUMENTS) {
             final String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
             final StringBuilder desc = new StringBuilder(maxLength + 1);
-            
+
             desc.append(arg[1]);
-            
+
             while (desc.length() < maxLength + 1) {
                 desc.append(' ');
             }
-            
+
             System.out.print("   -" + arg[0] + needsArg);
             System.out.println(" --" + desc + needsArg + " " + arg[2]);
             System.out.println();
         }
-        
+
         exit();
     }
-    
+
     /**
      * Applies any applicable settings to the config identity.
      */
@@ -355,12 +355,12 @@ public class CommandLineParser {
         if (disablereporting) {
             IdentityManager.getConfigIdentity().setOption("temp", "noerrorreporting", true);
         }
-        
+
         if (!launcherVersion.isEmpty()) {
             LauncherComponent.setLauncherInfo(launcherVersion);
         }
     }
-    
+
     /**
      * Processes arguments once the client has been loaded properly.
      * This allows us to auto-connect to servers, etc.
@@ -370,5 +370,5 @@ public class CommandLineParser {
             ServerManager.getServerManager().connectToAddress(address);
         }
     }
-    
+
 }

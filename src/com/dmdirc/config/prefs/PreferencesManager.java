@@ -145,12 +145,12 @@ public class PreferencesManager {
                 "Show a confirmation message when you try to close the client"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "splitusermodes", "Split user modes",
-                "Show individual mode lines for each mode change that affects" +
-                " a user (e.g. op, devoice)"));
+                "Show individual mode lines for each mode change that affects"
+                + " a user (e.g. op, devoice)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "sendwho", "Send channel WHOs",
-                "Request information (away state, hostname, etc) on channel " +
-                "users automatically"));
+                "Request information (away state, hostname, etc) on channel "
+                + "users automatically"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "general", "whotime", "Who request interval",
                 "How often to send WHO requests for a channel (if enabled)"));
@@ -165,8 +165,8 @@ public class PreferencesManager {
                 "Show an indicator in windows when you are marked as away"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
                 new OptionalValidator(new NumericalValidator(0, 100)), "ui", "pasteProtectionLimit",
-                "Paste protection trigger", "Confirm pasting of text that " +
-                "contains more than this many lines."));
+                "Paste protection trigger", "Confirm pasting of text that "
+                + "contains more than this many lines."));
 
         addTabCompletionCategory(category);
         addCategory(category.setInlineAfter());
@@ -186,15 +186,15 @@ public class PreferencesManager {
         }
 
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
-                "Tab completion style", "Determines the behaviour of " +
-                "the tab completer when there are multiple matches", taboptions));
+                "Tab completion style", "Determines the behaviour of "
+                + "the tab completer when there are multiple matches", taboptions));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "casesensitive", "Case-sensitive tab completion",
                 "Respect case when tab completing"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "allowempty", "Allow empty tab completion",
-                "Attempt to tab complete when the Tab key is pressed even " +
-                "if there is nothing to complete"));
+                "Attempt to tab complete when the Tab key is pressed even "
+                + "if there is nothing to complete"));
 
         parent.addSubCategory(category.setInline());
     }
@@ -211,27 +211,27 @@ public class PreferencesManager {
                 "Close channel windows when you manually disconnect from the server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsondisconnect",
-                "Close channels on disconnect", "Close channel windows when " +
-                "the server is disconnected (because of an error)"));
+                "Close channels on disconnect", "Close channel windows when "
+                + "the server is disconnected (because of an error)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesonquit", "Close queries on quit",
                 "Close query windows when you manually disconnect from the server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesondisconnect",
-                "Close queries on disconnect", "Close query windows when " +
-                "the server is disconnected (because of an error)"));
+                "Close queries on disconnect", "Close query windows when "
+                + "the server is disconnected (because of an error)"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimer", "Ping warning time",
-                "How long to wait after a ping reply is sent before showing " +
-                "a warning message"));
+                "How long to wait after a ping reply is sent before showing "
+                + "a warning message"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimeout", "Ping timeout",
-                "How long to wait for a server to reply to a PING request " +
-                "before assuming the server has died"));
+                "How long to wait for a server to reply to a PING request "
+                + "before assuming the server has died"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingfrequency", "Ping frequency",
-                "How often a PING request should be sent to the server (to " +
-                "check that it is still alive)"));
+                "How often a PING request should be sent to the server (to "
+                + "check that it is still alive)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectonconnectfailure", "Reconnect on failure",
                 "Attempt to reconnect if there is an error when connecting"));
@@ -381,8 +381,8 @@ public class PreferencesManager {
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "uselaunchdelay", "Use browser launch delay",
-                "Enable delay between browser launches (to prevent mistakenly" +
-                " double clicking)"));
+                "Enable delay between browser launches (to prevent mistakenly"
+                + " double clicking)"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "browser", "launchdelay", "Browser launch delay",
                 "Minimum time between opening of URLs if enabled"));
@@ -393,8 +393,8 @@ public class PreferencesManager {
                 "general", "logerrors", "Log errors to disk",
                 "Save copies of all client errors to disk"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "quickCopy", "Quick copy", "Automatically copy" +
-                " text that's selected when the mouse button is released"));
+                "ui", "quickCopy", "Quick copy", "Automatically copy"
+                + " text that's selected when the mouse button is released"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "showversion", "Show version",
                 "Show the current DMDirc version in the titlebar"));
@@ -420,11 +420,11 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting("general", "ui", "Active UI",
                 "User interface to use", uiOptions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                "ui", "backgroundcolour", "Background colour", "Default " +
-                "background colour to use"));
+                "ui", "backgroundcolour", "Background colour", "Default "
+                + "background colour to use"));
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                "ui", "foregroundcolour", "Foreground colour", "Default " +
-                "foreground colour to use"));
+                "ui", "foregroundcolour", "Foreground colour", "Default "
+                + "foreground colour to use"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "inputbackgroundcolour", "Input background colour",
                 "Default background colour to use for input fields"));
@@ -457,20 +457,20 @@ public class PreferencesManager {
      * @since 0.6.4
      */
     private void addStyleSubCategory(PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Link styles" +
-                " and colours", "");
+        final PreferencesCategory category = new PreferencesCategory("Link styles"
+                + " and colours", "");
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "stylelinks", "Style hyperlinks", "Style hyperlinks in " +
-                "text areas with underlines"));
+                "ui", "stylelinks", "Style hyperlinks", "Style hyperlinks in "
+                + "text areas with underlines"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "linkcolour", "Hyperlink colour", "Default colour to use " +
-                "for hyperlinks in the text area"));
+                "ui", "linkcolour", "Hyperlink colour", "Default colour to use "
+                + "for hyperlinks in the text area"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "stylechannels", "Style channel links", "Styles channel " +
-                "links in text areas with underlines"));
+                "ui", "stylechannels", "Style channel links", "Styles channel "
+                + "links in text areas with underlines"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "channelcolour", "Channel link colour", "Default colour to use " +
-                "for channel links in the text area"));
+                "ui", "channelcolour", "Channel link colour", "Default colour to use "
+                + "for channel links in the text area"));
 
         parent.addSubCategory(category.setInline());
     }

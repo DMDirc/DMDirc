@@ -43,20 +43,20 @@ import java.util.List;
  * @author chris
  */
 public final class AliasWrapper extends ActionGroup {
-    
+
     /** Singleton instance of the alias wrapper. */
     private static AliasWrapper me;
-    
+
     /** A list of registered alias names. */
     private final List<String> aliases = new ArrayList<String>();
-    
+
     /**
      * Creates a new instance of AliasWrapper.
      */
     private AliasWrapper() {
         super("aliases");
     }
-    
+
     /**
      * Retrieves a singleton instance of this alias wrapper.
      *
@@ -66,24 +66,24 @@ public final class AliasWrapper extends ActionGroup {
         if (me == null) {
             me = new AliasWrapper();
         }
-        
+
         return me;
     }
-    
+
     /**
      * Retrieves a list of alias names registered with this wrapper.
-     * 
+     *
      * @return A list of alias names
      */
     public List<String> getAliases() {
         return new ArrayList<String>(aliases);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void add(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
-            
+
             final String commandName = getCommandName(action);
 
             if (commandName != null) {
@@ -107,23 +107,23 @@ public final class AliasWrapper extends ActionGroup {
                     + action.getName());
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void remove(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
             super.remove(action);
-            
+
             final String commandName = getCommandName(action);
-            
+
             aliases.remove(commandName);
-            
+
             for (Server server : ServerManager.getServerManager().getServers()) {
                 server.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
             }
         }
     }
-    
+
     /**
      * Retrieves the command name of the specified alias action.
      *
@@ -137,7 +137,7 @@ public final class AliasWrapper extends ActionGroup {
                 return CommandManager.getCommandChar() + condition.getTarget();
             }
         }
-        
+
         // How can we have an alias without a command name?
         return null;
     }
@@ -155,5 +155,5 @@ public final class AliasWrapper extends ActionGroup {
                 + "more other commands. You can manage aliases using the \""
                 + "Alias Manager\", located in the Settings menu.";
     }
-    
+
 }

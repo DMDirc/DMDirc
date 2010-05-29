@@ -39,21 +39,21 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Sends a names request.
- * 
+ *
  * @author chris
  */
 @CommandOptions(allowOffline=false)
-public class Names extends Command implements IntelligentCommand, 
+public class Names extends Command implements IntelligentCommand,
         ExternalCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of Names.
      */
     public Names() {
         super();
-        
+
         CommandManager.registerCommand(this);
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -63,14 +63,14 @@ public class Names extends Command implements IntelligentCommand,
         channel.getServer().getParser().sendRawMessage("NAMES "
                 + channel.getChannelInfo().getName());
     }
-    
+
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel);
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override

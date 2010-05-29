@@ -28,17 +28,17 @@ import java.util.List;
 
 /**
  * Represents an abstract, UI-independent popup menu.
- * 
+ *
  * @author chris
  */
 public class PopupMenu {
-    
+
     /** The items contained within this popup menu. */
     private final List<PopupMenuItem> items = new ArrayList<PopupMenuItem>();
-    
+
     /**
      * Retrieves a list of items contained within this popup menu.
-     * 
+     *
      * @return A list of this popup menu's items.
      */
     public List<PopupMenuItem> getItems() {
@@ -47,7 +47,7 @@ public class PopupMenu {
 
     /**
      * Adds the specified item to this popup menu.
-     * 
+     *
      * @param e The item to be added to the popup menu.
      */
     public void add(final PopupMenuItem e) {
@@ -56,11 +56,11 @@ public class PopupMenu {
 
     /**
      * Adds all of the items in the specified collection to this popup menu.
-     * 
+     *
      * @param c The collection whose items should be added.
      */
     public void addAll(final Collection<? extends PopupMenuItem> c) {
         items.addAll(c);
-    }    
+    }
 
 }

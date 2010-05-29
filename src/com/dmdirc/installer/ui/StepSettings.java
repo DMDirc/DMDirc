@@ -83,8 +83,8 @@ public final class StepSettings extends SwingStep implements Settings {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
-        add(new TextLabel("Here you can choose options for the install." +
-                          "\n\nInstall Location:"), constraints);
+        add(new TextLabel("Here you can choose options for the install."
+                + "\n\nInstall Location:"), constraints);
 
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 1;

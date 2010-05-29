@@ -38,20 +38,20 @@ import java.net.URISyntaxException;
 
 /**
  * The /server command allows the user to connect to a new server.
- * 
+ *
  * @author chris
  */
 public final class ChangeServer extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of ChangeServer.
      */
     public ChangeServer() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -79,13 +79,13 @@ public final class ChangeServer extends Command implements CommandInfo {
 
         server.connect(address, server.getProfile());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "server";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -97,11 +97,11 @@ public final class ChangeServer extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "server <host[:[+]port]> [password] - connect to a different server";
     }
-    
+
 }

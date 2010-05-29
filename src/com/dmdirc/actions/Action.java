@@ -144,11 +144,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
         location = dir + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
         new File(dir).mkdirs();
-        
+
         ActionManager.processEvent(CoreActionType.ACTION_CREATED, null, this);
 
         save();
-        
+
         ActionManager.registerAction(this);
     }
 
@@ -178,8 +178,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         if (config.isFlatDomain(DOMAIN_FORMAT)) {
-            newFormat = config.getFlatDomain(DOMAIN_FORMAT).size() == 0 ? "" :
-                config.getFlatDomain(DOMAIN_FORMAT).get(0);
+            newFormat = config.getFlatDomain(DOMAIN_FORMAT).size() == 0 ? ""
+                    : config.getFlatDomain(DOMAIN_FORMAT).get(0);
         }
 
         for (int cond = 0; config.isKeyDomain("condition " + cond); cond++) {
@@ -237,11 +237,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
             if (data.containsKey("author")) {
                 myGroup.setAuthor(data.get("author"));
             }
-            
+
             if (data.containsKey("version")) {
                 myGroup.setVersion(new Version(data.get("version")));
             }
-            
+
             if (data.containsKey("component")) {
                 try {
                     myGroup.setComponent(Integer.parseInt(data.get("component")));
@@ -254,7 +254,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         for (int i = 0; config.isKeyDomain("setting " + i); i++) {
             final ActionGroup myGroup = ActionManager.getGroup(group);
             final Map<String, String> data = config.getKeyDomain("setting " + i);
-            
+
             if (data.containsKey("type") && data.containsKey("setting")
                     && data.containsKey("title") && data.containsKey("default")
                     && data.containsKey("tooltip")) {
@@ -268,7 +268,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
     /**
      * Loads a list of triggers with the specified names.
-     * 
+     *
      * @param newTriggers A list of trigger names
      * @return True if all triggers are valid and compatible, false otherwise.
      */
@@ -297,7 +297,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         if (!isModified()) {
             return;
         }
-        
+
         final ConfigFile newConfig = new ConfigFile(location);
 
         final List<String> triggerNames = new ArrayList<String>();
@@ -346,13 +346,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final Map<String, String> data = new HashMap<String, String>();
 
             data.put("argument", String.valueOf(condition.getArg()));
-            
+
             if (condition.getArg() == -1) {
                 data.put("starget", condition.getStarget());
             } else {
                 data.put("component", condition.getComponent().toString());
             }
-            
+
             data.put("comparison", condition.getComparison().toString());
             data.put("target", condition.getTarget());
 
@@ -384,7 +384,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
     /**
      * Reads a condition from the specified configuration section.
-     * 
+     *
      * @param data The relevant section of the action configuration
      * @return True if the condition is valid, false otherwise
      */
@@ -413,7 +413,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         if (arg == -1) {
             starget = data.get("starget");
-            
+
             if (starget == null) {
                 error("No starget specified");
                 return false;
@@ -422,7 +422,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             component = readComponent(data, arg);
             if (component == null) {
                 return false;
-            }            
+            }
         }
 
         // ------ Read the comparison
@@ -433,7 +433,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             return false;
         }
 
-        if ((arg != -1 && !comparison.appliesTo().equals(component.getType())) 
+        if ((arg != -1 && !comparison.appliesTo().equals(component.getType()))
             || (arg == -1 && !comparison.appliesTo().equals(String.class))) {
             error("Comparison cannot be applied to specified component: " + data.get("comparison"));
             return false;
@@ -453,13 +453,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
         } else {
             conditions.add(new ActionCondition(arg, component, comparison, target));
         }
-        
+
         return true;
     }
 
     /**
      * Reads a component from the specified data section for the specified argument.
-     * 
+     *
      * @param data The relevant section of the action configuration
      * @param arg The argument number that the component should apply to
      * @return The corresponding ActionComponent, or null if the specified
@@ -509,7 +509,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public void setName(final String newName) {
         super.setName(newName);
 
-        new File(location).delete();        
+        new File(location).delete();
         location = ActionManager.getDirectory() + group + File.separator + newName;
 
         save();
@@ -525,7 +525,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         final String dir = ActionManager.getDirectory() + group + File.separator;
         location = dir + name;
 
-        new File(dir).mkdirs();        
+        new File(dir).mkdirs();
 
         save();
     }

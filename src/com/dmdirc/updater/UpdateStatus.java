@@ -28,30 +28,30 @@ package com.dmdirc.updater;
 public enum UpdateStatus {
 
     /** Update pending. */
-    PENDING("Pending"), 
+    PENDING("Pending"),
     /** Update downloading. */
-    DOWNLOADING("Downloading"), 
+    DOWNLOADING("Downloading"),
     /** Update installing. */
-    INSTALLING("Installing"), 
+    INSTALLING("Installing"),
     /** Update installed. */
-    INSTALLED("Installed"), 
+    INSTALLED("Installed"),
     /** Error updating. */
-    ERROR("Error"), 
+    ERROR("Error"),
     /** Update requires restart. */
     RESTART_NEEDED("Restart needed");
-    
+
     /** Friendly name. */
     private final String friendlyName;
-    
+
     /**
      * Instantiates a new update status.
-     * 
+     *
      * @param friendlyName Friendly name for the status
      */
     UpdateStatus(final String friendlyName) {
         this.friendlyName = friendlyName;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

@@ -64,7 +64,7 @@ public class ServerTest {
     @Test
     public void testDuplicateInviteRemoval() {
         server.disconnect();
-        
+
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
         server.addInvite(new Invite(server, "#chan1", "d!e@f"));
 
@@ -76,7 +76,7 @@ public class ServerTest {
     @Test
     public void testRemoveInvites() {
         server.disconnect();
-        
+
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
         server.addInvite(new Invite(server, "#chan2", "d!e@f"));
 
@@ -94,38 +94,38 @@ public class ServerTest {
         server.onSocketClosed();
         assertEquals(0, server.getInvites().size());
     }
-    
+
    /* @Test
     public void testNumericActions() throws InterruptedException {
         final TestActionListener tal = new TestActionListener();
-        
+
         server.disconnect();
-        
+
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.SERVER_NUMERIC);
-        
+
         server.reconnect();
-        
+
         Thread.sleep(1000); // Give the parser thread time to run + inject
-        
+
         assertEquals(1, tal.events.keySet().size());
         assertTrue(tal.events.containsKey(CoreActionType.SERVER_NUMERIC));
-        
+
         final int[] counts = new int[6];
-        
+
         for (Object[] args : tal.events.values(CoreActionType.SERVER_NUMERIC)) {
             counts[(Integer) args[1]]++;
             assertSame("Server arg for numeric " + args[1] + " should be same. "
                     + "Actual: " + args[0].hashCode() + " Expected: " + server.hashCode(),
                     server, args[0]);
         }
-        
+
         assertEquals(1, counts[1]);
         assertEquals(1, counts[2]);
         assertEquals(1, counts[3]);
         assertEquals(1, counts[4]);
         assertEquals(2, counts[5]);
-        
+
         server.disconnect();
     }*/
 

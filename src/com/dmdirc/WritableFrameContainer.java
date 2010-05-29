@@ -45,10 +45,10 @@ import java.util.List;
  * @author chris
  */
 public abstract class WritableFrameContainer<T extends InputWindow> extends FrameContainer<T> {
-    
+
     /** The name of the server notification target. */
     protected static final String NOTIFICATION_SERVER = "server".intern();
-    
+
     /** The name of the channel notification target. */
     protected static final String NOTIFICATION_CHANNEL = "channel".intern();
 
@@ -57,7 +57,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
     /**
      * Creates a new WritableFrameContainer.
-     * 
+     *
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
@@ -74,7 +74,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
         this.commandParser = parser;
         parser.setOwner(this);
     }
-    
+
     /**
      * Sends a line of text to this container's source.
      *
@@ -84,7 +84,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
     /**
      * Retrieves the command parser to be used for this container.
-     * 
+     *
      * @return This container's command parser
      */
     public CommandParser getCommandParser() {
@@ -97,7 +97,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
      * @return This container's tab completer
      */
     public abstract TabCompleter getTabCompleter();
-    
+
     /**
      * Returns the maximum length that a line passed to sendLine() should be,
      * in order to prevent it being truncated or causing protocol violations.
@@ -140,7 +140,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
         return result;
     }
-    
+
     /**
      * Returns the number of lines that the specified string would be sent as.
      *
@@ -150,7 +150,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
     public final int getNumLines(final String line) {
         final String[] splitLines = line.split("(\n|\r\n|\r)", Integer.MAX_VALUE);
         int lines = 0;
-        
+
         for (String splitLine : splitLines) {
             if (getMaxLineLength() <= 0) {
                 lines++;
@@ -159,7 +159,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                         / (double) getMaxLineLength());
             }
         }
-        
+
         return lines;
     }
 
@@ -175,7 +175,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             final ActionType actionType, final Object... args) {
         return doNotification(new Date(), messageType, actionType, args);
     }
-    
+
     /**
      * Processes and displays a notification.
      *
@@ -200,7 +200,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                 messageArgs.add(arg);
             }
         }
-        
+
         modifyNotificationArgs(actionArgs, messageArgs);
 
         final boolean res = ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
@@ -208,11 +208,11 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
         handleNotification(date, buffer.toString(), messageArgs.toArray());
 
         return res;
-    } 
-    
+    }
+
     /**
      * Allows subclasses to modify the lists of arguments for notifications.
-     * 
+     *
      * @param actionArgs The list of arguments to be passed to the actions system
      * @param messageArgs The list of arguments to be passed to the formatter
      */
@@ -220,10 +220,10 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             final List<Object> messageArgs) {
         // Do nothing
     }
-    
+
     /**
      * Allows subclasses to process specific types of notification arguments.
-     * 
+     *
      * @param arg The argument to be processed
      * @param args The list of arguments that any data should be appended to
      * @return True if the arg has been processed, false otherwise
@@ -243,7 +243,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
     public void handleNotification(final String messageType, final Object... args) {
         handleNotification(new Date(), messageType, args);
     }
-    
+
     /**
      * Handles general server notifications (i.e., ones not tied to a
      * specific window). The user can select where the notifications should
@@ -258,10 +258,10 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                 messageType) ? getConfigManager().getOption("notifications", messageType)
                 : "self", args);
     }
-    
+
     /**
      * Despatches a notification of the specified type to the specified target.
-     * 
+     *
      * @param date The date/time at which the event occured
      * @param messageType The type of the message that is being sent
      * @param messageTarget The target of the message
@@ -269,10 +269,10 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
      */
     protected void despatchNotification(final Date date, final String messageType,
             final String messageTarget, final Object... args) {
-        
+
         String target = messageTarget;
         String format = messageType;
-        
+
         if (target.startsWith("format:")) {
             format = target.substring(7);
             format = format.substring(0, format.indexOf(':'));
@@ -284,12 +284,12 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
                     ? getConfigManager().getOption("notifications", target.substring(6))
                     : "self";
         }
-        
+
         if (target.startsWith("fork:")) {
             for (String newtarget : target.substring(5).split("\\|")) {
                 despatchNotification(date, format, newtarget, args);
             }
-            
+
             return;
         }
 
@@ -324,7 +324,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             long besttime = 0;
 
             final List<FrameContainer<?>> containers = new ArrayList<FrameContainer<?>>();
-            
+
             containers.add(getServer());
             containers.addAll(getServer().getChildren());
 
@@ -390,6 +390,6 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
         }
-    }          
-    
+    }
+
 }

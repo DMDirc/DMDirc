@@ -506,7 +506,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
 
-                    for (Map.Entry<String, String> subentry : 
+                    for (Map.Entry<String, String> subentry :
                         new HashSet<Map.Entry<String, String>>(entry.getValue().entrySet())) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();

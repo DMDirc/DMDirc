@@ -56,17 +56,17 @@ public class JoinChannelCommand extends Command implements
     /** A map of channel name mentions. */
     private final MapList<FrameContainer<?>, String> mentions
             = new MapList<FrameContainer<?>, String>();
-    
+
     /**
      * Creates a new instance of the join channel command.
      */
     public JoinChannelCommand() {
         super();
-        
+
         CommandManager.registerCommand(this);
         ActionManager.addListener(this, CoreActionType.CLIENT_LINE_ADDED);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -92,14 +92,14 @@ public class JoinChannelCommand extends Command implements
 
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[0]));
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "join";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -111,7 +111,7 @@ public class JoinChannelCommand extends Command implements
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -208,5 +208,5 @@ public class JoinChannelCommand extends Command implements
 
         return results;
     }
-    
+
 }

@@ -37,39 +37,39 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  * @author chris
  */
 public final class Reconnect extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of Reconnect.
      */
     public Reconnect() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         final String line;
-        
+
         if (args.getArguments().length == 0) {
             line = origin.getConfigManager().getOption("general", "reconnectmessage");
         } else {
             line = args.getArgumentsAsString();
         }
-        
+
         server.reconnect(line);
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "reconnect";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -81,11 +81,11 @@ public final class Reconnect extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "reconnect [reason] - reconnect to this server";
     }
-    
+
 }

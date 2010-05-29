@@ -26,39 +26,39 @@ import java.util.Date;
 
 /**
  * Stores information about a previously executed command.
- * 
+ *
  * @author chris
  */
 public final class PreviousCommand {
-   
+
     /** The full command that was executed. */
     private final String line;
-    
+
     /** The timestamp of its execution. */
     private final long time;
-    
+
     /**
      * Creates a new record of the specified command.
-     * 
+     *
      * @param line The full command that was executed
      */
     public PreviousCommand(final String line) {
         this.line = line;
         this.time = new Date().getTime();
     }
-    
+
     /**
      * Retrieves the time that the command was executed at.
-     * 
+     *
      * @return The timestamp that the command was executed at
      */
     public long getTime() {
         return time;
     }
-    
+
     /**
      * Retrieves the command that was executed.
-     * 
+     *
      * @return The command that was executed.
      */
     public String getLine() {
@@ -71,17 +71,17 @@ public final class PreviousCommand {
         if (obj == null) {
             return false;
         }
-        
+
         if (getClass() != obj.getClass()) {
             return false;
         }
-        
+
         final PreviousCommand other = (PreviousCommand) obj;
         if (this.line != other.line
                 && (this.line == null || !this.line.equals(other.line))) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -92,5 +92,5 @@ public final class PreviousCommand {
         hash = 97 * hash + (this.line == null ? 0 : this.line.hashCode());
         return hash;
     }
-    
+
 }

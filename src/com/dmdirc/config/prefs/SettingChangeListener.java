@@ -24,14 +24,14 @@ package com.dmdirc.config.prefs;
 
 /**
  * Defines the methods required for setting change listeners.
- * 
+ *
  * @author chris
  */
 public interface SettingChangeListener {
-    
+
     /**
      * Called to indicate that the specified setting has changed.
-     * 
+     *
      * @param setting The setting that was changed
      */
     void settingChanged(final PreferencesSetting setting);

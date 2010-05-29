@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Stores a program error.
  */
 public final class ProgramError implements Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -61,19 +61,19 @@ public final class ProgramError implements Serializable {
 
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
-    
+
     /** Error ID. */
     private final long id;
-    
+
     /** Error icon. */
     private final ErrorLevel level;
-    
+
     /** Error message. */
     private final String message;
-    
+
     /** Error trace. */
     private final String[] trace;
-    
+
     /** Date/time error first occurred. */
     private final Date firstDate;
 
@@ -82,13 +82,13 @@ public final class ProgramError implements Serializable {
 
     /** Number of occurrences. */
     private AtomicInteger count;
-    
+
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
-    
+
     /** Error fixed Status. */
     private ErrorFixedStatus fixedStatus;
-    
+
     /**
      * Creates a new instance of ProgramError.
      *
@@ -100,27 +100,27 @@ public final class ProgramError implements Serializable {
      */
     public ProgramError(final long id, final ErrorLevel level,
             final String message, final String[] trace, final Date date) {
-        
+
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
         }
-        
+
         if (level == null) {
             throw new IllegalArgumentException("Level cannot be null");
         }
-        
+
         if (message == null || message.isEmpty()) {
             throw new IllegalArgumentException("Message cannot be null or an empty string");
         }
-        
+
         if (trace == null) {
             throw new IllegalArgumentException("Trace cannot be null");
         }
-        
+
         if (date == null) {
             throw new IllegalArgumentException("date cannot be null");
         }
-        
+
         this.id = id;
         this.level = level;
         this.message = message;
@@ -131,7 +131,7 @@ public final class ProgramError implements Serializable {
         this.reportStatus = ErrorReportStatus.WAITING;
         this.fixedStatus = ErrorFixedStatus.UNKNOWN;
     }
-    
+
     /**
      * Returns this errors level.
      *
@@ -140,7 +140,7 @@ public final class ProgramError implements Serializable {
     public ErrorLevel getLevel() {
         return level;
     }
-    
+
     /**
      * Returns this errors message.
      *
@@ -149,7 +149,7 @@ public final class ProgramError implements Serializable {
     public String getMessage() {
         return message;
     }
-    
+
     /**
      * Returns this errors trace.
      *
@@ -158,7 +158,7 @@ public final class ProgramError implements Serializable {
     public String[] getTrace() {
         return Arrays.copyOf(trace, trace.length);
     }
-    
+
     /**
      * Returns this errors time.
      *
@@ -185,28 +185,28 @@ public final class ProgramError implements Serializable {
     public Date getLastDate() {
         return (Date) lastDate.clone();
     }
-    
+
     /**
      * Returns the reportStatus of this error.
-     * 
+     *
      * @return Error reportStatus
      */
     public ErrorReportStatus getReportStatus() {
         return reportStatus;
     }
-    
+
     /**
      * Returns the fixed status of this error.
-     * 
+     *
      * @return Error fixed status
      */
     public ErrorFixedStatus getFixedStatus() {
         return fixedStatus;
     }
-    
+
     /**
      * Sets the report Status of this error.
-     * 
+     *
      * @param newStatus new ErrorReportStatus for the error
      */
     public void setReportStatus(final ErrorReportStatus newStatus) {
@@ -219,10 +219,10 @@ public final class ProgramError implements Serializable {
             }
         }
     }
-    
+
     /**
      * Sets the fixed status of this error.
-     * 
+     *
      * @param newStatus new ErrorFixedStatus for the error
      */
     public void setFixedStatus(final ErrorFixedStatus newStatus) {
@@ -235,7 +235,7 @@ public final class ProgramError implements Serializable {
             }
         }
     }
-    
+
     /**
      * Returns the ID of this error.
      *
@@ -258,7 +258,7 @@ public final class ProgramError implements Serializable {
         for (String traceLine : getTrace()) {
             out.println('\t' + traceLine);
         }
-        
+
         out.close();
     }
 
@@ -270,7 +270,7 @@ public final class ProgramError implements Serializable {
     @SuppressWarnings("PMD.SystemPrintln")
     private OutputStream getErrorFile() {
         WRITING_SEM.acquireUninterruptibly();
-        
+
         if (errorDir == null || !errorDir.exists()) {
             errorDir = new File(Main.getConfigDir() + "errors");
             if (!errorDir.exists()) {
@@ -447,7 +447,7 @@ public final class ProgramError implements Serializable {
                     getDate()) + " and " + format.format(getLastDate()) + ".";
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
@@ -461,24 +461,24 @@ public final class ProgramError implements Serializable {
         if (obj == null) {
             return false;
         }
-        
+
         if (getClass() != obj.getClass()) {
             return false;
         }
-        
+
         final ProgramError other = (ProgramError) obj;
         if (this.level != other.level) {
             return false;
         }
-        
+
         if (!this.message.equals(other.message)) {
             return false;
         }
-        
+
         if (!Arrays.equals(this.trace, other.trace)) {
             return false;
         }
-        
+
         return true;
     }
 

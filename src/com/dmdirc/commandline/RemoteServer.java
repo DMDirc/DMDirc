@@ -36,40 +36,40 @@ import java.util.List;
 
 /**
  * An RMI server that allows other clients to interact with DMDirc.
- * 
+ *
  * @author chris
  */
 public class RemoteServer implements RemoteInterface {
-    
+
     /** The minimum port to use for RMI binding. */
     private static final int MINPORT = 3634;
     /** The maximum port to use for RMI binding. */
     private static final int MAXPORT = MINPORT + 5;
     /** The interface we're exposing. */
     private static final RemoteServer SERVER = new RemoteServer();
-    
+
     /** {@inheritDoc} */
     @Override
     public void connect(final List<URI> addresses) throws RemoteException {
         for (URI address : addresses) {
             ServerManager.getServerManager().connectToAddress(address);
         }
-    }    
-    
+    }
+
     /**
      * Binds to the RMI registry so that other clients may find this remote
      * server.
      */
     public static void bind() {
         RemoteInterface stub;
-        
+
         try {
             stub = (RemoteInterface) UnicastRemoteObject.exportObject(SERVER, 0);
         } catch (RemoteException ex) {
             Logger.appError(ErrorLevel.MEDIUM, "Unable to export remote interface", ex);
             return;
         }
-        
+
         for (int port = MINPORT; port < MAXPORT; port++) {
             try {
                 final Registry registry = LocateRegistry.createRegistry(port);
@@ -80,12 +80,12 @@ public class RemoteServer implements RemoteInterface {
             }
         }
     }
-    
+
     /**
      * Retrieves a reference to an existing RemoteServer, if there is one.
      * Note that this must be called before bind(), unless you want a reference
      * to our own client for some reason.
-     * 
+     *
      * @return The RemoteServer instance, or null if none was available
      */
     public static RemoteInterface getServer() {
@@ -93,7 +93,7 @@ public class RemoteServer implements RemoteInterface {
             try {
                 final Registry registry = LocateRegistry.getRegistry("localhost", port);
                 final RemoteInterface iface = (RemoteInterface) registry.lookup("DMDirc");
-                
+
                 if (iface == null) {
                     continue;
                 } else {
@@ -105,7 +105,7 @@ public class RemoteServer implements RemoteInterface {
                 continue;
             }
         }
-        
+
         // No RMI server found
         return null;
     }

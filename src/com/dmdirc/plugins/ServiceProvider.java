@@ -48,7 +48,7 @@ public interface ServiceProvider {
 
     /**
      * Get the name of this provider.
-     * 
+     *
      * @return This provider's name
      */
     String getProviderName();

@@ -42,27 +42,27 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-    
+
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
- * 
+ *
  * @author chris
  */
 public final class IdentityManager {
-    
+
     /**
      * The identities that have been loaded into this manager.
-     * 
+     *
      * Standard identities are inserted with a <code>null</code> key, custom
      * identities use their custom type as the key.
      */
     private static final MapList<String, Identity> IDENTITIES
             = new MapList<String, Identity>();
-    
+
     /**
      * The {@link IdentityListener}s that have registered with this manager.
-     * 
+     *
      * Listeners for standard identities are inserted with a <code>null</code>
      * key, listeners for a specific custom type use their type as the key.
      */
@@ -72,26 +72,26 @@ public final class IdentityManager {
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
             .Logger.getLogger(IdentityManager.class.getName());
-    
+
     /** The identity file used for the global config. */
     private static Identity config;
-    
+
     /** The identity file used for addon defaults. */
     private static Identity addonConfig;
 
     /** The identity file bundled with the client containing version info. */
     private static Identity versionConfig;
-    
+
     /** The config manager used for global settings. */
     private static ConfigManager globalconfig;
-    
+
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
     }
-    
+
     /**
      * Loads all identity files.
-     * 
+     *
      * @throws InvalidIdentityFileException If there is an error with the config
      *                                      file.
      */
@@ -103,7 +103,7 @@ public final class IdentityManager {
         loadDefaults();
         loadUser();
         loadConfig();
-        
+
         if (getProfiles().size() == 0) {
             try {
                 Identity.buildProfile("Default Profile");
@@ -111,31 +111,31 @@ public final class IdentityManager {
                 Logger.userError(ErrorLevel.FATAL, "Unable to write default profile", ex);
             }
         }
-        
+
         // Set up the identity used for the addons defaults
         final ConfigTarget target = new ConfigTarget();
         target.setGlobalDefault();
         target.setOrder(500000);
-        
+
         final ConfigFile addonConfigFile = new ConfigFile((File) null);
         final Map<String, String> addonSettings = new HashMap<String, String>();
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
-        
+
         addonConfig = new Identity(addonConfigFile, target);
         IdentityManager.addIdentity(addonConfig);
-        
+
         if (!getGlobalConfig().hasOptionString("identity", "defaultsversion")) {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
                     + "could not be loaded");
         }
     }
-    
+
     /** Loads the default (built in) identities. */
     private static void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
         final String dir = getDirectory();
-        
+
         for (String target : targets) {
             File file = new File(dir + target);
 
@@ -191,11 +191,11 @@ public final class IdentityManager {
                     + "formatters: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Extracts the specific set of default identities to the user's identity
      * folder.
-     * 
+     *
      * @param target The target to be extracted
      */
     private static void extractIdentities(final String target) {
@@ -211,17 +211,17 @@ public final class IdentityManager {
 
     /**
      * Retrieves the directory used to store identities in.
-     * 
+     *
      * @return The identity directory path
      */
     public static String getDirectory() {
-        return Main.getConfigDir() + "identities" + System.getProperty("file.separator"); 
+        return Main.getConfigDir() + "identities" + System.getProperty("file.separator");
     }
-    
+
     /** Loads user-defined identity files. */
     public static void loadUser() {
         final File dir = new File(getDirectory());
-        
+
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
@@ -230,13 +230,13 @@ public final class IdentityManager {
                 Logger.userError(ErrorLevel.MEDIUM, "Unable to create identity dir");
             }
         }
-        
+
         loadUser(dir);
     }
-     
+
     /**
      * Recursively loads files from the specified directory.
-     * 
+     *
      * @param dir The directory to be loaded
      */
     @Precondition({
@@ -246,7 +246,7 @@ public final class IdentityManager {
     private static void loadUser(final File dir) {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
-        
+
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Unable to load user identity files from "
@@ -261,11 +261,11 @@ public final class IdentityManager {
             }
         }
     }
-    
+
     /**
      * Loads an identity from the specified file. If the identity already
      * exists, it is told to reload instead.
-     * 
+     *
      * @param file The file to load the identity from.
      */
     private static void loadIdentity(final File file) {
@@ -286,7 +286,7 @@ public final class IdentityManager {
                 }
             }
         }
-        
+
         try {
             addIdentity(new Identity(file, false));
         } catch (InvalidIdentityFileException ex) {
@@ -341,21 +341,21 @@ public final class IdentityManager {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         }
     }
-    
+
     /**
      * Loads the config identity.
-     * 
+     *
      * @throws InvalidIdentityFileException if there is a problem with the
      * config file.
      */
     private static void loadConfig() throws InvalidIdentityFileException {
         try {
             final File file = new File(Main.getConfigDir() + "dmdirc.config");
-            
+
             if (!file.exists()) {
                 file.createNewFile();
             }
-            
+
             config = new Identity(file, true);
             config.setOption("identity", "name", "Global config");
             addIdentity(config);
@@ -364,7 +364,7 @@ public final class IdentityManager {
                     + ex.getMessage(), ex);
         }
     }
-    
+
     /**
      * Retrieves the identity used for the global config.
      *
@@ -373,10 +373,10 @@ public final class IdentityManager {
     public static Identity getConfigIdentity() {
         return config;
     }
-    
+
     /**
      * Retrieves the identity used for addons defaults.
-     * 
+     *
      * @return The addons defaults identity
      */
     public static Identity getAddonIdentity() {
@@ -393,7 +393,7 @@ public final class IdentityManager {
     public static Identity getVersionIdentity() {
         return versionConfig;
     }
-    
+
     /**
      * Saves all modified identity files to disk.
      */
@@ -404,7 +404,7 @@ public final class IdentityManager {
             }
         }
     }
-    
+
     /**
      * Adds the specific identity to this manager.
      * @param identity The identity to be added
@@ -431,7 +431,7 @@ public final class IdentityManager {
             }
         }
     }
-    
+
     /**
      * Removes an identity from this manager.
      * @param identity The identity to be removed
@@ -446,18 +446,18 @@ public final class IdentityManager {
         final String group = getGroup(identity);
 
         Logger.assertTrue(IDENTITIES.containsValue(group, identity));
-        
+
         synchronized (IDENTITIES) {
             IDENTITIES.remove(group, identity);
         }
-        
+
         synchronized (LISTENERS) {
             for (IdentityListener listener : LISTENERS.safeGet(group)) {
                 listener.identityRemoved(identity);
             }
         }
     }
-    
+
     /**
      * Adds a config manager to this manager.
      *
@@ -493,12 +493,12 @@ public final class IdentityManager {
     @Precondition("The specified listener is not null")
     public static void addIdentityListener(final String type, final IdentityListener listener) {
         Logger.assertTrue(listener != null);
-        
+
         synchronized (LISTENERS) {
             LISTENERS.add(type, listener);
         }
     }
-    
+
     /**
      * Retrieves a list of identities that serve as profiles.
      *
@@ -521,18 +521,18 @@ public final class IdentityManager {
     public static List<Identity> getCustomIdentities(final String type) {
         return Collections.unmodifiableList(IDENTITIES.safeGet(type));
     }
-    
+
     /**
      * Retrieves a list of all config sources that should be applied to the
      * specified config manager.
-     * 
+     *
      * @param manager The manager requesting sources
      * @return A list of all matching config sources
      */
     public static List<Identity> getSources(final ConfigManager manager) {
-        
+
         final List<Identity> sources = new ArrayList<Identity>();
-        
+
         synchronized (IDENTITIES) {
             for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (manager.identityApplies(identity)) {
@@ -540,12 +540,12 @@ public final class IdentityManager {
                 }
             }
         }
-        
+
         Collections.sort(sources);
-        
+
         return sources;
     }
-    
+
     /**
      * Retrieves the global config manager.
      *
@@ -555,10 +555,10 @@ public final class IdentityManager {
         if (globalconfig == null) {
             globalconfig = new ConfigManager("", "", "", "");
         }
-        
+
         return globalconfig;
     }
-    
+
     /**
      * Retrieves the config for the specified channel@network. The config is
      * created if it doesn't exist.
@@ -576,14 +576,14 @@ public final class IdentityManager {
             throw new IllegalArgumentException("getChannelConfig called "
                     + "with null or empty network\n\nNetwork: " + network);
         }
-        
+
         if (channel == null || channel.isEmpty()) {
             throw new IllegalArgumentException("getChannelConfig called "
                     + "with null or empty channel\n\nChannel: " + channel);
-        }        
+        }
 
         final String myTarget = (channel + "@" + network).toLowerCase();
-        
+
         synchronized (IDENTITIES) {
             for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
@@ -592,7 +592,7 @@ public final class IdentityManager {
                 }
             }
         }
-        
+
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
@@ -604,7 +604,7 @@ public final class IdentityManager {
             return null;
         }
     }
-    
+
     /**
      * Retrieves the config for the specified network. The config is
      * created if it doesn't exist.
@@ -620,7 +620,7 @@ public final class IdentityManager {
         }
 
         final String myTarget = network.toLowerCase();
-        
+
         synchronized (IDENTITIES) {
             for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
@@ -629,11 +629,11 @@ public final class IdentityManager {
                 }
             }
         }
-        
+
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork(myTarget);
-        
+
         try {
             return Identity.buildIdentity(target);
         } catch (IOException ex) {
@@ -641,11 +641,11 @@ public final class IdentityManager {
             return null;
         }
     }
-    
+
     /**
      * Retrieves the config for the specified server. The config is
      * created if it doesn't exist.
-     * 
+     *
      * @param server The name of the server
      * @return A config source for the server
      */
@@ -655,9 +655,9 @@ public final class IdentityManager {
             throw new IllegalArgumentException("getServerConfig called "
                     + "with null or empty server\n\nServer: " + server);
         }
-        
+
         final String myTarget = server.toLowerCase();
-        
+
         synchronized (IDENTITIES) {
             for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
@@ -666,17 +666,17 @@ public final class IdentityManager {
                 }
             }
         }
-        
+
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setServer(myTarget);
-        
+
         try {
             return Identity.buildIdentity(target);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
             return null;
         }
-    }    
-    
+    }
+
 }

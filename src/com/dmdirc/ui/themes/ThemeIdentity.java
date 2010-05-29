@@ -35,17 +35,17 @@ import java.io.InputStream;
  * @author Chris
  */
 public class ThemeIdentity extends Identity {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The theme that owns this identity. */
     private final Theme theme;
-    
+
     /**
      * Creates a new instance of ThemeIdentity.
      *
@@ -57,11 +57,11 @@ public class ThemeIdentity extends Identity {
     public ThemeIdentity(final InputStream stream, final Theme theme) throws IOException,
             InvalidIdentityFileException {
         super(stream, true);
-        
+
         myTarget.setTheme();
         this.theme = theme;
     }
-    
+
     /** {@inheritDoc} */
     @Override @Deprecated
     public boolean hasOption(final String domain, final String option) {
@@ -78,7 +78,7 @@ public class ThemeIdentity extends Identity {
     @Override
     public String getOption(final String domain, final String option) {
         final String result = super.getOption(domain, option);
-        
+
         if (result == null) {
             return result;
         } else {
@@ -91,5 +91,5 @@ public class ThemeIdentity extends Identity {
     public String getName() {
         return "Theme UI config: " + super.getName();
     }
-    
+
 }

@@ -33,30 +33,30 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class StyliserTest {
-    
+
     @Before
     public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
-    
+
     @Test
     public void testStripControlCodes1() {
         String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
-        
+
         String expResult = "This is a test";
         String result = Styliser.stipControlCodes(input);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testStripControlCodes2() {
         String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
-        
+
         String expResult = "This is a test";
         String result = Styliser.stipControlCodes(input);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testReadUntilControl1() {
         String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
@@ -64,7 +64,7 @@ public class StyliserTest {
         String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testReadUntilControl2() {
         String input = "This"+((char) 17)+" is "+((char) 17)+"a test";
@@ -72,7 +72,7 @@ public class StyliserTest {
         String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testReadUntilControl3() {
         String input = ((char) 31)+" is "+((char) 17)+"a test";
@@ -80,7 +80,7 @@ public class StyliserTest {
         String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testNegation() {
         final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
@@ -89,9 +89,9 @@ public class StyliserTest {
         final FrameContainer<?> container = mock(FrameContainer.class);
         final ConfigManager manager = mock(ConfigManager.class);
         when(container.getConfigManager()).thenReturn(manager);
-        
+
         final Styliser styliser = new Styliser(container);
-        
+
         for (int i = 0; i < input2.length(); i++) {
             final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1})
                     .getLogicalStyle(i).getAttributeNames();
@@ -105,5 +105,5 @@ public class StyliserTest {
             assertFalse(res1.hasMoreElements());
         }
     }
-    
+
 }

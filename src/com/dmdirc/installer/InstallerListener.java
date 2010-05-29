@@ -1,17 +1,17 @@
 /*
- * 
+ *
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -93,20 +93,19 @@ public class InstallerListener implements WizardListener, StepListener {
                     getMenuName() + " shortcut\n";
         }
 
-        if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP) &&
-            settings.getShortcutDesktopState()) {
+        if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)
+                && settings.getShortcutDesktopState()) {
             shortcutText = shortcutText + " - Create desktop shortcut\n";
         }
 
-        if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH) &&
-            settings.getShortcutQuickState()) {
+        if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)
+                && settings.getShortcutQuickState()) {
             shortcutText = shortcutText + " - Create Quick Launch shortcut\n";
         }
 
-        if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL) &&
-            settings.getShortcutProtocolState()) {
-            shortcutText = shortcutText +
-                           " - Make DMDirc handle irc:// links\n";
+        if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)
+                && settings.getShortcutProtocolState()) {
+            shortcutText = shortcutText + " - Make DMDirc handle irc:// links\n";
         }
 
 
@@ -117,16 +116,16 @@ public class InstallerListener implements WizardListener, StepListener {
             final TextStep textStep = (TextStep) step;
             if (installLocation.isEmpty()) {
                 textStep.setText(
-                        "You have chosen an invalid install location\n\n" +
-                        "Please press the \"Previous\" button to go back and correct it.");
+                        "You have chosen an invalid install location\n\n"
+                        + "Please press the \"Previous\" button to go back and correct it.");
                Main.getWizardFrame().enableNextStep(false);
             } else {
                 textStep.setText(
-                        "Please review your chosen settings:\n\n" +
-                        " - Install Location:\n" + "    " + installLocation +
-                        "\n" + shortcutText + "\n" + "If you wish to change " +
-                        "any of these settings, press the \"Previous\" " +
-                        "button, otherwise click \"Next\" to begin the installation");
+                        "Please review your chosen settings:\n\n"
+                        + " - Install Location:\n" + "    " + installLocation
+                        + "\n" + shortcutText + "\n" + "If you wish to change "
+                        + "any of these settings, press the \"Previous\" "
+                        + "button, otherwise click \"Next\" to begin the installation");
                 Main.getWizardFrame().enableNextStep(true);
            }
         }

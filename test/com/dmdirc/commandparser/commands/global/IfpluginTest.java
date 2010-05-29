@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 public class IfpluginTest {
 
     private final Ifplugin command = new Ifplugin();
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
@@ -44,17 +44,17 @@ public class IfpluginTest {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
                 new CommandContext(null, command));
-        
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
-    
+
     @Test
     public void testUsageOneArg() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo bar"),
                 new CommandContext(null, command));
-        
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
-    }    
+    }
 
 }

@@ -45,14 +45,14 @@ import com.dmdirc.ui.input.TabCompletionType;
 @CommandOptions(allowOffline=false)
 public final class KickReason extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /** Creates a new instance of KickReason. */
     public KickReason() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -62,25 +62,25 @@ public final class KickReason extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "kick", "<user> [reason]");
             return;
         }
-        
+
         final ChannelClientInfo victim = channel.getChannelInfo().getChannelClient(args
                 .getArguments()[0]);
-        
+
         if (victim == null) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "User not found: "
                     + args.getArguments()[0]);
         } else {
-            victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1) :
-                origin.getConfigManager().getOption("general", "kickmessage"));
+            victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1)
+                    : origin.getConfigManager().getOption("general", "kickmessage"));
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "kick";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -92,7 +92,7 @@ public final class KickReason extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_CHANNEL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -104,13 +104,13 @@ public final class KickReason extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             res.excludeAll();
             res.include(TabCompletionType.CHANNEL_NICK);
         }
-        
+
         return res;
     }
-    
+
 }

@@ -36,17 +36,17 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Opens a new window.
- * 
+ *
  * @author chris
  */
 public class OpenWindow extends Command implements IntelligentCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of OpenWindow.
      */
     public OpenWindow() {
         CommandManager.registerCommand(this);
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -74,15 +74,15 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
                     "[--server|--child] <name> [title]");
         } else {
             final FrameContainer<?> window;
-            
+
             if (parent == null) {
                 window = WindowManager.findCustomWindow(args.getArguments()[start]);
             } else {
                 window = WindowManager.findCustomWindow(parent, args.getArguments()[start]);
             }
-            
-            final String title = args.getArguments().length > start + 1 ?
-                args.getArgumentsAsString(start + 1): args.getArguments()[start];
+
+            final String title = args.getArguments().length > start + 1
+                ? args.getArgumentsAsString(start + 1) : args.getArguments()[start];
 
             if (window == null) {
                 if (parent == null) {
@@ -127,13 +127,13 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             res.add("--server");
             res.add("--child");
         }
-        
+
         return res;
-    } 
+    }
 
 }

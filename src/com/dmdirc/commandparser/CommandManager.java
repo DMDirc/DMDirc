@@ -46,34 +46,34 @@ import java.util.Map;
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
- * 
+ *
  * @author chris
  */
 public final class CommandManager {
-    
+
     /** A list of commands that have been instansiated. */
     private static final Map<CommandInfo, Command> COMMANDS
             = new HashMap<CommandInfo, Command>();
-    
+
     /** A list of command parsers that have been instansiated. */
     private static final MapList<CommandType, CommandParser> PARSERS
             = new MapList<CommandType, CommandParser>();
-    
+
     /** The command char we're using. */
     private static char commandChar = IdentityManager.getGlobalConfig()
             .getOptionChar("general", "commandchar");
-    
+
     /** The silence char we're using. */
     private static char silenceChar = IdentityManager.getGlobalConfig()
             .getOptionChar("general", "silencechar");
-    
+
     /**
      * Prevents creation of a new command manager.
      */
     private CommandManager() {
         // Do nothing
     }
-    
+
     /**
      * Returns the current command character.
      *
@@ -82,7 +82,7 @@ public final class CommandManager {
     public static char getCommandChar() {
         return commandChar;
     }
-    
+
     /**
      * Returns the current silence character.
      *
@@ -91,10 +91,10 @@ public final class CommandManager {
     public static char getSilenceChar() {
         return silenceChar;
     }
-    
+
     /**
      * Registers a command with the command manager.
-     * 
+     *
      * @param command The command to be registered
      * @param info The information about the command
      * @since 0.6.3m1
@@ -115,17 +115,17 @@ public final class CommandManager {
     public static <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
     }
-    
+
     /**
      * Unregisters a command with the command manager.
-     * 
+     *
      * @param info The information object for the command that should be unregistered
      * @since 0.6.3m1
      */
     public static void unregisterCommand(final CommandInfo info) {
         registerCommand(info, COMMANDS.get(info), false);
     }
-    
+
     /**
      * Registers or unregisters a command.
      *
@@ -140,7 +140,7 @@ public final class CommandManager {
         if (PARSERS.containsKey(info.getType())) {
             registerCommand(info, command, PARSERS.get(info.getType()), register);
         }
-        
+
         if (register) {
             COMMANDS.put(info, command);
         } else {
@@ -149,7 +149,7 @@ public final class CommandManager {
 
         registerCommandName(info, register);
     }
-    
+
     /**
      * Registers or unregisters the specified command with all of the specified parsers.
      *
@@ -169,7 +169,7 @@ public final class CommandManager {
             }
         }
     }
-    
+
     /**
      * Registers or unregisters the specified command's name with the relevant
      * tab completers.
@@ -186,11 +186,11 @@ public final class CommandManager {
 
         // TODO: This logic is probably in two places. Abstract it.
         for (Server server : ServerManager.getServerManager().getServers()) {
-            if (command.getType() == CommandType.TYPE_SERVER ||
-                    command.getType() == CommandType.TYPE_GLOBAL) {
+            if (command.getType() == CommandType.TYPE_SERVER
+                    || command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
             }
-            
+
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
                 for (String channelName : server.getChannels()) {
@@ -198,7 +198,7 @@ public final class CommandManager {
                             commandName, register);
                 }
             }
-            
+
             if (command.getType() == CommandType.TYPE_QUERY
                     || command.getType() == CommandType.TYPE_CHAT) {
                 for (Query query : server.getQueries()) {
@@ -208,7 +208,7 @@ public final class CommandManager {
             }
         }
     }
-    
+
     /**
      * Registers or unregisters the specified command with the specified tab-
      * completer.
@@ -226,14 +226,14 @@ public final class CommandManager {
             completer.removeEntry(TabCompletionType.COMMAND, name);
         }
     }
-        
+
     /**
      * Instansiates the default commands.
      */
     public static void initCommands() {
         // Chat commands
         new Me();
-        
+
         // Channel commands
         new Ban();
         new ChannelSettings();
@@ -245,7 +245,7 @@ public final class CommandManager {
         new Part();
         new SetNickColour();
         new ShowTopic();
-        
+
         // Server commands
         new AllChannels();
         new Away();
@@ -263,16 +263,16 @@ public final class CommandManager {
         new Reconnect();
         new ServerSettings();
         new Umode();
-        
+
         new RawServerCommand("lusers");
         new RawServerCommand("map");
         new RawServerCommand("motd");
         new RawServerCommand("oper");
         new RawServerCommand("whois");
         new RawServerCommand("who");
-        
+
         // Query commands
-        
+
         // Global commands
         new Active();
         new AliasCommand();
@@ -294,7 +294,7 @@ public final class CommandManager {
         new SaveConfig();
         new Set();
         new Input();
-        
+
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
             @Override
@@ -305,7 +305,7 @@ public final class CommandManager {
                         .getOptionChar("general", "silencechar");
             }
         };
-        
+
         IdentityManager.getGlobalConfig().addChangeListener("general", "commandchar", listener);
         IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
@@ -330,7 +330,7 @@ public final class CommandManager {
             }
         }
     }
-    
+
     /**
      * Retrieves the command identified by the specified name, regardless of
      * type.
@@ -341,10 +341,10 @@ public final class CommandManager {
     public static Map.Entry<CommandInfo, Command> getCommand(final String name) {
         return getCommand(null, name);
     }
-    
+
     /**
      * Retrieves a command of the specified type with the specified name.
-     * 
+     *
      * @param type The type of the command to look for
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
@@ -352,13 +352,13 @@ public final class CommandManager {
     public static Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
             final String name) {
         final Map<CommandInfo, Command> res = getCommands(type, name);
-        
+
         return res.isEmpty() ? null : res.entrySet().iterator().next();
-    }    
-     
+    }
+
     /**
      * Determines if the specified command is a valid channel command.
-     * 
+     *
      * @param command The name of the command to test
      * @return True iff the command is a channel command, false otherwise
      */
@@ -366,56 +366,56 @@ public final class CommandManager {
         return getCommand(CommandType.TYPE_CHANNEL, command) != null
                 || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
-       
+
     /**
      * Retrieves a list of the names of all commands of the specified type.
-     * 
+     *
      * @param type The type of command to list
      * @return A list of command names
      */
     public static List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
-        
+
         for (CommandInfo command : getCommands(type).keySet()) {
             res.add(getCommandChar() + command.getName());
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves a map of all {@link CommandInfo}s and their associated
      * {@link Command}s of the specified type.
-     * 
+     *
      * @param type The type of command to list
      * @return A map of commands
      * @since 0.6.3m1
-     */    
+     */
     public static Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
     }
-    
+
     /**
      * Retrieves a map of all commands of the specified type, with the
      * specified name.
-     * 
+     *
      * @param type The type of command to list, or null for all types
      * @param name The name of the command to look for, or null for any name
      * @return A map of {@link CommandInfo}s and their associated {@link Command}.
      * @since 0.6.3m1
-     */    
+     */
     private static Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {
         final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
-        
+
         for (Map.Entry<CommandInfo, Command> entry : COMMANDS.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
                     && (name == null || name.equals(entry.getKey().getName()))) {
                 res.put(entry.getKey(), entry.getValue());
             }
         }
-        
+
         return res;
     }
-    
+
 }

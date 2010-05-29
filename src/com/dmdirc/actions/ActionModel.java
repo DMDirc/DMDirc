@@ -61,10 +61,10 @@ public class ActionModel {
 
     /** The conditions for this action. */
     protected List<ActionCondition> conditions = new ArrayList<ActionCondition>();
-    
+
     /** The condition tree used for evaluating conditions. */
     protected ConditionTree conditionTree;
-    
+
     /** Whether this action has been modified or not. */
     protected boolean modified;
 
@@ -73,7 +73,7 @@ public class ActionModel {
 
     /** The concurrency group this action belongs to, if any. */
     protected String concurrencyGroup;
-    
+
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
@@ -83,8 +83,8 @@ public class ActionModel {
     public ActionModel(final String group, final String name) {
         this.group = group;
         this.name = name;
-    }    
-    
+    }
+
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
@@ -125,9 +125,9 @@ public class ActionModel {
     public boolean trigger(final StringBuffer format, final Object... arguments) {
         assert(triggers.length > 0);
         assert(triggers[0] != null);
-        
+
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
-        
+
         if (!test(sub, arguments)) {
             return true;
         }
@@ -168,22 +168,22 @@ public class ActionModel {
 
         return stop;
     }
-    
+
     /**
      * Tests to see if this action should be triggered or not.
-     * 
+     *
      * @param sub The ActionsSubstitutor to use to substitute args
      * @param arguments The arguments for the action event
      * @return True if the action should be executed, false otherwise
      */
     public boolean test(final ActionSubstitutor sub, final Object ... arguments) {
         final boolean[] results = new boolean[conditions.size()];
-        
+
         int i = 0;
         for (ActionCondition condition : conditions) {
             results[i++] = condition.test(sub, arguments);
         }
-        
+
         return getRealConditionTree().evaluate(results);
     }
 
@@ -271,7 +271,7 @@ public class ActionModel {
     public String getGroup() {
         return group;
     }
-    
+
     /**
      * Sets the group of this action.
      *
@@ -290,7 +290,7 @@ public class ActionModel {
     public String getName() {
         return name;
     }
-    
+
     /**
      * Sets the name of this action.
      *
@@ -304,18 +304,18 @@ public class ActionModel {
     /**
      * Retrieves the condition tree used for this action. Condition trees may
      * be null, in which case the arguments are conjoined together.
-     * 
+     *
      * @return This action's condition tree
      */
     public ConditionTree getConditionTree() {
         return conditionTree;
     }
-    
+
     /**
      * Retrieves a concrete condition tree used for this action. If there is
      * no condition tree defined for this action, returns a conjunction tree
      * for the arguments.
-     * 
+     *
      * @since 0.6
      * @return A {@link ConditionTree} object for this action
      */
@@ -326,7 +326,7 @@ public class ActionModel {
 
     /**
      * Sets the condition tree used for this action.
-     * 
+     *
      * @param conditionTree The new condition tree to be used
      */
     public void setConditionTree(final ConditionTree conditionTree) {
@@ -336,7 +336,7 @@ public class ActionModel {
 
     /**
      * Retrieves the concurrency group of this action.
-     * 
+     *
      * @return This action's concurrency group
      * @since 0.6.3
      */
@@ -358,7 +358,7 @@ public class ActionModel {
     /**
      * Determines whether or not this action will stop the event execution
      * if it is triggered.
-     * 
+     *
      * @return The stopping preference of this action
      * @see #setStopping(boolean)
      * @since 0.6.4
@@ -380,17 +380,17 @@ public class ActionModel {
     public void setStopping(boolean stop) {
         this.stop = stop;
     }
-    
+
     /**
      * Determine if this model has been modified since it was constructed or
      * its modified status was reset.
-     * 
+     *
      * @return True if this model has been modified, false otherwise
      */
     public boolean isModified() {
         return modified;
     }
-    
+
     /**
      * Resets the modified status of this model. After a call to
      * resetModified(), this model will report that it has not been modified,
@@ -399,7 +399,7 @@ public class ActionModel {
     public void resetModified() {
         this.modified = false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
@@ -407,5 +407,5 @@ public class ActionModel {
                 + Arrays.toString(triggers) + ", response="
                 + Arrays.toString(response) + ", "
                 + conditions + ", format='" + newFormat + "']";
-    }    
+    }
 }

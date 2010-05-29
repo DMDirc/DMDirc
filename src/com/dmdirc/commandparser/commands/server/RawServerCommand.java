@@ -36,28 +36,28 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 /**
  * Implements a raw server command (i.e., a command that is sent to the server
  * as-is.
- * 
+ *
  * @author chris
  */
 @CommandOptions(allowOffline=false)
 public final class RawServerCommand extends Command implements CommandInfo {
-    
+
     /** The name of this raw command. */
     private final String myName;
-    
+
     /**
      * Creates a new instance of RawServerCommand.
-     * 
+     *
      * @param command The command name for this raw command
      */
     public RawServerCommand(final String command) {
         super();
-        
+
         myName = command;
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -65,14 +65,14 @@ public final class RawServerCommand extends Command implements CommandInfo {
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return myName;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -84,11 +84,11 @@ public final class RawServerCommand extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return myName + " [arguments] - sends a " + myName + " command to the server";
     }
-    
+
 }

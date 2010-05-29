@@ -39,7 +39,7 @@ import com.dmdirc.ui.input.TabCompleter;
 
 /**
  * The alias command allows users to create aliases on-the-fly.
- * 
+ *
  * @author chris
  */
 public final class AliasCommand extends Command implements
@@ -69,11 +69,11 @@ public final class AliasCommand extends Command implements
                     ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
             if (doRemove(name)) {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name +
-                         "' removed.");
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '"
+                        + name + "' removed.");
             } else {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name +
-                         "' not found.");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '"
+                        + name + "' not found.");
             }
 
             return;
@@ -85,8 +85,8 @@ public final class AliasCommand extends Command implements
         for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
                     name)) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name +
-                         "' already exists.");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
+                        + "' already exists.");
                 return;
             }
         }
@@ -95,13 +95,13 @@ public final class AliasCommand extends Command implements
         myAlias.setResponse(new String[]{args.getArgumentsAsString(1)});
         myAlias.createAction().save();
 
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name +
-                 "' created.");
+        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name
+                + "' created.");
     }
 
     /**
      * Removes the alias with the specified name.
-     * 
+     *
      * @param name The name of the alias to remove
      * @return True if the alias was deleted, false otherwise
      */

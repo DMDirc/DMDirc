@@ -86,7 +86,7 @@ public class ServerGroupWriter {
         final String domain = group.getName() + " servergroup";
 
         final List<String> children = new ArrayList<String>();
-        
+
         for (ServerGroupItem item : group.getItems()) {
             if (item instanceof ServerGroup) {
                 writeGroup((ServerGroup) item, sections);
@@ -96,11 +96,11 @@ public class ServerGroupWriter {
                 children.add(item.getName() + " server");
             }
         }
-        
+
         final boolean needsUpdating = group.isModified();
         sections.remove(domain);
         group.setModified(false);
-        
+
         if (!needsUpdating) {
             return;
         }
@@ -115,7 +115,7 @@ public class ServerGroupWriter {
         } else {
             identity.setOption(domain, "network", group.getNetwork());
         }
-        
+
         identity.setOption(domain, "description", group.getDescription());
         identity.setOption(domain, "contents", children);
         identity.setOption(domain, "name", group.getName());

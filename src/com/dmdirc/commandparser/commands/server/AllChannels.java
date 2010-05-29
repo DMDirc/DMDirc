@@ -85,8 +85,8 @@ public final class AllChannels extends Command implements IntelligentCommand,
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "allchannels <command> - executes the command as though it had" +
-                "been entered on all channels";
+        return "allchannels <command> - executes the command as though it had"
+                + " been entered on all channels";
     }
 
     /** {@inheritDoc} */

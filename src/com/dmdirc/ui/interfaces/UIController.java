@@ -41,21 +41,21 @@ import java.util.List;
  * @author Chris
  */
 public interface UIController {
-    
+
     /**
      * Retrieves the main window used by this UI.
      *
      * @return This UI's main window
      */
     MainWindow getMainWindow();
-    
+
     /**
      * Retrieves the status bar component used by this UI.
      *
      * @return This UI's status bar
      */
     StatusBar getStatusBar();
-    
+
     /**
      * Creates a channel window for the specified channel.
      *
@@ -66,7 +66,7 @@ public interface UIController {
      */
     @Deprecated
     ChannelWindow getChannel(Channel channel);
-    
+
     /**
      * Creates a server window for the specified server.
      *
@@ -77,7 +77,7 @@ public interface UIController {
      */
     @Deprecated
     ServerWindow getServer(Server server);
-    
+
     /**
      * Creates a query window for the specified query.
      *
@@ -88,7 +88,7 @@ public interface UIController {
      */
     @Deprecated
     QueryWindow getQuery(Query query);
-    
+
     /**
      * Creates a new custom window instance.
      *
@@ -99,7 +99,7 @@ public interface UIController {
      */
     @Deprecated
     Window getWindow(FrameContainer<?> owner);
-    
+
     /**
      * Creates a new custom input window instance.
      *
@@ -110,7 +110,7 @@ public interface UIController {
      */
     @Deprecated
     InputWindow getInputWindow(WritableFrameContainer<?> owner);
-    
+
     /**
      * Returns an updater dialog for the specified updates.
      *
@@ -119,12 +119,12 @@ public interface UIController {
      * @return UpdaterDialog
      */
     UpdaterDialog getUpdaterDialog(List<Update> updates);
-    
+
     /**
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
-    
+
     /**
      * Shows the (addons) migration wizard for the ui.
      */
@@ -136,68 +136,68 @@ public interface UIController {
      * @param model The dialog model to use
      */
     void showSSLCertificateDialog(SSLCertificateDialogModel model);
-    
+
     /**
      * Shows a channel settigns dialog for specified channel.
      *
      * @param channel Channel to show the dialog for
      */
     void showChannelSettingsDialog(Channel channel);
-    
+
     /**
      * Shows a server settigns dialog for specified server.
      *
      * @param server Server to show the dialog for
      */
     void showServerSettingsDialog(Server server);
-    
+
     /**
      * Initialises any settings required by this UI (this is always called
      * before any aspect of the UI is instansiated).
      */
     void initUISettings();
-    
+
     /**
      * Returns the active window.
-     * 
+     *
      * @return Active window or null
      * @deprecated Use {@link WindowManager#getActiveWindow()} instead
      */
     @Deprecated
     Window getActiveWindow();
-    
+
     /**
      * Returns the active server.
-     * 
+     *
      * @return Active server null
      * @deprecated Use {@link WindowManager#getActiveServer()} instead
      */
     @Deprecated
     Server getActiveServer();
-    
+
     /**
      * Shows the unknown URL protocol handling dialog for a URL.
-     * 
+     *
      * @param url full url
      */
     void showURLDialog(final URI url);
-    
+
     /**
      * Show feedback nag.
      */
     void showFeedbackNag();
-    
+
     /**
      * Shows a message dialog to the user.
-     * 
+     *
      * @param title Dialog title
      * @param message Message to display
      */
     void showMessageDialog(final String title, final String message);
-    
+
     /**
      * Requests user input.
-     * 
+     *
      * @param prompt The prompt to display
      * @return The user-inputted string
      */
@@ -230,5 +230,5 @@ public interface UIController {
      * @return The themes preferences panel
      */
     PreferencesInterface getThemesPrefsPanel();
-    
+
 }

@@ -34,7 +34,7 @@ import com.dmdirc.commandparser.CommandType;
  */
 @Deprecated
 public abstract class GlobalCommand extends Command implements CommandInfo {
-        
+
     /** {@inheritDoc} */
     @Override
     public CommandType getType() {

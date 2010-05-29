@@ -26,7 +26,7 @@ package com.dmdirc.ui.interfaces;
  * Updater dialog.
  */
 public interface UpdaterDialog {
-    
+
     /** Displays the dialog. */
     void display();
 }

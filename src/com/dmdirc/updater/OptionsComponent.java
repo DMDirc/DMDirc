@@ -24,14 +24,14 @@ package com.dmdirc.updater;
 
 /**
  * This interface is implemented by components that provide options for upgrades
- * 
+ *
  * @author shane
  */
 public interface OptionsComponent {
-    
+
     /**
      * Retrieves the options for this component.
-     * 
+     *
      * @return Array containing the options for this component
      */
     String[] getOptions();

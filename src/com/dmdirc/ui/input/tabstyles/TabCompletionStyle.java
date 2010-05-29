@@ -27,14 +27,14 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Defines the methods that should be implemented by tab completion styles.
  * Styles control the result of tab completing.
- * 
+ *
  * @author Chris
  */
 public interface TabCompletionStyle {
-    
+
     /**
      * Retrieves this style's result for the specified parameters.
-     * 
+     *
      * @param original The original string which the user inputted
      * @param start The start offset of the word that's being tab-completed
      * @param end The end offset of the word that's being tab-completed
@@ -47,5 +47,5 @@ public interface TabCompletionStyle {
     TabCompletionResult getResult(final String original, final int start,
             final int end, final boolean shiftPressed,
             final AdditionalTabTargets additional);
-    
+
 }

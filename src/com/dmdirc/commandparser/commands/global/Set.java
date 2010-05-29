@@ -188,8 +188,8 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option +
-                " has been set to: " + newvalue);
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option
+                + " has been set to: " + newvalue);
     }
 
     /**
@@ -205,10 +205,10 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      */
     private void doAppendOption(final FrameContainer<?> origin,
             final boolean isSilent, final Identity identity, final ConfigManager manager,
-            final String domain,final String option, final String data) {
+            final String domain, final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
-                (manager.hasOptionString(domain, option) ?
-                    manager.getOption(domain, option) : "") + data);
+                (manager.hasOptionString(domain, option)
+                ? manager.getOption(domain, option) : "") + data);
     }
 
     /**

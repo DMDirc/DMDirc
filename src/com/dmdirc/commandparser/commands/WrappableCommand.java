@@ -28,15 +28,15 @@ import com.dmdirc.ui.interfaces.InputWindow;
 /**
  * Wrapping commands are commands whose arguments may be wrapped into multiple
  * lines when sending.
- * 
+ *
  * @author chris
  */
 public interface WrappableCommand {
-    
+
     /**
      * Determines the number of lines that the specified arguments will be
      * wrapped as.
-     * 
+     *
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return The number of lines that the arguments will result in

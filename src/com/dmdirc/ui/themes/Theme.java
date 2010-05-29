@@ -52,7 +52,7 @@ public class Theme implements Comparable<Theme> {
 
     /** Whether or not this theme is enabled. */
     private boolean enabled;
-    
+
     /** The Identity we've registered. */
     private ThemeIdentity identity;
 
@@ -84,7 +84,7 @@ public class Theme implements Comparable<Theme> {
 
             if (rm != null && rm.resourceExists("theme.config")) {
                 metadata = new ConfigFile(rm.getResourceInputStream("theme.config"));
-                
+
                 try {
                     metadata.read();
                 } catch (IOException ex) {
@@ -123,7 +123,7 @@ public class Theme implements Comparable<Theme> {
             }
         }
     }
-    
+
     /**
      * Removes the effects of this theme.
      */
@@ -131,9 +131,9 @@ public class Theme implements Comparable<Theme> {
         if (!isValidTheme() || !enabled || identity == null) {
             return;
         }
-        
+
         enabled = false;
-        
+
         IdentityManager.removeIdentity(identity);
     }
 
@@ -154,14 +154,14 @@ public class Theme implements Comparable<Theme> {
      */
     public String getFileName(final boolean includeExtension) {
         String result = file.getName();
-        
+
         if (!includeExtension) {
             result = result.substring(0, result.length() - 4);
         }
-        
+
         return result;
     }
-    
+
     /**
      * Retrieves the name of this theme.
      *
@@ -169,38 +169,38 @@ public class Theme implements Comparable<Theme> {
      */
     public String getFileName() {
         return getFileName(true);
-    }    
+    }
 
     /**
      * Retrieves the name of this theme.
-     * 
+     *
      * @return This theme's name
-     */    
+     */
     public String getName() {
         return getMetaData("name", getFileName(false));
     }
 
     /**
      * Retrieves the version of this theme.
-     * 
+     *
      * @return This theme's version
-     */    
+     */
     public String getVersion() {
         return getMetaData("version", "?");
     }
 
     /**
      * Retrieves the author of this theme.
-     * 
+     *
      * @return This theme's author
-     */    
+     */
     public String getAuthor() {
         return getMetaData("author", "?");
     }
 
     /**
      * Retrieves the description of this theme.
-     * 
+     *
      * @return This theme's description
      */
     public String getDescription() {
@@ -216,18 +216,18 @@ public class Theme implements Comparable<Theme> {
     /**
      * Attempts to read the specified key from the 'data' keysection of the
      * theme's config file.
-     * 
+     *
      * @param key The key to be read
      * @param fallback The value to use if the file, section or entry doesn't
      * exist
      * @return The relevant meta-data, or the fallback value
      */
     private String getMetaData(final String key, final String fallback) {
-        if (metadata == null || !metadata.isKeyDomain("data") ||
-                !metadata.getKeyDomain("data").containsKey(key)) {
+        if (metadata == null || !metadata.isKeyDomain("data")
+                || !metadata.getKeyDomain("data").containsKey(key)) {
             return fallback;
         }
-        
+
         return metadata.getKeyDomain("data").get(key);
     }
 

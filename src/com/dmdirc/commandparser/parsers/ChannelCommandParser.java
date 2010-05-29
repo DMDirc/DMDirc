@@ -35,23 +35,23 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser that is tailored for use in a channel environment.
- * 
+ *
  * @author chris
  */
 public class ChannelCommandParser extends ChatCommandParser {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * The channel instance that this parser is attached to.
      */
     private Channel channel;
-    
+
     /**
      * Creates a new instance of ChannelCommandParser.
      *
@@ -70,14 +70,14 @@ public class ChannelCommandParser extends ChatCommandParser {
 
         super.setOwner(owner);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void loadCommands() {
         CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
                 CommandType.TYPE_SERVER, CommandType.TYPE_CHANNEL);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
@@ -89,5 +89,5 @@ public class ChannelCommandParser extends ChatCommandParser {
             super.executeCommand(origin, window, commandInfo, command, args);
         }
     }
-    
+
 }

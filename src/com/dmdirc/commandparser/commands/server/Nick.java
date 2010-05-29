@@ -43,16 +43,16 @@ import com.dmdirc.ui.input.TabCompletionType;
 @CommandOptions(allowOffline=false)
 public final class Nick extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Nick.
      */
     public Nick() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -62,17 +62,17 @@ public final class Nick extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "nick", "<new nickname>");
             return;
         }
-        
+
         server.getParser().getLocalClient().setNickname(args.getArguments()[0]);
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "nick";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -84,7 +84,7 @@ public final class Nick extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -96,14 +96,14 @@ public final class Nick extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         res.exclude(TabCompletionType.COMMAND);
-        
+
         if (arg > 0) {
             res.excludeAll();
         }
-        
+
         return res;
     }
-    
+
 }

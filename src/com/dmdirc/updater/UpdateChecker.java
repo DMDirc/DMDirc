@@ -130,7 +130,7 @@ public final class UpdateChecker implements Runnable {
                 || status == STATE.UPDATING) {
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
-        
+
             MUTEX.release();
             init();
             return;
@@ -189,20 +189,20 @@ public final class UpdateChecker implements Runnable {
                     available = true;
                 }
             }
-            
+
             setStatus(available ? STATE.UPDATES_AVAILABLE : STATE.RESTART_REQUIRED);
         }
 
         MUTEX.release();
-        
+
         IdentityManager.getConfigIdentity().setOption("updater",
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
-        
+
         UpdateChecker.init();
-        
+
         if (config.getOptionBool("updater", "autoupdate")) {
             applyUpdates();
-        }        
+        }
     }
 
     /**
@@ -350,7 +350,7 @@ public final class UpdateChecker implements Runnable {
             doNextUpdate();
         }
     }
-    
+
     /**
      * Downloads and installs all known updates.
      */
@@ -360,14 +360,14 @@ public final class UpdateChecker implements Runnable {
             doNextUpdate();
         }
     }
-    
+
     /**
      * Finds and applies the next pending update, or sets the state to idle
      * / restart needed if appropriate.
      */
     private static void doNextUpdate() {
         boolean restart = false;
-        
+
         for (Update update : UPDATES) {
             if (update.getStatus() == UpdateStatus.PENDING) {
                 update.doUpdate();
@@ -376,7 +376,7 @@ public final class UpdateChecker implements Runnable {
                 restart = true;
             }
         }
-        
+
         setStatus(restart ? STATE.RESTART_REQUIRED : STATE.IDLE);
     }
 

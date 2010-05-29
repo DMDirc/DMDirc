@@ -103,7 +103,7 @@ public class CertificateManager implements X509TrustManager {
 
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
-    
+
     /** The action to perform. */
     private CertificateAction action;
 
@@ -288,7 +288,7 @@ public class CertificateManager implements X509TrustManager {
 
         for (X509Certificate cert : chain) {
             TrustResult trustResult = isTrusted(cert);
-            
+
             if (checkDate) {
                 // Check that the certificate is in-date
                 try {
@@ -323,7 +323,7 @@ public class CertificateManager implements X509TrustManager {
             } catch (InterruptedException ie) {
               throw new CertificateException("Thread aborted, ");
             }
-            
+
             switch (action) {
                 case DISCONNECT:
                     throw new CertificateException("Not trusted");
@@ -348,7 +348,7 @@ public class CertificateManager implements X509TrustManager {
      */
     public void setAction(final CertificateAction action) {
         this.action = action;
-        
+
         actionSem.release();
     }
 

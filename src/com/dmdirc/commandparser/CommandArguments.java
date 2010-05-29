@@ -109,7 +109,7 @@ public class CommandArguments {
      */
     public String[] getWords() {
         parse();
-        
+
         return words;
     }
 
@@ -133,7 +133,7 @@ public class CommandArguments {
      */
     public String getArgumentsAsString() {
         parse();
-        
+
         return getArgumentsAsString(0);
     }
 
@@ -160,7 +160,7 @@ public class CommandArguments {
      */
     public String getWordsAsString(final int start) {
         parse();
-        
+
         return getWordsAsString(start, words.length - 1);
     }
 
@@ -207,8 +207,8 @@ public class CommandArguments {
      * @return True if the input was a silenced command, false otherwise
      */
     public boolean isSilent() {
-        return isCommand() && line.length() >= 2 &&
-                line.charAt(1) == CommandManager.getSilenceChar();
+        return isCommand() && line.length() >= 2
+                && line.charAt(1) == CommandManager.getSilenceChar();
     }
 
     /**

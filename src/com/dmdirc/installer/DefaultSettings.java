@@ -32,29 +32,29 @@ public class DefaultSettings implements Settings {
     /** {@inheritDoc} */
     @Override
     public boolean getShortcutMenuState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") ==
-                0);
+        return CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu")
+                == 0;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean getShortcutDesktopState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") ==
-                0);
+        return CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop")
+                == 0;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean getShortcutQuickState() {
-        return (CLIParser.getCLIParser().getParamNumber(
-                "-no-shortcut-quicklaunch") == 0);
+        return CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch")
+                == 0;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean getShortcutProtocolState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") ==
-                0);
+        return CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol")
+                == 0;
     }
 
     /** {@inheritDoc} */

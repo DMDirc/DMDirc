@@ -35,37 +35,37 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to save the config file.
- * 
+ *
  * @author chris
  */
 public final class SaveConfig extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of SaveConfig.
      */
     public SaveConfig() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         IdentityManager.save();
-        
+
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "saveconfig";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -77,7 +77,7 @@ public final class SaveConfig extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -89,6 +89,6 @@ public final class SaveConfig extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
-    } 
-    
+    }
+
 }

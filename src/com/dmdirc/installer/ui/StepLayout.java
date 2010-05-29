@@ -62,7 +62,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Instantiates a new step layout.
-     * 
+     *
      * @param parent Parent component
      */
     public StepLayout(final Container parent) {
@@ -71,7 +71,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Instantiates a new step layout with the specified gaps.
-     * 
+     *
      * @param hGap Horizontal gap
      * @param vGap Vertical gap
      */
@@ -81,7 +81,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Instantiates a new step layout with the specified gaps.
-     * 
+     *
      * @param hGap Horizontal gap
      * @param vGap Vertical gap
      * @param parent Parent component
@@ -95,7 +95,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Returns the number of steps in the layout.
-     * 
+     *
      * @return number of steps >= 0
      */
     public int size() {
@@ -104,7 +104,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Checks if the layout is empty
-     * 
+     *
      * @return true iif the layout has no steps
      */
     public boolean isEmpty() {
@@ -113,9 +113,9 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Returns the specified step from the layout.
-     * 
+     *
      * @param index Step to retrieve
-     * 
+     *
      * @return Step
      */
     public Step getStep(final int index) {
@@ -124,7 +124,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Returns the step list.
-     * 
+     *
      * @return List of steps
      */
     public List<SwingStep> getSteps() {
@@ -160,7 +160,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Show the first step.
-     * 
+     *
      * @param parent Parent container
      */
     public void first(final Container parent) {
@@ -169,7 +169,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Show the last step.
-     * 
+     *
      * @param parent Parent container
      */
     public void last(final Container parent) {
@@ -178,16 +178,16 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Show the next step.
-     * 
+     *
      * @param parent Parent container
      */
     public void next(final Container parent) {
         show(currentStep + 1, parent);
     }
 
-    /** 
+    /**
      * Show the previous step.
-     * 
+     *
      * @param parent Parent container
      */
     public void previous(final Container parent) {
@@ -196,7 +196,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Show the specified step.
-     * 
+     *
      * @param step Step to show
      * @param parent Parent container
      */
@@ -206,7 +206,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Show the step at the specified index.
-     * 
+     *
      * @param step Step to show
      * @param parent Parent container
      */
@@ -247,12 +247,12 @@ public class StepLayout implements LayoutManager2, Serializable {
         addLayoutComponent((SwingStep) comp);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
-     * @deprecated Use addLayoutComponent(Component, Object) or 
+     *
+     * @deprecated Use addLayoutComponent(Component, Object) or
      * addLayoutComponent(Component)
-     * 
+     *
      * @see addLayoutComponent(Component)
      * @see addLayoutComponent(Component, Object)
      */
@@ -268,7 +268,7 @@ public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * Adds a component to the layout.
-     * 
+     *
      * @param step Component to add
      */
     public void addLayoutComponent(final SwingStep step) {
@@ -292,9 +292,9 @@ public class StepLayout implements LayoutManager2, Serializable {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @return Returns the preferred size of the container
      */
     @Override
@@ -317,9 +317,9 @@ public class StepLayout implements LayoutManager2, Serializable {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @return Returns the minimum size of the container
      */
     @Override
@@ -342,11 +342,11 @@ public class StepLayout implements LayoutManager2, Serializable {
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param parent Container to get the size for
-     * 
+     *
      * @return Returns the maximum size of the container
      */
     @Override
@@ -354,11 +354,11 @@ public class StepLayout implements LayoutManager2, Serializable {
         return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param target Container to get the alignment from
-     * 
+     *
      * @return Alignment
      */
     @Override
@@ -366,11 +366,11 @@ public class StepLayout implements LayoutManager2, Serializable {
         return 0.5f;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param target Container to get the alignment from
-     * 
+     *
      * @return Alignment
      */
     @Override
@@ -378,9 +378,9 @@ public class StepLayout implements LayoutManager2, Serializable {
         return 0.5f;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param target  Container to invalidate
      */
     @Override

@@ -307,7 +307,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
             updateAwayState(null);
             removeInvites();
-            
+
             try {
                 parserThread = new Thread(parser, "Parser thread");
                 parserThread.start();
@@ -1223,8 +1223,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      */
     public void sendCTCPReply(final String source, final String type, final String args) {
         if (type.equalsIgnoreCase("VERSION")) {
-            parser.sendCTCPReply(source, "VERSION", "DMDirc " +
-                    getConfigManager().getOption("version", "version")
+            parser.sendCTCPReply(source, "VERSION", "DMDirc "
+                    + getConfigManager().getOption("version", "version")
                     + " - http://www.dmdirc.com/");
         } else if (type.equalsIgnoreCase("PING")) {
             parser.sendCTCPReply(source, "PING", args);

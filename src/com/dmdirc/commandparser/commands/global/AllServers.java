@@ -41,32 +41,32 @@ import com.dmdirc.ui.input.TabCompleter;
  */
 public final class AllServers extends Command implements IntelligentCommand,
         CommandInfo{
-    
+
     /** Creates a new instance of AllServers. */
     public AllServers() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
-        
+
         for (Server target : ServerManager.getServerManager().getServers()) {
             target.getCommandParser().parseCommand(target, context.getSource(), command);
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "allservers";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -78,12 +78,12 @@ public final class AllServers extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "allservers <command> - executes the command as though it had" +
-                " been entered on all servers";
+        return "allservers <command> - executes the command as though it had"
+                + " been entered on all servers";
     }
 
     /** {@inheritDoc} */
@@ -92,5 +92,5 @@ public final class AllServers extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         return TabCompleter.getIntelligentResults(arg, context, 0);
     }
-    
+
 }

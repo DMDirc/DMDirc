@@ -29,28 +29,28 @@ import java.util.EventListener;
  * Error listener, error related events.
  */
 public interface ErrorListener extends EventListener {
-    
+
     /**
      * Fired when the program encounters an error.
      *
      * @param error Error that occurred
      */
     void errorAdded(final ProgramError error);
-    
+
     /**
      * Fired when an error is deleted.
      *
      * @param error Error that was deleted
      */
     void errorDeleted(final ProgramError error);
-    
+
     /**
      * Fired when an error's status is changed.
      *
      * @param error Error that has been altered
      */
     void errorStatusChanged(final ProgramError error);
-    
+
     /**
      * Returns true if the error listener is ready to receive errors
      *

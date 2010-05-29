@@ -108,7 +108,7 @@ public class GlobalWindow extends WritableFrameContainer<InputWindow> {
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
-    
+
     /**
      * Initialises the global window if it's enabled in the config.
      */

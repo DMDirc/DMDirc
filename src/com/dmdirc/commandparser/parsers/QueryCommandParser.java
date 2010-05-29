@@ -39,14 +39,14 @@ import com.dmdirc.ui.interfaces.Window;
  * @author chris
  */
 public class QueryCommandParser extends ChatCommandParser {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * The query instance that this parser is attached to.
      */
@@ -70,14 +70,14 @@ public class QueryCommandParser extends ChatCommandParser {
 
         super.setOwner(query);
     }
-    
+
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
         CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
                 CommandType.TYPE_SERVER, CommandType.TYPE_QUERY);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
@@ -89,5 +89,5 @@ public class QueryCommandParser extends ChatCommandParser {
             super.executeCommand(origin, window, commandInfo, command, args);
         }
     }
-    
+
 }

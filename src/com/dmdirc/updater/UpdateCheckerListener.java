@@ -25,14 +25,14 @@ package com.dmdirc.updater;
 /**
  * Update Checker Listeners receive notifications when the status of the update
  * checker changes.
- * 
+ *
  * @author chris
  */
 public interface UpdateCheckerListener {
-    
+
     /**
      * Called when the status of the update checker changes.
-     * 
+     *
      * @param newStatus The new status of the update checker
      */
     void statusChanged(UpdateChecker.STATE newStatus);

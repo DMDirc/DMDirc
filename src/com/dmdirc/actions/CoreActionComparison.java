@@ -34,7 +34,7 @@ import java.util.regex.PatternSyntaxException;
  * @author chris
  */
 public enum CoreActionComparison implements ActionComparison {
-    
+
     /** Compares a string to another using a regular expression. */
     STRING_REGEX {
         /** {@inheritDoc} */
@@ -53,7 +53,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "matches regex"; }
     },
-    
+
     /** Compares if two strings content are the same, case insensitive. */
     STRING_EQUALS {
         /** {@inheritDoc} */
@@ -68,7 +68,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "equals"; }
     },
-    
+
     /** Compares if two strings content aren't the same, case insensitive. */
     STRING_NEQUALS {
         /** {@inheritDoc} */
@@ -83,7 +83,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "does not equal"; }
     },
-    
+
     /** Checks if the string starts with another strings. */
     STRING_STARTSWITH {
         /** {@inheritDoc} */
@@ -98,7 +98,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "starts with"; }
     },
-    
+
     /** Checks if the string containts another string. */
     STRING_CONTAINS {
         /** {@inheritDoc} */
@@ -128,7 +128,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "doesn't contain"; }
     },
-    
+
     /** Checks if two boolean values are equal. */
     BOOL_IS {
         /** {@inheritDoc} */
@@ -143,7 +143,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "is"; }
     },
-    
+
     /** Checks if the colour is the same as another colour. */
     COLOUR_EQUALS {
         /** {@inheritDoc} */
@@ -158,7 +158,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "equals"; }
     },
-    
+
     /** Checks if the colour is not the same as another colour. */
     COLOUR_NEQUALS {
         /** {@inheritDoc} */
@@ -173,7 +173,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "does not equal"; }
     },
-    
+
     /** Checks if the int is equals to another int. */
     INT_EQUALS {
         /** {@inheritDoc} */
@@ -192,7 +192,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "equals"; }
     },
-    
+
     /** Checks if the int is larger than another int. */
     INT_GREATER {
         /** {@inheritDoc} */
@@ -211,7 +211,7 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "is greater than"; }
     },
-    
+
     /** Checks if the int is smaller than another int. */
     INT_LESS {
         /** {@inheritDoc} */
@@ -230,5 +230,5 @@ public enum CoreActionComparison implements ActionComparison {
         @Override
         public String getName() { return "is less than"; }
     };
-    
+
 }

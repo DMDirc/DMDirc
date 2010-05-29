@@ -47,24 +47,24 @@ import java.awt.Color;
  */
 public final class SetNickColour extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /** Creates a new instance of SetNickColour. */
     public SetNickColour() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
-        
+
         int offset = 0;
         boolean nicklist = true;
         boolean text = true;
-        
+
         if (args.getArguments().length > offset && args.getArguments()[offset]
                 .equalsIgnoreCase("--nicklist")) {
             text = false;
@@ -74,16 +74,16 @@ public final class SetNickColour extends Command implements IntelligentCommand,
             nicklist = false;
             offset++;
         }
-        
+
         if (args.getArguments().length <= offset) {
             showUsage(origin, args.isSilent(), "setnickcolour", "[--nicklist|--text] <nick> [colour]");
             return;
         }
-        
+
         final ChannelClientInfo target = channel.getChannelInfo()
                 .getChannelClient(args.getArguments()[offset]);
         offset++;
-        
+
         if (target == null) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "No such nickname ("
                     + args.getArguments()[offset - 1] + ")!");
@@ -120,13 +120,13 @@ public final class SetNickColour extends Command implements IntelligentCommand,
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "setnickcolour";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -138,7 +138,7 @@ public final class SetNickColour extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_CHANNEL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -152,17 +152,17 @@ public final class SetNickColour extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         targets.excludeAll();
-        
+
         if (arg == 0) {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.add("--nicklist");
             targets.add("--text");
         } else if (arg == 1 && (context.getPreviousArgs().get(0).equals("--text")
                 || context.getPreviousArgs().get(0).equals("--nicklist"))) {
-            targets.include(TabCompletionType.CHANNEL_NICK);            
+            targets.include(TabCompletionType.CHANNEL_NICK);
         }
-        
+
         return targets;
     }
-    
+
 }

@@ -27,19 +27,19 @@ import java.util.List;
 
 /**
  * Allows multiple validators to be chained together.
- * 
+ *
  * @param A The type of class that this chain validates
  * @author chris
  */
 public class ValidatorChain<A> implements Validator<A> {
-    
+
     /** A list of validators to use. */
     private final List<Validator<A>> validatorList
             = new ArrayList<Validator<A>>();
 
     /**
      * Creates a new validator chain containing the specified validators.
-     * 
+     *
      * @param validators The validators to be used in this chain.
      */
     public ValidatorChain(final Validator<A> ... validators) {
@@ -53,12 +53,12 @@ public class ValidatorChain<A> implements Validator<A> {
     public ValidationResponse validate(final A object) {
         for (Validator<A> validator : validatorList) {
             final ValidationResponse res = validator.validate(object);
-            
+
             if (res.isFailure()) {
                 return res;
             }
         }
-        
+
         return new ValidationResponse();
     }
 

@@ -90,8 +90,8 @@ public class Input extends Command implements IntelligentCommand, CommandInfo {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "input [--clear] <text to insert into inputfield> - Adds text to" +
-                " the active window's input field";
+        return "input [--clear] <text to insert into inputfield> - Adds text to"
+                + " the active window's input field";
     }
 
     /** {@inheritDoc} */
@@ -99,7 +99,7 @@ public class Input extends Command implements IntelligentCommand, CommandInfo {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             res.add("--clear");
         }

@@ -35,23 +35,23 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser used in the context of a server.
- * 
+ *
  * @author chris
  */
 public class ServerCommandParser extends GlobalCommandParser {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * The server instance that this parser is attached to.
      */
     private Server server;
-    
+
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer<?> owner) {
@@ -61,13 +61,13 @@ public class ServerCommandParser extends GlobalCommandParser {
 
         super.setOwner(owner);
     }
-    
+
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
         CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer<?> origin,
@@ -88,7 +88,7 @@ public class ServerCommandParser extends GlobalCommandParser {
             super.executeCommand(origin, window, commandInfo, command, args);
         }
     }
-    
+
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
@@ -99,5 +99,5 @@ public class ServerCommandParser extends GlobalCommandParser {
     protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
         server.sendLine(line);
     }
-    
+
 }

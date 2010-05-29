@@ -29,35 +29,35 @@ import com.dmdirc.ui.input.InputHandler;
 /**
  * The Input Window interface specifies additional methods that windows should
  * implement if they have an input field.
- * 
+ *
  * @author chris
  */
 public interface InputWindow extends Window {
-    
+
     /**
      * Retrieves the command Parser for this input window.
-     * 
+     *
      * @return This window's command parser
      */
     CommandParser getCommandParser();
-    
+
     /**
      * Retrieves the input handler for this input window.
-     * 
+     *
      * @return This window's input handler
      */
     InputHandler getInputHandler();
-    
+
     /**
      * Toggles the away-status indicator for this input window, if the UI
      * supports it.
-     * 
+     *
      * @param isAway Whether the away indicator should be displayed or not
      * @deprecated Use {@link AwayStateListener}s to listen for changes instead
      */
     @Deprecated
     void setAwayIndicator(boolean isAway);
-    
+
     /**
      * Retrieves the container that owns this command window.
      *
@@ -65,5 +65,5 @@ public interface InputWindow extends Window {
      */
     @Override
     WritableFrameContainer<? extends InputWindow> getContainer();
-    
+
 }

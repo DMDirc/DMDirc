@@ -150,15 +150,15 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Adds a key handler.
      */
     protected abstract void addKeyHandler();
-    
-    /** 
+
+    /**
      * Adds an enter key handler.
      */
     protected abstract void addEnterHandler();
 
     /**
      * Indicates which types of input this handler should handle.
-     * 
+     *
      * @param handleTabCompletion Whether or not to handle tab completion
      * @param handleBackBuffer Whether or not to maintain an input back buffer
      * @param handleFormatting Whether or not to handle formatting
@@ -167,7 +167,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void setTypes(final boolean handleTabCompletion,
             final boolean handleBackBuffer,
             final boolean handleFormatting, final boolean handleReturn) {
-        flags = (handleTabCompletion ? HANDLE_TABCOMPLETION : 0) 
+        flags = (handleTabCompletion ? HANDLE_TABCOMPLETION : 0)
                 | (handleBackBuffer ? HANDLE_BACKBUFFER : 0)
                 | (handleFormatting ? HANDLE_FORMATTING : 0)
                 | (handleReturn ? HANDLE_RETURN : 0);
@@ -204,14 +204,14 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected void handleKeyPressed(final String line, final int keyCode,
             final boolean shiftPressed, final boolean ctrlPressed) {
         target.hideColourPicker();
-        
+
         if (ctrlPressed && (flags & HANDLE_FORMATTING) != 0) {
             handleControlKey(line, keyCode, shiftPressed);
         }
-        
+
         validateText();
     }
-    
+
     /**
      * Validates the text currently entered in the text field.
      */
@@ -223,18 +223,18 @@ public abstract class InputHandler implements ConfigChangeListener {
         if (args.isCommand()) {
             final Map.Entry<CommandInfo, Command> command
                     = CommandManager.getCommand(args.getCommandName());
-            
+
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
                         .validateArguments(parentWindow, args);
-                
+
                 if (vr.isFailure()) {
                     fireCommandFailure(vr.getFailureReason());
                 } else {
                     fireCommandPassed();
                 }
             }
-            
+
             if (command != null && command.getValue() instanceof WrappableCommand) {
                 final int count = ((WrappableCommand) command.getValue())
                         .getLineCount(parentWindow, args);
@@ -245,10 +245,10 @@ public abstract class InputHandler implements ConfigChangeListener {
                 fireLineWrap(lines);
         }
     }
-    
+
     /**
      * Fires the "illegalCommand" method of all validation listeners.
-     * 
+     *
      * @param reason The reason for the command failure
      */
     private void fireCommandFailure(final String reason) {
@@ -256,7 +256,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             listener.illegalCommand(reason);
         }
     }
-    
+
     /**
      * Fires the "legalCommand" method of all validation listeners.
      */
@@ -265,21 +265,21 @@ public abstract class InputHandler implements ConfigChangeListener {
             listener.legalCommand();
         }
     }
-    
+
     /**
      * Fires the "wrappedText" method of all validation listeners.
-     * 
+     *
      * @param lines The number of lines that the text will wrap to
      */
     private void fireLineWrap(final int lines) {
         for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
             listener.wrappedText(lines);
-        }        
+        }
     }
-    
+
     /**
      * Adds an InputValidationListener to this input handler.
-     * 
+     *
      * @param listener The listener to be added
      */
     public void addValidationListener(final InputValidationListener listener) {
@@ -374,10 +374,10 @@ public abstract class InputHandler implements ConfigChangeListener {
         }
         validateText();
     }
-    
+
     /**
      * Retrieves a list of all known entries in the input backbuffer.
-     * 
+     *
      * @since 0.6
      * @return A copy of the input backbuffer.
      */
@@ -408,7 +408,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                     + ", flags: " + flags);
             return;
         }
-        
+
         final String text = target.getText();
 
         LOGGER.finer("Text for tab completion: " + text);
@@ -552,7 +552,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
     /**
      * Adds the specified string to the buffer.
-     * 
+     *
      * @param line The line to be added to the buffer
      */
     public void addToBuffer(final String line) {

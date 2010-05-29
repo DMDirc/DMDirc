@@ -32,47 +32,47 @@ import java.util.Map;
 
 /**
  * Represents a single setting.
- * 
+ *
  * @author chris
  */
 public class PreferencesSetting {
-    
+
     /** The type of this setting. */
     protected final PreferencesType type;
-    
+
     /** The possible options for a multichoice setting. */
     protected final Map<String, String> combooptions;
 
     /** The validator to use to validate this setting. */
     protected final Validator<String> validator;
-    
+
     /** The domain of the setting. */
     protected final String domain;
-    
+
     /** The option name of the setting. */
     protected final String option;
-    
+
     /** The title of this setting. */
     protected final String title;
-    
+
     /** Text to inform the user what the setting is for. */
     protected final String helptext;
-    
+
     /** The current value of the setting. */
     protected String current;
-    
+
     /** The original value of this vsetting. */
     private String original;
-    
+
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
-    
+
     /** A list of change listeners. */
     private final List<SettingChangeListener> listeners = new ArrayList<SettingChangeListener>();
 
     /**
      * Creates a new preferences setting for any type except multi-choice.
-     * 
+     *
      * @param type The type of the setting to create
      * @param validator A validator to validate the setting's value
      * @param domain The domain of the setting
@@ -84,10 +84,10 @@ public class PreferencesSetting {
             final Validator<String> validator, final String domain,
             final String option, final String title, final String helptext) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
-            throw new IllegalArgumentException("Multi-choice preferences must " +
-                    "have their options specified.");
+            throw new IllegalArgumentException("Multi-choice preferences must "
+                    + "have their options specified.");
         }
-        
+
         this.type = type;
         this.combooptions = null;
         this.validator = validator;
@@ -95,15 +95,15 @@ public class PreferencesSetting {
         this.option = option;
         this.title = title;
         this.helptext = helptext;
-        
+
         current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
     }
-    
+
     /**
      * Creates a new preferences setting for any type except multi-choice, with
      * a default permissive validator.
-     * 
+     *
      * @param type The type of the setting to create
      * @param domain The domain of the setting
      * @param option The option name of the setting
@@ -113,10 +113,10 @@ public class PreferencesSetting {
     public PreferencesSetting(final PreferencesType type, final String domain,
             final String option, final String title, final String helptext) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
-            throw new IllegalArgumentException("Multi-choice preferences must " +
-                    "have their options specified.");
+            throw new IllegalArgumentException("Multi-choice preferences must "
+                    + "have their options specified.");
         }
-        
+
         this.type = type;
         this.combooptions = null;
         this.validator = new PermissiveValidator<String>();
@@ -124,14 +124,14 @@ public class PreferencesSetting {
         this.option = option;
         this.title = title;
         this.helptext = helptext;
-        
+
         current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
-    }    
-    
+    }
+
     /**
      * Creates a new preferences setting for multi-choice preferences.
-     * 
+     *
      * @param domain The domain of the setting
      * @param option The option name of the setting
      * @param options A map of setting values to display names for this setting
@@ -148,18 +148,18 @@ public class PreferencesSetting {
         this.option = option;
         this.title = title;
         this.helptext = helptext;
-        
+
         current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
-        
+
         if (!combooptions.containsKey(current)) {
             combooptions.put(current, "Current (" + current + ")");
         }
-    }    
+    }
 
     /**
      * Retrieves the possible options for use in a multi-choice preference.
-     * 
+     *
      * @return A map of setting values to display names, representing the
      * possible options for this setting.
      */
@@ -169,7 +169,7 @@ public class PreferencesSetting {
 
     /**
      * Retrieves the help text for this setting.
-     * 
+     *
      * @return This setting's help text.
      */
     public String getHelptext() {
@@ -178,7 +178,7 @@ public class PreferencesSetting {
 
     /**
      * Retrieves the title of this setting.
-     * 
+     *
      * @return This setting's title.
      */
     public String getTitle() {
@@ -187,7 +187,7 @@ public class PreferencesSetting {
 
     /**
      * Retrieves the current value of this setting.
-     * 
+     *
      * @return The current value of this setting.
      */
     public String getValue() {
@@ -196,7 +196,7 @@ public class PreferencesSetting {
 
     /**
      * Retieves the type of this setting.
-     * 
+     *
      * @return This setting's type.
      */
     public PreferencesType getType() {
@@ -205,22 +205,22 @@ public class PreferencesSetting {
 
     /**
      * Returns a validator that can validate this setting.
-     * 
+     *
      * @return This setting's validator.
      */
     public Validator<String> getValidator() {
         return validator;
     }
-    
+
     /**
      * Sets the current value of this setting. Note that the setting is not
      * saved to the configuration file until the save method is called.
-     * 
+     *
      * @param newValue The new value of the setting
      */
     public void setValue(final String newValue) {
         current = newValue;
-        
+
         for (SettingChangeListener listener : listeners) {
             listener.settingChanged(this);
         }
@@ -228,7 +228,7 @@ public class PreferencesSetting {
 
     /**
      * Determines whether or not this setting needs a restart when it's changed.
-     * 
+     *
      * @return True if this setting needs a restart, false otherwise
      */
     public boolean isRestartNeeded() {
@@ -238,35 +238,35 @@ public class PreferencesSetting {
     /**
      * Sets the "restart needed" flag for this setting, indicating a client
      * restart is needed before the setting takes effect.
-     * 
+     *
      * @return A reference to this setting, for convenience
      */
     public PreferencesSetting setRestartNeeded() {
         restartNeeded = true;
         return this;
     }
-    
+
     /**
      * Registers the specified setting change listener.
-     * 
+     *
      * @param listener The listener to be registered
      * @return A reference to this setting, for convenience
      */
     public PreferencesSetting registerChangeListener(final SettingChangeListener listener) {
         listeners.add(listener);
         return this;
-    }    
-    
+    }
+
     /**
      * Saves the current value of this setting to the global configuration.
-     * 
+     *
      * @return True if the setting has changed, false otherwise
      */
     public boolean save() {
         if (!needsSaving()) {
             return false;
         }
-        
+
         if (current == null) {
             IdentityManager.getConfigIdentity().unsetOption(domain, option);
         } else {
@@ -276,7 +276,7 @@ public class PreferencesSetting {
         original = current;
         return true;
     }
-    
+
     /**
      * Dismisses changes to this setting.
      */
@@ -285,17 +285,17 @@ public class PreferencesSetting {
                 || (original == null && current == null)) {
             return;
         }
-        
+
         current = original;
-        
+
         for (SettingChangeListener listener : listeners) {
             listener.settingChanged(this);
         }
     }
-    
+
     /**
      * Does the setting need saving?
-     * 
+     *
      * @return true iif the setting will be changed if saved
      */
     public boolean needsSaving() {

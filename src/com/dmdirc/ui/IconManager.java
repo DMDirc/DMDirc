@@ -46,24 +46,24 @@ import javax.swing.ImageIcon;
  * @author chris
  */
 public final class IconManager implements ConfigChangeListener {
-    
+
     /** Previously created IconManager instance. */
     private static final IconManager ME = new IconManager();
-        
+
     /** A map of existing icons. */
     private final Map<String, Icon> icons;
-    
+
     /** A map of existing images. */
     private final Map<String, Image> images;
-    
+
     /** Creates a new instance of IconManager. */
-    private IconManager() {        
+    private IconManager() {
         icons = new HashMap<String, Icon>();
         images = new HashMap<String, Image>();
-        
+
         IdentityManager.getGlobalConfig().addChangeListener("icon", this);
     }
-    
+
     /**
      * Returns an instance of IconManager.
      *
@@ -72,7 +72,7 @@ public final class IconManager implements ConfigChangeListener {
     public static IconManager getIconManager() {
         return ME;
     }
-    
+
     /**
      * Retrieves the icon with the specified type. Returns null if the icon
      * wasn't found.
@@ -101,7 +101,7 @@ public final class IconManager implements ConfigChangeListener {
      * @param type The name of the icon type to retrieve
      * @param width width of the image
      * @param height height of the image
-     * 
+     *
      * @return The icon that should be used for the specified type
      *
      * @since 0.6.3m1
@@ -110,7 +110,7 @@ public final class IconManager implements ConfigChangeListener {
         return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).
                 getImage(), width, height));
     }
-    
+
     /**
      * Retrieves the image with the specified type. Returns null if the icon
      * wasn't found.
@@ -125,7 +125,7 @@ public final class IconManager implements ConfigChangeListener {
         }
         return images.get(type);
     }
-    
+
     /**
      * Returns a scaled image.
      *
@@ -139,7 +139,7 @@ public final class IconManager implements ConfigChangeListener {
             final int width, final int height) {
         return image.getScaledInstance(width , height, Image.SCALE_SMOOTH);
     }
-    
+
     /**
      * Retrieves the URL of a specified icon type.
      *
@@ -151,37 +151,37 @@ public final class IconManager implements ConfigChangeListener {
         final String iconType = getSpecialIcons(type);
         final ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         final URL defaultURL = cldr.getResource("com/dmdirc/res/" + iconType + ".png");
-        
+
         //Get the path for the url
         final String path = IdentityManager.getGlobalConfig().hasOptionString("icon", iconType)
                 ? IdentityManager.getGlobalConfig().getOption("icon", iconType)
                 : "dmdirc://com/dmdirc/res/" + iconType + ".png";
-        
+
         //Get the url for the speficied path
         URL imageURL = URLBuilder.buildURL(path);
-        
+
         if (imageURL == null && defaultURL != null) {
            imageURL = defaultURL;
         }
 
         if (imageURL == null && defaultURL == null) {
             imageURL = cldr.getResource("com/dmdirc/res/icon.png");
-            
+
             if (imageURL == null) {
                 throw new IllegalArgumentException("Unable to load icon type '"
                         + iconType + "', and unable to load default");
             }
         }
-        
+
         return imageURL;
     }
 
     private String getSpecialIcons(final String type) {
         final Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
-        if (cal.get(Calendar.MONTH) == Calendar.DECEMBER &&
-                cal.get(Calendar.DAY_OF_MONTH) >= 12 &&
-                cal.get(Calendar.DAY_OF_MONTH) <= 31) {
+        if (cal.get(Calendar.MONTH) == Calendar.DECEMBER
+                && cal.get(Calendar.DAY_OF_MONTH) >= 12
+                && cal.get(Calendar.DAY_OF_MONTH) <= 31) {
            if ("icon".equals(type) || "logo".equals(type)) {
                return "logo-special";
             }
@@ -201,5 +201,5 @@ public final class IconManager implements ConfigChangeListener {
             }
         }
     }
-    
+
 }

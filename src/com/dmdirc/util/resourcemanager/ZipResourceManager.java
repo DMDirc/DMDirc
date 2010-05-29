@@ -41,13 +41,13 @@ import java.util.zip.ZipFile;
  * Provides an easy way to access files inside a zip or jar.
  */
 public final class ZipResourceManager extends ResourceManager {
-    
+
     /** Zipfile instance. */
     private final ZipFile zipFile;
-    
+
     /** Entries list. */
     private final List<String> entries;
-    
+
     /**
      * Instantiates ZipResourceManager.
      *
@@ -56,7 +56,7 @@ public final class ZipResourceManager extends ResourceManager {
      */
     protected ZipResourceManager(final String filename) throws IOException {
         super();
-        
+
         this.zipFile = new ZipFile(filename);
         entries = new ArrayList<String>();
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
@@ -64,46 +64,46 @@ public final class ZipResourceManager extends ResourceManager {
             entries.add(zipEntries.nextElement().getName());
         }
     }
-    
+
     /**
      * Returns an instance of a ZipResourceManager for the specified file.
      *
      * @param filename Filename of the zip to load
-     * 
+     *
      * @return ZipResourceManager instance
-     * 
+     *
      * @throws IOException Throw when the zip fails to load
      */
     public static synchronized ZipResourceManager getInstance(final String filename) throws
             IOException {
         return new ZipResourceManager(filename);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean resourceExists(final String resource) {
-        final ZipEntry zipEntry = zipFile.getEntry(resource);        
-        
+        final ZipEntry zipEntry = zipFile.getEntry(resource);
+
         return zipEntry != null && !zipEntry.isDirectory();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public byte[] getResourceBytes(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
         BufferedInputStream inputStream = null;
-        
-        
+
+
         if (zipEntry == null) {
             return new byte[0];
         }
-        
+
         if (zipEntry.isDirectory()) {
             return new byte[0];
         }
-        
+
         final byte[] bytes = new byte[(int) zipEntry.getSize()];
-        
+
         try {
             inputStream = new BufferedInputStream(zipFile.getInputStream(zipEntry));
 
@@ -116,10 +116,10 @@ public final class ZipResourceManager extends ResourceManager {
         } finally {
             StreamUtil.close(inputStream);
         }
-        
+
         return bytes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputStream getResourceInputStream(final String resource) {
@@ -127,13 +127,13 @@ public final class ZipResourceManager extends ResourceManager {
         if (zipEntry == null) {
             return null;
         }
-        
+
         try {
             return zipFile.getInputStream(zipEntry);
         } catch (IOException ex) {
             return null;
         }
-        
+
     }
 
     /** {@inheritDoc} */
@@ -145,64 +145,64 @@ public final class ZipResourceManager extends ResourceManager {
             return null;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix) {
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
-        
+
         for (String entry : entries) {
             if (entry.endsWith(resourcesSuffix)) {
                 resources.put(entry, getResourceBytes(entry));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
-        
+
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
                 resources.put(entry, getResourceBytes(entry));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final Map<String, InputStream> resources =
                 new HashMap<String, InputStream>();
-        
+
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
                 resources.put(entry, getResourceInputStream(entry));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
         final List<String> resources = new ArrayList<String>();
-        
+
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
                 resources.add(entry);
             }
         }
-        
+
         return resources;
     }
 }

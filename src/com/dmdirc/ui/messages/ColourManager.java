@@ -37,10 +37,10 @@ import java.util.Map;
  * @author chris
  */
 public final class ColourManager {
-    
+
     /** Colour cache. */
     private static final Map<String, Color> COLOUR_CACHE = new HashMap<String, Color>();
-    
+
     /** Default colours used for the standard 16 IRC colours. */
     private static final Color[] DEFAULT_COLOURS = {
         Color.WHITE, Color.BLACK, new Color(0, 0, 127), new Color(0, 141, 0),
@@ -48,18 +48,18 @@ public final class ColourManager {
         Color.YELLOW, new Color(0, 252, 0), new Color(0, 128, 128), new Color(0, 255, 255),
         Color.BLUE, new Color(255, 0, 255), Color.GRAY, Color.LIGHT_GRAY,
     };
-    
+
     /** Actual colours we're using for the 16 IRC colours. */
     private static Color[] ircColours = DEFAULT_COLOURS.clone();
-       
+
     /** Creates a new instance of ColourManager. */
     private ColourManager() {
     }
-    
+
     /**
      * Initialises the IRC_COLOURS array.
      */
-    private static void initColours() {        
+    private static void initColours() {
         for (int i = 0; i < 16; i++) {
             if (IdentityManager.getGlobalConfig().hasOptionColour("colour", String.valueOf(i))) {
                 ircColours[i] = getColour(IdentityManager.getGlobalConfig()
@@ -68,10 +68,10 @@ public final class ColourManager {
             } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
                 ircColours[i] = DEFAULT_COLOURS[i];
                 COLOUR_CACHE.remove(String.valueOf(i));
-            } 
+            }
         }
     }
-    
+
     /**
      * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
      * target string, and returns the corresponding colour. Returns the
@@ -84,19 +84,19 @@ public final class ColourManager {
         if (COLOUR_CACHE.containsKey(spec)) {
             return COLOUR_CACHE.get(spec);
         }
-        
+
         Color res = null;
-        
+
         if (spec != null) {
             if (spec.length() < 3) {
                 int num;
-                
+
                 try {
                     num = Integer.parseInt(spec);
                 } catch (NumberFormatException ex) {
                     num = -1;
                 }
-                
+
                 if (num >= 0 && num <= 15) {
                     res = getColour(num);
                 }
@@ -104,17 +104,17 @@ public final class ColourManager {
                 res = getColour(spec);
             }
         }
-        
+
         if (res == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
             res = fallback;
         } else {
             COLOUR_CACHE.put(spec, res);
         }
-        
+
         return res;
     }
-    
+
     /**
      * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
      * target string, and returns the corresponding colour. Returns white if the
@@ -125,7 +125,7 @@ public final class ColourManager {
     public static Color parseColour(final String spec) {
         return parseColour(spec, Color.WHITE);
     }
-    
+
     /**
      * Returns a Color object that corresponds to the specified 6-digit hex
      * string. If the string is invalid, logs a warning and returns white.
@@ -136,20 +136,20 @@ public final class ColourManager {
         if (COLOUR_CACHE.containsKey(hex)) {
             return COLOUR_CACHE.get(hex);
         }
-        
+
         Color colour = null;
-        
+
         try {
             colour = Color.decode("#" + hex);
         } catch (NumberFormatException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour #" + hex);
             return Color.WHITE;
         }
-        
+
         COLOUR_CACHE.put(hex, colour);
         return colour;
     }
-    
+
     /**
      * Returns a Color object that represents the colour associated with the
      * specified IRC colour code. If the code is not found, a warning is logged
@@ -158,7 +158,7 @@ public final class ColourManager {
      * @return The corresponding Color object
      */
     public static Color getColour(final int number) {
-        
+
         if (number >= 0 && number <= 15) {
             return ircColours[number];
         } else {
@@ -166,7 +166,7 @@ public final class ColourManager {
             return Color.WHITE;
         }
     }
-    
+
     /**
      * Retrieves the hex representation of the specified colour.
      * @param colour The colour to be parsed
@@ -176,10 +176,10 @@ public final class ColourManager {
         final int r = colour.getRed();
         final int g = colour.getGreen();
         final int b = colour.getBlue();
-        
+
         return toHex(r) + toHex(g) + toHex(b);
     }
-    
+
     /**
      * Converts the specified integer (in the range 0-255) into a hex string.
      * @param value The integer to convert
@@ -190,10 +190,10 @@ public final class ColourManager {
             '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         };
-        
+
         return ("" + chars[value / 16]) + chars[value % 16];
     }
-    
+
     static {
         IdentityManager.getGlobalConfig().addChangeListener("colour",
                 new ConfigChangeListener() {
@@ -203,8 +203,8 @@ public final class ColourManager {
                 initColours();
             }
         });
-        
+
         initColours();
-    }    
-    
+    }
+
 }

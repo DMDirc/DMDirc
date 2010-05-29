@@ -24,7 +24,7 @@ package com.dmdirc.config.prefs.validator;
 
 /**
  * Validates a regular expression.
- * 
+ *
  * @author chris
  */
 public class RegexValidator implements Validator<String> {
@@ -35,7 +35,7 @@ public class RegexValidator implements Validator<String> {
         try {
             // Is there a proper way of doing this, as opposed to just seeing
             // if it breaks?
-            
+
             "abc".matches(object);
             return new ValidationResponse();
         } catch (Exception ex) {

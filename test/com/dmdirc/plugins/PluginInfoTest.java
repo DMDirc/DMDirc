@@ -32,14 +32,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PluginInfoTest {
-    
+
     private PluginInfo pi;
 
     @Test
     public void testCheckMinimum() throws PluginException {
         try {
             pi = new PluginInfo(new URL("file:///dev/null"), false);
-            
+
             assertTrue(pi.checkMinimumVersion("5", 6));
             assertTrue(pi.checkMinimumVersion("5", 5));
             assertTrue(pi.checkMinimumVersion("0", 17));
@@ -49,12 +49,12 @@ public class PluginInfoTest {
             assertFalse(pi.checkMinimumVersion("7", 6));
         } catch (MalformedURLException mue) { }
     }
-    
+
     @Test
     public void testCheckMaximim() throws PluginException {
         try {
             pi = new PluginInfo(new URL("file:///dev/null"), false);
-            
+
             assertTrue(pi.checkMaximumVersion("6", 6));
             assertTrue(pi.checkMaximumVersion("7", 6));
             assertTrue(pi.checkMaximumVersion("0", 6));
@@ -65,12 +65,12 @@ public class PluginInfoTest {
             assertFalse(pi.checkMaximumVersion("7", 10));
         } catch (MalformedURLException mue) { }
     }
-    
+
     @Test
     public void testOS() throws PluginException {
         try {
             pi = new PluginInfo(new URL("file:///dev/null"), false);
-            
+
             assertTrue(pi.checkOS("windows", "windows", "xp", "x86"));
             assertFalse(pi.checkOS("windows", "linux", "2.6.2.11", "x86"));
             assertTrue(pi.checkOS("windows:xp|98|3\\.1", "windows", "xp", "x86"));
@@ -79,10 +79,10 @@ public class PluginInfoTest {
             assertTrue(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "x86"));
             assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "mips"));
             assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "vista", "x86"));
-            assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));
         } catch (MalformedURLException mue) { }
     }
-    
+
     @Test
     public void testLoad() throws PluginException {
         PluginInfo pi = new PluginInfo(getClass().getResource("testplugin.jar"));
@@ -93,23 +93,23 @@ public class PluginInfoTest {
         assertEquals("Friendly name", pi.getNiceName());
         assertEquals("3", pi.getVersion().toString());
     }
-    
+
     @Test
     public void testUpdate() throws PluginException, IOException {
         final File dir = new File(File.createTempFile("dmdirc-plugin-test", null).getParentFile(),
                 "dmdirc-plugin-test-folder");
         final File pluginDir = new File(dir, "plugins");
-        
+
         dir.deleteOnExit();
         pluginDir.mkdirs();
-        
+
         final File target = new File(pluginDir, "test.jar");
-        
+
         target.createNewFile();
         new File(pluginDir, "test.jar.update").createNewFile();
-        
+
         new PluginInfo(target.toURI().toURL(), false);
-        
+
         assertTrue(new File(pluginDir, "test.jar").exists());
         assertFalse(new File(pluginDir, "test.jar.update").exists());
     }

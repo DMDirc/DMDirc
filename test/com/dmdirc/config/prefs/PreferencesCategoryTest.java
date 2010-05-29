@@ -51,20 +51,20 @@ public class PreferencesCategoryTest {
 
         category.addSetting(null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testInlineAdding() {
         final PreferencesCategory category1 = new PreferencesCategory("unit", "test");
         final PreferencesCategory category2 = new PreferencesCategory("unit", "test");
-        
+
         category1.setInline();
         category1.addSubCategory(category2);
     }
-    
+
     @Test
     public void testDescription() {
         final PreferencesCategory category = new PreferencesCategory("unit", "This is a desc.");
-        
+
         assertEquals("This is a desc.", category.getDescription());
     }
 
@@ -96,7 +96,7 @@ public class PreferencesCategoryTest {
     public void testParent() {
         final PreferencesCategory parent = mock(PreferencesCategory.class);
         when(parent.getPath()).thenReturn("parent path");
-        
+
         final PreferencesCategory category = new PreferencesCategory("unit",
                 "This is a desc.");
         category.setParent(parent);
@@ -104,16 +104,16 @@ public class PreferencesCategoryTest {
         assertSame(parent, category.getParent());
         assertEquals("parent path → unit", category.getPath());
     }
-    
+
     @Test
     public void testGetSettings() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
         final List<PreferencesSetting> settings1 = category.getSettings();
         final List<PreferencesSetting> settings2 = category.getSettings();
-        
+
         assertSame(settings1, settings2);
     }
-    
+
     @Test
     public void testSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
@@ -123,21 +123,21 @@ public class PreferencesCategoryTest {
         category.fireCategorySelected();
         category.removeChangeListener(test);
         category.fireCategorySelected();
-        
+
         verify(test).categorySelected(category);
         verify(test, never()).categoryDeselected((PreferencesCategory) anyObject());
     }
-    
+
     @Test
     public void testDeSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
         final CategoryChangeListener test = mock(CategoryChangeListener.class);
-        
+
         category.addChangeListener(test);
         category.fireCategoryDeselected();
         category.removeChangeListener(test);
         category.fireCategoryDeselected();
-        
+
         verify(test, never()).categorySelected(category);
         verify(test).categoryDeselected((PreferencesCategory) anyObject());
     }

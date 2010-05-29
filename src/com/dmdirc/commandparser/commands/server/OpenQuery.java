@@ -44,16 +44,16 @@ import com.dmdirc.ui.messages.Styliser;
  */
 public final class OpenQuery extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of Query.
      */
     public OpenQuery() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -63,7 +63,7 @@ public final class OpenQuery extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "query", "<target> <message>");
             return;
         }
-            
+
         if (server.getParser().isValidChannelName(args.getArguments()[0])) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
@@ -83,14 +83,14 @@ public final class OpenQuery extends Command implements IntelligentCommand,
                     args.getArguments()[0]);
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "query";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -102,27 +102,27 @@ public final class OpenQuery extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "query <user> [message] - opens a query with the specified user";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             targets.excludeAll();
             targets.include(TabCompletionType.CHANNEL_NICK);
         }
-        
+
         return targets;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getLineCount(final InputWindow origin, final CommandArguments arguments) {
@@ -134,5 +134,5 @@ public final class OpenQuery extends Command implements IntelligentCommand,
             return 1;
         }
     }
-    
+
 }

@@ -36,21 +36,21 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to reload a plugin.
- * 
+ *
  * @author chris
  */
 public final class ReloadPlugin extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of ReloadPlugin.
      */
     public ReloadPlugin() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -59,7 +59,7 @@ public final class ReloadPlugin extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "reloadplugin", "<plugin>");
             return;
         }
-        
+
         final PluginInfo plugin = PluginManager.getPluginManager()
                 .getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
@@ -71,13 +71,13 @@ public final class ReloadPlugin extends Command implements IntelligentCommand,
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Reloading failed");
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "reloadplugin";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -89,7 +89,7 @@ public final class ReloadPlugin extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -101,14 +101,14 @@ public final class ReloadPlugin extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
-        
+
         if (arg == 0) {
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
             }
         }
-        
+
         return res;
     }
-    
+
 }

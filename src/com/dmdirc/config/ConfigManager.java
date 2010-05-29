@@ -101,7 +101,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         this.network = network;
         this.server = server;
         this.channel = chanName;
-        
+
         sources = IdentityManager.getSources(this);
 
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -219,10 +219,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
         return null;
     }
-    
+
     /**
      * Checks whether the specified identity applies to this config manager.
-     * 
+     *
      * @param identity The identity to test
      * @return True if the identity applies, false otherwise
      */
@@ -262,7 +262,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
                     + identity.getTarget().getData() + " (" + identity + "). Result: "
                     + result);
         }
-        
+
         return result;
     }
 
@@ -285,7 +285,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     /**
      * Called whenever there is a new identity available. Checks if the
      * identity is relevant for this manager, and adds it if it is.
-     * 
+     *
      * @param identity The identity to be checked
      */
     public void checkIdentity(final Identity identity) {
@@ -295,7 +295,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
                 identity.addListener(this);
                 Collections.sort(sources);
             }
-            
+
             // Determine which settings will have changed
             for (String domain : identity.getDomains()) {
                 for (String option : identity.getOptions(domain).keySet()) {
@@ -303,7 +303,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
                         configChanged(domain, option);
                     }
                 }
-            }            
+            }
         }
     }
 
@@ -320,7 +320,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
                 res.addAll(source.getDomains());
             }
         }
-        
+
         return res;
     }
 
@@ -368,7 +368,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
                     + this.channel + " to " + protocol + ", " + ircd + ", "
                     + network + ", " + server + ", " + channel);
         }
-        
+
         this.protocol = protocol;
         this.ircd = ircd;
         this.network = network;
@@ -495,5 +495,5 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     public void identityRemoved(final Identity identity) {
         removeIdentity(identity);
     }
-    
+
 }

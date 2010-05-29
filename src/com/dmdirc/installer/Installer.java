@@ -99,12 +99,12 @@ public abstract class Installer extends Thread {
 
         if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
             if (settings.getShortcutMenuState()) {
-                step.addText("Setting up " + Main.getInstaller().getMenuName() +
-                             " shortcut");
+                step.addText("Setting up " + Main.getInstaller().getMenuName()
+                        + " shortcut");
                 setupShortcut(location, ShortcutType.MENU);
             } else {
-                step.addText("Not setting up " +
-                             Main.getInstaller().getMenuName() + " shortcut");
+                step.addText("Not setting up "
+                        + Main.getInstaller().getMenuName() + " shortcut");
             }
         }
 

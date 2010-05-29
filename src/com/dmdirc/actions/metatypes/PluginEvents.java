@@ -31,15 +31,15 @@ import com.dmdirc.plugins.PluginInfo;
  * @author Chris
  */
 public enum PluginEvents implements ActionMetaType {
-    
+
     /** Plugin event type. */
     PLUGIN_EVENT(new String[]{"plugin"}, PluginInfo.class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -50,29 +50,29 @@ public enum PluginEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Plugin Events";
-    }    
-    
+    }
+
 }

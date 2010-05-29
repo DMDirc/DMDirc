@@ -33,7 +33,7 @@ import com.dmdirc.ui.interfaces.Window;
 public enum LinkEvents implements ActionMetaType {
 
     /** URL Link clicked. */
-    LINK_CLICKED(new String[]{"Window","URL"}, Window.class, String.class),
+    LINK_CLICKED(new String[]{"Window", "URL"}, Window.class, String.class),
     /** Channel link clicked. */
     CHANNEL_CLICKED(new String[]{"Window", "Channel"}, Window.class, String.class),
     /** Nickname link clicked. */

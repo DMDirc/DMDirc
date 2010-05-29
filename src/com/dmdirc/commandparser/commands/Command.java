@@ -34,13 +34,13 @@ import com.dmdirc.ui.messages.Styliser;
  * @author chris
  */
 public abstract class Command {
-    
+
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
-    
+
     /** The format name used for command errors. */
     protected static final String FORMAT_ERROR = "commandError";
-    
+
     /**
      * Sends a line, if appropriate, to the specified target.
      * @param target The command window to send the line to
@@ -54,10 +54,10 @@ public abstract class Command {
             target.addLine(type, args);
         }
     }
-    
+
     /**
      * Sends a usage line, if appropriate, to the specified target.
-     * 
+     *
      * @param target The command window to send the line to
      * @param isSilent Whether this command is being silenced or not
      * @param name The name of the command that's raising the error
@@ -67,13 +67,13 @@ public abstract class Command {
             final boolean isSilent, final String name, final String args) {
         sendLine(target, isSilent, "commandUsage", CommandManager.getCommandChar(),
                 name, args);
-    }    
-    
+    }
+
     /**
      * Formats the specified data into a table suitable for output in the
      * textpane. It is expected that each String[] in data has the same number
      * of elements as the headers array.
-     * 
+     *
      * @param headers The headers of the table.
      * @param data The contents of the table.
      * @return A string containing an ASCII table
@@ -82,35 +82,35 @@ public abstract class Command {
         final StringBuilder res = new StringBuilder();
         res.append(Styliser.CODE_FIXED);
         res.append(Styliser.CODE_BOLD);
-        
+
         int[] maxsizes = new int[headers.length];
-        
+
         for (int i = 0; i < headers.length; i++) {
             maxsizes[i] = headers[i].length() + 3;
-            
+
             for (String[] row : data) {
                 maxsizes[i] = Math.max(maxsizes[i], row[i].length() + 3);
             }
-            
+
             doPadding(res, headers[i], maxsizes[i]);
         }
-                
+
         for (String[] source : data) {
             res.append('\n');
             res.append(Styliser.CODE_FIXED);
-            
+
             for (int i = 0; i < source.length; i++) {
                 doPadding(res, source[i], maxsizes[i]);
             }
         }
-        
+
         return res.toString();
     }
-    
+
     /**
      * Adds the specified data to the stringbuilder, padding with spaces to
      * the specified size.
-     * 
+     *
      * @param builder The stringbuilder to append data to
      * @param data The data to be added
      * @param size The minimum size that should be used
@@ -118,7 +118,7 @@ public abstract class Command {
     private static void doPadding(final StringBuilder builder, final String data,
             final int size) {
         builder.append(data);
-        
+
         for (int i = 0; i < size - data.length(); i++) {
             builder.append(' ');
         }

@@ -41,57 +41,57 @@ import java.util.Map;
  * Provides an easy way to access files inside a project.
  */
 public final class FileResourceManager extends ResourceManager {
-    
+
     /** Base path for the project. */
     private final String basePath;
-    
+
     /**
      * Creates a new instance of FileResourceManager.
-     * 
+     *
      * @param basePath Base path for the resource manager
      */
     protected FileResourceManager(final String basePath) {
         super();
-        
+
         this.basePath = basePath;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean resourceExists(final String resource) {
         final File file;
-        
+
         if (resource.startsWith(basePath)) {
             file = new File(resource);
         } else {
             file = new File(basePath, resource);
         }
-        
+
         return file.exists() && !file.isDirectory();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public byte[] getResourceBytes(final String resource) {
         FileInputStream inputStream = null;
         final File file;
-        
+
         if (resource.startsWith(basePath)) {
             file = new File(resource);
         } else {
             file = new File(basePath, resource);
         }
-        
+
         if (!file.exists()) {
             return new byte[0];
         }
-        
+
         if (file.isDirectory()) {
             return new byte[0];
         }
-        
+
         final byte[] bytes = new byte[(int) file.length()];
-        
+
         try {
             inputStream = new FileInputStream(file);
             inputStream.read(bytes);
@@ -103,26 +103,26 @@ public final class FileResourceManager extends ResourceManager {
 
         return bytes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputStream getResourceInputStream(final String resource) {
         final File file;
-        
+
         if (resource.startsWith(basePath)) {
             file = new File(resource);
         } else {
             file = new File(basePath, resource);
         }
-        
+
         if (!file.exists()) {
             return null;
         }
-        
+
         if (file.isDirectory()) {
             return null;
         }
-        
+
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException ex) {
@@ -139,14 +139,14 @@ public final class FileResourceManager extends ResourceManager {
             return null;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix) {
         final List<File> files = getFileListing(new File(basePath));
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
-        
+
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
                     file.getPath().length());
@@ -154,17 +154,17 @@ public final class FileResourceManager extends ResourceManager {
                 resources.put(path, getResourceBytes(path));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
-        
+
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
                     file.getPath().length());
@@ -172,17 +172,17 @@ public final class FileResourceManager extends ResourceManager {
                 resources.put(path, getResourceBytes(path));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
         final Map<String, InputStream> resources = new HashMap<String, InputStream>();
-        
+
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
                     file.getPath().length());
@@ -190,16 +190,16 @@ public final class FileResourceManager extends ResourceManager {
                 resources.put(path, getResourceInputStream(path));
             }
         }
-        
+
         return resources;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
         final List<String> resources = new ArrayList<String>();
-        
+
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
                     file.getPath().length());
@@ -207,10 +207,10 @@ public final class FileResourceManager extends ResourceManager {
                 resources.add(path);
             }
         }
-        
+
         return resources;
     }
-    
+
     /**
      * Returns a resursive listing of a directory tree.
      *
@@ -220,11 +220,11 @@ public final class FileResourceManager extends ResourceManager {
      */
     private static List<File> getFileListing(final File startingDirectory) {
         final List<File> result = new ArrayList<File>();
-        
+
         if (startingDirectory.listFiles() == null) {
             return result;
         }
-        
+
         final List<File> files = Arrays.asList(startingDirectory.listFiles());
         for (File file : files) {
             if (file.isFile()) {

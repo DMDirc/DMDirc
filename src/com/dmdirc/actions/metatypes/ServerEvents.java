@@ -32,7 +32,7 @@ import com.dmdirc.parser.interfaces.ClientInfo;
  * @author Chris
  */
 public enum ServerEvents implements ActionMetaType {
-    
+
     /** Server ping event type. */
     SERVER_PING(new String[]{"server", "ping"}, Server.class, Long.class),
     /** Server numeric event type. */
@@ -51,12 +51,12 @@ public enum ServerEvents implements ActionMetaType {
     SERVER_INVITE(new String[]{"server", "source", "channel"}, Server.class, ClientInfo.class, String.class),
     /** Server event type. */
     SERVER_EVENT(new String[]{"server"}, Server.class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -67,29 +67,29 @@ public enum ServerEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Server/Private Events";
-    }    
-    
+    }
+
 }

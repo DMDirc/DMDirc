@@ -23,20 +23,20 @@ package com.dmdirc.config.prefs.validator;
 
 /**
  * Validates that a number is within certain bounds.
- * 
+ *
  * @author chris
  */
 public class NumericalValidator implements Validator<String> {
-    
+
     /** The minimum value for this number. */
     protected final int min;
-    
+
     /** The maximum value for this number. */
     protected final int max;
 
     /**
      * Creates a new numerical validator with the specified bounds.
-     * 
+     *
      * @param min The minimum value for the number, or -1 for unlimited.
      * @param max The maximum value for the number, or -1 for unlimited.
      */
@@ -47,7 +47,7 @@ public class NumericalValidator implements Validator<String> {
 
     /**
      * Retrieves the maximum value that this validator will allow.
-     * 
+     *
      * @return This validator's maximum value
      */
     public int getMax() {
@@ -56,24 +56,24 @@ public class NumericalValidator implements Validator<String> {
 
     /**
      * Retrieves the minimum value that this validator will allow.
-     * 
+     *
      * @return This validator's minimum value
-     */    
+     */
     public int getMin() {
         return min == -1 ? Integer.MIN_VALUE : min;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
         int intv;
-        
+
         try {
             intv = Integer.parseInt(object);
         } catch (NumberFormatException ex) {
             return new ValidationResponse("Must be a valid number");
         }
-        
+
         if (intv < min && min != -1) {
             return new ValidationResponse("Must be at least " + min);
         } else if (intv > max && max != -1) {

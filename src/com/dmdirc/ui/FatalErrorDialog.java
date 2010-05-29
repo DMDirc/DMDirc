@@ -96,9 +96,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
         initComponents();
         layoutComponents();
-        
+
         ErrorManager.getErrorManager().addErrorListener(this);
-        
+
         setResizable(false);
         CoreUIUtils.centreWindow(this);
     }
@@ -197,7 +197,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
     /**
      * Exits the program. {@inheritDoc}
-     * 
+     *
      * @param actionEvent Action event.
      */
     @Override
@@ -246,7 +246,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     /**
      * Static method to instantiate and display the dialog, blocking until it
      * is closed.
-     * 
+     *
      * @param error Program error
      */
     public static void displayBlocking(final ProgramError error) {
@@ -320,7 +320,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public void errorStatusChanged(final ProgramError error) {
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
-            okButton.setEnabled(status.isTerminal());   
+            okButton.setEnabled(status.isTerminal());
             updateSendButtonText(status);
         }
     }

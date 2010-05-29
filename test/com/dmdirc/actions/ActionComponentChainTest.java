@@ -73,41 +73,41 @@ public class ActionComponentChainTest {
                 "STRING_STRING.STRING_STRING.STRING_LENGTH");
         assertEquals(String.class, chain.appliesTo());
     }
-    
+
     @Test
     public void testGetType() {
         final ActionComponentChain chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING.STRING_LENGTH");
         assertEquals(Integer.class, chain.getType());
-    }    
-    
+    }
+
     @Test
     public void testGetName() {
         final ActionComponentChain chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING.STRING_LENGTH");
-        
+
         assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_STRING.getName()) > -1);
         assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_LENGTH.getName()) > -1);
-    }  
-    
+    }
+
     @Test(expected=AssertionError.class)
     public void testEmptyAppliesTo() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");
         chain.appliesTo();
     }
-    
+
     @Test(expected=AssertionError.class)
     public void testEmptyGetType() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");
         chain.getType();
     }
-    
+
     @Test(expected=AssertionError.class)
     public void testEmptyGetName() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");
         chain.getName();
     }
-    
+
     @Test(expected=AssertionError.class)
     public void testEmptyToString() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");

@@ -71,10 +71,10 @@ public class ActionSubstitutor {
     private static final Pattern COMP_PATTERN = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
     /** Pattern to determine if a substitution is a server component type. */
     private static final Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
-    
+
     /** The action type this substitutor is for. */
     private final ActionType type;
-    
+
     /**
      * Creates a new substitutor for the specified action type.
      *
@@ -83,7 +83,7 @@ public class ActionSubstitutor {
     public ActionSubstitutor(final ActionType type) {
         this.type = type;
     }
-    
+
     /**
      * Retrieves a list of global config variables that will be substituted.
      * Note: does not include initial $.
@@ -93,7 +93,7 @@ public class ActionSubstitutor {
     public Set<String> getConfigSubstitutions() {
         return IdentityManager.getGlobalConfig().getOptions("actions").keySet();
     }
-    
+
     /**
      * Retrieves a list of substitutions derived from argument and component
      * combinations, along with a corresponding friendly name for them.
@@ -103,22 +103,22 @@ public class ActionSubstitutor {
      */
     public Map<String, String> getComponentSubstitutions() {
         final Map<String, String> res = new HashMap<String, String>();
-        
+
         int i = 0;
         for (Class<?> myClass : type.getType().getArgTypes()) {
             for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
                 final String key = "{" + i + "." + comp.toString() + "}";
                 final String desc = type.getType().getArgNames()[i] + "'s " + comp.getName();
-                
+
                 res.put(key, desc);
             }
-            
+
             i++;
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves a list of server substitutions, if this action type supports
      * them.
@@ -128,19 +128,19 @@ public class ActionSubstitutor {
      */
     public Map<String, String> getServerSubstitutions() {
         final Map<String, String> res = new HashMap<String, String>();
-        
+
         if (hasFrameContainer()) {
             for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
                 final String key = "{" + comp.toString() + "}";
                 final String desc = "The connection's " + comp.getName();
-                
+
                 res.put(key, desc);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Returns true if this action type's first argument is a frame container,
      * or descendent of one.
@@ -149,18 +149,18 @@ public class ActionSubstitutor {
      */
     private boolean hasFrameContainer() {
         Class<?> target = null;
-        
+
         if (type.getType().getArgTypes().length > 0) {
             target = type.getType().getArgTypes()[0];
-            
+
             while (target != null && target != FrameContainer.class) {
                 target = target.getSuperclass();
             }
         }
-        
+
         return target == FrameContainer.class;
     }
-    
+
     /**
      * Determines whether or not word substitutions will work for this action
      * type. Word substitutions take the form $1, $1-5, $6-, etc.
@@ -172,7 +172,7 @@ public class ActionSubstitutor {
                 && (type.getType().getArgTypes()[2] == String[].class
                 || type.getType().getArgTypes()[2] == String.class);
     }
-    
+
     /**
      * Performs all applicable substitutions on the specified string, with the
      * specified arguments.
@@ -181,8 +181,8 @@ public class ActionSubstitutor {
      * @param args The arguments for the action type
      * @return The substituted string
      */
-    @Precondition("Number of arguments given equals the number of arguments " +
-    "required by this substitutor's type")
+    @Precondition("Number of arguments given equals the number of arguments "
+    + "required by this substitutor's type")
     public String doSubstitution(final String target, final Object ... args) {
         if (type.getType().getArity() != args.length) {
             throw new IllegalArgumentException("Invalid number of arguments "
@@ -205,7 +205,7 @@ public class ActionSubstitutor {
 
             res.delete(start, end);
             res.insert(start, getSubstitution(doSubstitution(group, args), args));
-            
+
             bracesMatcher = BRACES_PATTERN.matcher(res);
             otherMatcher = OTHER_PATTERN.matcher(res);
         }
@@ -226,9 +226,9 @@ public class ActionSubstitutor {
         final Matcher serverMatcher = SERVER_PATTERN.matcher(substitution);
 
         if (usesWordSubstitutions() && numberMatcher.matches()) {
-            final CommandArguments words = args[2] instanceof String ?
-                new CommandArguments((String) args[2]) :
-                new CommandArguments(Arrays.asList((String[]) args[2]));
+            final CommandArguments words = args[2] instanceof String
+                    ? new CommandArguments((String) args[2])
+                    : new CommandArguments(Arrays.asList((String[]) args[2]));
 
             int start, end;
 
@@ -308,7 +308,7 @@ public class ActionSubstitutor {
      * specified set of arguments. If any of the arguments is an instance of
      * {@link FrameContainer} or {@link Window}, the config manager is
      * requested from them. Otherwise, the global config is returned.
-     * 
+     *
      * @param args The arguments to be tested
      * @return The best config manager to use for those arguments
      * @since 0.6.3m2
@@ -337,5 +337,5 @@ public class ActionSubstitutor {
     protected static String escape(final String input) {
         return input.replace("\\", "\\\\").replace("$", "\\$");
     }
-    
+
 }

@@ -40,34 +40,34 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  */
 @CommandOptions(allowOffline=false)
 public final class Raw extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of Raw.
      */
     public Raw() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         final String line = args.getArgumentsAsString();
-        
+
         server.getParser().sendRawMessage(line);
         sendLine(origin, args.isSilent(), "rawCommand", line);
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "raw";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -79,11 +79,11 @@ public final class Raw extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "raw <text> - sends the specified text directly to the server";
     }
-    
+
 }

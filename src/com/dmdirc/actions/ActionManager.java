@@ -380,8 +380,8 @@ public final class ActionManager {
         boolean res = false;
 
         if (LISTENERS.containsKey(type)) {
-            for (ActionListener listener :
-                new ArrayList<ActionListener>(LISTENERS.get(type))) {
+            for (ActionListener listener
+                    : new ArrayList<ActionListener>(LISTENERS.get(type))) {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {

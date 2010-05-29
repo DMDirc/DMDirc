@@ -24,11 +24,11 @@ package com.dmdirc.commandparser;
 
 /**
  * Represents an abstract, UI-independent popup menu item.
- * 
+ *
  * @author chris
  */
 public class PopupMenuItem {
-   
+
     /** Whether this item is a divider. */
     private boolean divider = false;
     /** The submenu for this item, if any. */
@@ -37,17 +37,17 @@ public class PopupMenuItem {
     private String name;
     /** The command for this item, if any. */
     private String command;
-    
+
     /**
      * Creates a new PopupMenuItem that is used as a divider.
      */
     public PopupMenuItem() {
         divider = true;
     }
-    
+
     /**
      * Creates a new PopupMenuItem that is used as a submenu.
-     * 
+     *
      * @param name The name of the menu item
      * @param submenu The submenu of this item
      */
@@ -55,10 +55,10 @@ public class PopupMenuItem {
         this.name = name;
         this.submenu = submenu;
     }
-    
+
     /**
      * Creates a new PopupMenuItem that executes a command.
-     * 
+     *
      * @param name The name of the menu item
      * @param command The command to be executed
      */
@@ -66,10 +66,10 @@ public class PopupMenuItem {
         this.name = name;
         this.command = command;
     }
-    
+
     /**
      * Determines if this menu item is a divider or not.
-     * 
+     *
      * @return True if this item is a divider, false otherwise.
      */
     public boolean isDivider() {
@@ -78,35 +78,35 @@ public class PopupMenuItem {
 
     /**
      * Determines if this menu item contains a submenu or not.
-     * 
+     *
      * @return True if this item contains a submenu, false otherwise.
-     */    
+     */
     public boolean isSubMenu() {
         return submenu != null;
     }
-    
+
     /**
      * Retrieves the submenu associated with this item.
-     * 
+     *
      * @return This menu item's submenu.
      */
     public PopupMenu getSubMenu() {
         return submenu;
     }
-    
+
     /**
      * Retrieves the name of this menu item.
-     * 
+     *
      * @return This menu item's name.
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * Retrieves the command for this menu item, with the specified argumenwits
      * substituted in.
-     * 
+     *
      * @param arguments The arguments needed for this command
      * @return The command to be passed to a command parser
      */

@@ -30,26 +30,26 @@ import com.dmdirc.actions.interfaces.ActionComponent;
  * @author chris
  */
 public class ActionCondition {
-    
+
     /** The argument number that this action condition applies to. */
     private int arg;
-    
+
     /** The component that this action condition applies to. */
     private ActionComponent component;
-    
+
     /** The comparison that should be used for this condition. */
     private ActionComparison comparison;
-    
+
     /** The target of the comparison for this condition. */
     private String target = "";
-    
+
     /** The source target for this comparison. */
     private String starget = "";
-    
+
     /**
      * Creates a new instance of ActionCondition that compares the output of
      * a component to a string.
-     * 
+     *
      * @param arg The argument number to be tested
      * @param component The component to be tested
      * @param comparison The comparison to be used
@@ -58,16 +58,16 @@ public class ActionCondition {
     public ActionCondition(final int arg, final ActionComponent component,
             final ActionComparison comparison, final String target) {
         super();
-        
+
         this.arg = arg;
         this.component = component;
         this.comparison = comparison;
         this.target = target;
     }
-    
+
     /**
      * Creates a new instance of ActionCondition that compares two strings.
-     * 
+     *
      * @param starget The first target for comparison.
      * @param comparison The comparison to be used
      * @param target The second target for the comparison
@@ -75,31 +75,31 @@ public class ActionCondition {
     public ActionCondition(final String starget, final ActionComparison comparison,
             final String target) {
         super();
-        
+
         this.arg = -1;
         this.starget = starget;
         this.comparison = comparison;
         this.target = target;
     }
-    
+
     /**
      * Tests to see if this condition holds.
-     * 
+     *
      * @param sub The substitutor to use for this
      * @param args The event arguments to be tested
      * @return True if the condition holds, false otherwise
      */
     public boolean test(final ActionSubstitutor sub, final Object ... args) {
         final String thisTarget = sub.doSubstitution(getTarget(), args);
-        
-        if (arg == -1) { 
+
+        if (arg == -1) {
             final String thisStarget = sub.doSubstitution(starget, args);
             return getComparison().test(thisStarget, thisTarget);
         } else {
             return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
         }
     }
-    
+
     /**
      * Returns the argument number this condition applies to.
      *
@@ -108,7 +108,7 @@ public class ActionCondition {
     public int getArg() {
         return arg;
     }
-    
+
     /**
      * Returns the component this condition applies to.
      *
@@ -117,7 +117,7 @@ public class ActionCondition {
     public ActionComponent getComponent() {
         return component;
     }
-    
+
     /**
      * Returns the comparison this condition applies to.
      *
@@ -126,7 +126,7 @@ public class ActionCondition {
     public ActionComparison getComparison() {
         return comparison;
     }
-    
+
     /**
      * Returns the target of the comparison for this condition.
      *
@@ -135,7 +135,7 @@ public class ActionCondition {
     public String getTarget() {
         return target;
     }
-    
+
     /**
      * Sets the argument number this condition applies to.
      *
@@ -144,7 +144,7 @@ public class ActionCondition {
     public void setArg(final int arg) {
         this.arg = arg;
     }
-    
+
     /**
      * Sets the component this condition applies to.
      *
@@ -153,7 +153,7 @@ public class ActionCondition {
     public void setComponent(final ActionComponent component) {
         this.component = component;
     }
-    
+
     /**
      * Sets the comparison this condition applies to.
      *
@@ -162,7 +162,7 @@ public class ActionCondition {
     public void setComparison(final ActionComparison comparison) {
         this.comparison = comparison;
     }
-    
+
     /**
      * Sets the target of the comparison for this condition.
      * @param target Target for comparison
@@ -173,7 +173,7 @@ public class ActionCondition {
 
     /**
      * Retrieves the starget of this condition.
-     * 
+     *
      * @return This condition's starget, or null if none was set.
      */
     public String getStarget() {
@@ -182,17 +182,17 @@ public class ActionCondition {
 
     /**
      * Sets the starget for this condition.
-     * 
+     *
      * @param starget The new starget for this condition.
      */
     public void setStarget(final String starget) {
         this.starget = starget;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "[ arg=" + arg + ", component=" + component + ", comparison=" 
+        return "[ arg=" + arg + ", component=" + component + ", comparison="
                 + comparison + ", target=" + target + ", starget=" + starget + " ]";
     }
 
@@ -202,19 +202,19 @@ public class ActionCondition {
         if (!(obj instanceof ActionCondition)) {
             return false;
         }
-        
+
         final ActionCondition o = (ActionCondition) obj;
-        
+
         return arg == o.getArg() && component == o.getComponent()
                 && comparison == o.getComparison() && target.equals(o.getTarget())
                 && starget.equals(o.getStarget());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return arg + 100 * (arg == -1 ? starget.hashCode() : component.hashCode())
                 + 10000 * comparison.hashCode() + 100000 * target.hashCode();
     }
-    
+
 }

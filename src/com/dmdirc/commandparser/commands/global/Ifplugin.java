@@ -45,16 +45,16 @@ import com.dmdirc.ui.input.TabCompleter;
  */
 public final class Ifplugin extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Ifplugin.
      */
     public Ifplugin() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -63,19 +63,19 @@ public final class Ifplugin extends Command implements IntelligentCommand,
             showUsage(origin, args.isSilent(), "ifplugin", "<[!]plugin> <command>");
             return;
         }
-        
+
         final boolean negative = args.getArguments()[0].charAt(0) == '!';
-        
+
         final String pname = args.getArguments()[0].substring(negative ? 1 : 0);
-        
+
         final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName(pname);
-        
+
         boolean result = true;
-        
+
         if (pluginInfo == null || !pluginInfo.isLoaded()) {
             result = false;
         }
-        
+
         if (result != negative) {
             if (origin == null) {
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
@@ -86,13 +86,13 @@ public final class Ifplugin extends Command implements IntelligentCommand,
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "ifplugin";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -104,12 +104,12 @@ public final class Ifplugin extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "ifplugin <[!]plugin> <command> - executes a command if the " +
-                "specified plugin is/isn't loaded";
+        return "ifplugin <[!]plugin> <command> - executes a command if the "
+                + "specified plugin is/isn't loaded";
     }
 
     /** {@inheritDoc} */
@@ -117,7 +117,7 @@ public final class Ifplugin extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res;
-        
+
         if (arg == 0) {
             res = new AdditionalTabTargets().excludeAll();
 
@@ -125,12 +125,12 @@ public final class Ifplugin extends Command implements IntelligentCommand,
                     : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
                 res.add("!" + possPlugin.getName());
-            }            
+            }
         } else {
             res = TabCompleter.getIntelligentResults(arg, context, 1);
         }
-        
+
         return res;
-    }    
-    
+    }
+
 }

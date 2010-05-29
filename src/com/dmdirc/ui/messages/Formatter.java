@@ -35,24 +35,24 @@ import java.util.UnknownFormatConversionException;
  * The Formatter provides a standard way to format messages for display.
  */
 public final class Formatter {
-       
+
     /**
      * A cache of types needed by the various formatters.
      */
     private static final Map<String, Character[]> TYPE_CACHE
             = new HashMap<String, Character[]>();
-   
+
     /**
      * Creates a new instance of Formatter.
      */
     private Formatter() {
         // Shouldn't be used
     }
-    
+
     /**
      * Inserts the supplied arguments into a format string for the specified
      * message type.
-     * 
+     *
      * @param messageType The message type that the arguments should be formatted as
      * @param config The config manager to use to format the message
      * @param arguments The arguments to this message type
@@ -62,11 +62,11 @@ public final class Formatter {
     public static String formatMessage(final ConfigManager config, final String messageType,
             final Object... arguments) {
         assert(messageType != null);
-                
+
         final String res = config.hasOptionString("formatter", messageType) ?
             config.getOption("formatter", messageType).replace("%-1$", "%"
             + arguments.length + "$"): null;
-        
+
         if (res == null) {
             return "<No format string for message type " + messageType + ">";
         } else {
@@ -88,7 +88,7 @@ public final class Formatter {
             }
         }
     }
-    
+
     /**
      * Casts the specified arguments to the relevant classes, based on the
      * format type cache.
@@ -100,19 +100,19 @@ public final class Formatter {
     @Precondition("The specified format is not null")
     private static Object[] castArguments(final String format, final Object[] args) {
         assert(format != null);
-        
+
         if (!TYPE_CACHE.containsKey(format)) {
             analyseFormat(format, args);
         }
-        
+
         final Object[] res = new Object[args.length];
-        
+
         int i = 0;
         for (Character chr : TYPE_CACHE.get(format)) {
             if (i >= args.length) {
                 break;
             }
-            
+
             switch (chr) {
             case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
                 // General (strings)
@@ -146,16 +146,16 @@ public final class Formatter {
             default:
                 res[i] = args[i];
             }
-            
+
             i++;
         }
-        
+
         return res;
     }
-    
+
     /**
      * Tests for and adds one component of the duration format.
-     * 
+     *
      * @param builder The string builder to append text to
      * @param current The number of seconds in the duration
      * @param duration The number of seconds in this component
@@ -165,43 +165,43 @@ public final class Formatter {
     private static int doDuration(final StringBuilder builder, final int current,
             final int duration, final String name) {
         int res = 0;
-        
+
         if (current >= duration) {
             final int units = current / duration;
             res = units * duration;
-            
+
             if (builder.length() > 0) {
                 builder.append(", ");
             }
-            
+
             builder.append(units);
             builder.append(' ');
             builder.append(name + (units != 1 ? 's' : ""));
         }
-        
+
         return res;
     }
-    
+
     /**
      * Formats the specified number of seconds as a string containing the
      * number of days, hours, minutes and seconds.
-     * 
+     *
      * @param duration The duration in seconds to be formatted
      * @return A textual version of the duration
      */
     public static String formatDuration(final int duration) {
         final StringBuilder buff = new StringBuilder();
-        
+
         int seconds = duration;
-        
+
         seconds -= doDuration(buff, seconds, 60*60*24, "day");
         seconds -= doDuration(buff, seconds, 60*60, "hour");
         seconds -= doDuration(buff, seconds, 60, "minute");
         seconds -= doDuration(buff, seconds, 1, "second");
-        
+
         return buff.length() == 0 ? "0 seconds" : buff.toString();
     }
-    
+
     /**
      * Analyses the specified format string and fills in the format type cache.
      *
@@ -210,17 +210,17 @@ public final class Formatter {
      */
     private static void analyseFormat(final String format, final Object[] args) {
         final Character[] types = new Character[args.length];
-        
+
         for (int i = 0; i < args.length; i++) {
             final int index = format.indexOf("%" + (i + 1) + "$");
-            
+
             if (index > -1) {
                 types[i] = format.charAt(index + 3);
             } else {
                 types[i] = 's';
             }
         }
-        
+
         TYPE_CACHE.put(format, types);
     }
 

@@ -33,19 +33,19 @@ import java.util.Locale;
  * @author chris
  */
 public final class TabCompleterResult {
-    
+
     /**
      * The result list for this tab completer.
      */
     private final List<String> results;
-    
+
     /**
      * Creates a new instance of TabCompleterResult with an empty result set.
      */
     public TabCompleterResult() {
         this.results = new ArrayList<String>();
     }
-    
+
     /**
      * Creates a new instance of TabCompleterResult.
      * @param newResults The list of results that this result set contains
@@ -53,7 +53,7 @@ public final class TabCompleterResult {
     public TabCompleterResult(final List<String> newResults) {
         results = newResults;
     }
-    
+
     /**
      * Adds a result to this result set.
      * @param result The result to be added
@@ -61,7 +61,7 @@ public final class TabCompleterResult {
     public void addResult(final String result) {
         results.add(result);
     }
-    
+
     /**
      * Determines if this result set contains the specified result.
      * @param result The result to be tested
@@ -70,7 +70,7 @@ public final class TabCompleterResult {
     public boolean hasResult(final String result) {
         return results.contains(result);
     }
-    
+
     /**
      * Merges the specified additional results with this result set.
      * @param additional The results to merge
@@ -82,7 +82,7 @@ public final class TabCompleterResult {
             }
         }
     }
-    
+
     /**
      * Gets the total size of this result set.
      * @return the size of this result set
@@ -90,7 +90,7 @@ public final class TabCompleterResult {
     public int getResultCount() {
         return results.size();
     }
-    
+
     /**
      * Returns the longest substring that matches all results.
      * @return longest possible substring matching all results
@@ -99,10 +99,10 @@ public final class TabCompleterResult {
         if (getResultCount() == 0) {
             return "";
         }
-        
+
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
                 .getOptionBool("tabcompletion", "casesensitive");
-        
+
         String res = results.get(0);
         for (String entry : results) {
             if (caseSensitive) {
@@ -116,10 +116,10 @@ public final class TabCompleterResult {
                 }
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves the list of results that this set contains.
      * @return An arraylist containing the results
@@ -127,21 +127,21 @@ public final class TabCompleterResult {
     public List<String> getResults() {
         return results;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         final StringBuffer buff = new StringBuffer();
-        
+
         for (String entry : results) {
             if (buff.length() > 0) {
                 buff.append(", ");
             }
-            
+
             buff.append(entry);
         }
-        
+
         return buff.toString();
     }
-    
+
 }

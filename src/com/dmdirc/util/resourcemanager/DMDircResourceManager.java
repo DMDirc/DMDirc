@@ -37,31 +37,31 @@ public class DMDircResourceManager {
 
     /**
      * Returns the working directory for the application.
-     * 
+     *
      * @return Current working directory
      */
     public static synchronized String getCurrentWorkingDirectory() {
-        String path = "";        
+        String path = "";
         final URL resource = Thread.currentThread().getContextClassLoader().
                         getResource("com/dmdirc/Main.class");
-        
+
         final String protocol = resource.getProtocol();
-        
+
         if ("file".equals(protocol)) {
             path = Thread.currentThread().
                     getContextClassLoader().getResource("").getPath();
         } else if ("jar".equals(protocol)) {
             final String tempPath = resource.getPath();
-            
+
             if (System.getProperty("os.name").startsWith("Windows")) {
                 path = tempPath.substring(6, tempPath.length() - 23);
             } else {
                 path = tempPath.substring(5, tempPath.length() - 23);
             }
-            
+
             path = path.substring(0, path.lastIndexOf('/') + 1);
         }
-        
+
         try {
             path = URLDecoder.decode(path, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
@@ -70,10 +70,10 @@ public class DMDircResourceManager {
         }
         return path;
     }
-    
+
     /**
      * Determines if this instance of DMDirc is running from a jar or not.
-     * 
+     *
      * @return True if this instance is running from a JAR, false otherwise
      */
     public static boolean isRunningFromJar() {
@@ -81,5 +81,5 @@ public class DMDircResourceManager {
                         getResource("com/dmdirc/Main.class");
         return "jar".equals(resource.getProtocol());
     }
-    
+
 }

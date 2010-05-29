@@ -416,8 +416,8 @@ public final class ErrorManager implements ConfigChangeListener {
         }
 
         try {
-            while (!error.getReportStatus().isTerminal()) {
-                synchronized (error) {
+            synchronized (error) {
+                while (!error.getReportStatus().isTerminal()) {
                     error.wait();
                 }
             }

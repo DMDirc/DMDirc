@@ -88,10 +88,10 @@ public class Main {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising", ex);
         }
     }
-    
+
     /**
      * Initialises the client.
-     * 
+     *
      * @param args The command line arguments
      */
     private static void init(final String[] args) {
@@ -116,7 +116,7 @@ public class Main {
 
         final PluginManager pm = PluginManager.getPluginManager();
         checkBundledPlugins(pm, IdentityManager.getGlobalConfig());
-        
+
         ThemeManager.loadThemes();
 
         clp.applySettings();
@@ -168,7 +168,7 @@ public class Main {
                 ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
                 IdentityManager.save();
             }
-        }, "Shutdown thread"));        
+        }, "Shutdown thread"));
     }
 
     /**
@@ -323,7 +323,7 @@ public class Main {
         // Can't find any
         throw new IllegalStateException("No UIs could be loaded");
     }
-    
+
     /**
      * Executes the first run or migration wizards as required.
      */
@@ -348,15 +348,15 @@ public class Main {
     public static void quit() {
         quit(0);
     }
-    
+
     /**
      * Quits the client nicely, with the default closing message.
-     * 
-     * @param exitCode This is the exit code that will be returned to the 
+     *
+     * @param exitCode This is the exit code that will be returned to the
      *                  operating system when the client exits
      */
     public static void quit(final int exitCode) {
-        quit(IdentityManager.getGlobalConfig().getOption("general", 
+        quit(IdentityManager.getGlobalConfig().getOption("general",
                 "closemessage"), exitCode);
     }
 
@@ -368,12 +368,12 @@ public class Main {
     public static void quit(final String reason) {
         quit(reason, 0);
     }
-    
+
     /**
      * Quits the client nicely.
      *
      * @param reason The quit reason to send
-     * @param exitCode This is the exit code that will be returned to the 
+     * @param exitCode This is the exit code that will be returned to the
      *                  operating system when the client exits
      */
     public static void quit(final String reason, final int exitCode) {
@@ -440,9 +440,9 @@ public class Main {
             final File testFile = new File(configdir);
             if (!testFile.exists()) {
                 final String configHome = System.getenv("XDG_CONFIG_HOME");
-                configdir = (configHome == null || configHome.isEmpty()) ?
-                    System.getProperty("user.home") + fs + ".config" + fs :
-                    configHome;
+                configdir = (configHome == null || configHome.isEmpty())
+                        ? System.getProperty("user.home") + fs + ".config" + fs
+                        : configHome;
                 configdir += fs + "DMDirc" + fs;
             }
         }

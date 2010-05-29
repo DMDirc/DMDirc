@@ -57,28 +57,28 @@ public class WarningDialog extends JDialog {
     /** Dialog heading text. */
     public static final String NO_UIS_TITLE = "No UIs Found";
     /** Dialog body text. */
-    public static final String NO_UIS_BODY = "DMDirc cannot find any UI " +
-            "plugins, which are required for you to use DMDirc.  You can " +
-            "either download a UI plugin or extract one from the jar. DMDirc " +
-            "will now exit";
+    public static final String NO_UIS_BODY = "DMDirc cannot find any UI "
+            + "plugins, which are required for you to use DMDirc.  You can "
+            + "either download a UI plugin or extract one from the jar. DMDirc "
+            + "will now exit";
 
     /** Alternative Dialog heading text. */
     public static final String NO_COMPAT_UIS_TITLE = "No compatible UIs Found";
     /** Alternative Dialog body text. */
-    public static final String NO_COMPAT_UIS_BODY = "DMDirc did not find any " +
-            "compatible UI plugins, which are required for you to use " +
-            "DMDirc. The bundled UI plugins have automatically been " +
-            "extracted from the jar, and your UI has been reset to the " +
-            "default swing UI. DMDirc will now attempt to restart. If you " +
-            "are not using the launcher you will need to restart DMDirc " +
-            "manually.";
+    public static final String NO_COMPAT_UIS_BODY = "DMDirc did not find any "
+            + "compatible UI plugins, which are required for you to use "
+            + "DMDirc. The bundled UI plugins have automatically been "
+            + "extracted from the jar, and your UI has been reset to the "
+            + "default swing UI. DMDirc will now attempt to restart. If you "
+            + "are not using the launcher you will need to restart DMDirc "
+            + "manually.";
 
     /** Another alternative Dialog body text! */
-    public static final String NO_RECOV_UIS = "DMDirc did not find any " +
-            "compatible UI plugins, which are required for you to use DMDirc." +
-            "  The bundled UI plugins were automatically extracted from the " +
-            "jar, but this did not fix the problem. DMDirc is unable to " +
-            "continue and will now exit.";
+    public static final String NO_RECOV_UIS = "DMDirc did not find any "
+            + "compatible UI plugins, which are required for you to use DMDirc."
+            + "  The bundled UI plugins were automatically extracted from the "
+            + "jar, but this did not fix the problem. DMDirc is unable to "
+            + "continue and will now exit.";
 
     /** Create a new NoUIDialog */
     public WarningDialog() {
@@ -117,12 +117,12 @@ public class WarningDialog extends JDialog {
 
         final HTMLDocument doc = (HTMLDocument) textArea.getDocument();
         final Font font = UIManager.getFont("Label.font");
-        doc.getStyleSheet().addRule("body " +
-                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
-                font.getSize() + "pt; text-align: center; }");
-        doc.getStyleSheet().addRule("h1 " +
-                "{ font-family: " + font.getFamily() + "; " +
-                "font-size: 1.5em; padding: 0; margin: 0}");
+        doc.getStyleSheet().addRule("body "
+                + "{ font-family: " + font.getFamily() + "; " + "font-size: "
+                + font.getSize() + "pt; text-align: center; }");
+        doc.getStyleSheet().addRule("h1 "
+                + "{ font-family: " + font.getFamily() + "; "
+                + "font-size: 1.5em; padding: 0; margin: 0}");
         doc.getStyleSheet().addRule("p { text-align: justify; }");
 
         textArea.setText("<h1>" + title + "</h1><p>" + body + "</p>");
@@ -145,7 +145,7 @@ public class WarningDialog extends JDialog {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                setSize(400,400);
+                setSize(400, 400);
                 CoreUIUtils.centreWindow(WarningDialog.this);
                 setVisible(true);
             }

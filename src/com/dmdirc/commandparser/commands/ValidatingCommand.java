@@ -28,14 +28,14 @@ import com.dmdirc.ui.interfaces.InputWindow;
 /**
  * Validating commands are capable of validating their arguments to determine
  * whether the input would be valid or not.
- * 
+ *
  * @author chris
  */
 public interface ValidatingCommand {
-    
+
     /**
      * Validates the specified arguments.
-     * 
+     *
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return A validation response indicating the validity of the arguments

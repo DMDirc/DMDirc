@@ -47,7 +47,7 @@ import javax.swing.text.StyledDocument;
  * @author chris
  */
 public class Styliser implements ConfigChangeListener {
-    
+
     /** The character used for marking up bold text. */
     public static final char CODE_BOLD = 2;
     /** The character used for marking up coloured text. */
@@ -74,25 +74,25 @@ public class Styliser implements ConfigChangeListener {
     public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
     public static final char CODE_UNDERLINE = 31;
-    
+
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
 
     /** Characters used for hyperlinks. */
     private static final String HYPERLINK_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
-    
+
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
-    
+
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
     private static final String URL_PUNCT_ILLEGAL = "\"";
-    
+
     /** Defines all characters treated as trailing punctuation that're legal in URLs. */
     private static final String URL_PUNCT_LEGAL = "';:!,\\.\\?";
-    
+
     /** Defines all trailing punctuation. */
     private static final String URL_PUNCT = URL_PUNCT_ILLEGAL + URL_PUNCT_LEGAL;
 
@@ -107,32 +107,32 @@ public class Styliser implements ConfigChangeListener {
     private static final String URL_REGEXP = "(?i)((?>(?<!" + CODE_HEXCOLOUR
             + "[a-f0-9]{5})[a-f]|[g-z+])+://" + URL_CHARS
             + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
-    
+
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)" + HYPERLINK_CHARS
             + "]*(?:[" + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "]*["
             + HYPERLINK_CHARS + "])?[^\\)" + HYPERLINK_CHARS + "]*[" + HYPERLINK_CHARS
             + "][^" + HYPERLINK_CHARS + "]+)(\\)['\";:!,\\.\\)]*)([" + HYPERLINK_CHARS + "])";
-    
+
     /** Regular expression for intelligent handling of trailing single and double quotes. */
     private static final String URL_INT2 = "(^(?:[^" + HYPERLINK_CHARS + "]+|["
             + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "][" + HYPERLINK_CHARS
             + "]))(['\"])([^" + HYPERLINK_CHARS + "]*?[" + HYPERLINK_CHARS + "][^"
             + HYPERLINK_CHARS + "]+)(\\1[" + URL_PUNCT + "]*)([" + HYPERLINK_CHARS + "])";
-    
+
     /** Regular expression for intelligent handling of surrounding quotes. */
     private static final String URL_INT3 = "(['\"])([" + HYPERLINK_CHARS
             + "][^" + HYPERLINK_CHARS + "]+?)(\\1[^" + HYPERLINK_CHARS + "]*)(["
             + HYPERLINK_CHARS + "])";
-    
+
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "([" + HYPERLINK_CHARS + "][^"
             + HYPERLINK_CHARS + "]+?)([" + URL_PUNCT + "]?)([" + HYPERLINK_CHARS + "])";
-    
+
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"',])([\\Q%s\\E]"
             + RESERVED_CHARS + "+)";
-    
+
     /** Whether or not we should style links. */
     private boolean styleURIs, styleChannels;
 
@@ -141,7 +141,7 @@ public class Styliser implements ConfigChangeListener {
 
     /** The container that owns this styliser. */
     private final FrameContainer<?> owner;
-    
+
     /**
      * Creates a new instance of Styliser.
      *
@@ -160,7 +160,7 @@ public class Styliser implements ConfigChangeListener {
         uriColour = owner.getConfigManager().getOptionColour("ui", "linkcolour");
         channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
     }
-    
+
     /**
      * Stylises the specified strings and adds them to the specified document.
      *
@@ -183,7 +183,7 @@ public class Styliser implements ConfigChangeListener {
         resetAttributes(attribs);
         for (int i = 0; i < strings.length; i++) {
             final char[] chars = strings[i].toCharArray();
-            
+
             for (int j = 0; j < chars.length; j++) {
                 if (chars[j] == 65533) {
                     chars[j] = '?';
@@ -194,20 +194,20 @@ public class Styliser implements ConfigChangeListener {
                 final int ooffset = styledDoc.getLength();
                 int offset = ooffset;
                 int position = 0;
-                
+
                 final String target = doSmilies(doLinks(new String(chars)
                         .replaceAll(INTERNAL_CHARS, "")));
-                
+
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
-                
+
                 while (position < target.length()) {
                     final String next = readUntilControl(target.substring(position));
 
                     styledDoc.insertString(offset, next, attribs);
-                    
+
                     position += next.length();
                     offset += next.length();
-                    
+
                     if (position < target.length()) {
                         position += readControlChars(target.substring(position),
                                 attribs, position == 0);
@@ -216,14 +216,14 @@ public class Styliser implements ConfigChangeListener {
 
                 ActionManager.processEvent(CoreActionType.CLIENT_STRING_STYLED,
                         null, styledDoc, ooffset, styledDoc.getLength() - ooffset);
-                
+
             } catch (BadLocationException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
                         "Unable to insert styled string: " + ex.getMessage());
             }
         }
     }
-    
+
     /**
      * Stylises the specified string.
      *
@@ -233,9 +233,9 @@ public class Styliser implements ConfigChangeListener {
      */
     public StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
-        
+
         addStyledString(styledDoc, strings);
-        
+
         return styledDoc;
     }
 
@@ -276,7 +276,7 @@ public class Styliser implements ConfigChangeListener {
 
         return styled.substring(start, end);
     }
-    
+
     /**
      * Applies the hyperlink styles and intelligent linking regexps to the
      * target.
@@ -288,7 +288,7 @@ public class Styliser implements ConfigChangeListener {
         String target = string;
         final String prefixes = owner.getServer() == null ? null
                 : owner.getServer().getChannelPrefixes();
-        
+
         String target2 = target;
         target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
 
@@ -305,7 +305,7 @@ public class Styliser implements ConfigChangeListener {
                     .replaceAll(URL_INT3, "$1$2$4$3")
                     .replaceAll(URL_INT4, "$1$3$2");
         }
-        
+
         return target;
     }
 
@@ -336,7 +336,7 @@ public class Styliser implements ConfigChangeListener {
         return string.replaceAll("(\\s|^)(" + smilies + ")(?=\\s|$)",
                 "$1" + CODE_SMILIE + "$2" + CODE_SMILIE);
     }
-    
+
     /**
      * Strips all recognised control codes from the input string.
      * @param input the String to be stripped
@@ -351,7 +351,7 @@ public class Styliser implements ConfigChangeListener {
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
                 + CODE_TOOLTIP, "$1");
     }
-    
+
     /**
      * Returns a substring of the input string such that no control codes are present
      * in the output. If the returned value isn't the same as the input, then the
@@ -361,7 +361,7 @@ public class Styliser implements ConfigChangeListener {
      */
     public static String readUntilControl(final String input) {
         int pos = input.length();
-        
+
         pos = checkChar(pos, input.indexOf(CODE_BOLD));
         pos = checkChar(pos, input.indexOf(CODE_UNDERLINE));
         pos = checkChar(pos, input.indexOf(CODE_STOP));
@@ -375,10 +375,10 @@ public class Styliser implements ConfigChangeListener {
         pos = checkChar(pos, input.indexOf(CODE_SMILIE));
         pos = checkChar(pos, input.indexOf(CODE_NEGATE));
         pos = checkChar(pos, input.indexOf(CODE_TOOLTIP));
-        
+
         return input.substring(0, pos);
     }
-    
+
     /**
      * Helper function used in readUntilControl. Checks if i is a valid index of
      * the string (i.e., it's not -1), and then returns the minimum of pos and i.
@@ -390,7 +390,7 @@ public class Styliser implements ConfigChangeListener {
         if (i < pos && i != -1) { return i; }
         return pos;
     }
-    
+
     /**
      * Reads the first control character from the input string (and any arguments
      * it takes), and applies it to the specified attribute set.
@@ -402,40 +402,40 @@ public class Styliser implements ConfigChangeListener {
     private int readControlChars(final String string,
             final SimpleAttributeSet attribs, final boolean isStart) {
         final boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
-        
+
         // Bold
         if (string.charAt(0) == CODE_BOLD) {
             if (!isNegated) {
                 toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
             }
-            
+
             return 1;
         }
-        
+
         // Underline
         if (string.charAt(0) == CODE_UNDERLINE) {
             if (!isNegated) {
                 toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
             }
-            
+
             return 1;
         }
-        
+
         // Italic
         if (string.charAt(0) == CODE_ITALIC) {
             if (!isNegated) {
                 toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
             }
-            
+
             return 1;
         }
-        
+
         // Hyperlinks
         if (string.charAt(0) == CODE_HYPERLINK) {
             if (!isNegated) {
                 toggleURI(attribs);
             }
-            
+
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 attribs.addAttribute(IRCTextAttribute.HYPERLINK,
                         readUntilControl(string.substring(1)));
@@ -444,7 +444,7 @@ public class Styliser implements ConfigChangeListener {
             }
             return 1;
         }
-        
+
         // Channel links
         if (string.charAt(0) == CODE_CHANNEL) {
             if (!isNegated) {
@@ -457,10 +457,10 @@ public class Styliser implements ConfigChangeListener {
             } else {
                 attribs.removeAttribute(IRCTextAttribute.CHANNEL);
             }
-            
+
             return 1;
         }
-        
+
         // Nickname links
         if (string.charAt(0) == CODE_NICKNAME) {
             if (attribs.getAttribute(IRCTextAttribute.NICKNAME) == null) {
@@ -469,10 +469,10 @@ public class Styliser implements ConfigChangeListener {
             } else {
                 attribs.removeAttribute(IRCTextAttribute.NICKNAME);
             }
-            
+
             return 1;
         }
-        
+
         // Fixed pitch
         if (string.charAt(0) == CODE_FIXED) {
             if (!isNegated) {
@@ -483,19 +483,19 @@ public class Styliser implements ConfigChangeListener {
                     attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
                 }
             }
-            
+
             return 1;
         }
-        
+
         // Stop formatting
         if (string.charAt(0) == CODE_STOP) {
             if (!isNegated) {
                 resetAttributes(attribs);
             }
-            
+
             return 1;
         }
-        
+
         // Colours
         if (string.charAt(0) == CODE_COLOUR) {
             int count = 1;
@@ -508,14 +508,14 @@ public class Styliser implements ConfigChangeListener {
                     count++;
                 }
                 foreground = foreground % 16;
-                
+
                 if (!isNegated) {
                     setForeground(attribs, String.valueOf(foreground));
                     if (isStart) {
                         setDefaultForeground(attribs, String.valueOf(foreground));
                     }
                 }
-                
+
                 // Now background
                 if (string.length() > count && string.charAt(count) == ','
                         && string.length() > count + 1
@@ -527,7 +527,7 @@ public class Styliser implements ConfigChangeListener {
                         count++;
                     }
                     background = background % 16;
-                    
+
                     if (!isNegated) {
                         setBackground(attribs, String.valueOf(background));
                         if (isStart) {
@@ -540,7 +540,7 @@ public class Styliser implements ConfigChangeListener {
             }
             return count;
         }
-        
+
         // Hex colours
         if (string.charAt(0) == CODE_HEXCOLOUR) {
             int count = 1;
@@ -551,24 +551,24 @@ public class Styliser implements ConfigChangeListener {
                         setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
                     }
                 }
-                
+
                 count = count + 6;
-                
+
                 if (string.length() == count) {
                     return count;
                 }
                 // Now for background
                 if (string.charAt(count) == ',' && hasHexString(string, count + 1)) {
                     count++;
-                    
+
                     if (!isNegated) {
                         setBackground(attribs, string.substring(count, count + 6).toUpperCase());
                         if (isStart) {
-                            setDefaultBackground(attribs, 
+                            setDefaultBackground(attribs,
                                     string.substring(count, count + 6).toUpperCase());
                         }
                     }
-                    
+
                     count += 6;
                 }
             } else if (!isNegated) {
@@ -576,7 +576,7 @@ public class Styliser implements ConfigChangeListener {
             }
             return count;
         }
-        
+
         // Control code negation
         if (string.charAt(0) == CODE_NEGATE) {
             toggleAttribute(attribs, "NegateControl");
@@ -617,10 +617,10 @@ public class Styliser implements ConfigChangeListener {
 
             return 1;
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Determines if the specified character represents a single integer (i.e. 0-9).
      * @param c The character to check
@@ -629,7 +629,7 @@ public class Styliser implements ConfigChangeListener {
     private static boolean isInt(final char c) {
         return c >= '0' && c <= '9';
     }
-    
+
     /**
      * Determines if the specified character represents a single hex digit
      * (i.e., 0-F).
@@ -639,7 +639,7 @@ public class Styliser implements ConfigChangeListener {
     private static boolean isHex(final char c) {
         return isInt(c) || (c >= 'A' && c <= 'F');
     }
-    
+
     /**
      * Determines if the specified string has a 6-digit hex string starting at
      * the specified offset.
@@ -656,7 +656,7 @@ public class Styliser implements ConfigChangeListener {
         for (int i = offset; i < 6 + offset; i++) {
             res = res && isHex(input.toUpperCase(Locale.getDefault()).charAt(i));
         }
-        
+
         return res;
     }
 
@@ -670,10 +670,10 @@ public class Styliser implements ConfigChangeListener {
             toggleLink(attribs, IRCTextAttribute.CHANNEL, channelColour);
         }
     }
-    
+
     /**
      * Toggles the various hyperlink-related attributes.
-     * 
+     *
      * @param attribs The attributes to be modified.
      */
     private void toggleURI(final SimpleAttributeSet attribs) {
@@ -733,7 +733,7 @@ public class Styliser implements ConfigChangeListener {
             }
         }
     }
-    
+
     /**
      * Toggles the specified attribute. If the attribute exists in the attribute
      * set, it is removed. Otherwise, it is added with a value of Boolean.True.
@@ -748,7 +748,7 @@ public class Styliser implements ConfigChangeListener {
             attribs.addAttribute(attrib, Boolean.TRUE);
         }
     }
-    
+
     /**
      * Resets all attributes in the specified attribute list.
      * @param attribs The attribute list whose attributes should be reset
@@ -770,7 +770,7 @@ public class Styliser implements ConfigChangeListener {
         }
         resetColour(attribs);
     }
-    
+
     /**
      * Resets the colour attributes in the specified attribute set.
      * @param attribs The attribute set whose colour attributes should be reset
@@ -791,7 +791,7 @@ public class Styliser implements ConfigChangeListener {
                     attribs.getAttribute("DefaultBackground"));
         }
     }
-    
+
     /**
      * Sets the foreground colour in the specified attribute set to the colour
      * corresponding to the specified colour code or hex.
@@ -805,7 +805,7 @@ public class Styliser implements ConfigChangeListener {
         }
         attribs.addAttribute(StyleConstants.Foreground, ColourManager.parseColour(foreground));
     }
-    
+
     /**
      * Sets the background colour in the specified attribute set to the colour
      * corresponding to the specified colour code or hex.
@@ -819,7 +819,7 @@ public class Styliser implements ConfigChangeListener {
         }
         attribs.addAttribute(StyleConstants.Background, ColourManager.parseColour(background));
     }
-    
+
     /**
      * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o).
      * @param attribs The attribute set to apply this default on
@@ -829,7 +829,7 @@ public class Styliser implements ConfigChangeListener {
             final String foreground) {
         attribs.addAttribute("DefaultForeground", ColourManager.parseColour(foreground));
     }
-    
+
     /**
      * Sets the default background colour (used after an empty ctrl+k or a ctrl+o).
      * @param attribs The attribute set to apply this default on
@@ -853,5 +853,5 @@ public class Styliser implements ConfigChangeListener {
             channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
         }
     }
-    
+
 }

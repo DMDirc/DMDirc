@@ -36,10 +36,10 @@ public class CoreUIUtils {
     /** Precent creation. */
     private CoreUIUtils() {
     }
-    
+
     /**
      * Centre the specified window on the active monitor.
-     * 
+     *
      * @param window Window to centre
      */
     public static void centreWindow(final Window window) {

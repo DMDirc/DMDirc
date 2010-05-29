@@ -25,27 +25,27 @@ package com.dmdirc.actions;
 /**
  * Provides methods to automatically generated condition tree for a specified
  * number of arguments.
- * 
+ *
  * @since 0.6
  * @author chris
  */
 public abstract class ConditionTreeFactory {
-        
+
     /**
      * Retrieves a condition tree for the specified number of arguments.
-     * 
+     *
      * @param args The number of arguments in the {@link Action}
      * @return A ConditionTree for the specified number of args
      */
     public abstract ConditionTree getConditionTree(final int args);
-    
+
     /**
      * Retrieves the type this of factory.
-     * 
+     *
      * @return This factory's type
      */
     public abstract ConditionTreeFactoryType getType();
-    
+
     /**
      * The possible types of ConditionTreeFactories
      */
@@ -57,7 +57,7 @@ public abstract class ConditionTreeFactory {
         /** Factories that produce custom trees. */
         CUSTOM,
     }
-    
+
     /**
      * Creates condition trees where the arguments are conjoined together.
      */
@@ -74,7 +74,7 @@ public abstract class ConditionTreeFactory {
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.CONJUNCTION;
         }
-        
+
     }
 
     /**
@@ -87,26 +87,26 @@ public abstract class ConditionTreeFactory {
         public ConditionTree getConditionTree(final int args) {
             return ConditionTree.createDisjunction(args);
         }
-        
+
         /** {@inheritDoc} */
         @Override
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.DISJUNCTION;
         }
-        
+
     }
-    
+
     /**
      * Creates condition trees with a custom structure.
      */
     public static class CustomFactory extends ConditionTreeFactory {
-        
+
         /** The condition tree to use. */
         protected final ConditionTree tree;
 
         /**
          * Creates a new CustomFactory for the specified tree.
-         * 
+         *
          * @param tree The tree to use
          */
         public CustomFactory(final ConditionTree tree) {
@@ -118,19 +118,19 @@ public abstract class ConditionTreeFactory {
         public ConditionTree getConditionTree(final int args) {
             return tree;
         }
-        
+
         /** {@inheritDoc} */
         @Override
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.CUSTOM;
         }
-        
+
     }
-    
+
     /**
      * Retrieves a factory that will extrapolate the specified
      * {@link ConditionTree} for different number of arguments, if applicable.
-     * 
+     *
      * @param tree The {@link ConditionTree} that's in use
      * @param args The number of conditions currently in use
      * @return A {@link ConditionTreeFactory} that will create relevant

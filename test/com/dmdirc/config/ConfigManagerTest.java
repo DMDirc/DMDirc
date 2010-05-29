@@ -28,12 +28,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ConfigManagerTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testNonExistantOption() {
         new ConfigManager("", "", "", "").getOption("unit-test123", "foobar");
     }
-    
+
     @Test
     public void testStats() {
         final ConfigManager cm = new ConfigManager("", "", "", "");
@@ -42,34 +42,34 @@ public class ConfigManagerTest {
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
         assertEquals(1, (int) ConfigManager.getStats().get("unit-test123.baz"));
     }
-    
+
     @Test
     public void testDomainListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         final ConfigManager cm = new ConfigManager("", "", "", "");
         cm.addChangeListener("unit-test", listener);
-        
+
         cm.configChanged("foo", "bar");
         verify(listener, never()).configChanged(anyString(), anyString());
-        
+
         cm.configChanged("unit-test", "bar");
         verify(listener).configChanged("unit-test", "bar");
     }
-    
+
     @Test
     public void testDomainKeyListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         final ConfigManager cm = new ConfigManager("", "", "", "");
         cm.addChangeListener("unit-test", "foo", listener);
-        
+
         cm.configChanged("foo", "bar");
         verify(listener, never()).configChanged(anyString(), anyString());
-        
+
         cm.configChanged("unit-test", "bar");
         verify(listener, never()).configChanged(anyString(), anyString());
-        
+
         cm.configChanged("unit-test", "foo");
         verify(listener).configChanged("unit-test", "foo");
-    }    
-    
+    }
+
 }

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2010 Shane Mc Cormack
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,7 +57,7 @@ public class CLIParser {
 
     /**
      * Get a reference to the CLIParser.
-     * 
+     *
      * @return CLI parser instance
      */
     public static synchronized CLIParser getCLIParser() {
@@ -80,7 +80,7 @@ public class CLIParser {
 
     /**
      * Add a CLIParam to the cliparser.
-     * 
+     *
      * @param param
      *            CLIParam sub-class to use as a parameter.
      * @return true if added, false if already exists.
@@ -108,7 +108,7 @@ public class CLIParser {
      * Get the number of times a param was given.
      * In the case of params with both a char and string value, this number is
      * the total for both.
-     * 
+     *
      * @param flag
      *            Flag to get count for
      * @return number, or -1 if the param is invalud
@@ -123,7 +123,7 @@ public class CLIParser {
 
     /**
      * Get a CLIParam object for a given flag.
-     * 
+     *
      * @param flag
      *            Flag to get param for
      * @return CLIParam object, or null if there is none.
@@ -138,7 +138,7 @@ public class CLIParser {
 
     /**
      * Get the list of params.
-     * 
+     *
      * @return list of params.
      */
     public List<CLIParam> getParamList() {
@@ -147,7 +147,7 @@ public class CLIParser {
 
     /**
      * Get the list of redundant strings.
-     * 
+     *
      * @return list of redundant strings.
      */
     public List<String> getRedundant() {
@@ -160,7 +160,7 @@ public class CLIParser {
 
     /**
      * Set the "help" command.
-     * 
+     *
      * @param param
      *            Param to look for in wantsHelp.
      */
@@ -170,9 +170,9 @@ public class CLIParser {
 
     /**
      * Check if the help parameter has been passed to the CLI.
-     * 
+     *
      * @param args Command line arguments to parse
-     * 
+     *
      * @return true iif help param is passed
      */
     public boolean wantsHelp(final String[] args) {
@@ -220,7 +220,7 @@ public class CLIParser {
 
     /**
      * Given a string array of arguments, parse as CLI Params.
-     * 
+     *
      * @param args
      *            Arguments to pass
      * @param strict

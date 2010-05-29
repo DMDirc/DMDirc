@@ -27,7 +27,7 @@ package com.dmdirc.ui.interfaces;
  * events.
  */
 public interface StatusMessageNotifier {
-    
+
     /**
      * Called when a click event is received on the message component.
      *

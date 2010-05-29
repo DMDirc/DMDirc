@@ -1,17 +1,17 @@
 /*
- * 
+ *
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -60,7 +60,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Instantiates a new installer dialog
-     * 
+     *
      * @param dialogTitle
      */
     public InstallerDialog(final String dialogTitle) {
@@ -74,13 +74,13 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
 
         title.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP, SMALL_GAP,
                 SMALL_GAP), title.getBorder()));
         wizard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP, SMALL_GAP,
                 SMALL_GAP), wizard.getBorder()));
         control.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP, SMALL_GAP,
                 SMALL_GAP), control.getBorder()));
 
         add(title, BorderLayout.NORTH);
@@ -99,7 +99,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Adds a step.
-     * 
+     *
      * @param step Step to add
      */
     public void addStep(final SwingStep step) {
@@ -132,7 +132,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Displays the installer with these steps added.
-     * 
+     *
      * @param steps Steps to add
      */
     public void display(final List<Step> steps) {
@@ -165,7 +165,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * shows the cancel confirmation.
-     * 
+     *
      * @return true if confirmed
      */
     public boolean showCancelConfirmation() {
@@ -239,7 +239,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Informs listeners a step is about to be hidden.
-     * 
+     *
      * @param step Step to be hidden
      */
     void fireStepHidden(final Step step) {
@@ -250,7 +250,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Adds a step listener to this installer.
-     * 
+     *
      * @param listener Listener to add
      */
     public void addStepListener(final StepListener listener) {
@@ -296,7 +296,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
     /**
      * Removes  a wizard listener from this installer
-     * 
+     *
      * @param listener Listener to remove
      */
     public void removeWizardListener(final WizardListener listener) {
@@ -326,7 +326,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
         } catch (IllegalAccessException ex) {
             throw new UnsupportedOperationException("Unable to switch to the " +
                                                     "system look and feel", ex);
-        }   
+        }
 
         UIManager.put("swing.useSystemFontSettings", true);
         UIManager.put("swing.boldMetal", false);

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,7 +38,7 @@ public class LinePosition {
 
     /**
      * Constructs a new line position.
-     * 
+     *
      * @param startLine Starting line
      * @param endLine Ending line
      * @param startPos Starting position
@@ -66,7 +66,7 @@ public class LinePosition {
 
     /**
      * Returns the end line for this position.
-     * 
+     *
      * @return End line
      */
     public int getEndLine() {
@@ -75,7 +75,7 @@ public class LinePosition {
 
     /**
      * Returns the end position for this position.
-     * 
+     *
      * @return End position
      */
     public int getEndPos() {
@@ -84,7 +84,7 @@ public class LinePosition {
 
     /**
      * Returns the start line for this position.
-     * 
+     *
      * @return Start line
      */
     public int getStartLine() {
@@ -93,16 +93,16 @@ public class LinePosition {
 
     /**
      * Returns the start position for this position.
-     * 
+     *
      * @return Start position
      */
     public int getStartPos() {
         return startPos;
     }
-    
+
     /**
      * Sets the positions end line.
-     * 
+     *
      * @param endLine new end line
      */
     public void setEndLine(int endLine) {
@@ -111,7 +111,7 @@ public class LinePosition {
 
     /**
      * Sets the positions end line.
-     * 
+     *
      * @param endPos new end line
      */
     public void setEndPos(int endPos) {
@@ -120,7 +120,7 @@ public class LinePosition {
 
     /**
      * Sets the positions start line.
-     * 
+     *
      * @param startLine new start line
      */
     public void setStartLine(int startLine) {
@@ -129,13 +129,13 @@ public class LinePosition {
 
     /**
      * Sets the positions start position.
-     * 
+     *
      * @param startPos new start position
      */
     public void setStartPos(int startPos) {
         this.startPos = startPos;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

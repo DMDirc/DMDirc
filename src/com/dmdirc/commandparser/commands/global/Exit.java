@@ -38,16 +38,16 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  * @author chris
  */
 public final class Exit extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of Exit.
      */
     public Exit() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
@@ -55,14 +55,14 @@ public final class Exit extends Command implements CommandInfo {
         Main.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));
     }
-    
-    
+
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "exit";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
@@ -74,11 +74,11 @@ public final class Exit extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-        
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
         return "exit [reason] - exits the client";
     }
-    
+
 }

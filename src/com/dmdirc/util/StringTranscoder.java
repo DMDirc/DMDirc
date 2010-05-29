@@ -26,44 +26,44 @@ import java.nio.charset.Charset;
 
 /**
  * Facilitates easy transcoding of strings.
- * 
+ *
  * @author Chris
  */
 public class StringTranscoder {
-   
+
     /** The charset that is used by this transcoder. */
     private final Charset charset;
-    
+
     /**
      * Creates a new StringTranscoder that will transcode strings from the
      * system's default character set into the specified charset.
-     * 
+     *
      * @param charset The target character set
      */
     public StringTranscoder(final Charset charset) {
         this.charset = charset;
     }
-    
+
     /**
      * Transcodes the specified string from the system's default charset to
      * this transcoder's charset.
-     * 
+     *
      * @param string The string to be transcoded
      * @return A new string of the appropriate charset
      */
     public String encode(final String string) {
         return new String(string.getBytes(charset));
     }
-    
+
     /**
      * Transcodes the specified string from this transcoder's charset to the
      * system's default charset
-     * 
+     *
      * @param string The string to be transcoded
      * @return A new string of the appropriate charset
      */
     public String decode(final String string) {
         return new String(string.getBytes(), charset);
-    }    
-    
+    }
+
 }

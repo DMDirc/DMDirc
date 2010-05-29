@@ -225,11 +225,11 @@ public class SSLCertificateDialogModel {
         }
 
         if (outofdate) {
-            res.add(new CertificateSummaryEntry("One or more certificates are " +
-                    "not within their validity period", false));
+            res.add(new CertificateSummaryEntry("One or more certificates are "
+                    + "not within their validity period", false));
         } else {
-            res.add(new CertificateSummaryEntry("All certificates are " +
-                    "within their validity period", true));
+            res.add(new CertificateSummaryEntry("All certificates are "
+                    + "within their validity period", true));
         }
 
         if (nottrusted) {

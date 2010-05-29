@@ -146,8 +146,8 @@ public class PerformWrapper extends ActionGroup {
                 return false;
             }
 
-            if ((this.profile == null) ? (other.profile != null) :
-                !this.profile.equals(other.profile)) {
+            if ((this.profile == null) ? (other.profile != null)
+                    : !this.profile.equals(other.profile)) {
                 return false;
             }
 
@@ -165,20 +165,20 @@ public class PerformWrapper extends ActionGroup {
         }
 
     }
-    
+
     /** A singleton instance of the Perform Wrapper. */
     private static final PerformWrapper ME = new PerformWrapper();
 
     /** The component name for per-profile perform conditions. */
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
-    
+
     /**
      * Creates a new instance of PerformWrapper.
      */
     private PerformWrapper() {
         super("performs");
     }
-    
+
     /**
      * Retrieves a singleton instance of this perform wrapper.
      *
@@ -187,7 +187,7 @@ public class PerformWrapper extends ActionGroup {
     public static PerformWrapper getPerformWrapper() {
         return ME;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void add(final Action action) {
@@ -233,9 +233,9 @@ public class PerformWrapper extends ActionGroup {
      */
     public void setPerform(final PerformDescription perform, final String[] content) {
         synchronized (this) {
-            Action action = getAction(perform.getType() == PerformType.NETWORK ?
-                CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
-                perform.getTarget(), perform.getProfile());
+            Action action = getAction(perform.getType() == PerformType.NETWORK
+                    ? CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
+                    perform.getTarget(), perform.getProfile());
 
             final boolean empty = isEmpty(content);
 
@@ -271,9 +271,9 @@ public class PerformWrapper extends ActionGroup {
      * @since 0.6.4
      */
     public String[] getPerform(final PerformDescription perform) {
-        final Action action = getAction(perform.getType() == PerformType.NETWORK ?
-            CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
-            perform.getTarget(), perform.getProfile());
+        final Action action = getAction(perform.getType() == PerformType.NETWORK
+                ? CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
+                perform.getTarget(), perform.getProfile());
 
         if (action == null || action.getResponse() == null) {
             return new String[0];
@@ -376,7 +376,7 @@ public class PerformWrapper extends ActionGroup {
     public Action getActionForServer(final String server) {
         return getActionForServer(server, null);
     }
-    
+
     /**
      * Retrieve the action that handles the perform for the specified server,
      * or null if no such action exists.
@@ -421,10 +421,10 @@ public class PerformWrapper extends ActionGroup {
     public Action getActionForNetwork(final String network, final String profile) {
         return getAction(CoreActionComponent.SERVER_NETWORK, network, profile);
     }
-    
+
     /**
      * Creates a new, empty, perform wrapper for the specified server.
-     * 
+     *
      * @param server The server to create the action for
      * @return The new perform wrapper action
      * @deprecated Actions shouldn't be used directly, use get/setPerform instead
@@ -451,7 +451,7 @@ public class PerformWrapper extends ActionGroup {
 
     /**
      * Creates a new, empty, perform wrapper for the specified network.
-     * 
+     *
      * @param network The network to create the action for
      * @return The new perform wrapper action
      * @deprecated Actions shouldn't be used directly, use get/setPerform instead
@@ -475,26 +475,26 @@ public class PerformWrapper extends ActionGroup {
     public Action createActionForNetwork(final String network, final String profile) {
         return createAction("", network, profile);
     }
-    
+
     /**
      * Creates a new, empty, perform wrapper for the specified server or
      * network. Note that both server and network must be specified, and
      * exactly one of them must be empty.
-     * 
+     *
      * @param server The server to create the action for
      * @param network The network to create the action for
      * @param profile The profile the action is for (or null if "global")
      * @since 0.6.3
      * @return The new perform wrapper action
-     */    
+     */
     private Action createAction(final String server, final String network,
             final String profile) {
         final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
         final CoreActionComponent component =
                 server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
                 : CoreActionComponent.SERVER_NAME;
-        
-        conditions.add(new ActionCondition(0, component, 
+
+        conditions.add(new ActionCondition(0, component,
                 CoreActionComparison.STRING_EQUALS, server + network));
 
         if (profile != null) {
@@ -502,13 +502,13 @@ public class PerformWrapper extends ActionGroup {
                     new ActionComponentChain(Server.class, PP_COMP_NAME),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
-        
+
         return new Action(getName(), server + network
                 + (profile == null ? "" : " - " + profile),
                 new ActionType[]{CoreActionType.SERVER_CONNECTED},
                 new String[0], conditions, null);
     }
-    
+
     /**
      * Retrieve an action with a condition that checks the specified component,
      * and matches it against the specified target.
@@ -519,7 +519,7 @@ public class PerformWrapper extends ActionGroup {
      * null for a non-profile specific action
      * @since 0.6.3
      * @return The matching action if one exists, or null
-     */    
+     */
     private Action getAction(final ActionComponent component, final String target,
             final String profile) {
         for (Action action : this) {
@@ -540,16 +540,16 @@ public class PerformWrapper extends ActionGroup {
                 return action;
             }
         }
-        
+
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isDelible() {
         return false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
@@ -559,5 +559,5 @@ public class PerformWrapper extends ActionGroup {
                 + "\"Server Settings\" dialog, which can be accessed through "
                 + "the Settings menu.";
     }
-    
+
 }

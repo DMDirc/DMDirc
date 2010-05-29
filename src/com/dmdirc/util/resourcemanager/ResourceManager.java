@@ -41,10 +41,10 @@ import java.util.Map.Entry;
  * Provides a launch method independant way of accessing resources.
  */
 public abstract class ResourceManager {
-    
+
     /** Previously assigned ResourceManager. */
     private static ResourceManager me;
-    
+
     /**
      * Returns an appropriate instance of ResourceManager.
      *
@@ -54,16 +54,16 @@ public abstract class ResourceManager {
         if (me == null) {
             String path = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/Main.class").getPath();
-            
+
             try {
                 path = java.net.URLDecoder.decode(path, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
             }
-            
+
             final String protocol = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/Main.class").getProtocol();
-            
+
             try {
                 if ("file".equals(protocol)) {
                     me = new FileResourceManager(Thread.currentThread().
@@ -82,11 +82,11 @@ public abstract class ResourceManager {
         }
         return me;
     }
-    
+
     /**
      * Returns a resource manager for the specified URL. The following URL types
      * are valid:
-     * 
+     *
      * <ul>
      *  <li>file://path/</li>
      *  <li>zip://path/filename.zip</li>
@@ -95,7 +95,7 @@ public abstract class ResourceManager {
      *
      * @param url The URL for which a resource manager is required
      * @return A resource manager for the specified URL
-     * 
+     *
      * @throws IOException if an IO Error occurs opening the file
      * @throws IllegalArgumentException if the URL type is not valid
      */
@@ -109,7 +109,7 @@ public abstract class ResourceManager {
             throw new IllegalArgumentException("Unknown resource manager type");
         }
     }
-    
+
     /**
      * Writes a resource to a file.
      *
@@ -130,7 +130,7 @@ public abstract class ResourceManager {
             StreamUtil.close(out);
         }
     }
-       
+
     /**
      * Extracts the specified resource to the specified directory.
      *
@@ -146,39 +146,39 @@ public abstract class ResourceManager {
     public final boolean extractResource(final String resourceName,
             final String directory, final boolean usePath) throws IOException {
         final byte[] resource = getResourceBytes(resourceName);
-        
+
         if (resource.length == 0) {
             return false;
         }
-        
+
         File newDir;
-        
+
         if (usePath && resourceName.indexOf('/') > -1) {
             newDir = new File(directory,
                     resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
         } else {
             newDir = new File(directory);
         }
-        
+
         if (!newDir.exists()) {
             newDir.mkdirs();
         }
-        
+
         if (!newDir.exists()) {
             return false;
         }
-        
+
         final File newFile = new File(newDir,
                 resourceName.substring(resourceName.lastIndexOf('/') + 1,
                 resourceName.length()));
-        
+
         if (!newFile.isDirectory()) {
             resourceToFile(resource, newFile);
         }
-        
+
         return true;
     }
-    
+
     /**
      * Extracts the specified resources to the specified directory.
      *
@@ -197,7 +197,7 @@ public abstract class ResourceManager {
             extractResource(entry.getKey(), directory, usePath);
         }
     }
-    
+
     /**
      * Extracts the specified resources to the specified directory.
      *
@@ -239,16 +239,16 @@ public abstract class ResourceManager {
             }
         }
     }
-    
+
     /**
      * Checks if a resource exists.
-     * 
+     *
      * @param resource Resource to check
-     * 
+     *
      * @return true iif the resource exists
      */
     public abstract boolean resourceExists(final String resource);
-    
+
     /**
      * Gets a byte[] of the specified resource.
      *
@@ -257,7 +257,7 @@ public abstract class ResourceManager {
      * @return byte[] for the resource, or an empty byte[] if not found
      */
     public abstract byte[] getResourceBytes(final String resource);
-    
+
     /**
      * Gets an InputStream for the specified resource.
      *
@@ -276,7 +276,7 @@ public abstract class ResourceManager {
      * @since 0.6.3
      */
     public abstract URL getResourceURL(final String resource) throws MalformedURLException;
-    
+
     /**
      * Gets a Map of byte[]s of the resources ending with the specified
      * suffix.
@@ -287,7 +287,7 @@ public abstract class ResourceManager {
      */
     public abstract Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix);
-    
+
     /**
      * Gets a Map of byte[]s of the resources starting with the specified
      * prefix.
@@ -298,7 +298,7 @@ public abstract class ResourceManager {
      */
     public abstract Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix);
-    
+
     /**
      * Gets a Map of InputStreams of the resources starting with the specified
      * prefix.
@@ -309,7 +309,7 @@ public abstract class ResourceManager {
      */
     public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix);
-    
+
     /**
      * Gets a List of the resources starting with the specified
      * prefix.

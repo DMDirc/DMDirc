@@ -36,12 +36,12 @@ import java.util.List;
  * @author chris
  */
 public class ActionComponentChain implements ActionComponent {
-    
+
     /**
      * A list of components in this chain.
      */
     private final List<ActionComponent> components = new ArrayList<ActionComponent>();
-    
+
     /**
      * Creates a new component chain from the specified text representation.
      * Chains are separated with full stops (.).
@@ -51,10 +51,10 @@ public class ActionComponentChain implements ActionComponent {
      */
     public ActionComponentChain(final Class<?> source, final String chain) {
         Class<?> current = source;
-        
+
         for (String componentName : chain.split("\\.")) {
             final ActionComponent component = ActionManager.getActionComponent(componentName);
-            
+
             if (component == null) {
                 throw new IllegalArgumentException("Component " + componentName
                         + " not found");
@@ -66,72 +66,72 @@ public class ActionComponentChain implements ActionComponent {
                         + " cannot be applied to " + current.getName());
             }
         }
-        
+
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Object get(final Object argument) {
         Object res = argument;
-        
+
         for (ActionComponent component : components) {
             if (res == null) {
                 return null;
             }
-            
+
             res = component.get(res);
         }
-        
+
         return res;
     }
-    
+
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> appliesTo() {
         Logger.assertTrue(!components.isEmpty());
-        
+
         return components.get(0).appliesTo();
     }
-    
+
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> getType() {
         Logger.assertTrue(!components.isEmpty());
-        
+
         return components.get(components.size() - 1).getType();
     }
-    
+
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public String getName() {
         Logger.assertTrue(!components.isEmpty());
-        
+
         final StringBuilder name = new StringBuilder();
-        
+
         for (ActionComponent component : components) {
             name.append("'s ");
             name.append(component.getName());
         }
-        
+
         return name.substring(3);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     @Precondition("This component chain has one or more components")
     public String toString() {
         Logger.assertTrue(!components.isEmpty());
-        
+
         final StringBuilder name = new StringBuilder();
-        
+
         for (ActionComponent component : components) {
             name.append('.');
             name.append(component.toString());
         }
-        
+
         return name.substring(1);
     }
 
@@ -165,5 +165,5 @@ public class ActionComponentChain implements ActionComponent {
 
         return res;
     }
-    
+
 }
