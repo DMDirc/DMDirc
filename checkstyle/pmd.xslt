@@ -119,6 +119,7 @@
         </table>
         <br/>
     </xsl:for-each>
+<p>Report generated at: <xsl:value-of select="@timestamp"/></p>
 </body>
 </html>
 </xsl:template>

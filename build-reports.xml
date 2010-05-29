@@ -155,7 +155,10 @@
             
             <ruleset>checkstyle/pmd_checks.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-            <fileset dir="src/com/" includes="**/*.java" />
+            <fileset dir="src/" includes="com/dmdirc/**/*.java" />
+            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java"/>
+            <fileset dir="modules/util/src/" includes="com/dmdirc/**/*.java"/>
+            <fileset dir="modules/parser/src/" includes="com/dmdirc/**/*.java"/>
         </pmd>
         <xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
     </target>
