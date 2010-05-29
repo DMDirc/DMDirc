@@ -43,7 +43,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     private final PluginInfo plugin;
 
     /** The config to use. */
-    private static final ConfigManager config = IdentityManager.getGlobalConfig();
+    private static final ConfigManager CONFIG = IdentityManager.getGlobalConfig();
 
     /**
      * Creates a new PluginComponent for the specified plugin, to enable it to
@@ -55,7 +55,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         this.plugin = plugin;
 
         if ((plugin.getAddonID() > 0 && plugin.getVersion().isValid())
-                || (config.hasOptionInt("plugin-addonid", plugin.getName()))) {
+                || (CONFIG.hasOptionInt("plugin-addonid", plugin.getName()))) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
         }
@@ -67,7 +67,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         if (plugin.getAddonID() > 0) {
             return "addon-" + plugin.getAddonID();
         } else {
-            return "addon-" + config.getOption("plugin-addonid", plugin.getName());
+            return "addon-" + CONFIG.getOption("plugin-addonid", plugin.getName());
         }
     }
 

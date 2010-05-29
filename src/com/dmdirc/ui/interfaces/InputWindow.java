@@ -24,7 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.ui.input.InputHandler;
 
 /**

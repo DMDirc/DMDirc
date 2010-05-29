@@ -21,7 +21,6 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;

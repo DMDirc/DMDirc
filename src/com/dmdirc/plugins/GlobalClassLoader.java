@@ -64,7 +64,7 @@ public final class GlobalClassLoader extends ClassLoader {
      *
      * @return A singleton instance of GlobalClassLoader.
      */
-    public static final synchronized GlobalClassLoader getGlobalClassLoader() {
+    public static synchronized GlobalClassLoader getGlobalClassLoader() {
         if (me == null) {
             me = new GlobalClassLoader();
         }

@@ -122,8 +122,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     public void addText(final String[] text) {
         synchronized (lines) {
-            lines.add(new Line(container.getStyliser(), text, fontSize, fontName));
-            fireLineAdded(lines.indexOf(text));
+            final Line line = new Line(container.getStyliser(), text, fontSize, fontName);
+            lines.add(line);
+            fireLineAdded(lines.indexOf(line));
         }
     }
 
@@ -135,8 +136,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     public void addText(final String[] text, final int lineHeight) {
         synchronized (lines) {
-            lines.add(new Line(container.getStyliser(), text, lineHeight, fontName));
-            fireLineAdded(lines.indexOf(text));
+            final Line line = new Line(container.getStyliser(), text, lineHeight, fontName);
+            lines.add(line);
+            fireLineAdded(lines.indexOf(line));
         }
     }
 

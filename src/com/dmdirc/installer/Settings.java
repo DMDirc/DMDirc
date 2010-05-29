@@ -32,33 +32,33 @@ public interface Settings {
      *
      * @return shortcutMenu checkbox state
      */
-    public boolean getShortcutMenuState();
+    boolean getShortcutMenuState();
 
     /**
      * Returns the state of the shortcutDesktop checkbox.
      *
      * @return shortcutDesktop checkbox state
      */
-    public boolean getShortcutDesktopState();
+    boolean getShortcutDesktopState();
 
     /**
      * Returns the state of the shortcutDesktop checkbox.
      *
      * @return shortcutDesktop checkbox state
      */
-    public boolean getShortcutQuickState();
+    boolean getShortcutQuickState();
 
     /**
      * Returns the state of the shortcutProtocol checkbox.
      *
      * @return shortcutDesktop checkbox state
      */
-    public boolean getShortcutProtocolState();
+    boolean getShortcutProtocolState();
 
     /**
      * Returns the location chosen for installation.
      *
      * @return location chosen for installation.
      */
-    public String getInstallLocation();
+    String getInstallLocation();
 }

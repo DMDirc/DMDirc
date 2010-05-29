@@ -36,14 +36,14 @@ public class UpdateTest {
         IdentityManager.load();
     }
     
-    private final String subject = "outofdate client channel date version url";
+    private static final String SUBJECT = "outofdate client channel date version url";
     
     private Update update;
 
     @Before
     public void setUp() throws Exception {
         UpdateChecker.init();
-        update = new Update(subject);
+        update = new Update(SUBJECT);
     }
 
     @Test

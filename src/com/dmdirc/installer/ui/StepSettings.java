@@ -76,24 +76,24 @@ public final class StepSettings extends SwingStep implements Settings {
         shortcutProtocol.setSelected(defaultSettings.getShortcutProtocolState());
 
         final GridBagConstraints constraints = new GridBagConstraints();
-		setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         constraints.weightx = 1.0;
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.gridwidth = 2;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
         add(new TextLabel("Here you can choose options for the install." +
                           "\n\nInstall Location:"), constraints);
 
         constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.gridx = 1;
+        constraints.gridx = 1;
         constraints.gridy = 1;
         add(location, constraints);
 
         constraints.gridwidth = 2;
-		constraints.gridx = 0;
-		constraints.insets = new Insets(InstallerDialog.SMALL_GAP, 0, 0, 0);
+        constraints.gridx = 0;
+        constraints.insets = new Insets(InstallerDialog.SMALL_GAP, 0, 0, 0);
 
         if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
             constraints.gridy = (constraints.gridy + 1);
@@ -113,8 +113,8 @@ public final class StepSettings extends SwingStep implements Settings {
         }
 
         constraints.gridy = (constraints.gridy + 1);
-		constraints.weighty = 1.0;
-		constraints.fill = GridBagConstraints.BOTH;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
         add(Box.createVerticalGlue(), constraints);
     }
 

@@ -27,8 +27,8 @@ package com.dmdirc.logger;
  */
 public final class Logger {
 
-    /** The manager to use to report errors. */
-    protected static final ErrorManager manager = ErrorManager.getErrorManager();
+    /** The MANAGER to use to report errors. */
+    protected static final ErrorManager MANAGER = ErrorManager.getErrorManager();
        
     /** Prevent instantiation of a new instance of Logger. */
     private Logger() {
@@ -42,7 +42,7 @@ public final class Logger {
      * @param message Brief error description
      */
     public static void userError(final ErrorLevel level, final String message) {
-        manager.addError(level, message);
+        MANAGER.addError(level, message);
     }
     
     /**
@@ -54,7 +54,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level, final String message,
             final String details) {
-        manager.addError(level, message, new String[]{details}, false);
+        MANAGER.addError(level, message, new String[]{details}, false);
     }
     
     /**
@@ -66,7 +66,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        manager.addError(level, message, exception, false);
+        MANAGER.addError(level, message, exception, false);
     }
     
     /**
@@ -79,7 +79,7 @@ public final class Logger {
      */
     public static void appError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        manager.addError(level, message, exception, true);
+        MANAGER.addError(level, message, exception, true);
     }
     
     /**

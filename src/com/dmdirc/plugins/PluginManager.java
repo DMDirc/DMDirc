@@ -321,7 +321,7 @@ public class PluginManager implements ActionListener {
             return false;
         }
 
-	final PluginInfo pluginInfo = getPluginInfo(filename);
+        final PluginInfo pluginInfo = getPluginInfo(filename);
         final boolean wasLoaded = pluginInfo.isLoaded();
 
         if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }

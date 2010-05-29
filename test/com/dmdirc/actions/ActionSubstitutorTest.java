@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
 @RunWith(Parameterized.class)
 public class ActionSubstitutorTest {
 
-    private static final Map<String, String> settings = new HashMap<String, String>();
+    private static final Map<String, String> SETTINGS = new HashMap<String, String>();
     
     private final String input, expected;
     private final Channel channel;
@@ -57,11 +57,11 @@ public class ActionSubstitutorTest {
         IdentityManager.load();
         ActionManager.init();
 
-        settings.put("alpha", "A");
-        settings.put("bravo", "$alpha");
-        settings.put("charlie", "${bravo}");
-        settings.put("delta", "${${bravo}${bravo}}");
-        settings.put("AA", "win!");
+        SETTINGS.put("alpha", "A");
+        SETTINGS.put("bravo", "$alpha");
+        SETTINGS.put("charlie", "${bravo}");
+        SETTINGS.put("delta", "${${bravo}${bravo}}");
+        SETTINGS.put("AA", "win!");
     }
 
     public ActionSubstitutorTest(final String input, final String expected) {
@@ -81,8 +81,8 @@ public class ActionSubstitutorTest {
         when(server.getAwayMessage()).thenReturn("foo");
         when(server.getProtocol()).thenReturn("$alpha");
 
-        when(manager.getOptions(eq("actions"))).thenReturn(settings);
-        for (Map.Entry<String, String> entry : settings.entrySet()) {
+        when(manager.getOptions(eq("actions"))).thenReturn(SETTINGS);
+        for (Map.Entry<String, String> entry : SETTINGS.entrySet()) {
             when(manager.hasOptionString("actions", entry.getKey())).thenReturn(true);
             when(manager.getOption("actions", entry.getKey())).thenReturn(entry.getValue());
         }

@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.parsers.*;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
 public class TestCommandParser extends CommandParser {

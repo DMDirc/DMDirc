@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class ErrorManager implements ConfigChangeListener {
 
     /** Previously instantiated instance of ErrorManager. */
-    private static final ErrorManager me = new ErrorManager();
+    private static final ErrorManager ME = new ErrorManager();
 
     /** A list of exceptions which we don't consider bugs and thus don't report. */
     private static final Class[] BANNED_EXCEPTIONS = new Class[]{
@@ -92,8 +92,8 @@ public final class ErrorManager implements ConfigChangeListener {
      * @return Instance of ErrorManager
      */
     public static ErrorManager getErrorManager() {
-        synchronized (me) {
-            return me;
+        synchronized (ME) {
+            return ME;
         }
     }
 

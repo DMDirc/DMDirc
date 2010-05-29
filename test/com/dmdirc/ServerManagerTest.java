@@ -24,12 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
-import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.plugins.PluginManager;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

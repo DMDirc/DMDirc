@@ -65,26 +65,26 @@ public final class UpdateChecker implements Runnable {
     }
 
     /** Semaphore used to prevent multiple invocations. */
-    private static final Semaphore mutex = new Semaphore(1);
+    private static final Semaphore MUTEX = new Semaphore(1);
 
     /** A list of components that we're to check. */
-    private static final List<UpdateComponent> components
+    private static final List<UpdateComponent> COMPONENTS
             = new ArrayList<UpdateComponent>();
 
     /** Our timer. */
     private static Timer timer = new Timer("Update Checker Timer");
 
     /** The list of updates that are available. */
-    private static final List<Update> updates = new ArrayList<Update>();
+    private static final List<Update> UPDATES = new ArrayList<Update>();
 
     /** A list of our listeners. */
-    private static final ListenerList listeners = new ListenerList();
+    private static final ListenerList LISTENERS = new ListenerList();
 
     /** Our current state. */
     private static STATE status = STATE.IDLE;
 
     /** A reference to the listener we use for update status changes. */
-    private static final UpdateListener listener = new UpdateListener() {
+    private static final UpdateListener LISTENER = new UpdateListener() {
         @Override
         public void updateStatusChange(final Update update, final UpdateStatus status) {
             if (status == UpdateStatus.INSTALLED
@@ -103,9 +103,9 @@ public final class UpdateChecker implements Runnable {
     };
 
     static {
-        components.add(new ClientComponent());
-        components.add(new ModeAliasesComponent());
-        components.add(new DefaultsComponent());
+        COMPONENTS.add(new ClientComponent());
+        COMPONENTS.add(new ModeAliasesComponent());
+        COMPONENTS.add(new DefaultsComponent());
     }
 
     /**
@@ -118,7 +118,7 @@ public final class UpdateChecker implements Runnable {
     /** {@inheritDoc} */
     @Override
     public void run() {
-        if (!mutex.tryAcquire()) {
+        if (!MUTEX.tryAcquire()) {
             // Duplicate invocation
 
             return;
@@ -131,7 +131,7 @@ public final class UpdateChecker implements Runnable {
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
         
-            mutex.release();
+            MUTEX.release();
             init();
             return;
         }
@@ -139,9 +139,9 @@ public final class UpdateChecker implements Runnable {
         setStatus(STATE.CHECKING);
 
         // Remove any existing update that isn't waiting for a restart.
-        for (Update update : new ArrayList<Update>(updates)) {
+        for (Update update : new ArrayList<Update>(UPDATES)) {
             if (update.getStatus() != UpdateStatus.RESTART_NEEDED) {
-                updates.remove(update);
+                UPDATES.remove(update);
             }
         }
 
@@ -149,7 +149,7 @@ public final class UpdateChecker implements Runnable {
         final String updateChannel = config.getOption("updater", "channel");
 
         // Build the data string to send to the server
-        for (UpdateComponent component : components) {
+        for (UpdateComponent component : COMPONENTS) {
             if (isEnabled(component)) {
                 data.append(component.getName());
                 data.append(',');
@@ -177,14 +177,14 @@ public final class UpdateChecker implements Runnable {
             }
         }
 
-        if (updates.isEmpty()) {
+        if (UPDATES.isEmpty()) {
             setStatus(STATE.IDLE);
         } else {
             boolean available = false;
 
             // Check to see if the updates are outstanding or just waiting for
             // a restart
-            for (Update update : updates) {
+            for (Update update : UPDATES) {
                 if (update.getStatus() == UpdateStatus.PENDING) {
                     available = true;
                 }
@@ -193,7 +193,7 @@ public final class UpdateChecker implements Runnable {
             setStatus(available ? STATE.UPDATES_AVAILABLE : STATE.RESTART_REQUIRED);
         }
 
-        mutex.release();
+        MUTEX.release();
         
         IdentityManager.getConfigIdentity().setOption("updater",
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
@@ -240,8 +240,8 @@ public final class UpdateChecker implements Runnable {
         final Update update = new Update(line);
 
         if (update.getUrl() != null) {
-            updates.add(update);
-            update.addUpdateListener(listener);
+            UPDATES.add(update);
+            update.addUpdateListener(LISTENER);
         }
     }
 
@@ -292,7 +292,7 @@ public final class UpdateChecker implements Runnable {
      * @param component The component to be registered
      */
     public static void registerComponent(final UpdateComponent component) {
-        components.add(component);
+        COMPONENTS.add(component);
     }
 
     /**
@@ -303,14 +303,14 @@ public final class UpdateChecker implements Runnable {
     public static void removeComponent(final String name) {
         UpdateComponent target = null;
 
-        for (UpdateComponent component : components) {
+        for (UpdateComponent component : COMPONENTS) {
             if (name.equals(component.getName())) {
                 target = component;
             }
         }
 
         if (target != null) {
-            components.remove(target);
+            COMPONENTS.remove(target);
         }
     }
 
@@ -324,7 +324,7 @@ public final class UpdateChecker implements Runnable {
     public static UpdateComponent findComponent(final String name) {
         assert(name != null);
 
-        for (UpdateComponent component : components) {
+        for (UpdateComponent component : COMPONENTS) {
             if (name.equals(component.getName())) {
                 return component;
             }
@@ -341,10 +341,10 @@ public final class UpdateChecker implements Runnable {
      * @param update The update to be removed
      */
     public static void removeUpdate(final Update update) {
-        update.removeUpdateListener(listener);
-        updates.remove(update);
+        update.removeUpdateListener(LISTENER);
+        UPDATES.remove(update);
 
-        if (updates.isEmpty()) {
+        if (UPDATES.isEmpty()) {
             setStatus(STATE.IDLE);
         } else if (status == STATE.UPDATING) {
             doNextUpdate();
@@ -355,7 +355,7 @@ public final class UpdateChecker implements Runnable {
      * Downloads and installs all known updates.
      */
     public static void applyUpdates() {
-        if (!updates.isEmpty()) {
+        if (!UPDATES.isEmpty()) {
             setStatus(STATE.UPDATING);
             doNextUpdate();
         }
@@ -368,7 +368,7 @@ public final class UpdateChecker implements Runnable {
     private static void doNextUpdate() {
         boolean restart = false;
         
-        for (Update update : updates) {
+        for (Update update : UPDATES) {
             if (update.getStatus() == UpdateStatus.PENDING) {
                 update.doUpdate();
                 return;
@@ -386,7 +386,7 @@ public final class UpdateChecker implements Runnable {
      * @return A list of registered components
      */
     public static List<UpdateComponent> getComponents() {
-        return components;
+        return COMPONENTS;
     }
 
     /**
@@ -395,7 +395,7 @@ public final class UpdateChecker implements Runnable {
      * @return A list of available updates
      */
     public static List<Update> getAvailableUpdates() {
-        return updates;
+        return UPDATES;
     }
 
 
@@ -405,7 +405,7 @@ public final class UpdateChecker implements Runnable {
      * @param listener The listener to be added
      */
     public static void addListener(final UpdateCheckerListener listener) {
-        listeners.add(UpdateCheckerListener.class, listener);
+        LISTENERS.add(UpdateCheckerListener.class, listener);
     }
 
     /**
@@ -414,7 +414,7 @@ public final class UpdateChecker implements Runnable {
      * @param listener The listener to be removed
      */
     public static void removeListener(final UpdateCheckerListener listener) {
-        listeners.remove(UpdateCheckerListener.class, listener);
+        LISTENERS.remove(UpdateCheckerListener.class, listener);
     }
 
     /**
@@ -434,7 +434,7 @@ public final class UpdateChecker implements Runnable {
     private static void setStatus(final STATE newStatus) {
         status = newStatus;
 
-        for (UpdateCheckerListener myListener : listeners.get(UpdateCheckerListener.class)) {
+        for (UpdateCheckerListener myListener : LISTENERS.get(UpdateCheckerListener.class)) {
             myListener.statusChanged(newStatus);
         }
     }

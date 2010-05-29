@@ -24,7 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.util.StringTranscoder;
 
 /**

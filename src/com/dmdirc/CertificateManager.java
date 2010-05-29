@@ -152,13 +152,7 @@ public class CertificateManager implements X509TrustManager {
         } catch (NoSuchAlgorithmException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ex) {
-                    // ...
-                }
-            }
+            StreamUtil.close(is);
         }
     }
 

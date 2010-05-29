@@ -54,20 +54,17 @@ public class ActionComponentChainTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidName() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
-                "STRONG_STRING");
+        new ActionComponentChain(String.class, "STRONG_STRING");
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidType() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
-                "USER_MODES.STRING_STRING");
+        new ActionComponentChain(String.class, "USER_MODES.STRING_STRING");
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidLink() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
-                "STRING_STRING.USER_MODES");
+        new ActionComponentChain(String.class, "STRING_STRING.USER_MODES");
     }
 
     @Test

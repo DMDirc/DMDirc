@@ -60,7 +60,7 @@ public final class ProgramError implements Serializable {
     private static File errorDir;
 
     /** Semaphore used to serialise write access. */
-    private static final Semaphore writingSem = new Semaphore(1);
+    private static final Semaphore WRITING_SEM = new Semaphore(1);
     
     /** Error ID. */
     private final long id;
@@ -269,7 +269,7 @@ public final class ProgramError implements Serializable {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     private OutputStream getErrorFile() {
-        writingSem.acquireUninterruptibly();
+        WRITING_SEM.acquireUninterruptibly();
         
         if (errorDir == null || !errorDir.exists()) {
             errorDir = new File(Main.getConfigDir() + "errors");
@@ -299,7 +299,7 @@ public final class ProgramError implements Serializable {
             ex.printStackTrace();
             return new NullOutputStream();
         } finally {
-            writingSem.release();
+            WRITING_SEM.release();
         }
     }
 

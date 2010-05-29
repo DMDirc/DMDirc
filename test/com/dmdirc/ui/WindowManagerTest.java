@@ -74,7 +74,7 @@ public class WindowManagerTest {
     public void testRemoveRoot() {
         final FrameListener tfm = mock(FrameListener.class);
         final Window parent = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer<DummyInputWindow>(512, DummyInputWindow.class), null);        WindowManager.addWindow(parent);
+        WindowManager.addWindow(parent);
         WindowManager.addFrameListener(tfm);
 
         WindowManager.removeWindow(parent);

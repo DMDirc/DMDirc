@@ -251,7 +251,7 @@ public final class ServerManager {
         server.activateFrame();
 
         if (server.getState().isDisconnected()) {
-            server.connect(uri, profile );
+            server.connect(uri, profile);
         } else {
             server.join(server.getParser().extractChannels(uri)
                     .toArray(new ChannelJoinRequest[0]));

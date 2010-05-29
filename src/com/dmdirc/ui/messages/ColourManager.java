@@ -50,7 +50,7 @@ public final class ColourManager {
     };
     
     /** Actual colours we're using for the 16 IRC colours. */
-    private static Color[] IRC_COLOURS = DEFAULT_COLOURS.clone();
+    private static Color[] ircColours = DEFAULT_COLOURS.clone();
        
     /** Creates a new instance of ColourManager. */
     private ColourManager() {
@@ -62,11 +62,11 @@ public final class ColourManager {
     private static void initColours() {        
         for (int i = 0; i < 16; i++) {
             if (IdentityManager.getGlobalConfig().hasOptionColour("colour", String.valueOf(i))) {
-                IRC_COLOURS[i] = getColour(IdentityManager.getGlobalConfig()
+                ircColours[i] = getColour(IdentityManager.getGlobalConfig()
                         .getOption("colour", String.valueOf(i)));
                 COLOUR_CACHE.remove(String.valueOf(i));
-            } else if (!IRC_COLOURS[i].equals(DEFAULT_COLOURS[i])) {
-                IRC_COLOURS[i] = DEFAULT_COLOURS[i];
+            } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
+                ircColours[i] = DEFAULT_COLOURS[i];
                 COLOUR_CACHE.remove(String.valueOf(i));
             } 
         }
@@ -160,7 +160,7 @@ public final class ColourManager {
     public static Color getColour(final int number) {
         
         if (number >= 0 && number <= 15) {
-            return IRC_COLOURS[number];
+            return ircColours[number];
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
             return Color.WHITE;

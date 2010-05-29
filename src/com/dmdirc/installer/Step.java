@@ -35,19 +35,19 @@ public interface Step {
      * 
      * @return Step name
      */
-    public abstract String getStepName();
+    String getStepName();
     
     /**
      * Returns the description for this step.
      * 
      * @return Step description
      */
-    public abstract String getStepDescription();
+    String getStepDescription();
     
     /**
      * Returns the icon for this step.
      * 
      * @return Step icon
      */
-    public abstract Image getIcon();
+    Image getIcon();
 }

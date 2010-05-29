@@ -26,46 +26,47 @@ package com.dmdirc.installer.cliparser;
  * Command Line argument type.
  */
 public class StringParam extends CLIParam {
-	/** The value of this param. */
-	private String myValue = "";
-	
-	/**
-	 * Create a new StringParam.
-	 *
-	 * @param chr Single Character flag for this param.
-	 * @param str String flag for this param.
-	 * @param desc Description of this flag.
-	 */
-	public StringParam(final char chr, final String str, final String desc) {
-		super(chr, str, desc);
-	}
-	
-	/**
-	 * Set the value of this param to the value given by a string.
-	 *
-	 * @param value String taken from command line to use as value.
-	 * @return true if value was valid, else false.
-	 */
-	public boolean setValue(final String value) {
-		myValue = value;
-		return true;
-	}
-	
-	/**
-	 * Get the value of this param.
-	 *
-	 * @return Value of this parameter
-	 */
-	public String getValue() {
-		return myValue;
-	}
-	
-	/**
-	 * Return the value of this param as a string.
-	 *
-	 * @return The value of this param as a string.
-	 */
-	public String getStringValue() {
-		return getValue();
-	}
+
+    /** The value of this param. */
+    private String myValue = "";
+
+    /**
+    * Create a new StringParam.
+    *
+    * @param chr Single Character flag for this param.
+    * @param str String flag for this param.
+    * @param desc Description of this flag.
+    */
+    public StringParam(final char chr, final String str, final String desc) {
+        super(chr, str, desc);
+    }
+
+    /**
+    * Set the value of this param to the value given by a string.
+    *
+    * @param value String taken from command line to use as value.
+    * @return true if value was valid, else false.
+    */
+    public boolean setValue(final String value) {
+        myValue = value;
+        return true;
+    }
+
+    /**
+    * Get the value of this param.
+    *
+    * @return Value of this parameter
+    */
+    public String getValue() {
+        return myValue;
+    }
+
+    /**
+    * Return the value of this param as a string.
+    *
+    * @return The value of this param as a string.
+    */
+    public String getStringValue() {
+        return getValue();
+    }
 }

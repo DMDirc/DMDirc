@@ -22,7 +22,7 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.plugins.PluginInfo;
-import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;

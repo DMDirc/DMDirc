@@ -64,11 +64,11 @@ public class Version implements Comparable<Version> {
         } else if (o.strVersion != null && this.strVersion == null) {
             return -1;
         } else {
-            final String myParts[] = this.strVersion.split("-");
-            final String thParts[] = o.strVersion.split("-");
+            final String[] myParts = this.strVersion.split("-");
+            final String[] thParts = o.strVersion.split("-");
 
-            final String myFirstParts[] = myParts[0].split("\\.|(?=a|b|rc|m)");
-            final String thFirstParts[] = thParts[0].split("\\.|(?=a|b|rc|m)");
+            final String[] myFirstParts = myParts[0].split("\\.|(?=a|b|rc|m)");
+            final String[] thFirstParts = thParts[0].split("\\.|(?=a|b|rc|m)");
 
             for (int i = 0; i < Math.max(myFirstParts.length, thFirstParts.length); i++) {
                 final boolean myExists = myFirstParts.length > i;
@@ -98,8 +98,8 @@ public class Version implements Comparable<Version> {
                 } else if (thIsInt && myIsInt) {
                     return myInt - thInt;
                 } else {
-                    final String myLetterParts[] = myFirstParts[i].split("(?=[0-9])", 2);
-                    final String thLetterParts[] = thFirstParts[i].split("(?=[0-9])", 2);
+                    final String[] myLetterParts = myFirstParts[i].split("(?=[0-9])", 2);
+                    final String[] thLetterParts = thFirstParts[i].split("(?=[0-9])", 2);
 
                     if (myLetterParts[0].equals(thLetterParts[0])) {
                         return Integer.parseInt(myLetterParts[1])

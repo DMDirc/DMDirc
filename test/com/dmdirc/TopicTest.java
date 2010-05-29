@@ -45,7 +45,7 @@ public class TopicTest {
     @Test
     public void testGetTime() {
         final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals(1l, test.getTime());
+        assertEquals(1L, test.getTime());
     }
 
     @Test

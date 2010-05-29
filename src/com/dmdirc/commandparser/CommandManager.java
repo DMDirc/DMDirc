@@ -52,11 +52,11 @@ import java.util.Map;
 public final class CommandManager {
     
     /** A list of commands that have been instansiated. */
-    private static final Map<CommandInfo, Command> commands
+    private static final Map<CommandInfo, Command> COMMANDS
             = new HashMap<CommandInfo, Command>();
     
     /** A list of command parsers that have been instansiated. */
-    private static final MapList<CommandType, CommandParser> parsers
+    private static final MapList<CommandType, CommandParser> PARSERS
             = new MapList<CommandType, CommandParser>();
     
     /** The command char we're using. */
@@ -123,7 +123,7 @@ public final class CommandManager {
      * @since 0.6.3m1
      */
     public static void unregisterCommand(final CommandInfo info) {
-        registerCommand(info, commands.get(info), false);
+        registerCommand(info, COMMANDS.get(info), false);
     }
     
     /**
@@ -137,14 +137,14 @@ public final class CommandManager {
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
-        if (parsers.containsKey(info.getType())) {
-            registerCommand(info, command, parsers.get(info.getType()), register);
+        if (PARSERS.containsKey(info.getType())) {
+            registerCommand(info, command, PARSERS.get(info.getType()), register);
         }
         
         if (register) {
-            commands.put(info, command);
+            COMMANDS.put(info, command);
         } else {
-            commands.remove(info);
+            COMMANDS.remove(info);
         }
 
         registerCommandName(info, register);
@@ -326,7 +326,7 @@ public final class CommandManager {
                     parser.registerCommand(pair.getValue(), pair.getKey());
                 }
 
-                parsers.add(type, parser);
+                PARSERS.add(type, parser);
             }
         }
     }
@@ -408,7 +408,7 @@ public final class CommandManager {
             final String name) {
         final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
         
-        for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
+        for (Map.Entry<CommandInfo, Command> entry : COMMANDS.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
                     && (name == null || name.equals(entry.getKey().getName()))) {
                 res.put(entry.getKey(), entry.getValue());

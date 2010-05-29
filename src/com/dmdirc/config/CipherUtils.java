@@ -63,7 +63,7 @@ public class CipherUtils {
     private Cipher dcipher;
     
     /** Salt. */
-    private final byte[] SALT = {
+    private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };

@@ -156,6 +156,6 @@ public class Line {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return getLineParts().hashCode();
+        return Arrays.hashCode(getLineParts());
     }
 }

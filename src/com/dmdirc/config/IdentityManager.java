@@ -57,7 +57,7 @@ public final class IdentityManager {
      * Standard identities are inserted with a <code>null</code> key, custom
      * identities use their custom type as the key.
      */
-    private static final MapList<String, Identity> identities
+    private static final MapList<String, Identity> IDENTITIES
             = new MapList<String, Identity>();
     
     /**
@@ -66,7 +66,7 @@ public final class IdentityManager {
      * Listeners for standard identities are inserted with a <code>null</code>
      * key, listeners for a specific custom type use their type as the key.
      */
-    private static final MapList<String, IdentityListener> listeners
+    private static final MapList<String, IdentityListener> LISTENERS
             = new WeakMapList<String, IdentityListener>();
 
     /** A logger for this class. */
@@ -96,8 +96,8 @@ public final class IdentityManager {
      *                                      file.
      */
     public static void load() throws InvalidIdentityFileException {
-        identities.clear();
-        identities.clear();
+        IDENTITIES.clear();
+        IDENTITIES.clear();
 
         loadVersion();
         loadDefaults();
@@ -269,7 +269,7 @@ public final class IdentityManager {
      * @param file The file to load the identity from.
      */
     private static void loadIdentity(final File file) {
-        synchronized (identities) {
+        synchronized (IDENTITIES) {
             for (Identity identity : getAllIdentities()) {
                 if (identity.isFile(file)) {
                     try {
@@ -309,7 +309,7 @@ public final class IdentityManager {
     private static Set<Identity> getAllIdentities() {
         final Set<Identity> res = new LinkedHashSet<Identity>();
 
-        for (Map.Entry<String, List<Identity>> entry : identities.entrySet()) {
+        for (Map.Entry<String, List<Identity>> entry : IDENTITIES.entrySet()) {
             res.addAll(entry.getValue());
         }
 
@@ -398,7 +398,7 @@ public final class IdentityManager {
      * Saves all modified identity files to disk.
      */
     public static void save() {
-        synchronized (identities) {
+        synchronized (IDENTITIES) {
             for (Identity identity : getAllIdentities()) {
                 identity.save();
             }
@@ -415,18 +415,18 @@ public final class IdentityManager {
 
         final String target = getGroup(identity);
 
-        if (identities.containsValue(target, identity)) {
+        if (IDENTITIES.containsValue(target, identity)) {
             removeIdentity(identity);
         }
 
-        synchronized (identities) {
-            identities.add(target, identity);
+        synchronized (IDENTITIES) {
+            IDENTITIES.add(target, identity);
         }
 
         LOGGER.finer("Adding identity: " + identity + " (group: " + target + ")");
 
-        synchronized (listeners) {
-            for (IdentityListener listener : listeners.safeGet(target)) {
+        synchronized (LISTENERS) {
+            for (IdentityListener listener : LISTENERS.safeGet(target)) {
                 listener.identityAdded(identity);
             }
         }
@@ -445,14 +445,14 @@ public final class IdentityManager {
 
         final String group = getGroup(identity);
 
-        Logger.assertTrue(identities.containsValue(group, identity));
+        Logger.assertTrue(IDENTITIES.containsValue(group, identity));
         
-        synchronized (identities) {
-            identities.remove(group, identity);
+        synchronized (IDENTITIES) {
+            IDENTITIES.remove(group, identity);
         }
         
-        synchronized (listeners) {
-            for (IdentityListener listener : listeners.safeGet(group)) {
+        synchronized (LISTENERS) {
+            for (IdentityListener listener : LISTENERS.safeGet(group)) {
                 listener.identityRemoved(identity);
             }
         }
@@ -494,8 +494,8 @@ public final class IdentityManager {
     public static void addIdentityListener(final String type, final IdentityListener listener) {
         Logger.assertTrue(listener != null);
         
-        synchronized (listeners) {
-            listeners.add(type, listener);
+        synchronized (LISTENERS) {
+            LISTENERS.add(type, listener);
         }
     }
     
@@ -519,7 +519,7 @@ public final class IdentityManager {
      * @since 0.6.4
      */
     public static List<Identity> getCustomIdentities(final String type) {
-        return Collections.unmodifiableList(identities.safeGet(type));
+        return Collections.unmodifiableList(IDENTITIES.safeGet(type));
     }
     
     /**
@@ -533,8 +533,8 @@ public final class IdentityManager {
         
         final List<Identity> sources = new ArrayList<Identity>();
         
-        synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+        synchronized (IDENTITIES) {
+            for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (manager.identityApplies(identity)) {
                     sources.add(identity);
                 }
@@ -584,8 +584,8 @@ public final class IdentityManager {
 
         final String myTarget = (channel + "@" + network).toLowerCase();
         
-        synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+        synchronized (IDENTITIES) {
+            for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -621,8 +621,8 @@ public final class IdentityManager {
 
         final String myTarget = network.toLowerCase();
         
-        synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+        synchronized (IDENTITIES) {
+            for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -658,8 +658,8 @@ public final class IdentityManager {
         
         final String myTarget = server.toLowerCase();
         
-        synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+        synchronized (IDENTITIES) {
+            for (Identity identity : IDENTITIES.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;

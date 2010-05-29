@@ -48,19 +48,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class WindowManager {
 
     /** A list of root windows. */
-    private final static List<FrameContainer<?>> rootWindows
+    private static final List<FrameContainer<?>> ROOT_WINDOWS
             = new CopyOnWriteArrayList<FrameContainer<?>>();
     
     /** A list of frame listeners. */
-    private final static List<FrameListener> frameListeners
+    private static final List<FrameListener> FRAME_LISTENERS
             = new ArrayList<FrameListener>();
     
     /** A list of selection listeners. */
-    private final static List<SelectionListener> selListeners
+    private static final List<SelectionListener> SELECTION_LISTENERS
             = new ArrayList<SelectionListener>();
     
     /** Our selection listener proxy. */
-    private static final SelectionListener selectionListener
+    private static final SelectionListener SELECTION_LISTENER
             = new WMSelectionListener();
 
     /** Active window. */
@@ -84,9 +84,9 @@ public class WindowManager {
     })
     public static void addFrameListener(final FrameListener frameListener) {
         Logger.assertTrue(frameListener != null);
-        Logger.assertTrue(!frameListeners.contains(frameListener));
+        Logger.assertTrue(!FRAME_LISTENERS.contains(frameListener));
 
-        frameListeners.add(frameListener);
+        FRAME_LISTENERS.add(frameListener);
     }
 
     /**
@@ -100,9 +100,9 @@ public class WindowManager {
     })
     public static void removeFrameListener(final FrameListener frameListener) {
         Logger.assertTrue(frameListener != null);
-        Logger.assertTrue(frameListeners.contains(frameListener));
+        Logger.assertTrue(FRAME_LISTENERS.contains(frameListener));
 
-        frameListeners.remove(frameListener);
+        FRAME_LISTENERS.remove(frameListener);
     }
     
     /**
@@ -111,7 +111,7 @@ public class WindowManager {
      * @param listener The listener to be added
      */
     public static void addSelectionListener(final SelectionListener listener) {
-        selListeners.add(listener);
+        SELECTION_LISTENERS.add(listener);
     }
     
     /**
@@ -120,7 +120,7 @@ public class WindowManager {
      * @param listener The listener to be removed
      */
     public static void removeSelectionListener(final SelectionListener listener) {
-        selListeners.remove(listener);
+        SELECTION_LISTENERS.remove(listener);
     }
 
     /**
@@ -150,11 +150,11 @@ public class WindowManager {
     })
     public static void addWindow(final FrameContainer<?> window, final boolean focus) {
         Logger.assertTrue(window != null);
-        Logger.assertTrue(!rootWindows.contains(window));
+        Logger.assertTrue(!ROOT_WINDOWS.contains(window));
 
-        rootWindows.add(window);
+        ROOT_WINDOWS.add(window);
 
-        window.addSelectionListener(selectionListener);
+        window.addSelectionListener(SELECTION_LISTENER);
 
         fireAddWindow(window, focus);
     }
@@ -224,7 +224,7 @@ public class WindowManager {
 
         parent.addChild(child);
 
-        child.addSelectionListener(selectionListener);
+        child.addSelectionListener(SELECTION_LISTENER);
 
         fireAddWindow(parent, child, focus);
     }
@@ -239,7 +239,7 @@ public class WindowManager {
      * @return True if the target is in the hierarchy, false otherise
      */
     protected static boolean isInHierarchy(final FrameContainer<?> target) {
-        return target != null && (rootWindows.contains(target)
+        return target != null && (ROOT_WINDOWS.contains(target)
                 || isInHierarchy(target.getParent()));
     }
 
@@ -330,11 +330,11 @@ public class WindowManager {
             }
         }
 
-        if (rootWindows.contains(window)) {
+        if (ROOT_WINDOWS.contains(window)) {
             fireDeleteWindow(window);
-            rootWindows.remove(window);
+            ROOT_WINDOWS.remove(window);
 
-            if (rootWindows.isEmpty()) {
+            if (ROOT_WINDOWS.isEmpty()) {
                 // Last root window has been removed, show that the selected
                 // window is now null
                 fireSelectionChanged(null);
@@ -354,7 +354,7 @@ public class WindowManager {
             }
         }
         
-        window.removeSelectionListener(selectionListener);
+        window.removeSelectionListener(SELECTION_LISTENER);
         window.windowClosed();
     }
 
@@ -369,7 +369,7 @@ public class WindowManager {
     public static FrameContainer<?> findCustomWindow(final String name) {
         Logger.assertTrue(name != null);
 
-        return findCustomWindow(rootWindows, name);
+        return findCustomWindow(ROOT_WINDOWS, name);
     }
 
     /**
@@ -434,7 +434,7 @@ public class WindowManager {
      * @return A collection of all known root windows.
      */
     public static Collection<FrameContainer<?>> getRootWindows() {
-        return rootWindows;
+        return ROOT_WINDOWS;
     }
 
     /**
@@ -477,7 +477,7 @@ public class WindowManager {
      * @param focus Should this window become focused
      */
     private static void fireAddWindow(final FrameContainer<?> window, final boolean focus) {
-        for (FrameListener listener : frameListeners) {
+        for (FrameListener listener : FRAME_LISTENERS) {
             listener.addWindow(window, focus);
         }
     }
@@ -492,7 +492,7 @@ public class WindowManager {
      */
     private static void fireAddWindow(final FrameContainer<?> parent,
             final FrameContainer<?> child, final boolean focus) {
-        for (FrameListener listener : frameListeners) {
+        for (FrameListener listener : FRAME_LISTENERS) {
             listener.addWindow(parent, child, focus);
         }
     }
@@ -503,7 +503,7 @@ public class WindowManager {
      * @param window The window that was removed
      */
     private static void fireDeleteWindow(final FrameContainer<?> window) {
-        for (FrameListener listener : frameListeners) {
+        for (FrameListener listener : FRAME_LISTENERS) {
             listener.delWindow(window);
         }
     }
@@ -516,7 +516,7 @@ public class WindowManager {
      */
     private static void fireDeleteWindow(final FrameContainer<?> parent,
             final FrameContainer<?> child) {
-        for (FrameListener listener : frameListeners) {
+        for (FrameListener listener : FRAME_LISTENERS) {
             listener.delWindow(parent, child);
         }
     }
@@ -528,7 +528,7 @@ public class WindowManager {
      * @param window The window that is now focused (or null)
      */
     private static void fireSelectionChanged(final FrameContainer<?> window) {
-        for (SelectionListener listener : selListeners) {
+        for (SelectionListener listener : SELECTION_LISTENERS) {
             listener.selectionChanged(window);
         }
 

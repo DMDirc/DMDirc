@@ -167,10 +167,10 @@ public class PerformWrapper extends ActionGroup {
     }
     
     /** A singleton instance of the Perform Wrapper. */
-    private static PerformWrapper me = new PerformWrapper();
+    private static final PerformWrapper ME = new PerformWrapper();
 
     /** The component name for per-profile perform conditions. */
-    private static String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
+    private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
     
     /**
      * Creates a new instance of PerformWrapper.
@@ -185,7 +185,7 @@ public class PerformWrapper extends ActionGroup {
      * @return A singleton instance of PerformWrapper
      */
     public static PerformWrapper getPerformWrapper() {
-        return me;
+        return ME;
     }
     
     /** {@inheritDoc} */
@@ -247,7 +247,9 @@ public class PerformWrapper extends ActionGroup {
                         perform.getProfile());
                 action.setResponse(content);
                 action.save();
-            } if (action != null) {
+            }
+
+            if (action != null) {
                 if (empty) {
                     // They want to clear the perform but we have an action
                     deleteAction(action);

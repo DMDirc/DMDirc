@@ -39,7 +39,7 @@ public final class Formatter {
     /**
      * A cache of types needed by the various formatters.
      */
-    private static final Map<String, Character[]> typeCache
+    private static final Map<String, Character[]> TYPE_CACHE
             = new HashMap<String, Character[]>();
    
     /**
@@ -101,14 +101,14 @@ public final class Formatter {
     private static Object[] castArguments(final String format, final Object[] args) {
         assert(format != null);
         
-        if (!typeCache.containsKey(format)) {
+        if (!TYPE_CACHE.containsKey(format)) {
             analyseFormat(format, args);
         }
         
         final Object[] res = new Object[args.length];
         
         int i = 0;
-        for (Character chr : typeCache.get(format)) {
+        for (Character chr : TYPE_CACHE.get(format)) {
             if (i >= args.length) {
                 break;
             }
@@ -221,7 +221,7 @@ public final class Formatter {
             }
         }
         
-        typeCache.put(format, types);
+        TYPE_CACHE.put(format, types);
     }
 
 }

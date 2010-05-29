@@ -66,7 +66,7 @@ public interface SearchBar {
      * @param text the text to search for
      * @param caseSensitive whether the search is case sensitive
      */
-    public void search(final String text, final boolean caseSensitive);
+    void search(final String text, final boolean caseSensitive);
 
     /**
      * Searches the textpane for text.
@@ -75,6 +75,6 @@ public interface SearchBar {
      * @param text the text to search for
      * @param caseSensitive whether the search is case sensitive
      */
-    public void search(final Direction direction, final String text,
+    void search(final Direction direction, final String text,
             final boolean caseSensitive);
 }

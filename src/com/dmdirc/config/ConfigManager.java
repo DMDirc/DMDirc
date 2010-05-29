@@ -44,7 +44,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         IdentityListener {
 
     /** Temporary map for lookup stats. */
-    private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
+    private static final Map<String, Integer> STATS = new TreeMap<String, Integer>();
 
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
@@ -403,7 +403,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         final String key = domain + "." + option;
 
         try {
-            stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
+            STATS.put(key, 1 + (STATS.containsKey(key) ? STATS.get(key) : 0));
         } catch (NullPointerException ex) {
             // JVM bugs ftl.
         }
@@ -415,7 +415,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @return A map of config options to lookup counts
      */
     public static Map<String, Integer> getStats() {
-        return stats;
+        return STATS;
     }
 
     /**

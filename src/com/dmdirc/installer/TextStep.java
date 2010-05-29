@@ -26,17 +26,19 @@ package com.dmdirc.installer;
  * Quick access methods for a step to have a controllable text field.
  */
 public interface TextStep {
-	/**
-	 * Add text to the infolabel on this step
-	 *
-	 * @param text Text to add to infoLabel
-	 */
-	public void addText(final String text);
-	
-	/**
-	 * Sets the text in the infolabel on this step
-	 *
-	 * @param text Text to set the infoLabel to
-	 */
-	public void setText(final String text);
+
+    /**
+     * Add text to the infolabel on this step
+     *
+     * @param text Text to add to infoLabel
+     */
+    void addText(final String text);
+
+    /**
+     * Sets the text in the infolabel on this step
+     *
+     * @param text Text to set the infoLabel to
+     */
+    void setText(final String text);
+
 }

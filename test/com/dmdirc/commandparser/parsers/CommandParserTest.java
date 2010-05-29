@@ -23,12 +23,8 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.global.Echo;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
-
-import java.util.Arrays;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -151,7 +147,7 @@ public class CommandParserTest {
         assertTrue(time2 > 0);
         assertTrue(time2 >= time1);
         
-        assertEquals(0l, tcp.getCommandTime("echo"));
+        assertEquals(0L, tcp.getCommandTime("echo"));
     }    
 
 }

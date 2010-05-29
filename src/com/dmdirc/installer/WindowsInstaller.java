@@ -186,7 +186,7 @@ public class WindowsInstaller extends Installer {
      *            Command array to execute/
      * @return return value from command, or -1 if there was an error.
      */
-    private int execAndWait(final String cmd[]) {
+    private int execAndWait(final String[] cmd) {
         try {
             final Process myProcess = Runtime.getRuntime().exec(cmd);
             new StreamReader(myProcess.getInputStream()).start();

@@ -44,7 +44,7 @@ public class URLHandler {
     /** Config manager. */
     private final ConfigManager config;
     /** Singleton instance. */
-    private static final URLHandler me = new URLHandler();
+    private static final URLHandler ME = new URLHandler();
     /** Desktop handler. */
     private final Desktop desktop;
     /** The time a browser was last launched. */
@@ -66,8 +66,8 @@ public class URLHandler {
      * @return URLHandler instance
      */
     public static URLHandler getURLHander() {
-        synchronized (me) {
-            return me;
+        synchronized (ME) {
+            return ME;
         }
     }
 

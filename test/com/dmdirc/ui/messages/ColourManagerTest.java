@@ -26,7 +26,6 @@ import com.dmdirc.config.IdentityManager;
 
 import java.awt.Color;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;

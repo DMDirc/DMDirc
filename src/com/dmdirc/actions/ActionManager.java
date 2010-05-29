@@ -54,35 +54,35 @@ import java.util.Map;
 public final class ActionManager {
 
     /** A list of registered action types. */
-    private static final List<ActionType> actionTypes
+    private static final List<ActionType> ACTION_TYPES
             = new ArrayList<ActionType>();
 
     /** A list of registered action components. */
-    private static final List<ActionComponent> actionComponents
+    private static final List<ActionComponent> ACTION_COMPONENTS
             = new ArrayList<ActionComponent>();
 
     /** A list of registered action comparisons. */
-    private static final List<ActionComparison> actionComparisons
+    private static final List<ActionComparison> ACTION_COMPARISON
             = new ArrayList<ActionComparison>();
 
     /** A map linking types and a list of actions that're registered for them. */
-    private static final MapList<ActionType, Action> actions
+    private static final MapList<ActionType, Action> ACTIONS
             = new MapList<ActionType, Action>();
 
     /** A map linking groups and a list of actions that're in them. */
-    private static final Map<String, ActionGroup> groups
+    private static final Map<String, ActionGroup> GROUPS
             = new HashMap<String, ActionGroup>();
 
     /** A map of objects to synchronise on for concurrency groups. */
-    private static final Map<String, Object> locks
+    private static final Map<String, Object> LOCKS
             = new HashMap<String, Object>();
 
     /** A map of the action type groups to the action types within. */
-    private static final MapList<String, ActionType> actionTypeGroups
+    private static final MapList<String, ActionType> ACTIONTYPE_GROUPS
             = new MapList<String, ActionType>();
 
     /** The listeners that we have registered. */
-    private static final MapList<ActionType, ActionListener> listeners
+    private static final MapList<ActionType, ActionListener> LISTENERS
             = new MapList<ActionType, ActionListener>();
 
     /** Indicates whether or not user actions should be killed (not processed). */
@@ -133,7 +133,7 @@ public final class ActionManager {
      * Saves all actions.
      */
     public static void saveActions() {
-        for (ActionGroup group : groups.values()) {
+        for (ActionGroup group : GROUPS.values()) {
             for (Action action : group) {
                 action.save();
             }
@@ -156,7 +156,7 @@ public final class ActionManager {
      * @param group The group of actions to be registered
      */
     public static void registerGroup(final ActionGroup group) {
-        groups.put(group.getName(), group);
+        GROUPS.put(group.getName(), group);
     }
 
     /**
@@ -169,9 +169,9 @@ public final class ActionManager {
         for (ActionType type : types) {
             Logger.assertTrue(type != null);
             
-            if(!actionTypes.contains(type)) {
-                actionTypes.add(type);
-                actionTypeGroups.add(type.getType().getGroup(), type);
+            if(!ACTION_TYPES.contains(type)) {
+                ACTION_TYPES.add(type);
+                ACTIONTYPE_GROUPS.add(type.getType().getGroup(), type);
             }
         }
     }
@@ -186,7 +186,7 @@ public final class ActionManager {
         for (ActionComponent comp : comps) {
             Logger.assertTrue(comp != null);
 
-            actionComponents.add(comp);
+            ACTION_COMPONENTS.add(comp);
         }
     }
 
@@ -200,7 +200,7 @@ public final class ActionManager {
         for (ActionComparison comp : comps) {
             Logger.assertTrue(comp != null);
 
-            actionComparisons.add(comp);
+            ACTION_COMPARISON.add(comp);
         }
     }
 
@@ -210,7 +210,7 @@ public final class ActionManager {
      * @return a map of groups to action lists
      */
     public static Map<String, ActionGroup> getGroups() {
-        return groups;
+        return GROUPS;
     }
 
     /**
@@ -219,16 +219,16 @@ public final class ActionManager {
      * @return A map of type groups to types
      */
     public static MapList<String, ActionType> getTypeGroups() {
-        return actionTypeGroups;
+        return ACTIONTYPE_GROUPS;
     }
 
     /**
      * Loads actions from the user's directory.
      */
     public static void loadActions() {
-        actions.clear();
+        ACTIONS.clear();
 
-        for (ActionGroup group : groups.values()) {
+        for (ActionGroup group : GROUPS.values()) {
             group.clear();
         }
 
@@ -261,7 +261,7 @@ public final class ActionManager {
      * Creates new ActionGroupComponents for each action group.
      */
     private static void registerComponents() {
-        for (ActionGroup group : groups.values()) {
+        for (ActionGroup group : GROUPS.values()) {
             new ActionGroupComponent(group);
         }
     }
@@ -276,8 +276,8 @@ public final class ActionManager {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
         
-        if (!groups.containsKey(dir.getName())) {
-            groups.put(dir.getName(), new ActionGroup(dir.getName()));
+        if (!GROUPS.containsKey(dir.getName())) {
+            GROUPS.put(dir.getName(), new ActionGroup(dir.getName()));
         }
 
         for (File file : dir.listFiles()) {
@@ -295,7 +295,7 @@ public final class ActionManager {
         Logger.assertTrue(action != null);
  
         for (ActionType trigger : action.getTriggers()) {
-            actions.add(trigger, action);
+            ACTIONS.add(trigger, action);
         }
 
         getGroup(action.getGroup()).add(action);
@@ -309,11 +309,11 @@ public final class ActionManager {
      * @return The corresponding ActionGroup
      */
     public static ActionGroup getGroup(final String name) {
-        if (!groups.containsKey(name)) {
-            groups.put(name, new ActionGroup(name));
+        if (!GROUPS.containsKey(name)) {
+            GROUPS.put(name, new ActionGroup(name));
         }
 
-        return groups.get(name);
+        return GROUPS.get(name);
     }
 
     /**
@@ -325,7 +325,7 @@ public final class ActionManager {
     public static void unregisterAction(final Action action) {
         Logger.assertTrue(action != null);
 
-        actions.removeFromAll(action);
+        ACTIONS.removeFromAll(action);
         getGroup(action.getGroup()).remove(action);
     }
 
@@ -379,9 +379,9 @@ public final class ActionManager {
 
         boolean res = false;
 
-        if (listeners.containsKey(type)) {
+        if (LISTENERS.containsKey(type)) {
             for (ActionListener listener :
-                new ArrayList<ActionListener>(listeners.get(type))) {
+                new ArrayList<ActionListener>(LISTENERS.get(type))) {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
@@ -414,19 +414,19 @@ public final class ActionManager {
 
         boolean res = false;
 
-        if (actions.containsKey(type)) {
-            for (Action action : new ArrayList<Action>(actions.get(type))) {
+        if (ACTIONS.containsKey(type)) {
+            for (Action action : new ArrayList<Action>(ACTIONS.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
                         res |= action.trigger(format, arguments);
                     } else {
-                        synchronized (locks) {
-                            if (!locks.containsKey(action.getConcurrencyGroup())) {
-                                locks.put(action.getConcurrencyGroup(), new Object());
+                        synchronized (LOCKS) {
+                            if (!LOCKS.containsKey(action.getConcurrencyGroup())) {
+                                LOCKS.put(action.getConcurrencyGroup(), new Object());
                             }
                         }
 
-                        synchronized (locks.get(action.getConcurrencyGroup())) {
+                        synchronized (LOCKS.get(action.getConcurrencyGroup())) {
                             res |= action.trigger(format, arguments);
                         }
                     }
@@ -466,12 +466,12 @@ public final class ActionManager {
     public static ActionGroup makeGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(!groups.containsKey(group));
+        Logger.assertTrue(!GROUPS.containsKey(group));
 
         final File file = new File(getDirectory() + group);
         if (file.isDirectory() || file.mkdir()) {
             final ActionGroup actionGroup = new ActionGroup(group);
-            groups.put(group, actionGroup);
+            GROUPS.put(group, actionGroup);
             return actionGroup;
         } else {
             throw new IllegalArgumentException("Unable to create action group directory"
@@ -491,9 +491,9 @@ public final class ActionManager {
     public static void removeGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(groups.containsKey(group));
+        Logger.assertTrue(GROUPS.containsKey(group));
 
-        for (Action action : groups.get(group).getActions()) {
+        for (Action action : GROUPS.get(group).getActions()) {
             unregisterAction(action);
         }
 
@@ -515,7 +515,7 @@ public final class ActionManager {
             return;
         }
 
-        groups.remove(group);
+        GROUPS.remove(group);
     }
 
     /**
@@ -536,13 +536,13 @@ public final class ActionManager {
         Logger.assertTrue(!oldName.isEmpty());
         Logger.assertTrue(newName != null);
         Logger.assertTrue(!newName.isEmpty());
-        Logger.assertTrue(groups.containsKey(oldName));
-        Logger.assertTrue(!groups.containsKey(newName));
+        Logger.assertTrue(GROUPS.containsKey(oldName));
+        Logger.assertTrue(!GROUPS.containsKey(newName));
         Logger.assertTrue(!newName.equals(oldName));
 
         makeGroup(newName);
 
-        for (Action action : groups.get(oldName).getActions()) {
+        for (Action action : GROUPS.get(oldName).getActions()) {
             action.setGroup(newName);
             getGroup(oldName).remove(action);
             getGroup(newName).add(action);
@@ -563,7 +563,7 @@ public final class ActionManager {
             return null;
         }
 
-        for (ActionType target : actionTypes) {
+        for (ActionType target : ACTION_TYPES) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -584,7 +584,7 @@ public final class ActionManager {
         Logger.assertTrue(type != null);
 
         final List<ActionType> res = new ArrayList<ActionType>();
-        for (ActionType target : actionTypes) {
+        for (ActionType target : ACTION_TYPES) {
             if (!target.equals(type) && target.getType().equals(type.getType())) {
                 res.add(target);
             }
@@ -605,7 +605,7 @@ public final class ActionManager {
         Logger.assertTrue(target != null);
 
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
-        for (ActionComponent subject : actionComponents) {
+        for (ActionComponent subject : ACTION_COMPONENTS) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
@@ -626,7 +626,7 @@ public final class ActionManager {
         Logger.assertTrue(target != null);
 
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
-        for (ActionComparison subject : actionComparisons) {
+        for (ActionComparison subject : ACTION_COMPARISON) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
@@ -641,7 +641,7 @@ public final class ActionManager {
      * @return A list of registered action types
      */
     public static List<ActionType> getTypes() {
-        return actionTypes;
+        return ACTION_TYPES;
     }
 
     /**
@@ -650,7 +650,7 @@ public final class ActionManager {
      * @return A list of registered action comparisons
      */
     public static List<ActionComparison> getComparisons() {
-        return actionComparisons;
+        return ACTION_COMPARISON;
     }
 
     /**
@@ -665,7 +665,7 @@ public final class ActionManager {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
 
-        for (ActionComponent target : actionComponents) {
+        for (ActionComponent target : ACTION_COMPONENTS) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -686,7 +686,7 @@ public final class ActionManager {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
 
-        for (ActionComparison target : actionComparisons) {
+        for (ActionComparison target : ACTION_COMPARISON) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -719,7 +719,7 @@ public final class ActionManager {
      */
     public static void addListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
-            listeners.add(type, listener);
+            LISTENERS.add(type, listener);
         }
     }
 
@@ -731,7 +731,7 @@ public final class ActionManager {
      */
     public static void removeListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
-            listeners.remove(type, listener);
+            LISTENERS.remove(type, listener);
         }
     }
 
@@ -741,6 +741,6 @@ public final class ActionManager {
      * @param listener The listener to be removed
      */
     public static void removeListener(final ActionListener listener) {
-        listeners.removeFromAll(listener);
+        LISTENERS.removeFromAll(listener);
     }
 }

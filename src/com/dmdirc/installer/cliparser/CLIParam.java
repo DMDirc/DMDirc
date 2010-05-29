@@ -26,65 +26,66 @@ package com.dmdirc.installer.cliparser;
  * Command Line argument type.
  */
 public abstract class CLIParam {
-	/** Single Character flag for this param. */
-	private final char charFlag;
-	/** String flag for this param. */
-	private final String stringFlag;
-	/** Description of this flag. */
-	private final String description;
-	/** Number of times this param has been given. */
-	private int number;
-	
-	/**
-	 * Create a new CLIParam.
-	 *
-	 * @param chr Single Character flag for this param.
-	 * @param str String flag for this param.
-	 * @param desc Description of this flag.
-	 */
-	protected CLIParam(final char chr, final String str, final String desc) {
-		charFlag = chr;
-		stringFlag = str;
-		description = desc;
-	}
-	
-	/**
-	 * Get the single character flag for this param.
-	 */
-	public final char getChr() { return charFlag; }
-	
-	/**
-	 * Get the string flag for this param.
-	 */
-	public final String getString() { return stringFlag; }
-	
-	/**
-	 * Get the description for this param.
-	 */
-	public final String getDescription() { return description; }
-	
-	/**
-	 * Get the number of times this value has been given.
-	 */
-	public final int getNumber() { return number; }
-	
-	/**
-	 * Increment the number of times this value has been given.
-	 */
-	public final void incNumber() { ++number; }
-	
-	/**
-	 * Set the value of this param to the value given by a string.
-	 *
-	 * @param value String taken from command line to use as value.
-	 * @return true if value was valid, else false.
-	 */
-	public abstract boolean setValue(final String value);
-	
-	/**
-	 * Return the value of this param as a string.
-	 *
-	 * @return The value of this param as a string.
-	 */
-	public abstract String getStringValue();
+
+    /** Single Character flag for this param. */
+    private final char charFlag;
+    /** String flag for this param. */
+    private final String stringFlag;
+    /** Description of this flag. */
+    private final String description;
+    /** Number of times this param has been given. */
+    private int number;
+
+    /**
+     * Create a new CLIParam.
+     *
+     * @param chr Single Character flag for this param.
+     * @param str String flag for this param.
+     * @param desc Description of this flag.
+     */
+    protected CLIParam(final char chr, final String str, final String desc) {
+        charFlag = chr;
+        stringFlag = str;
+        description = desc;
+    }
+
+    /**
+     * Get the single character flag for this param.
+     */
+    public final char getChr() { return charFlag; }
+
+    /**
+     * Get the string flag for this param.
+     */
+    public final String getString() { return stringFlag; }
+
+    /**
+     * Get the description for this param.
+     */
+    public final String getDescription() { return description; }
+
+    /**
+     * Get the number of times this value has been given.
+     */
+    public final int getNumber() { return number; }
+
+    /**
+     * Increment the number of times this value has been given.
+     */
+    public final void incNumber() { ++number; }
+
+    /**
+     * Set the value of this param to the value given by a string.
+     *
+     * @param value String taken from command line to use as value.
+     * @return true if value was valid, else false.
+     */
+    public abstract boolean setValue(final String value);
+
+    /**
+     * Return the value of this param as a string.
+     *
+     * @return The value of this param as a string.
+     */
+    public abstract String getStringValue();
 }
