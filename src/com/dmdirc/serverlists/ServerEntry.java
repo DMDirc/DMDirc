@@ -60,6 +60,7 @@ public class ServerEntry implements ServerGroupItem {
         this.name = name;
         this.address = address;
         this.profile = profile;
+        this.group = group;
     }
 
     /** {@inheritDoc} */
