@@ -129,13 +129,11 @@ public final class ServerEventHandler extends EventHandler implements
         errorString.append(owner.getAddress());
         errorString.append("\n");
         
-        if (parser instanceof IRCParser) {
-            errorString.append("\tAdditional Information:\n");
-            for (final String line : ((IRCParser)parser).getServerInformationLines()) {
-                errorString.append("\t\t");
-                errorString.append(line);
-                errorString.append("\n");
-            }
+        errorString.append("\tAdditional Information:\n");
+        for (final String line : parser.getServerInformationLines()) {
+            errorString.append("\t\t");
+            errorString.append(line);
+            errorString.append("\n");
         }
 
         final Exception ex = (errorInfo.isException()) ? errorInfo.getException()
