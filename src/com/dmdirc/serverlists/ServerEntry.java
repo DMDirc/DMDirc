@@ -37,7 +37,7 @@ import java.net.URI;
 public class ServerEntry implements ServerGroupItem {
 
     /** Whether or not this entry has been modified. */
-    private boolean isModified;
+    private boolean modified;
     /** The address of the server in question. */
     private URI address;
     /** The user-friendly name of the server. */
@@ -45,7 +45,7 @@ public class ServerEntry implements ServerGroupItem {
     /** The name of the profile to use. */
     private String profile;
     /** The group that owns this entry. */
-    private ServerGroup group;
+    private final ServerGroup group;
 
     /**
      * Creates a new server entry.
@@ -66,13 +66,13 @@ public class ServerEntry implements ServerGroupItem {
     /** {@inheritDoc} */
     @Override
     public boolean isModified() {
-        return isModified;
+        return modified;
     }
 
     /** {@inheritDoc} */
     @Override
     public void setModified(final boolean isModified) {
-        this.isModified = isModified;
+        this.modified = isModified;
     }
 
     /** {@inheritDoc} */
@@ -101,7 +101,8 @@ public class ServerEntry implements ServerGroupItem {
      * Retrieves the name of the profile which should be used when connecting
      * to this server.
      *
-     * @return The profile name used by this entry
+     * @return The profile name used by this entry, or <code>null</code> if the
+     * default profile should be used
      */
     public String getProfile() {
         return profile;
@@ -130,7 +131,8 @@ public class ServerEntry implements ServerGroupItem {
     /**
      * Sets the profile to be used for this server entry.
      *
-     * @param profile The new profile for this entry
+     * @param profile The new profile name for this entry, or <code>null</code>
+     * if the default profile should be used
      */
     public void setProfile(final String profile) {
         setModified(true);
@@ -151,9 +153,11 @@ public class ServerEntry implements ServerGroupItem {
      * @return This server's profile identity
      */
     protected Identity getProfileIdentity() {
-        for (Identity identity : IdentityManager.getCustomIdentities("profile")) {
-            if (profile.equals(identity.getName())) {
-                return identity;
+        if (profile != null) {
+            for (Identity identity : IdentityManager.getCustomIdentities("profile")) {
+                if (profile.equals(identity.getName())) {
+                    return identity;
+                }
             }
         }
 
