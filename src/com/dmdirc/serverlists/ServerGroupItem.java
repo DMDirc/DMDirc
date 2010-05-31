@@ -76,4 +76,21 @@ public interface ServerGroupItem {
      */
     void setModified(final boolean isModified);
 
+    /**
+     * Retrieves the name of the profile which should be used when connecting
+     * to this item.
+     *
+     * @return The profile name used by this entry, or <code>null</code> if the
+     * default or parent group's profile should be used
+     */
+    String getProfile();
+
+    /**
+     * Sets the profile to be used for this server entry.
+     *
+     * @param profile The new profile name for this entry, or <code>null</code>
+     * if the default or parent group's profile should be used
+     */
+    void setProfile(final String profile);
+
 }

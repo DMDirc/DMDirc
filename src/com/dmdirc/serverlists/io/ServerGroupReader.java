@@ -63,7 +63,7 @@ public class ServerGroupReader {
      */
     public ServerGroup read() {
         if (identity.hasOptionString("identity", "name")) {
-            return read(identity.getOption("identity", "name"));
+            return read(null, identity.getOption("identity", "name"));
         }
 
         throw new IllegalArgumentException("Identity has no name");
@@ -72,16 +72,19 @@ public class ServerGroupReader {
     /**
      * Reads a named server group from this reader's identity.
      *
+     * @param parent The parent of the group being read
      * @param name The name of the server group to read
      * @return A corresponding ServerGroup
      * @throws IllegalArgumentException If the server group doesn't define a name
      */
-    public ServerGroup read(final String name) throws IllegalArgumentException {
+    public ServerGroup read(final ServerGroup parent, final String name)
+            throws IllegalArgumentException {
         if (!identity.hasOptionString(name, "name")) {
             throw new IllegalArgumentException("ServerGroup '" + name + "' not defined");
         }
 
-        final ServerGroup group = new ServerGroup(identity.getOption(name, "name"));
+        final ServerGroup group = new ServerGroup(parent,
+                identity.getOption(name, "name"));
 
         if (identity.hasOptionString(name, "description")) {
             group.setDescription(identity.getOption(name, "description"));
@@ -94,7 +97,7 @@ public class ServerGroupReader {
         for (String item : identity.getOptionList(name, "contents", true)) {
             if (item.endsWith(" servergroup")) {
                 try {
-                    group.addItem(read(item));
+                    group.addItem(read(group, item));
                 } catch (IllegalArgumentException ex) {
                     // TODO: Raise an error about malformed group
                 }

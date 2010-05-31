@@ -34,16 +34,11 @@ import java.net.URI;
  * @since 0.6.4
  * @author chris
  */
-public class ServerEntry implements ServerGroupItem {
+public class ServerEntry extends ServerGroupItemBase {
 
-    /** Whether or not this entry has been modified. */
-    private boolean modified;
     /** The address of the server in question. */
     private URI address;
-    /** The user-friendly name of the server. */
-    private String name;
-    /** The name of the profile to use. */
-    private String profile;
+
     /** The group that owns this entry. */
     private final ServerGroup group;
 
@@ -57,22 +52,10 @@ public class ServerEntry implements ServerGroupItem {
      */
     public ServerEntry(final ServerGroup group, final String name,
             final URI address, final String profile) {
-        this.name = name;
+        setName(name);
+        setProfile(profile);
         this.address = address;
-        this.profile = profile;
         this.group = group;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isModified() {
-        return modified;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setModified(final boolean isModified) {
-        this.modified = isModified;
     }
 
     /** {@inheritDoc} */
@@ -83,8 +66,8 @@ public class ServerEntry implements ServerGroupItem {
 
     /** {@inheritDoc} */
     @Override
-    public String getName() {
-        return name;
+    protected ServerGroup getParent() {
+        return getGroup();
     }
 
     /**
@@ -98,17 +81,6 @@ public class ServerEntry implements ServerGroupItem {
     }
 
     /**
-     * Retrieves the name of the profile which should be used when connecting
-     * to this server.
-     *
-     * @return The profile name used by this entry, or <code>null</code> if the
-     * default profile should be used
-     */
-    public String getProfile() {
-        return profile;
-    }
-
-    /**
      * Sets the address for this server entry.
      *
      * @param address The new address for this entry
@@ -118,50 +90,11 @@ public class ServerEntry implements ServerGroupItem {
         this.address = address;
     }
 
-    /**
-     * Sets the name for this server entry.
-     *
-     * @param name The new name for this entry
-     */
-    public void setName(final String name) {
-        setModified(true);
-        this.name = name;
-    }
-
-    /**
-     * Sets the profile to be used for this server entry.
-     *
-     * @param profile The new profile name for this entry, or <code>null</code>
-     * if the default profile should be used
-     */
-    public void setProfile(final String profile) {
-        setModified(true);
-        this.profile = profile;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void connect() {
         final Server server = new Server(address, getProfileIdentity());
         server.connect();
-    }
-
-    /**
-     * Returns the {@link Identity} which corresponds to this server's desired
-     * profile.
-     *
-     * @return This server's profile identity
-     */
-    protected Identity getProfileIdentity() {
-        if (profile != null) {
-            for (Identity identity : IdentityManager.getCustomIdentities("profile")) {
-                if (profile.equals(identity.getName())) {
-                    return identity;
-                }
-            }
-        }
-
-        return IdentityManager.getCustomIdentities("profile").get(0);
     }
 
     /** {@inheritDoc} */

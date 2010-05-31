@@ -36,13 +36,7 @@ import java.util.Map;
  * @since 0.6.4
  * @author chris
  */
-public class ServerGroup implements ServerGroupItem {
-
-    /** Whether or not this group has been modified. */
-    private boolean isModified;
-
-    /** The name of the group. */
-    private String name;
+public class ServerGroup extends ServerGroupItemBase {
 
     /** The name of the network for the group. */
     private String network;
@@ -50,31 +44,33 @@ public class ServerGroup implements ServerGroupItem {
     /** A description of this group. */
     private String description = "";
 
+    /** This group's parent. */
+    private final ServerGroup parent;
+
     /** A set of links relevant to this group (e.g. homepages). */
-    private Map<String, URI> links = new HashMap<String, URI>();
+    private final Map<String, URI> links = new HashMap<String, URI>();
     
     /** The items contained within the group. */
     private final List<ServerGroupItem> entries = new ArrayList<ServerGroupItem>();
 
     /**
-     * Creates a new server group with the specified name.
+     * Creates a new server group with the specified name and no parent.
      *
      * @param name The name to be used for this group
      */
     public ServerGroup(final String name) {
-        this.name = name;
+        this(null, name);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean isModified() {
-        return isModified;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setModified(final boolean isModified) {
-        this.isModified = isModified;
+    /**
+     * Creates a new server group with the specified name.
+     *
+     * @param parent The parent of this group, or <code>null</code> for roots.
+     * @param name The name to be used for this group
+     */
+    public ServerGroup(final ServerGroup parent, final String name) {
+        this.parent = parent;
+        setName(name);
     }
 
     /** {@inheritDoc} */
@@ -85,18 +81,8 @@ public class ServerGroup implements ServerGroupItem {
 
     /** {@inheritDoc} */
     @Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of this group.
-     *
-     * @param name The new name for the group
-     */
-    public void setName(final String name) {
-        setModified(true);
-        this.name = name;
+    protected ServerGroup getParent() {
+        return getGroup();
     }
 
     /**
@@ -215,7 +201,7 @@ public class ServerGroup implements ServerGroupItem {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Current implementation just selects the first item in this group and
      * asks it to connect.
      */
