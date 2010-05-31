@@ -60,11 +60,8 @@ public abstract class ServerGroupItemBase implements ServerGroupItem {
         return name;
     }
 
-    /**
-     * Sets the name of this group.
-     *
-     * @param name The new name for the group
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setName(final String name) {
         setModified(true);
         this.name = name;

@@ -48,6 +48,13 @@ public interface ServerGroupItem {
     String getName();
 
     /**
+     * Sets the name of this group.
+     *
+     * @param name The new name for the group
+     */
+    void setName(final String name);
+
+    /**
      * Initiates a connection attempt for this item.
      */
     void connect();
