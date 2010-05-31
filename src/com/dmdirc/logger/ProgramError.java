@@ -284,9 +284,7 @@ public final class ProgramError implements Serializable {
 
         if (errorFile.exists()) {
             boolean rename = false;
-            int i = 0;
-            while (!rename) {
-                i++;
+            for (int i = 0; !rename; i++) {
                 rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
             }
         }

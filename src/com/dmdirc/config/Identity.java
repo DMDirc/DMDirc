@@ -469,11 +469,11 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * Saves this identity to disk if it has been updated.
      */
     public synchronized void save() {
-        LOGGER.fine(getName() + ": save(); needsave = " + needSave);
+        LOGGER.log(Level.FINE, "{0}: save(); needsave = {1}", new Object[]{getName(), needSave});
 
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
-                LOGGER.finer(getName() + ": I'm a global config");
+                LOGGER.log(Level.FINER, "{0}: I''m a global config", getName());
 
                 // This branch is executed if this identity is global. In this
                 // case, we build a global config (removing ourself and the
@@ -498,7 +498,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     for (Identity source : globalConfig.getSources()) {
-                        LOGGER.finest(getName() + ": source: " + source.getName());
+                        LOGGER.log(Level.FINEST, "{0}: source: {1}",
+                                new Object[]{getName(), source.getName()});
                     }
                 }
 
@@ -513,8 +514,9 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
                         if (globalConfig.hasOption(domain, key) &&
                                 globalConfig.getOption(domain, key).equals(value)) {
-                            LOGGER.finest(getName() + ": found superfluous setting: "
-                                    + domain + "." + key + " (= " + value + ")");
+                            LOGGER.log(Level.FINEST,
+                                    "{0}: found superfluous setting: {1}.{2} (= {3})",
+                                    new Object[]{getName(), domain, key, value});
                             file.getKeyDomain(domain).remove(key);
                         }
                     }

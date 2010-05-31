@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -489,26 +489,27 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
                      + " null ChannelClientInfo");
         }
 
-        final String[] res = new String[4];
-        res[0] = getModes(client);
-        res[1] = Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME;
-        res[2] = client.getClient().getUsername();
-        res[3] = client.getClient().getHostname();
+        final String[] res = new String[] {
+            getModes(client),
+            Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME,
+            client.getClient().getUsername(),
+            client.getClient().getHostname()
+        };
 
         if (showColours) {
-            final Map<?,?> map = client.getMap();
-            String prefix = null;
+            final Map<?, ?> map = client.getMap();
 
             if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
-                Color colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
-                prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
-                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
-                    prefix = "," + ColourManager.getHex(colour);
-                }
-            }
+                String prefix;
 
-            if (prefix != null) {
+                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
+                    prefix = "," + ColourManager.getHex((Color)
+                            map.get(ChannelClientProperty.TEXT_BACKGROUND));
+                } else {
+                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Color)
+                            map.get(ChannelClientProperty.TEXT_FOREGROUND));
+                }
+
                 res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
             }
         }
