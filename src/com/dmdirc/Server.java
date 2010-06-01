@@ -178,7 +178,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @param profile The profile to use
      */
     public Server(final URI uri, final Identity profile) {
-        super("server-disconnected", uri.getHost(), uri.getHost(),
+        super("server-disconnected", getHost(uri), getHost(uri),
                 ServerWindow.class,
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser());
@@ -715,18 +715,35 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     // <editor-fold defaultstate="collapsed" desc="Miscellaneous methods">
 
     /**
+     * Retrieves the host component of the specified URI, or throws a relevant
+     * exception if this is not possible.
+     *
+     * @param uri The URI to be processed
+     * @return The URI's host component, as returned by {@link URI#getHost()}.
+     * @throws NullPointerException If <code>uri</code> is null
+     * @throws IllegalArgumentException If the specified URI has no host
+     * @since 0.6.4
+     */
+    private static String getHost(final URI uri) {
+        if (uri.getHost() == null) {
+            throw new IllegalArgumentException("URIs must have hosts");
+        }
+
+        return uri.getHost();
+    }
+
+    /**
      * Builds an appropriately configured {@link Parser} for this server.
      *
      * @return A configured parser.
      */
     private Parser buildParser() {
-        final CertificateManager certManager = new CertificateManager(address.getHost(),
-                getConfigManager());
-
         final MyInfo myInfo = buildMyInfo();
         final Parser myParser = new ParserFactory().getParser(myInfo, address);
 
         if (myParser instanceof SecureParser) {
+            final CertificateManager certManager
+                    = new CertificateManager(address.getHost(), getConfigManager());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certManager});
             secureParser.setKeyManagers(certManager.getKeyManager());
@@ -891,7 +908,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                     }
                 }
 
-                parser.joinChannels(pending.toArray(new ChannelJoinRequest[0]));
+                parser.joinChannels(pending.toArray(new ChannelJoinRequest[pending.size()]));
             } else {
                 // TODO: Need to pass key
                 // TODO (uris): address.getChannels().add(channel);
@@ -1022,7 +1039,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @return True if this server is connected to the network, false otherwise
      * @since 0.6.3m1rc3
      */
-    public boolean isNetwork(String target) {
+    public boolean isNetwork(final String target) {
         synchronized (myStateLock) {
             try {
                 parserLock.readLock().lock();
@@ -1052,6 +1069,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         for (String tld : tlds) {
             if (serverName.endsWith("." + tld)) {
                 isTLD = true;
+                break;
             }
         }
 
