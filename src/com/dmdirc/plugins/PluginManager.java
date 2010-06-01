@@ -39,7 +39,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ import java.util.Map;
 public class PluginManager implements ActionListener {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
-    private final Map<String, PluginInfo> knownPlugins = new Hashtable<String, PluginInfo>();
+    private final Map<String, PluginInfo> knownPlugins = new HashMap<String, PluginInfo>();
 
     /** Directory where plugins are stored. */
     private final String myDir;
@@ -408,7 +407,7 @@ public class PluginManager implements ActionListener {
      * @return A list of all installed plugins
      */
     public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
-        final Map<String, PluginInfo> res = new Hashtable<String, PluginInfo>();
+        final Map<String, PluginInfo> res = new HashMap<String, PluginInfo>();
 
         final LinkedList<File> dirs = new LinkedList<File>();
 
@@ -440,7 +439,7 @@ public class PluginManager implements ActionListener {
             }
         }
 
-        final Map<String, PluginInfo> knownPluginsCopy = new Hashtable<String, PluginInfo>(knownPlugins);
+        final Map<String, PluginInfo> knownPluginsCopy = new HashMap<String, PluginInfo>(knownPlugins);
         for (PluginInfo pi : knownPluginsCopy.values()) {
             if (!(new File(pi.getFullFilename())).exists()) {
                 delPlugin(pi.getFilename());

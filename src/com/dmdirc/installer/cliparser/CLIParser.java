@@ -23,7 +23,7 @@
 package com.dmdirc.installer.cliparser;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class CLIParser {
      * Known arguments.
      * This hashtable stores the arguments with their flags as the key.
      */
-    private final Map<String, CLIParam> params = new Hashtable<String, CLIParam>();
+    private final Map<String, CLIParam> params = new HashMap<String, CLIParam>();
 
     /**
      * Known arguments.
