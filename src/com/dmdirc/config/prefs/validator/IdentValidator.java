@@ -30,14 +30,8 @@ public class IdentValidator implements Validator<String> {
     /** Ident regex. */
     private static final String IDENT_REGEX = "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]*";
     /** Failure reason. */
-    private static final String FAILURE_REASON = "Ident must only contain letters, numbers and []{}|-^\\.";
-
-    /**
-     * Instantiates a new ident validator.
-     */
-    public IdentValidator() {
-        //Do nothing
-    }
+    private static final String FAILURE_REASON = "Ident must only contain "
+            + "letters, numbers and []{}|-^\\.";
 
     /** {@inheritDoc} */
     @Override

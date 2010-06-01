@@ -36,7 +36,7 @@ public class ValidationResponse {
      * Creates a new ValidationResponse for a positive response.
      */
     public ValidationResponse() {
-        this.failure = null;
+        this(null);
     }
 
     /**

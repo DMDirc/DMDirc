@@ -19,21 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.config.prefs.validator;
 
 /**
  * Validates an optional setting in tandem with another validator.
  */
 public class OptionalValidator implements Validator<String> {
-    
+
     /** The minimum value for this number. */
     protected final Validator<String> validator;
 
     /**
-     * Creates a new Optional validator
-     * @param validator 
+     * Creates a new Optional validator.
+     *
+     * @param validator The validator for the setting's value, if present
      */
-    public OptionalValidator(Validator<String> validator) {
+    public OptionalValidator(final Validator<String> validator) {
         this.validator = validator;
     }
 
@@ -45,26 +47,23 @@ public class OptionalValidator implements Validator<String> {
     public Validator<String> getValidator() {
         return validator;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        String booleanv;
-        String otherv;
-        int colonIndex = object.indexOf(":");
+        final int colonIndex = object.indexOf(':');
 
         if (colonIndex == -1) {
             return new ValidationResponse("Must contain boolean int seperator.");
         }
 
-        booleanv = object.substring(0, colonIndex);
-        otherv = object.substring(colonIndex + 1);
+        final String booleanv = object.substring(0, colonIndex);
 
         if (!"true".equals(booleanv) && !"false".equals(booleanv)) {
             return new ValidationResponse("Must be true or false.");
         }
 
-        return validator.validate(otherv);
+        return validator.validate(object.substring(colonIndex + 1));
     }
 
 }

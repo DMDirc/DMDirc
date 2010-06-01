@@ -37,11 +37,11 @@ public class StringLengthValidator implements Validator<String> {
     /**
      * Creates a new string length validator that requires a string be between
      * the specified min/max length.
-     * 
+     *
      * @param min The minimum length of the string, or -1 for unlimited.
      * @param max The maximum length of the string, or -1 for unlimited.
      */
-    public StringLengthValidator(int min, int max) {
+    public StringLengthValidator(final int min, final int max) {
         this.min = min;
         this.max = max;
     }

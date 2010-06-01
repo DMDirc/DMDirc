@@ -23,7 +23,7 @@ package com.dmdirc.config.prefs.validator;
 
 /**
  * A validator that permits everything.
- * 
+ *
  * @param <V> The type of data that this validator validates
  * @author chris
  */

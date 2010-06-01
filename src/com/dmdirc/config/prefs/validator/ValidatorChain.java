@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Allows multiple validators to be chained together.
  *
- * @param A The type of class that this chain validates
+ * @param <A> The type of class that this chain validates
  * @author chris
  */
 public class ValidatorChain<A> implements Validator<A> {

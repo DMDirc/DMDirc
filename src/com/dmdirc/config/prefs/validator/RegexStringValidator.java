@@ -34,7 +34,7 @@ public class RegexStringValidator implements Validator<String> {
 
     /**
      * Instantiates a new regex validator.
-     * 
+     *
      * @param regex Regex to validate text against
      * @param failedReason Reason for validation failure
      */
@@ -52,5 +52,5 @@ public class RegexStringValidator implements Validator<String> {
             return new ValidationResponse(failedReason);
         }
     }
-    
+
 }

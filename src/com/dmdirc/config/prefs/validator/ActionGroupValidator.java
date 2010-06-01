@@ -32,13 +32,6 @@ public class ActionGroupValidator implements Validator<String> {
     /** Failure reason for duplicates. */
     private static final String FAILURE_EXISTS = "Must not already exist.";
 
-    /**
-     * Instantiates a new filename validator.
-     */
-    public ActionGroupValidator() {
-        //Do nothing
-    }
-
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {

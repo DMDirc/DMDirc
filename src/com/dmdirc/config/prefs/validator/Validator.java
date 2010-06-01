@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs.validator;
 /**
  * Validator interface.
  *
- * @param V Type to validate
+ * @param <V> Type to validate
  */
 public interface Validator<V> {
 
