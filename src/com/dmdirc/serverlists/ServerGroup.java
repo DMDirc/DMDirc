@@ -82,7 +82,7 @@ public class ServerGroup extends ServerGroupItemBase {
     /** {@inheritDoc} */
     @Override
     protected ServerGroup getParent() {
-        return getGroup();
+        return parent;
     }
 
     /**
