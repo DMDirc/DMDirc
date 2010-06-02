@@ -131,6 +131,7 @@ public class Main {
         // will satisfy the service existance check above, but will render the
         // client pretty useless, so we'll force IRC extraction for now.
         extractCorePlugins("parser_irc");
+        pm.getPossiblePluginInfos(true);
 
         loadUI(pm, IdentityManager.getGlobalConfig());
         if (getUI() == null) {
