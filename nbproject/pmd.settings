@@ -1,0 +1,6 @@
+ShortVariable
+AvoidInstantiatingObjectsInLoops
+BeanMembersShouldSerialize
+DoNotUseThreads
+AvoidUsingVolitile
+OnlyOneReturn
