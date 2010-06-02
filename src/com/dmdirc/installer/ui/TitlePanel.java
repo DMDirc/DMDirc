@@ -58,6 +58,7 @@ public class TitlePanel extends JPanel {
 
         title.setFont(title.getFont().deriveFont((float) (title.getFont().
                 getSize() * 1.5)));
+        title.setForeground(Color.BLACK);
         add(title, BorderLayout.CENTER);
         add(image, BorderLayout.EAST);
         setBackground(Color.WHITE);
