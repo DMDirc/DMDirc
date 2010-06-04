@@ -69,6 +69,15 @@ public abstract class ServerGroupItemBase implements ServerGroupItem {
 
     /** {@inheritDoc} */
     @Override
+    public String getPath() {
+        if (getParent() != null) {
+            return getParent().getPath() + " → " + getName();
+        }
+        return getName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String getProfile() {
         return profile;
     }

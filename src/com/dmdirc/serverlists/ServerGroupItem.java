@@ -55,6 +55,13 @@ public interface ServerGroupItem {
     void setName(final String name);
 
     /**
+     * Retrieves the path and name of this item in textual format.
+     *
+     * @return A string containing the items path and name
+     */
+    String getPath();
+
+    /**
      * Initiates a connection attempt for this item.
      */
     void connect();
