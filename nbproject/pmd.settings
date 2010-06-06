@@ -4,3 +4,7 @@ BeanMembersShouldSerialize
 DoNotUseThreads
 AvoidUsingVolitile
 OnlyOneReturn
+LongVariable
+AbstractNaming
+AvoidInlineConditionals
+NullAssignment
