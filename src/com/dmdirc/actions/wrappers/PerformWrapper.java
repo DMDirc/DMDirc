@@ -47,18 +47,6 @@ import java.util.List;
 public class PerformWrapper extends ActionGroup {
 
     /**
-     * Describes the type of perform.
-     *
-     * @since 0.6.4
-     */
-    public static enum PerformType {
-        /** A perform targetting a server. */
-        SERVER,
-        /** A perform targetting a network. */
-        NETWORK;
-    }
-
-    /**
      * Describes one specific perform.
      *
      * @since 0.6.4
