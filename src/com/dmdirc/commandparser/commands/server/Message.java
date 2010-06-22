@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -74,7 +75,17 @@ public final class Message extends Command implements IntelligentCommand,
             } else if (!args.isSilent() && server.hasQuery(target)) {
                 server.getQuery(target).sendLine(message, target);
             } else {
-                server.getParser().sendMessage(target, message);
+                final Parser parser = server.getParser();
+
+                if (parser == null) {
+                    // This can happen if the server gets disconnected after
+                    // the command manager has checked the @CommandOptions
+                    // annotation. Yay for concurrency.
+                    sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                            "You must be connected to use this command");
+                } else {
+                    parser.sendMessage(target, message);
+                }
             }
         }
     }
