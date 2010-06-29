@@ -121,11 +121,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param text stylised string to add to the text
      */
     public void addText(final String[] text) {
+        final int index;
         synchronized (lines) {
             final Line line = new Line(container.getStyliser(), text, fontSize, fontName);
             lines.add(line);
-            fireLineAdded(lines.indexOf(line));
+            index = lines.indexOf(line);
         }
+        fireLineAdded(index);
     }
 
     /**
@@ -135,11 +137,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param lineHeight Line height for the new line of text
      */
     public void addText(final String[] text, final int lineHeight) {
+        final int index;
         synchronized (lines) {
             final Line line = new Line(container.getStyliser(), text, lineHeight, fontName);
             lines.add(line);
-            fireLineAdded(lines.indexOf(line));
+            index = lines.indexOf(line);
         }
+        fireLineAdded(index);
     }
 
     /**
@@ -148,13 +152,14 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param text stylised string to add to the text
      */
     public void addText(final List<String[]> text) {
+        final int start;
         synchronized (lines) {
-            final int start = lines.size();
+            start = lines.size();
             for (String[] string : text) {
                 lines.add(new Line(container.getStyliser(), string, fontSize, fontName));
             }
-            fireLinesAdded(start, text.size());
         }
+        fireLinesAdded(start, text.size());
     }
 
     /**
@@ -165,15 +170,16 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     public void addText(final List<String[]> text,
             final List<Integer> lineHeights) {
+        final int start;
         synchronized (lines) {
-            final int start = lines.size();
+            start = lines.size();
             for (int i = 0; i < text.size(); i++) {
                 final String[] string = text.get(i);
                 final int lineHeight = lineHeights.get(i);
                 lines.add(new Line(container.getStyliser(), string, lineHeight, fontName));
             }
-            fireLinesAdded(start, text.size());
         }
+        fireLinesAdded(start, text.size());
     }
 
     /**
@@ -200,8 +206,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     public void clear() {
         synchronized (lines) {
             lines.clear();
-            fireCleared();
         }
+        fireCleared();
     }
 
     /**
