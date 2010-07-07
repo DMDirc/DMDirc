@@ -136,8 +136,14 @@ public class ServerList implements IdentityListener {
     /** {@inheritDoc} */
     @Override
     public void identityAdded(final Identity identity) {
-        final ServerGroupReader reader = new ServerGroupReader(identity);
-        addServerGroup(reader.read(), reader.getWriter());
+        try {
+            final ServerGroupReader reader = new ServerGroupReader(identity);
+            addServerGroup(reader.read(), reader.getWriter());
+        } catch (IllegalArgumentException ex) {
+            // Silently ignore
+            // TODO: Raise error if the identity isn't a server group being
+            //       currently added by addServerGroup()
+        }
     }
 
     /** {@inheritDoc} */
