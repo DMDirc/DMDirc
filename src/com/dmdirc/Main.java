@@ -35,6 +35,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.themes.ThemeManager;
@@ -46,7 +47,9 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -65,7 +68,7 @@ public class Main {
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
 
     /** The UI to use for the client. */
-    private static UIController controller;
+    private static final Collection<UIController> CONTROLLERS = new HashSet<UIController>();
 
     /** The config dir to use for the client. */
     private static String configdir;
@@ -133,7 +136,7 @@ public class Main {
         extractCorePlugins("parser_irc");
         pm.getPossiblePluginInfos(true);
 
-        loadUI(pm, IdentityManager.getGlobalConfig());
+        loadUIs(pm);
         if (getUI() == null) {
             handleMissingUI();
         } else {
@@ -295,34 +298,40 @@ public class Main {
      * can use.
      *
      * @param pm The plugin manager to use to load plugins
-     * @param cm The config manager to use to retrieve settings
      */
-    protected static void loadUI(final PluginManager pm, final ConfigManager cm) {
+    protected static void loadUIs(final PluginManager pm) {
         final List<Service> uis = pm.getServicesByType("ui");
-        final String desired = cm.getOption("general", "ui");
 
         // First try: go for our desired service type
         for (Service service : uis) {
-            if (service.getName().equals(desired) && service.activate()) {
-                return;
-            }
-        }
-
-        // Second try: go for any service type
-        for (Service service : uis) {
             if (service.activate()) {
-                return;
+                final ServiceProvider provider = service.getActiveProvider();
+
+                final Object export = provider.getExportedService("getController").execute();
+
+                if (export == null) {
+                    if (provider instanceof PluginInfo
+                            && ((PluginInfo) provider).getPlugin() instanceof UIController) {
+                        // @Deprecated - remove post 0.6.4
+                        // Hack for compatibility with older plugins
+                        CONTROLLERS.add((UIController) ((PluginInfo) provider).getPlugin());
+                    }
+                } else {
+                    CONTROLLERS.add((UIController) export);
+                }
             }
         }
 
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Show a dialog informing the user that no UI was found.
-            new WarningDialog().displayBlocking();
-            System.exit(2);
-        }
+        if (CONTROLLERS.isEmpty()) {
+            if (!GraphicsEnvironment.isHeadless()) {
+                // Show a dialog informing the user that no UI was found.
+                new WarningDialog().displayBlocking();
+                System.exit(2);
+            }
 
-        // Can't find any
-        throw new IllegalStateException("No UIs could be loaded");
+            // Can't find any
+            throw new IllegalStateException("No UIs could be loaded");
+        }
     }
 
     /**
@@ -387,22 +396,22 @@ public class Main {
      * Retrieves the UI controller that's being used by the client.
      *
      * @return The client's UI controller
+     * @deprecated Shouldn't be used. There may be multiple or no controllers.
      */
+    @Deprecated
     public static UIController getUI() {
-        return controller;
+        return CONTROLLERS.iterator().next();
     }
 
     /**
      * Sets the UI controller that should be used by this client.
      *
      * @param newController The new UI Controller
+     * @deprecated Shouldn't be used. UI plugins should declare services.
      */
+    @Deprecated
     public static synchronized void setUI(final UIController newController) {
-        if (controller == null) {
-            controller = newController;
-        } else {
-            throw new IllegalStateException("User interface is already set");
-        }
+        // Do nothing.
     }
 
     /**
