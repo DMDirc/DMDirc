@@ -42,8 +42,11 @@ public class NumericalValidator implements Validator<String> {
      * @param max The maximum value for the number, or -1 for unlimited.
      */
     public NumericalValidator(int min, int max) {
-        this.min = min;
-        this.max = max;
+        this.max = max == -1 ? Integer.MAX_VALUE : max;
+        this.min = min == -1 ? Integer.MIN_VALUE : min;
+        if (this.min > this.max) {
+            throw new IllegalArgumentException("min must be less than max.");
+        }
     }
 
     /**
@@ -52,7 +55,7 @@ public class NumericalValidator implements Validator<String> {
      * @return This validator's maximum value
      */
     public int getMax() {
-        return max == -1 ? Integer.MAX_VALUE : max;
+        return max;
     }
 
     /**
@@ -61,7 +64,7 @@ public class NumericalValidator implements Validator<String> {
      * @return This validator's minimum value
      */
     public int getMin() {
-        return min == -1 ? Integer.MIN_VALUE : min;
+        return min;
     }
 
     /** {@inheritDoc} */
@@ -75,9 +78,9 @@ public class NumericalValidator implements Validator<String> {
             return new ValidationResponse("Must be a valid number");
         }
 
-        if (intv < min && min != -1) {
+        if (intv < min) {
             return new ValidationResponse("Must be at least " + min);
-        } else if (intv > max && max != -1) {
+        } else if (intv > max) {
             return new ValidationResponse("Must be at most " + max);
         } else {
             return new ValidationResponse();
