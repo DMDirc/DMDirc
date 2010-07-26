@@ -96,7 +96,7 @@ public class CertificateManager implements X509TrustManager {
     private final ConfigManager config;
 
     /** The set of CAs from the global cacert file. */
-    private Set<X509Certificate> globalTrustedCAs = new HashSet<X509Certificate>();
+    private final Set<X509Certificate> globalTrustedCAs = new HashSet<X509Certificate>();
 
     /** Whether or not to check specified parts of the certificate. */
     private boolean checkDate, checkIssuer, checkHost;
@@ -157,7 +157,7 @@ public class CertificateManager implements X509TrustManager {
     }
 
     /**
-     * Retrieves a KeyManager[] for the client certicate specified in the
+     * Retrieves a KeyManager[] for the client certificate specified in the
      * configuration, if there is one.
      *
      * @return A KeyManager to use for the SSL connection
@@ -321,7 +321,7 @@ public class CertificateManager implements X509TrustManager {
             try {
                 actionSem.acquire();
             } catch (InterruptedException ie) {
-              throw new CertificateException("Thread aborted, ");
+                throw new CertificateException("Thread aborted, ");
             }
 
             switch (action) {
