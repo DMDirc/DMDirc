@@ -244,7 +244,7 @@ public class CertificateManager implements X509TrustManager {
 
     public boolean isValidHost(final X509Certificate certificate) {
         final Map<String, String> fields = getDNFieldsFromCert(certificate);
-        if (fields.containsKey("CN") && fields.get("CN").equals(serverName)) {
+        if (fields.containsKey("CN") && isMatchingServerName(fields.get("CN"))) {
             return true;
         }
 
@@ -254,7 +254,7 @@ public class CertificateManager implements X509TrustManager {
                     final int type = ((Integer) entry.get(0)).intValue();
 
                     // DNS or IP
-                    if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
+                    if ((type == 2 || type == 7) && isMatchingServerName((String) entry.get(1))) {
                         return true;
                     }
                 }
@@ -264,6 +264,34 @@ public class CertificateManager implements X509TrustManager {
         }
 
         return false;
+    }
+
+    /**
+     * Checks whether the specified target matches the server name this
+     * certificate manager was initialised with.
+     *
+     * Target names may contain wildcards per RFC2818.
+     *
+     * @since 0.6.5
+     * @param target The target to compare to our server name
+     * @return True if the target matches, false otherwise
+     */
+    protected boolean isMatchingServerName(final String target) {
+        final String[] targetParts = target.split("\\.");
+        final String[] serverParts = serverName.split("\\.");
+
+        if (targetParts.length != serverParts.length) {
+            // Fail fast if they don't match
+            return false;
+        }
+
+        for (int i = 0; i < serverParts.length; i++) {
+            if (!serverParts[i].matches("\\Q" + targetParts[i].replace("*", "\\E.*\\Q") + "\\E")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** {@inheritDoc} */
