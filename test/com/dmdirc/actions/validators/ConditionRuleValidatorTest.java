@@ -20,19 +20,39 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.validator;
+package com.dmdirc.actions.validators;
 
+import com.dmdirc.actions.validators.ConditionRuleValidator;
+import com.dmdirc.util.validators.ValidationResponse;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class FileNameValidatorTest {
+public class ConditionRuleValidatorTest {
 
     @Test
-    public void testValidate() {
-        final FileNameValidator rv = new FileNameValidator();
-        
-        assertTrue(rv.validate("/foo").isFailure());
-        assertFalse(rv.validate("filename").isFailure());
+    public void testIllegal() {
+        final ValidationResponse res = new ConditionRuleValidator(10).validate("|||");
+        assertTrue(res.isFailure());
+    }
+
+    @Test
+    public void testTooMany() {
+        final ValidationResponse res = new ConditionRuleValidator(1).validate("0|1|2");
+        assertTrue(res.isFailure());
+    }
+
+    @Test
+    public void testGood() {
+        final ValidationResponse res = new ConditionRuleValidator(3).validate("0|1|2");
+        assertFalse(res.isFailure());
+    }
+
+    @Test
+    public void testChangeArgs() {
+        final ConditionRuleValidator validator = new ConditionRuleValidator(1);
+        assertTrue(validator.validate("1|0").isFailure());
+        validator.setArgs(2);
+        assertFalse(validator.validate("1|0").isFailure());
     }
 
 }

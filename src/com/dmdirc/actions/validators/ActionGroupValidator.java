@@ -20,50 +20,27 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.validator;
+package com.dmdirc.actions.validators;
 
-import com.dmdirc.actions.ConditionTree;
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
+import com.dmdirc.actions.ActionManager;
 
 /**
- * Validates a condition tree.
+ * Validates action groups.
  */
-public class ConditionRuleValidator implements Validator<String> {
+public class ActionGroupValidator implements Validator<String> {
 
-    /** The number of arguments to the tree. */
-    private int args = 0;
-
-    /**
-     * Creates a new ConditionRuleValidator.
-     *
-     * @param args The number of arguments allowed in the ConditionTree (i.e.,
-     * the number of ActionConditions)
-     */
-    public ConditionRuleValidator(final int args) {
-        this.args = args;
-    }
-    
-    /**
-     * Updates the number of arguments used to validate the condition tree.
-     * 
-     * @param args New number of arguments
-     */
-    public void setArgs(final int args) {
-        this.args = args;
-    }
+    /** Failure reason for duplicates. */
+    private static final String FAILURE_EXISTS = "Must not already exist.";
 
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        final ConditionTree tree = ConditionTree.parseString(object);
-
-        if (tree == null) {
-            return new ValidationResponse("Invalid rule.");
-        } else if (tree.getMaximumArgument() >= args) {
-            return new ValidationResponse("Condition "
-                    + tree.getMaximumArgument() + " does not exist");
+        if (ActionManager.getGroups().containsKey(object)) {
+            return new ValidationResponse(FAILURE_EXISTS);
         } else {
             return new ValidationResponse();
         }
     }
-
 }

@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.validator;
+package com.dmdirc.config.validators;
 
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
 import com.dmdirc.config.IdentityManager;
 
 /**

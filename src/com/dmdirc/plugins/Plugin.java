@@ -23,7 +23,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.config.prefs.PreferencesManager;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
+import com.dmdirc.util.validators.ValidationResponse;
 import java.io.File;
 
 /**

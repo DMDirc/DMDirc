@@ -22,8 +22,8 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.prefs.validator.PermissiveValidator;
-import com.dmdirc.config.prefs.validator.Validator;
+import com.dmdirc.util.validators.PermissiveValidator;
+import com.dmdirc.util.validators.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

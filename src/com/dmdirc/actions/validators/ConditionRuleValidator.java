@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,25 +20,49 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.validator;
+package com.dmdirc.actions.validators;
+
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
+import com.dmdirc.actions.ConditionTree;
 
 /**
- * Validator checking the string is not empty.
+ * Validates a condition tree.
  */
-public class NotEmptyValidator implements Validator<String> {
+public class ConditionRuleValidator implements Validator<String> {
+
+    /** The number of arguments to the tree. */
+    private int args = 0;
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * Creates a new ConditionRuleValidator.
+     *
+     * @param args The number of arguments allowed in the ConditionTree (i.e.,
+     * the number of ActionConditions)
      */
-    private static final long serialVersionUID = 1;
+    public ConditionRuleValidator(final int args) {
+        this.args = args;
+    }
+    
+    /**
+     * Updates the number of arguments used to validate the condition tree.
+     * 
+     * @param args New number of arguments
+     */
+    public void setArgs(final int args) {
+        this.args = args;
+    }
 
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (object == null || object.isEmpty()) {
-            return new ValidationResponse("Cannot be an empty string.");
+        final ConditionTree tree = ConditionTree.parseString(object);
+
+        if (tree == null) {
+            return new ValidationResponse("Invalid rule.");
+        } else if (tree.getMaximumArgument() >= args) {
+            return new ValidationResponse("Condition "
+                    + tree.getMaximumArgument() + " does not exist");
         } else {
             return new ValidationResponse();
         }

@@ -32,7 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
+import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,41 +20,27 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.validator;
+package com.dmdirc.config.validators;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class OptionalValidatorTest {
-
+public class URLProtocolValidatorTest {
+    
     @Test
-    public void testNoSeparator() {
-        final ValidationResponse res = new OptionalValidator(null).validate("foo");
-        assertTrue(res.isFailure());
-        assertTrue(res.getFailureReason().contains("boolean"));
-    }
-
-    @Test
-    public void testIllegalPrefix() {
-        final ValidationResponse res = new OptionalValidator(null).validate("foo:bar");
-        assertTrue(res.isFailure());
-        assertTrue(res.getFailureReason().contains("true"));
-        assertTrue(res.getFailureReason().contains("false"));
-    }
-
-    @Test
-    public void testTrueValidation() {
-        final ValidationResponse res = new OptionalValidator(new StringLengthValidator(0, 3))
-                .validate("true:bar");
-        assertFalse(res.isFailure());
-    }
-
-    @Test
-    public void testFalseValidation() {
-        final ValidationResponse res = new OptionalValidator(new StringLengthValidator(0, 2))
-                .validate("true:bar");
-        assertTrue(res.isFailure());
-        assertTrue(res.getFailureReason().contains("at most 2"));
+    public void testValidate() throws InvalidIdentityFileException {
+        IdentityManager.load();
+        IdentityManager.getConfigIdentity().setOption("protocol", "unit-test-1", "BROWSER");
+        
+        final URLProtocolValidator validator = new URLProtocolValidator();
+        assertTrue(validator.validate(null).isFailure());
+        assertTrue(validator.validate("").isFailure());
+        assertTrue(validator.validate("unit-test-1").isFailure());
+        assertFalse(validator.validate("unit-test-2").isFailure());
+        
+        IdentityManager.getConfigIdentity().unsetOption("protocol", "unit-test-1");
     }
 
 }

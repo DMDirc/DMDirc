@@ -22,7 +22,7 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
+import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**

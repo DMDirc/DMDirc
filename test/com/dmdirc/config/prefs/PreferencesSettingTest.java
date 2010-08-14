@@ -22,9 +22,9 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.prefs.validator.NotEmptyValidator;
-import com.dmdirc.config.prefs.validator.PermissiveValidator;
-import com.dmdirc.config.prefs.validator.StringLengthValidator;
+import com.dmdirc.util.validators.NotEmptyValidator;
+import com.dmdirc.util.validators.PermissiveValidator;
+import com.dmdirc.util.validators.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.BeforeClass;
