@@ -22,16 +22,17 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,9 @@ import java.util.Map;
  */
 public class PreferencesManager {
 
+    /** The UI controller to use for custom categories. */
+    private final UIController controller;
+
     /** A list of categories. */
     private final List<PreferencesCategory> categories
             = new ArrayList<PreferencesCategory>();
@@ -52,8 +56,13 @@ public class PreferencesManager {
 
     /**
      * Creates a new instance of PreferencesManager.
+     *
+     * @param controller The UI controller to use to retrieve custom UIs for
+     * preferences panels.
      */
-    public PreferencesManager() {
+    public PreferencesManager(final UIController controller) {
+        this.controller = controller;
+
         addDefaultCategories();
 
         ActionManager.processEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
@@ -74,7 +83,7 @@ public class PreferencesManager {
      * @return An ordered list of categories
      */
     public List<PreferencesCategory> getCategories() {
-        return categories;
+        return Collections.unmodifiableList(categories);
     }
 
     /**
@@ -104,7 +113,7 @@ public class PreferencesManager {
         boolean restart = false;
         for (PreferencesCategory category : categories) {
             if (category.save()) {
-                restart = true;
+                restart |= true;
             }
         }
 
@@ -174,9 +183,11 @@ public class PreferencesManager {
 
     /**
      * Creates and adds the "Tab Completion" category.
+     *
+     * @param parent Parent category to add this category to
      * @since 0.6.4
      */
-    private void addTabCompletionCategory(PreferencesCategory parent) {
+    private void addTabCompletionCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Tab Completion", "");
         final Map<String, String> taboptions = new HashMap<String, String>();
 
@@ -251,6 +262,8 @@ public class PreferencesManager {
 
     /**
      * Creates and adds the "SSL" category.
+     *
+     * @param parent Parent category to add this category to
      */
     private void addSSLCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("SSL",
@@ -454,9 +467,11 @@ public class PreferencesManager {
 
     /**
      * Creates the Style subcategory in "GUI".
+     *
      * @since 0.6.4
+     * @param parent Parent category to add this category to
      */
-    private void addStyleSubCategory(PreferencesCategory parent) {
+    private void addStyleSubCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Link styles"
                 + " and colours", "");
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
@@ -481,7 +496,7 @@ public class PreferencesManager {
      */
     private void addThemesCategory(final PreferencesCategory parent) {
         parent.addSubCategory(new PreferencesCategory("Themes", "",
-                "category-addons", Main.getUI().getThemesPrefsPanel()));
+                "category-addons", controller.getThemesPrefsPanel()));
     }
 
     /**
@@ -489,7 +504,7 @@ public class PreferencesManager {
      */
     private void addPluginsCategory() {
         addCategory(new PreferencesCategory("Plugins", "", "category-addons",
-                Main.getUI().getPluginPrefsPanel()));
+                controller.getPluginPrefsPanel()));
     }
 
     /**
@@ -497,7 +512,7 @@ public class PreferencesManager {
      */
     private void addUpdatesCategory() {
         addCategory(new PreferencesCategory("Updates", "", "category-updates",
-                Main.getUI().getUpdatesPrefsPanel()));
+                controller.getUpdatesPrefsPanel()));
     }
 
     /**
@@ -506,7 +521,7 @@ public class PreferencesManager {
     private void addUrlHandlerCategory() {
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
-                "category-urlhandlers", Main.getUI().getUrlHandlersPrefsPanel()));
+                "category-urlhandlers", controller.getUrlHandlersPrefsPanel()));
     }
 
     /**

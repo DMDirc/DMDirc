@@ -29,6 +29,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.interfaces.UIController;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,17 +37,20 @@ import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {
 
+    private static UIController controller;
+
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
         Main.extractCorePlugins("ui_");
         Main.setUI(new SwingController());
         PluginManager.getPluginManager();
+        controller = mock(UIController.class);
     }
 
     @Test
     public void testDefaults() {
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         assertNotNull(pm.getCategory("General"));
         assertNotNull(pm.getCategory("Connection"));
         assertNotNull(pm.getCategory("Messages"));
@@ -60,7 +64,7 @@ public class PreferencesManagerTest {
     @Test
     public void testDismiss() {
         final PreferencesCategory category = mock(PreferencesCategory.class);
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         pm.addCategory(category);
         pm.dismiss();
 
@@ -72,7 +76,7 @@ public class PreferencesManagerTest {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(false);
 
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         pm.addCategory(category);
         assertFalse(pm.save());
 
@@ -84,7 +88,7 @@ public class PreferencesManagerTest {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(true);
 
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         pm.addCategory(category);
         assertTrue(pm.save());
 
@@ -93,13 +97,13 @@ public class PreferencesManagerTest {
 
     @Test
     public void testGetCategory() {
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         assertNull(pm.getCategory("unittest123"));
     }
 
     @Test
     public void testGetCategories() {
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         assertNotNull(pm.getCategories());
         assertFalse(pm.getCategories().isEmpty());
 
@@ -110,7 +114,7 @@ public class PreferencesManagerTest {
 
     @Test
     public void testSaveListener() {
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
 
         pm.registerSaveListener(tpi);
@@ -125,7 +129,7 @@ public class PreferencesManagerTest {
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
 
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
 
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
                 (StringBuffer) same(null), same(pm));
@@ -138,7 +142,7 @@ public class PreferencesManagerTest {
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
 
-        final PreferencesManager pm = new PreferencesManager();
+        final PreferencesManager pm = new PreferencesManager(controller);
         pm.close();
 
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),
