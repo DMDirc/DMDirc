@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -100,9 +99,9 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         } else if ("services".equals(args.getArguments()[0])) {
             doServices(origin, args.isSilent(), args.getArguments());
         } else if ("firstrun".equals(args.getArguments()[0])) {
-            Main.getUI().showFirstRunWizard();
+            context.getSource().getController().showFirstRunWizard();
         } else if ("migration".equals(args.getArguments()[0])) {
-            Main.getUI().showMigrationWizard();
+            context.getSource().getController().showMigrationWizard();
         } else if ("notify".equals(args.getArguments()[0])) {
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Current notification colour is: "
                     + origin.getNotification());
