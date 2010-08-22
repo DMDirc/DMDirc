@@ -315,6 +315,9 @@ public class Main {
                         // @Deprecated - remove post 0.6.4
                         // Hack for compatibility with older plugins
                         CONTROLLERS.add((UIController) ((PluginInfo) provider).getPlugin());
+                        Logger.appError(ErrorLevel.LOW,
+                                "UI plugin doesn't export getController: "
+                                + provider.getProviderName(), new UnsupportedOperationException());
                     }
                 } else {
                     CONTROLLERS.add((UIController) export);
