@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -40,6 +41,8 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.updater.UpdateChecker;
 
@@ -61,6 +64,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
      * Creates a new instance of Debug.
      */
     public Debug() {
+        super();
         CommandManager.registerCommand(this);
     }
 
@@ -105,6 +109,8 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         } else if ("notify".equals(args.getArguments()[0])) {
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Current notification colour is: "
                     + origin.getNotification());
+        } else if ("time".equals(args.getArguments()[0])) {
+            doTime(origin, context.getSource(), args);
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unknown debug action.");
         }
@@ -456,6 +462,25 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
         }
     }
 
+    /**
+     * Facilitates timing of a command.
+     *
+     * @param origin The origin of the command
+     * @param window The window to be passed on to the timed command, if any
+     * @param args The arguments that were passed to the command
+     */
+    private void doTime(final FrameContainer<?> origin, final Window window,
+            final CommandArguments args) {
+        if (origin instanceof WritableFrameContainer<?>) {
+            final WritableFrameContainer<?> container = (WritableFrameContainer<?>) origin;
+            final long start = System.currentTimeMillis();
+            container.getCommandParser().parseCommand(origin, window, args.getArgumentsAsString(1));
+            final long end = System.currentTimeMillis();
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Command executed in "
+                    + (end - start) + " milliseconds.");
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
@@ -506,6 +531,7 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             res.add("migration");
             res.add("notify");
             res.add("services");
+            res.add("time");
         } else if (arg == 1 && "error".equals(context.getPreviousArgs().get(0))) {
             res.add("user");
             res.add("app");
@@ -517,6 +543,8 @@ public class Debug extends Command implements IntelligentCommand, CommandInfo {
             res.add("high");
             res.add("fatal");
             res.add("unknown");
+        } else if (arg > 0 && "time".equals(context.getPreviousArgs().get(0))) {
+            return TabCompleter.getIntelligentResults(arg, context, 1);
         }
 
         return res;
