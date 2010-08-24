@@ -80,6 +80,19 @@ public final class Update implements DownloadListener {
     }
 
     /**
+     * Retrieves a string representation of this update. The result from this
+     * method may be passed to the {@link Update} constructor to create a copy
+     * of the update.
+     *
+     * @since 0.6.5
+     * @return A string representation of this update
+     */
+    public String getStringRepresentation() {
+        return "outofdate " + component.getName()
+                + " CHANNEL versionNumber " + versionName + " " + url;
+    }
+
+    /**
      * Retrieves the component that this update is for.
      *
      * @return The component of this update

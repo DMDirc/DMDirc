@@ -64,6 +64,9 @@ public final class UpdateChecker implements Runnable {
         RESTART_REQUIRED,
     }
 
+    /** The domain to use for updater settings. */
+    private static final String DOMAIN = "updater";
+
     /** Semaphore used to prevent multiple invocations. */
     private static final Semaphore MUTEX = new Semaphore(1);
 
@@ -126,13 +129,13 @@ public final class UpdateChecker implements Runnable {
 
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
-        if (!config.getOptionBool("updater", "enable")
+        if (!config.getOptionBool(DOMAIN, "enable")
                 || status == STATE.UPDATING) {
-            IdentityManager.getConfigIdentity().setOption("updater",
+            IdentityManager.getConfigIdentity().setOption(DOMAIN,
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
             MUTEX.release();
-            init();
+            initTimer();
             return;
         }
 
@@ -146,7 +149,7 @@ public final class UpdateChecker implements Runnable {
         }
 
         final StringBuilder data = new StringBuilder();
-        final String updateChannel = config.getOption("updater", "channel");
+        final String updateChannel = config.getOption(DOMAIN, "channel");
 
         // Build the data string to send to the server
         for (UpdateComponent component : COMPONENTS) {
@@ -193,16 +196,37 @@ public final class UpdateChecker implements Runnable {
             setStatus(available ? STATE.UPDATES_AVAILABLE : STATE.RESTART_REQUIRED);
         }
 
+        updateCachedUpdates();
+
         MUTEX.release();
 
-        IdentityManager.getConfigIdentity().setOption("updater",
+        IdentityManager.getConfigIdentity().setOption(DOMAIN,
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
-        UpdateChecker.init();
+        UpdateChecker.initTimer();
 
-        if (config.getOptionBool("updater", "autoupdate")) {
+        if (config.getOptionBool(DOMAIN, "autoupdate")) {
             applyUpdates();
         }
+    }
+
+    /**
+     * Updates the cache of pending updates in the configuration file.
+     *
+     * @since 0.6.5
+     */
+    private static void updateCachedUpdates() {
+       final List<String> stringCopies = new ArrayList<String>();
+
+        for (Update update : UPDATES) {
+            // Only include outstanding updates
+            if (update.getStatus() == UpdateStatus.PENDING
+                    || update.getStatus() == UpdateStatus.ERROR) {
+                stringCopies.add(update.getStringRepresentation());
+            }
+        }
+
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "updates", stringCopies);
     }
 
     /**
@@ -210,7 +234,7 @@ public final class UpdateChecker implements Runnable {
      *
      * @param line The line to be checked
      */
-    private void checkLine(final String line) {
+    private static void checkLine(final String line) {
         if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else if (line.startsWith("error")) {
@@ -236,7 +260,7 @@ public final class UpdateChecker implements Runnable {
      *
      * @param line The line that was received from the update server
      */
-    private void doUpdateAvailable(final String line) {
+    private static void doUpdateAvailable(final String line) {
         final Update update = new Update(line);
 
         if (update.getUrl() != null) {
@@ -250,10 +274,27 @@ public final class UpdateChecker implements Runnable {
      * frequency specified in the config.
      */
     public static void init() {
+        for (String update : IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "updates")) {
+            checkLine(update);
+        }
+
+        if (!UPDATES.isEmpty()) {
+            setStatus(STATE.UPDATES_AVAILABLE);
+        }
+
+        initTimer();
+    }
+
+    /**
+     * Initialises the timer to check for updates.
+     *
+     * @since 0.6.5
+     */
+    protected static void initTimer() {
         final int last = IdentityManager.getGlobalConfig()
-                .getOptionInt("updater", "lastcheck");
+                .getOptionInt(DOMAIN, "lastcheck");
         final int freq = IdentityManager.getGlobalConfig()
-                .getOptionInt("updater", "frequency");
+                .getOptionInt(DOMAIN, "frequency");
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
 
@@ -346,6 +387,7 @@ public final class UpdateChecker implements Runnable {
 
         if (UPDATES.isEmpty()) {
             setStatus(STATE.IDLE);
+            updateCachedUpdates();
         } else if (status == STATE.UPDATING) {
             doNextUpdate();
         }
@@ -378,6 +420,7 @@ public final class UpdateChecker implements Runnable {
         }
 
         setStatus(restart ? STATE.RESTART_REQUIRED : STATE.IDLE);
+        updateCachedUpdates();
     }
 
     /**
@@ -446,9 +489,9 @@ public final class UpdateChecker implements Runnable {
      * @return true iif the update component is enabled
      */
     public static boolean isEnabled(final UpdateComponent component) {
-        return !IdentityManager.getGlobalConfig().hasOptionBool("updater",
+        return !IdentityManager.getGlobalConfig().hasOptionBool(DOMAIN,
                 "enable-" + component.getName()) || IdentityManager.getGlobalConfig()
-                .getOptionBool("updater", "enable-" + component.getName());
+                .getOptionBool(DOMAIN, "enable-" + component.getName());
     }
 
 }
