@@ -292,7 +292,7 @@ public abstract class FrameContainer<T extends Window> {
         this.title = title;
 
         for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
-            listener.titleChanged(this, name);
+            listener.titleChanged(this, title);
         }
     }
 
