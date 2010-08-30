@@ -154,8 +154,6 @@ public class Main {
 
         ActionManager.loadActions();
 
-        getUI().getMainWindow();
-
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
 
         UpdateChecker.init();
