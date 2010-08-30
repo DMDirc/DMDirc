@@ -137,14 +137,6 @@ public class Main {
         pm.getPossiblePluginInfos(true);
 
         loadUIs(pm);
-        if (getUI() == null) {
-            handleMissingUI();
-        } else {
-            // The fix worked!
-            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
-                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
-            }
-        }
 
         doFirstRun();
 
@@ -324,14 +316,12 @@ public class Main {
         }
 
         if (CONTROLLERS.isEmpty()) {
-            if (!GraphicsEnvironment.isHeadless()) {
-                // Show a dialog informing the user that no UI was found.
-                new WarningDialog().displayBlocking();
-                System.exit(2);
+            handleMissingUI();
+        } else {
+            // The fix worked!
+            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
             }
-
-            // Can't find any
-            throw new IllegalStateException("No UIs could be loaded");
         }
     }
 
@@ -341,13 +331,18 @@ public class Main {
     private static void doFirstRun() {
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun")) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
-            getUI().showFirstRunWizard();
+            for (UIController controller : CONTROLLERS) {
+                controller.showFirstRunWizard();
+            }
+
             new Timer().schedule(new TimerTask() {
 
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
-                    getUI().showFeedbackNag();
+                    for (UIController controller : CONTROLLERS) {
+                        controller.showFeedbackNag();
+                    }
                 }
             }, FEEDBACK_DELAY);
         }
