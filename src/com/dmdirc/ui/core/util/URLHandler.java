@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -138,26 +139,26 @@ public class URLHandler {
         final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
 
         if ("DMDIRC".equals(command)) {
-            Main.getUI().getStatusBar().setMessage("Connecting to: " +
-                    uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage("Connecting to: "
+                    + uri.toString());
             ServerManager.getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
-            Main.getUI().getStatusBar().setMessage("Opening: " + uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage("Opening: " + uri.toString());
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
-            Main.getUI().getStatusBar().setMessage("Opening: " + uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage("Opening: " + uri.toString());
             execApp(substituteParams(uri, command));
         }
     }
 
     /**
-     * Substitutes variables into a command
-     * 
+     * Substitutes variables into a command.
+     *
      * @param url data url
      * @param command command to be substituted
-     * 
+     *
      * @return Substituted command
      */
     public String substituteParams(final URI url, final String command) {

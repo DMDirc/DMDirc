@@ -52,8 +52,11 @@ public interface UIController {
     /**
      * Retrieves the status bar component used by this UI.
      *
+     * @deprecated Should not be used externally - use the
+     * {@link com.dmdirc.ui.core.components.StatusBarManager} instead.
      * @return This UI's status bar
      */
+    @Deprecated
     StatusBar getStatusBar();
 
     /**

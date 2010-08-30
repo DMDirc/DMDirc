@@ -48,6 +48,7 @@ import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -1532,7 +1533,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * Called when we fail to receive a ping reply within a set period of time.
      */
     public void onPingFailed() {
-        Main.getUI().getStatusBar().setMessage("No ping reply from "
+        StatusBarManager.getStatusBarManager().setMessage("No ping reply from "
                 + getName() + " for over "
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", null, 10);
