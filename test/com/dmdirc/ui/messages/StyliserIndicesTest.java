@@ -64,6 +64,9 @@ public class StyliserIndicesTest {
                      4, 7, Styliser.CODE_COLOUR + "4,0RED"},
             {"Blah" + Styliser.CODE_COLOUR + "4,0RED blah blah",
                      5, 7, "ED"},
+            {Styliser.CODE_TOOLTIP + "Annoying internal tooltip text"
+                     + Styliser.CODE_TOOLTIP + "Blah" + Styliser.CODE_TOOLTIP + "Blah",
+                     2, 6, "ahBl"},
         };
 
         return Arrays.asList(tests);

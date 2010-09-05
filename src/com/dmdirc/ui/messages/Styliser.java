@@ -251,6 +251,8 @@ public class Styliser implements ConfigChangeListener {
      * to be as far left as they possibly can be. This means that the start of
      * the string will include any control codes immediately preceeding the
      * desired text, and the end will not include any trailing codes.
+     * <p>
+     * This method will NOT include "internal" control codes in the output.
      *
      * @param styled The styled String to be operated on
      * @param from The starting index in the unstyled string
@@ -262,19 +264,20 @@ public class Styliser implements ConfigChangeListener {
         final String unstyled = stipControlCodes(styled);
         final String startBit = unstyled.substring(0, from);
         final String middleBit = unstyled.substring(from, to);
+        final String sanitised = stipInternalControlCodes(styled);
         int start = from;
 
-        while (!stipControlCodes(styled.substring(0, start)).equals(startBit)) {
+        while (!stipControlCodes(sanitised.substring(0, start)).equals(startBit)) {
             start++;
         }
 
         int end = to + start - from;
 
-        while (!stipControlCodes(styled.substring(start, end)).equals(middleBit)) {
+        while (!stipControlCodes(sanitised.substring(start, end)).equals(middleBit)) {
             end++;
         }
 
-        return styled.substring(start, end);
+        return sanitised.substring(start, end);
     }
 
     /**
@@ -348,6 +351,20 @@ public class Styliser implements ConfigChangeListener {
                 + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]|"
                 + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
                 + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
+                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
+                + CODE_TOOLTIP, "$1");
+    }
+
+    /**
+     * St(r)ips all recognised internal control codes from the input string.
+     *
+     * @param input the String to be stripped
+     * @return a copy of the input with control codes removed
+     * @since 0.6.5
+     */
+    public static String stipInternalControlCodes(final String input) {
+        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
+                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]", "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
                 + CODE_TOOLTIP, "$1");
     }
