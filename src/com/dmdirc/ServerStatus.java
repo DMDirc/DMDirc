@@ -67,6 +67,7 @@ public class ServerStatus {
      * Transitions the status of this object to the specified state.
      *
      * @param newState The state to transition to
+     * @throws IllegalArgumentException If the specified transition is invalid
      */
     public synchronized void transition(final ServerState newState) {
         addHistoryEntry(state, newState);

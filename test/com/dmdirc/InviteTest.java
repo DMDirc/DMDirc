@@ -22,9 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.addons.ui_dummy.DummyController;
-
 import java.util.Date;
 
 import org.junit.BeforeClass;
@@ -41,21 +38,18 @@ public class InviteTest {
     
     @BeforeClass
     public static void setUp() throws Exception {
-        Main.setUI(new DummyController());
-        IdentityManager.load();
-        
         server = mock(Server.class);
 
         when(server.parseHostmask("nick!ident@host"))
-                .thenReturn(new String[] { "nick", "ident", "host"});
+                .thenReturn(new String[] {"nick", "ident", "host"});
 
         test = new Invite(server, "#channel", "nick!ident@host");
         ts = new Date().getTime();
-    }    
+    }
 
     @Test
     public void testGetServer() {
-        assertEquals(server, test.getServer());
+        assertSame(server, test.getServer());
     }
 
     @Test
@@ -80,7 +74,13 @@ public class InviteTest {
     @Test
     public void testAccept() {
         test.accept();
-        assertEquals(0, server.getInvites().size());
+        verify(server).acceptInvites(test);
+    }
+
+    @Test
+    public void testDecline() {
+        test.decline();
+        verify(server).removeInvite(test);
     }
 
 }

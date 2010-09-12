@@ -22,33 +22,42 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.interfaces.Parser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TopicTest {
+import static org.mockito.Mockito.*;
 
-    @Test
-    public void testGetClient() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("123!456@789", test.getClient());
+public class ServerStatusTest {
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testIllegalTransition() {
+        final ServerStatus status = new ServerStatus(mock(Server.class), mock(Object.class));
+        status.transition(ServerState.CONNECTED);
     }
 
     @Test
-    public void testGetTime() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals(1L, test.getTime());
+    public void testGetParserIdSame() {
+        final ServerStatus status = new ServerStatus(mock(Server.class), mock(Object.class));
+        final Parser parser = mock(Parser.class);
+
+        assertEquals(status.getParserID(parser), status.getParserID(parser));
     }
 
     @Test
-    public void testGetTopic() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("abc", test.getTopic());        
+    public void testGetParserIdDifferent() {
+        final ServerStatus status = new ServerStatus(mock(Server.class), mock(Object.class));
+        final Parser parser1 = mock(Parser.class);
+        final Parser parser2 = mock(Parser.class);
+
+        assertTrue(status.getParserID(parser1) != status.getParserID(parser2));
     }
 
     @Test
-    public void testToString() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("abc", test.toString());        
+    public void testGetParserIdNull() {
+        final ServerStatus status = new ServerStatus(mock(Server.class), mock(Object.class));
+
+        assertEquals(0, status.getParserID(null));
     }
 
 }
