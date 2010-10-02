@@ -43,6 +43,7 @@ import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.EncodingParser;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
@@ -748,6 +749,11 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certManager});
             secureParser.setKeyManagers(certManager.getKeyManager());
+        }
+
+        if (myParser instanceof EncodingParser) {
+            final EncodingParser encodingParser = (EncodingParser) myParser;
+            encodingParser.setEncoder(new MessageEncoder(this, myParser));
         }
 
         if (myParser != null) {
