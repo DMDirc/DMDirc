@@ -38,7 +38,10 @@ public interface InputWindow extends Window {
      * Retrieves the command Parser for this input window.
      *
      * @return This window's command parser
+     *
+     * @deprecated Use {@link WritableFrameContainer.getCommandParser()} instead
      */
+    @Deprecated
     CommandParser getCommandParser();
 
     /**
