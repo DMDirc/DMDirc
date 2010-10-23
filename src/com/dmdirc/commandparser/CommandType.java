@@ -22,13 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.commandparser.commands.ChannelCommand;
-import com.dmdirc.commandparser.commands.ChatCommand;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.commandparser.commands.QueryCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
-
 /**
  * Defines the possible targets for commands.
  * 
@@ -46,31 +39,6 @@ public enum CommandType {
     TYPE_CHANNEL,
     /** A query command. */
     TYPE_QUERY;
-   
-    /**
-     * Looks up the command type for the specified command, by inspecting its
-     * class.
-     * 
-     * @param command The command to look up
-     * @return The type of the specified command
-     * @deprecated Shouldn't be required any longer
-     */
-    @Deprecated
-    public static CommandType fromCommand(final Command command) {
-        if (command instanceof GlobalCommand) {
-            return TYPE_GLOBAL;
-        } else if (command instanceof ServerCommand) {
-            return TYPE_SERVER;
-        } else if (command instanceof ChatCommand) {
-            return TYPE_CHAT;
-        } else if (command instanceof ChannelCommand) {
-            return TYPE_CHANNEL;
-        } else if (command instanceof QueryCommand) {
-            return TYPE_QUERY;
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Retrieves an array of component types that make up this command type.

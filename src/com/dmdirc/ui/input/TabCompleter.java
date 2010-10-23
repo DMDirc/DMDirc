@@ -25,7 +25,7 @@ package com.dmdirc.ui.input;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
@@ -254,7 +254,7 @@ public class TabCompleter {
                         Arrays.asList(args.getArguments()), partial));
             }
 
-            if (command.getValue() instanceof ChannelCommand) {
+            if (command.getKey().getType().equals(CommandType.TYPE_CHANNEL)) {
                 if (targets == null) {
                     targets = new AdditionalTabTargets();
                 }
