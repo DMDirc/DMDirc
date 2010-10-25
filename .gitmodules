@@ -1,12 +1,12 @@
 [submodule "modules/parser"]
 	path = modules/parser
-	url = git://dmdirc.com/~dmdirc/parser
+	url = git://dmdirc.com/parser
 [submodule "modules/plugins"]
 	path = modules/plugins
-	url = git://dmdirc.com/~dmdirc/plugins
+	url = git://dmdirc.com/plugins
 [submodule "modules/defaults"]
 	path = modules/defaults
-	url = git://dmdirc.com/~dmdirc/defaults
+	url = git://dmdirc.com/defaults
 [submodule "modules/util"]
 	path = modules/util
-	url = git://dmdirc.com/~dmdirc/util
+	url = git://dmdirc.com/util
