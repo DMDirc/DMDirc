@@ -5,8 +5,14 @@
     <property name="clover.jar" location="lib/clover.jar"/>
     <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
     <taskdef resource="cloverjunitlib.xml" classpath="${clover.jar}"/>
-    <available property="clover.installed" classname="com.cenqua.clover.CloverInstr" />
     <available file="/usr/bin/xvfb-run" property="has.xvfb"/>
+
+    <condition property="clover.installed">
+     <and>
+      <available classname="com.cenqua.clover.CloverInstr"/>
+      <available file="lib/clover.license"/>
+     </and>
+    </condition>
 
     <target name="with.clover" depends="clean" if="clover.installed"
             description="Set up Clover to instrument tests.">
