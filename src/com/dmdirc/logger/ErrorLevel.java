@@ -22,27 +22,23 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.ui.IconManager;
-
-import javax.swing.Icon;
-
 /** Specific error levels allowed by Logger. */
 public enum ErrorLevel {
     /** Fatal error. */
-    FATAL("Fatal", IconManager.getIconManager().getIcon("error")),
+    FATAL("Fatal", "error"),
     /** High priority error. */
-    HIGH("High", IconManager.getIconManager().getIcon("error")),
+    HIGH("High", "error"),
     /** Medium priority error. */
-    MEDIUM("Medium", IconManager.getIconManager().getIcon("warning")),
+    MEDIUM("Medium", "warning"),
     /** Low priority error. */
-    LOW("Low", IconManager.getIconManager().getIcon("info")),
+    LOW("Low", "info"),
     /** Unknown priority error. */
-    UNKNOWN("Unknown", IconManager.getIconManager().getIcon("info"));
+    UNKNOWN("Unknown", "info");
     
     /** Error level string. */
     private String value;
     /** Error level icon. */
-    private Icon icon;
+    private String icon;
     
     /** 
      * Instantiates the enum. 
@@ -50,7 +46,7 @@ public enum ErrorLevel {
      * @param value toString value
      * @param icon Error level icon
      */
-    ErrorLevel(final String value, final Icon icon) {
+    ErrorLevel(final String value, final String icon) {
         this.value = value;
         this.icon = icon;
     }
@@ -66,7 +62,7 @@ public enum ErrorLevel {
      * 
      * @return Error levels icon
      */
-    public Icon getIcon() {
+    public String getIcon() {
         return icon;
     }
     
@@ -75,7 +71,7 @@ public enum ErrorLevel {
      *
      * @param level Error level to compare
      *
-     * @return true iif the error is more important
+     * @return true iff the error is more important
      */
     public boolean moreImportant(final ErrorLevel level) {
         if (level == null) {

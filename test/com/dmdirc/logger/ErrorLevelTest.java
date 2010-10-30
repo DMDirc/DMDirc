@@ -21,7 +21,6 @@
  */
 package com.dmdirc.logger;
 
-import javax.swing.Icon;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -34,15 +33,6 @@ public class ErrorLevelTest {
         assertTrue("High".equalsIgnoreCase(ErrorLevel.HIGH.toString()));
         assertTrue("Fatal".equalsIgnoreCase(ErrorLevel.FATAL.toString()));
         assertTrue("Unknown".equalsIgnoreCase(ErrorLevel.UNKNOWN.toString()));
-    }
-
-    @Test
-    public void testGetIcon() {
-        assertTrue(ErrorLevel.LOW.getIcon() instanceof Icon);
-        assertTrue(ErrorLevel.MEDIUM.getIcon() instanceof Icon);
-        assertTrue(ErrorLevel.HIGH.getIcon() instanceof Icon);
-        assertTrue(ErrorLevel.FATAL.getIcon() instanceof Icon);
-        assertTrue(ErrorLevel.UNKNOWN.getIcon() instanceof Icon);
     }
 
     @Test
