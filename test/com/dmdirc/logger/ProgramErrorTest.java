@@ -21,12 +21,20 @@
  */
 package com.dmdirc.logger;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Arrays;
 import java.util.Date;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ProgramErrorTest {
+    
+    @BeforeClass
+    public static void setup() throws InvalidIdentityFileException {
+        IdentityManager.load();
+    }
 
     @Test
     public void testConstructorNegativeID() {
