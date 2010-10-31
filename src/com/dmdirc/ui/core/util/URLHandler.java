@@ -29,6 +29,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.interfaces.UIController;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -42,34 +43,38 @@ import java.util.List;
 /** Handles URLs. */
 public class URLHandler {
 
+    /** The UI Controller that owns this handler. */
+    private final UIController controller;
     /** Config manager. */
     private final ConfigManager config;
-    /** Singleton instance. */
-    private static final URLHandler ME = new URLHandler();
     /** Desktop handler. */
     private final Desktop desktop;
     /** The time a browser was last launched. */
     private static Date lastLaunch;
 
-    /** Instantiates a new URL Handler. */
-    private URLHandler() {
-        config = IdentityManager.getGlobalConfig();
-        if (Desktop.isDesktopSupported()) {
-            desktop = Desktop.getDesktop();
-        } else {
-            desktop = null;
-        }
+    /**
+     * Instantiates a new URL Handler.
+     *
+     * @param controller The UI controller to show dialogs etc on
+     */
+    public URLHandler(final UIController controller) {
+        this.controller = controller;
+        this.config = IdentityManager.getGlobalConfig();
+        this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     }
 
     /**
      * Gets an instance of URLHandler.
      *
      * @return URLHandler instance
+     * @deprecated This will return a URLHandler for a random UI which may not
+     * implement the required methods. It will probably break. Users of this
+     * class must create instances of URLHandler directly with an appropriate
+     * UIController.
      */
+    @Deprecated
     public static URLHandler getURLHander() {
-        synchronized (ME) {
-            return ME;
-        }
+        return new URLHandler(Main.getUI());
     }
 
     /**
@@ -132,7 +137,7 @@ public class URLHandler {
         }
 
         if (!config.hasOptionString("protocol", uri.getScheme().toLowerCase())) {
-            Main.getUI().showURLDialog(uri);
+            controller.showURLDialog(uri);
             return;
         }
 
@@ -161,7 +166,7 @@ public class URLHandler {
      *
      * @return Substituted command
      */
-    public String substituteParams(final URI url, final String command) {
+    public static String substituteParams(final URI url, final String command) {
         final String userInfo = url.getUserInfo();
         String fragment = "";
         String host = "";
@@ -192,7 +197,7 @@ public class URLHandler {
         if (url.getQuery() != null) {
             query = url.getQuery();
         }
-        
+
         if (url.getPort() > 0) {
             port = String.valueOf(url.getPort());
         }
@@ -233,12 +238,12 @@ public class URLHandler {
                     ex.getMessage());
         }
     }
-    
+
     /**
      * Parses the specified command into an array of arguments. Arguments are
      * separated by spaces. Multi-word arguments may be specified by starting
      * the argument with a quote (") and finishing it with a quote (").
-     * 
+     *
      * @param command The command to parse
      * @return An array of arguments corresponding to the command
      */
@@ -246,7 +251,7 @@ public class URLHandler {
         final List<String> args = new ArrayList<String>();
         final StringBuilder builder = new StringBuilder();
         boolean inquote = false;
-        
+
         for (String word : command.split(" ")) {
             if (word.endsWith("\"") && inquote) {
                 args.add(builder.toString() + ' ' + word.substring(0, word.length() - 1));
@@ -256,7 +261,7 @@ public class URLHandler {
                 if (builder.length() > 0) {
                     builder.append(' ');
                 }
-                
+
                 builder.append(word);
             } else if (word.startsWith("\"") && !word.endsWith("\"")) {
                 inquote = true;
@@ -271,7 +276,7 @@ public class URLHandler {
                 args.add(word);
             }
         }
-        
+
         return args.toArray(new String[args.size()]);
     }
 

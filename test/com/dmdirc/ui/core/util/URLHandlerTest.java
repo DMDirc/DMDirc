@@ -65,7 +65,7 @@ public class URLHandlerTest {
         };
         
         for (Object[] test : tests) {
-            final String result = URLHandler.getURLHander().substituteParams((URI) test[0],
+            final String result = URLHandler.substituteParams((URI) test[0],
                     (String) test[1]);
             assertEquals(test[0].toString() + " + " + test[1].toString() + " ==> " + result,
                     (String) test[2], result);
