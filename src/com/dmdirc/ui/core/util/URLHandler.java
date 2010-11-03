@@ -83,18 +83,44 @@ public class URLHandler {
      * @param urlString URL to parse
      */
     public void launchApp(final String urlString) {
+        final String sanitisedString = getSanitisedString(urlString);
+
         URI uri;
         try {
-            uri = new URI(urlString.replace("|", "%7C"));
+            uri = new URI(sanitisedString);
             if (uri.getScheme() == null) {
-                uri = new URI("http://" + urlString.replace("|", "%7C"));
+                uri = new URI("http://" + sanitisedString);
             }
         } catch (URISyntaxException ex) {
-            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+            Logger.userError(ErrorLevel.LOW, "Invalid URI: " + ex.getMessage(), ex);
             return;
         }
 
         launchApp(uri);
+    }
+
+    /**
+     * Sanitises the specified string so that it may be used as a {@link URI}.
+     * Sanitisation consists of:
+     * <ul>
+     * <li>replacing any pipe character with its hex escape</li>
+     * <li>replacing any hash character in the fragment with its hex escape</li>
+     * </ul>
+     *
+     * @since 0.6.5
+     * @param urlString The string to be sanitised
+     * @return A sanitised version of the specified string.
+     */
+    protected static String getSanitisedString(final String urlString) {
+        String sanitisedString = urlString.replace("|", "%7C");
+
+        int index = sanitisedString.indexOf('#');
+        if (sanitisedString.lastIndexOf('#') > index) {
+            sanitisedString = sanitisedString.substring(0, index + 1)
+                    + sanitisedString.substring(index + 1).replace("#", "%23");
+        }
+
+        return sanitisedString;
     }
 
     /**
@@ -110,7 +136,7 @@ public class URLHandler {
                 uri = new URI("http://" + url.toString());
             }
         } catch (URISyntaxException ex) {
-            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage(), ex);
             return;
         }
 
@@ -234,8 +260,8 @@ public class URLHandler {
         try {
             Runtime.getRuntime().exec(parseArguments(command));
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to run application: ",
-                    ex.getMessage());
+            Logger.userError(ErrorLevel.LOW, "Unable to run application: "
+                    + ex.getMessage(), ex);
         }
     }
 
@@ -292,7 +318,7 @@ public class URLHandler {
                 desktop.browse(url);
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW,
-                        "Unable to open URL: " + ex.getMessage());
+                        "Unable to open URL: " + ex.getMessage(), ex);
             }
         } else {
             Logger.userError(ErrorLevel.LOW,
@@ -314,7 +340,7 @@ public class URLHandler {
                 desktop.mail(url);
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW,
-                        "Unable to open URL: " + ex.getMessage());
+                        "Unable to open URL: " + ex.getMessage(), ex);
             }
         } else {
             Logger.userError(ErrorLevel.LOW,
