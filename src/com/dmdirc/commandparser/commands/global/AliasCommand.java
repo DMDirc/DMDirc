@@ -50,8 +50,6 @@ public final class AliasCommand extends Command implements
      */
     public AliasCommand() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

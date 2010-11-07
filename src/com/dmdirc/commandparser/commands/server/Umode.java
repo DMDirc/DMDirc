@@ -27,7 +27,6 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
@@ -47,8 +46,6 @@ public class Umode extends Command implements CommandInfo {
      */
     public Umode() {
         super();
-        
-        CommandManager.registerCommand(this);
     }    
 
     /** {@inheritDoc} */

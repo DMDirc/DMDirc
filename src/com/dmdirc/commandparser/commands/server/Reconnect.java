@@ -26,7 +26,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -43,8 +42,6 @@ public final class Reconnect extends Command implements CommandInfo {
      */
     public Reconnect() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

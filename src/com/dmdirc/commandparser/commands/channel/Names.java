@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
@@ -51,8 +50,6 @@ public class Names extends Command implements IntelligentCommand,
      */
     public Names() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -52,8 +51,6 @@ public final class Echo extends Command implements IntelligentCommand,
      */
     public Echo() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

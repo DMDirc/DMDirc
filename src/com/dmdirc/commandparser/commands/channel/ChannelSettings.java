@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
@@ -45,8 +44,6 @@ public final class ChannelSettings extends Command implements
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
         super();
-        
-        CommandManager.registerCommand(this);
     }
     
     /** {@inheritDoc} */

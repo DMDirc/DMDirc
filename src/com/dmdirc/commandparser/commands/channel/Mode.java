@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
@@ -50,8 +49,6 @@ public final class Mode extends Command implements IntelligentCommand,
     /** Creates a new instance of Mode. */
     public Mode() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

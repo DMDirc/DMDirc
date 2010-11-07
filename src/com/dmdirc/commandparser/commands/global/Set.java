@@ -49,8 +49,6 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      */
     public Set() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

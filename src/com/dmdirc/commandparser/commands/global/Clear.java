@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -45,8 +44,6 @@ public final class Clear extends Command implements IntelligentCommand,
      */
     public Clear() {
         super();
-        
-        CommandManager.registerCommand(this);
     }
     
     /** {@inheritDoc} */

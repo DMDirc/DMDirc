@@ -26,7 +26,6 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
@@ -37,17 +36,17 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Opens the server settings window for the server.
+ *
  * @author Simon
  * @since 0.6.4
  */
 @CommandOptions(allowOffline=false)
-public class ServerSettings extends Command implements
-        IntelligentCommand, CommandInfo {
+public class ServerSettings extends Command implements IntelligentCommand,
+        CommandInfo {
 
     /** Creates a new instance of ServerSettings. */
     public ServerSettings() {
         super();
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

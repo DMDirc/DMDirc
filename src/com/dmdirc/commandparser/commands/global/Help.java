@@ -53,8 +53,6 @@ public final class Help extends Command implements IntelligentCommand, CommandIn
      */
     public Help() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */

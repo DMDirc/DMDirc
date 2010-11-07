@@ -26,7 +26,6 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -45,7 +44,7 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
      * Creates a new instance of OpenWindow.
      */
     public OpenWindow() {
-        CommandManager.registerCommand(this);
+        super();
     }
 
     /** {@inheritDoc} */

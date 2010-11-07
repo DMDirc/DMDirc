@@ -50,8 +50,6 @@ public final class OpenQuery extends Command implements IntelligentCommand,
      */
     public OpenQuery() {
         super();
-
-        CommandManager.registerCommand(this);
     }
 
     /** {@inheritDoc} */
