@@ -1489,6 +1489,17 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
+     * Does this plugin export the specified service?
+     *
+     * @param name Name of the service to check
+     *
+     * @return true iif the plugin exports the service
+     */
+    public boolean hasExportedService(final String name) {
+        return exports.containsKey(name);
+    }
+
+    /**
      * Get the Plugin object for this plugin.
      *
      * @return Plugin object for the plugin
