@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.RollingList;
@@ -52,11 +52,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Listener list. */
     private final ListenerList listeners;
     /** Cached lines. */
-    private transient RollingList<Line> cachedLines;
+    private final RollingList<Line> cachedLines;
     /** Cached attributed strings. */
-    private transient RollingList<AttributedString> cachedStrings;
-    /** Container that owns this document. */
-    private final FrameContainer<?> container;
+    private final RollingList<AttributedString> cachedStrings;
+    /** Config Manager for getting settings. */
+    private final ConfigManager configManager;
+    /** This document's styliser. */
+    private final Styliser styliser;
     /** Font size. */
     private int fontSize;
     /** Font name. */
@@ -67,26 +69,25 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /**
      * Creates a new instance of IRCDocument.
      *
-     * @param container The container that owns this document
+     * @param configManager Config Manager for required settings.
+     * @param styliser Styliser to style text
      * @since 0.6.3
      */
-    public IRCDocument(final FrameContainer<?> container) {
-        this.container = container;
+    public IRCDocument(final ConfigManager configManager,
+            final Styliser styliser) {
+        this.configManager = configManager;
+        this.styliser = styliser;
 
         lines = new ArrayList<Line>();
         listeners = new ListenerList();
 
         cachedLines = new RollingList<Line>(50);
         cachedStrings = new RollingList<AttributedString>(50);
-        frameBufferSize = container.getConfigManager().getOptionInt("ui",
-                "frameBufferSize");
+        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize");
 
-        container.getConfigManager().addChangeListener("ui", "textPaneFontSize",
-                this);
-        container.getConfigManager().addChangeListener("ui", "textPaneFontName",
-                this);
-        container.getConfigManager().addChangeListener("ui", "frameBufferSize",
-                this);
+        configManager.addChangeListener("ui", "textPaneFontSize", this);
+        configManager.addChangeListener("ui", "textPaneFontName", this);
+        configManager.addChangeListener("ui", "frameBufferSize", this);
 
         setCachedSettings();
     }
@@ -123,7 +124,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     public void addText(final String[] text) {
         final int index;
         synchronized (lines) {
-            final Line line = new Line(container.getStyliser(), text, fontSize, fontName);
+            final Line line = new Line(styliser, text, fontSize, fontName);
             lines.add(line);
             index = lines.indexOf(line);
         }
@@ -139,7 +140,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     public void addText(final String[] text, final int lineHeight) {
         final int index;
         synchronized (lines) {
-            final Line line = new Line(container.getStyliser(), text, lineHeight, fontName);
+            final Line line = new Line(styliser, text, lineHeight, fontName);
             lines.add(line);
             index = lines.indexOf(line);
         }
@@ -156,7 +157,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         synchronized (lines) {
             start = lines.size();
             for (String[] string : text) {
-                lines.add(new Line(container.getStyliser(), string, fontSize, fontName));
+                lines.add(new Line(styliser, string, fontSize, fontName));
             }
         }
         fireLinesAdded(start, text.size());
@@ -176,7 +177,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
             for (int i = 0; i < text.size(); i++) {
                 final String[] string = text.get(i);
                 final int lineHeight = lineHeights.get(i);
-                lines.add(new Line(container.getStyliser(), string, lineHeight, fontName));
+                lines.add(new Line(styliser, string, lineHeight, fontName));
             }
         }
         fireLinesAdded(start, text.size());
@@ -238,7 +239,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param index Index of the added line
      */
     protected void fireLineAdded(final int index) {
-        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+        for (IRCDocumentListener listener
+                : listeners.get(IRCDocumentListener.class)) {
             listener.lineAdded(index, lines.size());
         }
         trim(frameBufferSize);
@@ -251,7 +253,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param size Number of lines added
      */
     protected void fireLinesAdded(final int index, final int size) {
-        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+        for (IRCDocumentListener listener
+                : listeners.get(IRCDocumentListener.class)) {
             listener.linesAdded(index, size, lines.size());
         }
         trim(frameBufferSize);
@@ -264,7 +267,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param trimedLines Number of trimmed lines
      */
     protected void fireTrimmed(final int newSize, final int trimedLines) {
-        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+        for (IRCDocumentListener listener
+                : listeners.get(IRCDocumentListener.class)) {
             listener.trimmed(newSize, trimedLines);
         }
     }
@@ -273,7 +277,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * fires the cleared method on all listeners.
      */
     protected void fireCleared() {
-        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+        for (IRCDocumentListener listener
+                : listeners.get(IRCDocumentListener.class)) {
             listener.cleared();
         }
     }
@@ -282,7 +287,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * fires the need repaint method on all listeners.
      */
     protected void fireRepaintNeeded() {
-        for (IRCDocumentListener listener : listeners.get(IRCDocumentListener.class)) {
+        for (IRCDocumentListener listener
+                : listeners.get(IRCDocumentListener.class)) {
             listener.repaintNeeded();
         }
     }
@@ -326,7 +332,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Returns the line height of the specified line
+     * Returns the line height of the specified line.
      *
      * @param line Line
      *
@@ -337,7 +343,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Returns the line height of the specified line
+     * Returns the line height of the specified.
      *
      * @param line Line
      *
@@ -347,20 +353,22 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         return getLineHeight(getLine(line));
     }
 
+    /**
+     * Sets all the cached settings in this document.
+     */
     private void setCachedSettings() {
         final Font defaultFont = UIManager.getFont("TextPane.font");
-        if (container.getConfigManager().hasOptionString("ui", "textPaneFontName")) {
-            fontName = container.getConfigManager().getOption("ui", "textPaneFontName");
+        if (configManager.hasOptionString("ui", "textPaneFontName")) {
+            fontName = configManager.getOption("ui", "textPaneFontName");
         } else {
             fontName = defaultFont.getName();
         }
-        if (container.getConfigManager().hasOptionString("ui", "textPaneFontSize")) {
-            fontSize = container.getConfigManager().getOptionInt("ui", "textPaneFontSize");
+        if (configManager.hasOptionString("ui", "textPaneFontSize")) {
+            fontSize = configManager.getOptionInt("ui", "textPaneFontSize");
         } else {
             fontSize = defaultFont.getSize();
         }
-        frameBufferSize = container.getConfigManager().getOptionInt("ui",
-                "frameBufferSize");
+        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize");
         trim(frameBufferSize);
     }
 

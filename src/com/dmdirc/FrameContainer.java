@@ -110,13 +110,14 @@ public abstract class FrameContainer<T extends Window> {
      * @since 0.6.4
      */
     protected FrameContainer(final String icon, final String name,
-            final String title, final Class<T> windowClass, final ConfigManager config) {
+            final String title, final Class<T> windowClass,
+            final ConfigManager config) {
         this.config = config;
         this.name = name;
         this.title = title;
         this.windowClass = windowClass;
         this.styliser = new Styliser(this);
-        this.document = new IRCDocument(this);
+        this.document = new IRCDocument(getConfigManager(), getStyliser());
 
         // Can't assign directly to transcoder as it's final, and Java doesn't
         // like the two paths in the try/catch.
@@ -267,7 +268,8 @@ public abstract class FrameContainer<T extends Window> {
     protected void setName(final String name) {
         this.name = name;
 
-        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+        for (FrameInfoListener listener : listeners.get(
+                FrameInfoListener.class)) {
             listener.nameChanged(this, name);
         }
     }
@@ -291,7 +293,8 @@ public abstract class FrameContainer<T extends Window> {
     public void setTitle(final String title) {
         this.title = title;
 
-        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+        for (FrameInfoListener listener : listeners.get(
+                FrameInfoListener.class)) {
             listener.titleChanged(this, title);
         }
     }
@@ -330,7 +333,8 @@ public abstract class FrameContainer<T extends Window> {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        for (FrameInfoListener listener : listeners.get(FrameInfoListener.class)) {
+        for (FrameInfoListener listener : listeners.get(
+                FrameInfoListener.class)) {
             listener.iconChanged(this, icon);
         }
     }
@@ -378,7 +382,8 @@ public abstract class FrameContainer<T extends Window> {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
-        for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+        for (NotificationListener listener : listeners.get(
+                NotificationListener.class)) {
             listener.notificationCleared(this);
         }
     }
@@ -395,7 +400,8 @@ public abstract class FrameContainer<T extends Window> {
                 && !colour.equals(notification)) {
             notification = colour;
 
-            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+            for (NotificationListener listener : listeners.get(
+                    NotificationListener.class)) {
                 listener.notificationSet(this, colour);
             }
         }
@@ -473,7 +479,8 @@ public abstract class FrameContainer<T extends Window> {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
-        for (SelectionListener listener : listeners.get(SelectionListener.class)) {
+        for (SelectionListener listener : listeners.get(
+                SelectionListener.class)) {
             listener.selectionChanged(this);
         }
 
@@ -501,9 +508,11 @@ public abstract class FrameContainer<T extends Window> {
      * @param args The message's arguments
      * @since 0.6.4
      */
-    public void addLine(final String type, final Date timestamp, final Object ... args) {
+    public void addLine(final String type, final Date timestamp,
+            final Object ... args) {
         if (type != null && !type.isEmpty()) {
-            addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
+            addLine(Formatter.formatMessage(getConfigManager(), type, args),
+                    timestamp);
         }
     }
 
@@ -527,7 +536,8 @@ public abstract class FrameContainer<T extends Window> {
      * @param args The message's arguments
      * @since 0.6.4
      */
-    public void addLine(final StringBuffer type, final Date timestamp, final Object ... args) {
+    public void addLine(final StringBuffer type, final Date timestamp,
+            final Object ... args) {
         if (type != null) {
             addLine(type.toString(), timestamp, args);
         }
@@ -569,7 +579,8 @@ public abstract class FrameContainer<T extends Window> {
         for (final String myLine : encodedLine.split("\n")) {
             if (timestamp != null) {
                 lines.add(new String[]{
-                    Formatter.formatMessage(getConfigManager(), "timestamp", timestamp),
+                    Formatter.formatMessage(getConfigManager(), "timestamp",
+                            timestamp),
                     myLine,
                 });
             } else {
@@ -645,7 +656,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param window The window to be added
      * @since 0.6.4
      */
-    public void addWindow(T window) {
+    public void addWindow(final T window) {
         windows.add(window);
     }
 
@@ -655,7 +666,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param window The window to be removed
      * @since 0.6.4
      */
-    public void removeWindow(T window) {
+    public void removeWindow(final T window) {
         windows.remove(window);
     }
 

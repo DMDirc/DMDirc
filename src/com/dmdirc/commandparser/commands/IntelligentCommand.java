@@ -90,7 +90,6 @@ public interface IntelligentCommand {
         public String getPartial() {
             return partial;
         }
-
     }
 
     /**

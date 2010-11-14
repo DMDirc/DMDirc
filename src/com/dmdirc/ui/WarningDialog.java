@@ -1,17 +1,17 @@
 /*
- * 
+ *
  * Copyright (c) 2006-2010 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,16 +26,17 @@ package com.dmdirc.ui;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.Semaphore;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
@@ -80,22 +81,26 @@ public class WarningDialog extends JDialog {
             + "jar, but this did not fix the problem. DMDirc is unable to "
             + "continue and will now exit.";
 
-    /** Create a new NoUIDialog */
+    /** Create a new NoUIDialog. */
     public WarningDialog() {
         this(NO_UIS_TITLE, NO_UIS_BODY);
     }
 
     /**
-     * Create a new NoUIDialog
+     * Create a new NoUIDialog.
      *
      * @param title Title of dialog
      * @param body Body of dialog
      */
     public WarningDialog(final String title, final String body) {
-        super((JFrame) null, "DMDirc: "+title);
+        super((Window) null);
+        setTitle("DMDirc: " + title);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(
+                Thread.currentThread().getContextClassLoader()
+                .getResource("com/dmdirc/res/logo.png")));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
-        
+
         final JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         final JButton button = new JButton("OK");
