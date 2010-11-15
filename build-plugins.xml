@@ -5,7 +5,14 @@
     <property file="nbproject/project.properties"/>
     <property file="nbproject/private/private.properties"/>
     <property file="${user.properties.file}"/>
-    
+
+    <path id="libclasspath">
+        <fileset dir="lib" includes="*.jar"/>
+    </path>
+
+    <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+
     <target name="build-plugins" description="Build all plugins">
         <exec executable="bash">
             <arg value="createAllPluginJar.sh"/>
@@ -19,5 +26,66 @@
             <arg value="${dist.jar}"/>
        </exec>
     </target>
+
+    <target name="-check-addons-key" unless="dmdirc.addons.apikey">
+      <fail>You must specify an API key in the the dmdirc.addons.apikey property</fail>
+    </target>
+
+    <target name="-check-addon-id" unless="addon.id">
+      <fail>The ID of the addon to be published must be specified in the addon.id property</fail>
+    </target>
+
+    <target name="-check-addon-channel" unless="addon.channel">
+      <fail>
+        The channel of the addon to be published must be specified in the addon.channel property.
+        Use 1 for Stable, 2 for Unstable, or 3 for Nightly.
+      </fail>
+    </target>
+
+    <target name="-check-addon-file" unless="addon.file">
+      <fail>The file of the addon to be published must be specified in the addon.file property</fail>
+    </target>
+
+    <target name="publish-all-plugins" description="Publishes all plugins to the addons site"
+            depends="-check-addons-key,-check-addon-channel">
+      <foreach target="publish-plugin" param="addon.file" inheritall="true" parallel="true">
+        <path>
+          <fileset dir="plugins">
+            <include name="*.jar"/>
+          </fileset>
+        </path>
+      </foreach>
+    </target>
+
+    <target name="publish-plugin" description="Publish a plugin to the addons site"
+            depends="-check-addons-key,-check-addon-channel,-check-addon-file">
+      <tempfile property="temp.dir" prefix="plugintmp"/>
+      <mkdir dir="${temp.dir}"/>
+      <unzip src="${addon.file}" dest="${temp.dir}">
+        <patternset>
+            <include name="META-INF/plugin.config"/>
+        </patternset>
+      </unzip>
+      <loadfile srcfile="${temp.dir}/META-INF/plugin.config" property="addon.id">
+        <filterchain>
+          <!-- This is a bit fickle, and needs to understand config files better. -->
+          <linecontains>
+            <contains value=" id="/>
+          </linecontains>
+          <deletecharacters chars="\t id="/>
+          <striplinebreaks/>
+        </filterchain>
+      </loadfile>
+      <delete dir="${temp.dir}"/>
+      <antcall target="publish-addon"/>
+    </target>
     
+    <target name="publish-addon" description="Publish an addon to the addons site"
+            depends="-check-addons-key,-check-addon-id,-check-addon-channel,-check-addon-file">
+       <httpmpost url="http://addons.dmdirc.com/editaddon/${addon.id}" logLevel="none">
+           <postString name="apikey" value="${dmdirc.addons.apikey}"/>
+           <postString name="channel" value="${addon.channel}"/>
+           <postFile name="download" file="${addon.file}"/>
+       </httpmpost>
+    </target>
 </project>
