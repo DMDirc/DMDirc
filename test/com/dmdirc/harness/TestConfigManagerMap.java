@@ -23,6 +23,7 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.util.validators.Validator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,11 +47,11 @@ public class TestConfigManagerMap extends ConfigManager {
     }
 
     @Override @Deprecated
-    public boolean hasOption(String domain, String option) {
+    public boolean hasOption(String domain, String option, Validator<String> validator) {
         if (settings.containsKey(domain + "." + option)) {
             return true;
         } else {
-            return super.hasOption(domain, option);
+            return super.hasOption(domain, option, validator);
         }
     }
 }

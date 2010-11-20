@@ -24,6 +24,7 @@ package com.dmdirc.config;
 
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.MapList;
+import com.dmdirc.util.validators.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,28 +120,30 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    public String getOption(final String domain, final String option) {
+    public String getOption(final String domain, final String option,
+            final Validator<String> validator) {
         doStats(domain, option);
 
         synchronized (sources) {
             for (Identity source : sources) {
-                if (source.hasOption(domain, option)) {
-                    return source.getOption(domain, option);
+                if (source.hasOption(domain, option, validator)) {
+                    return source.getOption(domain, option, validator);
                 }
             }
         }
 
-        throw new IllegalArgumentException("Config option not found: " + domain + "." + option);
+        return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected boolean hasOption(final String domain, final String option) {
+    protected boolean hasOption(final String domain, final String option,
+            final Validator<String> validator) {
         doStats(domain, option);
 
         synchronized (sources) {
             for (Identity source : sources) {
-                if (source.hasOption(domain, option)) {
+                if (source.hasOption(domain, option, validator)) {
                     return true;
                 }
             }
@@ -211,7 +214,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     protected Identity getScope(final String domain, final String option) {
         synchronized (sources) {
             for (Identity source : sources) {
-                if (source.hasOption(domain, option)) {
+                if (source.hasOptionString(domain, option)) {
                     return source;
                 }
             }

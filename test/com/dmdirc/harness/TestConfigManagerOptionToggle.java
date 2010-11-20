@@ -23,6 +23,7 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.util.validators.Validator;
 
 public class TestConfigManagerOptionToggle extends ConfigManager {
     private static final long serialVersionUID = 8078917248288638755L;
@@ -32,12 +33,12 @@ public class TestConfigManagerOptionToggle extends ConfigManager {
     }
 
     @Override
-    public String getOption(String domain, String option) {
+    public String getOption(String domain, String option, Validator<String> validator) {
         return option.substring(1);
     }
 
     @Override @Deprecated
-    public boolean hasOption(String domain, String option) {
+    public boolean hasOption(String domain, String option, Validator<String> validator) {
         return option.charAt(0) == '1';
     }
 }

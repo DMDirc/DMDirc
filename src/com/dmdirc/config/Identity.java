@@ -29,6 +29,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.WeakList;
+import com.dmdirc.util.validators.Validator;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,29 +158,29 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
             throws InvalidIdentityFileException {
         final ConfigTarget target = new ConfigTarget();
 
-        if (hasOption(DOMAIN, "ircd")) {
+        if (hasOptionString(DOMAIN, "ircd")) {
             target.setIrcd(getOption(DOMAIN, "ircd"));
-        } else if (hasOption(DOMAIN, "protocol")) {
+        } else if (hasOptionString(DOMAIN, "protocol")) {
             target.setProtocol(getOption(DOMAIN, "protocol"));
-        } else if (hasOption(DOMAIN, "network")) {
+        } else if (hasOptionString(DOMAIN, "network")) {
             target.setNetwork(getOption(DOMAIN, "network"));
-        } else if (hasOption(DOMAIN, "server")) {
+        } else if (hasOptionString(DOMAIN, "server")) {
             target.setServer(getOption(DOMAIN, "server"));
-        } else if (hasOption(DOMAIN, "channel")) {
+        } else if (hasOptionString(DOMAIN, "channel")) {
             target.setChannel(getOption(DOMAIN, "channel"));
-        } else if (hasOption(DOMAIN, "globaldefault")) {
+        } else if (hasOptionString(DOMAIN, "globaldefault")) {
             target.setGlobalDefault();
-        } else if (hasOption(DOMAIN, "global") || (forceDefault && !isProfile())) {
+        } else if (hasOptionString(DOMAIN, "global") || (forceDefault && !isProfile())) {
             target.setGlobal();
         } else if (isProfile()) {
             target.setCustom(PROFILE_DOMAIN);
-        } else if (hasOption(DOMAIN, "type")) {
+        } else if (hasOptionString(DOMAIN, "type")) {
             target.setCustom(getOption(DOMAIN, "type"));
         } else {
             throw new InvalidIdentityFileException("No target and no profile");
         }
 
-        if (hasOption(DOMAIN, "order")) {
+        if (hasOptionString(DOMAIN, "order")) {
             target.setOrder(getOptionInt(DOMAIN, "order"));
         }
 
@@ -203,7 +204,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
             throw new InvalidIdentityFileException(ex);
         }
 
-        if (!hasOption(DOMAIN, "name") && !forceDefault) {
+        if (!hasOptionString(DOMAIN, "name") && !forceDefault) {
             throw new InvalidIdentityFileException("No name specified");
         }
     }
@@ -279,7 +280,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * @return The name of this identity
      */
     public String getName() {
-        if (hasOption(DOMAIN, "name")) {
+        if (hasOptionString(DOMAIN, "name")) {
             return getOption(DOMAIN, "name");
         } else {
             return "Unnamed";
@@ -294,11 +295,11 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * @since 0.6.3m1
      */
     protected void migrateProfile() {
-        if (hasOption(PROFILE_DOMAIN, "nickname")) {
+        if (hasOptionString(PROFILE_DOMAIN, "nickname")) {
             // Migrate
 
             setOption(PROFILE_DOMAIN, "nicknames", getOption(PROFILE_DOMAIN, "nickname")
-                    + (hasOption(PROFILE_DOMAIN, "altnicks") ? "\n"
+                    + (hasOptionString(PROFILE_DOMAIN, "altnicks") ? "\n"
                     + getOption(PROFILE_DOMAIN, "altnicks") : ""));
             unsetOption(PROFILE_DOMAIN, "nickname");
             unsetOption(PROFILE_DOMAIN, "altnicks");
@@ -313,21 +314,31 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * @return True iff this identity can be used as a profile
      */
     public boolean isProfile() {
-        return (hasOption(PROFILE_DOMAIN, "nicknames")
-                || hasOption(PROFILE_DOMAIN, "nickname"))
-                && hasOption(PROFILE_DOMAIN, "realname");
+        return (hasOptionString(PROFILE_DOMAIN, "nicknames")
+                || hasOptionString(PROFILE_DOMAIN, "nickname"))
+                && hasOptionString(PROFILE_DOMAIN, "realname");
     }
 
     /** {@inheritDoc} */
     @Override
-    protected boolean hasOption(final String domain, final String option) {
-        return file.isKeyDomain(domain) && file.getKeyDomain(domain).containsKey(option);
+    protected boolean hasOption(final String domain, final String option,
+            final Validator<String> validator) {
+        return file.isKeyDomain(domain)
+                && file.getKeyDomain(domain).containsKey(option)
+                && !validator.validate(file.getKeyDomain(domain).get(option)).isFailure();
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized String getOption(final String domain, final String option) {
-        return file.getKeyDomain(domain).get(option);
+    public synchronized String getOption(final String domain,
+            final String option, final Validator<String> validator) {
+        final String value = file.getKeyDomain(domain).get(option);
+        
+        if (validator.validate(value).isFailure()) {
+            return null;
+        }
+        
+        return value;
     }
 
     /**
@@ -356,7 +367,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
                 globalConfig.removeIdentity(this);
 
-                if (globalConfig.hasOption(domain, option)
+                if (globalConfig.hasOptionString(domain, option)
                         && globalConfig.getOption(domain, option).equals(value)) {
                     // The new value is covered by a default setting
                     if (oldValue == null) {
@@ -512,7 +523,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
 
-                        if (globalConfig.hasOption(domain, key) &&
+                        if (globalConfig.hasOptionString(domain, key) &&
                                 globalConfig.getOption(domain, key).equals(value)) {
                             LOGGER.log(Level.FINEST,
                                     "{0}: found superfluous setting: {1}.{2} (= {3})",

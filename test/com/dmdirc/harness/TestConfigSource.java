@@ -23,16 +23,17 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.config.*;
+import com.dmdirc.util.validators.Validator;
 
 public class TestConfigSource extends ConfigSource {
 
     @Override
-    public String getOption(String domain, String option) {
-        return option;
+    protected boolean hasOption(String domain, String option, Validator<String> validator) {
+        return Boolean.parseBoolean(domain);
     }
 
     @Override
-    protected boolean hasOption(String domain, String option) {
-        return Boolean.parseBoolean(domain);
+    protected String getOption(String domain, String option, Validator<String> validator) {
+        return option;
     }
 }

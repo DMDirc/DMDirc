@@ -22,6 +22,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.util.validators.PermissiveValidator;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,16 +30,16 @@ import static org.mockito.Mockito.*;
 
 public class ConfigManagerTest {
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testNonExistantOption() {
-        new ConfigManager("", "", "", "").getOption("unit-test123", "foobar");
+        assertNull(new ConfigManager("", "", "", "").getOption("unit-test123", "foobar"));
     }
 
     @Test
     public void testStats() {
         final ConfigManager cm = new ConfigManager("", "", "", "");
         assertNull(ConfigManager.getStats().get("unit-test123.baz"));
-        cm.hasOption("unit-test123", "baz");
+        cm.hasOption("unit-test123", "baz", new PermissiveValidator<String>());
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
         assertEquals(1, (int) ConfigManager.getStats().get("unit-test123.baz"));
     }

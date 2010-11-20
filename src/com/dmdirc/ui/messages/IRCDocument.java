@@ -83,7 +83,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
 
         cachedLines = new RollingList<Line>(50);
         cachedStrings = new RollingList<AttributedString>(50);
-        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize");
+        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", false);
 
         configManager.addChangeListener("ui", "textPaneFontSize", this);
         configManager.addChangeListener("ui", "textPaneFontName", this);
@@ -368,7 +368,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         } else {
             fontSize = defaultFont.getSize();
         }
-        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize");
+        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", false);
         trim(frameBufferSize);
     }
 

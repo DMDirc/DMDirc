@@ -24,6 +24,7 @@ package com.dmdirc.ui.themes;
 
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.util.validators.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,11 +65,12 @@ public class ThemeIdentity extends Identity {
 
     /** {@inheritDoc} */
     @Override @Deprecated
-    public boolean hasOption(final String domain, final String option) {
+    public boolean hasOption(final String domain, final String option,
+            final Validator<String> validator) {
         if (domain.equalsIgnoreCase("ui") || domain.equalsIgnoreCase("identity")
                 || domain.equalsIgnoreCase("icon")  || domain.equalsIgnoreCase("theme")
                 || domain.equalsIgnoreCase("formatter") || domain.equalsIgnoreCase("colour")) {
-            return super.hasOption(domain, option);
+            return super.hasOption(domain, option, validator);
         } else {
             return false;
         }
@@ -76,8 +78,9 @@ public class ThemeIdentity extends Identity {
 
     /** {@inheritDoc} */
     @Override
-    public String getOption(final String domain, final String option) {
-        final String result = super.getOption(domain, option);
+    public String getOption(final String domain,
+            final String option, final Validator<String> validator) {
+        final String result = super.getOption(domain, option, validator);
 
         if (result == null) {
             return result;

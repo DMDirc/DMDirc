@@ -62,8 +62,8 @@ public final class ColourManager {
     private static void initColours() {
         for (int i = 0; i < 16; i++) {
             if (IdentityManager.getGlobalConfig().hasOptionColour("colour", String.valueOf(i))) {
-                ircColours[i] = getColour(IdentityManager.getGlobalConfig()
-                        .getOption("colour", String.valueOf(i)));
+                ircColours[i] = IdentityManager.getGlobalConfig()
+                        .getOptionColour("colour", String.valueOf(i));
                 COLOUR_CACHE.remove(String.valueOf(i));
             } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
                 ircColours[i] = DEFAULT_COLOURS[i];

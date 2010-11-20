@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.util.validators.PermissiveValidator;
 
 import java.io.IOException;
 import java.util.Map;
@@ -79,11 +80,11 @@ public class IdentityTest {
 
     @Test
     public void testHasOption() {
-        assertFalse(myIdent.hasOption("has", "option"));
+        assertFalse(myIdent.hasOption("has", "option", new PermissiveValidator<String>()));
 
         myIdent.setOption("has", "option", "");
 
-        assertTrue(myIdent.hasOption("has", "option"));
+        assertTrue(myIdent.hasOption("has", "option", new PermissiveValidator<String>()));
 
         myIdent.unsetOption("has", "option");
     }
