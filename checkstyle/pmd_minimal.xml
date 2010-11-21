@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<ruleset name="DMDirc PMD checks"
+	 xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	 xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+	<description>DMDirc minimal PMD checks.</description>
+	
+	<rule ref="rulesets/basic.xml">
+		<exclude name="EmptyCatchBlock"/> <!-- ! -->
+	</rule>
+	<rule ref="rulesets/braces.xml"/>
+	<rule ref="rulesets/clone.xml"/>
+	<rule ref="rulesets/controversial.xml">
+		<exclude name="DataflowAnomalyAnalysis"/>
+                <exclude name="OnlyOneReturn"/>
+                <exclude name="NullAssignment"/>
+                <exclude name="UnnecessaryConstructor"/>
+		<exclude name="AvoidFinalLocalVariable"/>
+		<exclude name="AssignmentInOperand"/>
+		<exclude name="CallSuperInConstructor"/>
+		<exclude name="DefaultPackage"/> <!-- ! -->
+		<exclude name="AvoidUsingVolatile"/>
+		<exclude name="BooleanInversion"/>
+		<exclude name="AvoidUsingNativeCode"/>
+		<exclude name="AvoidUsingShortType"/>
+	</rule>
+	<rule ref="rulesets/design.xml">
+		<exclude name="AvoidDeeplyNestedIfStmts"/>
+		<exclude name="ConstructorCallsOverridableMethod"/>
+		<exclude name="TooFewBranchesForASwitchStatement"/>
+		<exclude name="SwitchStmtsShouldHaveDefault"/>
+		<exclude name="UseLocaleWithCaseConversions"/>
+		<exclude name="AvoidSynchronizedAtMethodLevel"/> <!-- ! -->
+		<exclude name="ImmutableField"/> <!-- ! -->
+		<exclude name="SimpleDateFormatNeedsLocale"/>
+		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract"/>
+		<exclude name="PositionLiteralsFirstInComparisons"/>
+	</rule>
+	<rule ref="rulesets/finalizers.xml"/>
+	<rule ref="rulesets/imports.xml"/>
+        <rule ref="rulesets/javabeans.xml">
+                <exclude name="BeanMembersShouldSerialize"/>
+        </rule>
+	<rule ref="rulesets/junit.xml"/>
+	<rule ref="rulesets/logging-java.xml">
+		<exclude name="SystemPrintln"/>
+	</rule>
+	<rule ref="rulesets/migrating.xml">
+		<exclude name="JUnit4TestShouldUseTestAnnotation"/>
+	</rule>
+	<rule ref="rulesets/naming.xml">
+                <exclude name="ShortVariable"/>
+                <exclude name="LongVariable"/>
+                <exclude name="AbstractNaming"/>
+		<exclude name="AvoidFieldNameMatchingMethodName"/>
+        </rule>
+	<rule ref="rulesets/optimizations.xml">
+                <exclude name="AvoidInstantiatingObjectsInLoops"/>
+		<exclude name="UseStringBufferForStringAppends"/>
+		<exclude name="LocalVariableCouldBeFinal"/> <!-- ! -->
+		<exclude name="MethodArgumentCouldBeFinal"/> <!-- ! -->
+		<exclude name="AddEmptyString"/>
+        </rule>
+	<rule ref="rulesets/strings.xml">
+                <exclude name="AvoidDuplicateLiterals"/>
+        </rule>
+	<rule ref="rulesets/sunsecure.xml">
+		<exclude name="MethodReturnsInternalArray"/> <!-- ! -->
+		<exclude name="ArrayIsStoredDirectly"/> <!-- ! -->
+	</rule>
+	<rule ref="rulesets/typeresolution.xml"/>
+	<rule ref="rulesets/unusedcode.xml"/>
+</ruleset>

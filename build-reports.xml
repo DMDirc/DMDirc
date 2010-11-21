@@ -156,7 +156,22 @@
             <ruleset>checkstyle/pmd_checks.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
             <fileset dir="src/" includes="com/dmdirc/**/*.java" />
-            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java"/>
+            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java" excludes="**/commons/*.java"/>
+            <fileset dir="modules/util/src/" includes="com/dmdirc/**/*.java"/>
+            <fileset dir="modules/parser/src/" includes="com/dmdirc/**/*.java"/>
+        </pmd>
+        <xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
+    </target>
+
+    <target name="pmd-minimal" description="Run PMD with minimal ruleset.">
+        <taskdef name="pmd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar"
+                         classname="net.sourceforge.pmd.ant.PMDTask" />
+        <pmd shortFilenames="true">
+
+            <ruleset>checkstyle/pmd_minimal.xml</ruleset>
+            <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+            <fileset dir="src/" includes="com/dmdirc/**/*.java" />
+            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java" excludes="**/commons/*.java"/>
             <fileset dir="modules/util/src/" includes="com/dmdirc/**/*.java"/>
             <fileset dir="modules/parser/src/" includes="com/dmdirc/**/*.java"/>
         </pmd>
