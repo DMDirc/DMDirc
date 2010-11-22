@@ -19,5 +19,10 @@
             </test-roots>
         </data>
         <junit-version xmlns="http://www.netbeans.org/ns/junit/1" value="junit4"/>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>config</word>
+            <word>iff</word>
+            <word>validator</word>
+        </spellchecker-wordlist>
     </configuration>
 </project>
