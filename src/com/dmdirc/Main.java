@@ -195,8 +195,6 @@ public class Main {
 
             // Allow the rebooted DMDirc to know that we have attempted restarting.
             IdentityManager.getConfigIdentity().setOption("debug", "uiFixAttempted", "true");
-            // Force the UI to swing to prevent problematic 3rd party UIs.
-            IdentityManager.getConfigIdentity().setOption("general", "ui", "swing");
             // Tell the launcher to restart!
             System.exit(42);
         }
