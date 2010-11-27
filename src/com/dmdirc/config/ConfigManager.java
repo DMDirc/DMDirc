@@ -47,6 +47,9 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> STATS = new TreeMap<String, Integer>();
 
+    /** Magical domain to redirect to the version identity. */
+    private static final String VERSION_DOMAIN = "version";
+
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
             .Logger.getLogger(ConfigManager.class.getName());
@@ -124,6 +127,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
             final Validator<String> validator) {
         doStats(domain, option);
 
+        if (VERSION_DOMAIN.equals(domain)) {
+            return IdentityManager.getVersionIdentity().getOption(domain, option, validator);
+        }
+
         synchronized (sources) {
             for (Identity source : sources) {
                 if (source.hasOption(domain, option, validator)) {
@@ -140,6 +147,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     protected boolean hasOption(final String domain, final String option,
             final Validator<String> validator) {
         doStats(domain, option);
+
+        if (VERSION_DOMAIN.equals(domain)) {
+            return IdentityManager.getVersionIdentity().hasOption(domain, option, validator);
+        }
 
         synchronized (sources) {
             for (Identity source : sources) {
@@ -160,6 +171,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @return A list of options in the specified domain
      */
     public Map<String, String> getOptions(final String domain) {
+        if (VERSION_DOMAIN.equals(domain)) {
+            return IdentityManager.getVersionIdentity().getOptions(domain);
+        }
+
         final Map<String, String> res = new HashMap<String, String>();
 
         synchronized (sources) {
@@ -212,6 +227,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @return The identity that defines that setting, or null on failure
      */
     protected Identity getScope(final String domain, final String option) {
+        if (VERSION_DOMAIN.equals(domain)) {
+            return IdentityManager.getVersionIdentity();
+        }
+
         synchronized (sources) {
             for (Identity source : sources) {
                 if (source.hasOptionString(domain, option)) {
