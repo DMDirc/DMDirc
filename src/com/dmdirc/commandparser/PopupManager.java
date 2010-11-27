@@ -50,7 +50,7 @@ public class PopupManager {
      * @return The PopupMenu that should be displayed
      */
     public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
-        final PopupMenu menu = getMenu(menuType.toString(), configManager);
+        final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
         ActionManager.processEvent(CoreActionType.CLIENT_POPUP_GENERATED,
                 null, menuType, menu, configManager);
@@ -62,17 +62,19 @@ public class PopupManager {
      * Retrieves the menu with the specified name.
      *
      * @param menuName The name of the menu to read
+     * @param type The type of the menu that is needed
      * @param configManager The config manager to be used for the menu
      * @return The PopupMenu with the specified name
      */
-    private static PopupMenu getMenu(final String menuName, final ConfigManager configManager) {
+    private static PopupMenu getMenu(final String menuName,
+            final PopupType type, final ConfigManager configManager) {
         final PopupMenu res = new PopupMenu();
 
         for (String item : configManager.getOptionList("popups", menuName)) {
             if (item.length() > 0 && item.charAt(0) == '<') {
-                res.addAll(getMenu(item.substring(1), configManager).getItems());
+                res.addAll(getMenu(item.substring(1), type, configManager).getItems());
             } else {
-                res.add(getItem(item, configManager));
+                res.add(getItem(item, type, configManager));
             }
         }
 
@@ -83,10 +85,12 @@ public class PopupManager {
      * Creates a PopupMenuItem for the specified item.
      *
      * @param item The item to be turned into a PopupMenuItem
+     * @param type The type of popup item to create
      * @param configManager The config manager to beused for the menu
      * @return The corresponding PopupMenuItem
      */
-    private static PopupMenuItem getItem(final String item, final ConfigManager configManager) {
+    private static PopupMenuItem getItem(final String item,
+            final PopupType type, final ConfigManager configManager) {
         PopupMenuItem res;
 
         if ("-".equals(item)) {
@@ -103,9 +107,10 @@ public class PopupManager {
             final String command = item.substring(colon + 1);
 
             if (command.length() > 0 && command.charAt(0) == '<') {
-                res = new PopupMenuItem(name, getMenu(command.substring(1), configManager));
+                res = new PopupMenuItem(name, getMenu(command.substring(1),
+                        type, configManager));
             } else {
-                res = new PopupMenuItem(name, command);
+                res = new PopupMenuItem(name, type.getArity(), command);
             }
         }
 

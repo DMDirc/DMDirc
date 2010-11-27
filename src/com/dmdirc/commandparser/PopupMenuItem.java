@@ -37,6 +37,8 @@ public class PopupMenuItem {
     private String name;
     /** The command for this item, if any. */
     private String command;
+    /** The arity of the command. */
+    private int arity;
 
     /**
      * Creates a new PopupMenuItem that is used as a divider.
@@ -60,10 +62,12 @@ public class PopupMenuItem {
      * Creates a new PopupMenuItem that executes a command.
      *
      * @param name The name of the menu item
+     * @param arity The arity of the command this item will execute
      * @param command The command to be executed
      */
-    public PopupMenuItem(final String name, final String command) {
+    public PopupMenuItem(final String name, final int arity, final String command) {
         this.name = name;
+        this.arity = arity;
         this.command = command;
     }
 
@@ -104,14 +108,61 @@ public class PopupMenuItem {
     }
 
     /**
-     * Retrieves the command for this menu item, with the specified argumenwits
-     * substituted in.
+     * Retrieves the command for this menu item, with the specified arguments
+     * substituted in. Note that the result may actually consist of multiple
+     * commands on separate lines.
      *
-     * @param arguments The arguments needed for this command
+     * @param arguments A two dimensional array containing one array of
+     * arguments for each subject of the command.
      * @return The command to be passed to a command parser
      */
-    public String getCommand(final Object... arguments) {
-        return CommandManager.getCommandChar() + String.format(command, arguments);
+    public String getCommand(final Object[][] arguments) {
+        final StringBuilder builder = new StringBuilder();
+
+        final String actualCommand;
+        final int expectedArgs;
+        if (command.matches("^[0-9]+:.+")) {
+            final int index = command.indexOf(':');
+            expectedArgs = Integer.parseInt(command.substring(0, index));
+            actualCommand = command.substring(index + 1);
+        } else {
+            expectedArgs = arity;
+            actualCommand = command;
+        }
+
+        final Object[] args = new Object[expectedArgs];
+        int offset = 0;
+
+        for (Object[] singleArg : arguments) {
+            System.arraycopy(singleArg, 0, args, offset, arity);
+
+            offset += arity;
+
+            if (offset >= expectedArgs) {
+                if (builder.length() > 0) {
+                    builder.append("\n");
+                }
+
+                builder.append(CommandManager.getCommandChar());
+                builder.append(String.format(actualCommand, args));
+                offset = 0;
+            }
+        }
+
+        if (offset > 0) {
+            for (int i = offset; i < expectedArgs; i++) {
+                args[i] = "";
+            }
+
+            if (builder.length() > 0) {
+                builder.append("\n");
+            }
+
+            builder.append(CommandManager.getCommandChar());
+            builder.append(String.format(actualCommand, args));
+        }
+
+        return builder.toString();
     }
 
 }

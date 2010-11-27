@@ -35,83 +35,104 @@ public enum PopupType {
      *
      * Expected arguments: none.
      */
-    CHAN_NORMAL,
+    CHAN_NORMAL(0),
 
     /**
      * The menu that appears when right clicking in a nickname in a channel window.
      *
      * Expected arguments: the nickname of the user who was clicked on.
      */
-    CHAN_NICK,
+    CHAN_NICK(1),
 
     /**
      * The menu that appears when right clicking in a channel in a channel window.
      *
      * Expected arguments: the nickname of the user who was clicked on.
      */
-    CHAN_CHANNEL,
+    CHAN_CHANNEL(1),
 
     /**
      * The menu that appears when right clicking in a hyperlink in a channel window.
      *
      * Expected arguments: the hyperlink clicked.
      */
-    CHAN_HYPERLINK,
+    CHAN_HYPERLINK(1),
 
     /**
      * The menu that appears when right clicking in a query window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    QUERY_NORMAL,
+    QUERY_NORMAL(1),
 
     /**
      * The menu that appears when right clicking in a nickname in a query window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    QUERY_NICK,
+    QUERY_NICK(1),
 
     /**
      * The menu that appears when right clicking in a channel in a query window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    QUERY_CHANNEL,
+    QUERY_CHANNEL(1),
 
     /**
      * The menu that appears when right clicking in a hyperlink in a query window.
      *
      * Expected arguments: the hyperlink clicked.
      */
-    QUERY_HYPERLINK,
+    QUERY_HYPERLINK(1),
 
     /**
      * The menu that appears when right clicking in a server window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    SERVER_NORMAL,
+    SERVER_NORMAL(1),
 
     /**
      * The menu that appears when right clicking in a nickname in a server window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    SERVER_NICK,
+    SERVER_NICK(1),
 
     /**
      * The menu that appears when right clicking in a channel in a server window.
      *
      * Expected arguments: the nickname of the user who the query is with.
      */
-    SERVER_CHANNEL,
+    SERVER_CHANNEL(1),
 
     /**
      * The menu that appears when right clicking in a hyperlink in a server window.
      *
      * Expected arguments: the hyperlink clicked.
      */
-    SERVER_HYPERLINK;
+    SERVER_HYPERLINK(1);
+
+    /** The arity (number of expected arguments) of the type. */
+    private final int arity;
+
+    /**
+     * Creates a new PopupType with the specified arity.
+     *
+     * @param arity The arity of the type
+     */
+    private PopupType(final int arity) {
+        this.arity = arity;
+    }
+
+    /**
+     * Retrieves the arity of this type.
+     *
+     * @return The arity of this type
+     */
+    public int getArity() {
+        return arity;
+    }
 
 }
