@@ -27,6 +27,7 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
 
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import javax.swing.KeyStroke;
@@ -53,6 +54,8 @@ public enum ClientEvents implements ActionMetaType {
     CLIENT_EVENT_WITH_BUFFER(new String[]{"origin", "buffer"}, FrameContainer.class, StringBuffer.class),
     /** Client event with preferences manager. */
     CLIENT_EVENT_WITH_PREFS(new String[]{"preferences manager"}, PreferencesDialogModel.class),
+    /** Client event with preferences category. */
+    CLIENT_EVENT_WITH_PREFS_CAT(new String[]{"preferences category", "is server"}, PreferencesCategory.class, Boolean.class),
     /** Client event with a styled doc. */
     CLIENT_EVENT_WITH_STYLE(new String[]{"styled document", "start offset", "length"}, StyledDocument.class, Integer.class, Integer.class),
     /** Unknown command event type. */

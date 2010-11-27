@@ -69,6 +69,8 @@ public enum CoreActionType implements ActionType {
 
     /** Prefs dialog opened. */
     CLIENT_PREFS_OPENED(ClientEvents.CLIENT_EVENT_WITH_PREFS, "Preferences dialog opened"),
+    /** Context-specific prefs requested. */
+    CLIENT_PREFS_REQUESTED(ClientEvents.CLIENT_EVENT_WITH_PREFS_CAT, "Preferences requested"),
     /** Prefs dialog closed. */
     CLIENT_PREFS_CLOSED(ClientEvents.CLIENT_EVENT, "Preferences dialog opened"),
 
