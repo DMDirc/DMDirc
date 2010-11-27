@@ -26,8 +26,10 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 public class PluginClassLoader extends ClassLoader {
 
@@ -201,9 +203,10 @@ public class PluginClassLoader extends ClassLoader {
      * @since 0.6.3
      */
     @Override
-    protected Enumeration<URL> findResources(final String name) throws IOException {
+    protected Enumeration<URL> findResources(final String name)
+            throws IOException {
         final URL resource = findResource(name);
-        final Vector<URL> resources = new Vector<URL>(); // URG
+        final List<URL> resources = new ArrayList<URL>();
 
         if (resource != null) {
             resources.add(resource);
@@ -211,13 +214,10 @@ public class PluginClassLoader extends ClassLoader {
 
         final Enumeration<URL> urls =  super.findResources(name);
 
-        while (urls.hasMoreElements()) { // More URG
+        while (urls.hasMoreElements()) {
             resources.add(urls.nextElement());
         }
 
-        return resources.elements();
+        return Collections.enumeration(resources);
     }
-
-    
-
 }

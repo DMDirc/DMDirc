@@ -647,25 +647,28 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         for (String pluginName : desired.split(",")) {
             final String[] data = pluginName.split(":");
-            final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
+            final PluginInfo pi = PluginManager.getPluginManager()
+                    .getPluginInfoByName(data[0]);
             if (pi == null) {
-                requirementsError = "Required plugin '" + data[0] + "' was not found";
+                requirementsError = "Required plugin '" + data[0]
+                        + "' was not found";
                 return false;
-            } else {
-                if (data.length > 1) {
-                    // Check plugin minimum version matches.
-                    if (pi.getVersion().compareTo(new Version(data[1])) < 0) {
-                        requirementsError = "Plugin '" + data[0] + "' is too old (Required Version: " + data[1] + ", Actual Version: " + pi.getVersion() + ")";
-                        return false;
-                    } else {
-                        if (data.length > 2) {
-                            // Check plugin maximum version matches.
-                            if (pi.getVersion().compareTo(new Version(data[2])) > 0) {
-                                requirementsError = "Plugin '" + data[0] + "' is too new (Required Version: " + data[2] + ", Actual Version: " + pi.getVersion() + ")";
-                                return false;
-                            }
-                        }
-                    }
+            }
+            if (data.length > 1) {
+                // Check plugin minimum version matches.
+                if (pi.getVersion().compareTo(new Version(data[1])) < 0) {
+                    requirementsError = "Plugin '" + data[0] 
+                            + "' is too old (Required Version: " + data[1]
+                            + ", Actual Version: " + pi.getVersion() + ")";
+                    return false;
+                }
+                // Check plugin maximum version matches.
+                if (data.length > 2 && pi.getVersion().compareTo(
+                        new Version(data[2])) > 0) {
+                    requirementsError = "Plugin '" + data[0] 
+                            + "' is too new (Required Version: " + data[2]
+                            + ", Actual Version: " + pi.getVersion() + ")";
+                    return false;
                 }
             }
         }

@@ -110,10 +110,8 @@ public final class GlobalClassLoader extends ClassLoader {
         // Check the other plugins.
         for (PluginInfo pi : PluginManager.getPluginManager().getPluginInfos()) {
             List<String> classList = pi.getClassList();
-            if (classList.contains(name)) {
-                if (pi.getPluginClassLoader() != null) {
-                    return pi.getPluginClassLoader().loadClass(name, false);
-                }
+            if (classList.contains(name) && pi.getPluginClassLoader() != null) {
+                return pi.getPluginClassLoader().loadClass(name, false);
             }
         }
 
