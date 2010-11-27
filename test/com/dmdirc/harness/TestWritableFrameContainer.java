@@ -59,7 +59,6 @@ public class TestWritableFrameContainer<T extends InputWindow> extends WritableF
     @Override
     public void windowClosing() {
         System.out.println("windowClosing");
-        WindowManager.removeWindow(this);
     }
 
     @Override

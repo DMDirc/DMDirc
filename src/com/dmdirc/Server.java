@@ -1167,11 +1167,6 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     @Override
     public void windowClosing() {
         synchronized (myStateLock) {
-            // 1: Make the window non-visible
-            for (Window window : getWindows()) {
-                window.setVisible(false);
-            }
-
             // 2: Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
 
@@ -1192,9 +1187,6 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
         ServerManager.getServerManager().unregisterServer(this);
-
-        // 6: Remove the window from the window manager
-        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

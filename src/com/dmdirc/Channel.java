@@ -327,11 +327,6 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
-        // 1: Make the window non-visible
-        for (ChannelWindow window : getWindows()) {
-            window.setVisible(false);
-        }
-
         // 2: Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
 
@@ -349,9 +344,6 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
 
         // 5: Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());
-
-        // 6: Remove the window from the window manager
-        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

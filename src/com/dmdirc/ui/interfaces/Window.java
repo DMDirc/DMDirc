@@ -93,6 +93,7 @@ public interface Window {
      *
      * @return boolean visibility
      */
+    @Deprecated
     boolean isVisible();
 
     /**
@@ -100,6 +101,7 @@ public interface Window {
      *
      * @param isVisible Whether the window should be visible or not
      */
+    @Deprecated
     void setVisible(boolean isVisible);
 
     /**

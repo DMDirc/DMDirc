@@ -300,11 +300,6 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
-        // 1: Make the window non-visible
-        for (QueryWindow window : getWindows()) {
-            window.setVisible(false);
-        }
-
         // 2: Remove any callbacks or listeners
         if (server != null && server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(this);
@@ -319,9 +314,6 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         if (server != null) {
             server.delQuery(this);
         }
-
-        // 6: Remove the window from the window manager
-        WindowManager.removeWindow(this);
     }
 
     /** {@inheritDoc} */

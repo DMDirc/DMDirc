@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
@@ -89,10 +90,10 @@ public abstract class FrameContainer<T extends Window> {
 
     /** The transcoder to use for this container. */
     private final StringTranscoder transcoder;
-    
+
     /** The config manager for this container. */
     private final ConfigManager config;
-    
+
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
 
@@ -101,7 +102,7 @@ public abstract class FrameContainer<T extends Window> {
 
     /**
      * Instantiate new frame container.
-     * 
+     *
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
@@ -129,7 +130,7 @@ public abstract class FrameContainer<T extends Window> {
             tempTranscoder = new StringTranscoder(Charset.forName("UTF-8"));
         }
         transcoder = tempTranscoder;
-        
+
         setIcon(icon);
     }
 
@@ -317,18 +318,18 @@ public abstract class FrameContainer<T extends Window> {
 
     /**
      * Sets the icon to be used by this frame container.
-     * 
+     *
      * @param icon The new icon to be used
      */
     public final void setIcon(final String icon) {
         this.icon = icon;
-        
+
         iconUpdated();
-        
+
         config.removeListener(changer);
         config.addChangeListener("icon", icon, changer);
     }
-    
+
     /**
      * Called when this container's icon is updated.
      */
@@ -454,6 +455,12 @@ public abstract class FrameContainer<T extends Window> {
      *      {@link WindowManager#removeWindow(com.dmdirc.ui.interfaces.Window)}</li>
      * </ol>
      * <p>
+     * <strong>NB:</strong> As of DMDirc 0.6.5, points 1 and 6 (making windows
+     * non-visible and removing the window from the window manager) are handled
+     * by the caller of this method, and should <strong>not</strong> be
+     * implemented by subclasses.
+     * </p>
+     * <p>
      * While resources may be relinquished in step three, references MUST NOT
      * be removed yet. That is, if a window holds a resource, the resource may
      * be closed, but the relevant object MUST still be available for
@@ -464,7 +471,21 @@ public abstract class FrameContainer<T extends Window> {
      * on its frame, parser, etc. The resources should be completely freed in
      * the {@link #windowClosed()} method.
      */
-    public abstract void windowClosing();
+    protected abstract void windowClosing();
+
+    /**
+     * Handles the closing of this container. This should be called by UI
+     * components when the user is attempting to close a corresponding window.
+     */
+    public void handleWindowClosing() {
+        for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
+            listener.windowClosing(this);
+        }
+
+        windowClosing();
+
+        WindowManager.removeWindow(this);
+    }
 
     /**
      * Invoked when our window has been closed.
@@ -615,6 +636,26 @@ public abstract class FrameContainer<T extends Window> {
     }
 
     /**
+     * Adds a close listener for this frame container.
+     *
+     * @since 0.6.5
+     * @param listener The listener to be added
+     */
+    public void addCloseListener(final FrameCloseListener listener) {
+        listeners.add(FrameCloseListener.class, listener);
+    }
+
+    /**
+     * Removes a close listener from this frame container.
+     *
+     * @since 0.6.5
+     * @param listener The listener to be removed
+     */
+    public void removeCloseListener(final FrameCloseListener listener) {
+        listeners.remove(FrameCloseListener.class, listener);
+    }
+
+    /**
      * Adds a selection listener for this frame container.
      *
      * @param listener The listener to be added
@@ -701,6 +742,6 @@ public abstract class FrameContainer<T extends Window> {
         public void configChanged(final String domain, final String key) {
             iconUpdated();
         }
-        
+
     }
 }
