@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author chris
  */
-public class PreferencesManager {
+public class PreferencesDialogModel {
 
     /** The UI controller to use for custom categories. */
     private final UIController controller;
@@ -55,12 +55,12 @@ public class PreferencesManager {
     private final ListenerList listeners = new ListenerList();
 
     /**
-     * Creates a new instance of PreferencesManager.
+     * Creates a new instance of PreferencesDialogModel.
      *
      * @param controller The UI controller to use to retrieve custom UIs for
      * preferences panels.
      */
-    public PreferencesManager(final UIController controller) {
+    public PreferencesDialogModel(final UIController controller) {
         this.controller = controller;
 
         addDefaultCategories();

@@ -22,7 +22,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 import java.io.File;
 
@@ -154,7 +154,7 @@ public abstract class Plugin implements Comparable<Plugin> {
      * @param manager The preferences manager that configuration options
      * need to be added to.
      */
-    public void showConfig(final PreferencesManager manager) {
+    public void showConfig(final PreferencesDialogModel manager) {
     }
 
     /**

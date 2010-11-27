@@ -27,7 +27,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -488,7 +488,7 @@ public class PluginManager implements ActionListener {
                 }
                 if (pi.isLoaded() || pi.isTempLoaded()) {
                     try {
-                        pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
+                        pi.getPlugin().showConfig((PreferencesDialogModel) arguments[0]);
                     } catch (LinkageError le) {
                         Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getNiceName() + "), unable to show config (" + le + ")", le);
                     } catch (Exception ex) {
