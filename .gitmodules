@@ -10,3 +10,6 @@
 [submodule "modules/util"]
 	path = modules/util
 	url = git://dmdirc.com/util
+[submodule "modules/installer"]
+	path = modules/installer
+	url = git://dmdirc.com/installer
