@@ -117,7 +117,9 @@ public interface Window {
      * Determines if this frame is currently maximised.
      *
      * @return true if the frame is maximised, false otherwise
+     * @deprecated This shouldn't be used outside the UI
      */
+    @Deprecated
     boolean isMaximum();
 
     /**
@@ -138,26 +140,34 @@ public interface Window {
      * Restores this window.
      *
      * @since 0.6.3m1
+     * @deprecated This shouldn't be used outside the UI
      */
+    @Deprecated
     void restore();
 
     /**
      * Maximises this window.
      *
      * @since 0.6.3m1
+     * @deprecated This shouldn't be used outside the UI
      */
+    @Deprecated
     void maximise();
 
     /**
      * Toggles Maximise State.
      *
      * @since 0.6.3m1
+     * @deprecated This shouldn't be used outside the UI
      */
+    @Deprecated
     void toggleMaximise();
 
     /**
      * Minimises this window.
+     * @deprecated This shouldn't be used outside the UI
      */
+    @Deprecated
     void minimise();
 
     /**
