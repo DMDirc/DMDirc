@@ -93,9 +93,7 @@ public final class SetNickColour extends Command implements IntelligentCommand,
                 target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
             }
 
-            for (ChannelWindow window : channel.getWindows()) {
-                window.redrawNicklist();
-            }
+            channel.refreshClients();
         } else {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
@@ -112,9 +110,7 @@ public final class SetNickColour extends Command implements IntelligentCommand,
                 target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
             }
 
-            for (ChannelWindow window : channel.getWindows()) {
-                window.redrawNicklist();
-            }
+            channel.refreshClients();
         }
     }
 

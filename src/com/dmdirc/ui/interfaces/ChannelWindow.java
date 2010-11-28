@@ -23,8 +23,9 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
-
+import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
+
 import java.util.Collection;
 
 /**
@@ -38,27 +39,35 @@ public interface ChannelWindow extends InputWindow {
      * Updates the channel's name list to the specified list of clients.
      * 
      * @param clients The new list of clients for this channel
+     * @deprecated Use a {@link NicklistListener}
      */
+    @Deprecated
     void updateNames(Collection<ChannelClientInfo> clients);
     
     /**
      * Adds the specified client to this channel's name list.
      * 
      * @param client The new client to be added
+     * @deprecated Use a {@link NicklistListener}
      */
+    @Deprecated
     void addName(ChannelClientInfo client);
     
     /**
      * Removes the specified client from this channel's name list.
      * 
      * @param client The client to be removed
+     * @deprecated Use a {@link NicklistListener}
      */
+    @Deprecated
     void removeName(ChannelClientInfo client);
     
     /**
      * Requests that the channel window updates the displayed list of channel
      * clients, to take into account mode or nickname changes.
+     * @deprecated Use a {@link NicklistListener}
      */
+    @Deprecated
     void updateNames();
     
     /**
@@ -72,7 +81,10 @@ public interface ChannelWindow extends InputWindow {
     
     /**
      * Redraws the nicklist belonging to this channel.
+     *
+     * @deprecated Use a {@link NicklistListener}
      */
+    @Deprecated
     void redrawNicklist();
 
 }

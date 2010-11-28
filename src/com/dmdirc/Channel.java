@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -319,8 +320,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
 
         setIcon("channel-inactive");
 
-        for (ChannelWindow window : getWindows()) {
-            window.updateNames(new ArrayList<ChannelClientInfo>());
+        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
+            listener.clientListUpdated(new ArrayList<ChannelClientInfo>());
         }
     }
 
@@ -366,13 +367,33 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
     }
 
     /**
+     * Registers a new nicklist listener for this channel.
+     *
+     * @since 0.6.5
+     * @param listener The listener to be added
+     */
+    public void addNicklistListener(final NicklistListener listener) {
+        listeners.add(NicklistListener.class, listener);
+    }
+
+    /**
+     * Removes the specified nicklist listener from this channel.
+     *
+     * @since 0.6.5
+     * @param listener The listener to be removed
+     */
+    public void removeNicklistListener(final NicklistListener listener) {
+        listeners.remove(NicklistListener.class, listener);
+    }
+
+    /**
      * Adds a ChannelClient to this Channel.
      *
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        for (ChannelWindow window : getWindows()) {
-            window.addName(client);
+        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
+            listener.clientAdded(client);
         }
 
         tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
@@ -384,8 +405,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        for (ChannelWindow window : getWindows()) {
-            window.removeName(client);
+        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
+            listener.clientRemoved(client);
         }
 
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
@@ -402,8 +423,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        for (ChannelWindow window : getWindows()) {
-            window.updateNames(clients);
+        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
+            listener.clientListUpdated(clients);
         }
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
@@ -434,8 +455,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             return;
         }
 
-        for (ChannelWindow window : getWindows()) {
-            window.updateNames();
+        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
+            listener.clientListUpdated();
         }
     }
 
