@@ -406,13 +406,15 @@ public final class ErrorManager implements ConfigChangeListener {
      * @param error Error that occurred
      */
     protected void fireFatalError(final ProgramError error) {
+        final boolean restart;
         if (GraphicsEnvironment.isHeadless()) {
             System.err.println("A fatal error has occurred: " + error.getMessage());
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
+            restart = false;
         } else {
-            FatalErrorDialog.displayBlocking(error);
+            restart = FatalErrorDialog.displayBlocking(error);
         }
 
         try {
@@ -425,7 +427,11 @@ public final class ErrorManager implements ConfigChangeListener {
             // Do nothing
         }
 
-        System.exit(42);
+        if (restart) {
+            System.exit(42);
+        } else {
+            System.exit(1);
+        }
     }
 
     /**

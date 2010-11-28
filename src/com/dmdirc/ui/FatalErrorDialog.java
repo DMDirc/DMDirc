@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.ui;
 
 import com.dmdirc.logger.ErrorListener;
@@ -33,8 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.util.concurrent.Semaphore;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -56,7 +57,7 @@ import javax.swing.text.StyledDocument;
 
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
- * occured.
+ * occured and to give them a chance to quit or restart the client.
  */
 public final class FatalErrorDialog extends JDialog implements ActionListener,
         ErrorListener {
@@ -67,20 +68,24 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    /** error. */
+    /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
-    /** button. */
-    private JButton okButton;
-    /** button. */
+    /** Restart client Button. */
+    private JButton restartButton;
+    /** Quit client button. */
+    private JButton quitButton;
+    /** Send errorbButton. */
     private JButton sendButton;
-    /** info label. */
+    /** Info panel, informs the user what is happening. */
     private JTextPane infoLabel;
-    /** message label. */
+    /** Message label, contains details error information. */
     private JTextPane messageLabel;
-    /** Icon. */
+    /** Fatal error icon. */
     private ImageIcon icon;
-    /** stack trace scroll pane. */
+    /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
+    /** Do we need to restart? Else we quit. */
+    private static boolean restart = true;
 
     /**
      * Creates a new fatal error dialog.
@@ -121,8 +126,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         StyleConstants.setAlignment(sas, StyleConstants.ALIGN_JUSTIFIED);
 
         scrollPane = new JScrollPane();
-        okButton = new JButton();
+        restartButton = new JButton();
         sendButton = new JButton();
+        quitButton = new JButton();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc: Fatal Error");
@@ -150,15 +156,18 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
         scrollPane.setViewportView(stacktraceField);
 
-        okButton.setText("OK");
+        restartButton.setText("Restart");
+        quitButton.setText("Quit");
         sendButton.setText("Send");
 
         final ErrorReportStatus status = error.getReportStatus();
-        okButton.setEnabled(status.isTerminal());
+        restartButton.setEnabled(status.isTerminal());
+        quitButton.setEnabled(status.isTerminal());
         updateSendButtonText(status);
 
-        okButton.addActionListener(this);
+        restartButton.addActionListener(this);
         sendButton.addActionListener(this);
+        quitButton.addActionListener(this);
     }
 
     /**
@@ -182,7 +191,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         buttons.add(Box.createHorizontalGlue());
         buttons.add(sendButton);
         buttons.add(Box.createHorizontalStrut(5));
-        buttons.add(okButton);
+        buttons.add(quitButton);
+        buttons.add(Box.createHorizontalStrut(5));
+        buttons.add(restartButton);
 
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.setLayout(new BorderLayout(5, 5));
@@ -204,7 +215,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == sendButton) {
             sendButton.setText("Sending...");
-            okButton.setEnabled(false);
+            restartButton.setEnabled(false);
             sendButton.setEnabled(false);
             new SwingWorker() {
 
@@ -221,6 +232,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                     super.done();
                 }
             }.execute();
+        } else if (actionEvent.getSource() == quitButton) {
+            restart = false;
+            dispose();
         } else {
             dispose();
         }
@@ -231,7 +245,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      *
      * @param error Program error
      */
-    public static void display(final ProgramError error) {
+    public static boolean display(final ProgramError error) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -241,6 +255,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                 me.setVisible(true);
             }
         });
+        return restart;
     }
 
     /**
@@ -249,7 +264,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      *
      * @param error Program error
      */
-    public static void displayBlocking(final ProgramError error) {
+    public static boolean displayBlocking(final ProgramError error) {
         final Semaphore semaphore = new Semaphore(0);
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -268,6 +283,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             }
         });
         semaphore.acquireUninterruptibly();
+        return restart;
     }
 
     private void updateSendButtonText(final ErrorReportStatus status) {
@@ -320,7 +336,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public void errorStatusChanged(final ProgramError error) {
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
-            okButton.setEnabled(status.isTerminal());
+            restartButton.setEnabled(status.isTerminal());
             updateSendButtonText(status);
         }
     }
