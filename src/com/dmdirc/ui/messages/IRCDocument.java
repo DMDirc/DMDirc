@@ -120,7 +120,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Adds the stylised string to the canvas.
      *
      * @param text stylised string to add to the text
+     * @deprecated Use {@link #addText(java.util.List)} instead
      */
+    @Deprecated
     public void addText(final String[] text) {
         final int index;
         synchronized (lines) {
@@ -136,7 +138,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      *
      * @param text stylised string to add to the text
      * @param lineHeight Line height for the new line of text
+     * @deprecated Use {@link #addText(java.util.List)} instead
      */
+    @Deprecated
     public void addText(final String[] text, final int lineHeight) {
         final int index;
         synchronized (lines) {
@@ -237,7 +241,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Fires the line added method on all listeners.
      *
      * @param index Index of the added line
+     * @deprecated Use {@link #fireLinesAdded(int, int)} instead
      */
+    @Deprecated
     protected void fireLineAdded(final int index) {
         for (IRCDocumentListener listener
                 : listeners.get(IRCDocumentListener.class)) {

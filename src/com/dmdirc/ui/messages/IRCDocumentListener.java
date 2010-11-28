@@ -34,7 +34,9 @@ public interface IRCDocumentListener extends EventListener {
      *
      * @param line Index of the added line
      * @param size New number of lines
+     * @deprecated Use {@link #linesAdded(line, length, size)}
      */
+    @Deprecated
     void lineAdded(final int line, final int size);
 
     /**
