@@ -8,7 +8,7 @@ if [ "" = "${TARGET}" -o ! -e "${SOURCE}" ]; then
 else
 	# Make sure target exists.
 	if [ ! -e "${TARGET}" ]; then
-		mkdir -P `dirname "${TARGET}"`
+		mkdir -p `dirname "${TARGET}"`
 		touch "${TARGET}"
 	fi;
 	
