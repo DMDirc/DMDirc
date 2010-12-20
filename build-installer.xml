@@ -2,6 +2,10 @@
 <project name="DMDirc-installer" default="default" basedir=".">
     <description>Tasks to build the DMDirc installer.</description>
 
+    <taskdef name="nsis" classname="com.danielreese.nsisant.Task">
+        <classpath location="lib/nsisant-1.3.jar" />
+    </taskdef>
+
     <target name="installer"
             description="Build the installer.">
         <exec executable="bash" dir="installer" resultproperty="installer.result">
@@ -58,5 +62,34 @@
         <echo message=""/>
     </target>
 
+    <target name="installer-nsis" description="Builds the Windows installer"
+        depends="jar">
+        <exec executable="git">
+            <redirector outputproperty="version.git"></redirector>
+            <arg value="describe"/>
+            <arg value="--tags"/>
+        </exec>
+
+        <mkdir dir="modules\installer\windows\files\" />
+        <delete>
+            <fileset dir="modules\installer\windows\files\" includes="*.*"/>
+        </delete>
+        <copy file="src/com/dmdirc/res/icon.ico"
+            tofile="modules\installer\windows\files\icon.ico"
+            overwrite="true" />
+        <copy file="dist/DMDirc.jar"
+            tofile="modules\installer\windows\files\DMDirc.jar"
+            overwrite="true" />
+        <nsis script="modules\installer\windows\updater.nsi" verbosity="2">
+            <define name="VERSION" value="${version.git}"/>
+        </nsis>
+        <nsis script="modules\installer\windows\launcher.nsi" verbosity="2">
+            <define name="VERSION" value="${version.git}"/>
+        </nsis>
+        <nsis script="modules\installer\windows\installer.nsi" verbosity="2">
+            <define name="VERSION" value="${version.git}"/>
+        </nsis>
+        <delete dir="modules\installer\windows\files" />
+    </target>
 
 </project>
