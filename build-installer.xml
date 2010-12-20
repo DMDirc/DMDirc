@@ -64,11 +64,22 @@
 
     <target name="installer-nsis" description="Builds the Windows installer"
         depends="jar">
-        <exec executable="git">
-            <redirector outputproperty="version.git"></redirector>
-            <arg value="describe"/>
-            <arg value="--tags"/>
-        </exec>
+       <exec executable="git" outputproperty="nsis.lastcommit">
+          <arg value="--git-dir=modules/installer/.git"/>
+          <arg value="rev-list"/>
+          <arg value="--max-count=1"/>
+          <arg value="HEAD"/>
+          <arg value="--"/>
+          <arg value="windows"/>
+       </exec>
+
+       <exec executable="git" outputproperty="version.git.nsis">
+          <arg value="--git-dir=modules/installer/.git"/>
+          <arg value="describe"/>
+          <arg value="--tags"/>
+          <arg value="--always"/>
+          <arg value="${nsis.lastcommit}"/>
+       </exec>
 
         <mkdir dir="modules\installer\windows\files\" />
         <delete>
@@ -81,13 +92,13 @@
             tofile="modules\installer\windows\files\DMDirc.jar"
             overwrite="true" />
         <nsis script="modules\installer\windows\updater.nsi" verbosity="2">
-            <define name="VERSION" value="${version.git}"/>
+            <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
         <nsis script="modules\installer\windows\launcher.nsi" verbosity="2">
-            <define name="VERSION" value="${version.git}"/>
+            <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
         <nsis script="modules\installer\windows\installer.nsi" verbosity="2">
-            <define name="VERSION" value="${version.git}"/>
+            <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
         <delete dir="modules\installer\windows\files" />
     </target>
