@@ -23,9 +23,8 @@
 package com.dmdirc.updater;
 
 /**
- * This interface is implemented by components that provide options for upgrades
- *
- * @author shane
+ * This interface is implemented by components that provide options for
+ * upgrades.
  */
 public interface OptionsComponent {
 

@@ -34,11 +34,29 @@ public class Version implements Comparable<Version> {
     protected final int intVersion;
     protected final String strVersion;
 
+    /**
+     * Creates an invalid version.
+     */
+    public Version() {
+        this.intVersion = Integer.MIN_VALUE;
+        this.strVersion = null;
+    }
+
+    /**
+     * Creates a new integer version.
+     *
+     * @param version Version to create
+     */
     public Version(final int version) {
         this.intVersion = version;
         this.strVersion = null;
     }
 
+    /**
+     * Creates a new git version.
+     *
+     * @param version Git version
+     */
     public Version(final String version) {
         if (version.matches("^[0-9]+$")) {
             this.intVersion = Integer.parseInt(version);

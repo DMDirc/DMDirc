@@ -29,11 +29,11 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Component for updates of DMDirc's launcher.
- *
- * @author chris
  */
 public class LauncherComponent implements UpdateComponent, OptionsComponent {
 
@@ -41,7 +41,7 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
     private static String platform = "";
 
     /** The version of our current launcher. */
-    private static int version = -1;
+    private static Version version = new Version();
 
     /** The options of our current launcher. */
     private static String[] options = new String[]{};
@@ -59,16 +59,12 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
             return;
         }
 
-        try {
-            platform = info.substring(0, hpos);
-            if (cpos == -1) {
-                version = Integer.parseInt(info.substring(hpos + 1));
-            } else {
-                version = Integer.parseInt(info.substring(hpos + 1, cpos));
-                options = info.substring(cpos + 1).split(",");
-            }
-        } catch (NumberFormatException ex) {
-            return;
+        platform = info.substring(0, hpos);
+        if (cpos == -1) {
+            version = new Version(info.substring(hpos + 1));
+        } else {
+            version = new Version(info.substring(hpos + 1, cpos));
+            options = info.substring(cpos + 1).split(",");
         }
 
         UpdateChecker.registerComponent(new LauncherComponent());
@@ -80,7 +76,7 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
      * @return True if the launcher has been used, false otherwise
      */
     public static boolean isUsingLauncher() {
-        return version != -1;
+        return version.isValid();
     }
 
     /** {@inheritDoc} */
@@ -104,13 +100,13 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
     /** {@inheritDoc} */
     @Override
     public Version getVersion() {
-        return new Version(version);
+        return version;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getOptions() {
-        return options;
+        return Arrays.copyOf(options, options.length);
     }
 
 
@@ -134,10 +130,12 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Exception {
+    public boolean doInstall(final String path) throws IOException {
         final File tmpFile = new File(path);
-        if (platform.equalsIgnoreCase("Linux") || platform.equalsIgnoreCase("unix")) {
-            final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");
+        if (platform.equalsIgnoreCase("Linux")
+                || platform.equalsIgnoreCase("unix")) {
+            final File targetFile = new File(tmpFile.getParent()
+                    + File.separator + ".launcher.sh");
 
             if (targetFile.exists()) {
                 targetFile.delete();
@@ -147,8 +145,8 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
             targetFile.setExecutable(true);
 
         } else {
-            final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-            ziprm.extractResources("", tmpFile.getParent()+ File.separator);
+            ZipResourceManager.getInstance(path).extractResources("",
+                    tmpFile.getParent() + File.separator);
             new File(path).delete();
         }
         return true;
