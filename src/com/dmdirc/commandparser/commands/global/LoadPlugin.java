@@ -35,17 +35,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to load a plugin.
- * @author chris
  */
 public final class LoadPlugin extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of LoadPlugin.
-     */
-    public LoadPlugin() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -57,21 +49,26 @@ public final class LoadPlugin extends Command implements IntelligentCommand,
         }
 
         // Add previously unknown plugin to plugin manager
-        PluginManager.getPluginManager().addPlugin(args.getArguments()[0]);
+        PluginManager.getPluginManager().addPlugin(
+                args.getArgumentsAsString());
         final PluginInfo plugin = PluginManager.getPluginManager()
-                .getPluginInfo(args.getArguments()[0]);
-        
+                .getPluginInfo(args.getArgumentsAsString());
+
         if (plugin == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin loading failed");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                    "Plugin loading failed");
         } else if (plugin.isLoaded()) {
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin already loaded.");
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
+                    "Plugin already loaded.");
         } else {
             plugin.loadPlugin();
             if (plugin.isLoaded()) {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin loaded.");
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
+                        "Plugin loaded.");
                 PluginManager.getPluginManager().updateAutoLoad(plugin);
             } else {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Loading plugin failed. ("
+                sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
+                        "Loading plugin failed. ("
                         + plugin.getLastError() + ")");
             }
         }
@@ -112,7 +109,8 @@ public final class LoadPlugin extends Command implements IntelligentCommand,
 
         if (arg == 0) {
             for (PluginInfo possPlugin
-                    : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
+                    : PluginManager.getPluginManager()
+                            .getPossiblePluginInfos(false)) {
                 res.add(possPlugin.getRelativeFilename());
             }
         }
