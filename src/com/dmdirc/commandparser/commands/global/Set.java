@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -29,7 +30,11 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.flags.CommandFlag;
+import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
+import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -44,54 +49,98 @@ import java.util.List;
  */
 public final class Set extends Command implements IntelligentCommand, CommandInfo {
 
+    /** The flag to indicate the set command should apply to a server's settings. */
+    private final CommandFlag serverFlag = new CommandFlag("server");
+    /** The flag to indicate the set command should apply to a channel's settings. */
+    private final CommandFlag channelFlag = new CommandFlag("channel");
+    /** The flag to indicate that the specified setting should be unset. */
+    private final CommandFlag unsetFlag = new CommandFlag("unset", true, 0, 2);
+    /** The flag to indicate that the specified setting should be appended to. */
+    private final CommandFlag appendFlag = new CommandFlag("append", true, 0, 2);
+    /** The command flag handler for this command. */
+    private final CommandFlagHandler handler;
+
     /**
      * Creates a new instance of Set.
      */
     public Set() {
         super();
+        
+        unsetFlag.addDisabled(appendFlag);
+        appendFlag.addDisabled(unsetFlag);
+        
+        channelFlag.addDisabled(serverFlag);
+        serverFlag.addDisabled(channelFlag);
+
+        handler = new CommandFlagHandler(serverFlag, channelFlag, unsetFlag, appendFlag);
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
-        int i = 0;
+        final CommandFlagResult res = handler.process(origin, args);
+
+        if (res == null) {
+            return;
+        }
 
         Identity identity = IdentityManager.getConfigIdentity();
         ConfigManager manager = IdentityManager.getGlobalConfig();
 
-        if (args.getArguments().length > 0
-                && "--server".equalsIgnoreCase(args.getArguments()[0]) && origin != null
-                && origin.getServer() != null) {
-            i = 1;
+        if (res.hasFlag(serverFlag)) {
+            if (origin.getServer() == null) {
+                sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                        "Cannot use --server in this context");
+                return;
+            }
+
             identity = origin.getServer().getServerIdentity();
             manager = origin.getServer().getConfigManager();
         }
 
-        switch (args.getArguments().length - i) {
+        if (res.hasFlag(channelFlag)) {
+            if (!(context instanceof ChannelCommandContext)) {
+                sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                        "Cannot use --channel in this context");
+                return;
+            }
+
+            final Channel channel = ((ChannelCommandContext) context).getChannel();
+            identity = IdentityManager.getChannelConfig(origin.getServer().getNetwork(),
+                    channel.getName());
+            manager = channel.getConfigManager();
+        }
+
+        if (res.hasFlag(unsetFlag)) {
+            final String[] arguments = res.getArguments(unsetFlag);
+            doUnsetOption(origin, args.isSilent(), identity, arguments[0], arguments[1]);
+            return;
+        }
+        
+        if (res.hasFlag(appendFlag)) {
+            final String[] arguments = res.getArguments(appendFlag);
+            doAppendOption(origin, args.isSilent(), identity, manager,
+                    arguments[0], arguments[1], res.getArgumentsAsString());
+            return;
+        }
+        
+        final String[] arguments = res.getArguments();
+
+        switch (arguments.length) {
         case 0:
             doDomainList(origin, args.isSilent(), manager);
             break;
         case 1:
-            doOptionsList(origin, args.isSilent(), manager, args.getArguments()[i]);
+            doOptionsList(origin, args.isSilent(), manager, arguments[0]);
             break;
         case 2:
-            doShowOption(origin, args.isSilent(), manager, args.getArguments()[i],
-                    args.getArguments()[1 + i]);
+            doShowOption(origin, args.isSilent(), manager, arguments[0],
+                    arguments[1]);
             break;
         default:
-            if (args.getArguments()[i].equalsIgnoreCase("--unset")) {
-                doUnsetOption(origin, args.isSilent(), identity, args.getArguments()[1 + i],
-                        args.getArguments()[2 + i]);
-            } else if (args.getArguments()[i].equalsIgnoreCase("--append")
-                    && args.getArguments().length > 3 + i) {
-                doAppendOption(origin, args.isSilent(), identity, manager,
-                        args.getArguments()[1 + i], args.getArguments()[2 + i],
-                        args.getArgumentsAsString(3 + i));
-            } else {
-                doSetOption(origin, args.isSilent(), identity, args.getArguments()[i],
-                        args.getArguments()[1 + i], args.getArgumentsAsString(2 + i));
-            }
+            doSetOption(origin, args.isSilent(), identity, arguments[0],
+                    arguments[1], res.getArgumentsAsString(2));
             break;
         }
     }
@@ -247,9 +296,9 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "set [--server] [domain [option [newvalue]]] - inspect or change configuration settings"
-                + "\nset [--server] --append <domain> <option> <data> - appends data to the specified option"
-                + "\nset [--server] --unset <domain> <option> - unsets the specified option";
+        return "set [--server|--channel] [domain [option [newvalue]]] - inspect or change configuration settings"
+                + "\nset [--server|--channel] --append <domain> <option> <data> - appends data to the specified option"
+                + "\nset [--server|--channel] --unset <domain> <option> - unsets the specified option";
     }
 
     /** {@inheritDoc} */
@@ -265,11 +314,13 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
             res.add("--unset");
             res.add("--append");
             res.add("--server");
+            res.add("--channel");
             res.excludeAll();
         } else if (arg == 1 && previousArgs.size() >= 1) {
             if (previousArgs.get(0).equalsIgnoreCase("--unset")
                     || previousArgs.get(0).equalsIgnoreCase("--append")
-                    || previousArgs.get(0).equalsIgnoreCase("--server")) {
+                    || previousArgs.get(0).equalsIgnoreCase("--server")
+                    || previousArgs.get(0).equalsIgnoreCase("--channel")) {
                 res.addAll(context.getWindow().getContainer().getConfigManager()
                         .getDomains());
             } else {
@@ -279,7 +330,8 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
             res.excludeAll();
         } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
                 || previousArgs.get(0).equalsIgnoreCase("--append")
-                || previousArgs.get(0).equalsIgnoreCase("--server"))) {
+                || previousArgs.get(0).equalsIgnoreCase("--server")
+                || previousArgs.get(0).equalsIgnoreCase("--channel"))) {
             res.addAll(context.getWindow().getContainer().getConfigManager()
                     .getOptions(previousArgs.get(1)).keySet());
             res.excludeAll();

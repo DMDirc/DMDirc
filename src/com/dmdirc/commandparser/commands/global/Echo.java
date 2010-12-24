@@ -31,6 +31,9 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.commands.flags.CommandFlag;
+import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
+import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -46,60 +49,74 @@ import java.util.List;
 public final class Echo extends Command implements IntelligentCommand,
         CommandInfo {
 
+    /** The flag used to specify a timestamp for the echo command. */
+    private final CommandFlag timeStampFlag = new CommandFlag("ts", true, 1, 0);
+    /** The flag used to specify the echo command should use the active window. */
+    private final CommandFlag activeFlag = new CommandFlag("active");
+    /** The flag used to specify a target for the echo command. */
+    private final CommandFlag targetFlag = new CommandFlag("target", true, 1, 0);
+    /** The command flag handler for this command. */
+    private final CommandFlagHandler handler;
+
     /**
      * Creates a new instance of Echo.
      */
     public Echo() {
         super();
+
+        activeFlag.addDisabled(targetFlag);
+        targetFlag.addDisabled(activeFlag);
+
+        handler = new CommandFlagHandler(timeStampFlag, activeFlag, targetFlag);
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer<?> origin,
             final CommandArguments args, final CommandContext context) {
-        int offset = 0;
-        Date time = new Date();
+        final CommandFlagResult results = handler.process(origin, args);
 
-        if (args.getArguments().length > 1
-                && args.getArguments()[offset].equalsIgnoreCase("--ts")) {
+        if (results == null) {
+            return;
+        }
+
+        Date time = new Date();
+        if (results.hasFlag(timeStampFlag)) {
             try {
-                time = new Date(Long.parseLong(args.getWordsAsString(2, 2)));
+                time = new Date(Long.parseLong(results.getArgumentsAsString(timeStampFlag)));
             } catch (NumberFormatException ex) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unable to process timestamp");
                 return;
             }
-
-            offset = 2;
         }
 
-        if (args.getArguments().length > offset
-                && args.getArguments()[offset].equalsIgnoreCase("--active")) {
+        if (results.hasFlag(activeFlag)) {
             if (!args.isSilent()) {
                 final FrameContainer<?> frame = WindowManager.getActiveWindow();
-                frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 1));
+                frame.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
             }
-        } else if (args.getArguments().length > offset + 1
-                && args.getArguments()[offset].equalsIgnoreCase("--target")) {
+        } else if (results.hasFlag(targetFlag)) {
             FrameContainer<?> frame = null;
             FrameContainer<?> target = origin;
 
             while (frame == null && target != null) {
-                frame = WindowManager.findCustomWindow(target, args.getArguments()[offset + 1]);
+                frame = WindowManager.findCustomWindow(target,
+                        results.getArgumentsAsString(targetFlag));
+                target = target.getParent();
             }
 
             if (frame == null) {
-                frame = WindowManager.findCustomWindow(args.getArguments()[offset + 1]);
+                frame = WindowManager.findCustomWindow(results.getArgumentsAsString(targetFlag));
             }
 
             if (frame == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset + 2));
+                frame.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
             }
-
         } else if (origin != null && !args.isSilent()) {
-            origin.addLine(FORMAT_OUTPUT, time, args.getArgumentsAsString(offset));
+            origin.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
         }
     }
 

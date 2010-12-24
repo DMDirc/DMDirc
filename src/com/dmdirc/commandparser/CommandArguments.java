@@ -122,7 +122,7 @@ public class CommandArguments {
     public String[] getArguments() {
         parse();
 
-        return Arrays.copyOfRange(words, 1, words.length);
+        return Arrays.copyOfRange(words, Math.min(1, words.length), words.length);
     }
 
     /**
@@ -132,8 +132,6 @@ public class CommandArguments {
      * @return A String representation of the command arguments
      */
     public String getArgumentsAsString() {
-        parse();
-
         return getArgumentsAsString(0);
     }
 
@@ -147,8 +145,21 @@ public class CommandArguments {
      */
     public String getArgumentsAsString(final int start) {
         parse();
+        
+        return getArgumentsAsString(start, words.length - 2);
+    }
 
-        return getWordsAsString(start + 1);
+    /**
+     * Retrieves arguments to the command (i.e., not including the
+     * command name) starting with the specified argument, with their original
+     * whitespace separation preserved.
+     *
+     * @param start The index of the first argument to include
+     * @param end The index of the last argument to include
+     * @return A String representation of the command arguments
+     */
+    public String getArgumentsAsString(final int start, final int end) {
+        return getWordsAsString(start + 1, end + 1);
     }
 
     /**
