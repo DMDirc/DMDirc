@@ -273,6 +273,8 @@ public class PluginManager implements ActionListener {
             if (requirements.isEmpty()) {
                 knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
+                ActionManager.processEvent(CoreActionType.PLUGIN_REFRESH, null,
+                        this);
                 return true;
             } else {
                 throw new PluginException("Plugin " + filename + " was not loaded, one or more requirements not met (" + requirements + ")");
@@ -448,6 +450,7 @@ public class PluginManager implements ActionListener {
             }
         }
 
+        ActionManager.processEvent(CoreActionType.PLUGIN_REFRESH, null, this);
         return new LinkedList<PluginInfo>(res.values());
     }
 
