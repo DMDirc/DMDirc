@@ -23,8 +23,6 @@ package com.dmdirc.config.prefs;
 
 /**
  * Enumerates the possible types of preferences.
- *
- * @author chris
  */
 public enum PreferencesType {
 
@@ -46,10 +44,12 @@ public enum PreferencesType {
     DURATION,
     /** Font type. */
     FONT,
-    /** File-Only browse component */
+    /** File-Only browse component. */
     FILE,
-    /** Directory-Only browse component */
+    /** Directory-Only browse component. */
     DIRECTORY,
-    /** File or Directory browse component */
-    FILES_AND_DIRECTORIES;
+    /** File or Directory browse component. */
+    FILES_AND_DIRECTORIES,
+    /** Free-form text label. */
+    LABEL,
 }
