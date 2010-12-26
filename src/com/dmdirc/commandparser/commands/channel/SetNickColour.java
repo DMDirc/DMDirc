@@ -35,7 +35,6 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;

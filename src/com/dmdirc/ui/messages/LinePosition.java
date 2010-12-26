@@ -105,7 +105,7 @@ public class LinePosition {
      *
      * @param endLine new end line
      */
-    public void setEndLine(int endLine) {
+    public void setEndLine(final int endLine) {
         this.endLine = endLine;
     }
 
@@ -114,7 +114,7 @@ public class LinePosition {
      *
      * @param endPos new end line
      */
-    public void setEndPos(int endPos) {
+    public void setEndPos(final int endPos) {
         this.endPos = endPos;
     }
 
@@ -123,7 +123,7 @@ public class LinePosition {
      *
      * @param startLine new start line
      */
-    public void setStartLine(int startLine) {
+    public void setStartLine(final int startLine) {
         this.startLine = startLine;
     }
 
@@ -132,13 +132,14 @@ public class LinePosition {
      *
      * @param startPos new start position
      */
-    public void setStartPos(int startPos) {
+    public void setStartPos(final int startPos) {
         this.startPos = startPos;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Position[" + startLine + ", " + startPos + ", " + endLine + ", " + endPos + "]";
+        return "Position[" + startLine + ", " + startPos + ", " + endLine
+                + ", " + endPos + "]";
     }
 }

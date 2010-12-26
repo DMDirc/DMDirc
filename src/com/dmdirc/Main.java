@@ -84,11 +84,13 @@ public class Main {
      *
      * @param args the command line arguments
      */
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         try {
             init(args);
         } catch (Throwable ex) {
-            Logger.appError(ErrorLevel.FATAL, "Exception while initialising", ex);
+            Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
+                    ex);
         }
     }
 

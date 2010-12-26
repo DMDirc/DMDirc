@@ -65,8 +65,8 @@ public class Line {
     }
 
     /**
-     * Returns the length of the specified line
-     * 
+     * Returns the length of the specified line.
+     *
      * @return Length of the line
      */
     public int getLength() {
@@ -79,7 +79,7 @@ public class Line {
 
     /**
      * Returns the height of the specified line.
-     * 
+     *
      * @return Line height
      */
     public int getFontSize() {
@@ -110,7 +110,7 @@ public class Line {
      * @return Line at the specified number or null
      */
     public String getText() {
-        StringBuilder lineText = new StringBuilder();
+        final StringBuilder lineText = new StringBuilder();
         for (String linePart : lineParts) {
             lineText.append(linePart);
         }
@@ -125,7 +125,7 @@ public class Line {
      * @since 0.6.3m1
      */
     public String getStyledText() {
-        StringBuilder lineText = new StringBuilder();
+        final StringBuilder lineText = new StringBuilder();
         for (String linePart : lineParts) {
             lineText.append(linePart);
         }
@@ -138,15 +138,15 @@ public class Line {
      * @return AttributedString representing the specified StyledDocument
      */
     public AttributedString getStyled() {
-        final ExtendedAttributedString string = Utils.getAttributedString(styliser, lineParts,
-                fontName, fontSize);
+        final ExtendedAttributedString string = Utils.getAttributedString(
+                styliser, lineParts, fontName, fontSize);
         fontSize = string.getMaxLineHeight();
         return string.getAttributedString();
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Line) {
             return Arrays.equals(((Line) obj).getLineParts(), getLineParts());
         }

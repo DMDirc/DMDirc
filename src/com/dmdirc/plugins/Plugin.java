@@ -41,12 +41,6 @@ public abstract class Plugin implements Comparable<Plugin> {
     private File filesDir = null;
 
     /**
-     * Called when the plugin is constructed.
-     */
-    public Plugin() {
-    }
-
-    /**
      * Called by PluginInfo to set the domain name.
      * This can only be called once, all other attempts will be ignored.
      *

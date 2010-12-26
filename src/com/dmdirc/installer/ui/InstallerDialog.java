@@ -338,7 +338,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
      * @param e Action performed
      */
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         final int currentStep = wizard.getCurrentStepIndex();
         Step hiddenStep = null;
         Step shownStep = null;

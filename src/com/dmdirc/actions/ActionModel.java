@@ -122,7 +122,8 @@ public class ActionModel {
         "This action has at least one trigger",
         "This action's primary trigger is non-null"
     })
-    public boolean trigger(final StringBuffer format, final Object... arguments) {
+    public boolean trigger(final StringBuffer format,
+            final Object... arguments) {
         assert(triggers.length > 0);
         assert(triggers[0] != null);
 
@@ -137,7 +138,8 @@ public class ActionModel {
         WritableFrameContainer<?> cw = null;
         CommandParser cp = null;
 
-        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer<?>) {
+        if (arguments.length > 0
+                && arguments[0] instanceof WritableFrameContainer<?>) {
             cw = (WritableFrameContainer<?>) arguments[0];
         } else if (active instanceof WritableFrameContainer<?>) {
             cw = (WritableFrameContainer<?>) active;
@@ -176,7 +178,8 @@ public class ActionModel {
      * @param arguments The arguments for the action event
      * @return True if the action should be executed, false otherwise
      */
-    public boolean test(final ActionSubstitutor sub, final Object ... arguments) {
+    public boolean test(final ActionSubstitutor sub,
+            final Object ... arguments) {
         final boolean[] results = new boolean[conditions.size()];
 
         int i = 0;
@@ -320,8 +323,8 @@ public class ActionModel {
      * @return A {@link ConditionTree} object for this action
      */
     public ConditionTree getRealConditionTree() {
-        return conditionTree == null
-                ? ConditionTree.createConjunction(conditions.size()) : conditionTree;
+        return conditionTree == null ? ConditionTree.createConjunction(
+                conditions.size()) : conditionTree;
     }
 
     /**
@@ -377,7 +380,7 @@ public class ActionModel {
      * @see #isStopping()
      * @since 0.6.4
      */
-    public void setStopping(boolean stop) {
+    public void setStopping(final boolean stop) {
         this.stop = stop;
     }
 

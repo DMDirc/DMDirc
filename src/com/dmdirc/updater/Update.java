@@ -179,7 +179,8 @@ public final class Update implements DownloadListener {
                 } catch (IOException ex) {
                     setStatus(UpdateStatus.ERROR);
 
-                    Logger.userError(ErrorLevel.MEDIUM, "Error when updating component "
+                    Logger.userError(ErrorLevel.MEDIUM,
+                            "Error when updating component "
                             + component.getName(), ex);
 
                     return;
@@ -199,11 +200,13 @@ public final class Update implements DownloadListener {
                 } catch (IOException ex) {
                     setStatus(UpdateStatus.ERROR);
                     Logger.userError(ErrorLevel.MEDIUM,
-                            "I/O error when updating component " + component.getName(), ex);
+                            "I/O error when updating component "
+                            + component.getName(), ex);
                 } catch (Exception ex) {
                     setStatus(UpdateStatus.ERROR);
                     Logger.appError(ErrorLevel.MEDIUM,
-                            "Error when updating component " + component.getName(), ex);
+                            "Error when updating component "
+                            + component.getName(), ex);
                 }
             }
 
@@ -214,7 +217,7 @@ public final class Update implements DownloadListener {
     @Override
     public void downloadProgress(final float percent) {
         progress = percent;
-        
+
         for (UpdateListener listener : listeners) {
             listener.updateProgressChange(this, percent);
         }
@@ -222,7 +225,7 @@ public final class Update implements DownloadListener {
 
     /**
      * Retrieves the current progress of the current state of this update.
-     * 
+     *
      * @return The percentage of the current stage that has been completed
      */
     public float getProgress() {
@@ -231,8 +234,8 @@ public final class Update implements DownloadListener {
 
     /** {@inheritDoc} */
     @Override
-    public void setIndeterminate(boolean indeterminate) {
+    public void setIndeterminate(final boolean indeterminate) {
         //TODO
     }
-    
+
 }

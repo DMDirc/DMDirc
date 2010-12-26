@@ -134,8 +134,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         setTitle("DMDirc: Fatal Error");
         setIconImage(IconManager.getIconManager().getImage("icon"));
 
-        infoLabel.setText("DMDirc has encountered a fatal error, and is " +
-                "not able to recover. \nThe application will now terminate.");
+        infoLabel.setText("DMDirc has encountered a fatal error, and is "
+                + "not able to recover. \nThe application will now terminate.");
         messageLabel.setText("Description: " + error.getMessage());
         ((StyledDocument) infoLabel.getDocument()).setParagraphAttributes(0,
                 infoLabel.getText().length(), sas, false);
@@ -221,15 +221,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
                 /** {@inheritDoc} */
                 @Override
-                protected Object doInBackground() throws Exception {
+                protected Object doInBackground() {
                     ErrorManager.getErrorManager().sendError(error);
                     return null;
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                protected void done() {
-                    super.done();
                 }
             }.execute();
         } else if (actionEvent.getSource() == quitButton) {

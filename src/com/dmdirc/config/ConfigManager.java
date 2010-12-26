@@ -421,6 +421,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @param domain The domain that is being looked up
      * @param option The option that is being looked up
      */
+    @SuppressWarnings("PMD.AvoidCatchingNPE")
     protected static void doStats(final String domain, final String option) {
         final String key = domain + "." + option;
 

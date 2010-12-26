@@ -109,7 +109,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Exception {
+    public boolean doInstall(final String path) {
         final File target = new File(plugin.getFullFilename());
 
         boolean returnCode = false;

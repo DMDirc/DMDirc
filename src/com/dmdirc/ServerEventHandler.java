@@ -33,8 +33,7 @@ import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.*;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.interfaces.callbacks.*; //NOPMD
 
 import java.util.Date;
 

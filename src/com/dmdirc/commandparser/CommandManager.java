@@ -26,11 +26,11 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.channel.*;
-import com.dmdirc.commandparser.commands.chat.*;
-import com.dmdirc.commandparser.commands.global.*;
-//import com.dmdirc.commandparser.commands.query.*;
-import com.dmdirc.commandparser.commands.server.*;
+import com.dmdirc.commandparser.commands.channel.*; //NOPMD
+import com.dmdirc.commandparser.commands.chat.*; //NOPMD
+import com.dmdirc.commandparser.commands.global.*; //NOPMD
+//import com.dmdirc.commandparser.commands.query.*; //NOPMD
+import com.dmdirc.commandparser.commands.server.*; //NOPMD
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -298,7 +298,7 @@ public final class CommandManager {
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
             @Override
-            public void configChanged(String domain, String key) {
+            public void configChanged(final String domain, final String key) {
                 commandChar = IdentityManager.getGlobalConfig()
                         .getOptionChar("general", "commandchar");
                 silenceChar = IdentityManager.getGlobalConfig()

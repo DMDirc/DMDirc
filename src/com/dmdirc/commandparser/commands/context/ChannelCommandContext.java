@@ -41,10 +41,12 @@ public class ChannelCommandContext extends ChatCommandContext {
      * Creates a new channel command context.
      *
      * @param source The source of the command
-     * @param commandInfo The command info object which associated the command with the input
+     * @param commandInfo The command info object which associated the command
+     * with the input
      * @param channel The channel associated with the command
      */
-    public ChannelCommandContext(Window source, CommandInfo commandInfo, Channel channel) {
+    public ChannelCommandContext(final Window source,
+            final CommandInfo commandInfo, final Channel channel) {
         super(source, commandInfo, channel);
         this.channel = channel;
     }
