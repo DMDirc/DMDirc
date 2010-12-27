@@ -23,8 +23,10 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -44,7 +46,6 @@ import javax.swing.text.StyledDocument;
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various
  * control codes which are a de-facto IRC standard.
- * @author chris
  */
 public class Styliser implements ConfigChangeListener {
 
@@ -139,26 +140,39 @@ public class Styliser implements ConfigChangeListener {
     /** Colours to use for URI and channel links. */
     private Color uriColour, channelColour;
 
-    /** The container that owns this styliser. */
-    private final FrameContainer<?> owner;
+    /** Server to get channel prefixes from, or null if not applicable. */
+    private final Server server;
+    /** Config manager to retrive settings from. */
+    private final ConfigManager configManager;
 
     /**
      * Creates a new instance of Styliser.
      *
      * @param owner The {@link FrameContainer} that owns this styliser.
-     * @since 0.6.3
      */
     public Styliser(final FrameContainer<?> owner) {
-        this.owner = owner;
+        this(owner.getServer(), owner.getConfigManager());
+    }
 
-        owner.getConfigManager().addChangeListener("ui", "linkcolour", this);
-        owner.getConfigManager().addChangeListener("ui", "channelcolour", this);
-        owner.getConfigManager().addChangeListener("ui", "stylelinks", this);
-        owner.getConfigManager().addChangeListener("ui", "stylechannels", this);
-        styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
-        styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
-        uriColour = owner.getConfigManager().getOptionColour("ui", "linkcolour");
-        channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
+    /**
+     * Creates a new instance of Styliser.
+     *
+     * @param server The {@link Server} that owns this styliser or null if n/a.
+     * @param configManager the {@link ConfigManager} to get settings from.
+     * @since 0.6.3
+     */
+    public Styliser(final Server server, final ConfigManager configManager) {
+        this.server = server;
+        this.configManager = configManager;
+
+        configManager.addChangeListener("ui", "linkcolour", this);
+        configManager.addChangeListener("ui", "channelcolour", this);
+        configManager.addChangeListener("ui", "stylelinks", this);
+        configManager.addChangeListener("ui", "stylechannels", this);
+        styleURIs = configManager.getOptionBool("ui", "stylelinks");
+        styleChannels = configManager.getOptionBool("ui", "stylechannels");
+        uriColour = configManager.getOptionColour("ui", "linkcolour");
+        channelColour = configManager.getOptionColour("ui", "channelcolour");
     }
 
     /**
@@ -289,8 +303,8 @@ public class Styliser implements ConfigChangeListener {
      */
     public String doLinks(final String string) {
         String target = string;
-        final String prefixes = owner.getServer() == null ? null
-                : owner.getServer().getChannelPrefixes();
+        final String prefixes = server == null ? null
+                : server.getChannelPrefixes();
 
         String target2 = target;
         target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
@@ -326,7 +340,7 @@ public class Styliser implements ConfigChangeListener {
         final StringBuilder smilies = new StringBuilder();
 
         for (Map.Entry<String, String> icon
-                : owner.getConfigManager().getOptions("icon").entrySet()) {
+                : configManager.getOptions("icon").entrySet()) {
             if (icon.getKey().startsWith("smilie-")) {
                 if (smilies.length() > 0) {
                     smilies.append('|');
@@ -861,13 +875,13 @@ public class Styliser implements ConfigChangeListener {
     @Override
     public void configChanged(final String domain, final String key) {
         if ("stylelinks".equals(key)) {
-            styleURIs = owner.getConfigManager().getOptionBool("ui", "stylelinks");
+            styleURIs = configManager.getOptionBool("ui", "stylelinks");
         } else if ("stylechannels".equals(key)) {
-            styleChannels = owner.getConfigManager().getOptionBool("ui", "stylechannels");
+            styleChannels = configManager.getOptionBool("ui", "stylechannels");
         } else if ("linkcolour".equals(key)) {
-            uriColour = owner.getConfigManager().getOptionColour("ui", "linkcolour");
+            uriColour = configManager.getOptionColour("ui", "linkcolour");
         } else if ("channelcolour".equals(key)) {
-            channelColour = owner.getConfigManager().getOptionColour("ui", "channelcolour");
+            channelColour = configManager.getOptionColour("ui", "channelcolour");
         }
     }
 
