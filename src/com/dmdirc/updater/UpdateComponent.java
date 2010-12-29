@@ -98,6 +98,6 @@ public interface UpdateComponent {
      * @return True if a client restart is needed, false otherwise
      * @throws java.lang.Exception If any error occured
      */
-    boolean doInstall(String path) throws Exception;
+    boolean doInstall(String path) throws Exception; //NOPMD
 
 }

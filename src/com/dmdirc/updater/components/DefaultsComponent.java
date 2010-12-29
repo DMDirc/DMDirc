@@ -33,8 +33,6 @@ import java.io.IOException;
 
 /**
  * Represents the default identities.
- *
- * @author chris
  */
 public class DefaultsComponent implements UpdateComponent {
 
@@ -62,7 +60,8 @@ public class DefaultsComponent implements UpdateComponent {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
 
         if (globalConfig.hasOptionString("identity", "defaultsversion")) {
-            return new Version(globalConfig.getOption("identity", "defaultsversion"));
+            return new Version(globalConfig.getOption("identity",
+                    "defaultsversion"));
         } else {
             return new Version(-1);
         }

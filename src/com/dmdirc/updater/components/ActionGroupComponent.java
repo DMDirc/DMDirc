@@ -28,15 +28,15 @@ import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
+import java.io.IOException;
+
 /**
  * Update component for action groups.
- *
- * @author chris
  */
 public class ActionGroupComponent implements UpdateComponent {
 
     /** The group that this component represents. */
-    private ActionGroup group;
+    private final ActionGroup group;
 
     /**
      * Creates a new ActionGroupComponent for the specified action group.
@@ -96,7 +96,7 @@ public class ActionGroupComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Exception {
+    public boolean doInstall(final String path) throws IOException {
         ActionManager.installActionPack(path);
         return false;
     }

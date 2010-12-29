@@ -32,8 +32,6 @@ import java.io.File;
 
 /**
  * Represents the client component, which covers the core client resources.
- *
- * @author chris
  */
 public class ClientComponent implements UpdateComponent {
 
@@ -70,7 +68,8 @@ public class ClientComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
-        final File targetFile = new File(new File(path).getParent() + File.separator + ".DMDirc.jar");
+        final File targetFile = new File(new File(path).getParent()
+                + File.separator + ".DMDirc.jar");
 
         if (requiresManualInstall()) {
             if (DMDircResourceManager.isRunningFromJar()) {
@@ -99,14 +98,16 @@ public class ClientComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
-        return IdentityManager.getGlobalConfig().getOption("version", "version");
+        return IdentityManager.getGlobalConfig().getOption("version",
+                "version");
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) {
         final File tmpFile = new File(path);
-        final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
+        final File targetFile = new File(tmpFile.getParent() + File.separator
+                + ".DMDirc.jar");
 
         if (targetFile.exists()) {
             targetFile.delete();
@@ -114,9 +115,10 @@ public class ClientComponent implements UpdateComponent {
 
         tmpFile.renameTo(targetFile);
 
-         // @deprecated Should be removed when updater UI changes are implemented.
-        final String message = this.getManualInstructions(path);
         if (requiresManualInstall()) {
+            // @deprecated Should be removed when updater UI changes are
+            // implemented.
+            final String message = this.getManualInstructions(path);
             Main.getUI().showMessageDialog("Client update downloaded", message);
         }
 

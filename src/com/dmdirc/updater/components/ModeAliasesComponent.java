@@ -33,8 +33,6 @@ import java.io.IOException;
 
 /**
  * Represents the mode alias identities.
- *
- * @author chris
  */
 public class ModeAliasesComponent implements UpdateComponent {
 
@@ -62,7 +60,8 @@ public class ModeAliasesComponent implements UpdateComponent {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
 
         if (globalConfig.hasOptionString("identity", "modealiasversion")) {
-            return new Version(globalConfig.getOption("identity", "modealiasversion"));
+            return new Version(globalConfig.getOption("identity",
+                    "modealiasversion"));
         } else {
             return new Version(-1);
         }
