@@ -278,7 +278,6 @@ public final class CommandManager {
         registerCommand(new AliasCommand());
         registerCommand(new AllServers());
         registerCommand(new Clear());
-        registerCommand(new Debug());
         registerCommand(new Echo());
         registerCommand(new Exit());
         registerCommand(new Help());
