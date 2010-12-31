@@ -189,7 +189,16 @@ fi;
 
 if [ "windows" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "================================================================"
-	echo "Building Windows installer"
+	echo "Building NSIS Windows installer"
+	echo "================================================================"
+	cd windows
+	./makeInstallerNSIS.sh ${OPT}${JARFILE}${JRE}-k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_windows}"
+	cd ${THISDIR}
+fi;
+
+if [ "oldwindows" = "${BUILDTARGET}" ]; then
+	echo "================================================================"
+	echo "Building Old Windows installer"
 	echo "================================================================"
 	cd windows
 	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_windows}"
