@@ -130,7 +130,10 @@ public interface UIController {
 
     /**
      * Shows the (addons) migration wizard for the ui.
+     *
+     * @deprecated Migration wizard is no longer used or needed
      */
+    @Deprecated
     void showMigrationWizard();
 
     /**
