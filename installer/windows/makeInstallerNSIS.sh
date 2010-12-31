@@ -10,6 +10,8 @@ if [ ! -e "../../modules/installer/windows/" ]; then
 fi;
 
 
+signEXE="true"
+
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -24,9 +26,13 @@ while test -n "$1"; do
 			TAGGED=`git describe --tags`
 			TAGGED=${TAGGED%%-*}
 			;;
+		--unsigned|-u)
+			signEXE="false"
+			;;
 		--extra|-e)
 			shift
 			finalTag="-${1}"
+			;;
 	esac
 	shift
 done
@@ -82,3 +88,35 @@ else
 fi;
 
 mv "${SRC}" "../output/${DEST}"
+
+# Get signcode path
+SIGNCODE=`which signcode`
+
+if [ "" = "${SIGNCODE}" ]; then
+	echo "Signcode not found. EXE's will not be digitally signed."
+fi
+
+# Sign stuff!
+signexe() {
+	if [ "" != "${SIGNCODE}" ]; then
+		if [ -e "../signing/DMDirc.spc" -a -e "../signing/DMDirc.pvk" ]; then
+			echo "Digitally Signing EXE (${@})..."
+			${SIGNCODE} -spc "../signing/DMDirc.spc" -v "../signing/DMDirc.pvk" -i "http://www.dmdirc.com/" -n "DMDirc Installer" $@ 2>/dev/null || {
+				kill -15 $$;
+			};
+			rm ${@}.sig
+			rm ${@}.bak
+		fi
+	fi
+}
+
+FULLINSTALLER="../output/${DEST}"
+
+echo "Chmodding.."
+chmod a+x ${FULLINSTALLER}
+if [ "${signEXE}" = "true" ]; then
+	echo "Signing.."
+	signexe ${FULLINSTALLER}
+else
+	echo "Not Signing.."
+fi;
