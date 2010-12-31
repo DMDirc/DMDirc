@@ -1,1 +1,0 @@
-* fixup dnsasync to perform retries and use multiple dns servers

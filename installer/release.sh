@@ -196,15 +196,6 @@ if [ "windows" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	cd ${THISDIR}
 fi;
 
-if [ "oldwindows" = "${BUILDTARGET}" ]; then
-	echo "================================================================"
-	echo "Building Old Windows installer"
-	echo "================================================================"
-	cd windows
-	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_windows}"
-	cd ${THISDIR}
-fi;
-
 if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "================================================================"
 	echo "Building OSX Bundle"
