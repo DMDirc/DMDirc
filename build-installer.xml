@@ -91,13 +91,13 @@
         <copy file="dist/DMDirc.jar"
             tofile="modules\installer\windows\files\DMDirc.jar"
             overwrite="true" />
-        <nsis script="modules\installer\windows\updater.nsi" verbosity="2">
+        <nsis script="modules\installer\windows\updater.nsi" verbosity="1">
             <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
-        <nsis script="modules\installer\windows\launcher.nsi" verbosity="2">
+        <nsis script="modules\installer\windows\launcher.nsi" verbosity="1">
             <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
-        <nsis script="modules\installer\windows\installer.nsi" verbosity="2">
+        <nsis script="modules\installer\windows\installer.nsi" verbosity="1">
             <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
         <delete dir="modules\installer\windows\files" />
