@@ -42,6 +42,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * The identity manager manages all known identities, providing easy methods
@@ -97,14 +98,13 @@ public final class IdentityManager {
      */
     public static void load() throws InvalidIdentityFileException {
         IDENTITIES.clear();
-        IDENTITIES.clear();
 
         loadVersion();
         loadDefaults();
         loadUser();
         loadConfig();
 
-        if (getProfiles().size() == 0) {
+        if (getCustomIdentities("profile").isEmpty()) {
             try {
                 Identity.buildProfile("Default Profile");
             } catch (IOException ex) {
@@ -423,7 +423,8 @@ public final class IdentityManager {
             IDENTITIES.add(target, identity);
         }
 
-        LOGGER.finer("Adding identity: " + identity + " (group: " + target + ")");
+        LOGGER.log(Level.FINER, "Adding identity: {0} (group: {1})",
+                new Object[]{identity, target});
 
         synchronized (LISTENERS) {
             for (IdentityListener listener : LISTENERS.safeGet(target)) {
