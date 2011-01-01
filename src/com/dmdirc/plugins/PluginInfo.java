@@ -657,7 +657,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             if (data.length > 1) {
                 // Check plugin minimum version matches.
                 if (pi.getVersion().compareTo(new Version(data[1])) < 0) {
-                    requirementsError = "Plugin '" + data[0] 
+                    requirementsError = "Plugin '" + data[0]
                             + "' is too old (Required Version: " + data[1]
                             + ", Actual Version: " + pi.getVersion() + ")";
                     return false;
@@ -665,7 +665,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 // Check plugin maximum version matches.
                 if (data.length > 2 && pi.getVersion().compareTo(
                         new Version(data[2])) > 0) {
-                    requirementsError = "Plugin '" + data[0] 
+                    requirementsError = "Plugin '" + data[0]
                             + "' is too new (Required Version: " + data[2]
                             + ", Actual Version: " + pi.getVersion() + ")";
                     return false;
@@ -857,7 +857,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             lastError = "Unable to loadPlugin, all requirements not met. (" + requirementsError + ")";
             return;
         }
-        loadIdentities();
+
         if (isTempLoaded()) {
             tempLoaded = false;
             loadRequired();
@@ -876,15 +876,18 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         } else {
             if (isLoaded() || metaData == null || isLoading) {
                 lastError = "Not Loading: (" + isLoaded() + "||" + (metaData == null) + "||" + isLoading + ")";
-                unloadIdentities();
                 return;
             }
+
             isLoading = true;
+            loadIdentities();
             loadRequired();
             loadClass(getMainClass());
+
             if (isLoaded()) {
                 ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
             }
+
             isLoading = false;
         }
     }
