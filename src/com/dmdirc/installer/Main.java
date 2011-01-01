@@ -98,11 +98,9 @@ public final class Main {
     public static synchronized Installer getInstaller() {
         if (myInstaller == null) {
             final String osName = System.getProperty("os.name");
-            if (osName.startsWith("Mac OS")) {
-                // myInstaller = new MacInstaller();
-            } else if (osName.startsWith("Windows")) {
+            if (osName.startsWith("Windows")) {
                 myInstaller = new WindowsInstaller();
-            } else {
+            } else if(!osName.startsWith("Mac OS")) {
                 myInstaller = new LinuxInstaller();
             }
         }

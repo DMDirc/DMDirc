@@ -349,7 +349,7 @@ public class CertificateManager implements X509TrustManager {
             try {
                 actionSem.acquire();
             } catch (InterruptedException ie) {
-                throw new CertificateException("Thread aborted, ");
+                throw new CertificateException("Thread aborted", ie);
             }
 
             switch (action) {

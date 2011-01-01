@@ -139,10 +139,9 @@ public class TabCompleter {
     public void addEntry(final TabCompletionType type, final String entry) {
         entries.add(type, entry);
 
-        if (type == TabCompletionType.COMMAND
-                && entry.startsWith(String.valueOf(CommandManager.getCommandChar()))
-                && !entry.startsWith(String.valueOf(CommandManager.getCommandChar())
-                + CommandManager.getSilenceChar())) {
+        if (type == TabCompletionType.COMMAND && entry.length() > 1
+                && entry.charAt(0) == CommandManager.getCommandChar()
+                && entry.charAt(1) != CommandManager.getSilenceChar()) {
             // If we're adding a command name that doesn't include the silence
             // character, also add a version with the silence char
             addEntry(type, entry.substring(0, 1) + CommandManager.getSilenceChar()

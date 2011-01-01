@@ -614,7 +614,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             final String[] filelist = files.split("\\|");
             boolean foundFile = false;
             for (String file : filelist) {
-                if ((new File(file)).exists()) {
+                if (new File(file).exists()) {
                     foundFile = true;
                     break;
                 }

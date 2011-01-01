@@ -916,10 +916,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 }
 
                 parser.joinChannels(pending.toArray(new ChannelJoinRequest[pending.size()]));
-            } else {
-                // TODO: Need to pass key
-                // TODO (uris): address.getChannels().add(channel);
             }
+            // TODO: otherwise: address.getChannels().add(channel);
         }
     }
 

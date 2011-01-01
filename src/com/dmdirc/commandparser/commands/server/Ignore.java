@@ -44,7 +44,7 @@ import java.util.regex.PatternSyntaxException;
  * @author chris
  */
 public final class Ignore extends Command implements IntelligentCommand,
-        CommandInfo{
+        CommandInfo {
     
     /**
      * Creates a new instance of Ignore.
@@ -196,8 +196,6 @@ public final class Ignore extends Command implements IntelligentCommand,
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--regex")) {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
-            // TODO: If/when passed a server, include known ignore list entries
         }
         
         return targets;

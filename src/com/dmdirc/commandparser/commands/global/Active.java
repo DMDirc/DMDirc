@@ -56,7 +56,7 @@ public final class Active extends Command implements IntelligentCommand,
         
         final FrameContainer<?> window = WindowManager.getActiveWindow();
         
-        if (window != null && window instanceof WritableFrameContainer<?>) {
+        if (window instanceof WritableFrameContainer<?>) {
             ((WritableFrameContainer<?>) window).getCommandParser()
                     .parseCommand(window, context.getSource(), command);
         }

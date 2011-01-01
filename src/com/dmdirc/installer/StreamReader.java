@@ -92,7 +92,7 @@ public class StreamReader extends Thread {
             while ((line = reader.readLine()) != null) {
                 if (data != null) {
                     if (data.length() > 0) {
-                        data.append("\n");
+                        data.append('\n');
                     }
                     data.append(line);
                 }

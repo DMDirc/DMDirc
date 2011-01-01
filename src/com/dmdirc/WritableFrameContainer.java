@@ -329,7 +329,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
             containers.addAll(getServer().getChildren());
 
             for (FrameContainer<?> container : containers) {
-                if (container == null || !(container instanceof WritableFrameContainer<?>)) {
+                if (!(container instanceof WritableFrameContainer<?>)) {
                     continue;
                 }
 

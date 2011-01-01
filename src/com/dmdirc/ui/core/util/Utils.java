@@ -1,17 +1,17 @@
 /*
- * 
+ *
  * Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,7 +56,7 @@ public class Utils {
      * @param lineParts Parts of a line comprising the whole
      * @param fontName Default font name to use
      * @param fontSize Default font size to use
-     * 
+     *
      * @return AttributedString representing the specified StyledDocument
      */
     public static ExtendedAttributedString getAttributedString(final Styliser styliser,
@@ -73,7 +73,7 @@ public class Utils {
                     "Unable to insert styled string: " +
                     ex.getMessage());
         }
-        
+
         if (attString.getIterator().getEndIndex() != 0) {
             final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
@@ -140,16 +140,16 @@ public class Utils {
                     attString.addAttribute(TextAttribute.UNDERLINE,
                             TextAttribute.UNDERLINE_ON, element.getStartOffset(),
                             element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.SMILEY) {
-                    /* Lets avoid showing broken smileys shall we!
+                } /* else if (attrib == IRCTextAttribute.SMILEY) {
+                    Lets avoid showing broken smileys shall we!
                     final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
                     getScaledInstance(14, 14, Image.SCALE_DEFAULT);
                     ImageGraphicAttribute iga = new ImageGraphicAttribute(image,
                     (int) BOTTOM_ALIGNMENT, 5, 5);
                     attString.addAttribute(TextAttribute.CHAR_REPLACEMENT, iga,
                     element.getStartOffset(), element.getEndOffset());
-                     */
-                }
+
+                }*/
             }
         }
 
