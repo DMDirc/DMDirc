@@ -28,6 +28,7 @@ import com.dmdirc.util.URLBuilder;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
@@ -85,10 +86,10 @@ public final class IconManager implements ConfigChangeListener {
         if (icons.containsKey(type)) {
             return icons.get(type);
         }
-        final URL iconURL = getIconURL(type);
-        final Image iconImage = Toolkit.getDefaultToolkit().getImage(iconURL);
-        final Image scaledIconImage = getScaledImage(iconImage, 16, 16);
         if (!icons.containsKey(type)) {
+            final URL iconURL = getIconURL(type);
+            final Image iconImage = Toolkit.getDefaultToolkit().getImage(iconURL);
+            final Image scaledIconImage = getScaledImage(iconImage, 16, 16);
             icons.put(type, new ImageIcon(scaledIconImage));
         }
         return icons.get(type);
@@ -159,6 +160,12 @@ public final class IconManager implements ConfigChangeListener {
 
         //Get the url for the speficied path
         URL imageURL = URLBuilder.buildURL(path);
+        //Check URL points to a valid location
+        try {
+            imageURL.openConnection().connect();
+        } catch (IOException ex) {
+            imageURL = defaultURL;
+        }
 
         if (imageURL == null && defaultURL != null) {
            imageURL = defaultURL;
@@ -181,7 +188,7 @@ public final class IconManager implements ConfigChangeListener {
         cal.setTime(new Date());
         if ((cal.get(Calendar.MONTH) == Calendar.DECEMBER
                 && cal.get(Calendar.DAY_OF_MONTH) >= 12
-                && cal.get(Calendar.DAY_OF_MONTH) <= 31) 
+                && cal.get(Calendar.DAY_OF_MONTH) <= 31)
                 && ("icon".equals(type) || "logo".equals(type))) {
             return "logo-special";
         }
