@@ -29,6 +29,7 @@ __history
 /reports/findbugs/
 /reports/report-fb.html
 /reports/report-pmd.*
+/reports/checkstyle.*
 /lib/clover.license
 /.clover
 /test_profile

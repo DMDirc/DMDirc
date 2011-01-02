@@ -7,142 +7,26 @@
     <target name="domostreports" depends="test-both,-mostreports,javadoc"
             description="Run all reports except Findbugs." />
 
-    <target name="checkstyle" depends="checkstyle-all, checkstyle-actions,
-                                       checkstyle-core,
-                                       checkstyle-commandparser,
-                                       checkstyle-config, checkstyle-logger,
-                                       checkstyle-parser, checkstyle-plugins,
-                                       checkstyle-ui, -remove-xml-files,
-                                       -move-index"
-            description="Run checkstyle." /> 
+    <target name="checkstyle" depends="checkstyle-all, -move-index" description="Run checkstyle." /> 
 
     <target name="-allreports" depends="findbugs, cpd, pmd, checkstyle" /> 
     <target name="-mostreports" depends="cpd, pmd, checkstyle" /> 
-    
-    <target name="checkstyle-plugins">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle-all-4.3.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/plugins/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-plugins.xml"/>
-            
-        </checkstyle>
-        <xslt in="reports/report-plugins.xml" out="reports/report-plugins.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="checkstyle-actions">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/actions/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-actions.xml"/>
-            
-        </checkstyle>
-        <xslt in="reports/report-actions.xml" out="reports/report-actions.html" style="checkstyle/checkstyle.xsl"/>
-    </target>            
-    
-    <target name="checkstyle-ui">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/ui/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-ui.xml"/>
-        </checkstyle>
-        
-        <xslt in="reports/report-ui.xml" out="reports/report-ui.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="checkstyle-parser">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="modules/parser/src/com/dmdirc/parser/irc/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-parser.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-parser.xml" out="reports/report-parser.html" style="checkstyle/checkstyle.xsl"/>
 
+    <target name="-init-checkstyle">
+        <taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.3-all.jar"/>
     </target>
-
-    <target name="checkstyle-addons">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="modules/addons/src/com/dmdirc/addons/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-addons.xml"/>
+    
+    <target name="checkstyle-all" depends="-init-checkstyle">
+        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure" failOnViolation="false">
+            <fileset dir="src/" includes="**/*.java" excludes="net/miginfocom/**"/>
+            <fileset dir="modules/plugins/src/" includes="**/*.java"/>
+            <fileset dir="modules/parser/src/" includes="**/*.java"/>
+            <fileset dir="modules/util/src/" includes="**/*.java"/>
+            <formatter type="xml" tofile="reports/checkstyle.xml"/>
         </checkstyle>
-        <xslt in="reports/report-addons.xml" out="reports/report-addons.html" style="checkstyle/checkstyle.xsl"/>
-
+        <xslt in="reports/checkstyle.xml" out="reports/checkstyle.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
-    <target name="checkstyle-logger">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/logger/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-logger.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-logger.xml" out="reports/report-logger.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    
-    <target name="checkstyle-config">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/config/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-config.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-config.xml" out="reports/report-config.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="checkstyle-commandparser">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/commandparser/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-commandparser.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-commandparser.xml" out="reports/report-commandparser.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="checkstyle-core">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            <fileset dir="src/com/dmdirc/" includes="*.java"/>
-            <formatter type="xml" tofile="reports/report-core.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-core.xml" out="reports/report-core.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="checkstyle-all">
-        <taskdef resource="checkstyletask.properties"
-                         classpath="checkstyle.jar"/>
-        <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
-                                failOnViolation="false">
-            
-            <fileset dir="src/com/dmdirc/" includes="**/*.java"/>
-            <formatter type="xml" tofile="reports/report-all.xml"/>
-        </checkstyle>
-        <xslt in="reports/report-all.xml" out="reports/report-all.html" style="checkstyle/checkstyle.xsl"/>
-    </target>
-    
-    <target name="-remove-xml-files">
-        <delete>
-            <fileset dir="reports/" includes="*.xml"/>
-        </delete>
-    </target>
-
     <target name="-move-index">
         <!-- <copy file="checkstyle/index.html" tofile="reports/index.html"/> -->
         <copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
