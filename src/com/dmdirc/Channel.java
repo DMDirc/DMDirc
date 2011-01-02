@@ -506,7 +506,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             getModes(client),
             Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME,
             client.getClient().getUsername(),
-            client.getClient().getHostname()
+            client.getClient().getHostname(),
         };
 
         if (showColours) {

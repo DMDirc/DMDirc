@@ -137,7 +137,7 @@ public final class IdentityManager {
         final String dir = getDirectory();
 
         for (String target : targets) {
-            File file = new File(dir + target);
+            final File file = new File(dir + target);
 
             if (file.exists() && !file.isDirectory()) {
                 boolean success = false;

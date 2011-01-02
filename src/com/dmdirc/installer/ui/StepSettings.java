@@ -69,7 +69,7 @@ public final class StepSettings extends SwingStep implements Settings {
     public StepSettings() {
         super();
 
-        DefaultSettings defaultSettings = new DefaultSettings();
+        final DefaultSettings defaultSettings = new DefaultSettings();
         shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());
         shortcutDesktop.setSelected(defaultSettings.getShortcutDesktopState());
         shortcutQuick.setSelected(defaultSettings.getShortcutQuickState());

@@ -22,9 +22,9 @@
 
 package com.dmdirc.actions.validators;
 
+import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
-import com.dmdirc.actions.ConditionTree;
 
 /**
  * Validates a condition tree.

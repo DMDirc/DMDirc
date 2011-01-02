@@ -24,12 +24,12 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.util.validators.NumericalValidator;
-import com.dmdirc.util.validators.OptionalValidator;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.validators.NumericalValidator;
+import com.dmdirc.util.validators.OptionalValidator;
 
 import java.util.ArrayList;
 import java.util.Collections;

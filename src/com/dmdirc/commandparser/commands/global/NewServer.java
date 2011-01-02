@@ -99,7 +99,7 @@ public final class NewServer extends Command implements IntelligentCommand,
      */
     public static URI getURI(final String address) throws URISyntaxException {
         final URI uri = new URI(address);
-        int port = uri.getPort();
+        final int port = uri.getPort();
 
         // Either no port specified, or a +port was used, lets try to find one.
         // Otherwise just return the URI.

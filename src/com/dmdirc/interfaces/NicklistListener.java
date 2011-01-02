@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
+
 import java.util.Collection;
 
 /**
@@ -30,7 +31,6 @@ import java.util.Collection;
  * channel's list of active users (the 'nicklist').
  *
  * @since 0.6.5
- * @author chris
  */
 public interface NicklistListener {
 

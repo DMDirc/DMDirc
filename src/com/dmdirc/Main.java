@@ -59,10 +59,8 @@ import java.util.logging.Level;
 
 /**
  * Main class, handles initialisation.
- *
- * @author chris
  */
-public class Main {
+public final class Main {
 
     /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;

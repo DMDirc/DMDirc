@@ -315,7 +315,7 @@ public class CertificateManager implements X509TrustManager {
         }
 
         for (X509Certificate cert : chain) {
-            TrustResult trustResult = isTrusted(cert);
+            final TrustResult trustResult = isTrusted(cert);
 
             if (checkDate) {
                 // Check that the certificate is in-date

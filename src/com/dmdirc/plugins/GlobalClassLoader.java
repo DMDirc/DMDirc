@@ -101,7 +101,7 @@ public final class GlobalClassLoader extends ClassLoader {
         try {
             return super.loadClass(name);
         } catch (ClassNotFoundException e) {
-            byte[] data = getClassData(name);
+            final byte[] data = getClassData(name);
             if (data != null) {
                 return defineClass(name, data);
             }
@@ -109,7 +109,7 @@ public final class GlobalClassLoader extends ClassLoader {
 
         // Check the other plugins.
         for (PluginInfo pi : PluginManager.getPluginManager().getPluginInfos()) {
-            List<String> classList = pi.getClassList();
+            final List<String> classList = pi.getClassList();
             if (classList.contains(name) && pi.getPluginClassLoader() != null) {
                 return pi.getPluginClassLoader().loadClass(name, false);
             }
@@ -137,7 +137,7 @@ public final class GlobalClassLoader extends ClassLoader {
         try {
             final String jarname = resourcesList.get(classname);
             if (jarname != null) {
-                ResourceManager rm = ResourceManager.getResourceManager("jar://" + jarname);
+                final ResourceManager rm = ResourceManager.getResourceManager("jar://" + jarname);
                 final String filename = classname.replace('.', '/') + ".class";
                 if (rm.resourceExists(filename)) {
                     return rm.getResourceBytes(filename);

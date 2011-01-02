@@ -88,13 +88,13 @@ public class WizardPanel extends JPanel {
      * @return Step
      */
     public Step getStep(final String stepName) {
-        Step step = null;
         for (SwingStep loopStep : layout.getSteps()) {
             if (stepName.equals(loopStep.getStepName())) {
                 return loopStep;
             }
         }
-        return step;
+
+        return null;
     }
 
     /**

@@ -24,6 +24,7 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
+
 import java.io.File;
 
 /**

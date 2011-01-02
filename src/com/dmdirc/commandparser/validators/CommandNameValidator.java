@@ -22,9 +22,10 @@
 
 package com.dmdirc.commandparser.validators;
 
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.util.validators.RegexStringValidator;
 import com.dmdirc.util.validators.ValidatorChain;
-import com.dmdirc.commandparser.CommandManager;
+
 import java.util.regex.Pattern;
 
 /**

@@ -363,7 +363,7 @@ public final class UpdateChecker implements Runnable {
      */
     @Precondition("The specified name is not null")
     public static UpdateComponent findComponent(final String name) {
-        assert(name != null);
+        assert name != null;
 
         for (UpdateComponent component : COMPONENTS) {
             if (name.equals(component.getName())) {

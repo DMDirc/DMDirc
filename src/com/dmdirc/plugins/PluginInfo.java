@@ -27,13 +27,13 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -1037,7 +1037,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             return false;
         } else {
             final String unloadable = getKeyValue("metadata", "unloadable", "true");
-            return (unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1"));
+            return unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1");
         }
     }
 

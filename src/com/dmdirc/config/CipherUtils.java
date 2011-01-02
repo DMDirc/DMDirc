@@ -56,12 +56,6 @@ public class CipherUtils {
     /** Singleton instance. */
     private static CipherUtils me;
 
-    /** Encryption cipher. */
-    private Cipher ecipher;
-
-    /** Decryption cipher. */
-    private Cipher dcipher;
-
     /** Salt. */
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
@@ -73,6 +67,12 @@ public class CipherUtils {
 
     /** Number of auth attemps before failing the attempt. */
     private static final int AUTH_TRIES = 4;
+
+    /** Encryption cipher. */
+    private Cipher ecipher;
+
+    /** Decryption cipher. */
+    private Cipher dcipher;
 
     /** User password. */
     private String password;

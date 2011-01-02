@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -299,7 +300,7 @@ public class PluginManager implements ActionListener {
             return false;
         }
 
-        PluginInfo pluginInfo = getPluginInfo(filename);
+        final PluginInfo pluginInfo = getPluginInfo(filename);
         final boolean wasLoaded = pluginInfo.isLoaded();
 
         if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }
@@ -411,7 +412,7 @@ public class PluginManager implements ActionListener {
     public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
         final Map<String, PluginInfo> res = new HashMap<String, PluginInfo>();
 
-        final LinkedList<File> dirs = new LinkedList<File>();
+        final Deque<File> dirs = new LinkedList<File>();
 
         dirs.add(new File(myDir));
 

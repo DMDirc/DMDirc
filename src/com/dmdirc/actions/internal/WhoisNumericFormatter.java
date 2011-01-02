@@ -28,6 +28,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ActionListener;
+
 import java.util.HashMap;
 import java.util.Map;
 

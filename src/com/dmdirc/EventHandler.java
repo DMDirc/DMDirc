@@ -73,7 +73,7 @@ public abstract class EventHandler implements CallbackInterface {
      * @throws CallbackNotFoundException if the specified callback isn't found
      */
     protected abstract <T extends CallbackInterface> void addCallback(
-            final CallbackManager<?> cbm, final Class<T> type) throws CallbackNotFoundException;
+            final CallbackManager<?> cbm, final Class<T> type);
 
     /**
      * Retrieves the server belonging to this EventHandler's owner.

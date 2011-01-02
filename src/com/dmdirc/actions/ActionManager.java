@@ -48,8 +48,6 @@ import java.util.Map;
 
 /**
  * Manages all actions for the client.
- *
- * @author chris
  */
 public final class ActionManager {
 
@@ -106,7 +104,7 @@ public final class ActionManager {
         registerGroup(PerformWrapper.getPerformWrapper());
 
         new WhoisNumericFormatter(IdentityManager.getAddonIdentity()).register();
-       
+
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
             /** {@inheritDoc} */
@@ -128,7 +126,7 @@ public final class ActionManager {
             }
         });
     }
-    
+
     /**
      * Saves all actions.
      */
@@ -168,7 +166,7 @@ public final class ActionManager {
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
             Logger.assertTrue(type != null);
-            
+
             if(!ACTION_TYPES.contains(type)) {
                 ACTION_TYPES.add(type);
                 ACTIONTYPE_GROUPS.add(type.getType().getGroup(), type);
@@ -275,7 +273,7 @@ public final class ActionManager {
     private static void loadActions(final File dir) {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
-        
+
         if (!GROUPS.containsKey(dir.getName())) {
             GROUPS.put(dir.getName(), new ActionGroup(dir.getName()));
         }
@@ -293,7 +291,7 @@ public final class ActionManager {
     @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
         Logger.assertTrue(action != null);
- 
+
         for (ActionType trigger : action.getTriggers()) {
             ACTIONS.add(trigger, action);
         }
@@ -352,7 +350,7 @@ public final class ActionManager {
         Logger.assertTrue(action != null);
 
         unregisterAction(action);
-        
+
         action.delete();
     }
 
@@ -456,7 +454,7 @@ public final class ActionManager {
      * Creates a new group with the specified name.
      *
      * @param group The group to be created
-     * 
+     *
      * @return The newly created group
      */
     @Precondition({

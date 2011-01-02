@@ -114,7 +114,7 @@ public class URLHandler {
     protected static String getSanitisedString(final String urlString) {
         String sanitisedString = urlString.replace("|", "%7C");
 
-        int index = sanitisedString.indexOf('#');
+        final int index = sanitisedString.indexOf('#');
         if (sanitisedString.lastIndexOf('#') > index) {
             sanitisedString = sanitisedString.substring(0, index + 1)
                     + sanitisedString.substring(index + 1).replace("#", "%23");

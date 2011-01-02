@@ -83,7 +83,7 @@ public abstract class Command {
         res.append(Styliser.CODE_FIXED);
         res.append(Styliser.CODE_BOLD);
 
-        int[] maxsizes = new int[headers.length];
+        final int[] maxsizes = new int[headers.length];
 
         for (int i = 0; i < headers.length; i++) {
             maxsizes[i] = headers[i].length() + 3;

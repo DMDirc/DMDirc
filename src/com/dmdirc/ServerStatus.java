@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.RollingList;
+
 import java.util.ArrayList;
 import java.util.List;
 

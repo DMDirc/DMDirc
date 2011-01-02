@@ -28,8 +28,8 @@ import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
-
 import com.dmdirc.config.prefs.PreferencesDialogModel;
+
 import javax.swing.KeyStroke;
 import javax.swing.text.StyledDocument;
 

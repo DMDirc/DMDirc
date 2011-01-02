@@ -65,14 +65,14 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The domain name for misc settings. */
     private static final String DOMAIN_MISC = "misc".intern();
 
-    /** The location of the file we're reading/saving. */
-    private String location;
-
     /** Whether or not this action is disabled. */
     protected boolean disabled;
 
     /** The config file we're using. */
     protected ConfigFile config;
+
+    /** The location of the file we're reading/saving. */
+    private String location;
 
     /**
      * Creates a new instance of Action. The group and name specified must
@@ -388,7 +388,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param data The relevant section of the action configuration
      * @return True if the condition is valid, false otherwise
      */
-    private boolean readCondition(final Map<String,String> data) {
+    private boolean readCondition(final Map<String, String> data) {
         int arg = 0;
         ActionComponent component = null;
         ActionComparison comparison = null;

@@ -22,14 +22,12 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.util.validators.ValidationResponse;
 
 /**
  * Validating commands are capable of validating their arguments to determine
  * whether the input would be valid or not.
- *
- * @author chris
  */
 public interface ValidatingCommand {
 

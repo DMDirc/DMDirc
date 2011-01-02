@@ -78,7 +78,7 @@ public class JoinChannelCommand extends Command implements
         final List<ChannelJoinRequest> channels = new ArrayList<ChannelJoinRequest>();
 
         for (String pair : args.getArgumentsAsString().split(",")) {
-            int index = pair.trim().indexOf(' ');
+            final int index = pair.trim().indexOf(' ');
 
             if (index == -1) {
                 channels.add(new ChannelJoinRequest(pair));

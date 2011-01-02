@@ -470,13 +470,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @return list of channel names belonging to this server
      */
     public List<String> getChannels() {
-        final ArrayList<String> res = new ArrayList<String>();
-
-        for (String channel : channels.keySet()) {
-            res.add(channel);
-        }
-
-        return res;
+        return new ArrayList<String>(channels.keySet());
     }
 
     /**
@@ -1304,7 +1298,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 final Object[] arguments = new Object[]{
                     address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
                     address.getPort(), parser == null ? "Unknown" : getNetwork(),
-                    parser == null ? "Unknown" : parser.getLocalClient().getNickname()
+                    parser == null ? "Unknown" : parser.getLocalClient().getNickname(),
                 };
 
                 setName(Formatter.formatMessage(getConfigManager(),

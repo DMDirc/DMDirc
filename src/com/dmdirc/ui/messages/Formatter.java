@@ -61,7 +61,7 @@ public final class Formatter {
     @Precondition("The specified message type is not null")
     public static String formatMessage(final ConfigManager config, final String messageType,
             final Object... arguments) {
-        assert(messageType != null);
+        assert messageType != null;
 
         final String res = config.hasOptionString("formatter", messageType) ?
             config.getOption("formatter", messageType).replace("%-1$", "%"
@@ -99,7 +99,7 @@ public final class Formatter {
      */
     @Precondition("The specified format is not null")
     private static Object[] castArguments(final String format, final Object[] args) {
-        assert(format != null);
+        assert format != null;
 
         if (!TYPE_CACHE.containsKey(format)) {
             analyseFormat(format, args);

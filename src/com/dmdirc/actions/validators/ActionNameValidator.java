@@ -22,10 +22,10 @@
 
 package com.dmdirc.actions.validators;
 
-import com.dmdirc.util.validators.ValidationResponse;
-import com.dmdirc.util.validators.Validator;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
 
 import java.util.List;
 

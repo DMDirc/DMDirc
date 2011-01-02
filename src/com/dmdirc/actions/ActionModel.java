@@ -124,8 +124,8 @@ public class ActionModel {
     })
     public boolean trigger(final StringBuffer format,
             final Object... arguments) {
-        assert(triggers.length > 0);
-        assert(triggers[0] != null);
+        assert triggers.length > 0;
+        assert triggers[0] != null;
 
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
 
