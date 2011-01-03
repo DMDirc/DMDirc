@@ -63,7 +63,7 @@ public abstract class FrameContainer<T extends Window> {
     protected final ListenerList listeners = new ListenerList();
 
     /** The document used to store this container's content. */
-    protected final IRCDocument document;
+    protected IRCDocument document;
 
     /** The children of this frame. */
     protected final Collection<FrameContainer<?>> children
@@ -98,7 +98,11 @@ public abstract class FrameContainer<T extends Window> {
     private final IconChanger changer = new IconChanger();
 
     /** The styliser used by this container. */
-    private final Styliser styliser;
+    private Styliser styliser;
+    /** Object used to synchronise styliser access. */
+    private final Object styliserSync = new Object();
+    /** Object used to synchronise styliser access. */
+    private final Object documentSync = new Object();
 
     /**
      * Instantiate new frame container.
@@ -117,8 +121,6 @@ public abstract class FrameContainer<T extends Window> {
         this.name = name;
         this.title = title;
         this.windowClass = windowClass;
-        this.styliser = new Styliser(this);
-        this.document = new IRCDocument(getConfigManager(), getStyliser());
 
         // Can't assign directly to transcoder as it's final, and Java doesn't
         // like the two paths in the try/catch.
@@ -230,7 +232,12 @@ public abstract class FrameContainer<T extends Window> {
      * @since 0.6.4
      */
     public IRCDocument getDocument() {
-        return document;
+        synchronized (documentSync) {
+            if (document == null) {
+                document = new IRCDocument(getConfigManager(), getStyliser());
+            }
+            return document;
+        }
     }
 
     /**
@@ -364,7 +371,12 @@ public abstract class FrameContainer<T extends Window> {
      * @return this container's styliser
      */
     public Styliser getStyliser() {
-        return styliser;
+        synchronized (styliserSync) {
+            if (styliser == null) {
+                styliser = new Styliser(getServer(), getConfigManager());
+            }
+            return styliser;
+        }
     }
 
     /**
@@ -614,7 +626,7 @@ public abstract class FrameContainer<T extends Window> {
                     null, this, myLine);
         }
 
-        document.addText(lines);
+        getDocument().addText(lines);
     }
 
     /**
