@@ -149,6 +149,10 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         save();
 
+        IdentityManager.getGlobalConfig().addChangeListener("disable_action",
+                (group + "/" + name).replace(' ', '.'), this);
+        checkDisabled();
+
         ActionManager.registerAction(this);
     }
 
