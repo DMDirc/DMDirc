@@ -160,12 +160,6 @@ public final class IconManager implements ConfigChangeListener {
 
         //Get the url for the speficied path
         URL imageURL = URLBuilder.buildURL(path);
-        //Check URL points to a valid location
-        try {
-            imageURL.openConnection().connect();
-        } catch (IOException ex) {
-            imageURL = defaultURL;
-        }
 
         if (imageURL == null && defaultURL != null) {
            imageURL = defaultURL;
@@ -173,11 +167,18 @@ public final class IconManager implements ConfigChangeListener {
 
         if (imageURL == null && defaultURL == null) {
             imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+        }
 
-            if (imageURL == null) {
-                throw new IllegalArgumentException("Unable to load icon type '"
-                        + iconType + "', and unable to load default");
-            }
+        //Check URL points to a valid location
+        try {
+            imageURL.openConnection().connect();
+        } catch (IOException ex) {
+            imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+        }
+
+        if (imageURL == null) {
+            throw new IllegalArgumentException("Unable to load icon type '"
+                    + iconType + "', and unable to load default");
         }
 
         return imageURL;
