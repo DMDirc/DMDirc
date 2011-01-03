@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script generates the launcher updates
 LAUNCHERDIR=`dirname $0`
-LAUNCHERUPDATEDIR="/home/dmdirc/www/updates/launchers/"
+LAUNCHERUPDATEDIR="/tmp/launchers/"
 
 UNIXVERSION=`cat ${LAUNCHERDIR}/unix/DMDirc.sh | grep LAUNCHERVERSION= | awk -F\" '{print $2}'`
 WINDOWSVERSION=`cat ${LAUNCHERDIR}/windows/DMDirc.dpr | grep "launcherVersion: String =" | awk -F\' '{print $2}'`
@@ -23,31 +23,33 @@ else
 fi;
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
-	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: unix-${UNIXVERSION}";
+echo	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: unix-${UNIXVERSION}";
 	
 	FUNCTIONSFILE="${LAUNCHERDIR}/../installer/linux/functions.sh"
 	SRCFILE=${LAUNCHERDIR}/unix/DMDirc.sh
 	DESTFILE=${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh
 	
 	if [ -e "${FUNCTIONSFILE}" ]; then
-		FUNCTIONSLINE=`grep ${GREPOPTS} "^###FUNCTIONS_FILE###$" ${SRCFILE}`
+		FUNCTIONSLINE=`grep ${GREPOPTS} "^\s*###FUNCTIONS_FILE###\s*$" ${SRCFILE}`
 		if [ "${FUNCTIONSLINE}" == "" ]; then
 			cp ${SRCFILE} ${DESTFILE}
 		else
 			FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
 			
 			head -n ${FUNCTIONSLINE} ${SRCFILE} > ${DESTFILE}
-			cat functions.sh >> ${DESTFILE}
+			cat ${FUNCTIONSFILE} >> ${DESTFILE}
 			echo "" >> ${DESTFILE}
 			tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) ${SRCFILE} >> ${DESTFILE}
 		fi;
 	else
-		/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Unable to create unix launcher update, no functions.sh found."
+echo		/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Unable to create unix launcher update, no functions.sh found."
 	fi;
 fi;
 
+exit 0;
+
 if [ ! -e "${LAUNCHERUPDATEDIR}/windows-${WINDOWSVERSION}.zip" ]; then
-	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: windows-${WINDOWSVERSION}";
+echo	/home/dmdirc/scripts/oblong.sh "LAUNCHER" "Creating Launcher Update: windows-${WINDOWSVERSION}";
 	OLDDIR=${PWD}
 	cd ${LAUNCHERDIR}/windows
 	sh compile.sh

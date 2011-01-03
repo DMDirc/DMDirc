@@ -234,7 +234,7 @@ else
 	TAILOPTS="-n +"
 fi;
 
-FUNCTIONSLINE=`grep ${GREPOPTS} "^###FUNCTIONS_FILE###$" installerstub.sh`
+FUNCTIONSLINE=`grep ${GREPOPTS} "^\s*###FUNCTIONS_FILE###\s*$" installerstub.sh`
 FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
 
 head -n ${FUNCTIONSLINE} installerstub.sh  > ${RUNNAME}
@@ -316,7 +316,7 @@ if [ -e "${jarPath}/launcher/unix" ]; then
 			FUNCTIONSLINE=$((${FUNCTIONSLINE%%:*} + 0))
 
 			head -n ${FUNCTIONSLINE} ${SRCFILE} > ${DESTFILE}
-			cat functions.sh >> ${DESTFILE}
+			cat ${FUNCTIONSFILE} >> ${DESTFILE}
 			echo "" >> ${DESTFILE}
 			tail ${TAILOPTS}$((${FUNCTIONSLINE%%:*} + 1)) ${SRCFILE} >> ${DESTFILE}
 		fi;
