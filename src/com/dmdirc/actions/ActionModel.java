@@ -39,8 +39,6 @@ import java.util.List;
 /**
  * Represents the basic model of an action, and its triggering mechanism.
  * Saving and loading are handled by the Action class.
- *
- * @author chris
  */
 public class ActionModel {
 
@@ -130,7 +128,7 @@ public class ActionModel {
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
 
         if (!test(sub, arguments)) {
-            return true;
+            return false;
         }
 
         final FrameContainer<?> active = WindowManager.getActiveWindow();
