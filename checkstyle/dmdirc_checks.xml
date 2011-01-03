@@ -53,7 +53,9 @@
         <module name="MagicNumber">
 		<property name="ignoreHashCodeMethod" value="true"/>
         </module>
-	<module name="LineLength"/>
+	<module name="LineLength">
+		<property name="severity" value="warning"/>
+	</module>
 	<module name="JavaNCSS">
 	    <property name="methodMaximum" value="200"/>
 	</module>
