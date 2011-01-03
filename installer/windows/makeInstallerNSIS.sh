@@ -64,12 +64,14 @@ cp ../../../../src/com/dmdirc/res/icon.ico icon.ico
 
 cd ..
 
-makensis -DVERSION="${TAGGED}" -V2 updater.nsi
-makensis -DVERSION="${TAGGED}" -V2 launcher.nsi
-makensis -DVERSION="${TAGGED}" -V2 installer.nsi
+for NSI in updater.nsi launcher.nsi installer.nsi; do
+	LASTCOMMIT=`git rev-list --max-count=1 HEAD -- $NSI`
+	NSISVERSION=`git describe --tags --always $LASTCOMMIT`
+	makensis -DVERSION="${NSISVERSION}" -V2 $NSI;
+done
 
 cd "${OLDDIR}"
-SRC="../../modules/installer/output/DMDirc-${TAGGED}-Setup.exe"
+SRC="../../modules/installer/output/DMDirc-Setup.exe"
 
 doRename=0
 if [ "${TAGGED}" != "" ]; then
