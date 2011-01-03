@@ -581,8 +581,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param enabled true to enable, false to disable
      */
     public void setEnabled(final boolean enabled) {
-        if (enabled && IdentityManager.getGlobalConfig().hasOptionBool(
-                "disable_action", (group + "/" + name).replace(' ', '.'))) {
+        if (enabled) {
             IdentityManager.getConfigIdentity().unsetOption("disable_action",
                     (group + "/" + name).replace(' ', '.'));
         } else {
