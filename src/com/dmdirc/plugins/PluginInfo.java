@@ -50,9 +50,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 /**
- * This class is used to store meta information
- *
- * @author shane
+ * Stores plugin metadata and handles loading of plugin resources.
  */
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
@@ -852,11 +850,17 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Load the plugin files.
      */
     public void loadPlugin() {
-        updateProvides();
+        if (isLoaded() || metaData == null || isLoading) {
+            lastError = "Not Loading: (" + isLoaded() + "||" + (metaData == null) + "||" + isLoading + ")";
+            return;
+        }
+
         if (!checkRequirements(isTempLoaded() || tempLoaded)) {
             lastError = "Unable to loadPlugin, all requirements not met. (" + requirementsError + ")";
             return;
         }
+
+        updateProvides();
 
         if (isTempLoaded()) {
             tempLoaded = false;
@@ -874,11 +878,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 unloadPlugin();
             }
         } else {
-            if (isLoaded() || metaData == null || isLoading) {
-                lastError = "Not Loading: (" + isLoaded() + "||" + (metaData == null) + "||" + isLoading + ")";
-                return;
-            }
-
             isLoading = true;
             loadIdentities();
             loadRequired();
