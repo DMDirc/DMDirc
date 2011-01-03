@@ -3,7 +3,8 @@
 # This script launches dmdirc and attempts to update the jar file if needed.
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes, Simon
+# Mott
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -164,7 +165,7 @@ BSDJava2="/usr/local/diablo-jdk1.6.0/jre/bin/java"
 echo "---------------------"
 echo "DMDirc - Open Source IRC Client"
 echo "Launcher Version: ${LAUNCHERVERSION}"
-echo "Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes"
+echo "Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes, Simon Mott"
 echo "---------------------"
 if [ "${ISOSX}" = "1" ]; then
 	echo "Running on OS X."
@@ -339,11 +340,12 @@ if [ -e "${UPDATESOURCE}" ]; then
 	fi;
 	
 	if [ "${UPDATEOK}" = "1" ]; then
-		echo "Update successful."
-		messagedialog "Client Update" "Client Update successful"
 		if [ "${UPDATEONLY}" = "1" ]; then
 			exit 0;
 		fi;
+		echo "Update successful."
+		messagedialog "Client Update" "Client Update successful"
+
 	else
 		if [ "${UID}" = "" ]; then
 			UID=`id -u`;
