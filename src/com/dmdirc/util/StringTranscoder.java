@@ -27,8 +27,11 @@ import java.nio.charset.Charset;
 /**
  * Facilitates easy transcoding of strings.
  *
+ * @deprecated This kind of transcoding is not technically possible. This class
+ * should not be used and now makes no attempt to transcode.
  * @author Chris
  */
+@Deprecated
 public class StringTranscoder {
 
     /** The charset that is used by this transcoder. */
@@ -50,9 +53,11 @@ public class StringTranscoder {
      *
      * @param string The string to be transcoded
      * @return A new string of the appropriate charset
+     * @deprecated Does not function. Do not use this class.
      */
+    @Deprecated
     public String encode(final String string) {
-        return new String(string.getBytes(charset));
+        return string;
     }
 
     /**
@@ -61,9 +66,11 @@ public class StringTranscoder {
      *
      * @param string The string to be transcoded
      * @return A new string of the appropriate charset
+     * @deprecated Does not function. Do not use this class.
      */
+    @Deprecated
     public String decode(final String string) {
-        return new String(string.getBytes(), charset);
+        return string;
     }
 
 }

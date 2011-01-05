@@ -129,7 +129,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
             return;
         }
 
-        for (String part : splitLine(getTranscoder().encode(line))) {
+        for (String part : splitLine(line)) {
             if (!part.isEmpty()) {
                 server.getParser().sendMessage(target, part);
 
@@ -177,8 +177,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
 
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(getNickname(),
-                    getTranscoder().encode(action));
+            server.getParser().sendAction(getNickname(), action);
 
             doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
                     client, action);

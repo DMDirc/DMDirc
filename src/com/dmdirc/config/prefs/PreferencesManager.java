@@ -203,8 +203,6 @@ public final class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 "ui", "inputbuffersize", "Input buffer size",
                 "Number of items of input history to keep"));
-        category.addSetting(new PreferencesSetting("channel", "encoding",
-                "Encoding", "Encoding to use", charsetMap));
 
         ActionManager.processEvent(CoreActionType.CLIENT_PREFS_REQUESTED, null,
                 category, Boolean.FALSE);

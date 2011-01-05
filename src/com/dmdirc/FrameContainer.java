@@ -39,7 +39,6 @@ import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.StringTranscoder;
 
 import java.awt.Color;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -122,16 +121,7 @@ public abstract class FrameContainer<T extends Window> {
         this.title = title;
         this.windowClass = windowClass;
 
-        // Can't assign directly to transcoder as it's final, and Java doesn't
-        // like the two paths in the try/catch.
-        StringTranscoder tempTranscoder;
-        try {
-            tempTranscoder = new StringTranscoder(Charset.forName(
-                    config.getOption("channel", "encoding")));
-        } catch (IllegalArgumentException ex) {
-            tempTranscoder = new StringTranscoder(Charset.forName("UTF-8"));
-        }
-        transcoder = tempTranscoder;
+        transcoder = new StringTranscoder(null);
 
         setIcon(icon);
     }
@@ -244,9 +234,11 @@ public abstract class FrameContainer<T extends Window> {
      * Retrieves the {@link StringTranscoder} used to transcode this frame's
      * text.
      *
+     * @deprecated Encoding is now handled by parsers, do not use.
      * @return This frame's transcoder
      * @since 0.6.4
      */
+    @Deprecated
     public StringTranscoder getTranscoder() {
         return transcoder;
     }

@@ -154,7 +154,7 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         final ClientInfo me = server.getParser().getLocalClient();
         final String[] details = getDetails(channelInfo.getChannelClient(me));
 
-        for (String part : splitLine(getTranscoder().encode(line))) {
+        for (String part : splitLine(line)) {
             if (!part.isEmpty()) {
                 final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
@@ -199,9 +199,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
                     this, channelInfo.getChannelClient(me), action);
 
             addLine(buff, details[0], details[1], details[2], details[3],
-                    getTranscoder().encode(action), channelInfo);
+                    action, channelInfo);
 
-            channelInfo.sendAction(getTranscoder().encode(action));
+            channelInfo.sendAction(action);
         }
     }
 

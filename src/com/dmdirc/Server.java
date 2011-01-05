@@ -935,7 +935,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 parserLock.readLock().lock();
                 if (parser != null && !line.isEmpty()
                         && myState.getState() == ServerState.CONNECTED) {
-                    parser.sendRawMessage(getTranscoder().encode(line));
+                    parser.sendRawMessage(line);
                 }
             } finally {
                 parserLock.readLock().unlock();

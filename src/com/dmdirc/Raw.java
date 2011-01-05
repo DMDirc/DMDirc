@@ -119,7 +119,7 @@ public final class Raw extends WritableFrameContainer<InputWindow>
     @Override
     public void sendLine(final String line) {
         if (!line.isEmpty()) {
-            sendLine(getTranscoder().encode(line));
+            sendLine(line);
         }
     }
 
