@@ -107,12 +107,13 @@
         </exec>
     </target>
 
-    <target name="do-xvfb-tests" depends="with.clover,do-real-test,clover.snapshot"/>
+    <target name="do-xvfb-tests" depends="with.clover,do-real-test,clover.xml,clover.snapshot"/>
 
     <target name="-test-no-xvfb" unless="use.xvfb">
         <antcall>
             <target name="with.clover"/>
             <target name="do-real-test"/>
+            <target name="clover.xml"/>
             <target name="clover.snapshot"/>
         </antcall>
     </target>
