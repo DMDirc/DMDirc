@@ -18,7 +18,7 @@
 	        </statisticValue>
 		<statisticValue key="cloverPercentElements" value="">
 	                <xsl:attribute name="value">
-        	                <xsl:value-of select="$decimal"/>
+        	                <xsl:value-of select="round(100 * $decimal)"/>
                 	</xsl:attribute>
 	        </statisticValue>
 
