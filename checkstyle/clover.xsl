@@ -6,6 +6,10 @@
 	<xsl:variable name="covered" select="project/metrics/@coveredelements"/>
 	<xsl:variable name="decimal" select="$covered div $total"/>
 	<build>
+                <statusInfo>
+                        <text action="append"> coverage: <xsl:value-of select="round($decimal * 10000) div 100"/>%</text>
+                </statusInfo>
+
 		<statisticValue key="cloverTotalElements">
 			<xsl:attribute name="value">
 				<xsl:value-of select="$total"/>
@@ -21,10 +25,6 @@
         	                <xsl:value-of select="round(100 * $decimal)"/>
                 	</xsl:attribute>
 	        </statisticValue>
-
-		<statusInfo>
-			<text action="append"> coverage: <xsl:value-of select="round($decimal * 10000) div 100"/>%</text>
-		</statusInfo>
 	</build>
 </xsl:template>
 
