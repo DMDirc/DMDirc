@@ -10,6 +10,7 @@ build-before-profiler.xml
 /junit*.properties
 /installer/output/*
 /installer/osx/compress-dmg
+/installer/signing/*
 /installer/windows/*.rc
 /installer/windows/*.inc
 /installer/windows/*.ico
