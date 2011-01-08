@@ -35,14 +35,11 @@ import java.util.Map;
 
 /**
  * Manages available themes.
- *
- * @author Chris
  */
 public final class ThemeManager {
 
     /** The directory to look for themes in. */
     private static final String THEME_DIR = Main.getConfigDir() + "themes/";
-
     /** Available themes. */
     private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
 
@@ -74,13 +71,13 @@ public final class ThemeManager {
             Logger.userError(ErrorLevel.HIGH, "Could not create themes directory");
         }
 
-        final List<String> enabled
-                = IdentityManager.getGlobalConfig().getOptionList("themes", "enabled");
-
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
             return;
         }
+
+        final List<String> enabled = IdentityManager.getGlobalConfig()
+                .getOptionList("themes", "enabled");
 
         synchronized (THEMES) {
             for (File file : dir.listFiles()) {
@@ -144,6 +141,25 @@ public final class ThemeManager {
      */
     public static String getThemeDirectory() {
         return THEME_DIR;
+    }
+
+    /**
+     * Updates the theme auto load list with the state of the specified theme.
+     *
+     * @param theme Theme to update auto load
+     */
+    public static void updateAutoLoad(final Theme theme) {
+        final List<String> enabled = IdentityManager.getConfigIdentity()
+                .getOptionList("themes", "enabled", true);
+
+        if (theme.isEnabled()) {
+            enabled.add(theme.getFileName());
+        } else {
+            enabled.remove(theme.getFileName());
+        }
+
+        IdentityManager.getConfigIdentity().setOption("themes", "enabled",
+                enabled);
     }
 
 }
