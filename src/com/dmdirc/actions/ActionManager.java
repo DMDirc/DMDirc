@@ -51,40 +51,43 @@ import java.util.Map;
  */
 public final class ActionManager {
 
+    /** A singleton instance of the ActionManager. */
+    private static final ActionManager INSTANCE = new ActionManager();
+
     /** A list of registered action types. */
-    private static final List<ActionType> ACTION_TYPES
+    private final List<ActionType> types
             = new ArrayList<ActionType>();
 
     /** A list of registered action components. */
-    private static final List<ActionComponent> ACTION_COMPONENTS
+    private final List<ActionComponent> components
             = new ArrayList<ActionComponent>();
 
     /** A list of registered action comparisons. */
-    private static final List<ActionComparison> ACTION_COMPARISON
+    private final List<ActionComparison> comparisons
             = new ArrayList<ActionComparison>();
 
     /** A map linking types and a list of actions that're registered for them. */
-    private static final MapList<ActionType, Action> ACTIONS
+    private final MapList<ActionType, Action> actions
             = new MapList<ActionType, Action>();
 
     /** A map linking groups and a list of actions that're in them. */
-    private static final Map<String, ActionGroup> GROUPS
+    private final Map<String, ActionGroup> groups
             = new HashMap<String, ActionGroup>();
 
     /** A map of objects to synchronise on for concurrency groups. */
-    private static final Map<String, Object> LOCKS
+    private final Map<String, Object> locks
             = new HashMap<String, Object>();
 
     /** A map of the action type groups to the action types within. */
-    private static final MapList<String, ActionType> ACTIONTYPE_GROUPS
+    private final MapList<String, ActionType> typeGroups
             = new MapList<String, ActionType>();
 
     /** The listeners that we have registered. */
-    private static final MapList<ActionType, ActionListener> LISTENERS
+    private final MapList<ActionType, ActionListener> listeners
             = new MapList<ActionType, ActionListener>();
 
     /** Indicates whether or not user actions should be killed (not processed). */
-    private static boolean killSwitch
+    private boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
 
     /** Creates a new instance of ActionManager. */
@@ -93,9 +96,27 @@ public final class ActionManager {
     }
 
     /**
+     * Returns a singleton instance of the Action Manager.
+     *
+     * @return A singleton ActionManager instance
+     */
+    public static ActionManager getActionManager() {
+        return INSTANCE;
+    }
+
+    /**
+     * Initialises the action manager.
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    public static void init() {
+        INSTANCE.initialise();
+    }
+
+    /**
      * Initialises the action manager.
      */
-    public static void init() {
+    public void initialise() {
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
@@ -129,9 +150,18 @@ public final class ActionManager {
 
     /**
      * Saves all actions.
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void saveActions() {
-        for (ActionGroup group : GROUPS.values()) {
+        INSTANCE.saveAllActions();
+    }
+
+    /**
+     * Saves all actions.
+     */
+    public void saveAllActions() {
+        for (ActionGroup group : groups.values()) {
             for (Action action : group) {
                 action.save();
             }
@@ -143,8 +173,20 @@ public final class ActionManager {
      *
      * @param name The name of the setting to be registered
      * @param value The default value for the setting
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void registerDefault(final String name, final String value) {
+        INSTANCE.registerSetting(name, value);
+    }
+
+    /**
+     * Registers the specified default setting for actions.
+     *
+     * @param name The name of the setting to be registered
+     * @param value The default value for the setting
+     */
+    public void registerSetting(final String name, final String value) {
         IdentityManager.getAddonIdentity().setOption("actions", name, value);
     }
 
@@ -152,24 +194,47 @@ public final class ActionManager {
      * Registers the specified group of actions with the manager.
      *
      * @param group The group of actions to be registered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void registerGroup(final ActionGroup group) {
-        GROUPS.put(group.getName(), group);
+        INSTANCE.addGroup(group);
+    }
+
+    /**
+     * Registers the specified group of actions with the manager.
+     *
+     * @param group The group of actions to be registered
+     */
+    public void addGroup(final ActionGroup group) {
+        groups.put(group.getName(), group);
     }
 
     /**
      * Registers a set of actiontypes with the manager.
      *
      * @param types An array of ActionTypes to be registered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("None of the specified ActionTypes are null")
     public static void registerActionTypes(final ActionType[] types) {
-        for (ActionType type : types) {
+        INSTANCE.registerTypes(types);
+    }
+
+    /**
+     * Registers a set of actiontypes with the manager.
+     *
+     * @param newTypes An array of ActionTypes to be registered
+     */
+    @Precondition("None of the specified ActionTypes are null")
+    public void registerTypes(final ActionType[] newTypes) {
+        for (ActionType type : newTypes) {
             Logger.assertTrue(type != null);
 
-            if(!ACTION_TYPES.contains(type)) {
-                ACTION_TYPES.add(type);
-                ACTIONTYPE_GROUPS.add(type.getType().getGroup(), type);
+            if(!types.contains(type)) {
+                types.add(type);
+                typeGroups.add(type.getType().getGroup(), type);
             }
         }
     }
@@ -178,14 +243,38 @@ public final class ActionManager {
      * Registers a set of action components with the manager.
      *
      * @param comps An array of ActionComponents to be registered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("None of the specified ActionComponents are null")
     public static void registerActionComponents(final ActionComponent[] comps) {
+        INSTANCE.registerComponents(comps);
+    }
+
+    /**
+     * Registers a set of action components with the manager.
+     *
+     * @param comps An array of ActionComponents to be registered
+     */
+    @Precondition("None of the specified ActionComponents are null")
+    public void registerComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
             Logger.assertTrue(comp != null);
 
-            ACTION_COMPONENTS.add(comp);
+            components.add(comp);
         }
+    }
+
+    /**
+     * Registers a set of action comparisons with the manager.
+     *
+     * @param comps An array of ActionComparisons to be registered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    @Precondition("None of the specified ActionComparisons are null")
+    public static void registerActionComparisons(final ActionComparison[] comps) {
+        INSTANCE.registerComparisons(comps);
     }
 
     /**
@@ -194,11 +283,11 @@ public final class ActionManager {
      * @param comps An array of ActionComparisons to be registered
      */
     @Precondition("None of the specified ActionComparisons are null")
-    public static void registerActionComparisons(final ActionComparison[] comps) {
+    public void registerComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
             Logger.assertTrue(comp != null);
 
-            ACTION_COMPARISON.add(comp);
+            comparisons.add(comp);
         }
     }
 
@@ -206,9 +295,31 @@ public final class ActionManager {
      * Returns a map of groups to action lists.
      *
      * @return a map of groups to action lists
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static Map<String, ActionGroup> getGroups() {
-        return GROUPS;
+        return INSTANCE.getGroupsMap();
+    }
+
+    /**
+     * Returns a map of groups to action lists.
+     *
+     * @return a map of groups to action lists
+     */
+    public Map<String, ActionGroup> getGroupsMap() {
+        return groups;
+    }
+
+    /**
+     * Returns a map of type groups to types.
+     *
+     * @return A map of type groups to types
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    public static MapList<String, ActionType> getTypeGroups() {
+        return INSTANCE.getGroupedTypes();
     }
 
     /**
@@ -216,17 +327,26 @@ public final class ActionManager {
      *
      * @return A map of type groups to types
      */
-    public static MapList<String, ActionType> getTypeGroups() {
-        return ACTIONTYPE_GROUPS;
+    public MapList<String, ActionType> getGroupedTypes() {
+        return typeGroups;
+    }
+
+    /**
+     * Loads actions from the user's directory.
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    public static void loadActions() {
+        INSTANCE.loadUserActions();
     }
 
     /**
      * Loads actions from the user's directory.
      */
-    public static void loadActions() {
-        ACTIONS.clear();
+    public void loadUserActions() {
+        actions.clear();
 
-        for (ActionGroup group : GROUPS.values()) {
+        for (ActionGroup group : groups.values()) {
             group.clear();
         }
 
@@ -258,8 +378,8 @@ public final class ActionManager {
     /**
      * Creates new ActionGroupComponents for each action group.
      */
-    private static void registerComponents() {
-        for (ActionGroup group : GROUPS.values()) {
+    private void registerComponents() {
+        for (ActionGroup group : groups.values()) {
             new ActionGroupComponent(group);
         }
     }
@@ -270,12 +390,12 @@ public final class ActionManager {
      * @param dir The directory to scan.
      */
     @Precondition("The specified File is not null and represents a directory")
-    private static void loadActions(final File dir) {
+    private void loadActions(final File dir) {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
 
-        if (!GROUPS.containsKey(dir.getName())) {
-            GROUPS.put(dir.getName(), new ActionGroup(dir.getName()));
+        if (!groups.containsKey(dir.getName())) {
+            groups.put(dir.getName(), new ActionGroup(dir.getName()));
         }
 
         for (File file : dir.listFiles()) {
@@ -287,13 +407,25 @@ public final class ActionManager {
      * Registers an action with the manager.
      *
      * @param action The action to be registered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
+        INSTANCE.addAction(action);
+    }
+
+    /**
+     * Registers an action with the manager.
+     *
+     * @param action The action to be registered
+     */
+    @Precondition("The specified action is not null")
+    public void addAction(final Action action) {
         Logger.assertTrue(action != null);
 
         for (ActionType trigger : action.getTriggers()) {
-            ACTIONS.add(trigger, action);
+            actions.add(trigger, action);
         }
 
         getGroup(action.getGroup()).add(action);
@@ -305,13 +437,38 @@ public final class ActionManager {
      *
      * @param name The name of the group to retrieve
      * @return The corresponding ActionGroup
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static ActionGroup getGroup(final String name) {
-        if (!GROUPS.containsKey(name)) {
-            GROUPS.put(name, new ActionGroup(name));
+        return INSTANCE.getOrCreateGroup(name);
+    }
+
+    /**
+     * Retrieves the action group with the specified name. A new group is
+     * created if it doesn't already exist.
+     *
+     * @param name The name of the group to retrieve
+     * @return The corresponding ActionGroup
+     */
+    public ActionGroup getOrCreateGroup(final String name) {
+        if (!groups.containsKey(name)) {
+            groups.put(name, new ActionGroup(name));
         }
 
-        return GROUPS.get(name);
+        return groups.get(name);
+    }
+
+    /**
+     * Unregisters an action with the manager.
+     *
+     * @param action The action to be unregistered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    @Precondition("The specified action is not null")
+    public static void unregisterAction(final Action action) {
+        INSTANCE.removeAction(action);
     }
 
     /**
@@ -320,10 +477,10 @@ public final class ActionManager {
      * @param action The action to be unregistered
      */
     @Precondition("The specified action is not null")
-    public static void unregisterAction(final Action action) {
+    public void removeAction(final Action action) {
         Logger.assertTrue(action != null);
 
-        ACTIONS.removeFromAll(action);
+        actions.removeFromAll(action);
         getGroup(action.getGroup()).remove(action);
     }
 
@@ -332,7 +489,9 @@ public final class ActionManager {
      * triggers change.
      *
      * @param action The action to be reregistered
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void reregisterAction(final Action action) {
         unregisterAction(action);
         registerAction(action);
@@ -363,7 +522,9 @@ public final class ActionManager {
      * @param arguments The arguments for the event
      * @return True if the event should be processed, or false if an action
      * listener has requested the event be skipped.
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition({
         "The specified ActionType is not null",
         "The specified ActionType has a valid ActionMetaType",
@@ -371,15 +532,35 @@ public final class ActionManager {
     })
     public static boolean processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
+        return INSTANCE.triggerEvent(type, format, arguments);
+    }
+
+    /**
+     * Processes an event of the specified type.
+     *
+     * @param type The type of the event to process
+     * @param format The format of the message that's going to be displayed for
+     * the event. Actions may change this format.
+     * @param arguments The arguments for the event
+     * @return True if the event should be processed, or false if an action
+     * listener has requested the event be skipped.
+     */
+    @Precondition({
+        "The specified ActionType is not null",
+        "The specified ActionType has a valid ActionMetaType",
+        "The length of the arguments array equals the arity of the ActionType's ActionMetaType"
+    })
+    public boolean triggerEvent(final ActionType type,
+            final StringBuffer format, final Object ... arguments) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(type.getType() != null);
         Logger.assertTrue(type.getType().getArity() == arguments.length);
 
         boolean res = false;
 
-        if (LISTENERS.containsKey(type)) {
+        if (listeners.containsKey(type)) {
             for (ActionListener listener
-                    : new ArrayList<ActionListener>(LISTENERS.get(type))) {
+                    : new ArrayList<ActionListener>(listeners.get(type))) {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
@@ -406,25 +587,25 @@ public final class ActionManager {
      * @return True if the event should be skipped, or false if it can continue
      */
     @Precondition("The specified ActionType is not null")
-    private static boolean triggerActions(final ActionType type,
+    private boolean triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         Logger.assertTrue(type != null);
 
         boolean res = false;
 
-        if (ACTIONS.containsKey(type)) {
-            for (Action action : new ArrayList<Action>(ACTIONS.get(type))) {
+        if (actions.containsKey(type)) {
+            for (Action action : new ArrayList<Action>(actions.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
                         res |= action.trigger(format, arguments);
                     } else {
-                        synchronized (LOCKS) {
-                            if (!LOCKS.containsKey(action.getConcurrencyGroup())) {
-                                LOCKS.put(action.getConcurrencyGroup(), new Object());
+                        synchronized (locks) {
+                            if (!locks.containsKey(action.getConcurrencyGroup())) {
+                                locks.put(action.getConcurrencyGroup(), new Object());
                             }
                         }
 
-                        synchronized (LOCKS.get(action.getConcurrencyGroup())) {
+                        synchronized (locks.get(action.getConcurrencyGroup())) {
                             res |= action.trigger(format, arguments);
                         }
                     }
@@ -456,20 +637,37 @@ public final class ActionManager {
      * @param group The group to be created
      *
      * @return The newly created group
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition({
         "The specified group is non-null and not empty",
         "The specified group is not an existing group"
     })
     public static ActionGroup makeGroup(final String group) {
+        return INSTANCE.createGroup(group);
+    }
+
+    /**
+     * Creates a new group with the specified name.
+     *
+     * @param group The group to be created
+     *
+     * @return The newly created group
+     */
+    @Precondition({
+        "The specified group is non-null and not empty",
+        "The specified group is not an existing group"
+    })
+    public ActionGroup createGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(!GROUPS.containsKey(group));
+        Logger.assertTrue(!groups.containsKey(group));
 
         final File file = new File(getDirectory() + group);
         if (file.isDirectory() || file.mkdir()) {
             final ActionGroup actionGroup = new ActionGroup(group);
-            GROUPS.put(group, actionGroup);
+            groups.put(group, actionGroup);
             return actionGroup;
         } else {
             throw new IllegalArgumentException("Unable to create action group directory"
@@ -481,17 +679,32 @@ public final class ActionManager {
      * Removes the group with the specified name.
      *
      * @param group The group to be removed
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition({
         "The specified group is non-null and not empty",
         "The specified group is an existing group"
     })
     public static void removeGroup(final String group) {
+        INSTANCE.deleteGroup(group);
+    }
+
+    /**
+     * Removes the group with the specified name.
+     *
+     * @param group The group to be removed
+     */
+    @Precondition({
+        "The specified group is non-null and not empty",
+        "The specified group is an existing group"
+    })
+    public void deleteGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(GROUPS.containsKey(group));
+        Logger.assertTrue(groups.containsKey(group));
 
-        for (Action action : GROUPS.get(group).getActions()) {
+        for (Action action : groups.get(group).getActions()) {
             unregisterAction(action);
         }
 
@@ -513,7 +726,26 @@ public final class ActionManager {
             return;
         }
 
-        GROUPS.remove(group);
+        groups.remove(group);
+    }
+
+    /**
+     * Renames the specified group.
+     *
+     * @param oldName The old name of the group
+     * @param newName The new name of the group
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    @Precondition({
+        "The old name is non-null and not empty",
+        "The old name is an existing group",
+        "The new name is non-null and not empty",
+        "The new name is not an existing group",
+        "The old name does not equal the new name"
+    })
+    public static void renameGroup(final String oldName, final String newName) {
+        INSTANCE.changeGroupName(oldName, newName);
     }
 
     /**
@@ -529,18 +761,18 @@ public final class ActionManager {
         "The new name is not an existing group",
         "The old name does not equal the new name"
     })
-    public static void renameGroup(final String oldName, final String newName) {
+    public void changeGroupName(final String oldName, final String newName) {
         Logger.assertTrue(oldName != null);
         Logger.assertTrue(!oldName.isEmpty());
         Logger.assertTrue(newName != null);
         Logger.assertTrue(!newName.isEmpty());
-        Logger.assertTrue(GROUPS.containsKey(oldName));
-        Logger.assertTrue(!GROUPS.containsKey(newName));
+        Logger.assertTrue(groups.containsKey(oldName));
+        Logger.assertTrue(!groups.containsKey(newName));
         Logger.assertTrue(!newName.equals(oldName));
 
         makeGroup(newName);
 
-        for (Action action : GROUPS.get(oldName).getActions()) {
+        for (Action action : groups.get(oldName).getActions()) {
             action.setGroup(newName);
             getGroup(oldName).remove(action);
             getGroup(newName).add(action);
@@ -554,14 +786,27 @@ public final class ActionManager {
      * doesn't match a valid registered action comparison.
      *
      * @param type The name of the action comparison to try and find
-     * @return The actioncomparison with the specified name, or null on failure
+     * @return The type with the specified name, or null on failure
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static ActionType getActionType(final String type) {
+        return INSTANCE.getType(type);
+    }
+
+    /**
+     * Returns the action comparison specified by the given string, or null if it
+     * doesn't match a valid registered action comparison.
+     *
+     * @param type The name of the action comparison to try and find
+     * @return The type with the specified name, or null on failure
+     */
+    public ActionType getType(final String type) {
         if (type == null || type.isEmpty()) {
             return null;
         }
 
-        for (ActionType target : ACTION_TYPES) {
+        for (ActionType target : types) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -576,13 +821,27 @@ public final class ActionManager {
      *
      * @param type The type to be checked against
      * @return A list of compatible action types
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("The specified type is not null")
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
+        return INSTANCE.findCompatibleTypes(type);
+    }
+
+    /**
+     * Returns a list of action types that are compatible with the one
+     * specified.
+     *
+     * @param type The type to be checked against
+     * @return A list of compatible action types
+     */
+    @Precondition("The specified type is not null")
+    public List<ActionType> findCompatibleTypes(final ActionType type) {
         Logger.assertTrue(type != null);
 
         final List<ActionType> res = new ArrayList<ActionType>();
-        for (ActionType target : ACTION_TYPES) {
+        for (ActionType target : types) {
             if (!target.equals(type) && target.getType().equals(type.getType())) {
                 res.add(target);
             }
@@ -597,13 +856,27 @@ public final class ActionManager {
      *
      * @param target The class to be tested
      * @return A list of compatible action components
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("The specified target is not null")
     public static List<ActionComponent> getCompatibleComponents(final Class<?> target) {
+        return INSTANCE.findCompatibleComponents(target);
+    }
+
+    /**
+     * Returns a list of action components that are compatible with the
+     * specified class.
+     *
+     * @param target The class to be tested
+     * @return A list of compatible action components
+     */
+    @Precondition("The specified target is not null")
+    public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
         Logger.assertTrue(target != null);
 
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
-        for (ActionComponent subject : ACTION_COMPONENTS) {
+        for (ActionComponent subject : components) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
@@ -618,13 +891,27 @@ public final class ActionManager {
      *
      * @param target The class to be tested
      * @return A list of compatible action comparisons
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("The specified target is not null")
     public static List<ActionComparison> getCompatibleComparisons(final Class<?> target) {
+        return INSTANCE.findCompatibleComparisons(target);
+    }
+
+    /**
+     * Returns a list of action comparisons that are compatible with the
+     * specified class.
+     *
+     * @param target The class to be tested
+     * @return A list of compatible action comparisons
+     */
+    @Precondition("The specified target is not null")
+    public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
         Logger.assertTrue(target != null);
 
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
-        for (ActionComparison subject : ACTION_COMPARISON) {
+        for (ActionComparison subject : comparisons) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
@@ -637,9 +924,31 @@ public final class ActionManager {
      * Returns a list of all the action types registered by this manager.
      *
      * @return A list of registered action types
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static List<ActionType> getTypes() {
-        return ACTION_TYPES;
+        return INSTANCE.getAllTypes();
+    }
+
+    /**
+     * Returns a list of all the action types registered by this manager.
+     *
+     * @return A list of registered action types
+     */
+    public List<ActionType> getAllTypes() {
+        return types;
+    }
+
+    /**
+     * Returns a list of all the action types registered by this manager.
+     *
+     * @return A list of registered action comparisons
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    public static List<ActionComparison> getComparisons() {
+        return INSTANCE.getAllComparisons();
     }
 
     /**
@@ -647,8 +956,22 @@ public final class ActionManager {
      *
      * @return A list of registered action comparisons
      */
-    public static List<ActionComparison> getComparisons() {
-        return ACTION_COMPARISON;
+    public List<ActionComparison> getAllComparisons() {
+        return comparisons;
+    }
+
+    /**
+     * Returns the action component specified by the given string, or null if it
+     * doesn't match a valid registered action component.
+     *
+     * @param type The name of the action component to try and find
+     * @return The actioncomponent with the specified name, or null on failure
+     * @deprecated Use {@link #getActionManager()} and non-static methods
+     */
+    @Deprecated
+    @Precondition("The specified type is non-null and not empty")
+    public static ActionComponent getActionComponent(final String type) {
+        return INSTANCE.getComponent(type);
     }
 
     /**
@@ -659,11 +982,11 @@ public final class ActionManager {
      * @return The actioncomponent with the specified name, or null on failure
      */
     @Precondition("The specified type is non-null and not empty")
-    public static ActionComponent getActionComponent(final String type) {
+    public ActionComponent getComponent(final String type) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
 
-        for (ActionComponent target : ACTION_COMPONENTS) {
+        for (ActionComponent target : components) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -678,13 +1001,27 @@ public final class ActionManager {
      *
      * @param type The name of the action type to try and find
      * @return The actiontype with the specified name, or null on failure
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     @Precondition("The specified type is non-null and not empty")
     public static ActionComparison getActionComparison(final String type) {
+        return INSTANCE.getComparison(type);
+    }
+
+    /**
+     * Returns the action type specified by the given string, or null if it
+     * doesn't match a valid registered action type.
+     *
+     * @param type The name of the action type to try and find
+     * @return The actiontype with the specified name, or null on failure
+     */
+    @Precondition("The specified type is non-null and not empty")
+    public ActionComparison getComparison(final String type) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
 
-        for (ActionComparison target : ACTION_COMPARISON) {
+        for (ActionComparison target : comparisons) {
             if (target.name().equals(type)) {
                 return target;
             }
@@ -714,10 +1051,22 @@ public final class ActionManager {
      *
      * @param types The action types that are to be listened for
      * @param listener The listener to be added
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void addListener(final ActionListener listener, final ActionType ... types) {
+        INSTANCE.registerListener(listener, types);
+    }
+
+    /**
+     * Adds a new listener for the specified action type.
+     *
+     * @param types The action types that are to be listened for
+     * @param listener The listener to be added
+     */
+    public void registerListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
-            LISTENERS.add(type, listener);
+            listeners.add(type, listener);
         }
     }
 
@@ -726,10 +1075,22 @@ public final class ActionManager {
      *
      * @param types The action types that were being listened for
      * @param listener The listener to be removed
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void removeListener(final ActionListener listener, final ActionType ... types) {
+        INSTANCE.unregisterListener(listener, types);
+    }
+
+    /**
+     * Removes a listener for the specified action type.
+     *
+     * @param types The action types that were being listened for
+     * @param listener The listener to be removed
+     */
+    public void unregisterListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
-            LISTENERS.remove(type, listener);
+            listeners.remove(type, listener);
         }
     }
 
@@ -737,8 +1098,19 @@ public final class ActionManager {
      * Removes a listener for all action types.
      *
      * @param listener The listener to be removed
+     * @deprecated Use {@link #getActionManager()} and non-static methods
      */
+    @Deprecated
     public static void removeListener(final ActionListener listener) {
-        LISTENERS.removeFromAll(listener);
+        INSTANCE.unregisterListener(listener);
+    }
+
+    /**
+     * Removes a listener for all action types.
+     *
+     * @param listener The listener to be removed
+     */
+    public void unregisterListener(final ActionListener listener) {
+        listeners.removeFromAll(listener);
     }
 }
