@@ -22,10 +22,11 @@
 
 package com.dmdirc.commandparser;
 
+import java.util.Arrays;
+
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
-import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,6 +36,49 @@ public class CommandArgumentsTest {
     @BeforeClass
     public static void beforeClass() throws InvalidIdentityFileException {
         IdentityManager.load();
+    }
+
+    /** Ensures the ctor which takes a collection builds the 'line' property. */
+    @Test
+    public void testCollectionCtorCreatesLine() {
+        final CommandArguments args = new CommandArguments(Arrays.asList(
+                "/command", "arg1", "arg2"));
+        assertEquals("/command arg1 arg2", args.getLine());
+    }
+
+    /** Ensures the ctor works with an empty collection. */
+    @Test
+    public void testCollectionCtorWithEmpty() {
+        final CommandArguments args = new CommandArguments(Arrays.asList(
+                new String[0]));
+        assertEquals("", args.getLine());
+    }
+
+    /** Ensures that getStrippedLine returns non-command lines as-is. */
+    @Test
+    public void testGetStrippedLineNormal() {
+        final CommandArguments args = new CommandArguments("blah blah");
+        assertEquals("blah blah", args.getStrippedLine());
+    }
+
+    /**
+     * Ensures that getStrippedLine returns command lines without the command
+     * char.
+     */
+    @Test
+    public void testGetStrippedLineCommand() {
+        final CommandArguments args = new CommandArguments("/blah blah");
+        assertEquals("blah blah", args.getStrippedLine());
+    }
+
+    /**
+     * Ensures that getStrippedLine returns silenced lines without the
+     * command or silence chars.
+     */
+    @Test
+    public void testGetStrippedLineSilenced() {
+        final CommandArguments args = new CommandArguments("/.blah blah");
+        assertEquals("blah blah", args.getStrippedLine());
     }
 
     @Test

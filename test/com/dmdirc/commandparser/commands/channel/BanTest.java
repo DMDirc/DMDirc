@@ -22,11 +22,14 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,16 +41,53 @@ public class BanTest {
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
-    
+
     private final Ban command = new Ban();
 
     @Test
     public void testUsage() {
         final FrameContainer<?> tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
-        command.execute(tiw, new CommandArguments("/ban"), 
+        command.execute(tiw, new CommandArguments("/ban"),
                 new ChannelCommandContext(null, command, channel));
-        
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+    }
+
+    /** Tests that the ban command uses the correct hostname if given a user. */
+    @Test
+    public void testKnownUser() {
+        final FrameContainer<?> container = mock(FrameContainer.class);
+        final ChannelInfo channelInfo = mock(ChannelInfo.class);
+        final ChannelClientInfo ccInfo = mock(ChannelClientInfo.class);
+        final ClientInfo clientInfo = mock(ClientInfo.class);
+        final Channel channel = mock(Channel.class);
+
+        when(channel.getChannelInfo()).thenReturn(channelInfo);
+        when(channelInfo.getChannelClient("user")).thenReturn(ccInfo);
+        when(ccInfo.getClient()).thenReturn(clientInfo);
+        when(clientInfo.getHostname()).thenReturn("my.host.name");
+
+        command.execute(container, new CommandArguments("/ban user"),
+                new ChannelCommandContext(null, command, channel));
+
+        verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
+        verify(channelInfo).flushModes();
+    }
+
+    /** Tests that the ban command works if given a mask not a username. */
+    @Test
+    public void testHostmask() {
+        final FrameContainer<?> container = mock(FrameContainer.class);
+        final ChannelInfo channelInfo = mock(ChannelInfo.class);
+        final Channel channel = mock(Channel.class);
+
+        when(channel.getChannelInfo()).thenReturn(channelInfo);
+
+        command.execute(container, new CommandArguments("/ban *!*@my.host.name"),
+                new ChannelCommandContext(null, command, channel));
+
+        verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
+        verify(channelInfo).flushModes();
     }
 }
