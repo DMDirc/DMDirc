@@ -884,7 +884,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             loadClass(getMainClass());
 
             if (isLoaded()) {
-                ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.PLUGIN_LOADED, null, this);
             }
 
             isLoading = false;
@@ -1068,7 +1069,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 }
-                ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.PLUGIN_UNLOADED, null, this);
                 synchronized (provides) {
                     for (Service service : provides) {
                         service.delProvider(this);

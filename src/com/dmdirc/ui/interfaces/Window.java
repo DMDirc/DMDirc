@@ -92,6 +92,8 @@ public interface Window {
      * Determines if the current window is visible.
      *
      * @return boolean visibility
+     * @deprecated With MDI removal, the client no longer has a concept of
+     * visibility
      */
     @Deprecated
     boolean isVisible();
@@ -100,6 +102,8 @@ public interface Window {
      * Sets the visibility of this window.
      *
      * @param isVisible Whether the window should be visible or not
+     * @deprecated With MDI removal, the client no longer has a concept of
+     * visibility
      */
     @Deprecated
     void setVisible(boolean isVisible);

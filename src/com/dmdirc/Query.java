@@ -83,7 +83,8 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         WindowManager.addWindow(server, this,
                 !getConfigManager().getOptionBool("general", "hidequeries"));
 
-        ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.QUERY_OPENED, null, this);
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -194,7 +195,8 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
-        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this,
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.QUERY_MESSAGE, buff, this,
                 parser.getClient(host), message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
@@ -208,8 +210,9 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
-        ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this,
-                parser.getClient(host), message);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.QUERY_ACTION, buff, this, parser.getClient(host),
+                message);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -257,7 +260,8 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
 
             final StringBuffer format = new StringBuffer("queryNickChanged");
 
-            ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, oldNick);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.QUERY_NICKCHANGE, format, this, oldNick);
 
             server.updateQuery(this, oldNick, client.getNickname());
 
@@ -279,7 +283,8 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
             final StringBuffer format = new StringBuffer(reason.isEmpty()
                 ? "queryQuit" : "queryQuitReason");
 
-            ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, reason);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.QUERY_QUIT, format, this, reason);
 
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
@@ -307,7 +312,8 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
         // 3: Trigger any actions neccessary
 
         // 4: Trigger action for the window closing
-        ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.QUERY_CLOSED, null, this);
 
         // 5: Inform any parents that the window is closing
         if (server != null) {

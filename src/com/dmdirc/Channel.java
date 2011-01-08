@@ -127,7 +127,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
 
         registerCallbacks();
 
-        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CHANNEL_OPENED, null, this);
 
         updateTitle();
         selfJoin();
@@ -158,8 +159,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             if (!part.isEmpty()) {
                 final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
-                ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
-                        this, channelInfo.getChannelClient(me), part);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.CHANNEL_SELF_MESSAGE, buff, this,
+                        channelInfo.getChannelClient(me), part);
 
                 addLine(buff, details[0], details[1], details[2], details[3],
                         part, channelInfo);
@@ -195,8 +197,9 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         } else {
             final StringBuffer buff = new StringBuffer("channelSelfAction");
 
-            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
-                    this, channelInfo.getChannelClient(me), action);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.CHANNEL_SELF_ACTION, buff, this,
+                    channelInfo.getChannelClient(me), action);
 
             addLine(buff, details[0], details[1], details[2], details[3],
                     action, channelInfo);
@@ -341,7 +344,8 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
         }
 
         // 4: Trigger action for the window closing
-        ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CHANNEL_CLOSED, null, this);
 
         // 5: Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());

@@ -65,7 +65,8 @@ public class PreferencesDialogModel {
 
         addDefaultCategories();
 
-        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_PREFS_OPENED, null, this);
     }
 
     /**
@@ -560,7 +561,8 @@ public class PreferencesDialogModel {
      * @since 0.6
      */
     public void close() {
-        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_PREFS_CLOSED, null);
     }
 
 }

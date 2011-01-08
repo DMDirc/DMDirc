@@ -62,7 +62,8 @@ public class JoinChannelCommand extends Command implements
     public JoinChannelCommand() {
         super();
 
-        ActionManager.addListener(this, CoreActionType.CLIENT_LINE_ADDED);
+        ActionManager.getActionManager().registerListener(this,
+                CoreActionType.CLIENT_LINE_ADDED);
     }
 
     /** {@inheritDoc} */

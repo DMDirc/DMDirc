@@ -235,7 +235,8 @@ public final class ServerEventHandler extends EventHandler implements
     public void onPingSent(final Parser parser, final Date date) {
         checkParser(parser);
 
-        ActionManager.processEvent(CoreActionType.SERVER_PINGSENT, null, owner);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_PINGSENT, null, owner);
     }
 
     /** {@inheritDoc} */
@@ -243,7 +244,8 @@ public final class ServerEventHandler extends EventHandler implements
     public void onPingSuccess(final Parser parser, final Date date) {
         checkParser(parser);
 
-        ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, owner,
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_GOTPING, null, owner,
                 Long.valueOf(owner.getParser().getServerLatency()));
     }
 

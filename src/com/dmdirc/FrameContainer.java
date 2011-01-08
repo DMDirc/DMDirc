@@ -87,9 +87,6 @@ public abstract class FrameContainer<T extends Window> {
     /** The title of this container. */
     private String title;
 
-    /** The transcoder to use for this container. */
-    private final StringTranscoder transcoder;
-
     /** The config manager for this container. */
     private final ConfigManager config;
 
@@ -120,8 +117,6 @@ public abstract class FrameContainer<T extends Window> {
         this.name = name;
         this.title = title;
         this.windowClass = windowClass;
-
-        transcoder = new StringTranscoder(null);
 
         setIcon(icon);
     }
@@ -240,7 +235,7 @@ public abstract class FrameContainer<T extends Window> {
      */
     @Deprecated
     public StringTranscoder getTranscoder() {
-        return transcoder;
+        return new StringTranscoder(null);
     }
 
     /** {@inheritDoc} */
@@ -599,9 +594,8 @@ public abstract class FrameContainer<T extends Window> {
      * @since 0.6.4
      */
     public void addLine(final String line, final Date timestamp) {
-        final String encodedLine = transcoder.decode(line);
         final List<String[]> lines = new LinkedList<String[]>();
-        for (final String myLine : encodedLine.split("\n")) {
+        for (final String myLine : line.split("\n")) {
             if (timestamp != null) {
                 lines.add(new String[]{
                     Formatter.formatMessage(getConfigManager(), "timestamp",
@@ -614,8 +608,8 @@ public abstract class FrameContainer<T extends Window> {
                 });
             }
 
-            ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
-                    null, this, myLine);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.CLIENT_LINE_ADDED, null, this, myLine);
         }
 
         getDocument().addText(lines);

@@ -298,13 +298,15 @@ public abstract class CommandParser implements Serializable {
     protected void handleInvalidCommand(final FrameContainer<?> origin,
             final CommandArguments args) {
         if (origin == null) {
-            ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, null,
-                    null, args.getCommandName(), args.getArguments());
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.UNKNOWN_COMMAND, null, null,
+                    args.getCommandName(), args.getArguments());
         } else {
             final StringBuffer buff = new StringBuffer("unknownCommand");
 
-            ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
-                    origin, args.getCommandName(), args.getArguments());
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.UNKNOWN_COMMAND, buff, origin,
+                    args.getCommandName(), args.getArguments());
 
             origin.addLine(buff, args.getCommandName());
         }

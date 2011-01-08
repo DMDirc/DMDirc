@@ -320,7 +320,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             }
         }
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_CONNECTING, null, this);
     }
 
     /**
@@ -1198,7 +1199,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
      * @param args The arguments for the message
      */
     public void addLineToActive(final String messageType, final Object... args) {
-        if (activeFrame == null || !activeFrame.getFrame().isVisible()) {
+        if (activeFrame == null) {
             activeFrame = this;
         }
 
@@ -1381,7 +1382,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             target = new StringBuffer("numeric_unknown");
         }
 
-        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, target, this,
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_NUMERIC, target, this,
                 Integer.valueOf(numeric), tokens);
 
         handleNotification(target.toString(), (Object[]) tokens);
@@ -1404,7 +1406,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
         handleNotification("socketClosed", getAddress());
 
-        ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_DISCONNECTED, null, this);
 
         eventHandler.unregisterCallbacks();
 
@@ -1507,8 +1510,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 }
             }
 
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null,
-                    this, description);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.SERVER_CONNECTERROR, null, this,
+                    description);
 
             handleNotification("connectError", getAddress(), description);
 
@@ -1528,7 +1532,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", null, 10);
 
-        ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime()));
 
         if (parser.getPingTime()
@@ -1577,7 +1582,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             checkModeAliases();
         }
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.SERVER_CONNECTED, null, this);
     }
 
     /**

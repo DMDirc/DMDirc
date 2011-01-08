@@ -203,7 +203,8 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
         modifyNotificationArgs(actionArgs, messageArgs);
 
-        final boolean res = ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
+        final boolean res = ActionManager.getActionManager().triggerEvent(
+                actionType, buffer, actionArgs.toArray());
 
         handleNotification(date, buffer.toString(), messageArgs.toArray());
 

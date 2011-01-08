@@ -228,8 +228,9 @@ public class Styliser implements ConfigChangeListener {
                     }
                 }
 
-                ActionManager.processEvent(CoreActionType.CLIENT_STRING_STYLED,
-                        null, styledDoc, ooffset, styledDoc.getLength() - ooffset);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.CLIENT_STRING_STYLED, null, styledDoc,
+                        ooffset, styledDoc.getLength() - ooffset);
 
             } catch (BadLocationException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
@@ -538,7 +539,7 @@ public class Styliser implements ConfigChangeListener {
                     foreground = foreground * 10 + (string.charAt(count) - '0');
                     count++;
                 }
-                foreground = foreground % 16;
+                foreground %= 16;
 
                 if (!isNegated) {
                     setForeground(attribs, String.valueOf(foreground));
@@ -557,7 +558,7 @@ public class Styliser implements ConfigChangeListener {
                         background = background * 10 + (string.charAt(count) - '0');
                         count++;
                     }
-                    background = background % 16;
+                    background %= 16;
 
                     if (!isNegated) {
                         setBackground(attribs, String.valueOf(background));
@@ -583,7 +584,7 @@ public class Styliser implements ConfigChangeListener {
                     }
                 }
 
-                count = count + 6;
+                count += 6;
 
                 if (string.length() == count) {
                     return count;

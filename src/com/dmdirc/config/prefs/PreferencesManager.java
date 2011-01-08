@@ -110,8 +110,9 @@ public final class PreferencesManager {
                 "general", "reconnectmessage",
                 "Reconnect message", "Default quit message to use when reconnecting"));
 
-        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_REQUESTED, null,
-                category, Boolean.TRUE);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_PREFS_REQUESTED, null, category,
+                Boolean.TRUE);
 
         return category;
     }
@@ -204,8 +205,9 @@ public final class PreferencesManager {
                 "ui", "inputbuffersize", "Input buffer size",
                 "Number of items of input history to keep"));
 
-        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_REQUESTED, null,
-                category, Boolean.FALSE);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_PREFS_REQUESTED, null, category,
+                Boolean.FALSE);
 
         return category;
     }

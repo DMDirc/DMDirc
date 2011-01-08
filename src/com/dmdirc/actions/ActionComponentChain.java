@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * An action component chain supports chaining of multiple action components
  * together.
- *
- * @author chris
  */
 public class ActionComponentChain implements ActionComponent {
 
@@ -50,10 +48,23 @@ public class ActionComponentChain implements ActionComponent {
      * @param chain The textual representation of the chain
      */
     public ActionComponentChain(final Class<?> source, final String chain) {
+        this(source, chain, ActionManager.getActionManager());
+    }
+
+    /**
+     * Creates a new component chain from the specified text representation.
+     * Chains are separated with full stops (.).
+     *
+     * @param source The class that this chain needs to start with
+     * @param chain The textual representation of the chain
+     * @param manager The action manager to use to look up components
+     */
+    public ActionComponentChain(final Class<?> source, final String chain,
+            final ActionManager manager) {
         Class<?> current = source;
 
         for (String componentName : chain.split("\\.")) {
-            final ActionComponent component = ActionManager.getActionComponent(componentName);
+            final ActionComponent component = manager.getComponent(componentName);
 
             if (component == null) {
                 throw new IllegalArgumentException("Component " + componentName
@@ -66,7 +77,6 @@ public class ActionComponentChain implements ActionComponent {
                         + " cannot be applied to " + current.getName());
             }
         }
-
     }
 
     /** {@inheritDoc} */

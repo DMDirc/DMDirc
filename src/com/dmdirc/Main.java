@@ -140,13 +140,14 @@ public final class Main {
 
         doFirstRun();
 
-        ActionManager.init();
+        ActionManager.getActionManager().initialise();
 
         pm.doAutoLoad();
 
-        ActionManager.loadActions();
+        ActionManager.getActionManager().loadUserActions();
 
-        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_OPENED, null);
 
         UpdateChecker.init();
 
@@ -158,7 +159,8 @@ public final class Main {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.CLIENT_CLOSED, null);
                 ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
                 IdentityManager.save();
             }
