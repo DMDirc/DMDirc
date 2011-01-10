@@ -60,7 +60,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +67,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -98,10 +98,10 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     // <editor-fold defaultstate="collapsed" desc="Instance">
 
     /** Open channels that currently exist on the server. */
-    private final Map<String, Channel> channels = new HashMap<String, Channel>();
+    private final Map<String, Channel> channels = new ConcurrentSkipListMap<String, Channel>();
 
     /** Open query windows on the server. */
-    private final Map<String, Query> queries = new HashMap<String, Query>();
+    private final Map<String, Query> queries = new ConcurrentSkipListMap<String, Query>();
 
     /** The Parser instance handling this server. */
     private Parser parser;
