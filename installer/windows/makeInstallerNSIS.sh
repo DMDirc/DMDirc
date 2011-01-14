@@ -45,6 +45,7 @@ rm -Rfv ../../modules/installer/windows/files
 mkdir -p ../../modules/installer/windows/files
 
 cp "${jarfile}" "../../modules/installer/windows/files/DMDirc.jar"
+cp "../../src/com/dmdirc/licences/DMDirc - MIT" "../../modules/installer/windows/licence.txt"
 cd ../../modules/installer/windows/files
 
 if [ "" != "${plugins}" ]; then
@@ -69,6 +70,8 @@ for NSI in updater.nsi launcher.nsi installer.nsi; do
 	NSISVERSION=`git describe --tags --always $LASTCOMMIT`
 	makensis -DVERSION="${NSISVERSION}" -V2 $NSI;
 done
+
+rm "license.txt"
 
 cd "${OLDDIR}"
 SRC="../../modules/installer/output/DMDirc-Setup.exe"
