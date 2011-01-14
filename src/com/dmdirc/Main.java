@@ -496,8 +496,17 @@ public final class Main {
                         resourceName.length()));
 
                 if (!newFile.isDirectory()) {
+                    final PluginManager pm = PluginManager.getPluginManager();
+
                     ResourceManager.getResourceManager().
                             resourceToFile(resource.getValue(), newFile);
+
+                    final PluginInfo plugin = pm.getPluginInfo(newFile
+                            .getAbsolutePath().substring(pm.getDirectory().length()));
+
+                    if (plugin != null) {
+                        plugin.pluginUpdated();
+                    }
                 }
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
