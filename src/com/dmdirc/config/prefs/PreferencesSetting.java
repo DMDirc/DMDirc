@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
@@ -302,6 +303,17 @@ public class PreferencesSetting {
         return (current == null || !current.equals(original))
                 && (current != null || original != null)
                 && (validator == null || !validator.validate(current).isFailure());
+    }
+
+    /**
+     * Does the specified identify have this value set?
+     *
+     * @param identity Identity to check
+     *
+     * @return true iif the setting is present
+     */
+    public boolean existInIdentity(final Identity identity) {
+        return identity.hasOptionString(domain, option);
     }
 
 }
