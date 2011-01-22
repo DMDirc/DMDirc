@@ -92,9 +92,6 @@
         <copy file="dist/DMDirc.jar"
             tofile="modules\installer\windows\files\DMDirc.jar"
             overwrite="true" />
-        <copy file="src/com/dmdirc/licences/DMDirc - MIT"
-            tofile="modules\installer\windows\licence.txt"
-            overwrite="true" />
         <nsis script="modules\installer\windows\updater.nsi" verbosity="1">
             <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
@@ -105,7 +102,6 @@
             <define name="VERSION" value="${version.git.nsis}"/>
         </nsis>
         <delete dir="modules\installer\windows\files" />
-        <delete file="modules\installer\windows\licence.txt" />
     </target>
 
 </project>
