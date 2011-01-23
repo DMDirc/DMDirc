@@ -120,41 +120,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Adds the stylised string to the canvas.
      *
      * @param text stylised string to add to the text
-     * @deprecated Use {@link #addText(java.util.List)} instead
-     */
-    @Deprecated
-    public void addText(final String[] text) {
-        final int index;
-        synchronized (lines) {
-            final Line line = new Line(styliser, text, fontSize, fontName);
-            lines.add(line);
-            index = lines.indexOf(line);
-        }
-        fireLineAdded(index);
-    }
-
-    /**
-     * Adds the stylised string to the canvas.
-     *
-     * @param text stylised string to add to the text
-     * @param lineHeight Line height for the new line of text
-     * @deprecated Use {@link #addText(java.util.List)} instead
-     */
-    @Deprecated
-    public void addText(final String[] text, final int lineHeight) {
-        final int index;
-        synchronized (lines) {
-            final Line line = new Line(styliser, text, lineHeight, fontName);
-            lines.add(line);
-            index = lines.indexOf(line);
-        }
-        fireLineAdded(index);
-    }
-
-    /**
-     * Adds the stylised string to the canvas.
-     *
-     * @param text stylised string to add to the text
      */
     public void addText(final List<String[]> text) {
         final int start;
@@ -235,21 +200,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      */
     public void removeIRCDocumentListener(final IRCDocumentListener listener) {
         listeners.remove(IRCDocumentListener.class, listener);
-    }
-
-    /**
-     * Fires the line added method on all listeners.
-     *
-     * @param index Index of the added line
-     * @deprecated Use {@link #fireLinesAdded(int, int)} instead
-     */
-    @Deprecated
-    protected void fireLineAdded(final int index) {
-        for (IRCDocumentListener listener
-                : listeners.get(IRCDocumentListener.class)) {
-            listener.lineAdded(index, lines.size());
-        }
-        trim(frameBufferSize);
     }
 
     /**

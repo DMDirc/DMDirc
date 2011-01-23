@@ -400,17 +400,6 @@ public final class Main {
     }
 
     /**
-     * Sets the UI controller that should be used by this client.
-     *
-     * @param newController The new UI Controller
-     * @deprecated Shouldn't be used. UI plugins should declare services.
-     */
-    @Deprecated
-    public static synchronized void setUI(final UIController newController) {
-        // Do nothing.
-    }
-
-    /**
      * Returns the application's config directory.
      *
      * @return configuration directory

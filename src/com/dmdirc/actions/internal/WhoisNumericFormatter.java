@@ -63,7 +63,8 @@ public class WhoisNumericFormatter implements ActionListener {
      * manager.
      */
     public void register() {
-        ActionManager.addListener(this, CoreActionType.SERVER_NUMERIC,
+        ActionManager.getActionManager().registerListener(this,
+                CoreActionType.SERVER_NUMERIC,
                 CoreActionType.SERVER_DISCONNECTED);
     }
 

@@ -64,19 +64,6 @@ public class ThemeIdentity extends Identity {
     }
 
     /** {@inheritDoc} */
-    @Override @Deprecated
-    public boolean hasOption(final String domain, final String option,
-            final Validator<String> validator) {
-        if (domain.equalsIgnoreCase("ui") || domain.equalsIgnoreCase("identity")
-                || domain.equalsIgnoreCase("icon")  || domain.equalsIgnoreCase("theme")
-                || domain.equalsIgnoreCase("formatter") || domain.equalsIgnoreCase("colour")) {
-            return super.hasOption(domain, option, validator);
-        } else {
-            return false;
-        }
-    }
-
-    /** {@inheritDoc} */
     @Override
     public String getOption(final String domain,
             final String option, final Validator<String> validator) {

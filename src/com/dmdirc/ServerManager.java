@@ -27,7 +27,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -144,27 +143,6 @@ public final class ServerManager {
      */
     public int numServers() {
         return servers.size();
-    }
-
-    /**
-     * Returns the server instance that owns the specified internal frame.
-     *
-     * @param active The internal frame to check
-     * @return The server associated with the internal frame
-     * @deprecated Use {@link Window#getContainer()} and
-     * {@link FrameContainer#getServer()} instead.
-     */
-    @Deprecated
-    public Server getServerFromFrame(final Window active) {
-        synchronized (servers) {
-            for (Server server : servers) {
-                if (server.ownsFrame(active)) {
-                    return server;
-                }
-            }
-        }
-
-        return null;
     }
 
     /**

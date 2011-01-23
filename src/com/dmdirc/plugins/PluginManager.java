@@ -70,7 +70,9 @@ public class PluginManager implements ActionListener {
     private PluginManager() {
         final String fs = System.getProperty("file.separator");
         myDir = Main.getConfigDir() + "plugins" + fs;
-        ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED, CoreActionType.CLIENT_PREFS_CLOSED);
+        ActionManager.getActionManager().registerListener(this,
+                CoreActionType.CLIENT_PREFS_OPENED,
+                CoreActionType.CLIENT_PREFS_CLOSED);
     }
 
     /**
@@ -274,8 +276,8 @@ public class PluginManager implements ActionListener {
             if (requirements.isEmpty()) {
                 knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
-                ActionManager.processEvent(CoreActionType.PLUGIN_REFRESH, null,
-                        this);
+                ActionManager.getActionManager().triggerEvent(
+                        CoreActionType.PLUGIN_REFRESH, null, this);
                 return true;
             } else {
                 throw new PluginException("Plugin " + filename + " was not loaded, one or more requirements not met (" + requirements + ")");
@@ -451,7 +453,8 @@ public class PluginManager implements ActionListener {
             }
         }
 
-        ActionManager.processEvent(CoreActionType.PLUGIN_REFRESH, null, this);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.PLUGIN_REFRESH, null, this);
         return new LinkedList<PluginInfo>(res.values());
     }
 

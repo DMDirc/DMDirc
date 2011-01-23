@@ -460,18 +460,6 @@ public final class IdentityManager {
     }
 
     /**
-     * Adds a config manager to this manager.
-     *
-     * @param manager The ConfigManager to add
-     * @deprecated Use {@link #addIdentityListener(com.dmdirc.config.IdentityListener)}
-     */
-    @Deprecated
-    @Precondition("The specified ConfigManager is not null")
-    public static void addConfigManager(final ConfigManager manager) {
-        addIdentityListener(manager);
-    }
-
-    /**
      * Adds a new identity listener which will be informed of all settings
      * identities which are added to this manager.
      *
@@ -498,18 +486,6 @@ public final class IdentityManager {
         synchronized (LISTENERS) {
             LISTENERS.add(type, listener);
         }
-    }
-
-    /**
-     * Retrieves a list of identities that serve as profiles.
-     *
-     * @return A list of profiles
-     * @deprecated Use {@link #getCustomIdentities(java.lang.String)} with
-     * an argument of <code>profile</code> to retrieve profiles.
-     */
-    @Deprecated
-    public static List<Identity> getProfiles() {
-        return getCustomIdentities("profile");
     }
 
     /**

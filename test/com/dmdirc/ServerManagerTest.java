@@ -38,7 +38,6 @@ public class ServerManagerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-        Main.setUI(new DummyController());
         Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 

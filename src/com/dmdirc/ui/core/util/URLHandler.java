@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -61,20 +60,6 @@ public class URLHandler {
         this.controller = controller;
         this.config = IdentityManager.getGlobalConfig();
         this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-    }
-
-    /**
-     * Gets an instance of URLHandler.
-     *
-     * @return URLHandler instance
-     * @deprecated This will return a URLHandler for a random UI which may not
-     * implement the required methods. It will probably break. Users of this
-     * class must create instances of URLHandler directly with an appropriate
-     * UIController.
-     */
-    @Deprecated
-    public static URLHandler getURLHander() {
-        return new URLHandler(Main.getUI());
     }
 
     /**

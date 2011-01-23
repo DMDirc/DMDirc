@@ -570,18 +570,6 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
     }
 
     /**
-     * Retrieve this identity's ConfigFile.
-     *
-     * @return The ConfigFile object used by this identity
-     * @deprecated Direct access should be avoided to prevent synchronisation
-     * issues
-     */
-    @Deprecated
-    public ConfigFile getFile() {
-        return file;
-    }
-
-    /**
      * Determines if this identity is loaded from the specified File.
      *
      * @param target The file to be checked

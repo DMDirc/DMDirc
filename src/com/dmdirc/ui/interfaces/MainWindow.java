@@ -42,20 +42,6 @@ public interface MainWindow {
     void quit();
 
     /**
-     * Sets whether or not the internal frame state is currently maximised.
-     *
-     * @param max whether the frame is maxomised
-     */
-    void setMaximised(final boolean max);
-
-    /**
-     * Gets whether or not the internal frame state is currently maximised.
-     *
-     * @return True iff frames should be maximised, false otherwise
-     */
-    boolean getMaximised();
-
-    /**
      * Returns a prefix for use in the titlebar. Includes the version number
      * if the config option is set.
      *

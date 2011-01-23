@@ -108,7 +108,7 @@ public final class AliasCommand extends Command implements
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
                     name)) {
                 alias.delete();
-                ActionManager.unregisterAction(alias);
+                ActionManager.getActionManager().removeAction(alias);
 
                 return true;
             }

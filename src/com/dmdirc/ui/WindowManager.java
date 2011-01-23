@@ -32,7 +32,6 @@ import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameListener;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -160,34 +159,6 @@ public class WindowManager {
     }
 
     /**
-     * Adds a new root window to the Window Manager.
-     *
-     * @param window The window to be added
-     * @deprecated Use {@link #addWindow(com.dmdirc.FrameContainer)}
-     */
-    @Deprecated
-    public static void addWindow(final Window window) {
-        Logger.assertTrue(window != null);
-
-        addWindow(window.getContainer());
-    }
-
-    /**
-     * Adds a new child window to the Window Manager.
-     *
-     * @param parent The parent window
-     * @param child The child window to be added
-     * @deprecated Use {@link #addWindow(com.dmdirc.FrameContainer, com.dmdirc.FrameContainer)}
-     */
-    @Deprecated
-    public static void addWindow(final Window parent, final Window child) {
-        Logger.assertTrue(parent != null);
-        Logger.assertTrue(child != null);
-
-        addWindow(parent.getContainer(), child.getContainer());
-    }
-
-    /**
      * Adds a new child window to the Window Manager.
      *
      * @param parent The parent window
@@ -241,30 +212,6 @@ public class WindowManager {
     protected static boolean isInHierarchy(final FrameContainer<?> target) {
         return target != null && (ROOT_WINDOWS.contains(target)
                 || isInHierarchy(target.getParent()));
-    }
-
-    /**
-     * Removes a window from the Window Manager. If the specified window
-     * has child windows, they are recursively removed before the target window.
-     * If the window hasn't previously been added, the request to remove it is
-     * ignored.
-     * <p>
-     * This method will not block, but may instead create a new thread in order
-     * to wait for child windows to be terminated. {@link FrameContainer}s
-     * calling this method should persist resource references until after the
-     * {@link FrameContainer#windowClosed()} method is called, to ensure
-     * correct state when the window deleted listeners are fired at a later
-     * time. See the documentation at {@link FrameContainer#windowClosing()} for
-     * further explanation.
-     *
-     * @see FrameContainer#windowClosing()
-     * @param window The window to be removed
-     * @deprecated Use {@link #removeWindow(com.dmdirc.FrameContainer)}
-     */
-    @Deprecated
-    public static void removeWindow(final Window window) {
-        Logger.assertTrue(window != null);
-        removeWindow(window.getContainer());
     }
 
     /**
@@ -414,20 +361,6 @@ public class WindowManager {
     }
 
     /**
-     * Retrieves the parent window of the specified window. If the window
-     * has no parent (i.e., it is a root window or it has not been added),
-     * returns null.
-     *
-     * @param window The window whose parent is being sought
-     * @return The parent of the specified window, or null if not found
-     * @deprecated Call {@link FrameContainer#getParent()} directly
-     */
-    @Deprecated
-    public static FrameContainer<?> getParent(final FrameContainer<?> window) {
-        return window.getParent();
-    }
-
-    /**
      * Retrieves all known root (parent-less) windows.
      *
      * @since 0.6.4
@@ -455,19 +388,6 @@ public class WindowManager {
      */
     public static Server getActiveServer() {
         return activeWindow == null ? null : getActiveWindow().getServer();
-    }
-
-    /**
-     * Retrieves all children of the specified window.
-     *
-     * @since 0.6.4
-     * @param window The window whose children are being requested
-     * @return A collection of all known child windows.
-     * @deprecated Call {@link FrameContainer#getChildren()} directly
-     */
-    @Deprecated
-    public static Collection<FrameContainer<?>> getChildren(final FrameContainer<?> window) {
-        return window.getChildren();
     }
 
     /**
@@ -532,7 +452,8 @@ public class WindowManager {
             listener.selectionChanged(window);
         }
 
-        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, window);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_FRAME_CHANGED, null, window);
     }
 
     /**

@@ -23,7 +23,6 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 
 /**
@@ -35,31 +34,11 @@ import com.dmdirc.ui.input.InputHandler;
 public interface InputWindow extends Window {
 
     /**
-     * Retrieves the command Parser for this input window.
-     *
-     * @return This window's command parser
-     *
-     * @deprecated Use {@link WritableFrameContainer.getCommandParser()} instead
-     */
-    @Deprecated
-    CommandParser getCommandParser();
-
-    /**
      * Retrieves the input handler for this input window.
      *
      * @return This window's input handler
      */
     InputHandler getInputHandler();
-
-    /**
-     * Toggles the away-status indicator for this input window, if the UI
-     * supports it.
-     *
-     * @param isAway Whether the away indicator should be displayed or not
-     * @deprecated Use {@link AwayStateListener}s to listen for changes instead
-     */
-    @Deprecated
-    void setAwayIndicator(boolean isAway);
 
     /**
      * Retrieves the container that owns this command window.

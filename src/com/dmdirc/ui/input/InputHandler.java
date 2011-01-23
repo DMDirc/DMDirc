@@ -387,16 +387,6 @@ public abstract class InputHandler implements ConfigChangeListener {
     }
 
     /**
-     * Handles tab completion of a string. Called when the user presses tab.
-     *
-     * @deprecated Preferred method is {@link doTabCompletion(boolean)}
-     */
-    @Deprecated
-    protected void doTabCompletion() {
-        doTabCompletion(false);
-    }
-
-    /**
      * Handles tab completion of a string. Called when the user presses
      * (shift) tab.
      *

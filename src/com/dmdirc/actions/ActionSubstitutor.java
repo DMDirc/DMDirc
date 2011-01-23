@@ -106,7 +106,8 @@ public class ActionSubstitutor {
 
         int i = 0;
         for (Class<?> myClass : type.getType().getArgTypes()) {
-            for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
+            for (ActionComponent comp : ActionManager.getActionManager()
+                    .findCompatibleComponents(myClass)) {
                 final String key = "{" + i + "." + comp.toString() + "}";
                 final String desc = type.getType().getArgNames()[i] + "'s " + comp.getName();
 
@@ -130,7 +131,8 @@ public class ActionSubstitutor {
         final Map<String, String> res = new HashMap<String, String>();
 
         if (hasFrameContainer()) {
-            for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+            for (ActionComponent comp : ActionManager.getActionManager()
+                    .findCompatibleComponents(Server.class)) {
                 final String key = "{" + comp.toString() + "}";
                 final String desc = "The connection's " + comp.getName();
 

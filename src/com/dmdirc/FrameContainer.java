@@ -36,7 +36,6 @@ import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
-import com.dmdirc.util.StringTranscoder;
 
 import java.awt.Color;
 import java.util.Collection;
@@ -223,19 +222,6 @@ public abstract class FrameContainer<T extends Window> {
             }
             return document;
         }
-    }
-
-    /**
-     * Retrieves the {@link StringTranscoder} used to transcode this frame's
-     * text.
-     *
-     * @deprecated Encoding is now handled by parsers, do not use.
-     * @return This frame's transcoder
-     * @since 0.6.4
-     */
-    @Deprecated
-    public StringTranscoder getTranscoder() {
-        return new StringTranscoder(null);
     }
 
     /** {@inheritDoc} */
@@ -428,14 +414,6 @@ public abstract class FrameContainer<T extends Window> {
     }
 
     /**
-     * Invoked when our window has been opened.
-     * @deprecated Pointless. Stop calling me.
-     */
-    @Deprecated
-    public void windowOpened() {
-    }
-
-    /**
      * Invoked when our window is closing.
      * <p>
      * Frame containers must perform the following actions in this order:
@@ -509,14 +487,6 @@ public abstract class FrameContainer<T extends Window> {
         if (getServer() != null) {
             getServer().setActiveFrame(this);
         }
-    }
-
-    /**
-     * Invoked when our window is deactivated.
-     * @deprecated Not used. Stop calling me.
-     */
-    @Deprecated
-    public void windowDeactivated() {
     }
 
     /**

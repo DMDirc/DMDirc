@@ -23,63 +23,12 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.util.StringTranscoder;
 
 /**
  * The Window interface specifies common methods that should be implemented
  * by all windows. It is assumed that all windows have a main text area.
  */
 public interface Window {
-
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     *
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     * @deprecated Use corresponding methods in {@link FrameContainer} instead
-     */
-    @Deprecated
-    void addLine(String messageType, Object... args);
-
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     *
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     * @deprecated Use corresponding methods in {@link FrameContainer} instead
-     */
-    @Deprecated
-    void addLine(StringBuffer messageType, Object... args);
-
-    /**
-     * Adds the specified raw line to the window, without using a formatter.
-     *
-     * @param line The line to be added
-     * @param timestamp Whether or not to display the timestamp for this line
-     * @deprecated Use corresponding methods in {@link FrameContainer} instead
-     */
-    @Deprecated
-    void addLine(final String line, final boolean timestamp);
-
-    /**
-     * Clears the main text area of the command window.
-     *
-     * @deprecated Call {@link IRCDocument#clear()} via {@link FrameContainer#getDocument()}
-     */
-    @Deprecated
-    void clear();
-
-    /**
-     * Retrieves the config manager for this command window.
-     *
-     * @return This window's config manager
-     * @deprecated Use {@link FrameContainer#getConfigManager()}
-     */
-    @Deprecated
-    ConfigManager getConfigManager();
 
     /**
      * Retrieves the container that owns this command window.
@@ -89,99 +38,9 @@ public interface Window {
     FrameContainer<?> getContainer();
 
     /**
-     * Determines if the current window is visible.
-     *
-     * @return boolean visibility
-     * @deprecated With MDI removal, the client no longer has a concept of
-     * visibility
-     */
-    @Deprecated
-    boolean isVisible();
-
-    /**
-     * Sets the visibility of this window.
-     *
-     * @param isVisible Whether the window should be visible or not
-     * @deprecated With MDI removal, the client no longer has a concept of
-     * visibility
-     */
-    @Deprecated
-    void setVisible(boolean isVisible);
-
-    /**
-     * Retrives the current title of this window.
-     *
-     * @return This window's title
-     * @deprecated Use {@link FrameContainer#getTitle()} instead
-     */
-    @Deprecated
-    String getTitle();
-
-    /**
-     * Determines if this frame is currently maximised.
-     *
-     * @return true if the frame is maximised, false otherwise
-     * @deprecated This shouldn't be used outside the UI
-     */
-    @Deprecated
-    boolean isMaximum();
-
-    /**
-     * Sets the title of this window.
-     *
-     * @param title The new title to be used.
-     * @deprecated Should use {@link FrameContainer#setTitle(java.lang.String)}
-     */
-    @Deprecated
-    void setTitle(String title);
-
-    /**
      * Opens this window.
      */
     void open();
-
-    /**
-     * Restores this window.
-     *
-     * @since 0.6.3m1
-     * @deprecated This shouldn't be used outside the UI
-     */
-    @Deprecated
-    void restore();
-
-    /**
-     * Maximises this window.
-     *
-     * @since 0.6.3m1
-     * @deprecated This shouldn't be used outside the UI
-     */
-    @Deprecated
-    void maximise();
-
-    /**
-     * Toggles Maximise State.
-     *
-     * @since 0.6.3m1
-     * @deprecated This shouldn't be used outside the UI
-     */
-    @Deprecated
-    void toggleMaximise();
-
-    /**
-     * Minimises this window.
-     * @deprecated This shouldn't be used outside the UI
-     */
-    @Deprecated
-    void minimise();
-
-    /**
-     * Returns the transcoder that is being used by the UI.
-     *
-     * @return This window's transcoder
-     * @deprecated Use {@link FrameContainer#getTranscoder()} instead
-     */
-    @Deprecated
-    StringTranscoder getTranscoder();
 
     /** Closes this window. */
     void close();

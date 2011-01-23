@@ -52,8 +52,9 @@ public class PopupManager {
     public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
         final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
-        ActionManager.processEvent(CoreActionType.CLIENT_POPUP_GENERATED,
-                null, menuType, menu, configManager);
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.CLIENT_POPUP_GENERATED, null, menuType, menu,
+                configManager);
 
         return menu;
     }

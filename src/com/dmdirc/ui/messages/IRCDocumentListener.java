@@ -33,16 +33,6 @@ public interface IRCDocumentListener extends EventListener {
      * A line has been added to the textpane.
      *
      * @param line Index of the added line
-     * @param size New number of lines
-     * @deprecated Use {@link #linesAdded(line, length, size)}
-     */
-    @Deprecated
-    void lineAdded(final int line, final int size);
-
-    /**
-     * A line has been added to the textpane.
-     *
-     * @param line Index of the added line
      * @param length Number of lines added
      * @param size New number of lines
      */

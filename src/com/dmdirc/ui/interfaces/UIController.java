@@ -23,10 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.updater.Update;
@@ -50,71 +47,6 @@ public interface UIController {
     MainWindow getMainWindow();
 
     /**
-     * Retrieves the status bar component used by this UI.
-     *
-     * @deprecated Should not be used externally - use the
-     * {@link com.dmdirc.ui.core.components.StatusBarManager} instead.
-     * @return This UI's status bar
-     */
-    @Deprecated
-    StatusBar getStatusBar();
-
-    /**
-     * Creates a channel window for the specified channel.
-     *
-     * @param channel The channel that is requesting a window be made
-     * @return A new channel window for the specified channel
-     * @deprecated Controllers should listen for window events using a
-     * {@link FrameListener} and create windows as needed.
-     */
-    @Deprecated
-    ChannelWindow getChannel(Channel channel);
-
-    /**
-     * Creates a server window for the specified server.
-     *
-     * @param server The server that is requesting a window be made
-     * @return A new server window for the specified server
-     * @deprecated Controllers should listen for window events using a
-     * {@link FrameListener} and create windows as needed.
-     */
-    @Deprecated
-    ServerWindow getServer(Server server);
-
-    /**
-     * Creates a query window for the specified query.
-     *
-     * @param query The query that is requesting a window be made
-     * @return A new query window for the specified query
-     * @deprecated Controllers should listen for window events using a
-     * {@link FrameListener} and create windows as needed.
-     */
-    @Deprecated
-    QueryWindow getQuery(Query query);
-
-    /**
-     * Creates a new custom window instance.
-     *
-     * @param owner The owner of the input window
-     * @return A new custom window
-     * @deprecated Controllers should listen for window events using a
-     * {@link FrameListener} and create windows as needed.
-     */
-    @Deprecated
-    Window getWindow(FrameContainer<?> owner);
-
-    /**
-     * Creates a new custom input window instance.
-     *
-     * @param owner The owner of the input window
-     * @return A new custom input window
-     * @deprecated Controllers should listen for window events using a
-     * {@link FrameListener} and create windows as needed.
-     */
-    @Deprecated
-    InputWindow getInputWindow(WritableFrameContainer<?> owner);
-
-    /**
      * Returns an updater dialog for the specified updates.
      *
      * @param updates Updates available
@@ -127,14 +59,6 @@ public interface UIController {
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
-
-    /**
-     * Shows the (addons) migration wizard for the ui.
-     *
-     * @deprecated Migration wizard is no longer used or needed
-     */
-    @Deprecated
-    void showMigrationWizard();
 
     /**
      * Shows the SSL certificate information dialog.
@@ -162,24 +86,6 @@ public interface UIController {
      * before any aspect of the UI is instansiated).
      */
     void initUISettings();
-
-    /**
-     * Returns the active window.
-     *
-     * @return Active window or null
-     * @deprecated Use {@link WindowManager#getActiveWindow()} instead
-     */
-    @Deprecated
-    Window getActiveWindow();
-
-    /**
-     * Returns the active server.
-     *
-     * @return Active server null
-     * @deprecated Use {@link WindowManager#getActiveServer()} instead
-     */
-    @Deprecated
-    Server getActiveServer();
 
     /**
      * Shows the unknown URL protocol handling dialog for a URL.

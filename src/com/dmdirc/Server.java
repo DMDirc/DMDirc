@@ -540,19 +540,6 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         return Collections.unmodifiableCollection(queries.values());
     }
 
-
-    /**
-     * Adds a query to this server.
-     *
-     * @param host host of the remote client being queried
-     * @return The query that was added (may be null if closing)
-     * @deprecated Use {@link #getQuery(java.lang.String)} instead
-     */
-    @Deprecated
-    public Query addQuery(final String host) {
-        return getQuery(host);
-    }
-
     /**
      * Deletes a query from this server.
      *
@@ -850,19 +837,6 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     }
 
     /**
-     * Joins the specified channel with the specified key.
-     *
-     * @since 0.6.3m1
-     * @param channel The channel to be joined
-     * @param key The key for the channel
-     * @deprecated Use {@link #join(com.dmdirc.parser.common.ChannelJoinRequest[])}
-     */
-    @Deprecated
-    public void join(final String channel, final String key) {
-        join(new ChannelJoinRequest(channel, key));
-    }
-
-    /**
      * Attempts to join the specified channels. If channels with the same name
      * already exist, they are (re)joined and their windows activated.
      *
@@ -914,18 +888,6 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
             }
             // TODO: otherwise: address.getChannels().add(channel);
         }
-    }
-
-    /**
-     * Joins the specified channel, or adds it to the auto-join list if the
-     * server is not connected.
-     *
-     * @param channel The channel to be joined
-     * @deprecated Use {@link #join(com.dmdirc.parser.common.ChannelJoinRequest[])}
-     */
-    @Deprecated
-    public void join(final String channel) {
-        join(new ChannelJoinRequest(channel));
     }
 
     /** {@inheritDoc} */

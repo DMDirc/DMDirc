@@ -37,7 +37,7 @@ public class ActionGroupValidator implements Validator<String> {
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (ActionManager.getGroups().containsKey(object)) {
+        if (ActionManager.getActionManager().getGroupsMap().containsKey(object)) {
             return new ValidationResponse(FAILURE_EXISTS);
         } else {
             return new ValidationResponse();

@@ -24,7 +24,6 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 
@@ -43,7 +42,6 @@ public class PreferencesManagerTest {
     public static void setUp() throws Exception {
         IdentityManager.load();
         Main.extractCorePlugins("ui_");
-        Main.setUI(new SwingController());
         PluginManager.getPluginManager();
         controller = mock(UIController.class);
     }

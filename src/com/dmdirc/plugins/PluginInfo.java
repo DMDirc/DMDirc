@@ -1379,66 +1379,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get misc meta-information.
-     *
-     * @param metainfo The metainfo to return
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
-     * @return Misc Meta Info (or "" if not found);
-     */
-    @Deprecated
-    public String getMetaInfo(final String metainfo) {
-        return getMetaInfo(metainfo, "");
-    }
-
-    /**
-     * Get misc meta-information.
-     *
-     * @param metainfo The metainfo to return
-     * @param fallback Fallback value if requested value is not found
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
-     * @return Misc Meta Info (or fallback if not found);
-     */
-    @Deprecated
-    public String getMetaInfo(final String metainfo, final String fallback) {
-        return getKeyValue("misc", metainfo, fallback);
-    }
-
-    /**
-     * Get misc meta-information.
-     *
-     * @param metainfo The metainfos to look for in order. If the first item in
-     *                 the array is not found, the next will be looked for, and
-     *                 so on until either one is found, or none are found.
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
-     * @return Misc Meta Info (or "" if none are found);
-     */
-    @Deprecated
-    public String getMetaInfo(final String[] metainfo) {
-        return getMetaInfo(metainfo, "");
-    }
-
-    /**
-     * Get misc meta-information.
-     *
-     * @param metainfo The metainfos to look for in order. If the first item in
-     *                 the array is not found, the next will be looked for, and
-     *                 so on until either one is found, or none are found.
-     * @param fallback Fallback value if requested values are not found
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
-     * @return Misc Meta Info (or "" if none are found);
-     */
-    @Deprecated
-    public String getMetaInfo(final String[] metainfo, final String fallback) {
-        for (String meta : metainfo) {
-            final String result = getKeyValue("misc", meta, null);
-            if (result != null) {
-                return result;
-            }
-        }
-        return fallback;
-    }
-
-    /**
      * Compares this object with the specified object for order.
      * Returns a negative integer, zero, or a positive integer as per String.compareTo();
      *
