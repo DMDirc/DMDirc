@@ -57,6 +57,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -185,9 +186,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser());
 
-        this.address = uri;
-        this.protocolDescription = new ParserFactory().getDescription(address);
-        this.profile = profile;
+        setConnectionDetails(uri, profile);
 
         ServerManager.getServerManager().registerServer(this);
         WindowManager.addWindow(this);
@@ -221,6 +220,30 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Connection, disconnection & reconnection">
+
+    /**
+     * Updates the connection details for this server. If the specified URI
+     * does not define a port, the default port from the protocol description
+     * will be used.
+     *
+     * @param uri The new URI that this server should connect to
+     * @param profile The profile that this server should use
+     */
+    private void setConnectionDetails(final URI uri, final Identity profile) {
+        this.address = uri;
+        this.protocolDescription = new ParserFactory().getDescription(uri);
+        this.profile = profile;
+
+        if (uri.getPort() == -1 && protocolDescription != null) {
+            try {
+                this.address = new URI(uri.getScheme(), uri.getUserInfo(),
+                        uri.getHost(), protocolDescription.getDefaultPort(),
+                        uri.getPath(), uri.getQuery(), uri.getFragment());
+            } catch (URISyntaxException ex) {
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to construct URI", ex);
+            }
+        }
+    }
 
     /**
      * Connects to a new server with the previously supplied address and profile.
@@ -282,9 +305,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
                 getConfigManager().migrate(address.getScheme(), "", "", address.getHost());
 
-                this.address = address;
-                this.protocolDescription = new ParserFactory().getDescription(address);
-                this.profile = profile;
+                setConnectionDetails(address, profile);
 
                 updateTitle();
                 updateIcon();

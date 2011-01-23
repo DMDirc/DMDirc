@@ -36,8 +36,6 @@ import java.util.Date;
 
 /**
  * Handles events for channel objects.
- *
- * @author chris
  */
 public class ChannelEventHandler extends EventHandler implements
         ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
@@ -65,7 +63,7 @@ public class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    protected <T extends CallbackInterface> void addCallback(final CallbackManager<?> cbm,
+    protected <T extends CallbackInterface> void addCallback(final CallbackManager cbm,
             final Class<T> type) {
         if (OtherAwayStateListener.class.equals(type)) {
             cbm.addCallback(type, (T) this);

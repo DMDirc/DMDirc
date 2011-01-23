@@ -41,7 +41,7 @@ public abstract class EventHandler implements CallbackInterface {
      * owner's parser.
      */
     public void registerCallbacks() {
-        final CallbackManager<?> cbm = getServer().getParser().getCallbackManager();
+        final CallbackManager cbm = getServer().getParser().getCallbackManager();
 
         try {
             for (Class<?> iface : this.getClass().getInterfaces()) {
@@ -73,7 +73,7 @@ public abstract class EventHandler implements CallbackInterface {
      * @throws CallbackNotFoundException if the specified callback isn't found
      */
     protected abstract <T extends CallbackInterface> void addCallback(
-            final CallbackManager<?> cbm, final Class<T> type);
+            final CallbackManager cbm, final Class<T> type);
 
     /**
      * Retrieves the server belonging to this EventHandler's owner.

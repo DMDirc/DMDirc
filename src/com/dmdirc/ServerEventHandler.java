@@ -38,8 +38,6 @@ import java.util.Date;
 
 /**
  * Handles parser events for a Server object.
- *
- * @author chris
  */
 public final class ServerEventHandler extends EventHandler implements
         ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
@@ -47,12 +45,12 @@ public final class ServerEventHandler extends EventHandler implements
         SocketCloseListener, PrivateNoticeListener, MotdStartListener,
         MotdLineListener, MotdEndListener, NumericListener, PingFailureListener,
         PingSuccessListener, AwayStateListener, ConnectErrorListener,
-        NickInUseListener, Post005Listener, AuthNoticeListener,
-        UnknownNoticeListener, UserModeChangeListener, InviteListener,
-        WallopListener, WalluserListener, WallDesyncListener,
-        NickChangeListener, ServerErrorListener, PingSentListener,
-        UserModeDiscoveryListener, ServerNoticeListener, UnknownMessageListener,
-        UnknownActionListener {
+        NickInUseListener, AuthNoticeListener, UnknownNoticeListener,
+        UserModeChangeListener, InviteListener, WallopListener,
+        WalluserListener, WallDesyncListener, NickChangeListener,
+        ServerErrorListener, PingSentListener, UserModeDiscoveryListener,
+        ServerNoticeListener, UnknownMessageListener, UnknownActionListener,
+        ServerReadyListener {
 
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -72,7 +70,7 @@ public final class ServerEventHandler extends EventHandler implements
     @Override
     @SuppressWarnings("unchecked")
     protected <T extends CallbackInterface> void addCallback(
-            final CallbackManager<?> cbm, final Class<T> type) {
+            final CallbackManager cbm, final Class<T> type) {
         cbm.addCallback(type, (T) this);
     }
 
@@ -285,7 +283,7 @@ public final class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onPost005(final Parser parser, final Date date) {
+    public void onServerReady(final Parser parser, final Date date) {
         checkParser(parser);
         owner.onPost005();
     }

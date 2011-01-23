@@ -228,7 +228,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
      * Reregisters query callbacks. Called when reconnecting to the server.
      */
     public void reregister() {
-        final CallbackManager<?> callbackManager = server.getParser().getCallbackManager();
+        final CallbackManager callbackManager = server.getParser().getCallbackManager();
         final String nick = getNickname();
 
         try {
@@ -246,7 +246,7 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
         if (oldNick.equals(getNickname())) {
-            final CallbackManager<?> callbackManager = server.getParser().getCallbackManager();
+            final CallbackManager callbackManager = server.getParser().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);
