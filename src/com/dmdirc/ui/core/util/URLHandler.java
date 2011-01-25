@@ -27,6 +27,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.interfaces.UIController;
 
@@ -155,16 +156,18 @@ public class URLHandler {
         final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
 
         if ("DMDIRC".equals(command)) {
-            StatusBarManager.getStatusBarManager().setMessage("Connecting to: "
-                    + uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage(
+                    new StatusMessage("Connecting to: " + uri.toString()));
             ServerManager.getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
-            StatusBarManager.getStatusBarManager().setMessage("Opening: " + uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage(
+                    new StatusMessage("Opening: " + uri.toString()));
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
-            StatusBarManager.getStatusBarManager().setMessage("Opening: " + uri.toString());
+            StatusBarManager.getStatusBarManager().setMessage(
+                    new StatusMessage("Opening: " + uri.toString()));
             execApp(substituteParams(uri, command));
         }
     }

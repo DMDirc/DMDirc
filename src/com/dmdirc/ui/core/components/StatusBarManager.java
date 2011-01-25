@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.core.components;
 
+import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
@@ -33,7 +34,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * A manager for status bars or status bar like components.
  *
  * @since 0.6.5
- * @author chris
  */
 public class StatusBarManager implements StatusBar {
 
@@ -42,16 +42,6 @@ public class StatusBarManager implements StatusBar {
 
     /** A collection of known status bars. */
     private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<StatusBar>();
-
-    /**
-     * Creates a new instance of the StatusBarManager.
-     * <p>
-     * <strong>You probably want to use {@link #getStatusBarManager()} instead
-     * of creating a new instance.</strong>
-     */
-    public StatusBarManager() {
-        // Do nothing
-    }
 
     /**
      * Registers a new status bar with the manager. All requests to
@@ -73,7 +63,11 @@ public class StatusBarManager implements StatusBar {
         statusBars.remove(statusBar);
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String newMessage) {
         for (StatusBar statusBar : statusBars) {
@@ -81,7 +75,11 @@ public class StatusBarManager implements StatusBar {
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String iconType, final String newMessage) {
         for (StatusBar statusBar : statusBars) {
@@ -89,7 +87,11 @@ public class StatusBarManager implements StatusBar {
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
@@ -98,7 +100,11 @@ public class StatusBarManager implements StatusBar {
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier) {
@@ -107,7 +113,11 @@ public class StatusBarManager implements StatusBar {
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
@@ -116,12 +126,24 @@ public class StatusBarManager implements StatusBar {
         }
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
+     */
+    @Deprecated
     @Override
     public void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         for (StatusBar statusBar : statusBars) {
             statusBar.setMessage(iconType, newMessage, newNotifier, timeout);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMessage(final StatusMessage message) {
+        for (StatusBar statusBar : statusBars) {
+            statusBar.setMessage(message);
         }
     }
 

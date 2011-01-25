@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.interfaces;
 
+import com.dmdirc.ui.StatusMessage;
+
 /**
  * Status bar interface.
  */
@@ -31,7 +33,10 @@ public interface StatusBar {
      * sets the message in the status bar.
      *
      * @param newMessage Message to display
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String newMessage);
 
     /**
@@ -41,7 +46,10 @@ public interface StatusBar {
      * @param newMessage Message to display
      *
      * @since 0.6
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String iconType, final String newMessage);
 
     /**
@@ -53,7 +61,10 @@ public interface StatusBar {
      * this message
      *
      * @since 0.6
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier);
 
@@ -67,7 +78,10 @@ public interface StatusBar {
      * this message
      *
      * @since 0.6
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier);
 
@@ -79,7 +93,10 @@ public interface StatusBar {
      * @param newNotifier status message notifier to be notified for events on
      * this message
      * @param timeout message timeout in seconds
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout);
 
@@ -94,9 +111,21 @@ public interface StatusBar {
      * @param timeout message timeout in seconds
      *
      * @since 0.6
+     *
+     * @deprecated Should use {@link setMessage(StatusMessage)} instead
      */
+    @Deprecated
     void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout);
+
+    /**
+     * Sets the message for this message label.
+     *
+     * @param message Message object to show
+     *
+     * @since 0.6.6
+     */
+    void setMessage(final StatusMessage message);
 
     /**
      * Removes the message from the status bar.
