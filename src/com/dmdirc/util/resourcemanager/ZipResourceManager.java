@@ -83,7 +83,6 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public boolean resourceExists(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
-
         return zipEntry != null && !zipEntry.isDirectory();
     }
 
@@ -140,7 +139,8 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public URL getResourceURL(final String resource) throws MalformedURLException {
         if (resourceExists(resource)) {
-            return new URL("jar:" + zipFile.getName() + "!" + resource);
+            return new URL("jar:file:/" + zipFile.getName() + "!"
+                    + (resource.charAt(0) == '/' ? resource : "/" + resource));
         } else {
             return null;
         }
