@@ -27,8 +27,6 @@ import com.dmdirc.FrameContainer;
 /**
  * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager}
  * to receive events pertaining to frames.
- *
- * @author chris
  */
 public interface FrameListener {
 

@@ -28,8 +28,6 @@ import com.dmdirc.ui.input.InputHandler;
 /**
  * The Input Window interface specifies additional methods that windows should
  * implement if they have an input field.
- *
- * @author chris
  */
 public interface InputWindow extends Window {
 

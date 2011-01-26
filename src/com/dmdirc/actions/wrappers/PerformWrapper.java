@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
@@ -41,8 +40,6 @@ import java.util.List;
 
 /**
  * An action wrapper for performs.
- *
- * @author Chris
  */
 public class PerformWrapper extends ActionGroup {
 
@@ -313,155 +310,6 @@ public class PerformWrapper extends ActionGroup {
         }
 
         return target || profile;
-    }
-
-    /**
-     * Determines if the specified action is a per-profile perform, as opposed
-     * to a generic perform.
-     *
-     * @param action The action to be tested
-     * @return True if the action is per-profile, false otherwise
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly
-     */
-    @Deprecated
-    public boolean isPerProfilePerform(final Action action) {
-        return contains(action) && action.getConditions().size() == 2;
-    }
-
-    /**
-     * Retrieves the name of the profile that is targetted by the specified
-     * per-profile perform action.
-     *
-     * @param action The action whose perform should be retrieved
-     * @return The action's targetted profile name
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly
-     */
-    @Deprecated
-    @Precondition("The action is a per-profile perform")
-    public String getProfileName(final Action action) {
-        Logger.assertTrue(isPerProfilePerform(action));
-
-        for (ActionCondition condition : action.getConditions()) {
-            if (PP_COMP_NAME.equals(condition.getComponent().toString())) {
-                return condition.getTarget();
-            }
-        }
-
-        throw new IllegalStateException("Profile component not found in action");
-    }
-
-    /**
-     * Retrieve the action that handles the perform for the specified server,
-     * or null if no such action exists.
-     *
-     * @param server The server to look for
-     * @return The action that handles the server's perform, or null
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action getActionForServer(final String server) {
-        return getActionForServer(server, null);
-    }
-
-    /**
-     * Retrieve the action that handles the perform for the specified server,
-     * or null if no such action exists.
-     *
-     * @param server The server to look for
-     * @param profile The name of the profile the perform works for
-     * @return The action that handles the servers's perform for the specified
-     * profile, or null
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action getActionForServer(final String server, final String profile) {
-        return getAction(CoreActionComponent.SERVER_NAME, server, profile);
-    }
-
-    /**
-     * Retrieve the action that handles the perform for the specified network,
-     * or null if no such action exists.
-     *
-     * @param network The network to look for
-     * @return The action that handles the network's perform, or null
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action getActionForNetwork(final String network) {
-        return getActionForNetwork(network, null);
-    }
-
-    /**
-     * Retrieve the action that handles the perform for the specified network,
-     * or null if no such action exists.
-     *
-     * @param network The network to look for
-     * @param profile The name of the profile the perform works for
-     * @return The action that handles the network's perform for the specified
-     * profile, or null
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action getActionForNetwork(final String network, final String profile) {
-        return getAction(CoreActionComponent.SERVER_NETWORK, network, profile);
-    }
-
-    /**
-     * Creates a new, empty, perform wrapper for the specified server.
-     *
-     * @param server The server to create the action for
-     * @return The new perform wrapper action
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action createActionForServer(final String server) {
-        return createActionForServer(server, null);
-    }
-
-    /**
-     * Creates a new, empty, perform wrapper for the specified server, which
-     * is only applicable when the specified profile is in use.
-     *
-     * @param server The server to create the action for
-     * @param profile The name of the profile which must be in use
-     * @return The new perform wrapper action
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action createActionForServer(final String server, final String profile) {
-        return createAction(server, "", profile);
-    }
-
-    /**
-     * Creates a new, empty, perform wrapper for the specified network.
-     *
-     * @param network The network to create the action for
-     * @return The new perform wrapper action
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action createActionForNetwork(final String network) {
-        return createActionForNetwork(network, null);
-    }
-
-    /**
-     * Creates a new, empty, perform wrapper for the specified network, which
-     * is only applicable when the specified profile is in use.
-     *
-     * @param network The network to create the action for
-     * @param profile The name of the profile which must be in use
-     * @return The new perform wrapper action
-     * @since 0.6.3
-     * @deprecated Actions shouldn't be used directly, use get/setPerform instead
-     */
-    @Deprecated
-    public Action createActionForNetwork(final String network, final String profile) {
-        return createAction("", network, profile);
     }
 
     /**

@@ -24,8 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 /**
  * Lists the standard methods that should be implemented by any server window.
- * 
- * @author chris
  */
 public interface ServerWindow extends InputWindow {
     

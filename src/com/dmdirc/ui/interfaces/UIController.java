@@ -26,34 +26,14 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
-import com.dmdirc.updater.Update;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * Defines the methods that should be implemented by UI controllers. Controllers
  * handle the various aspects of a UI implementation.
- *
- * @author Chris
  */
 public interface UIController {
-
-    /**
-     * Retrieves the main window used by this UI.
-     *
-     * @return This UI's main window
-     */
-    MainWindow getMainWindow();
-
-    /**
-     * Returns an updater dialog for the specified updates.
-     *
-     * @param updates Updates available
-     *
-     * @return UpdaterDialog
-     */
-    UpdaterDialog getUpdaterDialog(List<Update> updates);
 
     /**
      * Shows the first run wizard for the ui.
@@ -82,12 +62,6 @@ public interface UIController {
     void showServerSettingsDialog(Server server);
 
     /**
-     * Initialises any settings required by this UI (this is always called
-     * before any aspect of the UI is instansiated).
-     */
-    void initUISettings();
-
-    /**
      * Shows the unknown URL protocol handling dialog for a URL.
      *
      * @param url full url
@@ -106,14 +80,6 @@ public interface UIController {
      * @param message Message to display
      */
     void showMessageDialog(final String title, final String message);
-
-    /**
-     * Requests user input.
-     *
-     * @param prompt The prompt to display
-     * @return The user-inputted string
-     */
-    String getUserInput(final String prompt);
 
     /**
      * Retrieves the object used to display the plugin preferences panel.

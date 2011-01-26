@@ -121,17 +121,6 @@ public abstract class FrameContainer<T extends Window> {
     }
 
     /**
-     * Returns the internal frame associated with this object.
-     *
-     * @return The internal frame associated with this object
-     * @deprecated Use {@link #getWindows()} instead
-     */
-    @Deprecated
-    public final T getFrame() {
-        return getWindows().isEmpty() ? null : getWindows().iterator().next();
-    }
-
-    /**
      * Returns a collection of direct children of this frame.
      *
      * @return This frame's children

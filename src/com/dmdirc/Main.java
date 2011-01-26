@@ -299,17 +299,7 @@ public final class Main {
 
                 final Object export = provider.getExportedService("getController").execute();
 
-                if (export == null) {
-                    if (provider instanceof PluginInfo
-                            && ((PluginInfo) provider).getPlugin() instanceof UIController) {
-                        // @Deprecated - remove post 0.6.4
-                        // Hack for compatibility with older plugins
-                        CONTROLLERS.add((UIController) ((PluginInfo) provider).getPlugin());
-                        Logger.appError(ErrorLevel.LOW,
-                                "UI plugin doesn't export getController: "
-                                + provider.getProviderName(), new UnsupportedOperationException());
-                    }
-                } else {
+                if (export != null) {
                     CONTROLLERS.add((UIController) export);
                 }
             }

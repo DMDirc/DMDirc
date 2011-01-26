@@ -34,6 +34,7 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -133,32 +134,33 @@ public class ActionModel {
 
         final FrameContainer<?> active = WindowManager.getActiveWindow();
         Window window = null;
-        WritableFrameContainer<?> cw = null;
+        WritableFrameContainer<? extends Window> container = null;
         CommandParser cp = null;
 
         if (arguments.length > 0
                 && arguments[0] instanceof WritableFrameContainer<?>) {
-            cw = (WritableFrameContainer<?>) arguments[0];
+            container = (WritableFrameContainer<?>) arguments[0];
         } else if (active instanceof WritableFrameContainer<?>) {
-            cw = (WritableFrameContainer<?>) active;
+            container = (WritableFrameContainer<?>) active;
         } else if (ServerManager.getServerManager().numServers() > 0) {
-            cw = ServerManager.getServerManager().getServers().get(0);
+            container = ServerManager.getServerManager().getServers().get(0);
         }
 
         if (arguments.length > 0 && arguments[0] instanceof Window) {
             window = (Window) arguments[0];
-        } else if (cw != null) {
-            window = cw.getFrame();
+        } else if (container != null) {
+            final Collection<? extends Window> windows = container.getWindows();
+            window = windows.isEmpty() ? null : windows.iterator().next();
         }
 
-        if (cw == null) {
+        if (container == null) {
             cp = GlobalCommandParser.getGlobalCommandParser();
         } else {
-            cp = cw.getCommandParser();
+            cp = container.getCommandParser();
         }
 
         for (String command : response) {
-            cp.parseCommand(cw, window, sub.doSubstitution(command, arguments));
+            cp.parseCommand(container, window, sub.doSubstitution(command, arguments));
         }
 
         if (newFormat != null && format != null) {

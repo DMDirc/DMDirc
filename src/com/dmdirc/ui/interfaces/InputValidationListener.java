@@ -24,8 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 /**
  * Defines methods that need to be implemented by validation listeners.
- * 
- * @author chris
  */
 public interface InputValidationListener {
     

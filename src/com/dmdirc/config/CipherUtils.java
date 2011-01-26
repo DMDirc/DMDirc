@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -51,7 +50,7 @@ import net.miginfocom.Base64;
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
  */
-public class CipherUtils {
+public abstract class CipherUtils {
 
     /** Singleton instance. */
     private static CipherUtils me;
@@ -76,28 +75,6 @@ public class CipherUtils {
 
     /** User password. */
     private String password;
-
-    /**
-     * Prevents creation of a new instance of Encipher.
-     */
-    protected CipherUtils() {
-        // Do nothing
-    }
-
-    /**
-     * Retrieves a singleton instance of CipherUtils.
-     *
-     * @return A singleton cipher utils instance.
-     */
-    public static CipherUtils getCipherUtils() {
-        synchronized(CipherUtils.class) {
-            if (me == null) {
-                me = new CipherUtils();
-            }
-
-            return me;
-        }
-    }
 
     /**
      * Encrypts a string using the stored settings. Will return null if the
@@ -259,7 +236,5 @@ public class CipherUtils {
      * @param prompt The prompt to show
      * @return The user-specified password
      */
-    protected String getPassword(final String prompt) {
-        return Main.getUI().getUserInput(prompt);
-    }
+    protected abstract String getPassword(final String prompt);
 }
