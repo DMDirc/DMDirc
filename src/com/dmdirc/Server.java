@@ -1488,7 +1488,8 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                         || exception instanceof javax.net.ssl.SSLException) {
                     description = exception.getMessage();
                 } else {
-                    Logger.appError(ErrorLevel.LOW, "Unknown socket error",
+                    Logger.appError(ErrorLevel.LOW, "Unknown socket error: "
+                            + exception.getClass().getCanonicalName(),
                             new IllegalArgumentException(exception));
                     description = "Unknown error: " + exception.getMessage();
                 }
