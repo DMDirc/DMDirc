@@ -36,6 +36,11 @@
             <zipfileset src="modules/plugins/lib/smack.jar" includes="org/**"/>
             <zipfileset src="modules/plugins/lib/smackx.jar" includes="org/** com/**"/>
         </jar>
+
+        <jar destfile="plugins/windowflashing.jar" compress="${jar.compress}" keepcompression="true" update="true">
+            <zipfileset src="modules/plugins/lib/jna.jar" includes="com/**"/>
+            <zipfileset src="modules/plugins/lib/platform.jar" includes="com/**"/>
+        </jar>
     </target>
 
 </project>
