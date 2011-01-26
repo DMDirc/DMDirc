@@ -1514,7 +1514,7 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         StatusBarManager.getStatusBarManager().setMessage(new StatusMessage(
                 "No ping reply from " + getName() + " for over "
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
-                + " seconds."));
+                + " seconds.", getConfigManager()));
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.SERVER_NOPING, null, this,

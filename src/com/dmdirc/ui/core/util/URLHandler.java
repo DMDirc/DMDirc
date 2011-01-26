@@ -157,17 +157,20 @@ public class URLHandler {
 
         if ("DMDIRC".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
-                    new StatusMessage("Connecting to: " + uri.toString()));
+                    new StatusMessage("Connecting to: " + uri.toString(),
+                    IdentityManager.getGlobalConfig()));
             ServerManager.getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
-                    new StatusMessage("Opening: " + uri.toString()));
+                    new StatusMessage("Opening: " + uri.toString(),
+                    IdentityManager.getGlobalConfig()));
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
             StatusBarManager.getStatusBarManager().setMessage(
-                    new StatusMessage("Opening: " + uri.toString()));
+                    new StatusMessage("Opening: " + uri.toString(),
+                    IdentityManager.getGlobalConfig()));
             execApp(substituteParams(uri, command));
         }
     }

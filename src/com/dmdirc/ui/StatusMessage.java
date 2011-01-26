@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 
 /**
@@ -37,6 +38,8 @@ public class StatusMessage {
     private final StatusMessageNotifier messageNotifier;
     /** Timeout when initially displayed. */
     private final int timeout;
+    /** Config manager to get default timeout from. */
+    private final ConfigManager configManager;
 
     /**
      * Creates a new statusbar message.
@@ -45,13 +48,16 @@ public class StatusMessage {
      * @param message Message to show
      * @param messageNotifier Optional notifier (can be null)
      * @param timeout message timeout (can be -1)
+     * @param configManager Config manager to get default timeout from
      */
     public StatusMessage(final String iconType, final String message,
-            final StatusMessageNotifier messageNotifier, final int timeout) {
+            final StatusMessageNotifier messageNotifier, final int timeout,
+            final ConfigManager configManager) {
         this.iconType = iconType;
         this.message = message;
         this.messageNotifier = messageNotifier;
         this.timeout = timeout;
+        this.configManager = configManager;
     }
 
     /**
@@ -59,12 +65,10 @@ public class StatusMessage {
      * message notifier and will time out in the default timeout.
      *
      * @param message Message to show
+     * @param manager Config manager to get default timeout from
      */
-    public StatusMessage(final String message) {
-        this.iconType = null;
-        this.message = message;
-        this.messageNotifier = null;
-        this.timeout = -1;
+    public StatusMessage(final String message, final ConfigManager manager) {
+        this(null, message, null, -1, manager);
     }
 
     /**
@@ -93,13 +97,18 @@ public class StatusMessage {
     public StatusMessageNotifier getMessageNotifier() {
         return messageNotifier;
     }
-    
+
     /**
      * Get the value of timeout
-     * 
+     *
      * @return the value of timeout
      */
     public int getTimeout() {
-        return timeout;
+        if (timeout == -1) {
+            return configManager.getOptionInt("statusBar",
+                    "messageDisplayLength");
+        } else {
+            return timeout;
+        }
     }
 }
