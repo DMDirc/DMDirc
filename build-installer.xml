@@ -8,9 +8,8 @@
 
     <target name="installer"
             description="Build the installer.">
-        <exec executable="bash" dir="installer" resultproperty="installer.result">
-            <arg value="release.sh"/>
-            <arg value="this"/>
+        <exec executable="bash" dir="modules/installer" resultproperty="installer.result">
+            <arg value="makeAll.sh"/>
         </exec>
 
         <condition property="installer.success">
@@ -19,15 +18,14 @@
 
         <echo message="Installer build finished."/>
         <echo message="Completed build files can be found in:"/>
-        <echo message="    ${installer.output.dir}"/>
+        <echo message="    ./modules/installer/output"/>
         <echo message=""/>
     </target>
 
     <target name="installer-stable"
             description="Build the installer for a stable release.">
-        <exec executable="bash" dir="installer" resultproperty="installer.result">
-            <arg value="release.sh"/>
-            <arg value="-t"/>
+        <exec executable="bash" dir="modules/installer" resultproperty="installer.result">
+            <arg value="makeAll.sh"/>
             <arg value="-c"/>
             <arg value="STABLE"/>
             <arg value="--upload"/>
@@ -45,9 +43,8 @@
 
     <target name="installer-unstable"
             description="Build the installer for an unstable release.">
-        <exec executable="bash" dir="installer" resultproperty="installer.result">
+        <exec executable="bash" dir="modules/installer" resultproperty="installer.result">
             <arg value="release.sh"/>
-            <arg value="-t"/>
             <arg value="-c"/>
             <arg value="UNSTABLE"/>
         </exec>
@@ -58,7 +55,7 @@
 
         <echo message="Installer build finished."/>
         <echo message="Completed build files can be found in:"/>
-        <echo message="    ${installer.output.dir}"/>
+        <echo message="    ./modules/installer/output"/>
         <echo message=""/>
     </target>
 
