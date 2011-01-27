@@ -72,11 +72,14 @@ else
 	# Delete all automatically added plugins from the jar to allow the installer
 	# to add its own on a per-os basis
 	unzip -l ${MYDIR}/dist/DMDirc.jar | grep " plugins/" | tr -s ' ' | cut -d ' ' -f 5- | xargs zip ${MYDIR}/dist/DMDirc.jar -d
-	cd "${MYDIR}/installer"
-	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--extra ${FILEDATA}" trunk
+	cd "${MYDIR}/modules/installer"
+	PACKAGENAME="DMDirc-Nightly"
+	./makeAll.sh --extra "${FILEDATA}" --packagename "${PACKAGENAME}"
 	cd "${MYDIR}"
-	
-	if [ ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" -o  ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar" ]; then
+
+	OUTPUTDIR="${MYDIR}/modules/installer/output"
+		 
+	if [ ! -e "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.exe" -o  ! -e "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.run" -o ! -e "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.dmg" -o ! -e "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" ]; then
 		# Report failure
 		echo "Installer build failure."
 		if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
@@ -98,28 +101,32 @@ else
 	
 	# Move installers/jar to nightlies site
 	FILENAME=DMDirc_${FILEDATA}.jar
-	mv "installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
-	mv "installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
-	mv "installer/output/DMDirc-${FILEDATA}.dmg" "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg"
-	rm -Rf "installer/output/DMDirc-${FILEDATA}.jar"
-	cp dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
+	
+	function handleNightly() {
+		PACKAGENAME="${1}"
+		FILEDATA="${2}"
+		EXT="${3}"
 
-	if [ -e "${WWWDIR}/nightly/${FILENAME}" ]; then
-		ln -sf ${WWWDIR}/nightly/${FILENAME} $WWWDIR/nightly/DMDirc_latest.jar
-	fi;
-	if [ -e "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" ]; then
-		ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
-	fi;
-	if [ -e "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" ]; then
-		ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
-	fi;
-	if [ -e "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" ]; then
-		ln -sf "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" $WWWDIR/nightly/DMDirc_latest.dmg
+		mv "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.${EXT}" "${WWWDIR}/nightly/${PACKAGENAME}-${FILEDATA}.${EXT}"
+		if [ -e "${WWWDIR}/nightly/${PACKAGENAME}-${FILEDATA}.${EXT}" ]; then
+			ln -sf "${WWWDIR}/nightly/${PACKAGENAME}-${FILEDATA}.${EXT}" "${WWWDIR}/nightly/${PACKAGENAME}_latest.${EXT}"
+		fi;
+	}
+
+	handleNightly "${PACKAGENAME}" "${FILEDATA}" "exe"
+	handleNightly "${PACKAGENAME}" "${FILEDATA}" "dmg"
+	handleNightly "${PACKAGENAME}" "${FILEDATA}" "deb"
+	handleNightly "${PACKAGENAME}" "${FILEDATA}" "rpm"
+
+	# Jars get a different name for some reason.
+	mv "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar"
+	if [ -e "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" ]; then
+		ln -sf "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" "${WWWDIR}/nightly/${PACKAGENAME}_latest.${EXT}"
 	fi;
 	
-	# Update Launchers
-	cd ${MYDIR}/launcher
-	sh ${MYDIR}/launcher/createUpdate.sh
+	# # Update Launchers
+	# cd ${MYDIR}/launcher
+	# sh ${MYDIR}/launcher/createUpdate.sh
 	
 	# Do normal reports
 	if [ "${IS_BAMBOO}" == "" ]; then
