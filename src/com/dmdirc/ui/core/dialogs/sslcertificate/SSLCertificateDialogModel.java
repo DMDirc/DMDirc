@@ -22,9 +22,10 @@
 
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
-import com.dmdirc.CertificateManager;
-import com.dmdirc.CertificateManager.CertificateDoesntMatchHostException;
-import com.dmdirc.CertificateManager.CertificateNotTrustedException;
+import com.dmdirc.tls.CertificateAction;
+import com.dmdirc.tls.CertificateManager;
+import com.dmdirc.tls.CertificateDoesntMatchHostException;
+import com.dmdirc.tls.CertificateNotTrustedException;
 
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
@@ -32,6 +33,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,6 @@ import java.util.Map;
  * Model for SSL certificate dialogs.
  *
  * @since 0.6.3m1
- * @author chris
  */
 public class SSLCertificateDialogModel {
 
@@ -50,7 +51,7 @@ public class SSLCertificateDialogModel {
     private final CertificateManager manager;
 
     /** The list of problems found with the certs, if any. */
-    private final List<CertificateException> problems;
+    private final Collection<CertificateException> problems;
 
     /** The text to use if a field isn't present on the certificate. */
     private static final String NOTPRESENT = "(not present on certificate)";
@@ -63,7 +64,7 @@ public class SSLCertificateDialogModel {
      * @param manager The certificate manager responsible for the certs
      */
     public SSLCertificateDialogModel(final X509Certificate[] chain,
-            final List<CertificateException> problems,
+            final Collection<CertificateException> problems,
             final CertificateManager manager) {
         this.chain = chain;
         this.problems = problems;
@@ -158,6 +159,13 @@ public class SSLCertificateDialogModel {
         return res;
     }
 
+    /**
+     * Retrieves a list of all the alternate names of the specified certificates
+     * as a comma-separated string.
+     *
+     * @param cert The certificate to retrieve alternate names for
+     * @return A comma-separated list of alternate names
+     */
     protected String getAlternateNames(final X509Certificate cert) {
         final StringBuilder res = new StringBuilder();
 

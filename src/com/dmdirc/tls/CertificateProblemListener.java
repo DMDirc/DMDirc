@@ -20,23 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.core.dialogs.sslcertificate;
+package com.dmdirc.tls;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Collection;
 
 /**
- * Describes an action that can be performed on an invalid certificate.
- *
- * @since 0.6.3m1
- * @author chris
+ * Listener interface for objects interested in being notified when there
+ * are certificate problems.
  */
-public enum CertificateAction {
+public interface CertificateProblemListener {
 
-    /** Disconnects from the server and does nothing. */
-    DISCONNECT,
+    /**
+     * Called when a problem is encountered with a server's certificate which
+     * requires user input.
+     *
+     * @param chain The certificate chain received from the server
+     * @param problems A collection of errors that were encountered
+     * @param certificateManager The certificate manager handling the connection
+     */
+    void certificateProblemEncountered(X509Certificate[] chain,
+            Collection<CertificateException> problems,
+            CertificateManager certificateManager);
 
-    /** Ignores the problem but does not store the exception. */
-    IGNORE_TEMPORARILY,
-
-    /** Adds a permanent exception for the certificate. */
-    IGNORE_PERMANENTY;
+    /**
+     * Called when a certificate problem has been resolved.
+     *
+     * @param manager The manager that had raised the problem
+     */
+    void certificateProblemResolved(CertificateManager manager);
 
 }

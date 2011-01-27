@@ -48,6 +48,8 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
+import com.dmdirc.tls.CertificateManager;
+import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -59,6 +61,8 @@ import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,10 +83,9 @@ import javax.net.ssl.TrustManager;
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
- *
- * @author chris
  */
-public class Server extends WritableFrameContainer<ServerWindow> implements ConfigChangeListener {
+public class Server extends WritableFrameContainer<ServerWindow>
+        implements ConfigChangeListener, CertificateProblemListener {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
@@ -166,6 +169,9 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
 
     /** Our string convertor. */
     private StringConverter converter = new DefaultStringConverter();
+
+    /** The certificate manager in use, if any. */
+    private CertificateManager certificateManager;
 
     // </editor-fold>
 
@@ -748,11 +754,11 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
         final Parser myParser = new ParserFactory().getParser(myInfo, address);
 
         if (myParser instanceof SecureParser) {
-            final CertificateManager certManager
-                    = new CertificateManager(address.getHost(), getConfigManager());
+            certificateManager = new CertificateManager(address.getHost(), getConfigManager());
             final SecureParser secureParser = (SecureParser) myParser;
-            secureParser.setTrustManagers(new TrustManager[]{certManager});
-            secureParser.setKeyManagers(certManager.getKeyManager());
+            secureParser.setTrustManagers(new TrustManager[]{certificateManager});
+            secureParser.setKeyManagers(certificateManager.getKeyManager());
+            certificateManager.addCertificateProblemListener(this);
         }
 
         if (myParser instanceof EncodingParser) {
@@ -1854,6 +1860,53 @@ public class Server extends WritableFrameContainer<ServerWindow> implements Conf
                 }
             }
         }, "Away state listener runner").start();
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="TLS listener handling">
+
+    /**
+     * Adds a new certificate problem listener to this server. If there is
+     * currently an on-going problem with a certificate, the listener will
+     * be called immediately before this method returns.
+     *
+     * @param listener The listener to be added
+     */
+    public void addCertificateProblemListener(final CertificateProblemListener listener) {
+        listeners.add(CertificateProblemListener.class, listener);
+
+        if (certificateManager != null && !certificateManager.getProblems().isEmpty()) {
+            listener.certificateProblemEncountered(certificateManager.getChain(),
+                    certificateManager.getProblems(), certificateManager);
+        }
+    }
+
+    /**
+     * Removes the specified listener from this server.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeCertificateProblemListener(final CertificateProblemListener listener) {
+        listeners.remove(CertificateProblemListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void certificateProblemEncountered(final X509Certificate[] chain,
+            final Collection<CertificateException> problems,
+            final CertificateManager certificateManager) {
+        for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+            listener.certificateProblemEncountered(chain, problems, certificateManager);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void certificateProblemResolved(final CertificateManager manager) {
+        for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+            listener.certificateProblemResolved(manager);
+        }
     }
 
     // </editor-fold>

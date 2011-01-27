@@ -20,14 +20,13 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.tls;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
-import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
+import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.StreamUtil;
 
 import java.io.File;
@@ -46,6 +45,7 @@ import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,27 +67,11 @@ import net.miginfocom.Base64;
  * SSL servers.
  *
  * @since 0.6.3m1
- * @author chris
  */
 public class CertificateManager implements X509TrustManager {
-
-    public static enum TrustResult {
-
-        TRUSTED_CA(true),
-        TRUSTED_MANUALLY(true),
-        UNTRUSTED_EXCEPTION(false),
-        UNTRUSTED_GENERAL(false);
-
-        private final boolean trusted;
-
-        private TrustResult(final boolean trusted) {
-            this.trusted = trusted;
-        }
-
-        public boolean isTrusted() {
-            return trusted;
-        }
-    }
+    
+    /** List of listeners. */
+    private final ListenerList listeners = new ListenerList();
 
     /** The server name the user is trying to connect to. */
     private final String serverName;
@@ -106,6 +90,12 @@ public class CertificateManager implements X509TrustManager {
 
     /** The action to perform. */
     private CertificateAction action;
+    
+    /** A list of problems encountered most recently. */
+    private final List<CertificateException> problems = new ArrayList<CertificateException>();
+    
+    /** The chain of certificates currently being validated. */
+    private X509Certificate[] chain;
 
     /**
      * Creates a new certificate manager for a client connecting to the
@@ -242,6 +232,14 @@ public class CertificateManager implements X509TrustManager {
         return TrustResult.UNTRUSTED_GENERAL;
     }
 
+    /**
+     * Determines whether the given certificate has a valid CN or alternate
+     * name for this server's hostname.
+     *
+     * @param certificate The certificate to be validated
+     * @return True if the certificate is valid for this server's host, false
+     * otherwise
+     */
     public boolean isValidHost(final X509Certificate certificate) {
         final Map<String, String> fields = getDNFieldsFromCert(certificate);
         if (fields.containsKey("CN") && isMatchingServerName(fields.get("CN"))) {
@@ -298,7 +296,9 @@ public class CertificateManager implements X509TrustManager {
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
             throws CertificateException {
-        final List<CertificateException> problems = new ArrayList<CertificateException>();
+        this.chain = chain;
+        problems.clear();
+        
         boolean verified = false;
         boolean manual = false;
 
@@ -342,14 +342,20 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty() && !manual) {
-            final SSLCertificateDialogModel model
-                    = new SSLCertificateDialogModel(chain, problems, this);
-            Main.getUI().showSSLCertificateDialog(model);
+            for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+                listener.certificateProblemEncountered(chain, problems, this);
+            }
 
             try {
                 actionSem.acquire();
             } catch (InterruptedException ie) {
                 throw new CertificateException("Thread aborted", ie);
+            } finally {
+                problems.clear();
+                
+                for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+                    listener.certificateProblemResolved(this);
+                }
             }
 
             switch (action) {
@@ -367,6 +373,25 @@ public class CertificateManager implements X509TrustManager {
                     break;
             }
         }
+    }
+    
+    /**
+     * Gets the chain of certificates currently being validated, if any.
+     *
+     * @return The chain of certificates being validated
+     */
+    public X509Certificate[] getChain() {
+        return chain;
+    }
+    
+    /**
+     * Gets the set of problems that were encountered with the last certificate.
+     *
+     * @return The set of problems encountered, or any empty collection if there
+     * is no current validation attempt ongoing.
+     */
+    public Collection<CertificateException> getProblems() {
+        return problems;
     }
 
     /**
@@ -417,53 +442,23 @@ public class CertificateManager implements X509TrustManager {
     public X509Certificate[] getAcceptedIssuers() {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
     }
-
-    /**
-     * An exception to indicate that the host on a certificate doesn't match
-     * the host we're trying to connect to.
+    
+   /**
+     * Adds a new certificate problem listener to this manager.
+     *
+     * @param listener The listener to be added
      */
-    public static class CertificateDoesntMatchHostException extends CertificateException {
-
-        /**
-         * A version number for this class. It should be changed whenever the
-         * class structure is changed (or anything else that would prevent
-         * serialized objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        /**
-         * Creates a new CertificateDoesntMatchHostException
-         *
-         * @param msg A description of the problem
-         */
-        public CertificateDoesntMatchHostException(final String msg) {
-            super(msg);
-        }
-
+    public void addCertificateProblemListener(final CertificateProblemListener listener) {
+        listeners.add(CertificateProblemListener.class, listener);
     }
-
+    
     /**
-     * An exception to indicate that we do not trust the issuer of the
-     * certificate (or the CA).
+     * Removes the specified listener from this manager.
+     *
+     * @param listener The listener to be removed
      */
-    public static class CertificateNotTrustedException extends CertificateException {
-
-        /**
-         * A version number for this class. It should be changed whenever the
-         * class structure is changed (or anything else that would prevent
-         * serialized objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        /**
-         * Creates a new CertificateNotTrustedException
-         *
-         * @param msg A description of the problem
-         */
-        public CertificateNotTrustedException(final String msg) {
-            super(msg);
-        }
-
+    public void removeCertificateProblemListener(final CertificateProblemListener listener) {
+        listeners.remove(CertificateProblemListener.class, listener);
     }
 
 }
