@@ -911,6 +911,24 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
+     * Returns a list of this plugin's children.
+     *
+     * @return List of child plugins
+     */
+    public List<PluginInfo> getChildren() {
+        return new ArrayList<PluginInfo>(children);
+    }
+
+    /**
+     * Checks if this plugin has any children.
+     *
+     * @return true iif this plugin has children
+     */
+    public boolean hasChildren() {
+        return !children.isEmpty();
+    }
+
+    /**
      * Load the given classname.
      *
      * @param classname Class to load
