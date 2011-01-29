@@ -51,7 +51,7 @@ public final class Invite extends Command implements ExternalCommand, CommandInf
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 1) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
@@ -66,7 +66,7 @@ public final class Invite extends Command implements ExternalCommand, CommandInf
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length < 1) {
             sendLine(origin, isSilent, FORMAT_ERROR,

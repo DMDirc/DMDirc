@@ -50,7 +50,7 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
                 new ChannelCommandContext(null, command, channel));
         
@@ -59,7 +59,7 @@ public class SetNickColourTest {
     
     @Test
     public void testUsageNicklist() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo --nicklist"),
                 new ChannelCommandContext(null, command, channel));
         
@@ -68,7 +68,7 @@ public class SetNickColourTest {
     
     @Test
     public void testUsageText() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo --text"),
                 new ChannelCommandContext(null, command, channel));
         

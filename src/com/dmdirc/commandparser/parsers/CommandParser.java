@@ -85,7 +85,7 @@ public abstract class CommandParser implements Serializable {
      * @param owner The container which owns this parser
      * @since 0.6.4
      */
-    public abstract void setOwner(final FrameContainer<?> owner);
+    public abstract void setOwner(final FrameContainer owner);
 
     /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
@@ -131,7 +131,7 @@ public abstract class CommandParser implements Serializable {
      * as a channel name
      * @since 0.6.4
      */
-    public final void parseCommand(final FrameContainer<?> origin,
+    public final void parseCommand(final FrameContainer origin,
             final Window window, final String line, final boolean parseChannel) {
         final CommandArguments args = new CommandArguments(line);
 
@@ -166,7 +166,7 @@ public abstract class CommandParser implements Serializable {
      * @param parseChannel Whether or not to try parsing channel names
      * @return True iff the command was handled, false otherwise
      */
-    protected boolean handleChannelCommand(final FrameContainer<?> origin,
+    protected boolean handleChannelCommand(final FrameContainer origin,
             final Window window, final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
@@ -257,7 +257,7 @@ public abstract class CommandParser implements Serializable {
      * @param line The line to be parsed
      * @since 0.6.4
      */
-    public final void parseCommand(final FrameContainer<?> origin,
+    public final void parseCommand(final FrameContainer origin,
             final Window window, final String line) {
         parseCommand(origin, window, line, true);
     }
@@ -268,7 +268,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommandCtrl(final FrameContainer<?> origin, final String line) {
+    public final void parseCommandCtrl(final FrameContainer origin, final String line) {
         handleNonCommand(origin, line);
     }
 
@@ -282,7 +282,7 @@ public abstract class CommandParser implements Serializable {
      * @param args The arguments to the command
      * @since 0.6.4
      */
-    protected abstract void executeCommand(final FrameContainer<?> origin,
+    protected abstract void executeCommand(final FrameContainer origin,
             final Window window, final CommandInfo commandInfo,
             final Command command, final CommandArguments args);
 
@@ -295,7 +295,7 @@ public abstract class CommandParser implements Serializable {
      * @param args The arguments passed to the command
      * @since 0.6.3m1
      */
-    protected void handleInvalidCommand(final FrameContainer<?> origin,
+    protected void handleInvalidCommand(final FrameContainer origin,
             final CommandArguments args) {
         if (origin == null) {
             ActionManager.getActionManager().triggerEvent(
@@ -319,7 +319,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected abstract void handleNonCommand(final FrameContainer<?> origin,
+    protected abstract void handleNonCommand(final FrameContainer origin,
             final String line);
 
     /**

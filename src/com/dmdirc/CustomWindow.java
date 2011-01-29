@@ -24,14 +24,15 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.interfaces.Window;
+
+import java.util.Arrays;
 
 /**
  * A generic custom window implementation.
- *
- * @author chris
  */
-public class CustomWindow extends FrameContainer<Window> {
+public class CustomWindow extends FrameContainer {
 
     /**
      * Creates a new custom window as a child of the specified window.
@@ -41,8 +42,9 @@ public class CustomWindow extends FrameContainer<Window> {
      * @param parent The parent of this custom window
      */
     public CustomWindow(final String name, final String title,
-            final FrameContainer<?> parent) {
-        super("custom", name, title, Window.class, parent.getConfigManager());
+            final FrameContainer parent) {
+        super("custom", name, title, Window.class, parent.getConfigManager(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
 
         WindowManager.addWindow(parent, this);
     }
@@ -54,7 +56,9 @@ public class CustomWindow extends FrameContainer<Window> {
      * @param title The parent of this custom window
      */
     public CustomWindow(final String name, final String title) {
-        super("custom", name, title, Window.class, IdentityManager.getGlobalConfig());
+        super("custom", name, title, Window.class,
+                IdentityManager.getGlobalConfig(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
 
         WindowManager.addWindow(this);
     }

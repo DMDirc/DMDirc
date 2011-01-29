@@ -31,7 +31,6 @@ import java.util.EventListener;
  * receive information about frame icon or title changes.
  *
  * @since 0.6.3m2
- * @author Chris
  */
 public interface FrameInfoListener extends EventListener {
 
@@ -41,7 +40,7 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose icon changed
      * @param icon The new icon for the window
      */
-    void iconChanged(final FrameContainer<?> window, final String icon);
+    void iconChanged(final FrameContainer window, final String icon);
 
     /**
      * Called when a window's name is changed.
@@ -49,7 +48,7 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose name changed
      * @param name The new name for the window
      */
-    void nameChanged(final FrameContainer<?> window, final String name);
+    void nameChanged(final FrameContainer window, final String name);
 
     /**
      * Called when a window's title is changed.
@@ -57,6 +56,6 @@ public interface FrameInfoListener extends EventListener {
      * @param window The window whose title changed
      * @param title The new title for the window
      */
-    void titleChanged(final FrameContainer<?> window, final String title);
+    void titleChanged(final FrameContainer window, final String title);
 
 }

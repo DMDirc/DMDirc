@@ -480,7 +480,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_NICK {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Query) argument).toString(); }
+        public Object get(final Object argument) { return ((Query) argument).getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Query.class; }
@@ -512,7 +512,7 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((FrameContainer) argument).toString(); }
+        public Object get(final Object argument) { return ((FrameContainer) argument).getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return FrameContainer.class; }

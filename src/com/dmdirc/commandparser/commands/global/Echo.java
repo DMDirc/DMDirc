@@ -72,7 +72,7 @@ public final class Echo extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final CommandFlagResult results = handler.process(origin, args);
 
@@ -92,12 +92,12 @@ public final class Echo extends Command implements IntelligentCommand,
 
         if (results.hasFlag(activeFlag)) {
             if (!args.isSilent()) {
-                final FrameContainer<?> frame = WindowManager.getActiveWindow();
+                final FrameContainer frame = WindowManager.getActiveWindow();
                 frame.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
             }
         } else if (results.hasFlag(targetFlag)) {
-            FrameContainer<?> frame = null;
-            FrameContainer<?> target = origin;
+            FrameContainer frame = null;
+            FrameContainer target = origin;
 
             while (frame == null && target != null) {
                 frame = WindowManager.findCustomWindow(target,
@@ -159,7 +159,7 @@ public final class Echo extends Command implements IntelligentCommand,
                 || (arg == 3 && context.getPreviousArgs().get(2).equals("--target")
                 && context.getPreviousArgs().get(0).equals("--ts"))) {
 
-            final List<FrameContainer<?>> windowList = new ArrayList<FrameContainer<?>>();
+            final List<FrameContainer> windowList = new ArrayList<FrameContainer>();
             final Server currentServer = context.getWindow().getContainer()
                     .getServer();
 
@@ -173,7 +173,7 @@ public final class Echo extends Command implements IntelligentCommand,
 
             //Global Windows
             windowList.addAll(WindowManager.getRootWindows());
-            for (FrameContainer<?> customWindow : windowList) {
+            for (FrameContainer customWindow : windowList) {
                 if (customWindow instanceof CustomWindow) {
                     targets.add(customWindow.getName());
                 }

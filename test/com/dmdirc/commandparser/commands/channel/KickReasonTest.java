@@ -46,7 +46,7 @@ public class KickReasonTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
         command.execute(tiw, new CommandArguments("/kick"),
                 new ChannelCommandContext(null, command, channel));
@@ -56,7 +56,7 @@ public class KickReasonTest {
 
     @Test
     public void testUnknown() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
 
@@ -71,7 +71,7 @@ public class KickReasonTest {
 
     @Test
     public void testWithReason() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
         final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
@@ -87,7 +87,7 @@ public class KickReasonTest {
 
     @Test
     public void testWithoutReason() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         final ConfigManager manager = mock(ConfigManager.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);

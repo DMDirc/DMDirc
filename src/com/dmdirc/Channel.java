@@ -35,9 +35,10 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.ChannelWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
@@ -53,10 +54,8 @@ import java.util.Map;
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
  * ChannelWindow, and handles user input for the channel.
- *
- * @author chris
  */
-public class Channel extends MessageTarget<ChannelWindow> implements ConfigChangeListener {
+public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
@@ -97,10 +96,14 @@ public class Channel extends MessageTarget<ChannelWindow> implements ConfigChang
             final boolean focus) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
-                ChannelWindow.class,
+                InputWindow.class,
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
-                new ChannelCommandParser(newServer));
+                new ChannelCommandParser(newServer),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier(),
+                WindowComponent.TOPICBAR.getIdentifier(),
+                WindowComponent.USERLIST.getIdentifier()));
 
         channelInfo = newChannelInfo;
         server = newServer;

@@ -53,9 +53,10 @@ import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.ServerWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
@@ -64,6 +65,7 @@ import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -84,7 +86,7 @@ import javax.net.ssl.TrustManager;
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
  */
-public class Server extends WritableFrameContainer<ServerWindow>
+public class Server extends WritableFrameContainer
         implements ConfigChangeListener, CertificateProblemListener {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
@@ -149,8 +151,9 @@ public class Server extends WritableFrameContainer<ServerWindow>
 
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
+
     /** The last activated internal frame for this server. */
-    private FrameContainer<?> activeFrame = this;
+    private FrameContainer activeFrame = this;
 
     /** Our reason for being away, if any. */
     private String awayMessage;
@@ -189,9 +192,12 @@ public class Server extends WritableFrameContainer<ServerWindow>
      */
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", getHost(uri), getHost(uri),
-                ServerWindow.class,
+                InputWindow.class,
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
-                new ServerCommandParser());
+                new ServerCommandParser(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier(),
+                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         setConnectionDetails(uri, profile);
 
@@ -667,8 +673,13 @@ public class Server extends WritableFrameContainer<ServerWindow>
         return getChannel(chan.getName());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated The core should not need to know about UI implementations
+     */
     @Override
+    @Deprecated
     @SuppressWarnings("element-type-mismatch")
     public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
@@ -691,7 +702,7 @@ public class Server extends WritableFrameContainer<ServerWindow>
      *
      * @param source The frame that was activated
      */
-    public void setActiveFrame(final FrameContainer<?> source) {
+    public void setActiveFrame(final FrameContainer source) {
         activeFrame = source;
     }
 

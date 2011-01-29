@@ -49,7 +49,7 @@ public final class ReloadActions extends Command implements IntelligentCommand,
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         ActionManager.getActionManager().loadUserActions();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");

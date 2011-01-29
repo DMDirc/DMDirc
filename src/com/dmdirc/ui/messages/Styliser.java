@@ -150,7 +150,7 @@ public class Styliser implements ConfigChangeListener {
      *
      * @param owner The {@link FrameContainer} that owns this styliser.
      */
-    public Styliser(final FrameContainer<?> owner) {
+    public Styliser(final FrameContainer owner) {
         this(owner.getServer(), owner.getConfigManager());
     }
 

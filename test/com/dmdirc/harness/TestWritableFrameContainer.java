@@ -27,22 +27,24 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.Collections;
 
-public class TestWritableFrameContainer<T extends InputWindow> extends WritableFrameContainer<T> {
+public class TestWritableFrameContainer extends WritableFrameContainer {
 
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
-            final ConfigManager cm, final Class<T> clazz) {
-        super("raw", "Raw", "(Raw)", clazz, cm, GlobalCommandParser.getGlobalCommandParser());
+            final ConfigManager cm, final Class<? extends InputWindow> clazz) {
+        super("raw", "Raw", "(Raw)", clazz, cm,
+                GlobalCommandParser.getGlobalCommandParser(),
+                Collections.<String>emptySet());
 
         this.lineLength = lineLength;
     }
 
-    public TestWritableFrameContainer(final int lineLength, final Class<T> clazz) {
+    public TestWritableFrameContainer(final int lineLength, final Class<? extends InputWindow> clazz) {
         this(lineLength, IdentityManager.getGlobalConfig(), clazz);
     }
 

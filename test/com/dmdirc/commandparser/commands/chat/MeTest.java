@@ -49,7 +49,7 @@ public class MeTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
                 new ChatCommandContext(null, command, mtt));
         

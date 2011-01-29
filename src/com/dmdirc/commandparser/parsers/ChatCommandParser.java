@@ -49,7 +49,7 @@ public class ChatCommandParser extends ServerCommandParser {
     private static final long serialVersionUID = 1;
 
     /** The container that owns this parser. */
-    private MessageTarget<?> owner;
+    private MessageTarget owner;
 
     /**
      * Creates a new chat command parser that belongs to a child of the
@@ -63,15 +63,15 @@ public class ChatCommandParser extends ServerCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer<?> owner) {
+    public void setOwner(final FrameContainer owner) {
         if (this.owner == null) {
-            this.owner = (MessageTarget<?>) owner;
+            this.owner = (MessageTarget) owner;
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer<?> origin,
+    protected void executeCommand(final FrameContainer origin,
             final Window window, final CommandInfo commandInfo,
             final Command command, final CommandArguments args) {
         if (commandInfo.getType() == CommandType.TYPE_CHAT) {
@@ -83,7 +83,7 @@ public class ChatCommandParser extends ServerCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    protected void handleNonCommand(final FrameContainer<?> origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         owner.sendLine(line);
     }
 

@@ -55,7 +55,7 @@ public final class Ignore extends Command implements IntelligentCommand,
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
 
@@ -70,7 +70,7 @@ public final class Ignore extends Command implements IntelligentCommand,
         }
     }
 
-    protected void executeView(final FrameContainer<?> origin, final Server server,
+    protected void executeView(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args, final boolean forceRegex) {
         final IgnoreList ignoreList = server.getIgnoreList();
 
@@ -97,7 +97,7 @@ public final class Ignore extends Command implements IntelligentCommand,
         }
     }
 
-    protected void executeAdd(final FrameContainer<?> origin, final Server server,
+    protected void executeAdd(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         final IgnoreList ignoreList = server.getIgnoreList();
         final String target = args.getArgumentsAsString();
@@ -107,7 +107,7 @@ public final class Ignore extends Command implements IntelligentCommand,
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRegex(final FrameContainer<?> origin, final Server server,
+    protected void executeRegex(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
             executeView(origin, server, args.isSilent(), args, true);
@@ -130,7 +130,7 @@ public final class Ignore extends Command implements IntelligentCommand,
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRemove(final FrameContainer<?> origin, final Server server,
+    protected void executeRemove(final FrameContainer origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
             showUsage(origin, args.isSilent(), "ignore", "--remove <host>");

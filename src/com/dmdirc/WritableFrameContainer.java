@@ -33,6 +33,7 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,8 @@ import java.util.List;
  * The writable frame container adds additional methods to the frame container
  * class that allow the sending of lines back to whatever the container's
  * data source is (e.g. an IRC channel or server).
- *
- * @param <T> The type of window which should be used for this frame container.
- * @author chris
  */
-public abstract class WritableFrameContainer<T extends InputWindow> extends FrameContainer<T> {
+public abstract class WritableFrameContainer extends FrameContainer {
 
     /** The name of the server notification target. */
     protected static final String NOTIFICATION_SERVER = "server".intern();
@@ -64,12 +62,14 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
      * @param windowClass The class of window to use to represent this container
      * @param config The config manager for this container
      * @param parser The command parser for this container
+     * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
-            final String title, final Class<T> windowClass,
-            final ConfigManager config, final CommandParser parser) {
-        super(icon, name, title, windowClass, config);
+            final String title, final Class<? extends InputWindow> windowClass,
+            final ConfigManager config, final CommandParser parser,
+            final Collection<String> components) {
+        super(icon, name, title, windowClass, config, components);
 
         this.commandParser = parser;
         parser.setOwner(this);
@@ -305,7 +305,7 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
-            FrameContainer<?> targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
+            FrameContainer targetWindow = WindowManager.findCustomWindow(getServer(), windowName);
 
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName, getServer());
@@ -321,24 +321,24 @@ public abstract class WritableFrameContainer<T extends InputWindow> extends Fram
 
             final String command = String.format(target.substring(12), escapedargs);
 
-            WritableFrameContainer<?> best = this;
+            WritableFrameContainer best = this;
             long besttime = 0;
 
-            final List<FrameContainer<?>> containers = new ArrayList<FrameContainer<?>>();
+            final List<FrameContainer> containers = new ArrayList<FrameContainer>();
 
             containers.add(getServer());
             containers.addAll(getServer().getChildren());
 
-            for (FrameContainer<?> container : containers) {
-                if (!(container instanceof WritableFrameContainer<?>)) {
+            for (FrameContainer container : containers) {
+                if (!(container instanceof WritableFrameContainer)) {
                     continue;
                 }
 
-                final long time = ((WritableFrameContainer<?>) container)
+                final long time = ((WritableFrameContainer) container)
                         .getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
-                    best = (WritableFrameContainer<?>) container;
+                    best = (WritableFrameContainer) container;
                 }
             }
 

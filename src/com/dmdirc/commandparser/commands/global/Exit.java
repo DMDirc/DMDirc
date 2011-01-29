@@ -47,7 +47,7 @@ public final class Exit extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         Main.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));

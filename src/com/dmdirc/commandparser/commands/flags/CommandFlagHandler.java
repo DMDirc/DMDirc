@@ -71,7 +71,7 @@ public class CommandFlagHandler {
      * @return A corresponding {@link CommandFlagResult} object, or null
      * if some problem was encountered.
      */
-    public CommandFlagResult process(final FrameContainer<?> origin,
+    public CommandFlagResult process(final FrameContainer origin,
             final CommandArguments arguments) {
         final Map<CommandFlag, Integer> results = parse(origin, arguments);
 
@@ -88,7 +88,7 @@ public class CommandFlagHandler {
      * first argument within the <code>arguments</code> object. If an error
      * occurs, null is returned.
      */
-    protected Map<CommandFlag, Integer> parse(final FrameContainer<?> origin,
+    protected Map<CommandFlag, Integer> parse(final FrameContainer origin,
             final CommandArguments arguments) {
         enabledFlags.clear();
         disabledBy.clear();
@@ -171,7 +171,7 @@ public class CommandFlagHandler {
      */
     protected int readArguments(final CommandFlag flag,
             final CommandArguments arguments, final int offset, final int argCount,
-            final FrameContainer<?> origin, final Map<CommandFlag, Integer> results) {
+            final FrameContainer origin, final Map<CommandFlag, Integer> results) {
         final int lastArg = argCount + offset - 1;
 
         if (arguments.getArguments().length <= lastArg) {
@@ -251,7 +251,7 @@ public class CommandFlagHandler {
      * @param messageType The type of the line to be sent
      * @param args The arguments for the specified messageType
      */
-    protected static void sendLine(final FrameContainer<?> origin, final boolean isSilent,
+    protected static void sendLine(final FrameContainer origin, final boolean isSilent,
             final String messageType, final Object ... args) {
         if (origin != null && !isSilent) {
             origin.addLine(messageType, args);

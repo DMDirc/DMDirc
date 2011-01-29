@@ -71,7 +71,7 @@ public class CommandFlagHandlerTest {
     
     @Test
     public void testParse() {
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         
         final Map<CommandFlag, Integer> results
                 = handler.parse(container, new CommandArguments(input));

@@ -65,7 +65,7 @@ public class StyliserStylesTest {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
 
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         final ConfigManager manager = mock(ConfigManager.class);
         when(container.getConfigManager()).thenReturn(manager);
 

@@ -50,7 +50,7 @@ public final class ShowTopic extends Command implements ExternalCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
@@ -72,7 +72,7 @@ public final class ShowTopic extends Command implements ExternalCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             server.getParser().sendRawMessage("TOPIC " + channel);

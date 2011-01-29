@@ -30,7 +30,7 @@ import java.util.Comparator;
 /**
  * Compares FrameContainers by name.
  */
-public final class FrameContainerComparator implements Comparator<FrameContainer<?>>,
+public final class FrameContainerComparator implements Comparator<FrameContainer>,
         Serializable {
 
     /**
@@ -55,22 +55,22 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
         "item1.toString() returns a non-null value",
         "item2.toString() returns a non-null value"
     })
-    public int compare(final FrameContainer<?> item1, final FrameContainer<?> item2) {
+    public int compare(final FrameContainer item1, final FrameContainer item2) {
         Logger.assertTrue(item1 != null);
         Logger.assertTrue(item2 != null);
-        Logger.assertTrue(item1.toString() != null);
-        Logger.assertTrue(item2.toString() != null);
+        Logger.assertTrue(item1.getName() != null);
+        Logger.assertTrue(item2.getName() != null);
 
         if (sortBefore(item1, item2)) {
             return -1;
         } else if (sortAfter(item1, item2)) {
             return 1;
         } else {
-            final int position = item1.toString().compareToIgnoreCase(
-                    item2.toString());
+            final int position = item1.getName()
+                    .compareToIgnoreCase(item2.getName());
             if (position == 0) {
-                return Integer.valueOf(item1.hashCode()).compareTo(
-                        Integer.valueOf(item2.hashCode()));
+                return Integer.valueOf(item1.hashCode())
+                        .compareTo(Integer.valueOf(item2.hashCode()));
             } else {
                 return position;
             }
@@ -84,8 +84,8 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be before the old container
      */
-    private static boolean sortBefore(final FrameContainer<?> item1,
-            final FrameContainer<?> item2) {
+    private static boolean sortBefore(final FrameContainer item1,
+            final FrameContainer item2) {
 
         return getPosition(item1) < getPosition(item2);
     }
@@ -97,8 +97,8 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be after the old container
      */
-    private static boolean sortAfter(final FrameContainer<?> item1,
-            final FrameContainer<?> item2) {
+    private static boolean sortAfter(final FrameContainer item1,
+            final FrameContainer item2) {
         return getPosition(item1) > getPosition(item2);
     }
 
@@ -109,7 +109,7 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item The frame container to be tested
      * @return Position of the frame container
      */
-    private static int getPosition(final FrameContainer<?> item) {
+    private static int getPosition(final FrameContainer item) {
         if (item instanceof GlobalWindow) {
             return 0;
         } else if (item instanceof Server) {

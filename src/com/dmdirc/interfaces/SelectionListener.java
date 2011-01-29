@@ -29,8 +29,6 @@ import java.util.EventListener;
 /**
  * Defines the methods that should be implemented by classes which wish to
  * receive information about frame selection changes.
- *
- * @author Chris
  */
 public interface SelectionListener extends EventListener {
 
@@ -39,6 +37,6 @@ public interface SelectionListener extends EventListener {
      *
      * @param window The window that's now selected
      */
-    void selectionChanged(final FrameContainer<?> window);
+    void selectionChanged(final FrameContainer window);
 
 }

@@ -53,8 +53,8 @@ public class JoinChannelCommand extends Command implements
         ActionListener, IntelligentCommand, CommandInfo {
 
     /** A map of channel name mentions. */
-    private final MapList<FrameContainer<?>, String> mentions
-            = new MapList<FrameContainer<?>, String>();
+    private final MapList<FrameContainer, String> mentions
+            = new MapList<FrameContainer, String>();
 
     /**
      * Creates a new instance of the join channel command.
@@ -68,7 +68,7 @@ public class JoinChannelCommand extends Command implements
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {
@@ -121,7 +121,7 @@ public class JoinChannelCommand extends Command implements
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        final FrameContainer<?> source = (FrameContainer<?>) arguments[0];
+        final FrameContainer source = (FrameContainer) arguments[0];
         final String message = (String) arguments[1];
 
         final String[] parts = source.getStyliser().doLinks(message)
@@ -138,7 +138,7 @@ public class JoinChannelCommand extends Command implements
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        final FrameContainer<?> source = context.getWindow().getContainer();
+        final FrameContainer source = context.getWindow().getContainer();
         final Server server = source.getServer();
         final List<String> results = checkSource(source, true, true);
 
@@ -184,7 +184,7 @@ public class JoinChannelCommand extends Command implements
      * @return A list of channel names which have been mentioned in the hierarchy
      * @since 0.6.4
      */
-    protected List<String> checkSource(final FrameContainer<?> source,
+    protected List<String> checkSource(final FrameContainer source,
             final boolean checkParents, final boolean checkChildren) {
         final List<String> results = new ArrayList<String>();
 
@@ -200,7 +200,7 @@ public class JoinChannelCommand extends Command implements
 
         // Check the children window
         if (checkChildren) {
-            for (FrameContainer<?> child : source.getChildren()) {
+            for (FrameContainer child : source.getChildren()) {
                 results.addAll(checkSource(child, false, true));
             }
         }

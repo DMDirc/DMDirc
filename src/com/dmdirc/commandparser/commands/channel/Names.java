@@ -54,7 +54,7 @@ public class Names extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
         channel.getServer().getParser().sendRawMessage("NAMES "
@@ -64,7 +64,7 @@ public class Names extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin, final Server server,
+    public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel);
     }

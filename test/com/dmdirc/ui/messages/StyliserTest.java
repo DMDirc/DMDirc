@@ -86,7 +86,7 @@ public class StyliserTest {
         final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
         final String input2 = "abcdefghi";
 
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         final ConfigManager manager = mock(ConfigManager.class);
         when(container.getConfigManager()).thenReturn(manager);
 

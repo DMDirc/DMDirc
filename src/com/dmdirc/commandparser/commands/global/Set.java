@@ -77,7 +77,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final CommandFlagResult res = handler.process(origin, args);
 
@@ -152,7 +152,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param isSilent Whether or not the command is being silenced or not
      * @param manager The config manager to use to retrieve data
      */
-    private void doDomainList(final FrameContainer<?> origin, final boolean isSilent,
+    private void doDomainList(final FrameContainer origin, final boolean isSilent,
             final ConfigManager manager) {
         final StringBuffer output = new StringBuffer(67);
 
@@ -176,7 +176,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param manager The config manager to use to retrieve data
      * @param domain The domain to be inspected
      */
-    private void doOptionsList(final FrameContainer<?> origin,
+    private void doOptionsList(final FrameContainer origin,
             final boolean isSilent, final ConfigManager manager, final String domain) {
         final StringBuffer output = new StringBuffer(24);
 
@@ -209,7 +209,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doShowOption(final FrameContainer<?> origin,
+    private void doShowOption(final FrameContainer origin,
             final boolean isSilent, final ConfigManager manager,
             final String domain, final String option) {
         if (manager.hasOptionString(domain, option)) {
@@ -230,7 +230,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param option The name of the option
      * @param newvalue The value the option should be set to
      */
-    private void doSetOption(final FrameContainer<?> origin,
+    private void doSetOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity,
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
@@ -250,7 +250,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param option The name of the option
      * @param data The data to be appended
      */
-    private void doAppendOption(final FrameContainer<?> origin,
+    private void doAppendOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity, final ConfigManager manager,
             final String domain, final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
@@ -267,7 +267,7 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doUnsetOption(final FrameContainer<?> origin,
+    private void doUnsetOption(final FrameContainer origin,
             final boolean isSilent, final Identity identity, final String domain,
             final String option) {
         identity.unsetOption(domain, option);

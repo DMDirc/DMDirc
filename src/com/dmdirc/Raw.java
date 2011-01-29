@@ -30,17 +30,18 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.Arrays;
 
 import java.util.Date;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
- * @author chris
  */
-public final class Raw extends WritableFrameContainer<InputWindow>
+public final class Raw extends WritableFrameContainer
         implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
@@ -53,7 +54,9 @@ public final class Raw extends WritableFrameContainer<InputWindow>
      */
     public Raw(final Server newServer) {
         super("raw", "Raw", "(Raw log)", InputWindow.class,
-                newServer.getConfigManager(), new ServerCommandParser());
+                newServer.getConfigManager(), new ServerCommandParser(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
 

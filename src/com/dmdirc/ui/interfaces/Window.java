@@ -35,7 +35,7 @@ public interface Window {
      *
      * @return The container that owns this command window.
      */
-    FrameContainer<?> getContainer();
+    FrameContainer getContainer();
 
     /**
      * Opens this window.

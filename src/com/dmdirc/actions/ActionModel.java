@@ -34,7 +34,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -132,25 +131,22 @@ public class ActionModel {
             return false;
         }
 
-        final FrameContainer<?> active = WindowManager.getActiveWindow();
+        final FrameContainer active = WindowManager.getActiveWindow();
         Window window = null;
-        WritableFrameContainer<? extends Window> container = null;
+        WritableFrameContainer container = null;
         CommandParser cp = null;
 
         if (arguments.length > 0
-                && arguments[0] instanceof WritableFrameContainer<?>) {
-            container = (WritableFrameContainer<?>) arguments[0];
-        } else if (active instanceof WritableFrameContainer<?>) {
-            container = (WritableFrameContainer<?>) active;
+                && arguments[0] instanceof WritableFrameContainer) {
+            container = (WritableFrameContainer) arguments[0];
+        } else if (active instanceof WritableFrameContainer) {
+            container = (WritableFrameContainer) active;
         } else if (ServerManager.getServerManager().numServers() > 0) {
             container = ServerManager.getServerManager().getServers().get(0);
         }
 
         if (arguments.length > 0 && arguments[0] instanceof Window) {
             window = (Window) arguments[0];
-        } else if (container != null) {
-            final Collection<? extends Window> windows = container.getWindows();
-            window = windows.isEmpty() ? null : windows.iterator().next();
         }
 
         if (container == null) {

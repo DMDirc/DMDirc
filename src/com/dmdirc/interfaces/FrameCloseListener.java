@@ -39,6 +39,6 @@ public interface FrameCloseListener {
      *
      * @param window The window which is being closed
      */
-    void windowClosing(final FrameContainer<?> window);
+    void windowClosing(final FrameContainer window);
 
 }

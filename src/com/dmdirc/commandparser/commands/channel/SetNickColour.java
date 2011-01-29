@@ -53,7 +53,7 @@ public final class SetNickColour extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
 

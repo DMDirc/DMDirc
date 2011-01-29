@@ -44,6 +44,6 @@ public interface InputWindow extends Window {
      * @return The container that owns this command window.
      */
     @Override
-    WritableFrameContainer<? extends InputWindow> getContainer();
+    WritableFrameContainer getContainer();
 
 }

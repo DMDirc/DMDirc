@@ -45,7 +45,7 @@ public class IntelligentLinkingTest {
         this.input = input;
         this.expected = expected;
 
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         final ConfigManager manager = mock(ConfigManager.class);
         final Server server = mock(Server.class);
         when(server.getChannelPrefixes()).thenReturn("#&+");

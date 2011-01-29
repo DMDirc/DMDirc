@@ -36,7 +36,6 @@ import com.dmdirc.util.validators.ValidationResponse;
 
 /**
  * The me command sends a CTCP action to the current channel.
- * @author chris
  */
 public final class Me extends Command implements ValidatingCommand, CommandInfo {
 
@@ -47,9 +46,9 @@ public final class Me extends Command implements ValidatingCommand, CommandInfo 
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final MessageTarget<?> target = ((ChatCommandContext) context).getChat();
+        final MessageTarget target = ((ChatCommandContext) context).getChat();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "me", "<action>");
         } else {
@@ -93,7 +92,7 @@ public final class Me extends Command implements ValidatingCommand, CommandInfo 
         final int length = 2 + arguments.getArgumentsAsString().length();
 
         if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
-                origin.getContainer().toString()) <= length) {
+                origin.getContainer().getName()) <= length) {
             return new ValidationResponse("Too long");
         } else {
             return new ValidationResponse();

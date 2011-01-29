@@ -38,11 +38,13 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.QueryWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.Toolkit;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -50,9 +52,8 @@ import java.util.List;
  * The Query class represents the client's view of a query with another user.
  * It handles callbacks for query events from the parser, maintains the
  * corresponding QueryWindow, and handles user input for the query.
- * @author chris
  */
-public class Query extends MessageTarget<QueryWindow> implements PrivateActionListener,
+public class Query extends MessageTarget implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener {
 
     /** The Server this Query is on. */
@@ -73,8 +74,10 @@ public class Query extends MessageTarget<QueryWindow> implements PrivateActionLi
     public Query(final Server newServer, final String newHost) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
-                QueryWindow.class, newServer.getConfigManager(),
-                new QueryCommandParser(newServer));
+                InputWindow.class, newServer.getConfigManager(),
+                new QueryCommandParser(newServer),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
         this.host = newHost;

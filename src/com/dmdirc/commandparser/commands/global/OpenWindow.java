@@ -49,10 +49,10 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         int start = 0;
-        FrameContainer<?> parent = null;
+        FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             if (origin.getServer() == null) {
@@ -72,7 +72,7 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
             showUsage(origin, args.isSilent(), "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
-            final FrameContainer<?> window;
+            final FrameContainer window;
 
             if (parent == null) {
                 window = WindowManager.findCustomWindow(args.getArguments()[start]);

@@ -59,7 +59,7 @@ public final class NewServer extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         URI address = null;
 
@@ -137,7 +137,7 @@ public final class NewServer extends Command implements IntelligentCommand,
      *
      * @return URI is input was valid
      */
-    public static URI parseInput(final FrameContainer<?> origin, final boolean isSilent,
+    public static URI parseInput(final FrameContainer origin, final boolean isSilent,
             final CommandArguments args) {
 
         boolean ssl = false;

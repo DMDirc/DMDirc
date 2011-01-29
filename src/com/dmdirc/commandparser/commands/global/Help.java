@@ -57,7 +57,7 @@ public final class Help extends Command implements IntelligentCommand, CommandIn
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showAllCommands(origin, args.isSilent());
@@ -72,8 +72,8 @@ public final class Help extends Command implements IntelligentCommand, CommandIn
      * @param origin The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void showAllCommands(final FrameContainer<?> origin, final boolean isSilent) {
-        final List<String> commands = new ArrayList<String>(((WritableFrameContainer<?>) origin)
+    private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
+        final List<String> commands = new ArrayList<String>(((WritableFrameContainer) origin)
                 .getCommandParser().getCommands().keySet());
 
         Collections.sort(commands);
@@ -109,7 +109,7 @@ public final class Help extends Command implements IntelligentCommand, CommandIn
      * @param isSilent Whether this command has been silenced or not
      * @param name The name of the command to display info for
      */
-    private void showCommand(final FrameContainer<?> origin, final boolean isSilent,
+    private void showCommand(final FrameContainer origin, final boolean isSilent,
             final String name) {
         Map.Entry<CommandInfo, Command> command = null;
 

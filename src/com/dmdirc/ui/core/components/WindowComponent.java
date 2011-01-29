@@ -20,41 +20,43 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.context;
-
-import com.dmdirc.MessageTarget;
-import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.ui.interfaces.Window;
+package com.dmdirc.ui.core.components;
 
 /**
- * A command context specific to chat windows.
- *
- * @since 0.6.4
+ * An enumeration of common window components.
  */
-public class ChatCommandContext extends ServerCommandContext {
-
-    /** The chat container associated with this context. */
-    private final MessageTarget chat;
+public enum WindowComponent {
+    
+    /** A small bar to show the current topic/subject and allow editing. */
+    TOPICBAR("com.dmdirc.ui.components.topicbar"),
+    /** A panel to show a list of users or contacts. */
+    USERLIST("com.dmdirc.ui.components.userlist"),
+    /** A large text area for generic output. */
+    TEXTAREA("com.dmdirc.ui.components.textarea"),
+    /** An input field for user input or commands. */
+    INPUTFIELD("com.dmdirc.ui.components.inputfield"),
+    /** A component to show details of or problems with a certificate. */
+    CERTIFICATE_VIEWER("com.dmdirc.ui.components.certificateviewer"),;
+    
+    /** The identifier for this window component. */
+    private final String identifier;
 
     /**
-     * Creates a new chat command context.
+     * Creates a new WindowComponent.
      *
-     * @param source The source of the command
-     * @param commandInfo The command info object which associated the command with the input
-     * @param chat The chat container associated with the command
+     * @param identifier The identifier for this window component
      */
-    public ChatCommandContext(final Window source, final CommandInfo commandInfo,
-            final MessageTarget chat) {
-        super(source, commandInfo, chat.getServer());
-        this.chat = chat;
+    private WindowComponent(final String identifier) {
+        this.identifier = identifier;
     }
 
     /**
-     * Retrieves the chat container's associated with the command.
+     * Gets the identifier for this component.
      *
-     * @return This context's associated container
+     * @return This component's identifier
      */
-    public MessageTarget getChat() {
-        return chat;
+    public String getIdentifier() {
+        return identifier;
     }
+
 }

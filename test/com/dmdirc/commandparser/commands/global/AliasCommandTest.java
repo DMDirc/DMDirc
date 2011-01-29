@@ -41,7 +41,7 @@ public class AliasCommandTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
 
         command.execute(tiw, new CommandArguments("/foo"),
                 new CommandContext(null, command));
@@ -51,7 +51,7 @@ public class AliasCommandTest {
     
     @Test
     public void testUsageOneArg() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         
         command.execute(tiw, new CommandArguments("/foo --remove"),
                 new CommandContext(null, command));

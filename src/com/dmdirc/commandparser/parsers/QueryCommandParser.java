@@ -63,7 +63,7 @@ public class QueryCommandParser extends ChatCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    public void setOwner(final FrameContainer<?> owner) {
+    public void setOwner(final FrameContainer owner) {
         if (query == null) {
             query = (Query) owner;
         }
@@ -80,7 +80,7 @@ public class QueryCommandParser extends ChatCommandParser {
 
     /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer<?> origin,
+    protected void executeCommand(final FrameContainer origin,
             final Window window, final CommandInfo commandInfo,
             final Command command, final CommandArguments args) {
         if (commandInfo.getType() == CommandType.TYPE_QUERY) {

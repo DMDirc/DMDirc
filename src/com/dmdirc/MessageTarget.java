@@ -26,14 +26,13 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import java.util.Collection;
+
 /**
  * Defines common methods for objects that you can send messages to (such as
  * channels and queries).
- *
- * @param <T> The type of window which should be used for this frame container.
- * @author Chris
  */
-public abstract class MessageTarget<T extends InputWindow> extends WritableFrameContainer<T> {
+public abstract class MessageTarget extends WritableFrameContainer {
 
     /**
      * Creates a new MessageTarget.
@@ -44,12 +43,14 @@ public abstract class MessageTarget<T extends InputWindow> extends WritableFrame
      * @param windowClass The class of window to use to represent this container
      * @param config The config manager to use for this target
      * @param parser The command parser for this container
+     * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     public MessageTarget(final String icon, final String name,
-            final String title, final Class<T> windowClass,
-            final ConfigManager config, final CommandParser parser) {
-        super(icon, name, title, windowClass, config, parser);
+            final String title, final Class<? extends InputWindow> windowClass,
+            final ConfigManager config, final CommandParser parser,
+            final Collection<String> components) {
+        super(icon, name, title, windowClass, config, parser, components);
     }
 
     /**

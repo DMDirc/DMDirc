@@ -50,14 +50,14 @@ public final class Active extends Command implements IntelligentCommand,
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
         
-        final FrameContainer<?> window = WindowManager.getActiveWindow();
+        final FrameContainer window = WindowManager.getActiveWindow();
         
-        if (window instanceof WritableFrameContainer<?>) {
-            ((WritableFrameContainer<?>) window).getCommandParser()
+        if (window instanceof WritableFrameContainer) {
+            ((WritableFrameContainer) window).getCommandParser()
                     .parseCommand(window, context.getSource(), command);
         }
     }

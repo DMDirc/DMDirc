@@ -57,7 +57,7 @@ public final class RawServerCommand extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());

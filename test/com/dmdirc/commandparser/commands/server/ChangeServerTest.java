@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 public class ChangeServerTest {
 
     private final ChangeServer command = new ChangeServer();
-    private FrameContainer<?> tiw;
+    private FrameContainer tiw;
     private Identity profile;
     private Server server;
     

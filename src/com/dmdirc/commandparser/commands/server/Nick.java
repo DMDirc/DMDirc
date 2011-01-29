@@ -52,7 +52,7 @@ public final class Nick extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {

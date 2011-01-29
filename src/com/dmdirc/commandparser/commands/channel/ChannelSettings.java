@@ -48,7 +48,7 @@ public final class ChannelSettings extends Command implements
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         context.getSource().getController().showChannelSettingsDialog(
                 ((ChannelCommandContext) context).getChannel());

@@ -41,41 +41,50 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
- *
- * @param <T> The type of window which should be used for this frame container.
- * @author chris
  */
-public abstract class FrameContainer<T extends Window> {
+public abstract class FrameContainer {
 
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
 
-    /** A list of listeners for this containers's events. */
+    /** A list of listeners for this container's events. */
     protected final ListenerList listeners = new ListenerList();
 
     /** The document used to store this container's content. */
     protected IRCDocument document;
 
     /** The children of this frame. */
-    protected final Collection<FrameContainer<?>> children
-            = new CopyOnWriteArrayList<FrameContainer<?>>();
+    protected final Collection<FrameContainer> children
+            = new CopyOnWriteArrayList<FrameContainer>();
 
-    /** The windows representing of this frame. */
-    protected final Collection<T> windows
-            = new CopyOnWriteArrayList<T>();
+    /**
+     * The windows representing of this frame.
+     *
+     * @deprecated The core should not need to know about UI implementations
+     */
+    @Deprecated
+    protected final Collection<Window> windows
+            = new CopyOnWriteArrayList<Window>();
 
-    /** The class of windows we want to represent this container. */
-    protected final Class<T> windowClass;
+    /**
+     * The class of windows we want to represent this container.
+     * 
+     * @deprecated Replaced with {@link #components}
+     */
+    @Deprecated
+    protected final Class<? extends Window> windowClass;
 
     /** The parent of this frame. */
-    protected FrameContainer<?> parent;
+    protected FrameContainer parent;
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
@@ -91,6 +100,9 @@ public abstract class FrameContainer<T extends Window> {
 
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
+    
+    /** The UI components that this frame requires. */
+    private final Set<String> components;
 
     /** The styliser used by this container. */
     private Styliser styliser;
@@ -107,15 +119,17 @@ public abstract class FrameContainer<T extends Window> {
      * @param title The title of this container
      * @param windowClass The class of windows required to represent this container
      * @param config The config manager for this container
+     * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     protected FrameContainer(final String icon, final String name,
-            final String title, final Class<T> windowClass,
-            final ConfigManager config) {
+            final String title, final Class<? extends Window> windowClass,
+            final ConfigManager config, final Collection<String> components) {
         this.config = config;
         this.name = name;
         this.title = title;
         this.windowClass = windowClass;
+        this.components = new HashSet<String>(components);
 
         setIcon(icon);
     }
@@ -126,7 +140,7 @@ public abstract class FrameContainer<T extends Window> {
      * @return This frame's children
      * @since 0.6.4
      */
-    public Collection<FrameContainer<?>> getChildren() {
+    public Collection<FrameContainer> getChildren() {
         return Collections.unmodifiableCollection(children);
     }
 
@@ -137,12 +151,12 @@ public abstract class FrameContainer<T extends Window> {
      * @param target The window to be tested
      * @return True if the specified container is a child of this one
      */
-    public boolean isChild(final FrameContainer<?> target) {
+    public boolean isChild(final FrameContainer target) {
         if (children.contains(target)) {
             return true;
         }
 
-        for (FrameContainer<?> child : children) {
+        for (FrameContainer child : children) {
             if (child.isChild(target)) {
                 return true;
             }
@@ -157,7 +171,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param child The window to be added
      * @since 0.6.4
      */
-    public void addChild(final FrameContainer<?> child) {
+    public void addChild(final FrameContainer child) {
         children.add(child);
         child.setParent(this);
     }
@@ -168,7 +182,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param child The window to be removed
      * @since 0.6.4
      */
-    public void removeChild(final FrameContainer<?> child) {
+    public void removeChild(final FrameContainer child) {
         children.remove(child);
     }
 
@@ -180,7 +194,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param parent The new parent for this container
      * @since 0.6.4
      */
-    public synchronized void setParent(final FrameContainer<?> parent) {
+    public synchronized void setParent(final FrameContainer parent) {
         if (this.parent != null && !parent.equals(this.parent)) {
             this.parent.removeChild(this);
         }
@@ -194,7 +208,7 @@ public abstract class FrameContainer<T extends Window> {
      * @return This container's parent, or null if it is a top level window.
      * @since 0.6.4
      */
-    public FrameContainer<?> getParent() {
+    public FrameContainer getParent() {
         return parent;
     }
 
@@ -211,12 +225,6 @@ public abstract class FrameContainer<T extends Window> {
             }
             return document;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return name;
     }
 
     /**
@@ -267,6 +275,17 @@ public abstract class FrameContainer<T extends Window> {
                 FrameInfoListener.class)) {
             listener.titleChanged(this, title);
         }
+    }
+    
+    /**
+     * Returns the collection of UI component identifiers that this frame
+     * container requires for its display.
+     *
+     * @since 0.6.6
+     * @return Collection of UI component identifiers
+     */
+    public Set<String> getComponents() {
+        return Collections.unmodifiableSet(components);
     }
 
     /**
@@ -369,7 +388,7 @@ public abstract class FrameContainer<T extends Window> {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final FrameContainer<?> activeWindow = WindowManager.getActiveWindow();
+        final FrameContainer activeWindow = WindowManager.getActiveWindow();
 
         if (activeWindow != null && !activeWindow.equals(this)
                 && !colour.equals(notification)) {
@@ -396,7 +415,9 @@ public abstract class FrameContainer<T extends Window> {
      *
      * @param target Window to check ownership of
      * @return True iff frame is owned by this container, false otherwise
+     * @deprecated The core should not need to know about UI implementations
      */
+    @Deprecated
     @SuppressWarnings("element-type-mismatch")
     public boolean ownsFrame(final Window target) {
         return windows.contains(target);
@@ -652,9 +673,11 @@ public abstract class FrameContainer<T extends Window> {
      * Adds a new window to this container.
      *
      * @param window The window to be added
+     * @deprecated The core should not need to know about UI methods
      * @since 0.6.4
      */
-    public void addWindow(final T window) {
+    @Deprecated
+    public void addWindow(final Window window) {
         windows.add(window);
     }
 
@@ -662,9 +685,11 @@ public abstract class FrameContainer<T extends Window> {
      * Removes the specified window from this container.
      *
      * @param window The window to be removed
+     * @deprecated The core should not need to know about UI methods
      * @since 0.6.4
      */
-    public void removeWindow(final T window) {
+    @Deprecated
+    public void removeWindow(final Window window) {
         windows.remove(window);
     }
 
@@ -672,10 +697,12 @@ public abstract class FrameContainer<T extends Window> {
      * Retrieves a collection of windows that represent this container.
      *
      * @return The collection of windows currently representing this container
+     * @deprecated The core should not need to know about UI methods
      * @since 0.6.4
      */
-    public Collection<T> getWindows() {
-        return windows;
+    @Deprecated
+    public Collection<Window> getWindows() {
+        return Collections.unmodifiableCollection(windows);
     }
 
     /**
@@ -683,9 +710,12 @@ public abstract class FrameContainer<T extends Window> {
      * container.
      *
      * @return This container's window class
+     * @deprecated UIs should base their implementations on the value of
+     * {@link #getComponents()}
      * @since 0.6.4
      */
-    public Class<T> getWindowClass() {
+    @Deprecated
+    public Class<? extends Window> getWindowClass() {
         return windowClass;
     }
 

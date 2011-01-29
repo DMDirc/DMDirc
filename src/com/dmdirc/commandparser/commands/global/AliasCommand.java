@@ -54,7 +54,7 @@ public final class AliasCommand extends Command implements
 
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 2) {
             showUsage(origin, args.isSilent(), "alias", "[--remove] <name> [command]");

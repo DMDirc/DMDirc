@@ -48,7 +48,7 @@ public final class Away extends Command implements CommandInfo {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         final String line = args.getArgumentsAsString();

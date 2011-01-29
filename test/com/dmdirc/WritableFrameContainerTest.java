@@ -41,8 +41,8 @@ public class WritableFrameContainerTest {
     
     @Test
     public void testGetNumLines() {
-        final WritableFrameContainer<?> container10
-                = new TestWritableFrameContainer<InputWindow>(10, InputWindow.class);
+        final WritableFrameContainer container10
+                = new TestWritableFrameContainer(10, InputWindow.class);
         
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -71,8 +71,8 @@ public class WritableFrameContainerTest {
 
     @Test
     public void testSplitLine() {
-        final WritableFrameContainer<?> container10
-                = new TestWritableFrameContainer<InputWindow>(10, InputWindow.class);
+        final WritableFrameContainer container10
+                = new TestWritableFrameContainer(10, InputWindow.class);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

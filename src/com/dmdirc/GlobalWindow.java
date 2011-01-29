@@ -29,16 +29,19 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.Arrays;
 
 /**
  * A window which can be used to execute global commands.
  *
  * @author chris
  */
-public class GlobalWindow extends WritableFrameContainer<InputWindow> {
+public class GlobalWindow extends WritableFrameContainer {
 
     /** The global window that's in use, if any. */
     private static GlobalWindow globalWindow;
@@ -50,7 +53,9 @@ public class GlobalWindow extends WritableFrameContainer<InputWindow> {
     public GlobalWindow() {
         super("icon", "Global", "(Global)", InputWindow.class,
                 IdentityManager.getGlobalConfig(),
-                GlobalCommandParser.getGlobalCommandParser());
+                GlobalCommandParser.getGlobalCommandParser(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,

@@ -47,7 +47,7 @@ public final class Cycle extends Command implements CommandInfo {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final FrameContainer<?> origin,
+    public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
         channel.part(args.getArguments().length > 0 ? args.getArgumentsAsString()

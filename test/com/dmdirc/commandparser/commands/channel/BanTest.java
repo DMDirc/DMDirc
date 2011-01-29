@@ -46,7 +46,7 @@ public class BanTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer<?> tiw = mock(FrameContainer.class);
+        final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
         command.execute(tiw, new CommandArguments("/ban"),
                 new ChannelCommandContext(null, command, channel));
@@ -57,7 +57,7 @@ public class BanTest {
     /** Tests that the ban command uses the correct hostname if given a user. */
     @Test
     public void testKnownUser() {
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         final ChannelInfo channelInfo = mock(ChannelInfo.class);
         final ChannelClientInfo ccInfo = mock(ChannelClientInfo.class);
         final ClientInfo clientInfo = mock(ClientInfo.class);
@@ -78,7 +78,7 @@ public class BanTest {
     /** Tests that the ban command works if given a mask not a username. */
     @Test
     public void testHostmask() {
-        final FrameContainer<?> container = mock(FrameContainer.class);
+        final FrameContainer container = mock(FrameContainer.class);
         final ChannelInfo channelInfo = mock(ChannelInfo.class);
         final Channel channel = mock(Channel.class);
 

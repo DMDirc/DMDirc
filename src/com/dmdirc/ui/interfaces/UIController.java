@@ -25,7 +25,6 @@ package com.dmdirc.ui.interfaces;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 
 import java.net.URI;
 
@@ -39,13 +38,6 @@ public interface UIController {
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
-
-    /**
-     * Shows the SSL certificate information dialog.
-     *
-     * @param model The dialog model to use
-     */
-    void showSSLCertificateDialog(SSLCertificateDialogModel model);
 
     /**
      * Shows a channel settigns dialog for specified channel.
