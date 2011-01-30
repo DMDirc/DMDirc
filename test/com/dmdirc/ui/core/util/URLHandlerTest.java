@@ -25,31 +25,12 @@ package com.dmdirc.ui.core.util;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class URLHandlerTest {
     
-    @Test
-    public void testParseArguments() {
-        final String[][][] tests = new String[][][]{
-            {{"abcdef abcdef abcdef"}, {"abcdef", "abcdef", "abcdef"}},
-            {{"abcdef \"abcdef abcdef\""}, {"abcdef", "abcdef abcdef"}},
-            {{"abcdef \"abcdef foo abcdef\""}, {"abcdef", "abcdef foo abcdef"}},
-            {{"abcdef \"abcdef\" \"abcdef\""}, {"abcdef", "abcdef", "abcdef"}},
-            {{"abcdef \"\""}, {"abcdef", ""}},
-            {{"abcdef \" foo?\""}, {"abcdef", " foo?"}},
-        };
-        
-        for (String[][] test : tests) {
-            final String[] res = URLHandler.parseArguments(test[0][0]);
-            assertTrue(test[0][0] + " - " + Arrays.toString(test[1]) + " - "
-                    + Arrays.toString(res),
-                    Arrays.equals(test[1], res));
-        }
-    }
-
     @Test
     public void testSubstituteParams() throws MalformedURLException, URISyntaxException {
         final Object[][] tests = new Object[][]{
@@ -63,7 +44,7 @@ public class URLHandlerTest {
             {new URI("protocol://@host:33/?foo+bar#frag"), "$query $fragment", "foo+bar frag"},
             {new URI("host.com"), "$path $protocol$host", "host.com "},
         };
-        
+
         for (Object[] test : tests) {
             final String result = URLHandler.substituteParams((URI) test[0],
                     (String) test[1]);
@@ -71,5 +52,4 @@ public class URLHandlerTest {
                     (String) test[2], result);
         }
     }
-    
 }

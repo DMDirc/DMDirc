@@ -30,15 +30,14 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.util.CommandUtils;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -249,52 +248,11 @@ public class URLHandler {
      */
     private void execApp(final String command) {
         try {
-            Runtime.getRuntime().exec(parseArguments(command));
+            Runtime.getRuntime().exec(CommandUtils.parseArguments(command));
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to run application: "
                     + ex.getMessage(), ex);
         }
-    }
-
-    /**
-     * Parses the specified command into an array of arguments. Arguments are
-     * separated by spaces. Multi-word arguments may be specified by starting
-     * the argument with a quote (") and finishing it with a quote (").
-     *
-     * @param command The command to parse
-     * @return An array of arguments corresponding to the command
-     */
-    protected static String[] parseArguments(final String command) {
-        final List<String> args = new ArrayList<String>();
-        final StringBuilder builder = new StringBuilder();
-        boolean inquote = false;
-
-        for (String word : command.split(" ")) {
-            if (word.endsWith("\"") && inquote) {
-                args.add(builder.toString() + ' ' + word.substring(0, word.length() - 1));
-                builder.delete(0, builder.length());
-                inquote = false;
-            } else if (inquote) {
-                if (builder.length() > 0) {
-                    builder.append(' ');
-                }
-
-                builder.append(word);
-            } else if (word.startsWith("\"") && !word.endsWith("\"")) {
-                inquote = true;
-                builder.append(word.substring(1));
-            } else if (word.startsWith("\"") && word.endsWith("\"")) {
-                if (word.length() == 1) {
-                    inquote = true;
-                } else {
-                    args.add(word.substring(1, word.length() - 1));
-                }
-            } else {
-                args.add(word);
-            }
-        }
-
-        return args.toArray(new String[args.size()]);
     }
 
     /**
