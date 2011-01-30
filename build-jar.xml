@@ -43,7 +43,7 @@
             <zipfileset src="modules/plugins/lib/platform.jar" includes="com/**"/>
         </jar>
 
-        <jar destfile="plugins/freedesktop_notifications.jar.jar" compress="${jar.compress}" keepcompression="true" update="true">
+        <jar destfile="plugins/freedesktop_notifications.jar" compress="${jar.compress}" keepcompression="true" update="true">
             <zipfileset src="modules/plugins/lib/commons-lang-2.4.jar" includes="org/apache/commons/lang/StringEscapeUtils.class org/apache/commons/lang/UnhandledException.class org/apache/commons/lang/IntHashMap*.class org/apache/commons/lang/Entities*.class"/>
         </jar>
     </target>
