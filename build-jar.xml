@@ -17,6 +17,7 @@
 	<jar destfile="plugins/parser_twitter.jar" compress="${jar.compress}" keepcompression="true" update="true">
             <zipfileset src="modules/plugins/lib/commons-codec-1.3.jar" includes="org/apache/**"/>
             <zipfileset src="modules/plugins/lib/signpost-core-1.1-SNAPSHOT.jar" includes="com/google/** oauth/signpost/**"/>
+            <zipfileset src="modules/plugins/lib/commons-lang-2.4.jar" includes="org/apache/commons/lang/StringEscapeUtils.class org/apache/commons/lang/UnhandledException.class org/apache/commons/lang/IntHashMap*.class org/apache/commons/lang/Entities*.class"/>
         </jar>
 
         <jar destfile="plugins/ui_web.jar" compress="${jar.compress}" keepcompression="true" update="true">
@@ -40,6 +41,10 @@
         <jar destfile="plugins/windowflashing.jar" compress="${jar.compress}" keepcompression="true" update="true">
             <zipfileset src="modules/plugins/lib/jna.jar" includes="com/**"/>
             <zipfileset src="modules/plugins/lib/platform.jar" includes="com/**"/>
+        </jar>
+
+        <jar destfile="plugins/freedesktop_notifications.jar.jar" compress="${jar.compress}" keepcompression="true" update="true">
+            <zipfileset src="modules/plugins/lib/commons-lang-2.4.jar" includes="org/apache/commons/lang/StringEscapeUtils.class org/apache/commons/lang/UnhandledException.class org/apache/commons/lang/IntHashMap*.class org/apache/commons/lang/Entities*.class"/>
         </jar>
     </target>
 
