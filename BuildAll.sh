@@ -72,6 +72,12 @@ else
 	# Delete all automatically added plugins from the jar to allow the installer
 	# to add its own on a per-os basis
 	unzip -l "${MYDIR}/dist/DMDirc.jar" | grep " plugins/" | tr -s ' ' | cut -d ' ' -f 5- | xargs zip "${MYDIR}/dist/DMDirc.jar" -d
+
+	# Temporary, add certain plugins back in as the installer builds no
+        # longer add any at all
+	cd "${MYDIR}"
+	$JAR -uvf "${MYDIR}/dist/DMDirc.jar" plugins/ui_swing.jar plugins/tabcompletion_bash.jar plugins/tabcompletion_mirc.jar plugins/parser_irc.jar
+
 	cd "${MYDIR}/modules/installer"
 	PACKAGENAME="DMDirc-Nightly"
 	./makeAll.sh --extra "${FILEDATA}" --packagename "${PACKAGENAME}" --jar "${MYDIR}/dist/DMDirc.jar" --version "${GITREV}"
@@ -90,7 +96,7 @@ else
 	fi;
 
 	# Re-add all plugins to the jar so that the nightly .jar has everything.
-	$JAR -uvf "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" plugins
+	# $JAR -uvf "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" plugins
 
 	# Submit plugins to addons site
 	if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
@@ -98,9 +104,6 @@ else
 			$PHP ${HOME}/www/addons/submitplugin.php $plugin
 		done;
 	fi;
-
-	# Move installers/jar to nightlies site
-	FILENAME=DMDirc_${FILEDATA}.jar
 
 	function handleNightly() {
 		PACKAGENAME="${1}"
@@ -121,7 +124,7 @@ else
 	# Jars get a different name for some reason.
 	mv -v "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar"
 	if [ -e "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" ]; then
-		ln -sfv "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" "${WWWDIR}/nightly/${PACKAGENAME}_latest.${EXT}"
+		ln -sfv "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" "${WWWDIR}/nightly/${PACKAGENAME}_latest.jar"
 	fi;
 
 	# # Update Launchers
