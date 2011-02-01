@@ -124,7 +124,7 @@ else
 	# Jars get a different name for some reason.
 	mv -v "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar"
 	if [ -e "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" ]; then
-		ln -sfv "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" "${WWWDIR}/nightly/${PACKAGENAME}_latest.jar"
+		ln -sfv "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" "${WWWDIR}/nightly/DMDirc_latest.jar"
 	fi;
 
 	# # Update Launchers
