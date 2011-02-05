@@ -97,7 +97,7 @@ public abstract class Plugin implements Comparable<Plugin> {
      *
      * @return Files directory for this plugin.
      */
-    public File getFilesDir() {
+    protected File getFilesDir() {
         if (filesDir == null) {
             final String fs = System.getProperty("file.separator");
             final String dir = PluginManager.getPluginManager().getFilesDirectory();
@@ -115,7 +115,7 @@ public abstract class Plugin implements Comparable<Plugin> {
      *
      * @return Filesdir as a string with trailing path separator
      */
-    public String getFilesDirString() {
+    protected String getFilesDirString() {
         return getFilesDir().getAbsolutePath() + System.getProperty("file.separator");
     }
 
