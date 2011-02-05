@@ -66,11 +66,7 @@ public class ParserFactory {
 
         if (obj instanceof Parser) {
             return (Parser) obj;
-        } else {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to create parser for: " + address.getScheme());
         }
-
         return null;
     }
 
@@ -86,11 +82,7 @@ public class ParserFactory {
 
         if (obj instanceof ProtocolDescription) {
             return (ProtocolDescription) obj;
-        } else {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to create protocol description for: " + address.getScheme());
         }
-
         return null;
     }
 
