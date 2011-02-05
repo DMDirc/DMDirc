@@ -25,13 +25,11 @@ package com.dmdirc.plugins;
 public class ExportInfo {
 
     /** Name of class the export is in. */
-    final String className;
-
+    private final String className;
     /** Name of method the export is in. */
-    final String methodName;
-
+    private final String methodName;
     /** The PluginInfo that defined this export. */
-    final PluginInfo pluginInfo;
+    private final PluginInfo pluginInfo;
 
     /**
      * Create a new ExportInfo.

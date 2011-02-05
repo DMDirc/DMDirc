@@ -55,50 +55,36 @@ import java.util.TreeMap;
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
-
+    private static final java.util.logging.Logger LOGGER
+            = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
     /** Plugin Meta Data */
     private volatile ConfigFile metaData = null;
-
     /** URL that this plugin was loaded from */
     private final URL url;
-
     /** Filename for this plugin (taken from URL) */
     private final String filename;
-
     /** The actual Plugin from this jar */
     private Plugin plugin = null;
-
     /** The classloader used for this Plugin */
     private PluginClassLoader classloader = null;
-
     /** The resource manager used by this pluginInfo */
     private ResourceManager myResourceManager = null;
-
     /** Is this plugin only loaded temporarily? */
     private boolean tempLoaded = false;
-
     /** List of classes this plugin has */
-    private List<String> myClasses = new ArrayList<String>();
-
+    private final List<String> myClasses = new ArrayList<String>();
     /** Requirements error message. */
     private String requirementsError = "";
-
     /** Last Error Message. */
     private String lastError = "No Error";
-
     /** Are we trying to load? */
     private boolean isLoading = false;
-
     /** List of services we provide. */
     private final List<Service> provides = new ArrayList<Service>();
-
     /** List of children of this plugin. */
     private final List<PluginInfo> children = new ArrayList<PluginInfo>();
-
     /** Map of exports */
     private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
-
     /** List of identities */
     private final List<Identity> identities = new ArrayList<Identity>();
 
@@ -717,7 +703,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             Service service = null;
             if (name.equalsIgnoreCase("any")) {
                 final List<Service> serviceList = PluginManager.getPluginManager().getServicesByType(type);
-                if (serviceList.size() > 0) {
+                if (!serviceList.isEmpty()) {
                     // Default to the first Service in the list
                     service = serviceList.get(0);
                     if (serviceList.size() > 1) {
@@ -733,7 +719,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             } else {
                 service = PluginManager.getPluginManager().getService(type, name, false);
             }
-            // System.out.println("\tSatisfied by: "+service+" "+(PluginInfo)service.getActiveProvider());
             if (service != null) {
                 available = service.activate();
             }
