@@ -28,9 +28,12 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Formatter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -302,6 +305,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
             getServer().addLineToAll(format, args);
         } else if ("active".equals(target)) {
             getServer().addLineToActive(format, args);
+        } else if ("statusbar".equals(target)) {
+            final String message = Formatter.formatMessage(getConfigManager(), format, args);
+            StatusBarManager.getStatusBarManager().setMessage(new StatusMessage(message, getConfigManager()));
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
