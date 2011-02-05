@@ -23,11 +23,11 @@ package com.dmdirc.ui.input;
 
 /**
  * The possible types of tab-completion entries.
- * 
+ *
  * @author chris
  */
 public enum TabCompletionType {
-    
+
     /** A command name. */
     COMMAND,
     /** A channel name. */

@@ -114,7 +114,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
 
     /**
      * Sets this target to be a custom identity.
-     * 
+     *
      * @param customType The type of custom identity
      * @since 0.6.4
      */

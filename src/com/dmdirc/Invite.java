@@ -30,22 +30,22 @@ import java.util.Date;
  * @author Chris
  */
 public class Invite {
-    
+
     /** The server this invite was on. */
     private final Server server;
-    
+
     /** The channel this invite is for. */
     private final String channel;
-    
+
     /** The time this invite was created. */
     private final long timestamp;
-    
+
     /** The source of this invite. */
     private final String source;
-    
+
     /**
      * Creates a new instance of Invite.
-     * 
+     *
      * @param server The server that this invite was received for
      * @param channel The channel that this invite is for
      * @param source The source of this invite
@@ -59,7 +59,7 @@ public class Invite {
 
     /**
      * Retrieves the server that this invite is associated with.
-     * 
+     *
      * @return This invite's server
      */
     public Server getServer() {
@@ -68,7 +68,7 @@ public class Invite {
 
     /**
      * Retrieves the name of the channel that this invite is for.
-     * 
+     *
      * @return This invite's channel
      */
     public String getChannel() {
@@ -77,7 +77,7 @@ public class Invite {
 
     /**
      * Retrieves the timestamp that this invite was received at.
-     * 
+     *
      * @return This invite's timestamp
      */
     public long getTimestamp() {
@@ -86,13 +86,13 @@ public class Invite {
 
     /**
      * Retrieves the nickname, ident and hostname of this invite's source.
-     * 
+     *
      * @return This invite's source
      */
     public String[] getSource() {
         return server.parseHostmask(source);
     }
-    
+
     /**
      * Join the channel that belongs to this invite.
      */

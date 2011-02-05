@@ -55,15 +55,15 @@ import java.util.List;
  * @author chris
  */
 public abstract class ConfigSource {
-    
+
     /** A permissive validator to use when callers don't specify one. */
     private static final Validator<String> PERMISSIVE_VALIDATOR
             = new PermissiveValidator<String>();
-    
+
     /** A validator for integer settings. */
     private static final Validator<String> INT_VALIDATOR
             = new OptionalValidator(new NumericalValidator(-1, -1));
-    
+
     /** A validator for colour settings. */
     private static final Validator<String> COLOUR_VALIDATOR
             = new OptionalValidator(new ColourValidator());
@@ -78,7 +78,7 @@ public abstract class ConfigSource {
     public String getOption(final String domain, final String option) {
         return getOption(domain, option, PERMISSIVE_VALIDATOR);
     }
-    
+
     /**
      * Retrieves the first value for the specified option that matches the
      * specified validator.
@@ -123,7 +123,7 @@ public abstract class ConfigSource {
     public boolean hasOptionString(final String domain, final String option) {
         return hasOptionString(domain, option, PERMISSIVE_VALIDATOR);
     }
-    
+
     /**
      * Determines if this source has the specified String option.
      * <p>
@@ -199,7 +199,7 @@ public abstract class ConfigSource {
     public boolean hasOptionBool(final String domain, final String option) {
         return hasOption(domain, option, PERMISSIVE_VALIDATOR);
     }
-    
+
     /**
      * Retrieves the specified option as a String, if it exists and satisfies
      * the specified validator.
@@ -225,14 +225,14 @@ public abstract class ConfigSource {
             final boolean required, final Validator<String> validator,
             final String ... fallbacks) {
         String value;
-        
+
         @SuppressWarnings("unchecked")
         final Validator<String> newValidator = required && fallbacks.length == 0
                 ? new ValidatorChain<String>(new DisabledOptionValidator(), validator)
                 : validator;
 
         if (!hasOption(domain, option, newValidator)
-                || (value = getOption(domain, option, newValidator)).startsWith("false:")) {            
+                || (value = getOption(domain, option, newValidator)).startsWith("false:")) {
             return fallbacks.length >= 2 ? getOptionString(fallbacks[0],
                     fallbacks[1], required, validator,
                     Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
@@ -269,7 +269,7 @@ public abstract class ConfigSource {
     public char getOptionChar(final String domain, final String option) {
         return getOption(domain, option).charAt(0);
     }
-    
+
     /**
      * Retrieves a colour representation of the specified option.
      *
@@ -332,7 +332,7 @@ public abstract class ConfigSource {
     public List<String> getOptionList(final String domain, final String option) {
         return getOptionList(domain, option, true);
     }
-    
+
     /**
      * Retrieves an integral representation of the specified option.
      *

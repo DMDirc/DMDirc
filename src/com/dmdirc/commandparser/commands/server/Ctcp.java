@@ -42,14 +42,14 @@ import com.dmdirc.ui.input.TabCompletionType;
 @CommandOptions(allowOffline=false)
 public final class Ctcp extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Ctcp.
      */
     public Ctcp() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -64,14 +64,14 @@ public final class Ctcp extends Command implements IntelligentCommand,
                     args.getArgumentsAsString(1));
         }
     }
-    
-    
+
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "ctcp";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
@@ -83,19 +83,19 @@ public final class Ctcp extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
         return "ctcp <target> <type> [arguments] - sends a CTCP message";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             res.exclude(TabCompletionType.COMMAND);
         } else if (arg == 1) {
@@ -109,8 +109,8 @@ public final class Ctcp extends Command implements IntelligentCommand,
             res.add("TIME");
             res.excludeAll();
         }
-        
+
         return res;
     }
-    
+
 }

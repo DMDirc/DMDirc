@@ -61,7 +61,7 @@ public class CertificateInformationEntry {
 
     /**
      * Checks whether the value is considered invalid.
-     * 
+     *
      * @return True if the value is invalid, false otherwise
      */
     public boolean isInvalid() {

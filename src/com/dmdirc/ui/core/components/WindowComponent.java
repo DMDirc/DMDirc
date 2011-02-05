@@ -26,7 +26,7 @@ package com.dmdirc.ui.core.components;
  * An enumeration of common window components.
  */
 public enum WindowComponent {
-    
+
     /** A small bar to show the current topic/subject and allow editing. */
     TOPICBAR("com.dmdirc.ui.components.topicbar"),
     /** A panel to show a list of users or contacts. */
@@ -37,7 +37,7 @@ public enum WindowComponent {
     INPUTFIELD("com.dmdirc.ui.components.inputfield"),
     /** A component to show details of or problems with a certificate. */
     CERTIFICATE_VIEWER("com.dmdirc.ui.components.certificateviewer"),;
-    
+
     /** The identifier for this window component. */
     private final String identifier;
 

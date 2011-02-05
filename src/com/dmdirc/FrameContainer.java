@@ -77,7 +77,7 @@ public abstract class FrameContainer {
 
     /**
      * The class of windows we want to represent this container.
-     * 
+     *
      * @deprecated Replaced with {@link #components}
      */
     @Deprecated
@@ -100,7 +100,7 @@ public abstract class FrameContainer {
 
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
-    
+
     /** The UI components that this frame requires. */
     private final Set<String> components;
 
@@ -276,7 +276,7 @@ public abstract class FrameContainer {
             listener.titleChanged(this, title);
         }
     }
-    
+
     /**
      * Returns the collection of UI component identifiers that this frame
      * container requires for its display.

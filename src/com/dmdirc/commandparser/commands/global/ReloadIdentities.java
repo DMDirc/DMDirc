@@ -34,12 +34,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to reload identities.
- * 
+ *
  * @author chris
  */
 public class ReloadIdentities extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of ReloadIdentities.
      */
@@ -48,11 +48,11 @@ public class ReloadIdentities extends Command implements IntelligentCommand,
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         IdentityManager.loadUser();
-        
+
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Identities reloaded.");
     }
 
@@ -85,6 +85,6 @@ public class ReloadIdentities extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
-    } 
+    }
 
 }

@@ -38,28 +38,28 @@ public interface NicklistListener {
      * Called to indicate the client list has been extensively updated,
      * and any cached data should be discarded and replaced with the specified
      * set of clients.
-     * 
+     *
      * @param clients The new set of clients for the channel
      */
     void clientListUpdated(Collection<ChannelClientInfo> clients);
-    
+
     /**
      * Called to indicate a member of the channel has had their nicklist entry
      * changed in some manner, and their display text, colours, etc, should be
      * re-read from the object.
      */
     void clientListUpdated();
-    
+
     /**
      * Called to indicate a new client has been added to the nicklist
-     * 
+     *
      * @param client The new client that has been added
      */
     void clientAdded(ChannelClientInfo client);
-    
+
     /**
      * Called to indicate a client has been removed from the nicklist
-     * 
+     *
      * @param client The client that has been removed
      */
     void clientRemoved(ChannelClientInfo client);

@@ -137,7 +137,7 @@ public class SSLCertificateDialogModel {
         group = new ArrayList<CertificateInformationEntry>();
         addCertField(fields, group, "Common name", "CN", wrongName);
 
-        group.add(new CertificateInformationEntry("Alternate names", 
+        group.add(new CertificateInformationEntry("Alternate names",
                 names == null ? NOTPRESENT : names, wrongName, names == null));
 
         addCertField(fields, group, "Organisation", "O", false);
@@ -258,7 +258,7 @@ public class SSLCertificateDialogModel {
 
         return res;
     }
-    
+
     /**
      * Determines whether or not a response is required from the user about
      * this certificate chain.
@@ -282,7 +282,7 @@ public class SSLCertificateDialogModel {
      * Performs the specified action on the certificate chain/connection.
      * Should only be called once per instance, and only if
      * {@link #needsResponse()} returns true.
-     * 
+     *
      * @param action The action to be performed
      */
     public void performAction(final CertificateAction action) {
@@ -290,7 +290,7 @@ public class SSLCertificateDialogModel {
             throw new IllegalStateException("Can't perform action when "
                     + "no action is needed");
         }
-        
+
         manager.setAction(action);
     }
 

@@ -38,14 +38,14 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  */
 @CommandOptions(allowOffline=false)
 public final class Away extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of Away.
      */
     public Away() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -55,14 +55,14 @@ public final class Away extends Command implements CommandInfo {
 
         server.getParser().getLocalClient().setAway(line);
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "away";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -74,11 +74,11 @@ public final class Away extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return "away <reason> - marks you as away";
     }
-    
+
 }

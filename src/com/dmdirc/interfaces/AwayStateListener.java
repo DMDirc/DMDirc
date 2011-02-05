@@ -24,18 +24,18 @@ package com.dmdirc.interfaces;
 
 /**
  * AwayStateListeners are informed of changes to our away state.
- * 
+ *
  * @author chris
  */
 public interface AwayStateListener {
-    
+
     /**
      * Called when we're marked as away.
-     * 
+     *
      * @param reason The reason that we're away
      */
     void onAway(String reason);
-    
+
     /**
      * Called when we're marked as back.
      */

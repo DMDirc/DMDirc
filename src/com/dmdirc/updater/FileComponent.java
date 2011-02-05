@@ -25,14 +25,14 @@ package com.dmdirc.updater;
 /**
  * This interface is implemented by components that are related to a specific
  * file.
- * 
+ *
  * @author shane
  */
 public interface FileComponent {
-    
+
     /**
      * Retrieves the file name of this component.
-     * 
+     *
      * @return This component's file name
      */
     String getFileName();

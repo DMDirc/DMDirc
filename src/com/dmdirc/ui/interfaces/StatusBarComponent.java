@@ -26,10 +26,10 @@ package com.dmdirc.ui.interfaces;
  * Statusbar component interface
  */
 public interface StatusBarComponent {
-    
+
     /**
      * Makes the component visible or invisible.
-     * 
+     *
      * @param visible component visibility
      */
     void setVisible(final boolean visible);

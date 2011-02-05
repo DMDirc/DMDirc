@@ -36,7 +36,7 @@ public abstract class MessageTarget extends WritableFrameContainer {
 
     /**
      * Creates a new MessageTarget.
-     * 
+     *
      * @param icon The icon to use for this target
      * @param name The name of this target
      * @param title The title of this target

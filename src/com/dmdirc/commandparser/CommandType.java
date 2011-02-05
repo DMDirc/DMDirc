@@ -24,11 +24,11 @@ package com.dmdirc.commandparser;
 
 /**
  * Defines the possible targets for commands.
- * 
+ *
  * @author chris
  */
 public enum CommandType {
-    
+
     /** A global command, which may be executed anywhere. */
     TYPE_GLOBAL,
     /** A server command, which only makes sense in the context of a connection. */

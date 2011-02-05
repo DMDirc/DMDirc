@@ -45,14 +45,14 @@ import com.dmdirc.ui.interfaces.InputWindow;
 @CommandOptions(allowOffline=false)
 public final class Message extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
-    
+
     /**
      * Creates a new instance of Message.
      */
     public Message() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -86,14 +86,14 @@ public final class Message extends Command implements IntelligentCommand,
             }
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "msg";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -105,7 +105,7 @@ public final class Message extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -117,14 +117,14 @@ public final class Message extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
         if (arg == 0) {
             res.excludeAll();
             res.include(TabCompletionType.CHANNEL_NICK);
             res.include(TabCompletionType.CHANNEL);
             res.include(TabCompletionType.QUERY_NICK);
         }
-        
+
         return res;
     }
 
@@ -139,5 +139,5 @@ public final class Message extends Command implements IntelligentCommand,
             return 1;
         }
     }
-    
+
 }

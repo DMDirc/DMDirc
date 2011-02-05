@@ -333,11 +333,11 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
     public synchronized String getOption(final String domain,
             final String option, final Validator<String> validator) {
         final String value = file.getKeyDomain(domain).get(option);
-        
+
         if (validator.validate(value).isFailure()) {
             return null;
         }
-        
+
         return value;
     }
 

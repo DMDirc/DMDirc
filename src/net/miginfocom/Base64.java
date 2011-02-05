@@ -13,7 +13,7 @@ import java.util.Arrays;
  * (10000 - 1000000 bytes)
  * compared to <code>sun.misc.Encoder()/Decoder()</code>.<br>
  * <br>
- * 
+ *
  * On byte arrays the encoder is about 20% faster than Jakarta Commons Base64
  * Codec for encode and
  * about 50% faster for decoding large arrays. This implementation is about
@@ -23,7 +23,7 @@ import java.util.Arrays;
  * result has to be recoded
  * to a <code>String</code> from <code>byte[]</code>, which is very expensive.<br>
  * <br>
- * 
+ *
  * This encode/decode algorithm doesn't create any temporary arrays as many
  * other codecs do, it only
  * allocates the resulting array. This produces less garbage and it is possible
@@ -34,7 +34,7 @@ import java.util.Arrays;
  * arrays but since performance
  * is quite low it probably does.<br>
  * <br>
- * 
+ *
  * The encoder produces the same output as the Sun one except that the Sun's
  * encoder appends
  * a trailing line separator if the last character isn't a pad. Unclear why but
@@ -43,7 +43,7 @@ import java.util.Arrays;
  * though.<br>
  * Commons codec seem to always att a trailing line separator.<br>
  * <br>
- * 
+ *
  * <b>Note!</b>
  * The encode/decode method pairs (types) come in three versions with the
  * <b>exact</b> same algorithm and
@@ -51,23 +51,23 @@ import java.util.Arrays;
  * transcoding to/from different
  * format types. The methods not used can simply be commented out.<br>
  * <br>
- * 
+ *
  * There is also a "fast" version of all decode methods that works the same way
  * as the normal ones, but
  * har a few demands on the decoded input. Normally though, these fast verions
  * should be used if the source if
  * the input is known and it hasn't bee tampered with.<br>
  * <br>
- * 
+ *
  * If you find the code useful or you find a bug, please send me a note at
  * base64 @ miginfocom . com.
- * 
+ *
  * Licence (BSD):
  * ==============
- * 
+ *
  * Copyright (c) 2004, Mikael Grev, MiG InfoCom AB. (base64 @ miginfocom . com)
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification,
  * are permitted provided that the following conditions are met:
@@ -84,7 +84,7 @@ import java.util.Arrays;
  * used to endorse or promote products derived from this software without
  * specific
  * prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -103,7 +103,7 @@ import java.util.Arrays;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY
  * OF SUCH DAMAGE.
- * 
+ *
  * @version 2.2
  * @author Mikael Grev
  *         Date: 2004-aug-02
@@ -129,7 +129,7 @@ public class Base64 {
     /**
      * Encodes a raw byte array into a BASE64 <code>char[]</code> representation
      * i accordance with RFC 2045.
-     * 
+     *
      * @param sArr
      *            The bytes to convert. If <code>null</code> or length 0 an
      *            empty array will be returned.
@@ -197,7 +197,7 @@ public class Base64 {
      * Decodes a BASE64 encoded char array. All illegal characters will be
      * ignored and can handle both arrays with
      * and without line separators.
-     * 
+     *
      * @param sArr
      *            The source array. <code>null</code> or length 0 will return an
      *            empty array.
@@ -275,7 +275,7 @@ public class Base64 {
      * + The array must not contain illegal characters within the encoded string<br>
      * + The array CAN have illegal characters at the beginning and end, those
      * will be dealt with appropriately.<br>
-     * 
+     *
      * @param sArr
      *            The source array. Length 0 will return an empty array.
      *            <code>null</code> will throw an exception.
@@ -355,7 +355,7 @@ public class Base64 {
     /**
      * Encodes a raw byte array into a BASE64 <code>byte[]</code> representation
      * i accordance with RFC 2045.
-     * 
+     *
      * @param sArr
      *            The bytes to convert. If <code>null</code> or length 0 an
      *            empty array will be returned.
@@ -423,7 +423,7 @@ public class Base64 {
      * Decodes a BASE64 encoded byte array. All illegal characters will be
      * ignored and can handle both arrays with
      * and without line separators.
-     * 
+     *
      * @param sArr
      *            The source array. Length 0 will return an empty array.
      *            <code>null</code> will throw an exception.
@@ -500,7 +500,7 @@ public class Base64 {
      * + The array must not contain illegal characters within the encoded string<br>
      * + The array CAN have illegal characters at the beginning and end, those
      * will be dealt with appropriately.<br>
-     * 
+     *
      * @param sArr
      *            The source array. Length 0 will return an empty array.
      *            <code>null</code> will throw an exception.
@@ -580,7 +580,7 @@ public class Base64 {
     /**
      * Encodes a raw byte array into a BASE64 <code>String</code> representation
      * i accordance with RFC 2045.
-     * 
+     *
      * @param sArr
      *            The bytes to convert. If <code>null</code> or length 0 an
      *            empty array will be returned.
@@ -606,7 +606,7 @@ public class Base64 {
      * <code>decode(str.toCharArray())</code> instead. That
      * will create a temporary array though. This version will use
      * <code>str.charAt(i)</code> to iterate the string.
-     * 
+     *
      * @param str
      *            The source string. <code>null</code> or length 0 will return
      *            an empty array.
@@ -685,7 +685,7 @@ public class Base64 {
      * + The array must not contain illegal characters within the encoded string<br>
      * + The array CAN have illegal characters at the beginning and end, those
      * will be dealt with appropriately.<br>
-     * 
+     *
      * @param s
      *            The source string. Length 0 will return an empty array.
      *            <code>null</code> will throw an exception.

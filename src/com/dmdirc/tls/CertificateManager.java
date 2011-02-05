@@ -69,7 +69,7 @@ import net.miginfocom.Base64;
  * @since 0.6.3m1
  */
 public class CertificateManager implements X509TrustManager {
-    
+
     /** List of listeners. */
     private final ListenerList listeners = new ListenerList();
 
@@ -90,10 +90,10 @@ public class CertificateManager implements X509TrustManager {
 
     /** The action to perform. */
     private CertificateAction action;
-    
+
     /** A list of problems encountered most recently. */
     private final List<CertificateException> problems = new ArrayList<CertificateException>();
-    
+
     /** The chain of certificates currently being validated. */
     private X509Certificate[] chain;
 
@@ -298,7 +298,7 @@ public class CertificateManager implements X509TrustManager {
             throws CertificateException {
         this.chain = chain;
         problems.clear();
-        
+
         boolean verified = false;
         boolean manual = false;
 
@@ -352,7 +352,7 @@ public class CertificateManager implements X509TrustManager {
                 throw new CertificateException("Thread aborted", ie);
             } finally {
                 problems.clear();
-                
+
                 for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
                     listener.certificateProblemResolved(this);
                 }
@@ -374,7 +374,7 @@ public class CertificateManager implements X509TrustManager {
             }
         }
     }
-    
+
     /**
      * Gets the chain of certificates currently being validated, if any.
      *
@@ -383,7 +383,7 @@ public class CertificateManager implements X509TrustManager {
     public X509Certificate[] getChain() {
         return chain;
     }
-    
+
     /**
      * Gets the set of problems that were encountered with the last certificate.
      *
@@ -442,7 +442,7 @@ public class CertificateManager implements X509TrustManager {
     public X509Certificate[] getAcceptedIssuers() {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
     }
-    
+
    /**
      * Adds a new certificate problem listener to this manager.
      *
@@ -451,7 +451,7 @@ public class CertificateManager implements X509TrustManager {
     public void addCertificateProblemListener(final CertificateProblemListener listener) {
         listeners.add(CertificateProblemListener.class, listener);
     }
-    
+
     /**
      * Removes the specified listener from this manager.
      *

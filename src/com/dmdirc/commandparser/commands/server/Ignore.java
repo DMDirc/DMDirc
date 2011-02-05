@@ -45,14 +45,14 @@ import java.util.regex.PatternSyntaxException;
  */
 public final class Ignore extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Ignore.
      */
     public Ignore() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -156,13 +156,13 @@ public final class Ignore extends Command implements IntelligentCommand,
 
         sendLine(origin, args.isSilent(), FORMAT_ERROR, "Ignore list doesn't contain '" + host + "'.");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "ignore";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -174,7 +174,7 @@ public final class Ignore extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -187,7 +187,7 @@ public final class Ignore extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         targets.excludeAll();
-        
+
         if (arg == 0) {
             targets.add("--regex");
             targets.add("--remove");
@@ -197,8 +197,8 @@ public final class Ignore extends Command implements IntelligentCommand,
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
         }
-        
+
         return targets;
     }
-    
+
 }

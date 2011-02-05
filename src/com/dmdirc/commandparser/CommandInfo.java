@@ -24,25 +24,25 @@ package com.dmdirc.commandparser;
 
 /**
  * Describes a command.
- * 
+ *
  * @author chris
  */
 public interface CommandInfo {
-          
+
     /**
      * Returns this command's name.
      *
      * @return The name of this command
      */
     String getName();
-    
+
     /**
      * Returns whether or not this command should be shown in help messages.
      *
      * @return True iff the command should be shown, false otherwise
      */
     boolean showInHelp();
-    
+
     /**
      * Returns a string representing the help message for this command.
      * <p>
@@ -62,7 +62,7 @@ public interface CommandInfo {
      * @return the help message for this command
      */
     String getHelp();
-    
+
     /**
      * Retrieves the type of this command.
      *

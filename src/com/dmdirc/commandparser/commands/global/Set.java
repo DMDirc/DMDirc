@@ -65,10 +65,10 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
      */
     public Set() {
         super();
-        
+
         unsetFlag.addDisabled(appendFlag);
         appendFlag.addDisabled(unsetFlag);
-        
+
         channelFlag.addDisabled(serverFlag);
         serverFlag.addDisabled(channelFlag);
 
@@ -117,14 +117,14 @@ public final class Set extends Command implements IntelligentCommand, CommandInf
             doUnsetOption(origin, args.isSilent(), identity, arguments[0], arguments[1]);
             return;
         }
-        
+
         if (res.hasFlag(appendFlag)) {
             final String[] arguments = res.getArguments(appendFlag);
             doAppendOption(origin, args.isSilent(), identity, manager,
                     arguments[0], arguments[1], res.getArgumentsAsString());
             return;
         }
-        
+
         final String[] arguments = res.getArguments();
 
         switch (arguments.length) {

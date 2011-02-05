@@ -29,15 +29,15 @@ import java.io.OutputStream;
  * Fake buffered output stream, writes files to /dev/null.
  */
 public class NullOutputStream extends OutputStream {
-    
+
     /** Instantiates a new null output stream. */
     public NullOutputStream() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     public void write(final int b) throws IOException {
         //Ignore data.
     }
-    
+
 }

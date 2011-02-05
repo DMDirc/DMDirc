@@ -41,32 +41,32 @@ import com.dmdirc.ui.input.TabCompleter;
  */
 public final class AllChannels extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /** Creates a new instance of AllChannels. */
     public AllChannels() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         final String command = args.getArgumentsAsString();
-        
+
         for (String channel : server.getChannels()) {
             server.getChannel(channel).getCommandParser()
                     .parseCommand(server.getChannel(channel), context.getSource(), command);
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "allchannels";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -78,7 +78,7 @@ public final class AllChannels extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -92,5 +92,5 @@ public final class AllChannels extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         return TabCompleter.getIntelligentResults(arg, context, 0);
     }
-    
+
 }

@@ -38,15 +38,15 @@ public enum ErrorReportStatus {
     QUEUED("Queued", false),
     /** Waiting state. */
     WAITING("Waiting", true);
-    
+
     /** toString value of the item. */
     private final String value;
 
     /** Whether this state is terminal. */
     private final boolean terminal;
-    
-    /** 
-     * Instantiates the enum. 
+
+    /**
+     * Instantiates the enum.
      *
      * @param value toString value
      * @param terminal Whether or not the state is terminal (i.e., whether there
@@ -62,13 +62,13 @@ public enum ErrorReportStatus {
      * defined as those on which no further actions will be performed without
      * user interaction. Non-terminal states may start or finish sending in
      * the future.
-     * 
+     *
      * @return True if the state is terminal, false otherwise
      */
     public boolean isTerminal() {
         return terminal;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

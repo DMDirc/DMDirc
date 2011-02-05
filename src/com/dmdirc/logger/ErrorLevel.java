@@ -34,14 +34,14 @@ public enum ErrorLevel {
     LOW("Low", "info"),
     /** Unknown priority error. */
     UNKNOWN("Unknown", "info");
-    
+
     /** Error level string. */
     private String value;
     /** Error level icon. */
     private String icon;
-    
-    /** 
-     * Instantiates the enum. 
+
+    /**
+     * Instantiates the enum.
      *
      * @param value toString value
      * @param icon Error level icon
@@ -50,22 +50,22 @@ public enum ErrorLevel {
         this.value = value;
         this.icon = icon;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;
     }
-    
+
     /**
      * Error levels icon.
-     * 
+     *
      * @return Error levels icon
      */
     public String getIcon() {
         return icon;
     }
-    
+
     /**
      * Returns if the specified error is more important than this one
      *
@@ -77,7 +77,7 @@ public enum ErrorLevel {
         if (level == null) {
             return false;
         }
-        
+
         return ordinal() > level.ordinal();
     }
 }

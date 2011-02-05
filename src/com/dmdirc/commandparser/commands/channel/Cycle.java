@@ -39,12 +39,12 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  */
 @CommandOptions(allowOffline=false)
 public final class Cycle extends Command implements CommandInfo {
-    
+
     /** Creates a new instance of Cycle. */
     public Cycle() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -54,13 +54,13 @@ public final class Cycle extends Command implements CommandInfo {
                 : origin.getConfigManager().getOption("general", "cyclemessage"));
         channel.join();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "cycle";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -72,7 +72,7 @@ public final class Cycle extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_CHANNEL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {

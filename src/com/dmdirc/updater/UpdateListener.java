@@ -24,25 +24,25 @@ package com.dmdirc.updater;
 
 /**
  * Defines the method that must be implemented by update listeners.
- * 
+ *
  * @author chris
  */
 public interface UpdateListener {
-    
+
     /**
      * Called when the state of the update has changed.
-     * 
+     *
      * @param update The update in question
      * @param status The new status of the update
      */
     void updateStatusChange(Update update, UpdateStatus status);
-    
+
     /**
      * Called when the progress of the current update state has changed.
-     * 
+     *
      * @param update The update in question
      * @param progress The progress (as a percentage) of the update
      */
     void updateProgressChange(Update update, float progress);
-    
+
 }

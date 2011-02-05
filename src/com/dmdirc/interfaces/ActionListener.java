@@ -27,11 +27,11 @@ import com.dmdirc.actions.interfaces.ActionType;
 /**
  * Defines the method that has to be implemented by classes wanting to receive
  * action events.
- * 
+ *
  * @author chris
  */
 public interface ActionListener {
-    
+
     /**
      * Processes an action of the specified type.
      *

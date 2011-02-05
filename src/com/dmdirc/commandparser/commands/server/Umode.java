@@ -35,18 +35,18 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * Allows the user to change user modes.
- * 
+ *
  * @author chris
  */
 @CommandOptions(allowOffline=false)
 public class Umode extends Command implements CommandInfo {
-    
+
     /**
      * Creates a new instance of Umode.
      */
     public Umode() {
         super();
-    }    
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -68,7 +68,7 @@ public class Umode extends Command implements CommandInfo {
     public String getName() {
         return "umode";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {

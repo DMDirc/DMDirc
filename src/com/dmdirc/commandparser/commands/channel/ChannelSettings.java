@@ -40,12 +40,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 @CommandOptions(allowOffline=false)
 public final class ChannelSettings extends Command implements
         IntelligentCommand, CommandInfo {
-    
+
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -53,13 +53,13 @@ public final class ChannelSettings extends Command implements
         context.getSource().getController().showChannelSettingsDialog(
                 ((ChannelCommandContext) context).getChannel());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "channelsettings";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -71,7 +71,7 @@ public final class ChannelSettings extends Command implements
     public CommandType getType() {
         return CommandType.TYPE_CHANNEL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {

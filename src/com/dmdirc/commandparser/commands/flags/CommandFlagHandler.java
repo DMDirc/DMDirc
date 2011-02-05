@@ -153,7 +153,7 @@ public class CommandFlagHandler {
         }
 
         results.put(null, offset);
-        
+
         return results;
     }
 

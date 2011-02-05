@@ -167,5 +167,5 @@ public class CommandFlag {
     public String getName() {
         return name;
     }
-    
+
 }

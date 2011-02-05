@@ -35,7 +35,7 @@ import com.dmdirc.ui.interfaces.Window;
 /**
  * A command parser which implements common functionality for chat windows
  * (queries and channels).
- * 
+ *
  * @since 0.6.4
  * @author chris
  */

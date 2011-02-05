@@ -39,14 +39,14 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  */
 public final class ReloadActions extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of ReloadActions.
      */
     public ReloadActions() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -54,14 +54,14 @@ public final class ReloadActions extends Command implements IntelligentCommand,
         ActionManager.getActionManager().loadUserActions();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
     }
-    
-    
+
+
     /** {@inheritDoc}. */
     @Override
     public String getName() {
         return "reloadactions";
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public boolean showInHelp() {
@@ -73,7 +73,7 @@ public final class ReloadActions extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
@@ -86,5 +86,5 @@ public final class ReloadActions extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
     }
-    
+
 }

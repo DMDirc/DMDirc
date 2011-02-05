@@ -154,7 +154,7 @@ public class ServerStatus {
 
         final int hashcode = parser.hashCode();
         int offset;
-        
+
         synchronized (parsers) {
             offset = parsers.indexOf(hashcode);
 

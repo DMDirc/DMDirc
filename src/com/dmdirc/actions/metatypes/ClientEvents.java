@@ -39,7 +39,7 @@ import javax.swing.text.StyledDocument;
  * @author Chris
  */
 public enum ClientEvents implements ActionMetaType {
-    
+
     /** Client event type. */
     CLIENT_EVENT(new String[]{}),
     /** Client event type, with a frame argument. */
@@ -60,12 +60,12 @@ public enum ClientEvents implements ActionMetaType {
     CLIENT_EVENT_WITH_STYLE(new String[]{"styled document", "start offset", "length"}, StyledDocument.class, Integer.class, Integer.class),
     /** Unknown command event type. */
     UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -76,29 +76,29 @@ public enum ClientEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "General Events";
-    }    
-    
+    }
+
 }

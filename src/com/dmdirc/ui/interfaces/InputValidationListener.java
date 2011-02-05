@@ -26,25 +26,25 @@ package com.dmdirc.ui.interfaces;
  * Defines methods that need to be implemented by validation listeners.
  */
 public interface InputValidationListener {
-    
+
     /**
      * Called when the command that has been entered is illegal.
-     * 
+     *
      * @param reason The reason that the command is illegal
      */
     void illegalCommand(final String reason);
-    
+
     /**
      * Called when the command that has been entered is legal.
-     * 
+     *
      * @since 0.6
      */
     void legalCommand();
-    
+
     /**
      * Called when the text or command that has been entered will be wrapped
      * onto multiple lines.
-     * 
+     *
      * @param count The number of lines that the text will be sent as
      */
     void wrappedText(final int count);

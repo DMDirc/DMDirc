@@ -24,21 +24,21 @@ package com.dmdirc.config.prefs;
 /**
  * Defines methods that should be implemented by objects who wish to be
  * notified about category changes.
- * 
+ *
  * @author chris
  */
 public interface CategoryChangeListener {
 
     /**
      * Called when a category has been selected.
-     * 
+     *
      * @param category The category that was selected
      */
     void categorySelected(final PreferencesCategory category);
-    
+
     /**
      * Called when a category has been deselected.
-     * 
+     *
      * @param category The category that was deselected
      */
     void categoryDeselected(final PreferencesCategory category);

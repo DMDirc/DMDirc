@@ -26,10 +26,10 @@ package com.dmdirc.config.prefs;
  * Interface for objects that are added to the preferences dialog.
  */
 public interface PreferencesInterface {
-    
-    /** 
+
+    /**
      * Called when the preferences dialog is being saved.
      */
     void save();
-    
+
 }

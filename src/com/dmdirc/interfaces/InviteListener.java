@@ -30,22 +30,22 @@ import java.util.EventListener;
 /**
  * Defines the methods that should be implemented by classes which wish to
  * receive information about invites.
- * 
+ *
  * @author Chris
  */
 public interface InviteListener extends EventListener {
-    
+
     /**
      * Called when a new invite has been received.
-     * 
+     *
      * @param server The server the invite was received by
      * @param invite The invite that was received
      */
     void inviteReceived(final Server server, final Invite invite);
-    
+
     /**
      * Called when an invite has expired or has been used.
-     * 
+     *
      * @param server The server the invite was initially received by
      * @param invite The invite that has expired
      */

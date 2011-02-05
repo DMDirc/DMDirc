@@ -59,7 +59,7 @@ public class PreferencesSetting {
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
     /** A list of change listeners. */
-    private final List<SettingChangeListener> listeners 
+    private final List<SettingChangeListener> listeners
             = new ArrayList<SettingChangeListener>();
     /** Identity to save settings to. */
     private final Identity identity;

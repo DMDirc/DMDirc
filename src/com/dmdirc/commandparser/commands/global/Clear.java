@@ -33,33 +33,33 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * The clear command clears the main text area of the current window.
- * 
+ *
  * @author chris
  */
 public final class Clear extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Clear.
      */
     public Clear() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         origin.getDocument().clear();
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "clear";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -71,7 +71,7 @@ public final class Clear extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -83,6 +83,6 @@ public final class Clear extends Command implements IntelligentCommand,
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         return new AdditionalTabTargets().excludeAll();
-    } 
-    
+    }
+
 }

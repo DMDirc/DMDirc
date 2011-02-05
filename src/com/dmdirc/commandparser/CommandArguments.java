@@ -145,7 +145,7 @@ public class CommandArguments {
      */
     public String getArgumentsAsString(final int start) {
         parse();
-        
+
         return getArgumentsAsString(start, words.length - 2);
     }
 

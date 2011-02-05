@@ -27,13 +27,13 @@ package com.dmdirc.ui.input.tabstyles;
  * new string (to replace the current one), and a new caret position.
  */
 public class TabCompletionResult {
-    
+
     /** The new string to use in the result. */
     private final String text;
-    
+
     /** The new caret position to be used. */
     private final int position;
-    
+
     /**
      * Creates a new instance of TabCompletionResult.
      *
@@ -44,7 +44,7 @@ public class TabCompletionResult {
         this.text = text;
         this.position = position;
     }
-    
+
     /**
      * Retrieves the replacement string for this result.
      *
@@ -53,7 +53,7 @@ public class TabCompletionResult {
     public String getText() {
         return text;
     }
-    
+
     /**
      * Retrieves the new caret position for this result.
      *
@@ -62,5 +62,5 @@ public class TabCompletionResult {
     public int getPosition() {
         return position;
     }
-    
+
 }

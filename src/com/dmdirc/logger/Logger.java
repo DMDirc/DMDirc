@@ -29,12 +29,12 @@ public final class Logger {
 
     /** The MANAGER to use to report errors. */
     protected static final ErrorManager MANAGER = ErrorManager.getErrorManager();
-       
+
     /** Prevent instantiation of a new instance of Logger. */
     private Logger() {
         //Ignore
     }
-    
+
     /**
      * Called when a user correctable error occurs.
      *
@@ -44,7 +44,7 @@ public final class Logger {
     public static void userError(final ErrorLevel level, final String message) {
         MANAGER.addError(level, message);
     }
-    
+
     /**
      * Called when a user correctable error occurs.
      *
@@ -56,7 +56,7 @@ public final class Logger {
             final String details) {
         MANAGER.addError(level, message, new String[]{details}, false);
     }
-    
+
     /**
      * Called when a user correctable error occurs.
      *
@@ -68,7 +68,7 @@ public final class Logger {
             final String message, final Throwable exception) {
         MANAGER.addError(level, message, exception, false);
     }
-    
+
     /**
      * Called when a non user correctable error occurs, the error will be
      * logged and optionally sent to the developers.
@@ -81,11 +81,11 @@ public final class Logger {
             final String message, final Throwable exception) {
         MANAGER.addError(level, message, exception, true);
     }
-    
+
     /**
      * Asserts that the specified value is true. If not, an AssertionError
      * exception is thrown.
-     * 
+     *
      * @param value The value to be tested
      */
     public static void assertTrue(final boolean value) {
@@ -93,5 +93,5 @@ public final class Logger {
             throw new AssertionError();
         }
     }
-    
+
 }

@@ -27,14 +27,14 @@ package com.dmdirc.actions.interfaces;
  * @author chris
  */
 public interface ActionType {
-    
+
     /**
      * Retrieves the type of this action.
-     * 
+     *
      * @return This action's type
      */
     ActionMetaType getType();
-    
+
     /**
      * Retrieves this type's friendly name.
      *
@@ -44,10 +44,10 @@ public interface ActionType {
 
     /**
      * Retrieves this type's internal name.
-     * 
+     *
      * @since 0.6.4
      * @return The internal name of this type
      */
     String name();
-    
+
 }

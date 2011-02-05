@@ -40,35 +40,35 @@ import com.dmdirc.ui.input.TabCompleter;
  */
 public final class Active extends Command implements IntelligentCommand,
         CommandInfo {
-    
+
     /**
      * Creates a new instance of Active.
      */
     public Active() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
-        
+
         final FrameContainer window = WindowManager.getActiveWindow();
-        
+
         if (window instanceof WritableFrameContainer) {
             ((WritableFrameContainer) window).getCommandParser()
                     .parseCommand(window, context.getSource(), command);
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "active";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -80,7 +80,7 @@ public final class Active extends Command implements IntelligentCommand,
     public CommandType getType() {
         return CommandType.TYPE_GLOBAL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -94,5 +94,5 @@ public final class Active extends Command implements IntelligentCommand,
             final IntelligentCommandContext context) {
         return TabCompleter.getIntelligentResults(arg, context, 0);
     }
-    
+
 }

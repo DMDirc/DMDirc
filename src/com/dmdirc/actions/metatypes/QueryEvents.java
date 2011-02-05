@@ -32,19 +32,19 @@ import com.dmdirc.parser.interfaces.ClientInfo;
  * @author Chris
  */
 public enum QueryEvents implements ActionMetaType {
-    
+
     /** Query event type. */
     QUERY_EVENT(new String[]{"query"}, Query.class),
     /** Query event with argument. */
     QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class),
     /** Query event with argument and source. */
     QUERY_SOURCED_EVENT_WITH_ARG(new String[]{"query", "source", "message"}, Query.class, ClientInfo.class, String.class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -55,29 +55,29 @@ public enum QueryEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Query Events";
-    }    
-    
+    }
+
 }

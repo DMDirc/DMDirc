@@ -178,7 +178,7 @@ public class PluginClassLoader extends ClassLoader {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @since 0.6.3
      */
     @Override

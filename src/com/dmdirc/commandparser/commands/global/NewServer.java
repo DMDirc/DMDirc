@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 
 /**
  * The new server command allows users to open a new server window.
- * 
+ *
  * @author chris
  */
 public final class NewServer extends Command implements IntelligentCommand,
@@ -127,7 +127,7 @@ public final class NewServer extends Command implements IntelligentCommand,
         // use the default one we had to start with.
         return uri;
     }
-    
+
     /**
      * Parses an input string and attempts to create a URI from it.
      *

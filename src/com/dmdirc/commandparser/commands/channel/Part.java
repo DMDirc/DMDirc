@@ -38,12 +38,12 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  */
 @CommandOptions(allowOffline=false)
 public final class Part extends Command implements CommandInfo {
-    
+
     /** Creates a new instance of Part. */
     public Part() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -53,13 +53,13 @@ public final class Part extends Command implements CommandInfo {
                 : origin.getConfigManager().getOption("general", "partmessage"));
         channel.close();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "part";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
@@ -71,7 +71,7 @@ public final class Part extends Command implements CommandInfo {
     public CommandType getType() {
         return CommandType.TYPE_CHANNEL;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {

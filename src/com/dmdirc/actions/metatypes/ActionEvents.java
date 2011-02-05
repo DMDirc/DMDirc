@@ -29,17 +29,17 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
  * Defines action-related events.
  */
 public enum ActionEvents implements ActionMetaType {
-    
+
     /** Action event type. */
     ACTION_EVENT(new String[]{"action"}, Action.class),
     /** Action event type. */
     ACTION_DELETED(new String[]{"Action group", "Action name"}, Action.class, String.class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -50,29 +50,29 @@ public enum ActionEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Action Events";
-    }    
-    
+    }
+
 }

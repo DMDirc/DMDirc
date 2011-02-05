@@ -31,7 +31,7 @@ public enum ErrorFixedStatus {
     /** Finished state. */
     KNOWN("Known bug"),
     /** Sending state. */
-    FIXED("Fixed"), 
+    FIXED("Fixed"),
     /** Waiting state. */
     INVALID("Invalid bug"),
     /** Unreported. */
@@ -42,19 +42,19 @@ public enum ErrorFixedStatus {
     DUPLICATE("Duplicate bug exists in list"),
     /** Unknown state. */
     UNKNOWN("Unknown status");
-    
+
     /** toString value of the item. */
     private String value;
-    
-    /** 
-     * Instantiates the enum. 
+
+    /**
+     * Instantiates the enum.
      *
      * @param value toString value
      */
     ErrorFixedStatus(final String value) {
         this.value = value;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
