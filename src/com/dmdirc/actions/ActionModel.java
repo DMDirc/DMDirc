@@ -22,14 +22,12 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
@@ -131,7 +129,6 @@ public class ActionModel {
             return false;
         }
 
-        final FrameContainer active = WindowManager.getActiveWindow();
         Window window = null;
         WritableFrameContainer container = null;
         CommandParser cp = null;
@@ -139,8 +136,6 @@ public class ActionModel {
         if (arguments.length > 0
                 && arguments[0] instanceof WritableFrameContainer) {
             container = (WritableFrameContainer) arguments[0];
-        } else if (active instanceof WritableFrameContainer) {
-            container = (WritableFrameContainer) active;
         } else if (ServerManager.getServerManager().numServers() > 0) {
             container = ServerManager.getServerManager().getServers().get(0);
         }

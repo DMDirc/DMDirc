@@ -226,8 +226,6 @@ public final class ServerManager {
             return server;
         }
 
-        server.activateFrame();
-
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile);
         } else {

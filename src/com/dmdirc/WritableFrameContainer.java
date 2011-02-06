@@ -303,8 +303,6 @@ public abstract class WritableFrameContainer extends FrameContainer {
             getServer().addLine(format, date, args);
         } else if ("all".equals(target)) {
             getServer().addLineToAll(format, args);
-        } else if ("active".equals(target)) {
-            getServer().addLineToActive(format, args);
         } else if ("statusbar".equals(target)) {
             final String message = Formatter.formatMessage(getConfigManager(), format, args);
             StatusBarManager.getStatusBarManager().setMessage(new StatusMessage(message, getConfigManager()));

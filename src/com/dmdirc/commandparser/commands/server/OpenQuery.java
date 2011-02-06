@@ -40,28 +40,20 @@ import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Allows the user to open a query dialog with another user.
- * @author chris
  */
 public final class OpenQuery extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Query.
-     */
-    public OpenQuery() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "query", "<target> <message>");
             return;
         }
 
+        final Server server = ((ServerCommandContext) context).getServer();
         if (server.getParser().isValidChannelName(args.getArguments()[0])) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
@@ -73,7 +65,7 @@ public final class OpenQuery extends Command implements IntelligentCommand,
         }
 
         if (!args.isSilent()) {
-            server.getQuery(args.getArguments()[0]).activateFrame();
+            context.getSource().getController().requestWindowFocus(context.getSource());
         }
 
         if (args.getArguments().length > 1) {

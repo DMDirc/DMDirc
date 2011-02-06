@@ -272,7 +272,6 @@ public final class CommandManager {
         // Query commands
 
         // Global commands
-        registerCommand(new Active());
         registerCommand(new AliasCommand());
         registerCommand(new AllServers());
         registerCommand(new Clear());

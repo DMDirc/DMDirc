@@ -25,10 +25,6 @@ package com.dmdirc.ui;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
-import com.dmdirc.Server;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameListener;
@@ -42,7 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The WindowManager maintains a list of all open windows, and their
  * parent/child relations.
  */
-public class WindowManager {
+public final class WindowManager {
 
     /** A list of root windows. */
     private static final List<FrameContainer> ROOT_WINDOWS
@@ -51,17 +47,6 @@ public class WindowManager {
     /** A list of frame listeners. */
     private static final List<FrameListener> FRAME_LISTENERS
             = new ArrayList<FrameListener>();
-
-    /** A list of selection listeners. */
-    private static final List<SelectionListener> SELECTION_LISTENERS
-            = new ArrayList<SelectionListener>();
-
-    /** Our selection listener proxy. */
-    private static final SelectionListener SELECTION_LISTENER
-            = new WMSelectionListener();
-
-    /** Active window. */
-    private static FrameContainer activeWindow;
 
     /**
      * Creates a new instance of WindowManager.
@@ -103,24 +88,6 @@ public class WindowManager {
     }
 
     /**
-     * Registers the specified SelectionListener with the WindowManager.
-     *
-     * @param listener The listener to be added
-     */
-    public static void addSelectionListener(final SelectionListener listener) {
-        SELECTION_LISTENERS.add(listener);
-    }
-
-    /**
-     * Unregisters the specified SelectionListener with the WindowManager.
-     *
-     * @param listener The listener to be removed
-     */
-    public static void removeSelectionListener(final SelectionListener listener) {
-        SELECTION_LISTENERS.remove(listener);
-    }
-
-    /**
      * Adds a new root window to the Window Manager.
      *
      * @param window The window to be added
@@ -150,8 +117,6 @@ public class WindowManager {
         Logger.assertTrue(!ROOT_WINDOWS.contains(window));
 
         ROOT_WINDOWS.add(window);
-
-        window.addSelectionListener(SELECTION_LISTENER);
 
         fireAddWindow(window, focus);
     }
@@ -190,8 +155,6 @@ public class WindowManager {
         Logger.assertTrue(!isInHierarchy(child));
 
         parent.addChild(child);
-
-        child.addSelectionListener(SELECTION_LISTENER);
 
         fireAddWindow(parent, child, focus);
     }
@@ -276,12 +239,6 @@ public class WindowManager {
         if (ROOT_WINDOWS.contains(window)) {
             fireDeleteWindow(window);
             ROOT_WINDOWS.remove(window);
-
-            if (ROOT_WINDOWS.isEmpty()) {
-                // Last root window has been removed, show that the selected
-                // window is now null
-                fireSelectionChanged(null);
-            }
         } else {
             final FrameContainer parent = window.getParent();
             fireDeleteWindow(parent, window);
@@ -297,7 +254,6 @@ public class WindowManager {
             }
         }
 
-        window.removeSelectionListener(SELECTION_LISTENER);
         window.windowClosed();
     }
 
@@ -367,26 +323,6 @@ public class WindowManager {
     }
 
     /**
-     * Returns the current focused window.
-     *
-     * @return Focused window or null
-     * @since 0.6.3
-     */
-    public static FrameContainer getActiveWindow() {
-        return activeWindow;
-    }
-
-    /**
-     * Returns the server associated with the currently focused window.
-     *
-     * @return The currently active server or null
-     * @since 0.6.3
-     */
-    public static Server getActiveServer() {
-        return activeWindow == null ? null : getActiveWindow().getServer();
-    }
-
-    /**
      * Fires the addWindow(Window) callback.
      *
      * @param window The window that was added
@@ -435,36 +371,6 @@ public class WindowManager {
         for (FrameListener listener : FRAME_LISTENERS) {
             listener.delWindow(parent, child);
         }
-    }
-
-    /**
-     * Fires the selectionChanged(Window) callback, and triggers the
-     * CLIENT_FRAME_CHANGED action.
-     *
-     * @param window The window that is now focused (or null)
-     */
-    private static void fireSelectionChanged(final FrameContainer window) {
-        for (SelectionListener listener : SELECTION_LISTENERS) {
-            listener.selectionChanged(window);
-        }
-
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_FRAME_CHANGED, null, window);
-    }
-
-    /**
-     * Proxy for selection events.
-     */
-    private static class WMSelectionListener implements SelectionListener {
-
-        /** {@inheritDoc} */
-        @Override
-        public void selectionChanged(final FrameContainer window) {
-            activeWindow = window;
-
-            fireSelectionChanged(window);
-        }
-
     }
 
 }

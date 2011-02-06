@@ -49,8 +49,6 @@ public final class Echo extends Command implements IntelligentCommand,
 
     /** The flag used to specify a timestamp for the echo command. */
     private final CommandFlag timeStampFlag = new CommandFlag("ts", true, 1, 0);
-    /** The flag used to specify the echo command should use the active window. */
-    private final CommandFlag activeFlag = new CommandFlag("active");
     /** The flag used to specify a target for the echo command. */
     private final CommandFlag targetFlag = new CommandFlag("target", true, 1, 0);
     /** The command flag handler for this command. */
@@ -62,10 +60,7 @@ public final class Echo extends Command implements IntelligentCommand,
     public Echo() {
         super();
 
-        activeFlag.addDisabled(targetFlag);
-        targetFlag.addDisabled(activeFlag);
-
-        handler = new CommandFlagHandler(timeStampFlag, activeFlag, targetFlag);
+        handler = new CommandFlagHandler(timeStampFlag, targetFlag);
     }
 
     /** {@inheritDoc} */
@@ -88,12 +83,7 @@ public final class Echo extends Command implements IntelligentCommand,
             }
         }
 
-        if (results.hasFlag(activeFlag)) {
-            if (!args.isSilent()) {
-                final FrameContainer frame = WindowManager.getActiveWindow();
-                frame.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
-            }
-        } else if (results.hasFlag(targetFlag)) {
+        if (results.hasFlag(targetFlag)) {
             FrameContainer frame = null;
             FrameContainer target = origin;
 
@@ -139,7 +129,7 @@ public final class Echo extends Command implements IntelligentCommand,
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "echo [--ts <timestamp>] [--active|--target <window>] <line> "
+        return "echo [--ts <timestamp>] [--target <window>] <line> "
                 + "- echos the specified line to the window";
     }
 
@@ -150,7 +140,6 @@ public final class Echo extends Command implements IntelligentCommand,
         final AdditionalTabTargets targets = new AdditionalTabTargets();
 
         if (arg == 0) {
-            targets.add("--active");
             targets.add("--target");
             targets.add("--ts");
         } else if ((arg == 1 && context.getPreviousArgs().get(0).equals("--target"))

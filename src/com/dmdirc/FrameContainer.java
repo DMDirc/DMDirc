@@ -29,7 +29,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
-import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
@@ -65,15 +64,6 @@ public abstract class FrameContainer {
     /** The children of this frame. */
     protected final Collection<FrameContainer> children
             = new CopyOnWriteArrayList<FrameContainer>();
-
-    /**
-     * The windows representing of this frame.
-     *
-     * @deprecated The core should not need to know about UI implementations
-     */
-    @Deprecated
-    protected final Collection<Window> windows
-            = new CopyOnWriteArrayList<Window>();
 
     /**
      * The class of windows we want to represent this container.
@@ -365,18 +355,9 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Requests that this object's frame be activated.
-     */
-    public void activateFrame() {
-        for (Window window : getWindows()) {
-            window.activateFrame();
-        }
-    }
-
-    /**
      * Clears any outstanding notifications this frame has set.
      */
-    protected void clearNotification() {
+    public void clearNotification() {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
@@ -392,10 +373,7 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final FrameContainer activeWindow = WindowManager.getActiveWindow();
-
-        if (activeWindow != null && !activeWindow.equals(this)
-                && !colour.equals(notification)) {
+        if (!colour.equals(notification)) {
             notification = colour;
 
             for (NotificationListener listener : listeners.get(
@@ -412,19 +390,6 @@ public abstract class FrameContainer {
      */
     public Color getNotification() {
         return notification;
-    }
-
-    /**
-     * Determines if the specified frame is owned by this object.
-     *
-     * @param target Window to check ownership of
-     * @return True iff frame is owned by this container, false otherwise
-     * @deprecated The core should not need to know about UI implementations
-     */
-    @Deprecated
-    @SuppressWarnings("element-type-mismatch")
-    public boolean ownsFrame(final Window target) {
-        return windows.contains(target);
     }
 
     /**
@@ -472,22 +437,6 @@ public abstract class FrameContainer {
      * resources may be completely freed.
      */
     public abstract void windowClosed();
-
-    /**
-     * Invoked when our window is activated.
-     */
-    public void windowActivated() {
-        for (SelectionListener listener : listeners.get(
-                SelectionListener.class)) {
-            listener.selectionChanged(this);
-        }
-
-        clearNotification();
-
-        if (getServer() != null) {
-            getServer().setActiveFrame(this);
-        }
-    }
 
     /**
      * Adds a line to this container's window. If the window is null for some
@@ -624,24 +573,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds a selection listener for this frame container.
-     *
-     * @param listener The listener to be added
-     */
-    public void addSelectionListener(final SelectionListener listener) {
-        listeners.add(SelectionListener.class, listener);
-    }
-
-    /**
-     * Removes a selection listener from this frame container.
-     *
-     * @param listener The listener to be removed
-     */
-    public void removeSelectionListener(final SelectionListener listener) {
-        listeners.remove(SelectionListener.class, listener);
-    }
-
-    /**
      * Adds a frame info listener for this frame container.
      *
      * @param listener The listener to be added
@@ -657,42 +588,6 @@ public abstract class FrameContainer {
      */
     public void removeFrameInfoListener(final FrameInfoListener listener) {
         listeners.remove(FrameInfoListener.class, listener);
-    }
-
-    /**
-     * Adds a new window to this container.
-     *
-     * @param window The window to be added
-     * @deprecated The core should not need to know about UI methods
-     * @since 0.6.4
-     */
-    @Deprecated
-    public void addWindow(final Window window) {
-        windows.add(window);
-    }
-
-    /**
-     * Removes the specified window from this container.
-     *
-     * @param window The window to be removed
-     * @deprecated The core should not need to know about UI methods
-     * @since 0.6.4
-     */
-    @Deprecated
-    public void removeWindow(final Window window) {
-        windows.remove(window);
-    }
-
-    /**
-     * Retrieves a collection of windows that represent this container.
-     *
-     * @return The collection of windows currently representing this container
-     * @deprecated The core should not need to know about UI methods
-     * @since 0.6.4
-     */
-    @Deprecated
-    public Collection<Window> getWindows() {
-        return Collections.unmodifiableCollection(windows);
     }
 
     /**

@@ -294,7 +294,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
-        activateFrame();
     }
 
     /**

@@ -38,11 +38,6 @@ public interface Window {
     FrameContainer getContainer();
 
     /**
-     * Requests that this object's frame be activated.
-     */
-    void activateFrame();
-
-    /**
      * Retrieves the UI controller this window is associated with.
      *
      * @return This window's UI controller

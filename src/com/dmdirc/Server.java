@@ -57,7 +57,6 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URI;
@@ -151,9 +150,6 @@ public class Server extends WritableFrameContainer
 
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
-
-    /** The last activated internal frame for this server. */
-    private FrameContainer activeFrame = this;
 
     /** Our reason for being away, if any. */
     private String awayMessage;
@@ -593,8 +589,6 @@ public class Server extends WritableFrameContainer
             } finally {
                 parserLock.readLock().unlock();
             }
-        } else {
-            raw.activateFrame();
         }
     }
 
@@ -665,39 +659,6 @@ public class Server extends WritableFrameContainer
         }
 
         return getChannel(chan.getName());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated The core should not need to know about UI implementations
-     */
-    @Override
-    @Deprecated
-    @SuppressWarnings("element-type-mismatch")
-    public boolean ownsFrame(final Window target) {
-        // Check if it's our server frame
-        if (windows.contains(target)) { return true; }
-        // Check if it's the raw frame
-        if (raw != null && raw.ownsFrame(target)) { return true; }
-        // Check if it's a channel frame
-        for (Channel channel : channels.values()) {
-            if (channel.ownsFrame(target)) { return true; }
-        }
-        // Check if it's a query frame
-        for (Query query : queries.values()) {
-            if (query.ownsFrame(target)) { return true; }
-        }
-        return false;
-    }
-
-    /**
-     * Sets the specified frame as the most-recently activated.
-     *
-     * @param source The frame that was activated
-     */
-    public void setActiveFrame(final FrameContainer source) {
-        activeFrame = source;
     }
 
     /**
@@ -882,7 +843,7 @@ public class Server extends WritableFrameContainer
 
     /**
      * Attempts to join the specified channels. If channels with the same name
-     * already exist, they are (re)joined and their windows activated.
+     * already exist, they are (re)joined.
      *
      * @param focus Whether or not to focus any new channels
      * @param requests The channel join requests to process
@@ -902,10 +863,6 @@ public class Server extends WritableFrameContainer
                     } else {
                         name = parser.getChannelPrefixes().substring(0, 1)
                                 + request.getName();
-                    }
-
-                    if (hasChannel(name) && focus) {
-                        getChannel(name).activateFrame();
                     }
 
                     if (!hasChannel(name) || !getChannel(name).isOnChannel()) {
@@ -1183,22 +1140,6 @@ public class Server extends WritableFrameContainer
         // 7: Remove any references to the window and parents
         oldParser = null; //NOPMD
         parser = null; //NOPMD
-    }
-
-    /**
-     * Passes the arguments to the most recently activated frame for this
-     * server. If the frame isn't know, or isn't visible, use this frame
-     * instead.
-     *
-     * @param messageType The type of message to send
-     * @param args The arguments for the message
-     */
-    public void addLineToActive(final String messageType, final Object... args) {
-        if (activeFrame == null) {
-            activeFrame = this;
-        }
-
-        activeFrame.addLine(messageType, args);
     }
 
     /**
