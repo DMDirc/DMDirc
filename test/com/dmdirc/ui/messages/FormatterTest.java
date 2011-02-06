@@ -60,38 +60,4 @@ public class FormatterTest {
     public void testFormatDuration() {
         assertEquals("1 minute, 1 second", Formatter.formatMessage(mcm, "1%1$u", "61"));
     }
-    
-    @Test
-    public void testFormatDurationSeconds() {
-        assertEquals("1 second", Formatter.formatDuration(1));
-        assertEquals("2 seconds", Formatter.formatDuration(2));
-    }
-    
-    @Test
-    public void testFormatDurationMinutes() {
-        assertEquals("1 minute", Formatter.formatDuration(60));
-        assertEquals("1 minute, 1 second", Formatter.formatDuration(61));
-        assertEquals("1 minute, 2 seconds", Formatter.formatDuration(62));
-        assertEquals("2 minutes, 2 seconds", Formatter.formatDuration(122));
-    }
-    
-    @Test
-    public void testFormatDurationHours() {
-        assertEquals("1 hour", Formatter.formatDuration(3600));
-        assertEquals("1 hour, 1 second", Formatter.formatDuration(3601));
-        assertEquals("2 hours, 1 minute, 5 seconds", Formatter.formatDuration(7265));
-    }
-    
-    @Test
-    public void testFormatDurationDays() {
-        assertEquals("1 day", Formatter.formatDuration(86400));
-        assertEquals("1 day, 10 minutes, 1 second", Formatter.formatDuration(87001));
-    }
-
-    @Test
-    public void testFormatNoSeconds() {
-        assertEquals("0 seconds", Formatter.formatDuration(0));
-        assertEquals("0 seconds", Formatter.formatDuration(-100));
-    }
-
 }
