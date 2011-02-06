@@ -38,14 +38,6 @@ public interface Window {
     FrameContainer getContainer();
 
     /**
-     * Opens this window.
-     */
-    void open();
-
-    /** Closes this window. */
-    void close();
-
-    /**
      * Requests that this object's frame be activated.
      */
     void activateFrame();

@@ -292,9 +292,13 @@ public abstract class FrameContainer {
      * Closes this container (and it's associated frame).
      */
     public void close() {
-        for (Window window : getWindows()) {
-            window.close();
+        for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
+            listener.windowClosing(this);
         }
+
+        windowClosing();
+
+        WindowManager.removeWindow(this);
     }
 
     /**
@@ -459,20 +463,6 @@ public abstract class FrameContainer {
      * the {@link #windowClosed()} method.
      */
     protected abstract void windowClosing();
-
-    /**
-     * Handles the closing of this container. This should be called by UI
-     * components when the user is attempting to close a corresponding window.
-     */
-    public void handleWindowClosing() {
-        for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
-            listener.windowClosing(this);
-        }
-
-        windowClosing();
-
-        WindowManager.removeWindow(this);
-    }
 
     /**
      * Invoked when our window has been closed.
