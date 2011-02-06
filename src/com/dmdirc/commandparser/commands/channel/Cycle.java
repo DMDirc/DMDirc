@@ -34,10 +34,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 
 /**
  * The cycle command allows users to rapidly part and rejoin a channel.
- *
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Cycle extends Command implements CommandInfo {
 
     /** Creates a new instance of Cycle. */

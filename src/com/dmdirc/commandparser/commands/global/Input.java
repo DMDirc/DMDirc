@@ -36,17 +36,9 @@ import com.dmdirc.ui.interfaces.InputWindow;
 /**
  * The input command allows you to maniplulate text in a windows inputField.
  *
- * @author Simon
  * @since 0.6.4
  */
 public class Input extends Command implements IntelligentCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Input.
-     */
-    public Input() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

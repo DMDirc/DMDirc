@@ -24,8 +24,8 @@ package com.dmdirc.util.resourcemanager;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-
 import com.dmdirc.util.StreamUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

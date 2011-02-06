@@ -28,8 +28,6 @@ import com.dmdirc.commandparser.CommandArguments;
 /**
  * An external command is a channel command that can be executed from outside
  * of the channel.
- *
- * @author chris
  */
 public interface ExternalCommand {
 

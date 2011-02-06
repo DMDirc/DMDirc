@@ -46,20 +46,17 @@ import java.util.Map;
 
 /**
  * Searches for and manages plugins and services.
- *
- * @author shane
- * @author chris
  */
 public class PluginManager implements ActionListener {
+
+    /** Singleton instance of the plugin manager. */
+    private static PluginManager me;
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<String, PluginInfo>();
 
     /** Directory where plugins are stored. */
     private final String myDir;
-
-    /** Singleton instance of the plugin manager. */
-    private static PluginManager me;
 
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();

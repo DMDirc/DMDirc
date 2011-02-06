@@ -29,7 +29,6 @@ import com.dmdirc.ui.interfaces.Window;
  * Provides information relating to the context that a command was executed in.
  *
  * @since 0.6.4
- * @author chris
  */
 public class CommandContext {
 

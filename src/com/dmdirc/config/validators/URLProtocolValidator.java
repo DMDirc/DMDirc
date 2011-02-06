@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.validators;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
-import com.dmdirc.config.IdentityManager;
 
 /**
  * Validates URLProtocols.

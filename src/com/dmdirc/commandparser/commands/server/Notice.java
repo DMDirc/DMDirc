@@ -37,18 +37,10 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * Allows the user to send notices.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Notice extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of Notice.
-     */
-    public Notice() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

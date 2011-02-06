@@ -33,16 +33,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * The disconnect command disconnects from the current server.
- * @author chris
  */
 public final class Disconnect extends Command implements CommandInfo {
-
-    /**
-     * Creates a new instance of Disconnect.
-     */
-    public Disconnect() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

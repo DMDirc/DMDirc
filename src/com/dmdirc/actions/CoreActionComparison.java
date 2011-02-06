@@ -31,7 +31,6 @@ import java.util.regex.PatternSyntaxException;
 /**
  * A CoreActionComparison represents a possible comparison between two types of
  * data used in an action condition.
- * @author chris
  */
 public enum CoreActionComparison implements ActionComparison {
 

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,10 +35,10 @@ import java.util.Enumeration;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
-import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  * Core UI Utilities.
@@ -70,8 +69,7 @@ public class Utils {
                     line.getDocument().getLength()));
         } catch (BadLocationException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to insert styled string: " +
-                    ex.getMessage());
+                    "Unable to insert styled string: " + ex.getMessage());
         }
 
         if (attString.getIterator().getEndIndex() != 0) {

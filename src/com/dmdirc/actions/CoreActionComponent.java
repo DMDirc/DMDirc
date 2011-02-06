@@ -45,7 +45,6 @@ import javax.swing.KeyStroke;
 /**
  * A CoreActionComponent represents a component of some object that the user can
  * use as the subject of a condition within an action.
- * @author chris
  */
 public enum CoreActionComponent implements ActionComponent {
 
@@ -69,7 +68,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_NETWORK {
         /** {@inheritDoc} */
         @Override
-        @ComponentOptions(requireConnected=true)
+        @ComponentOptions(requireConnected = true)
         public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
         /** {@inheritDoc} */
         @Override
@@ -122,7 +121,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
         @Override
-        @ComponentOptions(requireConnected=true)
+        @ComponentOptions(requireConnected = true)
         public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
@@ -139,15 +138,16 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_MYNICKNAME {
         /** {@inheritDoc} */
         @Override
-        @ComponentOptions(requireConnected=true)
+        @ComponentOptions(requireConnected = true)
         public Object get(final Object argument) {
             final Server server = (Server) argument;
 
             if (server == null || server.getParser() == null) {
                 Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
                         new UnsupportedOperationException(
-                        server == null ? "Server was null" :
-                            server.getParser() == null ? "Parser was null" : "Unknown"
+                        server == null ? "Server was null"
+                            : server.getParser() == null ? "Parser was null"
+                            : "Unknown"
                         ));
 
                 return "null";

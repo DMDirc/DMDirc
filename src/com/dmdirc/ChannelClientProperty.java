@@ -24,8 +24,6 @@ package com.dmdirc;
 
 /**
  * Represents the properties that can be set on a channel client.
- *
- * @author chris
  */
 public enum ChannelClientProperty {
 

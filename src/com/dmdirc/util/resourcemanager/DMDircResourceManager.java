@@ -30,8 +30,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 /**
- *
- * @author chris
+ * Provides utility methods for working with resources from the DMDirc
+ * distribution.
  */
 public class DMDircResourceManager {
 

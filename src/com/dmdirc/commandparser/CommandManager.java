@@ -46,8 +46,6 @@ import java.util.Map;
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
- *
- * @author chris
  */
 public final class CommandManager {
 

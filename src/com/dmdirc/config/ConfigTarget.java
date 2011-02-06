@@ -28,8 +28,6 @@ import java.io.Serializable;
  * Represents the target of a particular config source.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
- *
- * @author chris
  */
 public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
 

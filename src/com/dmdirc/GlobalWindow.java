@@ -38,8 +38,6 @@ import java.util.Arrays;
 
 /**
  * A window which can be used to execute global commands.
- *
- * @author chris
  */
 public class GlobalWindow extends WritableFrameContainer {
 

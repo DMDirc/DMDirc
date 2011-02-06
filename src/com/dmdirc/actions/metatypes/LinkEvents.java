@@ -27,8 +27,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * Defines link-related events.
- *
- * @author Chris
  */
 public enum LinkEvents implements ActionMetaType {
 

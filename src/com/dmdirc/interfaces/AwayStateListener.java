@@ -24,8 +24,6 @@ package com.dmdirc.interfaces;
 
 /**
  * AwayStateListeners are informed of changes to our away state.
- *
- * @author chris
  */
 public interface AwayStateListener {
 

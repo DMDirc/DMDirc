@@ -27,8 +27,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Defines the methods that should be implemented by tab completion styles.
  * Styles control the result of tab completing.
- *
- * @author Chris
  */
 public interface TabCompletionStyle {
 

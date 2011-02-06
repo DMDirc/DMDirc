@@ -41,15 +41,12 @@ import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
  * on the character at the start of the string), and handles it appropriately.
- *
- * @author chris
  */
 public abstract class CommandParser implements Serializable {
 
@@ -72,7 +69,7 @@ public abstract class CommandParser implements Serializable {
 
     /** Creates a new instance of CommandParser. */
     protected CommandParser() {
-        commands = new Hashtable<String, CommandInfoPair>();
+        commands = new HashMap<String, CommandInfoPair>();
         history = new RollingList<PreviousCommand>(
                 IdentityManager.getGlobalConfig().getOptionInt("general",
                     "commandhistory"));

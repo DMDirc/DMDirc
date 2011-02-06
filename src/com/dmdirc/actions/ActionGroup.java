@@ -35,8 +35,6 @@ import java.util.Map;
 
 /**
  * Represents a group of actions, along with their meta-data.
- *
- * @author chris
  */
 public class ActionGroup implements Iterable<Action> {
 
@@ -54,16 +52,16 @@ public class ActionGroup implements Iterable<Action> {
     private final String name;
 
     /** The description of this action group. */
-    private String description = null;
+    private String description;
 
     /** The author of this action group. */
-    private String author = null;
+    private String author;
 
     /** The component number of this action group (for updating). */
     private int component = -1;
 
     /** The version of this action group. */
-    private Version version = null;
+    private Version version;
 
     /** A list of settings used by this action group. */
     private final Map<String, PreferencesSetting> settings

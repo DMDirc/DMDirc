@@ -58,19 +58,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private static final java.util.logging.Logger LOGGER
             = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
     /** Plugin Meta Data */
-    private volatile ConfigFile metaData = null;
+    private volatile ConfigFile metaData;
     /** URL that this plugin was loaded from */
     private final URL url;
     /** Filename for this plugin (taken from URL) */
     private final String filename;
     /** The actual Plugin from this jar */
-    private Plugin plugin = null;
+    private Plugin plugin;
     /** The classloader used for this Plugin */
-    private PluginClassLoader classloader = null;
+    private PluginClassLoader classloader;
     /** The resource manager used by this pluginInfo */
-    private ResourceManager myResourceManager = null;
+    private ResourceManager myResourceManager;
     /** Is this plugin only loaded temporarily? */
-    private boolean tempLoaded = false;
+    private boolean tempLoaded;
     /** List of classes this plugin has */
     private final List<String> myClasses = new ArrayList<String>();
     /** Requirements error message. */
@@ -78,7 +78,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** Last Error Message. */
     private String lastError = "No Error";
     /** Are we trying to load? */
-    private boolean isLoading = false;
+    private boolean isLoading;
     /** List of services we provide. */
     private final List<Service> provides = new ArrayList<Service>();
     /** List of children of this plugin. */
@@ -671,10 +671,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             return true;
         }
 
-        if (!checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
-                !checkFiles(getKeyValue("requires", "files", "")) ||
-                (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
-                (!preliminary && !checkServices(metaData.getFlatDomain("required-services")))) {
+        if (!checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
+                || !checkFiles(getKeyValue("requires", "files", ""))
+                || (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", "")))
+                || (!preliminary && !checkServices(metaData.getFlatDomain("required-services")))) {
             return false;
         }
 

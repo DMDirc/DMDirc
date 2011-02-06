@@ -33,8 +33,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * The clear command clears the main text area of the current window.
- *
- * @author chris
  */
 public final class Clear extends Command implements IntelligentCommand,
         CommandInfo {

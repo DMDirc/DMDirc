@@ -24,8 +24,6 @@ package com.dmdirc.plugins;
 
 /**
  * Plugin Exception.
- *
- * @author            Shane Mc Cormack
  */
 public class NoSuchProviderException extends RuntimeException {
 

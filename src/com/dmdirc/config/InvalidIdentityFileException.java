@@ -25,8 +25,6 @@ package com.dmdirc.config;
 /**
  * Thrown when an identity file is read that does not contain the required
  * fields.
- *
- * @author chris
  */
 public class InvalidIdentityFileException extends Exception {
 

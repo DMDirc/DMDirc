@@ -43,8 +43,6 @@ import javax.swing.ImageIcon;
  * The icon manager provides a standard way to access icons for use in DMDirc.
  * It allows the user to override the default actions using config settings
  * under the icons domain.
- *
- * @author chris
  */
 public final class IconManager implements ConfigChangeListener {
 

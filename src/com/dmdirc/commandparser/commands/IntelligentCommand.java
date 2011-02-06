@@ -30,9 +30,19 @@ import java.util.List;
 /**
  * Intelligent commands implement a method that provides a list of possible
  * options for them, for use (for example) by table completers.
- * @author chris
  */
 public interface IntelligentCommand {
+
+    /**
+     * Returns a list of suggestions for the specified argument, given the
+     * specified context.
+     *
+     * @param arg The argument that is being completed
+     * @param context The context in which suggestions are being sought
+     * @return A list of suggestions for the argument
+     * @since 0.6.4
+     */
+    AdditionalTabTargets getSuggestions(int arg, IntelligentCommandContext context);
 
     /**
      * Describes the context of an intelligent tab completion request.
@@ -91,16 +101,4 @@ public interface IntelligentCommand {
             return partial;
         }
     }
-
-    /**
-     * Returns a list of suggestions for the specified argument, given the
-     * specified context.
-     *
-     * @param arg The argument that is being completed
-     * @param context The context in which suggestions are being sought
-     * @return A list of suggestions for the argument
-     * @since 0.6.4
-     */
-    AdditionalTabTargets getSuggestions(int arg, IntelligentCommandContext context);
-
 }

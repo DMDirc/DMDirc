@@ -34,7 +34,6 @@ import java.util.Map;
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows
  * other components to use IRC colour codes instead of absolute colours.
- * @author chris
  */
 public final class ColourManager {
 

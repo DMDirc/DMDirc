@@ -36,7 +36,6 @@ import com.dmdirc.ui.input.TabCompleter;
 
 /**
  * The AllServers command allows users to issue commands to all servers.
- * @author chris
  */
 public final class AllServers extends Command implements IntelligentCommand,
         CommandInfo{

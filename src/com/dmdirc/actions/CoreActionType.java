@@ -34,7 +34,6 @@ import com.dmdirc.actions.metatypes.ServerEvents;
 
 /**
  * An enumeration of actions that are raised by the core.
- * @author chris
  */
 public enum CoreActionType implements ActionType {
 

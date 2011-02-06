@@ -30,7 +30,6 @@ import com.dmdirc.ui.interfaces.Window;
  * A specialised {@link CommandContext} for commands executed in channels.
  *
  * @since 0.6.4
- * @author chris
  */
 public class ChannelCommandContext extends ChatCommandContext {
 

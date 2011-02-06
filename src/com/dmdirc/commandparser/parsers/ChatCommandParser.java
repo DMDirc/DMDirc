@@ -37,7 +37,6 @@ import com.dmdirc.ui.interfaces.Window;
  * (queries and channels).
  *
  * @since 0.6.4
- * @author chris
  */
 public class ChatCommandParser extends ServerCommandParser {
 

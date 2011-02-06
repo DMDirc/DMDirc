@@ -43,114 +43,6 @@ import java.util.List;
  */
 public class PerformWrapper extends ActionGroup {
 
-    /**
-     * Describes one specific perform.
-     *
-     * @since 0.6.4
-     */
-    public static class PerformDescription {
-
-        /** The type of the perform being described. */
-        private final PerformType type;
-        /** The target of the perform. */
-        private final String target;
-        /** The profile (if any) of the perform. */
-        private final String profile;
-
-        /**
-         * Creates a new perform description with the specified arguments.
-         *
-         * @param type The type of the perform in question
-         * @param target The target of the perform
-         * @param profile The profile of the perform (or null)
-         */
-        public PerformDescription(final PerformType type, final String target,
-                final String profile) {
-            this.type = type;
-            this.target = target;
-            this.profile = profile;
-
-            if (target == null) {
-                throw new NullPointerException("Target may not be null");
-            }
-        }
-
-        /**
-         * Creates a new perform description with the specified arguments.
-         *
-         * @param type The type of the perform in question
-         * @param target The target of the perform
-         */
-        public PerformDescription(final PerformType type, final String target) {
-            this.type = type;
-            this.target = target;
-            this.profile = null;
-
-            if (target == null) {
-                throw new NullPointerException("Target may not be null");
-            }
-        }
-
-        /**
-         * Retrieves the profile of this perform.
-         *
-         * @return This perform's profile
-         */
-        public String getProfile() {
-            return profile;
-        }
-
-        /**
-         * Retrieves the target of this perform.
-         *
-         * @return This perform's target
-         */
-        public String getTarget() {
-            return target;
-        }
-
-        /**
-         * Retrieves the type of this perform.
-         *
-         * @return This perform's type
-         */
-        public PerformType getType() {
-            return type;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-
-            final PerformDescription other = (PerformDescription) obj;
-
-            if (this.type != other.type || !this.target.equals(other.target)) {
-                return false;
-            }
-
-            if ((this.profile == null) ? (other.profile != null)
-                    : !this.profile.equals(other.profile)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 89 * hash + (this.type != null ? this.type.hashCode() : 0);
-            hash = 89 * hash + (this.target != null ? this.target.hashCode() : 0);
-            hash = 89 * hash + (this.profile != null ? this.profile.hashCode() : 0);
-            return hash;
-        }
-
-    }
-
     /** A singleton instance of the Perform Wrapper. */
     private static final PerformWrapper ME = new PerformWrapper();
 
@@ -394,6 +286,114 @@ public class PerformWrapper extends ActionGroup {
                 + " the perform for the current server or network in the "
                 + "\"Server Settings\" dialog, which can be accessed through "
                 + "the Settings menu.";
+    }
+
+    /**
+     * Describes one specific perform.
+     *
+     * @since 0.6.4
+     */
+    public static class PerformDescription {
+
+        /** The type of the perform being described. */
+        private final PerformType type;
+        /** The target of the perform. */
+        private final String target;
+        /** The profile (if any) of the perform. */
+        private final String profile;
+
+        /**
+         * Creates a new perform description with the specified arguments.
+         *
+         * @param type The type of the perform in question
+         * @param target The target of the perform
+         * @param profile The profile of the perform (or null)
+         */
+        public PerformDescription(final PerformType type, final String target,
+                final String profile) {
+            this.type = type;
+            this.target = target;
+            this.profile = profile;
+
+            if (target == null) {
+                throw new NullPointerException("Target may not be null");
+            }
+        }
+
+        /**
+         * Creates a new perform description with the specified arguments.
+         *
+         * @param type The type of the perform in question
+         * @param target The target of the perform
+         */
+        public PerformDescription(final PerformType type, final String target) {
+            this.type = type;
+            this.target = target;
+            this.profile = null;
+
+            if (target == null) {
+                throw new NullPointerException("Target may not be null");
+            }
+        }
+
+        /**
+         * Retrieves the profile of this perform.
+         *
+         * @return This perform's profile
+         */
+        public String getProfile() {
+            return profile;
+        }
+
+        /**
+         * Retrieves the target of this perform.
+         *
+         * @return This perform's target
+         */
+        public String getTarget() {
+            return target;
+        }
+
+        /**
+         * Retrieves the type of this perform.
+         *
+         * @return This perform's type
+         */
+        public PerformType getType() {
+            return type;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            final PerformDescription other = (PerformDescription) obj;
+
+            if (this.type != other.type || !this.target.equals(other.target)) {
+                return false;
+            }
+
+            if ((this.profile == null) ? (other.profile != null)
+                    : !this.profile.equals(other.profile)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 89 * hash + (this.type != null ? this.type.hashCode() : 0);
+            hash = 89 * hash + (this.target != null ? this.target.hashCode() : 0);
+            hash = 89 * hash + (this.profile != null ? this.profile.hashCode() : 0);
+            return hash;
+        }
+
     }
 
 }

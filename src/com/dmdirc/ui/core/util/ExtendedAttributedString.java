@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +29,7 @@ import java.text.AttributedString;
  */
 public class ExtendedAttributedString {
 
-    private int lineHeight = 0;
+    private int lineHeight;
     private AttributedString string;
 
     /**

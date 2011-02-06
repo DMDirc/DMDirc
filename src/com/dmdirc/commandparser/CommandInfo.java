@@ -24,8 +24,6 @@ package com.dmdirc.commandparser;
 
 /**
  * Describes a command.
- *
- * @author chris
  */
 public interface CommandInfo {
 

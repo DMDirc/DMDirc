@@ -32,7 +32,7 @@ import com.dmdirc.util.validators.Validator;
 public class ConditionRuleValidator implements Validator<String> {
 
     /** The number of arguments to the tree. */
-    private int args = 0;
+    private int args;
 
     /**
      * Creates a new ConditionRuleValidator.

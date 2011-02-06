@@ -29,7 +29,6 @@ import com.dmdirc.FrameContainer;
  * frame closing lifecycle of a {@link FrameContainer}.
  *
  * @since 0.6.5
- * @author chris
  */
 public interface FrameCloseListener {
 

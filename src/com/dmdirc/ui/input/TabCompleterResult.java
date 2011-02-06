@@ -30,7 +30,6 @@ import java.util.Locale;
 
 /**
  * Represents the result set from a tab completion operation.
- * @author chris
  */
 public final class TabCompleterResult {
 

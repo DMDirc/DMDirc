@@ -31,8 +31,6 @@ import java.util.List;
  * Represents one category of preferences. Categories can contain 0 or more
  * subcategories, and either 0 or more PreferencesSettings or exactly 1
  * PreferencesInterface object.
- *
- * @author chris
  */
 public class PreferencesCategory {
 
@@ -53,7 +51,7 @@ public class PreferencesCategory {
     private String warning;
 
     /** Whether or not this category is inline. */
-    private boolean isInline = false;
+    private boolean isInline;
 
     /** Whether or not to show inline categories before settings. */
     private boolean inlineBefore = true;
@@ -172,8 +170,8 @@ public class PreferencesCategory {
      */
     public void addSetting(final PreferencesSetting setting) {
         if (hasObject()) {
-            throw new IllegalArgumentException("Can't add settings to a " +
-                    "category that uses a replacement object");
+            throw new IllegalArgumentException("Can't add settings to a "
+                    + "category that uses a replacement object");
         }
 
         settings.add(setting);
@@ -186,8 +184,8 @@ public class PreferencesCategory {
      */
     public void addSubCategory(final PreferencesCategory subcategory) {
         if (isInline() && !subcategory.isInline()) {
-            throw new IllegalArgumentException("Can't add non-inline " +
-                    "subcategories to inline ones");
+            throw new IllegalArgumentException("Can't add non-inline "
+                    + "subcategories to inline ones");
         }
 
         subcategory.setParent(this);

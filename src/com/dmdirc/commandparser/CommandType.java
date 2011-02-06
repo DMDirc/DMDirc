@@ -24,8 +24,6 @@ package com.dmdirc.commandparser;
 
 /**
  * Defines the possible targets for commands.
- *
- * @author chris
  */
 public enum CommandType {
 

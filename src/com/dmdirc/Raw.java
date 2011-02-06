@@ -33,8 +33,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
-import java.util.Arrays;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**

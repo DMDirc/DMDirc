@@ -49,19 +49,17 @@ import java.util.logging.Level;
  * cases, or the user may manually apply them.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
- *
- * @author chris
  */
 public class Identity extends ConfigSource implements Comparable<Identity> {
+
+    /** A regular expression that will match all characters illegal in file names. */
+    protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
 
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity".intern();
 
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile".intern();
-
-    /** A regular expression that will match all characters illegal in file names. */
-    protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
 
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
@@ -518,13 +516,13 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
 
-                    for (Map.Entry<String, String> subentry :
-                        new HashSet<Map.Entry<String, String>>(entry.getValue().entrySet())) {
+                    for (Map.Entry<String, String> subentry
+                        : new HashSet<Map.Entry<String, String>>(entry.getValue().entrySet())) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
 
-                        if (globalConfig.hasOptionString(domain, key) &&
-                                globalConfig.getOption(domain, key).equals(value)) {
+                        if (globalConfig.hasOptionString(domain, key)
+                                && globalConfig.getOption(domain, key).equals(value)) {
                             LOGGER.log(Level.FINEST,
                                     "{0}: found superfluous setting: {1}.{2} (= {3})",
                                     new Object[]{getName(), domain, key, value});

@@ -39,9 +39,8 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
  * The invite command allows the user to invite others to a channel.
  *
  * @since 0.6.4
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Invite extends Command implements ExternalCommand, CommandInfo {
 
     /** Creates a new instance of Invite. */

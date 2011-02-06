@@ -36,7 +36,6 @@ import com.dmdirc.ui.input.TabCompleter;
 
 /**
  * The Active command issues a command to the active window.
- * @author chris
  */
 public final class Active extends Command implements IntelligentCommand,
         CommandInfo {

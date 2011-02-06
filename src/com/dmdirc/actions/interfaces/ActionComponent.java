@@ -31,8 +31,6 @@ import java.lang.annotation.Target;
  * The ActionComponent interface describes the methods that action components
  * are required to implement. Components are objects that allow the user to
  * pull a specific piece of information from a certain type of argument.
- *
- * @author chris
  */
 public interface ActionComponent {
 

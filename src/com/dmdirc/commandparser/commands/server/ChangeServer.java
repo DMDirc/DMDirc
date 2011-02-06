@@ -37,8 +37,6 @@ import java.net.URISyntaxException;
 
 /**
  * The /server command allows the user to connect to a new server.
- *
- * @author chris
  */
 public final class ChangeServer extends Command implements CommandInfo {
 

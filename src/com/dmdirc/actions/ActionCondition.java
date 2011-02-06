@@ -27,7 +27,6 @@ import com.dmdirc.actions.interfaces.ActionComponent;
 
 /**
  * An action condition represents one condition within an action.
- * @author chris
  */
 public class ActionCondition {
 

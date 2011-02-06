@@ -35,11 +35,11 @@ public abstract class BasePlugin implements Plugin {
     /** Domain name for the settings in this plugin. */
     private String myDomain = "plugin-unknown";
     /** Has the domain been set? */
-    private boolean domainSet = false;
+    private boolean domainSet;
     /** Associated Plugin info. */
     private PluginInfo pluginInfo;
     /** Files directory for this plugin. */
-    private File filesDir = null;
+    private File filesDir;
 
     /** {@inheritDoc} */
     @Override

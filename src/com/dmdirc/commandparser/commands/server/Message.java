@@ -40,18 +40,10 @@ import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Allows the user to send privmsgs.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Message extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Message.
-     */
-    public Message() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

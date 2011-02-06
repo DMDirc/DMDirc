@@ -37,18 +37,10 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * Allows the user to send CTCP messages.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Ctcp extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of Ctcp.
-     */
-    public Ctcp() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

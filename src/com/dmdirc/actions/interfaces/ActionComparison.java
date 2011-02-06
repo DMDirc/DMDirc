@@ -26,7 +26,6 @@ package com.dmdirc.actions.interfaces;
  * Describes the methods that must be implemented by an action comparison.
  * Action comparisons allow the user to compare an action component to a
  * string they entered.
- * @author chris
  */
 public interface ActionComparison {
 

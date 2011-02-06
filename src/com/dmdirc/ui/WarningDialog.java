@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2006-2011 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -49,12 +48,6 @@ import javax.swing.text.html.HTMLEditorKit;
  */
 public class WarningDialog extends JDialog {
 
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = -528603916540455179L;
     /** Dialog heading text. */
     public static final String NO_UIS_TITLE = "No UIs Found";
     /** Dialog body text. */
@@ -80,6 +73,13 @@ public class WarningDialog extends JDialog {
             + "  The bundled UI plugins were automatically extracted from the "
             + "jar, but this did not fix the problem. DMDirc is unable to "
             + "continue and will now exit.";
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = -528603916540455179L;
 
     /** Create a new NoUIDialog. */
     public WarningDialog() {

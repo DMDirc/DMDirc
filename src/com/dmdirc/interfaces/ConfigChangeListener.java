@@ -24,8 +24,6 @@ package com.dmdirc.interfaces;
 
 /**
  * Defines the method required for config change listeners.
-
- * @author Chris
  */
 public interface ConfigChangeListener {
 

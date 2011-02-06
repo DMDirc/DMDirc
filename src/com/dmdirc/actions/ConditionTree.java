@@ -28,8 +28,6 @@ import java.util.Deque;
 /**
  * A condition tree specifies in which order a group of conditions will be
  * executed.
- *
- * @author chris
  */
 public class ConditionTree {
 

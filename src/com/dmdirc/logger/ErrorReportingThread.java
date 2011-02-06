@@ -28,7 +28,6 @@ import java.util.concurrent.BlockingQueue;
  * Daemon thread which reports errors.
  *
  * @since 0.6.3m1
- * @author chris
  */
 public class ErrorReportingThread extends Thread {
 

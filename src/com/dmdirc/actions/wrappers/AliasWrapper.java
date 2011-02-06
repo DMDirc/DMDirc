@@ -39,8 +39,6 @@ import java.util.List;
 
 /**
  * Encapsulates alias actions.
- *
- * @author chris
  */
 public final class AliasWrapper extends ActionGroup {
 

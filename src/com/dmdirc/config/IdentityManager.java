@@ -47,8 +47,6 @@ import java.util.logging.Level;
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
- *
- * @author chris
  */
 public final class IdentityManager {
 

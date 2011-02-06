@@ -70,8 +70,8 @@ public class CommandFlagResult {
      */
     public String getArgumentsAsString(final CommandFlag flag) {
         return flag == null ? (offsets.get(flag) > arguments.getArguments().length
-                ? "" : arguments.getArgumentsAsString(offsets.get(flag))) :
-                arguments.getArgumentsAsString(offsets.get(flag),
+                ? "" : arguments.getArgumentsAsString(offsets.get(flag)))
+                : arguments.getArgumentsAsString(offsets.get(flag),
                 offsets.get(flag) + flag.getDelayedArgs() + flag.getImmediateArgs() - 1);
     }
 

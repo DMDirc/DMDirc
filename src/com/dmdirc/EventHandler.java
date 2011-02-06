@@ -31,8 +31,6 @@ import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 /**
  * Abstracts some behaviour used by Event Handlers.
- *
- * @author chris
  */
 public abstract class EventHandler implements CallbackInterface {
 

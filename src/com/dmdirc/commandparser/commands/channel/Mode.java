@@ -40,16 +40,10 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * The mode command allows the user to inspect and change channel modes.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Mode extends Command implements IntelligentCommand,
         ExternalCommand, CommandInfo {
-
-    /** Creates a new instance of Mode. */
-    public Mode() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

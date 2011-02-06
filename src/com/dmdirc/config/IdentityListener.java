@@ -27,7 +27,6 @@ package com.dmdirc.config;
  * and removed from the {@link IdentityManager}.
  *
  * @since 0.6.4
- * @author chris
  */
 public interface IdentityListener {
 

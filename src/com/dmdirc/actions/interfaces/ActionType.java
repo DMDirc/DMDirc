@@ -24,7 +24,6 @@ package com.dmdirc.actions.interfaces;
 
 /**
  * Encapsulates the methods that all actions are required to implement.
- * @author chris
  */
 public interface ActionType {
 

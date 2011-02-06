@@ -36,9 +36,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * The back command allows the user to unset their away status.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Back extends Command implements IntelligentCommand, CommandInfo {
 
     /**

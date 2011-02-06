@@ -41,17 +41,9 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Allows the user to add/view/delete ignores.
- * @author chris
  */
 public final class Ignore extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of Ignore.
-     */
-    public Ignore() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

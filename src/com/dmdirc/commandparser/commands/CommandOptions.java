@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
  * Allows commands to define options that affect their behaviour.
  *
  * @since 0.6.3m1
- * @author chris
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

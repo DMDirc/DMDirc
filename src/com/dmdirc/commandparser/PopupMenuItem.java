@@ -24,15 +24,13 @@ package com.dmdirc.commandparser;
 
 /**
  * Represents an abstract, UI-independent popup menu item.
- *
- * @author chris
  */
 public class PopupMenuItem {
 
     /** Whether this item is a divider. */
-    private boolean divider = false;
+    private boolean divider;
     /** The submenu for this item, if any. */
-    private PopupMenu submenu = null;
+    private PopupMenu submenu;
     /** The name of this item, if any. */
     private String name;
     /** The command for this item, if any. */

@@ -42,14 +42,14 @@ import java.util.Date;
 /** Handles URLs. */
 public class URLHandler {
 
+    /** The time a browser was last launched. */
+    private static Date lastLaunch;
     /** The UI Controller that owns this handler. */
     private final UIController controller;
     /** Config manager. */
     private final ConfigManager config;
     /** Desktop handler. */
     private final Desktop desktop;
-    /** The time a browser was last launched. */
-    private static Date lastLaunch;
 
     /**
      * Instantiates a new URL Handler.
@@ -261,8 +261,7 @@ public class URLHandler {
      * @param url URL to open
      */
     private void execBrowser(final URI url) {
-        if (desktop != null &&
-                desktop.isSupported(Desktop.Action.BROWSE)) {
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
                 desktop.browse(url);
             } catch (IOException ex) {
@@ -271,10 +270,10 @@ public class URLHandler {
             }
         } else {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to open your browser: Your desktop enviroment is " +
-                    "not supported, please go to the URL Handlers section of " +
-                    "the preferences dialog and set the path to your browser " +
-                    "manually");
+                    "Unable to open your browser: Your desktop enviroment is "
+                    + "not supported, please go to the URL Handlers section of "
+                    + "the preferences dialog and set the path to your browser "
+                    + "manually");
         }
     }
 
@@ -293,10 +292,10 @@ public class URLHandler {
             }
         } else {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to open your mail client: Your desktop enviroment is " +
-                    "not supported, please go to the URL Handlers section of " +
-                    "the preferences dialog and set the path to your browser " +
-                    "manually");
+                    "Unable to open your mail client: Your desktop enviroment is "
+                    + "not supported, please go to the URL Handlers section of "
+                    + "the preferences dialog and set the path to your browser "
+                    + "manually");
         }
     }
 }

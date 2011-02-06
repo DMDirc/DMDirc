@@ -45,8 +45,6 @@ import java.util.Map;
 
 /**
  * Describes a single action.
- *
- * @author chris
  */
 public class Action extends ActionModel implements ConfigChangeListener {
 
@@ -174,7 +172,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             response = new String[config.getFlatDomain(DOMAIN_RESPONSE).size()];
 
             int i = 0;
-            for (String line: config.getFlatDomain(DOMAIN_RESPONSE)) {
+            for (String line : config.getFlatDomain(DOMAIN_RESPONSE)) {
                 response[i++] = line;
             }
         } else {

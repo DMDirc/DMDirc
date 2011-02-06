@@ -23,8 +23,8 @@
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 import com.dmdirc.tls.CertificateAction;
-import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateDoesntMatchHostException;
+import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateNotTrustedException;
 
 import java.security.cert.CertificateException;
@@ -44,6 +44,9 @@ import java.util.Map;
  */
 public class SSLCertificateDialogModel {
 
+    /** The text to use if a field isn't present on the certificate. */
+    private static final String NOTPRESENT = "(not present on certificate)";
+
     /** The certificate chain that we're displaying information about. */
     private final X509Certificate[] chain;
 
@@ -52,9 +55,6 @@ public class SSLCertificateDialogModel {
 
     /** The list of problems found with the certs, if any. */
     private final Collection<CertificateException> problems;
-
-    /** The text to use if a field isn't present on the certificate. */
-    private static final String NOTPRESENT = "(not present on certificate)";
 
     /**
      * Creates a new SSLCertificateDialogModel for the specified chain.

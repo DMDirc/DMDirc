@@ -25,8 +25,6 @@ package com.dmdirc.updater;
 /**
  * This interface is implemented by components that are related to a specific
  * file.
- *
- * @author shane
  */
 public interface FileComponent {
 

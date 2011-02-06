@@ -54,10 +54,10 @@ public class PreferencesSetting {
     protected final String helptext;
     /** The current value of the setting. */
     protected String current;
-    /** The original value of this vsetting. */
-    private String original;
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
+    /** The original value of this vsetting. */
+    private String original;
     /** A list of change listeners. */
     private final List<SettingChangeListener> listeners
             = new ArrayList<SettingChangeListener>();

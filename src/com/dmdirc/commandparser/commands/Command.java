@@ -30,8 +30,6 @@ import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Represents a generic command.
- *
- * @author chris
  */
 public abstract class Command {
 

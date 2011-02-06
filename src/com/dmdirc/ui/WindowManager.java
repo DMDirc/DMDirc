@@ -41,8 +41,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * The WindowManager maintains a list of all open windows, and their
  * parent/child relations.
- *
- * @author Chris
  */
 public class WindowManager {
 
@@ -165,9 +163,7 @@ public class WindowManager {
      * @param child The child window to be added
      * @since 0.6.4
      */
-    @Precondition({
-        "The specified Windows are not null"
-    })
+    @Precondition("The specified Windows are not null")
     public static void addWindow(final FrameContainer parent,
             final FrameContainer child) {
         addWindow(parent, child, true);

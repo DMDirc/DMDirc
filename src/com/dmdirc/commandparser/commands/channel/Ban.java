@@ -37,8 +37,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * The kick command bans a specified user or host from the channel.
- *
- * @author chris
  */
 public final class Ban extends Command implements IntelligentCommand, CommandInfo {
 

@@ -30,8 +30,6 @@ import java.util.EventListener;
 /**
  * Defines the methods that should be implemented by classes which wish to
  * receive information about invites.
- *
- * @author Chris
  */
 public interface InviteListener extends EventListener {
 

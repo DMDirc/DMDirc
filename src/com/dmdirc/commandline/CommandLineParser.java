@@ -40,8 +40,6 @@ import java.util.List;
 
 /**
  * Parses command line arguments for the client.
- *
- * @author Chris
  */
 public class CommandLineParser {
 

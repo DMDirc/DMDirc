@@ -38,19 +38,10 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Sends a names request.
- *
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class Names extends Command implements IntelligentCommand,
         ExternalCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Names.
-     */
-    public Names() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

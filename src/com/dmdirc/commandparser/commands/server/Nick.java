@@ -37,18 +37,10 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 /**
  * Allows the user to change nickname.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Nick extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of Nick.
-     */
-    public Nick() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

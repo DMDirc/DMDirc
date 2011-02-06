@@ -42,8 +42,6 @@ import java.util.regex.Pattern;
 
 /**
  * Handles the substitution of variables into action targets and responses.
- *
- * @author Chris
  */
 public class ActionSubstitutor {
 

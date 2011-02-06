@@ -35,8 +35,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser that is tailored for use in a channel environment.
- *
- * @author chris
  */
 public class ChannelCommandParser extends ChatCommandParser {
 

@@ -38,8 +38,6 @@ import java.util.logging.Level;
 
 /**
  * The config manager manages the various config sources for each entity.
- *
- * @author chris
  */
 public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         IdentityListener {

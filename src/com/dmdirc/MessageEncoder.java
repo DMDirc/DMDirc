@@ -32,8 +32,6 @@ import java.io.UnsupportedEncodingException;
 /**
  * An {@link Encoder} implementation that reads the desired encoding from
  * the relevant target's config file.
- *
- * @author chris
  */
 public class MessageEncoder implements Encoder {
 

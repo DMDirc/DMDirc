@@ -232,7 +232,7 @@ public final class ActionManager {
         for (ActionType type : newTypes) {
             Logger.assertTrue(type != null);
 
-            if(!types.contains(type)) {
+            if (!types.contains(type)) {
                 types.add(type);
                 typeGroups.add(type.getType().getGroup(), type);
             }

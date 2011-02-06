@@ -36,7 +36,7 @@ public enum WindowComponent {
     /** An input field for user input or commands. */
     INPUTFIELD("com.dmdirc.ui.components.inputfield"),
     /** A component to show details of or problems with a certificate. */
-    CERTIFICATE_VIEWER("com.dmdirc.ui.components.certificateviewer"),;
+    CERTIFICATE_VIEWER("com.dmdirc.ui.components.certificateviewer");
 
     /** The identifier for this window component. */
     private final String identifier;

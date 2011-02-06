@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.commands.Command;
  * triggered it.
  *
  * @since 0.6.4
- * @author chris
  */
 public class CommandInfoPair {
 

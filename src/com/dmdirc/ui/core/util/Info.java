@@ -23,8 +23,8 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.config.IdentityManager;
-import java.lang.management.ManagementFactory;
 
+import java.lang.management.ManagementFactory;
 import java.util.Locale;
 
 /**
@@ -55,9 +55,9 @@ public class Info {
      * @return Java version string
      */
     public static String getJavaVersion() {
-        return System.getProperty("java.vm.name", "unknown") + " " +
-                System.getProperty("java.version", "unknown") +
-                " [" + System.getProperty("java.vm.vendor", "unknown") + "]";
+        return System.getProperty("java.vm.name", "unknown") + " "
+                + System.getProperty("java.version", "unknown")
+                + " [" + System.getProperty("java.vm.vendor", "unknown") + "]";
     }
 
     /**
@@ -66,11 +66,11 @@ public class Info {
      * @return OS version string
      */
     public static String getOSVersion() {
-        return System.getProperty("os.name", "unknown") + " " +
-                System.getProperty("os.version", "unknown") + " " +
-                System.getProperty("os.arch", "unknown") + "; " +
-                System.getProperty("file.encoding", "unknown") + "; " + Locale.getDefault().
-                toString();
+        return System.getProperty("os.name", "unknown") + " "
+                + System.getProperty("os.version", "unknown") + " "
+                + System.getProperty("os.arch", "unknown") + "; "
+                + System.getProperty("file.encoding", "unknown") + "; "
+                + Locale.getDefault().toString();
     }
 
     /**

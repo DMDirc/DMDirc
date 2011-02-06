@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
@@ -42,6 +41,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.RollingList;
+import com.dmdirc.util.validators.ValidationResponse;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -55,16 +55,9 @@ import java.util.logging.Level;
  * to use shortcut keys for control characters (ctrl+b, etc), to tab complete
  * nicknames/channel names/etc, and to scroll through their previously issued
  * commands.
- *
- * @author chris
  */
 public abstract class InputHandler implements ConfigChangeListener {
 
-    /**
-     * Indicates that the caret should be moved to the end of a selection when
-     * a control code has been inserted.
-     */
-    private static final int POSITION_END = 1;
     /**
      * Indicates that the caret should be moved to the start of a selection when
      * a control code has been inserted.
@@ -79,6 +72,11 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** Flag to indicate that this input handler should handle returns. */
     protected static final int HANDLE_RETURN = 8;
 
+    /**
+     * Indicates that the caret should be moved to the end of a selection when
+     * a control code has been inserted.
+     */
+    private static final int POSITION_END = 1;
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
             .Logger.getLogger(InputHandler.class.getName());

@@ -51,8 +51,6 @@ import java.util.List;
  * have a value. Note that for this sort of behaviour to make sense, it requires
  * an implementation that takes values from multiple sources, such as a
  * {@link ConfigManager}.
- *
- * @author chris
  */
 public abstract class ConfigSource {
 

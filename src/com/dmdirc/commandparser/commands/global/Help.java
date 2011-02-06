@@ -44,16 +44,8 @@ import java.util.Map;
  * The help command shows the user a list of available commands, along with
  * their arguments, and a description. It is context-aware, so channel commands
  * are only displayed when in a channel window, for example.
- * @author chris
  */
 public final class Help extends Command implements IntelligentCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Help.
-     */
-    public Help() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

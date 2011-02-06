@@ -29,8 +29,6 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 /**
  * Defines channel-related events.
- *
- * @author Chris
  */
 public enum ChannelEvents implements ActionMetaType {
 

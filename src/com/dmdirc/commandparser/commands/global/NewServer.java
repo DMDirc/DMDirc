@@ -44,18 +44,9 @@ import java.util.regex.Pattern;
 
 /**
  * The new server command allows users to open a new server window.
- *
- * @author chris
  */
 public final class NewServer extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of NewServer.
-     */
-    public NewServer() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

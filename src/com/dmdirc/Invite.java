@@ -26,8 +26,6 @@ import java.util.Date;
 
 /**
  * Model for a channel invitation.
- *
- * @author Chris
  */
 public class Invite {
 

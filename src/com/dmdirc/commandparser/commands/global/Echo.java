@@ -43,8 +43,6 @@ import java.util.List;
 
 /**
  * The echo commands simply echos text to the current window.
- *
- * @author chris
  */
 public final class Echo extends Command implements IntelligentCommand,
         CommandInfo {

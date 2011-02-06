@@ -34,9 +34,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * The away command allows the user to set their away message.
- * @author chris
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public final class Away extends Command implements CommandInfo {
 
     /**

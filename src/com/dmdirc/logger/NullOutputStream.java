@@ -30,12 +30,8 @@ import java.io.OutputStream;
  */
 public class NullOutputStream extends OutputStream {
 
-    /** Instantiates a new null output stream. */
-    public NullOutputStream() {
-        super();
-    }
-
     /** {@inheritDoc} */
+    @Override
     public void write(final int b) throws IOException {
         //Ignore data.
     }

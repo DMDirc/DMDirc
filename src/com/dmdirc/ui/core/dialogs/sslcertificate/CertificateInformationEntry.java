@@ -26,7 +26,6 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
  * Describes one piece of information about a certificate.
  *
  * @since 0.6.3m1
- * @author chris
  */
 public class CertificateInformationEntry {
 

@@ -35,8 +35,6 @@ import javax.swing.text.StyledDocument;
 
 /**
  * Defines client-wide events.
- *
- * @author Chris
  */
 public enum ClientEvents implements ActionMetaType {
 

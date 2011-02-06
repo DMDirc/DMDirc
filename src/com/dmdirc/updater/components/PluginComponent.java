@@ -34,16 +34,14 @@ import java.io.File;
 
 /**
  * An update component for plugins.
- *
- * @author chris
  */
 public class PluginComponent implements UpdateComponent, FileComponent {
 
-    /** The plugin this component is for. */
-    private final PluginInfo plugin;
-
     /** The config to use. */
     private static final ConfigManager CONFIG = IdentityManager.getGlobalConfig();
+
+    /** The plugin this component is for. */
+    private final PluginInfo plugin;
 
     /**
      * Creates a new PluginComponent for the specified plugin, to enable it to

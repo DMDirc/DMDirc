@@ -27,7 +27,6 @@ package com.dmdirc.actions;
  * number of arguments.
  *
  * @since 0.6
- * @author chris
  */
 public abstract class ConditionTreeFactory {
 
@@ -56,6 +55,25 @@ public abstract class ConditionTreeFactory {
         CONJUNCTION,
         /** Factories that produce custom trees. */
         CUSTOM,
+    }
+
+    /**
+     * Retrieves a factory that will extrapolate the specified
+     * {@link ConditionTree} for different number of arguments, if applicable.
+     *
+     * @param tree The {@link ConditionTree} that's in use
+     * @param args The number of conditions currently in use
+     * @return A {@link ConditionTreeFactory} that will create relevant
+     * {@link ConditionTree}s
+     */
+    public static ConditionTreeFactory getFactory(final ConditionTree tree, final int args) {
+        if (tree.equals(ConditionTree.createConjunction(args))) {
+            return new ConjunctionFactory();
+        } else if (tree.equals(ConditionTree.createDisjunction(args))) {
+            return new DisjunctionFactory();
+        } else {
+            return new CustomFactory(tree);
+        }
     }
 
     /**
@@ -126,24 +144,4 @@ public abstract class ConditionTreeFactory {
         }
 
     }
-
-    /**
-     * Retrieves a factory that will extrapolate the specified
-     * {@link ConditionTree} for different number of arguments, if applicable.
-     *
-     * @param tree The {@link ConditionTree} that's in use
-     * @param args The number of conditions currently in use
-     * @return A {@link ConditionTreeFactory} that will create relevant
-     * {@link ConditionTree}s
-     */
-    public static ConditionTreeFactory getFactory(final ConditionTree tree, final int args) {
-        if (tree.equals(ConditionTree.createConjunction(args))) {
-            return new ConjunctionFactory();
-        } else if (tree.equals(ConditionTree.createDisjunction(args))) {
-            return new DisjunctionFactory();
-        } else {
-            return new CustomFactory(tree);
-        }
-    }
-
 }

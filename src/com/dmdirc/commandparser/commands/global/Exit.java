@@ -34,7 +34,6 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  * The exit command allows the user to quit DMDirc with a custom quit message.
  * When the client quits, it disconnects all servers (with the quit message
  * supplied) and saves the config file.
- * @author chris
  */
 public final class Exit extends Command implements CommandInfo {
 

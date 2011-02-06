@@ -35,7 +35,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * The command parser used for global commands.
- * @author chris
  */
 public class GlobalCommandParser extends CommandParser {
 

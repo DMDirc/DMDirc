@@ -24,8 +24,6 @@ package com.dmdirc.config.prefs;
 /**
  * Defines methods that should be implemented by objects who wish to be
  * notified about category changes.
- *
- * @author chris
  */
 public interface CategoryChangeListener {
 

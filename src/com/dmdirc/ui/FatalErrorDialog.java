@@ -68,6 +68,10 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
+
+    /** Do we need to restart? Else we quit. */
+    private static boolean restart = true;
+
     /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
     /** Restart client Button. */
@@ -84,8 +88,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private ImageIcon icon;
     /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
-    /** Do we need to restart? Else we quit. */
-    private static boolean restart = true;
 
     /**
      * Creates a new fatal error dialog.
