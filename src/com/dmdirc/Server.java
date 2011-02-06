@@ -344,14 +344,8 @@ public class Server extends WritableFrameContainer
             updateAwayState(null);
             removeInvites();
 
-            try {
-                parserThread = new Thread(parser, "Parser thread");
-                parserThread.start();
-            } catch (IllegalThreadStateException ex) {
-                // This won't happen. Ever. But it's a checked exception. Yay.
-                Logger.appError(ErrorLevel.HIGH, "Unable to start parser", ex);
-                return;
-            }
+            parserThread = new Thread(parser, "Parser thread");
+            parserThread.start();
         }
 
         ActionManager.getActionManager().triggerEvent(
