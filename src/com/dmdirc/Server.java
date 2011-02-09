@@ -516,6 +516,18 @@ public class Server extends WritableFrameContainer
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
+        return getQuery(host, false);
+    }
+
+    /**
+     * Retrieves the specified query belonging to this server. If the query
+     * does not yet exist, it is created automatically.
+     *
+     * @param host The host of the query to look for
+     * @param focus Should we focus the window on open?
+     * @return The appropriate query object
+     */
+    public Query getQuery(final String host, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't open queries while the server is closing
@@ -527,7 +539,7 @@ public class Server extends WritableFrameContainer
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host);
+            final Query newQuery = new Query(this, host, focus);
 
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);

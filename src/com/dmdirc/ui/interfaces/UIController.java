@@ -23,6 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.config.prefs.PreferencesInterface;
 
@@ -40,6 +41,14 @@ public interface UIController {
      * @param window The window to be focused
      */
     void requestWindowFocus(Window window);
+
+    /**
+     * Requests that the specified container's window be bought to focus in
+     * this UI.
+     *
+     * @param container The framecontainer whose window is to be focused
+     */
+    void requestWindowFocus(FrameContainer container);
 
     /**
      * Shows the first run wizard for the ui.

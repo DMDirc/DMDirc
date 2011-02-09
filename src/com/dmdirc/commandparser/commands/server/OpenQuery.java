@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -64,13 +65,14 @@ public final class OpenQuery extends Command implements IntelligentCommand,
             return;
         }
 
-        if (!args.isSilent()) {
-            context.getSource().getController().requestWindowFocus(context.getSource());
-        }
+        final Query query = server.getQuery(args.getArguments()[0], !args.isSilent());
 
         if (args.getArguments().length > 1) {
-            server.getQuery(args.getArguments()[0]).sendLine(args.getArgumentsAsString(1),
-                    args.getArguments()[0]);
+            query.sendLine(args.getArgumentsAsString(1), args.getArguments()[0]);
+        }
+
+        if (!args.isSilent()) {
+            context.getSource().getController().requestWindowFocus(query);
         }
     }
 

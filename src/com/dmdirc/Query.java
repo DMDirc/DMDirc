@@ -65,6 +65,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;
 
+
     /**
      * Creates a new instance of Query.
      *
@@ -72,6 +73,18 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
+        this(newServer, newHost, false);
+    }
+
+    /**
+     * Creates a new instance of Query.
+     *
+     * @param newHost host of the remove client
+     * @param newServer The server object that this Query belongs to
+     * @param focus Should we focus the query on open?
+     */
+    public Query(final Server newServer, final String newHost,
+            final boolean focus) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 InputWindow.class, newServer.getConfigManager(),
@@ -83,8 +96,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
 
-        WindowManager.addWindow(server, this,
-                !getConfigManager().getOptionBool("general", "hidequeries"));
+        WindowManager.addWindow(server, this, focus);
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_OPENED, null, this);

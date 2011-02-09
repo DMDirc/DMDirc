@@ -168,9 +168,6 @@ public class PreferencesDialogModel {
                 "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode (e.g. @) in channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "hidequeries", "Hide queries",
-                "Initially hide new query windows so that they don't steal focus"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "awayindicator", "Away indicator",
                 "Show an indicator in windows when you are marked as away"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
