@@ -34,7 +34,7 @@ public class ActionComponentChainTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-        ActionManager.init();
+        ActionManager.getActionManager().initialise();
     }
 
     @Test

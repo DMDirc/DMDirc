@@ -124,8 +124,8 @@ public class PreferencesManagerTest {
     public void testOpenAction() {
         final ActionListener tal = mock(ActionListener.class);
 
-        ActionManager.init();
-        ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
+        ActionManager.getActionManager().initialise();
+        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
 
@@ -137,8 +137,8 @@ public class PreferencesManagerTest {
     public void testCloseAction() {
         final ActionListener tal = mock(ActionListener.class);
 
-        ActionManager.init();
-        ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
+        ActionManager.getActionManager().initialise();
+        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
         pm.close();

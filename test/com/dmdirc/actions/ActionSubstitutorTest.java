@@ -55,7 +55,7 @@ public class ActionSubstitutorTest {
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
         IdentityManager.load();
-        ActionManager.init();
+        ActionManager.getActionManager().initialise();
 
         SETTINGS.put("alpha", "A");
         SETTINGS.put("bravo", "$alpha");

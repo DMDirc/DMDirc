@@ -44,7 +44,7 @@ public class ActionTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-        ActionManager.init();
+        ActionManager.getActionManager().initialise();
     }
 
     private static Action action;
@@ -115,9 +115,9 @@ public class ActionTest {
         action.config.read();
         action.loadActionFromConfig();
 
-        assertEquals(1, ActionManager.getGroup("unit-test").getSettings().size());
+        assertEquals(1, ActionManager.getActionManager().getOrCreateGroup("unit-test").getSettings().size());
 
-        final PreferencesSetting setting = ActionManager.getGroup("unit-test")
+        final PreferencesSetting setting = ActionManager.getActionManager().getOrCreateGroup("unit-test")
                 .getSettings().values().iterator().next();
         assertEquals(PreferencesType.TEXT, setting.getType());
         assertEquals("Highlight Regex", setting.getTitle());

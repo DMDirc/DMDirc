@@ -33,7 +33,7 @@ public class ActionConditionTest {
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-        ActionManager.init();
+        ActionManager.getActionManager().initialise();
     }
 
     @Test

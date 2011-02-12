@@ -20,28 +20,20 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.validators;
+package com.dmdirc.actions;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.config.IdentityManager;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+/**
+ * An enumeration of possible statuses for actions.
+ *
+ * @since 0.6.6
+ */
+public enum ActionStatus {
 
-public class ActionGroupValidatorTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.load();
-        ActionManager.getActionManager().initialise();
-    }
-
-    @Test
-    public void testValidate() {
-        final ActionGroupValidator rv = new ActionGroupValidator();
-
-        assertFalse(rv.validate("filename").isFailure());
-        assertTrue(rv.validate("aliases").isFailure());
-    }
+    /** The action is active and will run if triggered. */
+    ACTIVE,
+    /** The action is disabled by the user. */
+    DISABLED,
+    /** The action has failed to load. */
+    FAILED;
 
 }

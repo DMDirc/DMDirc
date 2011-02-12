@@ -36,26 +36,26 @@ public class ActionManagerTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
-        ActionManager.init();
-        ActionManager.loadActions();
+        ActionManager.getActionManager().initialise();
+        ActionManager.getActionManager().loadUserActions();
 
         tearDownClass();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        if (ActionManager.getGroups().containsKey("unit-test")) {
-            ActionManager.removeGroup("unit-test");
+        if (ActionManager.getActionManager().getGroupsMap().containsKey("unit-test")) {
+            ActionManager.getActionManager().deleteGroup("unit-test");
         }
 
-        if (ActionManager.getGroups().containsKey("unit-test-two")) {
-            ActionManager.removeGroup("unit-test-two");
+        if (ActionManager.getActionManager().getGroupsMap().containsKey("unit-test-two")) {
+            ActionManager.getActionManager().deleteGroup("unit-test-two");
         }
     }
 
     @Test
     public void testMakeGroup() {
-        ActionManager.makeGroup("unit-test");
+        ActionManager.getActionManager().createGroup("unit-test");
 
         assertTrue("makeGroup must create the group directory",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
@@ -63,7 +63,7 @@ public class ActionManagerTest {
 
     @Test
     public void testGetGroup() {
-        final ActionGroup group = ActionManager.getGroup("unit-test");
+        final ActionGroup group = ActionManager.getActionManager().getOrCreateGroup("unit-test");
 
         assertEquals("getGroup must return an ActionGroup with the right name",
                 "unit-test", group.getName());
@@ -71,7 +71,7 @@ public class ActionManagerTest {
 
     @Test
     public void testRenameGroup() {
-        ActionManager.renameGroup("unit-test", "unit-test-two");
+        ActionManager.getActionManager().changeGroupName("unit-test", "unit-test-two");
         assertFalse("renameGroup must unlink the old directory",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
         assertTrue("renameGroup must create the target directory",
@@ -83,26 +83,26 @@ public class ActionManagerTest {
         final Action action = new Action("unit-test-two", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(), null);
         assertSame("Creating a new action must add it to the correct group",
-                action, ActionManager.getGroup("unit-test-two").get(0));
+                action, ActionManager.getActionManager().getOrCreateGroup("unit-test-two").get(0));
 
-        ActionManager.renameGroup("unit-test-two", "unit-test");
+        ActionManager.getActionManager().changeGroupName("unit-test-two", "unit-test");
         assertFalse("renameGroup must unlink the old directory",
                 new File(ActionManager.getDirectory() + "unit-test-two").isDirectory());
         assertTrue("renameGroup must create the target directory",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
         assertSame("renameGroup must move actions to new group",
-                action, ActionManager.getGroup("unit-test").get(0));
+                action, ActionManager.getActionManager().getOrCreateGroup("unit-test").get(0));
         assertEquals("renameGroup must remove actions from old group",
-                0, ActionManager.getGroup("unit-test-two").size());
+                0, ActionManager.getActionManager().getOrCreateGroup("unit-test-two").size());
     }
 
     @Test
     public void testRemoveGroup() {
-        ActionManager.removeGroup("unit-test");
+        ActionManager.getActionManager().deleteGroup("unit-test");
         assertFalse("removeGroup must unlink directory",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
 
-        ActionManager.saveActions();
+        ActionManager.getActionManager().saveAllActions();
         assertFalse("saveActions must not restore removed groups",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
     }

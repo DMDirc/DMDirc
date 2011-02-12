@@ -20,28 +20,28 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.validators;
+package com.dmdirc.actions;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.config.IdentityManager;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+/**
+ * An enumeration of possible types of error an action may encounter.
+ *
+ * @since 0.6.6
+ */
+public enum ActionErrorType {
 
-public class ActionGroupValidatorTest {
+    /** A low-level problem occurred trying to read the action's file. */
+    FILE,
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.load();
-        ActionManager.getActionManager().initialise();
-    }
+    /** A problem with the action's triggers. */
+    TRIGGERS,
 
-    @Test
-    public void testValidate() {
-        final ActionGroupValidator rv = new ActionGroupValidator();
+    /** A problem with the action's response. */
+    RESPONSE,
 
-        assertFalse(rv.validate("filename").isFailure());
-        assertTrue(rv.validate("aliases").isFailure());
-    }
+    /** A problem with the action's condition tree. */
+    CONDITION_TREE,
+
+    /** A problem with the action's conditions. */
+    CONDITIONS;
 
 }

@@ -70,6 +70,15 @@ public class ActionModel {
     /** The concurrency group this action belongs to, if any. */
     protected String concurrencyGroup;
 
+    /** The status of this action. */
+    protected ActionStatus status = ActionStatus.ACTIVE;
+
+    /** A description of any error that occurs while creating the action. */
+    protected String error;
+
+    /** The type of error that occurred, if any. */
+    protected ActionErrorType errorType;
+
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
@@ -96,8 +105,7 @@ public class ActionModel {
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        this.group = group;
-        this.name = name;
+        this(group, name);
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;
@@ -122,6 +130,10 @@ public class ActionModel {
             final Object... arguments) {
         assert triggers.length > 0;
         assert triggers[0] != null;
+
+        if (status != ActionStatus.ACTIVE) {
+            return false;
+        }
 
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
 
@@ -198,6 +210,37 @@ public class ActionModel {
     public void setConditions(final List<ActionCondition> conditions) {
         this.conditions = conditions;
         this.modified = true;
+    }
+
+    /**
+     * Retrieves the status of this action.
+     *
+     * @since 0.6.5
+     * @return This action's current status
+     */
+    public ActionStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Retrieves a plain text description of any error that occurred while
+     * loading this action.
+     *
+     * @since 0.6.5
+     * @return This action's error message, or null if no error was encountered
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * Retrieves the type of the error that occurred while loading this action.
+     *
+     * @since 0.6.5
+     * @return This action's error's type, or null if no error was encountered
+     */
+    public ActionErrorType getErrorType() {
+        return errorType;
     }
 
     /**

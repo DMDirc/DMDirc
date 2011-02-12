@@ -63,9 +63,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The domain name for misc settings. */
     private static final String DOMAIN_MISC = "misc".intern();
 
-    /** Whether or not this action is disabled. */
-    protected boolean disabled;
-
     /** The config file we're using. */
     protected ConfigFile config;
 
@@ -88,13 +85,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
             config = new ConfigFile(location);
             config.read();
             loadActionFromConfig();
+            ActionManager.getActionManager().addAction(this);
         } catch (InvalidConfigFileException ex) {
             // This isn't a valid config file. Maybe it's a properties file?
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to parse action file: "
-                    + group + "/" + name + ": " + ex.getMessage());
+            error(ActionErrorType.FILE, "Unable to parse action file: " + ex.getMessage());
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
-                    + group + "/" + name + ": " + ex.getMessage());
+            error(ActionErrorType.FILE, "I/O error when loading action: " + ex.getMessage());
         }
 
         IdentityManager.getGlobalConfig().addChangeListener("disable_action",
@@ -164,7 +160,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 return;
             }
         } else {
-            error("No trigger specified");
+            error(ActionErrorType.TRIGGERS, "No trigger specified");
             return;
         }
 
@@ -176,7 +172,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 response[i++] = line;
             }
         } else {
-            error("No response specified");
+            error(ActionErrorType.RESPONSE, "No response specified");
             return;
         }
 
@@ -197,12 +193,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
                     config.getFlatDomain(DOMAIN_CONDITIONTREE).get(0));
 
             if (conditionTree == null) {
-                error("Unable to parse condition tree");
+                error(ActionErrorType.CONDITION_TREE, "Unable to parse condition tree");
                 return;
             }
 
             if (conditionTree.getMaximumArgument() >= conditions.size()) {
-                error("Condition tree references condition "
+                error(ActionErrorType.CONDITION_TREE, "Condition tree references condition "
                         + conditionTree.getMaximumArgument() + " but there are"
                         + " only " + conditions.size() + " conditions");
                 return;
@@ -219,7 +215,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
             setStopping(Boolean.parseBoolean(config.getKeyDomain(DOMAIN_MISC).get("stopping")));
         }
 
-        ActionManager.getActionManager().addAction(this);
+        if (status == ActionStatus.DISABLED) {
+            status = ActionStatus.ACTIVE;
+        }
 
         checkMetaData();
     }
@@ -285,10 +283,10 @@ public class Action extends ActionModel implements ConfigChangeListener {
             triggers[i] = ActionManager.getActionManager().getType(newTriggers.get(i));
 
             if (triggers[i] == null) {
-                error("Invalid trigger specified: " + newTriggers.get(i));
+                error(ActionErrorType.TRIGGERS, "Invalid trigger specified: " + newTriggers.get(i));
                 return false;
             } else if (i != 0 && !triggers[i].getType().equals(triggers[0].getType())) {
-                error("Triggers are not compatible");
+                error(ActionErrorType.TRIGGERS, "Triggers are not compatible");
                 return false;
             }
         }
@@ -308,6 +306,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         final List<String> triggerNames = new ArrayList<String>();
         final List<String> responseLines = new ArrayList<String>();
+        responseLines.addAll(Arrays.asList(response));
 
         for (ActionType trigger : triggers) {
             if (trigger == null) {
@@ -318,10 +317,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
             }
 
             triggerNames.add(trigger.toString());
-        }
-
-        for (String line : response) {
-            responseLines.add(line);
         }
 
         newConfig.addDomain(DOMAIN_TRIGGERS, triggerNames);
@@ -407,12 +402,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
         try {
             arg = Integer.parseInt(data.get("argument"));
         } catch (NumberFormatException ex) {
-            error("Invalid argument number specified: " + data.get("argument"));
+            error(ActionErrorType.CONDITIONS,
+                    "Invalid argument number specified: " + data.get("argument"));
             return false;
         }
 
         if (arg < -1 || arg >= triggers[0].getType().getArity()) {
-            error("Invalid argument number specified: " + arg);
+            error(ActionErrorType.CONDITIONS, "Invalid argument number specified: " + arg);
             return false;
         }
 
@@ -422,7 +418,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             starget = data.get("starget");
 
             if (starget == null) {
-                error("No starget specified");
+                error(ActionErrorType.CONDITIONS, "No starget specified");
                 return false;
             }
         } else {
@@ -436,13 +432,15 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         comparison = ActionManager.getActionManager().getComparison(data.get("comparison"));
         if (comparison == null) {
-            error("Invalid comparison specified: " + data.get("comparison"));
+            error(ActionErrorType.CONDITIONS, "Invalid comparison specified: "
+                    + data.get("comparison"));
             return false;
         }
 
         if ((arg != -1 && !comparison.appliesTo().equals(component.getType()))
             || (arg == -1 && !comparison.appliesTo().equals(String.class))) {
-            error("Comparison cannot be applied to specified component: " + data.get("comparison"));
+            error(ActionErrorType.CONDITIONS,
+                    "Comparison cannot be applied to specified component: " + data.get("comparison"));
             return false;
         }
 
@@ -451,7 +449,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         target = data.get("target");
 
         if (target == null) {
-            error("No target specified for condition");
+            error(ActionErrorType.CONDITIONS, "No target specified for condition");
             return false;
         }
 
@@ -483,18 +481,19 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
                         componentName);
             } catch (IllegalArgumentException iae) {
-                error(iae.getMessage());
+                error(ActionErrorType.CONDITIONS, iae.getMessage());
                 return null;
             }
         }
 
         if (component == null) {
-            error("Unknown component: " + componentName);
+            error(ActionErrorType.CONDITIONS, "Unknown component: " + componentName);
             return null;
         }
 
         if (!component.appliesTo().equals(triggers[0].getType().getArgTypes()[arg])) {
-            error("Component cannot be applied to specified arg in condition: " + componentName);
+            error(ActionErrorType.CONDITIONS,
+                    "Component cannot be applied to specified arg in condition: " + componentName);
             return null;
         }
 
@@ -506,7 +505,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
      *
      * @param message The message to be raised
      */
-    private void error(final String message) {
+    private void error(final ActionErrorType type, final String message) {
+        this.error = message;
+        this.errorType = type;
+        this.status = ActionStatus.FAILED;
+
         Logger.userError(ErrorLevel.LOW, "Error when parsing action: "
                 + group + "/" + name + ": " + message);
     }
@@ -567,20 +570,28 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @since 0.6.3
      */
     protected void checkDisabled() {
-        disabled = IdentityManager.getGlobalConfig().hasOptionBool("disable_action",
+        boolean disabled = IdentityManager.getGlobalConfig().hasOptionBool("disable_action",
                 (group + "/" + name).replace(' ', '.'))
                 && IdentityManager.getGlobalConfig().getOptionBool("disable_action",
                 (group + "/" + name).replace(' ', '.'));
+
+        if (disabled && status == ActionStatus.ACTIVE) {
+            status = ActionStatus.DISABLED;
+        } else if (!disabled && status == ActionStatus.DISABLED) {
+            status = ActionStatus.ACTIVE;
+        }
     }
 
     /**
      * Determines whether this action is enabled or not.
      *
      * @since 0.6.4
+     * @deprecated Use {@link #getStatus()} instead
      * @return True if the action is enabled, false otherwise
      */
+    @Deprecated
     public boolean isEnabled() {
-        return !disabled;
+        return status == ActionStatus.ACTIVE;
     }
 
     /**
@@ -596,16 +607,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
             IdentityManager.getConfigIdentity().setOption("disable_action",
                     (group + "/" + name).replace(' ', '.'), true);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean trigger(final StringBuffer format, final Object... arguments) {
-        if (!disabled) {
-            return super.trigger(format, arguments);
-        }
-
-        return false;
     }
 
 }
