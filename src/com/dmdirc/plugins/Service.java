@@ -37,10 +37,10 @@ public class Service {
     private final String name;
 
     /** List of ServiceProviders that implement this service. */
-    private List<ServiceProvider> serviceproviders = new ArrayList<ServiceProvider>();
+    private final List<ServiceProvider> serviceproviders = new ArrayList<ServiceProvider>();
 
     /**
-     * Create a new Service
+     * Create a new Service.
      *
      * @param type Type of this service
      * @param name Name of this service
@@ -51,7 +51,7 @@ public class Service {
     }
 
     /**
-     * Get the name of this service
+     * Get the name of this service.
      *
      * @return The name of this service
      */
@@ -60,7 +60,7 @@ public class Service {
     }
 
     /**
-     * Get the type of this service
+     * Get the type of this service.
      *
      * @return The type of this service
      */
@@ -87,7 +87,7 @@ public class Service {
     }
 
     /**
-     * Get a list of ServiceProviders for this service
+     * Get a list of ServiceProviders for this service.
      *
      * @return List of ServiceProvider that provide this service
      */
@@ -150,11 +150,8 @@ public class Service {
         return false;
     }
 
-    /**
-     * Get this service as a String
-     *
-     * @return String representation of this service
-     */
+    /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "Service: " + type + "->" + name + " (Providers: " + serviceproviders.size() + ")";
     }

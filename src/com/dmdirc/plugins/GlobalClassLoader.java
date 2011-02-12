@@ -38,7 +38,7 @@ public final class GlobalClassLoader extends ClassLoader {
     private static GlobalClassLoader me;
 
     /** HashMap containing sources of Global class files. */
-    private Map<String, String> resourcesList = new HashMap<String, String>();
+    private final Map<String, String> resourcesList = new HashMap<String, String>();
 
     /**
      * Create a new GlobalClassLoader.
@@ -54,9 +54,7 @@ public final class GlobalClassLoader extends ClassLoader {
      * @return True if the class is loaded, false otherwise
      */
     public boolean isClassLoaded(final String name) {
-        // Don't duplicate a class
-        final Class existing = findLoadedClass(name);
-        return existing != null;
+        return findLoadedClass(name) != null;
     }
 
     /**
@@ -89,13 +87,7 @@ public final class GlobalClassLoader extends ClassLoader {
         return loadClass(name);
     }
 
-    /**
-     * Load the plugin with the given className.
-     *
-     * @param name Class Name of plugin
-     * @return plugin class
-     * @throws ClassNotFoundException if the class to be loaded could not be found.
-     */
+    /** {@inheritDoc} */
     @Override
     public Class<?> loadClass(final String name) throws ClassNotFoundException {
         try {

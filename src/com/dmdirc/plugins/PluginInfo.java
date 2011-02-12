@@ -57,21 +57,21 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER
             = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
-    /** Plugin Meta Data */
+    /** Plugin Meta Data. */
     private volatile ConfigFile metaData;
-    /** URL that this plugin was loaded from */
+    /** URL that this plugin was loaded from. */
     private final URL url;
-    /** Filename for this plugin (taken from URL) */
+    /** Filename for this plugin (taken from URL). */
     private final String filename;
-    /** The actual Plugin from this jar */
+    /** The actual Plugin from this jar. */
     private Plugin plugin;
-    /** The classloader used for this Plugin */
+    /** The classloader used for this Plugin. */
     private PluginClassLoader classloader;
-    /** The resource manager used by this pluginInfo */
+    /** The resource manager used by this pluginInfo. */
     private ResourceManager myResourceManager;
     /** Is this plugin only loaded temporarily? */
     private boolean tempLoaded;
-    /** List of classes this plugin has */
+    /** List of classes this plugin has. */
     private final List<String> myClasses = new ArrayList<String>();
     /** Requirements error message. */
     private String requirementsError = "";
@@ -83,9 +83,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final List<Service> provides = new ArrayList<Service>();
     /** List of children of this plugin. */
     private final List<PluginInfo> children = new ArrayList<PluginInfo>();
-    /** Map of exports */
+    /** Map of exports. */
     private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
-    /** List of identities */
+    /** List of identities. */
     private final List<Identity> identities = new ArrayList<Identity>();
 
     /**
@@ -421,7 +421,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return The resource manager for this plugin
      * @throws IOException if there is any problem getting a ResourceManager for this plugin
      */
-    public synchronized ResourceManager getResourceManager() throws IOException {
+    public ResourceManager getResourceManager() throws IOException {
         return getResourceManager(false);
     }
 
@@ -448,6 +448,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             }, 10000);
         }
+
         return myResourceManager;
     }
 
@@ -463,20 +464,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the test passed, false otherwise
      */
     protected boolean checkMinimumVersion(final String desired, final int actual) {
-        int idesired;
-
         if (desired.isEmpty()) {
             return true;
         }
 
+        int minversion;
         try {
-            idesired = Integer.parseInt(desired);
+            minversion = Integer.parseInt(desired);
         } catch (NumberFormatException ex) {
             requirementsError = "'minversion' is a non-integer";
             return false;
         }
 
-        if (actual > 0 && idesired > 0 && actual < idesired) {
+        if (actual > 0 && minversion > 0 && actual < minversion) {
             requirementsError = "Plugin is for a newer version of DMDirc";
             return false;
         } else {
@@ -497,20 +497,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the test passed, false otherwise
      */
     protected boolean checkMaximumVersion(final String desired, final int actual) {
-        int idesired;
-
         if (desired.isEmpty()) {
             return true;
         }
 
+        int maxversion;
         try {
-            idesired = Integer.parseInt(desired);
+            maxversion = Integer.parseInt(desired);
         } catch (NumberFormatException ex) {
             requirementsError = "'maxversion' is a non-integer";
             return false;
         }
 
-        if (actual > 0 && idesired > 0 && actual > idesired) {
+        if (actual > 0 && maxversion > 0 && actual > maxversion) {
             requirementsError = "Plugin is for an older version of DMDirc";
             return false;
         } else {
@@ -695,32 +694,32 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         for (String requirement : services) {
             boolean available = false;
-            final String[] bits = requirement.split(" ");
+            final String[] bits = requirement.split(" ", 2);
             final String name = bits[0];
-            final String type = (bits.length > 1) ? bits[1] : "misc";
+            final String type = bits.length > 1 ? bits[1] : "misc";
 
-            // System.out.println(toString()+" Looking for: "+requirement);
-            Service service = null;
+            Service best = null;
             if (name.equalsIgnoreCase("any")) {
                 final List<Service> serviceList = PluginManager.getPluginManager().getServicesByType(type);
-                if (!serviceList.isEmpty()) {
-                    // Default to the first Service in the list
-                    service = serviceList.get(0);
-                    if (serviceList.size() > 1) {
-                        // Check to see if any of the others are already active
-                        for (Service serv : serviceList) {
-                            if (service.isActive()) {
-                                // Already active, abort.
-                                available = true;
-                            }
-                        }
+                for (Service service : serviceList) {
+                    if (service.isActive()) {
+                        // There's a service already active, let's use that.
+                        best = service;
+                        available = true;
+                        break;
                     }
                 }
+
+                if (!available && !serviceList.isEmpty()) {
+                    // If none are already active, default to the first one
+                    best = serviceList.get(0);
+                }
             } else {
-                service = PluginManager.getPluginManager().getService(type, name, false);
+                best = PluginManager.getPluginManager().getService(type, name, false);
             }
-            if (service != null) {
-                available = service.activate();
+
+            if (best != null) {
+                available = best.activate();
             }
 
             if (!available) {
@@ -731,17 +730,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         return true;
     }
 
-    /**
-     * Is this provider active at this time.
-     *
-     * @return true if the provider is able to provide its services
-     */
+    /** {@inheritDoc} */
     @Override
     public final boolean isActive() {
         return isLoaded();
     }
 
-    /** Activate the services. */
+    /** {@inheritDoc} */
     @Override
     public void activateServices() {
         loadPlugin();
@@ -753,11 +748,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         return "Plugin: " + getNiceName() + " (" + getName() + " / " + getFilename() + ")";
     }
 
-    /**
-     * Get a list of services provided by this provider.
-     *
-     * @return A list of services provided by this provider.
-     */
+    /** {@inheritDoc} */
     @Override
     public List<Service> getServices() {
         synchronized (provides) {
@@ -957,12 +948,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 lastError = "Class '"+classname+"' was not able to load.";
                 return;
             }
-            final Constructor<?> constructor = c.getConstructor(new Class[]{});
 
             // Only try and construct the main class, anything else should be constructed
             // by the plugin itself.
             if (classname.equals(getMainClass())) {
-                final Object temp = constructor.newInstance(new Object[]{});
+                final Constructor<?> constructor = c.getConstructor();
+                final Object temp = constructor.newInstance();
 
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
@@ -1381,13 +1372,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         return loadAll.equalsIgnoreCase("true") || loadAll.equalsIgnoreCase("yes");
     }
 
-    /**
-     * Compares this object with the specified object for order.
-     * Returns a negative integer, zero, or a positive integer as per String.compareTo();
-     *
-     * @param o Object to compare to
-     * @return a negative integer, zero, or a positive integer.
-     */
+    /** {@inheritDoc} */
     @Override
     public int compareTo(final PluginInfo o) {
         return toString().compareTo(o.toString());
@@ -1422,19 +1407,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
     }
 
-    /**
-     * Get an ExportedService object from this provider.
-     *
-     * @param name Service name
-     * @return ExportedService object. If no such service exists, the execute
-     *         method of this ExportedService will always return null.
-     */
+    /** {@inheritDoc} */
     @Override
     public ExportedService getExportedService(final String name) {
         if (exports.containsKey(name)) {
             return exports.get(name).getExportedService();
         } else {
-            return new ExportedService(null, null);
+            return null;
         }
     }
 

@@ -34,7 +34,7 @@ import java.util.List;
 public class PluginClassLoader extends ClassLoader {
 
     /** The plugin Info object for the plugin we are loading. */
-    final PluginInfo pluginInfo;
+    private final PluginInfo pluginInfo;
 
     /**
      * Create a new PluginClassLoader.
@@ -68,7 +68,7 @@ public class PluginClassLoader extends ClassLoader {
     }
 
     /**
-     * Load the plugin with the given className
+     * Load the plugin with the given className.
      *
      * @param name Class Name of plugin
      * @return plugin class
@@ -87,14 +87,12 @@ public class PluginClassLoader extends ClassLoader {
      * @return True if the specified class is loaded, false otherwise
      */
     public boolean isClassLoaded(final String name, final boolean checkGlobal) {
-        // Don't duplicate a class
-        final Class existing = findLoadedClass(name);
-        final boolean gcl = checkGlobal ? GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
-        return existing != null || gcl;
+        return findLoadedClass(name) != null || (checkGlobal
+                && GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name));
     }
 
     /**
-     * Load the plugin with the given className
+     * Load the plugin with the given className.
      *
      * @param name Class Name of plugin
      * @param askGlobal Ask the gobal class loaded for this class if we can't find it?

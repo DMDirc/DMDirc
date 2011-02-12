@@ -28,7 +28,7 @@ import com.dmdirc.util.validators.ValidationResponse;
 import java.io.File;
 
 /**
- * Base implementation of the Plugin interface
+ * Base implementation of the Plugin interface.
  */
 public abstract class BasePlugin implements Plugin {
 

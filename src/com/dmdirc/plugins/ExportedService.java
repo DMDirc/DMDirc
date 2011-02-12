@@ -28,15 +28,15 @@ import com.dmdirc.logger.Logger;
 import java.lang.reflect.Method;
 
 /**
- * Object to allow interaction with Exported methods
+ * Object to allow interaction with Exported methods.
  */
 public class ExportedService {
 
     /** Method we will be executing today! */
-    final Method myMethod;
+    private final Method method;
 
     /** Object we will be executing this method on. */
-    final Object myObject;
+    private final Object object;
 
     /**
      * Create a new ExportedService object.
@@ -44,7 +44,7 @@ public class ExportedService {
      * @param myClass class method is in.
      * @param methodName Name of method
      */
-    public ExportedService(final Class myClass, final String methodName) {
+    public ExportedService(final Class<?> myClass, final String methodName) {
         this(myClass, methodName, null);
     }
 
@@ -55,20 +55,24 @@ public class ExportedService {
      * @param methodName Name of method
      * @param object Object to execute this method on.
      */
-    public ExportedService(final Class<?> myClass, final String methodName, final Object object) {
-        myObject = object;
+    public ExportedService(final Class<?> myClass, final String methodName,
+            final Object object) {
         if (myClass == null) {
-            myMethod = null;
-        } else {
-            final Method[] methods = myClass.getDeclaredMethods();
-            for (Method m : methods) {
-                if (m.getName().equals(methodName)) {
-                    myMethod = m;
-                    return;
-                }
-            }
-            myMethod = null;
+            throw new IllegalArgumentException("Class must not be null");
         }
+
+        this.object = object;
+
+        final Method[] methods = myClass.getDeclaredMethods();
+        for (Method m : methods) {
+            if (m.getName().equals(methodName)) {
+                method = m;
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("Illegal method/class combinatiion",
+                new NoSuchMethodException("Method does not exist in the specified class"));
     }
 
     /**
@@ -78,17 +82,15 @@ public class ExportedService {
      * @return result of executing the method
      */
     public Object execute(final Object... args) {
-        if (myMethod == null) {
-            return null;
-        }
-
         try {
-            return myMethod.invoke(myObject, args);
+            return method.invoke(object, args);
         } catch (final LinkageError le) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "+le+" -> "+le.getMessage(), le);
+            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "
+                    + le + " -> " + le.getMessage(), le);
             return null;
         } catch (final Exception e) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Exception in exported service: "+e+" -> "+e.getMessage(), e);
+            Logger.userError(ErrorLevel.UNKNOWN, "Exception in exported service: "
+                    + e + " -> " + e.getMessage(), e);
             return null;
         }
     }

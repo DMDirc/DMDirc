@@ -47,7 +47,7 @@ public class ExportInfo {
     /**
      * Get the ExportedService for this Export.
      *
-     * @return ExportedService object for this export.
+     * @return ExportedService object for this export or null if there was a problem.
      */
     public ExportedService getExportedService() {
         try {
@@ -55,7 +55,9 @@ public class ExportInfo {
             final Plugin p = className.equals(pluginInfo.getMainClass()) ? pluginInfo.getPluginObject() : null;
             return new ExportedService(c, methodName, p);
         } catch (ClassNotFoundException cnfe) {
-            return new ExportedService(null, null);
+            return null;
+        } catch (IllegalArgumentException ex) {
+            return null;
         }
     }
 
