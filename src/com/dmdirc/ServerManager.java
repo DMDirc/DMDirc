@@ -32,6 +32,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
@@ -45,7 +47,7 @@ public final class ServerManager {
     private static ServerManager me;
 
     /** All servers that currently exist. */
-    private final List<Server> servers = new ArrayList<Server>();
+    private final Set<Server> servers = new CopyOnWriteArraySet<Server>();
 
     /**
      * Creates a new instance of ServerManager.
@@ -71,9 +73,7 @@ public final class ServerManager {
      * @param server The server to be registered
      */
     public void registerServer(final Server server) {
-        synchronized (servers) {
-            servers.add(server);
-        }
+        servers.add(server);
     }
 
     /**
@@ -83,9 +83,7 @@ public final class ServerManager {
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
-        synchronized (servers) {
-            servers.remove(server);
-        }
+        servers.remove(server);
     }
 
     /**
@@ -103,10 +101,8 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(final String message) {
-        synchronized (servers) {
-            for (Server server : servers) {
-                server.disconnect(message);
-            }
+        for (Server server : servers) {
+            server.disconnect(message);
         }
     }
 
@@ -114,11 +110,9 @@ public final class ServerManager {
      * Closes all servers with a default quit message.
      */
     public void closeAll() {
-        synchronized (servers) {
-            for (Server server : servers) {
-                server.disconnect();
-                server.close();
-            }
+        for (Server server : servers) {
+            server.disconnect();
+            server.close();
         }
     }
 
@@ -128,11 +122,9 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
-        synchronized (servers) {
-            for (Server server : servers) {
-                server.disconnect(message);
-                server.close();
-            }
+        for (Server server : servers) {
+            server.disconnect(message);
+            server.close();
         }
     }
 
@@ -154,11 +146,9 @@ public final class ServerManager {
     public List<Server> getServersByNetwork(final String network) {
         final List<Server> res = new ArrayList<Server>();
 
-        synchronized (servers) {
-            for (Server server : servers) {
-                if (server.isNetwork(network)) {
-                    res.add(server);
-                }
+        for (Server server : servers) {
+            if (server.isNetwork(network)) {
+                res.add(server);
             }
         }
 
@@ -174,11 +164,9 @@ public final class ServerManager {
     public List<Server> getServersByAddress(final String address) {
         final List<Server> res = new ArrayList<Server>();
 
-        synchronized (servers) {
-            for (Server server : servers) {
-                if (server.getAddress().equalsIgnoreCase(address)) {
-                    res.add(server);
-                }
+        for (Server server : servers) {
+            if (server.getAddress().equalsIgnoreCase(address)) {
+                res.add(server);
             }
         }
 
@@ -211,12 +199,10 @@ public final class ServerManager {
         Logger.assertTrue(profile.isProfile());
         Server server = null;
 
-        synchronized (servers) {
-            for (Server loopServer : servers) {
-                if (loopServer.compareURI(uri)) {
-                    server = loopServer;
-                    break;
-                }
+        for (Server loopServer : servers) {
+            if (loopServer.compareURI(uri)) {
+                server = loopServer;
+                break;
             }
         }
 
