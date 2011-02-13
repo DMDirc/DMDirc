@@ -9,7 +9,7 @@
     <target name="-addjarlibs" />
     <target name="-addpluginlibs">
         <jar destfile="plugins/ui_swing.jar" compress="${jar.compress}" keepcompression="true" update="true">
-            <zipfileset src="modules/plugins/lib/miglayout-3.7.3.1-swing.jar" includes="net/miginfocom/layout/**,net/miginfocom/swing/**"/>
+            <zipfileset src="modules/plugins/lib/miglayout-3.7.4-swing.jar" includes="net/miginfocom/layout/**,net/miginfocom/swing/**"/>
             <zipfileset src="modules/plugins/lib/menuscroller.jar" includes="darrylbu/util/**"/>
             <zipfileset src="modules/plugins/lib/jxlayer.jar" includes="org/jdesktop/jxlayer/**"/>
         </jar>
