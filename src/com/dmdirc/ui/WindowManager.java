@@ -31,6 +31,7 @@ import com.dmdirc.ui.interfaces.FrameListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -69,6 +70,47 @@ public final class WindowManager {
         Logger.assertTrue(!FRAME_LISTENERS.contains(frameListener));
 
         FRAME_LISTENERS.add(frameListener);
+    }
+
+    /**
+     * Registers a FrameListener with the WindowManager, and then calls the
+     * relevant methods on it for all existing windows.
+     *
+     * @param frameListener The frame listener to be registered
+     * @since 0.6.6
+     */
+    @Precondition({
+        "The specified FrameListener is not null",
+        "The specified FrameListener has not already been added"
+    })
+    public static void addAndExecuteFrameListener(final FrameListener frameListener) {
+        addFrameListener(frameListener);
+
+        for (FrameContainer root : ROOT_WINDOWS) {
+            frameListener.addWindow(root, true);
+
+            for (FrameContainer child : root.getChildren()) {
+                fireAddWindow(frameListener, root, child);
+            }
+        }
+    }
+
+    /**
+     * Recursively fires the addWindow callback for the specified windows and
+     * listener.
+     *
+     * @param listener The listener to be fired
+     * @param parent The parent window
+     * @param child The new child window that was added
+     *
+     */
+    private static void fireAddWindow(final FrameListener listener,
+            final FrameContainer parent, final FrameContainer child) {
+        listener.addWindow(parent, child, true);
+
+        for (FrameContainer grandchild : child.getChildren()) {
+            fireAddWindow(listener, child, grandchild);
+        }
     }
 
     /**
@@ -178,62 +220,20 @@ public final class WindowManager {
      * has child windows, they are recursively removed before the target window.
      * If the window hasn't previously been added, the request to remove it is
      * ignored.
-     * <p>
-     * This method will not block, but may instead create a new thread in order
-     * to wait for child windows to be terminated. {@link FrameContainer}s
-     * calling this method should persist resource references until after the
-     * {@link FrameContainer#windowClosed()} method is called, to ensure
-     * correct state when the window deleted listeners are fired at a later
-     * time. See the documentation at {@link FrameContainer#windowClosing()} for
-     * further explanation.
      *
-     * @see FrameContainer#windowClosing()
      * @param window The window to be removed
      * @since 0.6.4
-     */
-    @Precondition("The specified Window is not null")
-    public static void removeWindow(final FrameContainer window) {
-        removeWindow(window, false);
-    }
-
-    /**
-     * Removes a window from the Window Manager. If the specified window
-     * has child windows, they are recursively removed before the target window.
-     * If the window hasn't previously been added, the reques to remove it is
-     * ignored.
-     *
-     * @param window The window to be removed
-     * @param canWait Whether or not this method can wait for child windows
-     * to be closed. If canWait is false, a new thread is created.
-     * @since 0.6.3
      */
     @Precondition({
         "The specified window is not null",
         "The specified window is in the window hierarchy"
     })
-    public static void removeWindow(final FrameContainer window, final boolean canWait) {
+    public static void removeWindow(final FrameContainer window) {
         Logger.assertTrue(isInHierarchy(window));
         Logger.assertTrue(window != null);
 
-        if (!window.getChildren().isEmpty()) {
-            if (!canWait) {
-                new Thread(new Runnable() {
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        removeWindow(window, true);
-                    }
-                }, "WindowManager removeWindow thread").start();
-                return;
-            }
-
-            for (FrameContainer child : window.getChildren()) {
-                child.close();
-            }
-
-            while (!window.getChildren().isEmpty()) {
-                Thread.yield();
-            }
+        for (FrameContainer child : window.getChildren()) {
+            child.close();
         }
 
         if (ROOT_WINDOWS.contains(window)) {
@@ -255,6 +255,28 @@ public final class WindowManager {
         }
 
         window.windowClosed();
+    }
+
+    /**
+     * Removes a window from the Window Manager. If the specified window
+     * has child windows, they are recursively removed before the target window.
+     * If the window hasn't previously been added, the reques to remove it is
+     * ignored.
+     *
+     * @param window The window to be removed
+     * @param canWait Whether or not this method can wait for child windows
+     * to be closed. If canWait is false, a new thread is created.
+     * @deprecated The canWait parameter no longer has any effect. Call
+     * {@link #removeWindow(com.dmdirc.FrameContainer)} instead.
+     * @since 0.6.3
+     */
+    @Precondition({
+        "The specified window is not null",
+        "The specified window is in the window hierarchy"
+    })
+    @Deprecated
+    public static void removeWindow(final FrameContainer window, final boolean canWait) {
+        removeWindow(window);
     }
 
     /**
@@ -319,7 +341,7 @@ public final class WindowManager {
      * @return A collection of all known root windows.
      */
     public static Collection<FrameContainer> getRootWindows() {
-        return ROOT_WINDOWS;
+        return Collections.unmodifiableCollection(ROOT_WINDOWS);
     }
 
     /**
