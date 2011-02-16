@@ -124,7 +124,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
 
-        WindowManager.addWindow(server, this, focus);
+        WindowManager.getWindowManager().addWindow(server, this, focus);
 
         eventHandler = new ChannelEventHandler(this);
 

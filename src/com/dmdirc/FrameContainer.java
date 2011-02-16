@@ -288,7 +288,7 @@ public abstract class FrameContainer {
 
         windowClosing();
 
-        WindowManager.removeWindow(this);
+        WindowManager.getWindowManager().removeWindow(this);
     }
 
     /**

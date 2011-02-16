@@ -28,8 +28,8 @@ import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameListener;
+import com.dmdirc.util.ListenerList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -39,37 +39,29 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The WindowManager maintains a list of all open windows, and their
  * parent/child relations.
  */
-public final class WindowManager {
+public class WindowManager {
+
+    /** Singleton instance of the WindowManager. */
+    private static final WindowManager INSTANCE = new WindowManager();
 
     /** A list of root windows. */
-    private static final List<FrameContainer> ROOT_WINDOWS
+    private final List<FrameContainer> rootWindows
             = new CopyOnWriteArrayList<FrameContainer>();
 
     /** A list of frame listeners. */
-    private static final List<FrameListener> FRAME_LISTENERS
-            = new ArrayList<FrameListener>();
-
-    /**
-     * Creates a new instance of WindowManager.
-     */
-    private WindowManager() {
-        // Shouldn't be instansiated
-    }
+    private final ListenerList listeners
+            = new ListenerList();
 
     /**
      * Registers a FrameListener with the WindowManager.
      *
      * @param frameListener The frame listener to be registered
      */
-    @Precondition({
-        "The specified FrameListener is not null",
-        "The specified FrameListener has not already been added"
-    })
-    public static void addFrameListener(final FrameListener frameListener) {
+    @Precondition("The specified FrameListener is not null")
+    public void addListener(final FrameListener frameListener) {
         Logger.assertTrue(frameListener != null);
-        Logger.assertTrue(!FRAME_LISTENERS.contains(frameListener));
 
-        FRAME_LISTENERS.add(frameListener);
+        listeners.add(FrameListener.class, frameListener);
     }
 
     /**
@@ -79,14 +71,11 @@ public final class WindowManager {
      * @param frameListener The frame listener to be registered
      * @since 0.6.6
      */
-    @Precondition({
-        "The specified FrameListener is not null",
-        "The specified FrameListener has not already been added"
-    })
-    public static void addAndExecuteFrameListener(final FrameListener frameListener) {
-        addFrameListener(frameListener);
+    @Precondition("The specified FrameListener is not null")
+    public void addListenerAndSync(final FrameListener frameListener) {
+        addListener(frameListener);
 
-        for (FrameContainer root : ROOT_WINDOWS) {
+        for (FrameContainer root : rootWindows) {
             frameListener.addWindow(root, true);
 
             for (FrameContainer child : root.getChildren()) {
@@ -118,15 +107,8 @@ public final class WindowManager {
      *
      * @param frameListener The frame listener to be removed
      */
-    @Precondition({
-        "The specified FrameListener is not null",
-        "The specified FrameListener has already been added and not removed"
-    })
-    public static void removeFrameListener(final FrameListener frameListener) {
-        Logger.assertTrue(frameListener != null);
-        Logger.assertTrue(FRAME_LISTENERS.contains(frameListener));
-
-        FRAME_LISTENERS.remove(frameListener);
+    public void removeListener(final FrameListener frameListener) {
+        listeners.remove(FrameListener.class, frameListener);
     }
 
     /**
@@ -139,7 +121,7 @@ public final class WindowManager {
         "The specified Window is not null",
         "The specified Window has not already been added"
     })
-    public static void addWindow(final FrameContainer window) {
+    public void addWindow(final FrameContainer window) {
         addWindow(window, true);
     }
 
@@ -154,11 +136,11 @@ public final class WindowManager {
         "The specified Window is not null",
         "The specified Window has not already been added"
     })
-    public static void addWindow(final FrameContainer window, final boolean focus) {
+    public void addWindow(final FrameContainer window, final boolean focus) {
         Logger.assertTrue(window != null);
-        Logger.assertTrue(!ROOT_WINDOWS.contains(window));
+        Logger.assertTrue(!rootWindows.contains(window));
 
-        ROOT_WINDOWS.add(window);
+        rootWindows.add(window);
 
         fireAddWindow(window, focus);
     }
@@ -171,7 +153,7 @@ public final class WindowManager {
      * @since 0.6.4
      */
     @Precondition("The specified Windows are not null")
-    public static void addWindow(final FrameContainer parent,
+    public void addWindow(final FrameContainer parent,
             final FrameContainer child) {
         addWindow(parent, child, true);
     }
@@ -189,7 +171,7 @@ public final class WindowManager {
         "The specified parent is in the window hierarchy already",
         "The specified child is NOT in the window hierarchy already"
     })
-    public static void addWindow(final FrameContainer parent,
+    public void addWindow(final FrameContainer parent,
             final FrameContainer child, final boolean focus) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(isInHierarchy(parent));
@@ -210,8 +192,8 @@ public final class WindowManager {
      * @param target The container to be tested
      * @return True if the target is in the hierarchy, false otherise
      */
-    protected static boolean isInHierarchy(final FrameContainer target) {
-        return target != null && (ROOT_WINDOWS.contains(target)
+    protected boolean isInHierarchy(final FrameContainer target) {
+        return target != null && (rootWindows.contains(target)
                 || isInHierarchy(target.getParent()));
     }
 
@@ -228,7 +210,7 @@ public final class WindowManager {
         "The specified window is not null",
         "The specified window is in the window hierarchy"
     })
-    public static void removeWindow(final FrameContainer window) {
+    public void removeWindow(final FrameContainer window) {
         Logger.assertTrue(isInHierarchy(window));
         Logger.assertTrue(window != null);
 
@@ -236,9 +218,9 @@ public final class WindowManager {
             child.close();
         }
 
-        if (ROOT_WINDOWS.contains(window)) {
+        if (rootWindows.contains(window)) {
             fireDeleteWindow(window);
-            ROOT_WINDOWS.remove(window);
+            rootWindows.remove(window);
         } else {
             final FrameContainer parent = window.getParent();
             fireDeleteWindow(parent, window);
@@ -275,7 +257,7 @@ public final class WindowManager {
         "The specified window is in the window hierarchy"
     })
     @Deprecated
-    public static void removeWindow(final FrameContainer window, final boolean canWait) {
+    public void removeWindow(final FrameContainer window, final boolean canWait) {
         removeWindow(window);
     }
 
@@ -287,10 +269,10 @@ public final class WindowManager {
      * @return The specified custom window, or null
      */
     @Precondition("The specified window name is not null")
-    public static FrameContainer findCustomWindow(final String name) {
+    public FrameContainer findCustomWindow(final String name) {
         Logger.assertTrue(name != null);
 
-        return findCustomWindow(ROOT_WINDOWS, name);
+        return findCustomWindow(rootWindows, name);
     }
 
     /**
@@ -306,7 +288,7 @@ public final class WindowManager {
         "The specified parent window is not null",
         "The specified parent window has been added to the Window Manager"
     })
-    public static FrameContainer findCustomWindow(final FrameContainer parent,
+    public FrameContainer findCustomWindow(final FrameContainer parent,
             final String name) {
         Logger.assertTrue(parent != null);
         Logger.assertTrue(name != null);
@@ -322,7 +304,7 @@ public final class WindowManager {
      * @param name The name of the custom window to search for
      * @return The custom window if found, or null otherwise
      */
-    private static FrameContainer findCustomWindow(final Collection<FrameContainer> windows,
+    private FrameContainer findCustomWindow(final Collection<FrameContainer> windows,
             final String name) {
         for (FrameContainer window : windows) {
             if (window instanceof CustomWindow
@@ -340,8 +322,8 @@ public final class WindowManager {
      * @since 0.6.4
      * @return A collection of all known root windows.
      */
-    public static Collection<FrameContainer> getRootWindows() {
-        return Collections.unmodifiableCollection(ROOT_WINDOWS);
+    public Collection<FrameContainer> getRootWindows() {
+        return Collections.unmodifiableCollection(rootWindows);
     }
 
     /**
@@ -350,8 +332,8 @@ public final class WindowManager {
      * @param window The window that was added
      * @param focus Should this window become focused
      */
-    private static void fireAddWindow(final FrameContainer window, final boolean focus) {
-        for (FrameListener listener : FRAME_LISTENERS) {
+    private void fireAddWindow(final FrameContainer window, final boolean focus) {
+        for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.addWindow(window, focus);
         }
     }
@@ -364,9 +346,9 @@ public final class WindowManager {
      * @param focus Should this window become focused
      *
      */
-    private static void fireAddWindow(final FrameContainer parent,
+    private void fireAddWindow(final FrameContainer parent,
             final FrameContainer child, final boolean focus) {
-        for (FrameListener listener : FRAME_LISTENERS) {
+        for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.addWindow(parent, child, focus);
         }
     }
@@ -376,8 +358,8 @@ public final class WindowManager {
      *
      * @param window The window that was removed
      */
-    private static void fireDeleteWindow(final FrameContainer window) {
-        for (FrameListener listener : FRAME_LISTENERS) {
+    private void fireDeleteWindow(final FrameContainer window) {
+        for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.delWindow(window);
         }
     }
@@ -388,11 +370,19 @@ public final class WindowManager {
      * @param parent The parent window
      * @param child The child window that was removed
      */
-    private static void fireDeleteWindow(final FrameContainer parent,
+    private void fireDeleteWindow(final FrameContainer parent,
             final FrameContainer child) {
-        for (FrameListener listener : FRAME_LISTENERS) {
+        for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.delWindow(parent, child);
         }
     }
 
+    /**
+     * Returns a singleton instance of the WindowManager.
+     *
+     * @return A singleton WindowManager instance
+     */
+    public static WindowManager getWindowManager() {
+        return INSTANCE;
+    }
 }

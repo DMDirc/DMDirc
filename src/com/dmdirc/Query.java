@@ -96,7 +96,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
 
-        WindowManager.addWindow(server, this, focus);
+        WindowManager.getWindowManager().addWindow(server, this, focus);
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_OPENED, null, this);

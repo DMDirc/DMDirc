@@ -46,7 +46,7 @@ public class CustomWindow extends FrameContainer {
         super("custom", name, title, Window.class, parent.getConfigManager(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
 
-        WindowManager.addWindow(parent, this);
+        WindowManager.getWindowManager().addWindow(parent, this);
     }
 
     /**
@@ -60,7 +60,7 @@ public class CustomWindow extends FrameContainer {
                 IdentityManager.getGlobalConfig(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
 
-        WindowManager.addWindow(this);
+        WindowManager.getWindowManager().addWindow(this);
     }
 
     /** {@inheritDoc} */

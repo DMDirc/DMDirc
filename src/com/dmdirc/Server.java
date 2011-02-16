@@ -198,7 +198,7 @@ public class Server extends WritableFrameContainer
         setConnectionDetails(uri, profile);
 
         ServerManager.getServerManager().registerServer(this);
-        WindowManager.addWindow(this);
+        WindowManager.getWindowManager().addWindow(this);
 
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());

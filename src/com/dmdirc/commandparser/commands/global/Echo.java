@@ -88,13 +88,13 @@ public final class Echo extends Command implements IntelligentCommand,
             FrameContainer target = origin;
 
             while (frame == null && target != null) {
-                frame = WindowManager.findCustomWindow(target,
+                frame = WindowManager.getWindowManager().findCustomWindow(target,
                         results.getArgumentsAsString(targetFlag));
                 target = target.getParent();
             }
 
             if (frame == null) {
-                frame = WindowManager.findCustomWindow(results.getArgumentsAsString(targetFlag));
+                frame = WindowManager.getWindowManager().findCustomWindow(results.getArgumentsAsString(targetFlag));
             }
 
             if (frame == null) {
@@ -159,7 +159,7 @@ public final class Echo extends Command implements IntelligentCommand,
             }
 
             //Global Windows
-            windowList.addAll(WindowManager.getRootWindows());
+            windowList.addAll(WindowManager.getWindowManager().getRootWindows());
             for (FrameContainer customWindow : windowList) {
                 if (customWindow instanceof CustomWindow) {
                     targets.add(customWindow.getName());

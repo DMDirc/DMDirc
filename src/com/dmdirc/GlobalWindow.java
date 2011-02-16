@@ -61,7 +61,7 @@ public class GlobalWindow extends WritableFrameContainer {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
 
-        WindowManager.addWindow(this);
+        WindowManager.getWindowManager().addWindow(this);
     }
 
     /** {@inheritDoc} */
