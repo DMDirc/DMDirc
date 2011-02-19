@@ -822,8 +822,8 @@ public class Server extends WritableFrameContainer
      */
     private void updateIcon() {
         final String icon = myState.getState() == ServerState.CONNECTED
-                    ? address.getScheme().endsWith("s") ? "secure-server" : "server"
-                    : "server-disconnected";
+                ? protocolDescription.isSecure(address)
+                ? "secure-server" : "server" : "server-disconnected";
         setIcon(icon);
     }
 
