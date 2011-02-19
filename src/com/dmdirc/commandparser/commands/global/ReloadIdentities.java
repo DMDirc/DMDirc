@@ -34,18 +34,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to reload identities.
- *
- * @author chris
  */
 public class ReloadIdentities extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of ReloadIdentities.
-     */
-    public ReloadIdentities() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

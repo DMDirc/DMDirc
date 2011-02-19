@@ -37,16 +37,10 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 
 /**
  * The show topic command shows the user the current topic.
- * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class ShowTopic extends Command implements ExternalCommand,
+public class ShowTopic extends Command implements ExternalCommand,
         CommandInfo {
-
-    /** Creates a new instance of ShowTopic. */
-    public ShowTopic() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

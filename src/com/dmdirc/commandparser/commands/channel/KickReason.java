@@ -41,13 +41,8 @@ import com.dmdirc.ui.input.TabCompletionType;
  * This version allows the user to specify a reason.
  */
 @CommandOptions(allowOffline = false)
-public final class KickReason extends Command implements IntelligentCommand,
+public class KickReason extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /** Creates a new instance of KickReason. */
-    public KickReason() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

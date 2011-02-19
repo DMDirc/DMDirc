@@ -39,7 +39,7 @@ import com.dmdirc.ui.input.TabCompletionType;
  * Allows the user to change nickname.
  */
 @CommandOptions(allowOffline = false)
-public final class Nick extends Command implements IntelligentCommand,
+public class Nick extends Command implements IntelligentCommand,
         CommandInfo {
 
     /** {@inheritDoc} */
@@ -54,7 +54,6 @@ public final class Nick extends Command implements IntelligentCommand,
 
         server.getParser().getLocalClient().setNickname(args.getArguments()[0]);
     }
-
 
     /** {@inheritDoc} */
     @Override

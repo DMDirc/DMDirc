@@ -38,14 +38,7 @@ import java.net.URISyntaxException;
 /**
  * The /server command allows the user to connect to a new server.
  */
-public final class ChangeServer extends Command implements CommandInfo {
-
-    /**
-     * Creates a new instance of ChangeServer.
-     */
-    public ChangeServer() {
-        super();
-    }
+public class ChangeServer extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override

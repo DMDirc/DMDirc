@@ -52,7 +52,6 @@ public class Names extends Command implements IntelligentCommand,
                 + channel.getChannelInfo().getName());
     }
 
-
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin, final Server server,

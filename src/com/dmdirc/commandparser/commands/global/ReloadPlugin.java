@@ -35,18 +35,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to reload a plugin.
- *
- * @author chris
  */
-public final class ReloadPlugin extends Command implements IntelligentCommand,
+public class ReloadPlugin extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of ReloadPlugin.
-     */
-    public ReloadPlugin() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

@@ -41,15 +41,9 @@ import java.awt.Color;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
- * @author chris
  */
-public final class SetNickColour extends Command implements IntelligentCommand,
+public class SetNickColour extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /** Creates a new instance of SetNickColour. */
-    public SetNickColour() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

@@ -37,12 +37,7 @@ import com.dmdirc.util.validators.ValidationResponse;
 /**
  * The me command sends a CTCP action to the current channel.
  */
-public final class Me extends Command implements ValidatingCommand, CommandInfo {
-
-    /** Creates a new instance of Me. */
-    public Me() {
-        super();
-    }
+public class Me extends Command implements ValidatingCommand, CommandInfo {
 
     /** {@inheritDoc} */
     @Override

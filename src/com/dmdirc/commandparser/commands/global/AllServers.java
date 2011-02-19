@@ -37,13 +37,8 @@ import com.dmdirc.ui.input.TabCompleter;
 /**
  * The AllServers command allows users to issue commands to all servers.
  */
-public final class AllServers extends Command implements IntelligentCommand,
+public class AllServers extends Command implements IntelligentCommand,
         CommandInfo{
-
-    /** Creates a new instance of AllServers. */
-    public AllServers() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -55,7 +50,6 @@ public final class AllServers extends Command implements IntelligentCommand,
             target.getCommandParser().parseCommand(target, context.getSource(), command);
         }
     }
-
 
     /** {@inheritDoc} */
     @Override

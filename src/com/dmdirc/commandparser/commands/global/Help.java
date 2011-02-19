@@ -45,7 +45,7 @@ import java.util.Map;
  * their arguments, and a description. It is context-aware, so channel commands
  * are only displayed when in a channel window, for example.
  */
-public final class Help extends Command implements IntelligentCommand, CommandInfo {
+public class Help extends Command implements IntelligentCommand, CommandInfo {
 
     /** {@inheritDoc} */
     @Override

@@ -37,18 +37,9 @@ import java.awt.Color;
 /**
  * The notify command allows the user to set the notification colour for a
  * window.
- *
- * @author chris
  */
-public final class Notify extends Command implements IntelligentCommand,
+public class Notify extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of Notify.
-     */
-    public Notify() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

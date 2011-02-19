@@ -91,7 +91,6 @@ public class JoinChannelCommand extends Command implements
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[0]));
     }
 
-
     /** {@inheritDoc} */
     @Override
     public String getName() {

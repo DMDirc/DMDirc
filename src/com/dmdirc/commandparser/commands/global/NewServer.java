@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 /**
  * The new server command allows users to open a new server window.
  */
-public final class NewServer extends Command implements IntelligentCommand,
+public class NewServer extends Command implements IntelligentCommand,
         CommandInfo {
 
     /** {@inheritDoc} */

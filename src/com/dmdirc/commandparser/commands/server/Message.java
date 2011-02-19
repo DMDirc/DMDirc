@@ -42,7 +42,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * Allows the user to send privmsgs.
  */
 @CommandOptions(allowOffline = false)
-public final class Message extends Command implements IntelligentCommand,
+public class Message extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
 
     /** {@inheritDoc} */
@@ -78,7 +78,6 @@ public final class Message extends Command implements IntelligentCommand,
             }
         }
     }
-
 
     /** {@inheritDoc} */
     @Override

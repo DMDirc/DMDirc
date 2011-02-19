@@ -38,14 +38,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * The back command allows the user to unset their away status.
  */
 @CommandOptions(allowOffline = false)
-public final class Back extends Command implements IntelligentCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Back.
-     */
-    public Back() {
-        super();
-    }
+public class Back extends Command implements IntelligentCommand, CommandInfo {
 
     /** {@inheritDoc} */
     @Override
@@ -54,7 +47,6 @@ public final class Back extends Command implements IntelligentCommand, CommandIn
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().getLocalClient().setBack();
     }
-
 
     /** {@inheritDoc}. */
     @Override

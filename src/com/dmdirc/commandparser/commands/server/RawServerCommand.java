@@ -35,11 +35,9 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 /**
  * Implements a raw server command (i.e., a command that is sent to the server
  * as-is.
- *
- * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class RawServerCommand extends Command implements CommandInfo {
+public class RawServerCommand extends Command implements CommandInfo {
 
     /** The name of this raw command. */
     private final String myName;
@@ -62,7 +60,6 @@ public final class RawServerCommand extends Command implements CommandInfo {
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());
     }
-
 
     /** {@inheritDoc} */
     @Override

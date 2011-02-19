@@ -40,15 +40,8 @@ import com.dmdirc.ui.input.TabCompleter;
 /**
  * The alias command allows users to create aliases on-the-fly.
  */
-public final class AliasCommand extends Command implements
+public class AliasCommand extends Command implements
         IntelligentCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of Active.
-     */
-    public AliasCommand() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

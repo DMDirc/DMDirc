@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * The echo commands simply echos text to the current window.
  */
-public final class Echo extends Command implements IntelligentCommand,
+public class Echo extends Command implements IntelligentCommand,
         CommandInfo {
 
     /** The flag used to specify a timestamp for the echo command. */

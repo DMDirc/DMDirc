@@ -34,15 +34,9 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 
 /**
  * The part command parts the current channel with a specified part message.
- * @author chris
  */
 @CommandOptions(allowOffline=false)
-public final class Part extends Command implements CommandInfo {
-
-    /** Creates a new instance of Part. */
-    public Part() {
-        super();
-    }
+public class Part extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override

@@ -38,13 +38,8 @@ import com.dmdirc.ui.input.TabCompleter;
  * The AllChannels command allows the user to issue a command to all channels
  * on a server.
  */
-public final class AllChannels extends Command implements IntelligentCommand,
+public class AllChannels extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /** Creates a new instance of AllChannels. */
-    public AllChannels() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -58,7 +53,6 @@ public final class AllChannels extends Command implements IntelligentCommand,
                     .parseCommand(server.getChannel(channel), context.getSource(), command);
         }
     }
-
 
     /** {@inheritDoc} */
     @Override

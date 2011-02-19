@@ -34,18 +34,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to reload actions.
- *
- * @author chris
  */
 public final class ReloadActions extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of ReloadActions.
-     */
-    public ReloadActions() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -54,7 +45,6 @@ public final class ReloadActions extends Command implements IntelligentCommand,
         ActionManager.getActionManager().loadUserActions();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
     }
-
 
     /** {@inheritDoc}. */
     @Override

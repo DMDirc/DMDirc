@@ -44,10 +44,8 @@ import java.util.List;
 
 /**
  * The set command allows the user to inspect and change global config settings.
- *
- * @author chris
  */
-public final class Set extends Command implements IntelligentCommand, CommandInfo {
+public class Set extends Command implements IntelligentCommand, CommandInfo {
 
     /** The flag to indicate the set command should apply to a server's settings. */
     private final CommandFlag serverFlag = new CommandFlag("server");

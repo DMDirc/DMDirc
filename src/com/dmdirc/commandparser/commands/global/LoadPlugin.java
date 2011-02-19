@@ -36,7 +36,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Allows the user to load a plugin.
  */
-public final class LoadPlugin extends Command implements IntelligentCommand,
+public class LoadPlugin extends Command implements IntelligentCommand,
         CommandInfo {
 
     /** {@inheritDoc} */
@@ -73,7 +73,6 @@ public final class LoadPlugin extends Command implements IntelligentCommand,
             }
         }
     }
-
 
     /** {@inheritDoc} */
     @Override

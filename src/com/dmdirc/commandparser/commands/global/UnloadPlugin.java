@@ -35,18 +35,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to unload a plugin.
- *
- * @author chris
  */
-public final class UnloadPlugin extends Command implements IntelligentCommand,
+public class UnloadPlugin extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of UnloadPlugin.
-     */
-    public UnloadPlugin() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

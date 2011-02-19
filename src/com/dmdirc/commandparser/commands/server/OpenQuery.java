@@ -42,7 +42,7 @@ import com.dmdirc.ui.messages.Styliser;
 /**
  * Allows the user to open a query dialog with another user.
  */
-public final class OpenQuery extends Command implements IntelligentCommand,
+public class OpenQuery extends Command implements IntelligentCommand,
         WrappableCommand, CommandInfo {
 
     /** {@inheritDoc} */
@@ -75,7 +75,6 @@ public final class OpenQuery extends Command implements IntelligentCommand,
             context.getSource().getController().requestWindowFocus(query);
         }
     }
-
 
     /** {@inheritDoc} */
     @Override

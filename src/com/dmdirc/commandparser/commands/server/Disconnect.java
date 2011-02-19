@@ -34,7 +34,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 /**
  * The disconnect command disconnects from the current server.
  */
-public final class Disconnect extends Command implements CommandInfo {
+public class Disconnect extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override
@@ -51,7 +51,6 @@ public final class Disconnect extends Command implements CommandInfo {
 
         server.disconnect(line);
     }
-
 
     /** {@inheritDoc} */
     @Override

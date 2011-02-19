@@ -41,12 +41,7 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
  * @since 0.6.4
  */
 @CommandOptions(allowOffline = false)
-public final class Invite extends Command implements ExternalCommand, CommandInfo {
-
-    /** Creates a new instance of Invite. */
-    public Invite() {
-        super();
-    }
+public class Invite extends Command implements ExternalCommand, CommandInfo {
 
     /** {@inheritDoc} */
     @Override

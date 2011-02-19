@@ -37,13 +37,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * Opens the channel settings window for the channel.
  */
 @CommandOptions(allowOffline = false)
-public final class ChannelSettings extends Command implements
+public class ChannelSettings extends Command implements
         IntelligentCommand, CommandInfo {
-
-    /** Creates a new instance of ChannelSettings. */
-    public ChannelSettings() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

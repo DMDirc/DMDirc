@@ -40,7 +40,7 @@ import com.dmdirc.ui.input.TabCompleter;
  * The if plugin command allows the user to execute commands based on whether
  * or not a plugin is loaded.
  */
-public final class Ifplugin extends Command implements IntelligentCommand,
+public class Ifplugin extends Command implements IntelligentCommand,
         CommandInfo {
 
     /** {@inheritDoc} */

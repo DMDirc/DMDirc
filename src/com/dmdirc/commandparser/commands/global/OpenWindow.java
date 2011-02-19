@@ -35,17 +35,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Opens a new window.
- *
- * @author chris
  */
 public class OpenWindow extends Command implements IntelligentCommand, CommandInfo {
-
-    /**
-     * Creates a new instance of OpenWindow.
-     */
-    public OpenWindow() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override

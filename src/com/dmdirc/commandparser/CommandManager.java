@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.channel.*; //NOPMD
 import com.dmdirc.commandparser.commands.chat.*; //NOPMD
 import com.dmdirc.commandparser.commands.global.*; //NOPMD
-//import com.dmdirc.commandparser.commands.query.*; //NOPMD
 import com.dmdirc.commandparser.commands.server.*; //NOPMD
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.IdentityManager;
@@ -49,11 +48,11 @@ import java.util.Map;
  */
 public final class CommandManager {
 
-    /** A list of commands that have been instansiated. */
+    /** A list of commands that have been instantiated. */
     private static final Map<CommandInfo, Command> COMMANDS
             = new HashMap<CommandInfo, Command>();
 
-    /** A list of command parsers that have been instansiated. */
+    /** A list of command parsers that have been instantiated. */
     private static final MapList<CommandType, CommandParser> PARSERS
             = new MapList<CommandType, CommandParser>();
 

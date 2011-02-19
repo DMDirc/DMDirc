@@ -33,16 +33,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
 /**
  * The reconnect command reconnects to the current server.
- * @author chris
  */
-public final class Reconnect extends Command implements CommandInfo {
-
-    /**
-     * Creates a new instance of Reconnect.
-     */
-    public Reconnect() {
-        super();
-    }
+public class Reconnect extends Command implements CommandInfo {
 
     /** {@inheritDoc} */
     @Override

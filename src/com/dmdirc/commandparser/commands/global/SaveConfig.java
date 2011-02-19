@@ -34,18 +34,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
  * Allows the user to save the config file.
- *
- * @author chris
  */
 public final class SaveConfig extends Command implements IntelligentCommand,
         CommandInfo {
-
-    /**
-     * Creates a new instance of SaveConfig.
-     */
-    public SaveConfig() {
-        super();
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -55,7 +46,6 @@ public final class SaveConfig extends Command implements IntelligentCommand,
 
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
     }
-
 
     /** {@inheritDoc} */
     @Override
