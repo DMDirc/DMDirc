@@ -83,17 +83,17 @@ public class CommandArgumentsTest {
 
     @Test
     public void testIsCommand() {
-        assertTrue(new CommandArguments(CommandManager.getCommandChar() + "").isCommand());
-        assertTrue(new CommandArguments(CommandManager.getCommandChar() + "foo bar").isCommand());
-        assertFalse(new CommandArguments(" " + CommandManager.getCommandChar()).isCommand());
+        assertTrue(new CommandArguments(CommandManager.getCommandManager().getCommandChar() + "").isCommand());
+        assertTrue(new CommandArguments(CommandManager.getCommandManager().getCommandChar() + "foo bar").isCommand());
+        assertFalse(new CommandArguments(" " + CommandManager.getCommandManager().getCommandChar()).isCommand());
         assertFalse(new CommandArguments("").isCommand());
         assertFalse(new CommandArguments("foo").isCommand());
     }
 
     @Test
     public void testIsSilent() {
-        final char c = CommandManager.getCommandChar();
-        final char s = CommandManager.getSilenceChar();
+        final char c = CommandManager.getCommandManager().getCommandChar();
+        final char s = CommandManager.getCommandManager().getSilenceChar();
 
         assertTrue(new CommandArguments(c + "" + s).isSilent());
         assertFalse(new CommandArguments("f" + s).isSilent());

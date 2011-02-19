@@ -141,7 +141,7 @@ public class PopupMenuItem {
                     builder.append("\n");
                 }
 
-                builder.append(CommandManager.getCommandChar());
+                builder.append(CommandManager.getCommandManager().getCommandChar());
                 builder.append(String.format(actualCommand, args));
                 offset = 0;
             }
@@ -156,7 +156,7 @@ public class PopupMenuItem {
                 builder.append("\n");
             }
 
-            builder.append(CommandManager.getCommandChar());
+            builder.append(CommandManager.getCommandManager().getCommandChar());
             builder.append(String.format(actualCommand, args));
         }
 

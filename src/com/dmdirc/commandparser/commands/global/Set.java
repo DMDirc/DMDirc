@@ -155,7 +155,7 @@ public class Set extends Command implements IntelligentCommand, CommandInfo {
         final StringBuffer output = new StringBuffer(67);
 
         output.append("Valid domains (use ");
-        output.append(CommandManager.getCommandChar());
+        output.append(CommandManager.getCommandManager().getCommandChar());
         output.append("set <domain> to see options within a domain): ");
 
         for (String domain : manager.getDomains()) {

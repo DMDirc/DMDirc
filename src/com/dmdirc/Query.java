@@ -65,7 +65,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
     /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;
 
-
     /**
      * Creates a new instance of Query.
      *
@@ -103,9 +102,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_QUERY));
+                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_QUERY));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_CHAT));
+                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHAT));
 
         if (!server.getState().isDisconnected()) {
             reregister();

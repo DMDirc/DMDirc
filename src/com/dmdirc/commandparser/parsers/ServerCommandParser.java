@@ -27,7 +27,6 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
@@ -35,8 +34,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser used in the context of a server.
- *
- * @author chris
  */
 public class ServerCommandParser extends GlobalCommandParser {
 
@@ -65,7 +62,7 @@ public class ServerCommandParser extends GlobalCommandParser {
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
-        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
+        commandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
     }
 
     /** {@inheritDoc} */

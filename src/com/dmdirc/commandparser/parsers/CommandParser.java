@@ -67,6 +67,9 @@ public abstract class CommandParser implements Serializable {
      */
     private final RollingList<PreviousCommand> history;
 
+    /** Command manager to use. */
+    protected final CommandManager commandManager = CommandManager.getCommandManager();
+
     /** Creates a new instance of CommandParser. */
     protected CommandParser() {
         commands = new HashMap<String, CommandInfoPair>();
@@ -171,7 +174,7 @@ public abstract class CommandParser implements Serializable {
 
         if (cargs.length == 0 || !parseChannel || origin == null
                 || origin.getServer() == null
-                || !CommandManager.isChannelCommand(command)) {
+                || !commandManager.isChannelCommand(command)) {
             return false;
         }
 
@@ -191,11 +194,11 @@ public abstract class CommandParser implements Serializable {
 
                 if (server.hasChannel(channel)) {
                     server.getChannel(channel).getCommandParser()
-                            .parseCommand(origin, window, CommandManager.getCommandChar()
+                            .parseCommand(origin, window, commandManager.getCommandChar()
                             + args.getCommandName() + " " + args.getWordsAsString(2), false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand
-                            = CommandManager.getCommand(CommandType.TYPE_CHANNEL, command);
+                            = commandManager.getCommand(CommandType.TYPE_CHANNEL, command);
 
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(

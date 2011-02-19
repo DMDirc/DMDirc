@@ -203,9 +203,9 @@ public class Server extends WritableFrameContainer
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_SERVER));
+                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_SERVER));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_GLOBAL));
 
         updateIcon();
 

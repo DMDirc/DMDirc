@@ -105,10 +105,11 @@ public class Help extends Command implements IntelligentCommand, CommandInfo {
             final String name) {
         Map.Entry<CommandInfo, Command> command = null;
 
-        if (name.length() > 0 && name.charAt(0) == CommandManager.getCommandChar()) {
-            command = CommandManager.getCommand(name.substring(1));
+        if (name.length() > 0 && name.charAt(0)
+                == CommandManager.getCommandManager().getCommandChar()) {
+            command = CommandManager.getCommandManager().getCommand(name.substring(1));
         } else {
-            command = CommandManager.getCommand(name);
+            command = CommandManager.getCommandManager().getCommand(name);
         }
 
         if (command == null) {

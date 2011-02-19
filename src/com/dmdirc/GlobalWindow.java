@@ -57,7 +57,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
         tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_GLOBAL));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
 

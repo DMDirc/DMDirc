@@ -60,10 +60,10 @@ public class HelpTest {
         final List<Object[]> res = new LinkedList<Object[]>();
 
         IdentityManager.load();
-        CommandManager.initCommands();
+        CommandManager.getCommandManager().initCommands();
 
         for (CommandType type : CommandType.values()) {
-            for (CommandInfo command : CommandManager.getCommands(type).keySet()) {
+            for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {
                 if (command.showInHelp()) {
                     res.add(new Object[]{command});
                 }

@@ -54,7 +54,8 @@ public class AliasCommand extends Command implements
 
         if (args.getArguments()[0].equalsIgnoreCase("--remove")) {
             final String name
-                    = args.getArguments()[1].charAt(0) == CommandManager.getCommandChar()
+                    = args.getArguments()[1].charAt(0)
+                    == CommandManager.getCommandManager().getCommandChar()
                     ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
             if (doRemove(name)) {
@@ -68,7 +69,8 @@ public class AliasCommand extends Command implements
             return;
         }
 
-        final String name = args.getArguments()[0].charAt(0) == CommandManager.getCommandChar()
+        final String name = args.getArguments()[0].charAt(0)
+                == CommandManager.getCommandManager().getCommandChar()
                 ? args.getArguments()[0].substring(1) : args.getArguments()[0];
 
         for (Action alias : AliasWrapper.getAliasWrapper()) {

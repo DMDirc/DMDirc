@@ -46,7 +46,7 @@ public class TestCommandParser extends CommandParser {
 
     @Override
     protected void loadCommands() {
-        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL);
+        CommandManager.getCommandManager().loadCommands(this, CommandType.TYPE_GLOBAL);
     }
 
     @Override

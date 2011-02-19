@@ -124,7 +124,7 @@ public final class Main {
 
         clp.applySettings();
 
-        CommandManager.initCommands();
+        CommandManager.getCommandManager().initCommands();
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pm, service);

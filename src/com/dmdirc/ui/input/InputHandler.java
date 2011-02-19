@@ -221,7 +221,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
         if (args.isCommand()) {
             final Map.Entry<CommandInfo, Command> command
-                    = CommandManager.getCommand(args.getCommandName());
+                    = CommandManager.getCommandManager().getCommand(args.getCommandName());
 
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
@@ -432,7 +432,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         LOGGER.log(Level.FINER, "Offsets: start: {0}, end: {1}",
                 new Object[]{start, end});
 
-        if (start > 0 && text.charAt(0) == CommandManager.getCommandChar()) {
+        if (start > 0 && text.charAt(0) == CommandManager.getCommandManager().getCommandChar()) {
             doCommandTabCompletion(text, start, end, shiftPressed);
         } else {
             doNormalTabCompletion(text, start, end, shiftPressed,  null);

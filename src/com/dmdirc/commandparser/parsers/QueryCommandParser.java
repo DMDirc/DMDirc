@@ -27,7 +27,6 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
@@ -36,7 +35,6 @@ import com.dmdirc.ui.interfaces.Window;
 /**
  * A command parser that is tailored for use in a query environment. Handles
  * both query and server commands.
- * @author chris
  */
 public class QueryCommandParser extends ChatCommandParser {
 
@@ -74,7 +72,7 @@ public class QueryCommandParser extends ChatCommandParser {
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
-        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+        commandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
                 CommandType.TYPE_SERVER, CommandType.TYPE_QUERY);
     }
 

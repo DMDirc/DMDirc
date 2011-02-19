@@ -63,7 +63,8 @@ public abstract class Command {
      */
     protected final void showUsage(final FrameContainer target,
             final boolean isSilent, final String name, final String args) {
-        sendLine(target, isSilent, "commandUsage", CommandManager.getCommandChar(),
+        sendLine(target, isSilent, "commandUsage",
+                CommandManager.getCommandManager().getCommandChar(),
                 name, args);
     }
 

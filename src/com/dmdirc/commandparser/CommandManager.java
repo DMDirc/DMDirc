@@ -46,37 +46,33 @@ import java.util.Map;
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
-public final class CommandManager {
+public class CommandManager {
+
+    /** A singleton instance of the command manager. */
+    private static final CommandManager INSTANCE = new CommandManager();
 
     /** A list of commands that have been instantiated. */
-    private static final Map<CommandInfo, Command> COMMANDS
+    private final Map<CommandInfo, Command> commands
             = new HashMap<CommandInfo, Command>();
 
     /** A list of command parsers that have been instantiated. */
-    private static final MapList<CommandType, CommandParser> PARSERS
+    private final MapList<CommandType, CommandParser> parsers
             = new MapList<CommandType, CommandParser>();
 
     /** The command char we're using. */
-    private static char commandChar = IdentityManager.getGlobalConfig()
+    private char commandChar = IdentityManager.getGlobalConfig()
             .getOptionChar("general", "commandchar");
 
     /** The silence char we're using. */
-    private static char silenceChar = IdentityManager.getGlobalConfig()
+    private char silenceChar = IdentityManager.getGlobalConfig()
             .getOptionChar("general", "silencechar");
-
-    /**
-     * Prevents creation of a new command manager.
-     */
-    private CommandManager() {
-        // Do nothing
-    }
 
     /**
      * Returns the current command character.
      *
      * @return the current command char
      */
-    public static char getCommandChar() {
+    public char getCommandChar() {
         return commandChar;
     }
 
@@ -85,7 +81,7 @@ public final class CommandManager {
      *
      * @return the current silence char
      */
-    public static char getSilenceChar() {
+    public char getSilenceChar() {
         return silenceChar;
     }
 
@@ -96,7 +92,7 @@ public final class CommandManager {
      * @param info The information about the command
      * @since 0.6.3m1
      */
-    public static void registerCommand(final Command command, final CommandInfo info) {
+    public void registerCommand(final Command command, final CommandInfo info) {
         registerCommand(info, command, true);
     }
 
@@ -109,7 +105,7 @@ public final class CommandManager {
      * {@link CommandInfo} to be registered.
      * @since 0.6.3m1
      */
-    public static <T extends Command & CommandInfo> void registerCommand(final T command) {
+    public <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
     }
 
@@ -119,8 +115,8 @@ public final class CommandManager {
      * @param info The information object for the command that should be unregistered
      * @since 0.6.3m1
      */
-    public static void unregisterCommand(final CommandInfo info) {
-        registerCommand(info, COMMANDS.get(info), false);
+    public void unregisterCommand(final CommandInfo info) {
+        registerCommand(info, commands.get(info), false);
     }
 
     /**
@@ -132,16 +128,16 @@ public final class CommandManager {
      * should be unregistered.
      * @since 0.6.3m1
      */
-    private static void registerCommand(final CommandInfo info, final Command command,
+    private void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
-        if (PARSERS.containsKey(info.getType())) {
-            registerCommand(info, command, PARSERS.get(info.getType()), register);
+        if (parsers.containsKey(info.getType())) {
+            registerCommand(info, command, parsers.get(info.getType()), register);
         }
 
         if (register) {
-            COMMANDS.put(info, command);
+            commands.put(info, command);
         } else {
-            COMMANDS.remove(info);
+            commands.remove(info);
         }
 
         registerCommandName(info, register);
@@ -156,7 +152,7 @@ public final class CommandManager {
      * @param register Whether to register or unregister the commands
      * @since 0.6.3m1
      */
-    private static void registerCommand(final CommandInfo info, final Command command,
+    private void registerCommand(final CommandInfo info, final Command command,
             final List<? extends CommandParser> myParsers, final boolean register) {
         for (CommandParser parser : myParsers) {
             if (register) {
@@ -176,7 +172,7 @@ public final class CommandManager {
      * should be unregistered.
      * @since 0.6.3m1
      */
-    private static void registerCommandName(final CommandInfo command,
+    private void registerCommandName(final CommandInfo command,
             final boolean register) {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
@@ -215,7 +211,7 @@ public final class CommandManager {
      * @param register True if the command should be registered, false if it
      * should be unregistered.
      */
-    private static void registerCommandName(final TabCompleter completer,
+    private void registerCommandName(final TabCompleter completer,
             final String name, final boolean register) {
         if (register) {
             completer.addEntry(TabCompletionType.COMMAND, name);
@@ -227,7 +223,7 @@ public final class CommandManager {
     /**
      * Instansiates the default commands.
      */
-    public static void initCommands() {
+    public void initCommands() {
         // Chat commands
         registerCommand(new Me());
 
@@ -313,7 +309,7 @@ public final class CommandManager {
      * @param parser The {@link CommandParser} to load commands in to
      * @param supertypes The types of commands that should be loaded
      */
-    public static void loadCommands(final CommandParser parser,
+    public void loadCommands(final CommandParser parser,
             final CommandType ... supertypes) {
         for (CommandType supertype : supertypes) {
             for (CommandType type : supertype.getComponentTypes()) {
@@ -321,7 +317,7 @@ public final class CommandManager {
                     parser.registerCommand(pair.getValue(), pair.getKey());
                 }
 
-                PARSERS.add(type, parser);
+                parsers.add(type, parser);
             }
         }
     }
@@ -333,7 +329,7 @@ public final class CommandManager {
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
-    public static Map.Entry<CommandInfo, Command> getCommand(final String name) {
+    public Map.Entry<CommandInfo, Command> getCommand(final String name) {
         return getCommand(null, name);
     }
 
@@ -344,7 +340,7 @@ public final class CommandManager {
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
-    public static Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
+    public Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
             final String name) {
         final Map<CommandInfo, Command> res = getCommands(type, name);
 
@@ -357,7 +353,7 @@ public final class CommandManager {
      * @param command The name of the command to test
      * @return True iff the command is a channel command, false otherwise
      */
-    public static boolean isChannelCommand(final String command) {
+    public boolean isChannelCommand(final String command) {
         return getCommand(CommandType.TYPE_CHANNEL, command) != null
                 || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
@@ -368,7 +364,7 @@ public final class CommandManager {
      * @param type The type of command to list
      * @return A list of command names
      */
-    public static List<String> getCommandNames(final CommandType type) {
+    public List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
 
         for (CommandInfo command : getCommands(type).keySet()) {
@@ -386,7 +382,7 @@ public final class CommandManager {
      * @return A map of commands
      * @since 0.6.3m1
      */
-    public static Map<CommandInfo, Command> getCommands(final CommandType type) {
+    public Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
     }
 
@@ -399,11 +395,11 @@ public final class CommandManager {
      * @return A map of {@link CommandInfo}s and their associated {@link Command}.
      * @since 0.6.3m1
      */
-    private static Map<CommandInfo, Command> getCommands(final CommandType type,
+    private Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {
         final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
 
-        for (Map.Entry<CommandInfo, Command> entry : COMMANDS.entrySet()) {
+        for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
                     && (name == null || name.equals(entry.getKey().getName()))) {
                 res.put(entry.getKey(), entry.getValue());
@@ -411,6 +407,15 @@ public final class CommandManager {
         }
 
         return res;
+    }
+
+    /**
+     * Retrieves a singleton instance of the CommandManager.
+     *
+     * @return A singleton instance of the CommandManager.
+     */
+    public static CommandManager getCommandManager() {
+        return INSTANCE;
     }
 
 }

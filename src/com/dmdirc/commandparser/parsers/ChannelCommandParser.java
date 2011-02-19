@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
@@ -72,7 +71,7 @@ public class ChannelCommandParser extends ChatCommandParser {
     /** {@inheritDoc} */
     @Override
     protected void loadCommands() {
-        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+        commandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
                 CommandType.TYPE_SERVER, CommandType.TYPE_CHANNEL);
     }
 

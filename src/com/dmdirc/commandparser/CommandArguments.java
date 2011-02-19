@@ -208,7 +208,7 @@ public class CommandArguments {
      * @return True if the input was a command, false otherwise
      */
     public boolean isCommand() {
-        return !line.isEmpty() && line.charAt(0) == CommandManager.getCommandChar();
+        return !line.isEmpty() && line.charAt(0) == CommandManager.getCommandManager().getCommandChar();
     }
 
     /**
@@ -218,7 +218,7 @@ public class CommandArguments {
      */
     public boolean isSilent() {
         return isCommand() && line.length() >= 2
-                && line.charAt(1) == CommandManager.getSilenceChar();
+                && line.charAt(1) == CommandManager.getCommandManager().getSilenceChar();
     }
 
     /**

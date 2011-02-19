@@ -42,8 +42,8 @@ public class CommandNameValidator extends ValidatorChain<String> {
     public CommandNameValidator() {
         super(new RegexStringValidator("^[^\\s]*$", "Cannot contain spaces"),
                 new RegexStringValidator("^[^"
-                + Pattern.quote(String.valueOf(CommandManager.getCommandChar()))
-                + "].*$", "Cannot start with a " + CommandManager.getCommandChar()));
+                + Pattern.quote(String.valueOf(CommandManager.getCommandManager().getCommandChar()))
+                + "].*$", "Cannot start with a " + CommandManager.getCommandManager().getCommandChar()));
     }
 
 }

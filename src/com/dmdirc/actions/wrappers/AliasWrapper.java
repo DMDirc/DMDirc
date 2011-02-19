@@ -132,7 +132,8 @@ public final class AliasWrapper extends ActionGroup {
     public static String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {
             if (condition.getArg() == 1) {
-                return CommandManager.getCommandChar() + condition.getTarget();
+                return CommandManager.getCommandManager().getCommandChar()
+                        + condition.getTarget();
             }
         }
 

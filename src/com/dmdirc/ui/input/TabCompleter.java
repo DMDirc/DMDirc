@@ -140,11 +140,11 @@ public class TabCompleter {
         entries.add(type, entry);
 
         if (type == TabCompletionType.COMMAND && entry.length() > 1
-                && entry.charAt(0) == CommandManager.getCommandChar()
-                && entry.charAt(1) != CommandManager.getSilenceChar()) {
+                && entry.charAt(0) == CommandManager.getCommandManager().getCommandChar()
+                && entry.charAt(1) != CommandManager.getCommandManager().getSilenceChar()) {
             // If we're adding a command name that doesn't include the silence
             // character, also add a version with the silence char
-            addEntry(type, entry.substring(0, 1) + CommandManager.getSilenceChar()
+            addEntry(type, entry.substring(0, 1) + CommandManager.getCommandManager().getSilenceChar()
                     + entry.substring(1));
         }
     }
@@ -241,7 +241,7 @@ public class TabCompleter {
         }
 
         final Map.Entry<CommandInfo, Command> command
-                = CommandManager.getCommand(args.getCommandName());
+                = CommandManager.getCommandManager().getCommand(args.getCommandName());
 
         AdditionalTabTargets targets = null;
 

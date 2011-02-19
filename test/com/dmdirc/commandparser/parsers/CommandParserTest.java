@@ -35,7 +35,7 @@ public class CommandParserTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
-        CommandManager.initCommands();
+        CommandManager.getCommandManager().initCommands();
     }
 
     @Test
