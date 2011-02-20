@@ -39,8 +39,8 @@
         </jar>
 
        <jar destfile="plugins/parser_msn.jar" compress="${jar.compress}" keepcompression="true" update="true">
-            <zipfileset src="modules/plugins/lib/jml-1.0b4-full.jar" includes="net/**"/>
-            <zipfileset src="modules/plugins/lib/httpcore.jar" includes="net/**"/>
+            <zipfileset src="modules/plugins/lib/jml-1.0b4-full.jar" includes="net/** org/**"/>
+            <zipfileset src="modules/plugins/lib/httpcore.jar" includes="org/**"/>
         </jar>
 
         <jar destfile="plugins/windowflashing.jar" compress="${jar.compress}" keepcompression="true" update="true">
