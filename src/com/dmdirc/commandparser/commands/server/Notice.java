@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -39,8 +40,12 @@ import com.dmdirc.ui.input.TabCompletionType;
  * Allows the user to send notices.
  */
 @CommandOptions(allowOffline = false)
-public class Notice extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Notice extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("notice",
+            "notice <target> <message> - sends a notice",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -55,30 +60,6 @@ public class Notice extends Command implements IntelligentCommand,
             sendLine(origin, args.isSilent(), "selfNotice", args.getArguments()[0],
                     args.getArgumentsAsString(1));
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "notice";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "notice <target> <message> - sends a notice";
     }
 
     /** {@inheritDoc} */

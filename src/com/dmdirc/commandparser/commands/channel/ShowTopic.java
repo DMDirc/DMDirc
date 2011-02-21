@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -39,8 +40,12 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
  * The show topic command shows the user the current topic.
  */
 @CommandOptions(allowOffline=false)
-public class ShowTopic extends Command implements ExternalCommand,
-        CommandInfo {
+public class ShowTopic extends Command implements ExternalCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("topic",
+            "topic - displays the current topic\ntopic <newtopic> - sets the channel topic",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -73,30 +78,6 @@ public class ShowTopic extends Command implements ExternalCommand,
         } else {
             server.getParser().sendRawMessage("TOPIC " + channel + " :" + args.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "topic";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "topic - displays the current topic\ntopic <newtopic> - sets the channel topic";
     }
 
 }

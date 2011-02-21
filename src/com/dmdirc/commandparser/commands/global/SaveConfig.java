@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -35,8 +36,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Allows the user to save the config file.
  */
-public final class SaveConfig extends Command implements IntelligentCommand,
-        CommandInfo {
+public final class SaveConfig extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("saveconfig",
+            "saveconfig - force the client to save its configuration to disk",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -45,30 +50,6 @@ public final class SaveConfig extends Command implements IntelligentCommand,
         IdentityManager.save();
 
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "saveconfig";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "saveconfig - force the client to save its configuration to disk";
     }
 
     /** {@inheritDoc} */

@@ -49,7 +49,7 @@ public class BanTest {
         final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
         command.execute(tiw, new CommandArguments("/ban"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Ban.INFO, channel));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -69,7 +69,7 @@ public class BanTest {
         when(clientInfo.getHostname()).thenReturn("my.host.name");
 
         command.execute(container, new CommandArguments("/ban user"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Ban.INFO, channel));
 
         verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
         verify(channelInfo).flushModes();
@@ -85,7 +85,7 @@ public class BanTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
 
         command.execute(container, new CommandArguments("/ban *!*@my.host.name"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Ban.INFO, channel));
 
         verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
         verify(channelInfo).flushModes();

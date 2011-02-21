@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -37,8 +38,12 @@ import com.dmdirc.ui.input.TabCompleter;
 /**
  * The AllServers command allows users to issue commands to all servers.
  */
-public class AllServers extends Command implements IntelligentCommand,
-        CommandInfo{
+public class AllServers extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("allservers",
+            "allservers <command> - executes the command as though it had"
+            + " been entered on all servers", CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -49,31 +54,6 @@ public class AllServers extends Command implements IntelligentCommand,
         for (Server target : ServerManager.getServerManager().getServers()) {
             target.getCommandParser().parseCommand(target, context.getSource(), command);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "allservers";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "allservers <command> - executes the command as though it had"
-                + " been entered on all servers";
     }
 
     /** {@inheritDoc} */

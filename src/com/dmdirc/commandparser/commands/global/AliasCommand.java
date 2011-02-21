@@ -27,6 +27,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -40,8 +41,12 @@ import com.dmdirc.ui.input.TabCompleter;
 /**
  * The alias command allows users to create aliases on-the-fly.
  */
-public class AliasCommand extends Command implements
-        IntelligentCommand, CommandInfo {
+public class AliasCommand extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("alias",
+            "alias [--remove] <name> [command] - creates or removes the specified alias",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -108,30 +113,6 @@ public class AliasCommand extends Command implements
         }
 
         return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "alias";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "alias [--remove] <name> [command] - creates or removes the specified alias";
     }
 
     /** {@inheritDoc} */

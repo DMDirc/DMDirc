@@ -20,40 +20,59 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.global;
-
-import com.dmdirc.FrameContainer;
-import com.dmdirc.commandparser.BaseCommandInfo;
-import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.ui.input.AdditionalTabTargets;
+package com.dmdirc.commandparser;
 
 /**
- * The clear command clears the main text area of the current window.
+ * A basic {@link CommandInfo} implementation whose parameters can be
+ * configured via the constructor.
  */
-public class Clear extends Command implements IntelligentCommand {
+public class BaseCommandInfo implements CommandInfo {
 
-    /** A command info object for this command. */
-    public static final CommandInfo INFO = new BaseCommandInfo("clear",
-            "clear - clears the current window's text area",
-            CommandType.TYPE_GLOBAL);
+    /** The name of the command. */
+    private final String name;
 
-    /** {@inheritDoc} */
-    @Override
-    public void execute(final FrameContainer origin,
-            final CommandArguments args, final CommandContext context) {
-        origin.getDocument().clear();
+    /** The help text for this command. */
+    private final String helpText;
+
+    /** The type of the command. */
+    private final CommandType type;
+
+    /**
+     * Creates a new BaseCommandInfo with the specified information.
+     *
+     * @param name The name of the command
+     * @param helpText The help text for this command
+     * @param type The type of the command
+     */
+    public BaseCommandInfo(final String name, final String helpText,
+            final CommandType type) {
+        this.name = name;
+        this.helpText = helpText;
+        this.type = type;
     }
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg,
-            final IntelligentCommandContext context) {
-        return new AdditionalTabTargets().excludeAll();
+    public String getName() {
+        return name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean showInHelp() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getHelp() {
+        return helpText;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return type;
     }
 
 }

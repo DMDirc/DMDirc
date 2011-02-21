@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.chat;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -37,7 +38,12 @@ import com.dmdirc.util.validators.ValidationResponse;
 /**
  * The me command sends a CTCP action to the current channel.
  */
-public class Me extends Command implements ValidatingCommand, CommandInfo {
+public class Me extends Command implements ValidatingCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("me",
+            "me <action> - sends the specified action",
+            CommandType.TYPE_CHAT);
 
     /** {@inheritDoc} */
     @Override
@@ -49,30 +55,6 @@ public class Me extends Command implements ValidatingCommand, CommandInfo {
         } else {
             target.sendAction(args.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "me";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHAT;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "me <action> - sends the specified action";
     }
 
     /** {@inheritDoc} */

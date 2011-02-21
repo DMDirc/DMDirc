@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -42,8 +43,13 @@ import java.awt.Color;
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
  */
-public class SetNickColour extends Command implements IntelligentCommand,
-        CommandInfo {
+public class SetNickColour extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("setnickcolour",
+            "setnickcolour [--nicklist|--text] <nick> [colour] - "
+            + "set the specified person's display colour",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -105,31 +111,6 @@ public class SetNickColour extends Command implements IntelligentCommand,
 
             channel.refreshClients();
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "setnickcolour";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "setnickcolour [--nicklist|--text] <nick> [colour] - "
-                + "set the specified person's display colour";
     }
 
     /** {@inheritDoc} */

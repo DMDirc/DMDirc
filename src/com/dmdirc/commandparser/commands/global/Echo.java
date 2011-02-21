@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -44,8 +45,13 @@ import java.util.List;
 /**
  * The echo commands simply echos text to the current window.
  */
-public class Echo extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Echo extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("echo",
+            "echo [--ts <timestamp>] [--target <window>] <line> "
+            + "- echos the specified line to the window",
+            CommandType.TYPE_GLOBAL);
 
     /** The flag used to specify a timestamp for the echo command. */
     private final CommandFlag timeStampFlag = new CommandFlag("ts", true, 1, 0);
@@ -106,31 +112,6 @@ public class Echo extends Command implements IntelligentCommand,
         } else if (origin != null && !args.isSilent()) {
             origin.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "echo";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "echo [--ts <timestamp>] [--target <window>] <line> "
-                + "- echos the specified line to the window";
     }
 
     /** {@inheritDoc} */

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,7 +37,13 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Opens a new window.
  */
-public class OpenWindow extends Command implements IntelligentCommand, CommandInfo {
+public class OpenWindow extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("openwindow",
+            "openwindow [--server|--child] <name> [title] "
+            + "- opens a window with the specified name and title",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -85,31 +92,6 @@ public class OpenWindow extends Command implements IntelligentCommand, CommandIn
                 "A custom window by that name already exists.");
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "openwindow [--server|--child] <name> [title] "
-                + "- opens a window with the specified name and title";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "openwindow";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
     }
 
     /** {@inheritDoc} */

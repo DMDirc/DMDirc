@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 public class AliasCommandTest {
 
     private final AliasCommand command = new AliasCommand();
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
@@ -44,19 +44,19 @@ public class AliasCommandTest {
         final FrameContainer tiw = mock(FrameContainer.class);
 
         command.execute(tiw, new CommandArguments("/foo"),
-                new CommandContext(null, command));
-        
+                new CommandContext(null, AliasCommand.INFO));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
-    
+
     @Test
     public void testUsageOneArg() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        
+
         command.execute(tiw, new CommandArguments("/foo --remove"),
-                new CommandContext(null, command));
-        
+                new CommandContext(null, AliasCommand.INFO));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
-    }    
+    }
 
 }

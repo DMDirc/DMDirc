@@ -45,34 +45,34 @@ public class SetNickColourTest {
     public void setUp() {
         channel = mock(Channel.class);
     }
-    
+
     private final SetNickColour command = new SetNickColour();
 
     @Test
     public void testUsageNoArgs() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
-                new ChannelCommandContext(null, command, channel));
-        
+                new ChannelCommandContext(null, SetNickColour.INFO, channel));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
-    
+
     @Test
     public void testUsageNicklist() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo --nicklist"),
-                new ChannelCommandContext(null, command, channel));
-        
+                new ChannelCommandContext(null, SetNickColour.INFO, channel));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
-    }    
-    
+    }
+
     @Test
     public void testUsageText() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo --text"),
-                new ChannelCommandContext(null, command, channel));
-        
+                new ChannelCommandContext(null, SetNickColour.INFO, channel));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
-    }       
+    }
 
 }

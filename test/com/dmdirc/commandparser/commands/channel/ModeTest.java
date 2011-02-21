@@ -53,7 +53,7 @@ public class ModeTest {
     @Before
     public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
-        
+
         parser = mock(IRCParser.class);
         server = mock(Server.class);
         channel = mock(Channel.class);
@@ -69,9 +69,9 @@ public class ModeTest {
     @Test
     public void testWithoutArgs() {
         final FrameContainer origin = mock(FrameContainer.class);
-        
+
         command.execute(origin, new CommandArguments("/mode"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(origin).addLine("channelModeDiscovered", "my mode string!", channelinfo);
     }
@@ -81,7 +81,7 @@ public class ModeTest {
         final FrameContainer origin = mock(FrameContainer.class);
 
         command.execute(origin, new CommandArguments("/mode +hello -bye"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }
@@ -91,7 +91,7 @@ public class ModeTest {
         final FrameContainer origin = mock(FrameContainer.class);
 
         command.execute(origin, new CommandArguments("/mode +hello -bye"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
     }

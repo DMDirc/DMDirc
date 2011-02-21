@@ -33,7 +33,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 public class MeTest {
- 
+
     private final Me command = new Me();
     private MessageTarget mtt;
 
@@ -51,15 +51,15 @@ public class MeTest {
     public void testUsage() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
-                new ChatCommandContext(null, command, mtt));
-        
+                new ChatCommandContext(null, Me.INFO, mtt));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
-    
+
     @Test
     public void testSend() {
         command.execute(null, new CommandArguments("/foo hello meep moop"),
-                new ChatCommandContext(null, command, mtt));
+                new ChatCommandContext(null, Me.INFO, mtt));
 
         verify(mtt).sendAction("hello meep moop");
     }

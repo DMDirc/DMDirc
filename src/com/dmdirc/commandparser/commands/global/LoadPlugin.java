@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,8 +37,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Allows the user to load a plugin.
  */
-public class LoadPlugin extends Command implements IntelligentCommand,
-        CommandInfo {
+public class LoadPlugin extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("loadplugin",
+            "loadplugin <plugin> - loads the specified class as a plugin",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -72,30 +77,6 @@ public class LoadPlugin extends Command implements IntelligentCommand,
                         + plugin.getLastError() + ")");
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "loadplugin";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "loadplugin <plugin> - loads the specified class as a plugin";
     }
 
     /** {@inheritDoc} */

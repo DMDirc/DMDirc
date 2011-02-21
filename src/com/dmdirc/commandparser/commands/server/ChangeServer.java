@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,7 +39,12 @@ import java.net.URISyntaxException;
 /**
  * The /server command allows the user to connect to a new server.
  */
-public class ChangeServer extends Command implements CommandInfo {
+public class ChangeServer extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("server",
+            "server <host[:[+]port]> [password] - connect to a different server",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -66,30 +72,6 @@ public class ChangeServer extends Command implements CommandInfo {
         }
 
         server.connect(address, server.getProfile());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "server";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "server <host[:[+]port]> [password] - connect to a different server";
     }
 
 }

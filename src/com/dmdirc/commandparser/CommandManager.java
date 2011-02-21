@@ -225,37 +225,37 @@ public class CommandManager {
      */
     public void initCommands() {
         // Chat commands
-        registerCommand(new Me());
+        registerCommand(new Me(), Me.INFO);
 
         // Channel commands
-        registerCommand(new Ban());
-        registerCommand(new ChannelSettings());
-        registerCommand(new Cycle());
-        registerCommand(new Invite());
-        registerCommand(new KickReason());
-        registerCommand(new Mode());
-        registerCommand(new Names());
-        registerCommand(new Part());
-        registerCommand(new SetNickColour());
-        registerCommand(new ShowTopic());
+        registerCommand(new Ban(), Ban.INFO);
+        registerCommand(new ChannelSettings(), ChannelSettings.INFO);
+        registerCommand(new Cycle(), Cycle.INFO);
+        registerCommand(new Invite(), Invite.INFO);
+        registerCommand(new KickReason(), KickReason.INFO);
+        registerCommand(new Mode(), Mode.INFO);
+        registerCommand(new Names(), Names.INFO);
+        registerCommand(new Part(), Part.INFO);
+        registerCommand(new SetNickColour(), SetNickColour.INFO);
+        registerCommand(new ShowTopic(), ShowTopic.INFO);
 
         // Server commands
-        registerCommand(new AllChannels());
-        registerCommand(new Away());
-        registerCommand(new Back());
-        registerCommand(new ChangeServer());
-        registerCommand(new Ctcp());
-        registerCommand(new Disconnect());
-        registerCommand(new Ignore());
-        registerCommand(new JoinChannelCommand());
-        registerCommand(new Message());
-        registerCommand(new Nick());
-        registerCommand(new Notice());
-        registerCommand(new OpenQuery());
-        registerCommand(new Raw());
-        registerCommand(new Reconnect());
-        registerCommand(new ServerSettings());
-        registerCommand(new Umode());
+        registerCommand(new AllChannels(), AllChannels.INFO);
+        registerCommand(new Away(), Away.INFO);
+        registerCommand(new Back(), Back.INFO);
+        registerCommand(new ChangeServer(), ChangeServer.INFO);
+        registerCommand(new Ctcp(), Ctcp.INFO);
+        registerCommand(new Disconnect(), Disconnect.INFO);
+        registerCommand(new Ignore(), Ignore.INFO);
+        registerCommand(new JoinChannelCommand(), JoinChannelCommand.INFO);
+        registerCommand(new Message(), Message.INFO);
+        registerCommand(new Nick(), Nick.INFO);
+        registerCommand(new Notice(), Notice.INFO);
+        registerCommand(new OpenQuery(), OpenQuery.INFO);
+        registerCommand(new Raw(), Raw.INFO);
+        registerCommand(new Reconnect(), Reconnect.INFO);
+        registerCommand(new ServerSettings(), ServerSettings.INFO);
+        registerCommand(new Umode(), Umode.INFO);
 
         registerCommand(new RawServerCommand("lusers"));
         registerCommand(new RawServerCommand("map"));
@@ -267,24 +267,24 @@ public class CommandManager {
         // Query commands
 
         // Global commands
-        registerCommand(new AliasCommand());
-        registerCommand(new AllServers());
-        registerCommand(new Clear());
-        registerCommand(new Echo());
-        registerCommand(new Exit());
-        registerCommand(new Help());
-        registerCommand(new Ifplugin());
-        registerCommand(new Input());
-        registerCommand(new NewServer());
-        registerCommand(new Notify());
-        registerCommand(new LoadPlugin());
-        registerCommand(new UnloadPlugin());
-        registerCommand(new OpenWindow());
-        registerCommand(new ReloadActions());
-        registerCommand(new ReloadIdentities());
-        registerCommand(new ReloadPlugin());
-        registerCommand(new SaveConfig());
-        registerCommand(new Set());
+        registerCommand(new AliasCommand(), AliasCommand.INFO);
+        registerCommand(new AllServers(), AllServers.INFO);
+        registerCommand(new Clear(), Clear.INFO);
+        registerCommand(new Echo(), Echo.INFO);
+        registerCommand(new Exit(), Exit.INFO);
+        registerCommand(new Help(), Help.INFO);
+        registerCommand(new Ifplugin(), Ifplugin.INFO);
+        registerCommand(new Input(), Input.INFO);
+        registerCommand(new NewServer(), NewServer.INFO);
+        registerCommand(new Notify(), Notify.INFO);
+        registerCommand(new LoadPlugin(), LoadPlugin.INFO);
+        registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);
+        registerCommand(new OpenWindow(), OpenWindow.INFO);
+        registerCommand(new ReloadActions(), ReloadActions.INFO);
+        registerCommand(new ReloadIdentities(), ReloadIdentities.INFO);
+        registerCommand(new ReloadPlugin(), ReloadPlugin.INFO);
+        registerCommand(new SaveConfig(), SaveConfig.INFO);
+        registerCommand(new Set(), Set.INFO);
 
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {

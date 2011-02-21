@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -45,7 +46,14 @@ import java.util.List;
 /**
  * The set command allows the user to inspect and change global config settings.
  */
-public class Set extends Command implements IntelligentCommand, CommandInfo {
+public class Set extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("set",
+            "set [--server|--channel] [domain [option [newvalue]]] - inspect or change configuration settings"
+            + "\nset [--server|--channel] --append <domain> <option> <data> - appends data to the specified option"
+            + "\nset [--server|--channel] --unset <domain> <option> - unsets the specified option",
+            CommandType.TYPE_GLOBAL);
 
     /** The flag to indicate the set command should apply to a server's settings. */
     private final CommandFlag serverFlag = new CommandFlag("server");
@@ -271,32 +279,6 @@ public class Set extends Command implements IntelligentCommand, CommandInfo {
         identity.unsetOption(domain, option);
 
         sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been unset.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "set";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "set [--server|--channel] [domain [option [newvalue]]] - inspect or change configuration settings"
-                + "\nset [--server|--channel] --append <domain> <option> <data> - appends data to the specified option"
-                + "\nset [--server|--channel] --unset <domain> <option> - unsets the specified option";
     }
 
     /** {@inheritDoc} */

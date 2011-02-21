@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -35,7 +36,12 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  * When the client quits, it disconnects all servers (with the quit message
  * supplied) and saves the config file.
  */
-public class Exit extends Command implements CommandInfo {
+public class Exit extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("exit",
+            "exit [reason] - exits the client",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -43,30 +49,6 @@ public class Exit extends Command implements CommandInfo {
             final CommandArguments args, final CommandContext context) {
         Main.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getName() {
-        return "exit";
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getHelp() {
-        return "exit [reason] - exits the client";
     }
 
 }

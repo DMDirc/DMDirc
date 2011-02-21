@@ -38,7 +38,9 @@ public interface CommandInfo {
      * Returns whether or not this command should be shown in help messages.
      *
      * @return True iff the command should be shown, false otherwise
+     * @deprecated All commands should be shown in help messages
      */
+    @Deprecated
     boolean showInHelp();
 
     /**

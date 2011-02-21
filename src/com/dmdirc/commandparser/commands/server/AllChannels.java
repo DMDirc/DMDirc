@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,8 +39,12 @@ import com.dmdirc.ui.input.TabCompleter;
  * The AllChannels command allows the user to issue a command to all channels
  * on a server.
  */
-public class AllChannels extends Command implements IntelligentCommand,
-        CommandInfo {
+public class AllChannels extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("allchannels",
+           "allchannels <command> - executes the command as though it had"
+            + " been entered on all channels", CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -52,31 +57,6 @@ public class AllChannels extends Command implements IntelligentCommand,
             server.getChannel(channel).getCommandParser()
                     .parseCommand(server.getChannel(channel), context.getSource(), command);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "allchannels";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "allchannels <command> - executes the command as though it had"
-                + " been entered on all channels";
     }
 
     /** {@inheritDoc} */

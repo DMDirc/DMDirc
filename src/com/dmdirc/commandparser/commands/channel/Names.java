@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -41,7 +42,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  */
 @CommandOptions(allowOffline = false)
 public class Names extends Command implements IntelligentCommand,
-        ExternalCommand, CommandInfo {
+        ExternalCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("names",
+            "names - Requests a list of users that are in the channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -57,30 +63,6 @@ public class Names extends Command implements IntelligentCommand,
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendRawMessage("NAMES " + channel);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "names";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "names - Requests a list of users that are in the channel";
     }
 
     /** {@inheritDoc} */

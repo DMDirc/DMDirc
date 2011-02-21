@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -41,7 +42,12 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
  * @since 0.6.4
  */
 @CommandOptions(allowOffline = false)
-public class Invite extends Command implements ExternalCommand, CommandInfo {
+public class Invite extends Command implements ExternalCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("invite",
+            "invite <user> - invites user to a channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -68,30 +74,6 @@ public class Invite extends Command implements ExternalCommand, CommandInfo {
         } else {
             server.getParser().sendInvite(channel, args.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "invite";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "invite <user> - invites user to a channel";
     }
 
 }

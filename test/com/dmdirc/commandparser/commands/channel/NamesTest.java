@@ -52,7 +52,7 @@ public class NamesTest {
     @Before
     public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
-        
+
         parser = mock(IRCParser.class);
         server = mock(Server.class);
         channel = mock(Channel.class);
@@ -67,7 +67,7 @@ public class NamesTest {
     @Test
     public void testNormal() {
         command.execute(null, new CommandArguments("/names"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Names.INFO, channel));
 
         verify(parser).sendRawMessage("NAMES #chan");
     }

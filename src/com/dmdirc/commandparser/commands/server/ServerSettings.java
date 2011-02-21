@@ -24,6 +24,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -40,8 +41,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  * @since 0.6.4
  */
 @CommandOptions(allowOffline=false)
-public class ServerSettings extends Command implements IntelligentCommand,
-        CommandInfo {
+public class ServerSettings extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("serversettings",
+            "serversettings - opens the server settings window",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -49,30 +54,6 @@ public class ServerSettings extends Command implements IntelligentCommand,
             final CommandArguments args, final CommandContext context) {
         context.getSource().getController().showServerSettingsDialog(
                 ((ServerCommandContext) context).getServer());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "serversettings";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "serversettings - opens the server settings window";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
     }
 
     /** {@inheritDoc} */

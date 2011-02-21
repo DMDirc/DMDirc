@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -34,7 +35,12 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 /**
  * The disconnect command disconnects from the current server.
  */
-public class Disconnect extends Command implements CommandInfo {
+public class Disconnect extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("disconnect",
+            "disconnect [reason] - disconnect from this server",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -50,30 +56,6 @@ public class Disconnect extends Command implements CommandInfo {
         }
 
         server.disconnect(line);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "disconnect";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "disconnect [reason] - disconnect from this server";
     }
 
 }

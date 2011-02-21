@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -49,7 +50,12 @@ import java.util.List;
  * @since 0.6.3m1
  */
 public class JoinChannelCommand extends Command implements
-        ActionListener, IntelligentCommand, CommandInfo {
+        ActionListener, IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("join",
+            "join <channel [key]>[,channel [key]...] - joins the specified channel(s)",
+            CommandType.TYPE_SERVER);
 
     /** A map of channel name mentions. */
     private final MapList<FrameContainer, String> mentions
@@ -89,30 +95,6 @@ public class JoinChannelCommand extends Command implements
         }
 
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[0]));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "join";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "join <channel [key]>[,channel [key]...] - joins the specified channel(s)";
     }
 
     /** {@inheritDoc} */

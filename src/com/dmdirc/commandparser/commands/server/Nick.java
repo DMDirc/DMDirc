@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -39,8 +40,12 @@ import com.dmdirc.ui.input.TabCompletionType;
  * Allows the user to change nickname.
  */
 @CommandOptions(allowOffline = false)
-public class Nick extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Nick extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("nick",
+            "nick <new nickname> - attempts to change your nickname to the one specified",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -53,30 +58,6 @@ public class Nick extends Command implements IntelligentCommand,
         }
 
         server.getParser().getLocalClient().setNickname(args.getArguments()[0]);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "nick";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "nick <new nickname> - attempts to change your nickname to the one specified";
     }
 
     /** {@inheritDoc} */

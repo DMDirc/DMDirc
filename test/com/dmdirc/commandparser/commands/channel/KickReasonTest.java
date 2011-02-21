@@ -41,7 +41,7 @@ public class KickReasonTest {
     public static void setUpClass() throws Exception {
         IdentityManager.load();
     }
-    
+
     private final KickReason command = new KickReason();
 
     @Test
@@ -49,8 +49,8 @@ public class KickReasonTest {
         final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
         command.execute(tiw, new CommandArguments("/kick"),
-                new ChannelCommandContext(null, command, channel));
-        
+                new ChannelCommandContext(null, KickReason.INFO, channel));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
@@ -64,7 +64,7 @@ public class KickReasonTest {
         when(channelInfo.getChannelClient(anyString())).thenReturn(null);
 
         command.execute(tiw, new CommandArguments("/kick user1"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(tiw).addLine(eq("commandError"), matches(".*user1"));
     }
@@ -80,7 +80,7 @@ public class KickReasonTest {
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
 
         command.execute(tiw, new CommandArguments("/kick user1 reason here"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(cci).kick("reason here");
     }
@@ -99,7 +99,7 @@ public class KickReasonTest {
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
 
         command.execute(tiw, new CommandArguments("/kick user1"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(cci).kick("reason here");
     }

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -39,8 +40,12 @@ import com.dmdirc.ui.input.TabCompletionType;
  * Allows the user to send CTCP messages.
  */
 @CommandOptions(allowOffline = false)
-public class Ctcp extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Ctcp extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("ctcp",
+            "ctcp <target> <type> [arguments] - sends a CTCP message",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -55,30 +60,6 @@ public class Ctcp extends Command implements IntelligentCommand,
             sendLine(origin, args.isSilent(), "selfCTCP", args.getArguments()[0],
                     args.getArgumentsAsString(1));
         }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getName() {
-        return "ctcp";
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getHelp() {
-        return "ctcp <target> <type> [arguments] - sends a CTCP message";
     }
 
     /** {@inheritDoc} */

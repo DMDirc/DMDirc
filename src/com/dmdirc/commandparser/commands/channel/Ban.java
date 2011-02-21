@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,7 +39,12 @@ import com.dmdirc.ui.input.TabCompletionType;
 /**
  * The kick command bans a specified user or host from the channel.
  */
-public class Ban extends Command implements IntelligentCommand, CommandInfo {
+public class Ban extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("ban",
+            "ban <user|host> - bans the specified user or host from the channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -60,30 +66,6 @@ public class Ban extends Command implements IntelligentCommand, CommandInfo {
 
         channel.getChannelInfo().alterMode(true, 'b', host);
         channel.getChannelInfo().flushModes();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "ban";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "ban <user|host> - bans the specified user or host from the channel.";
     }
 
     /** {@inheritDoc} */

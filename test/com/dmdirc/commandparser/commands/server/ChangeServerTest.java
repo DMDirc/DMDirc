@@ -41,7 +41,7 @@ public class ChangeServerTest {
     private FrameContainer tiw;
     private Identity profile;
     private Server server;
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
@@ -58,39 +58,39 @@ public class ChangeServerTest {
     @Test
     public void testUsageNoArgs() {
         command.execute(tiw, new CommandArguments("/server"),
-                new ServerCommandContext(null, command, server));
-        
+                new ServerCommandContext(null, ChangeServer.INFO, server));
+
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
-    
+
     @Test
     public void testInvalidPort() {
         command.execute(tiw, new CommandArguments("/server foo:abc"),
-                new ServerCommandContext(null, command, server));
-        
+                new ServerCommandContext(null, ChangeServer.INFO, server));
+
         verify(tiw).addLine(eq("commandError"), anyString());
     }
-    
+
     @Test
     public void testOutOfRangePort1() {
         command.execute(tiw, new CommandArguments("/server foo:0"),
-                new ServerCommandContext(null, command, server));
-        
+                new ServerCommandContext(null, ChangeServer.INFO, server));
+
         verify(tiw).addLine(eq("commandError"), anyString());
     }
-    
+
     @Test
     public void testOutOfRangePort2() {
         command.execute(tiw, new CommandArguments("/server foo:65537"),
-                new ServerCommandContext(null, command, server));
-        
+                new ServerCommandContext(null, ChangeServer.INFO, server));
+
         verify(tiw).addLine(eq("commandError"), anyString());
     }
 
     @Test
     public void testExecuteBasic() throws URISyntaxException {
         command.execute(tiw, new CommandArguments("/server foo:1234"),
-                new ServerCommandContext(null, command, server));
+                new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("irc://foo:1234")), same(profile));
     }
@@ -98,7 +98,7 @@ public class ChangeServerTest {
     @Test
     public void testExecuteNoPort() throws URISyntaxException {
         command.execute(tiw, new CommandArguments("/server foo"),
-                new ServerCommandContext(null, command, server));
+                new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
     }
@@ -106,7 +106,7 @@ public class ChangeServerTest {
     @Test
     public void testDeprecatedSSL() throws URISyntaxException {
         command.execute(tiw, new CommandArguments("/server --ssl foo"),
-                new ServerCommandContext(null, command, server));
+                new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("ircs://foo:6667")), same(profile));
     }
@@ -114,7 +114,7 @@ public class ChangeServerTest {
     @Test
     public void testExecuteComplex() throws URISyntaxException {
         command.execute(tiw, new CommandArguments("/server foo:+1234 password"),
-                new ServerCommandContext(null, command, server));
+                new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("ircs://password@foo:1234")), same(profile));
     }

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -45,7 +46,12 @@ import java.util.Map;
  * their arguments, and a description. It is context-aware, so channel commands
  * are only displayed when in a channel window, for example.
  */
-public class Help extends Command implements IntelligentCommand, CommandInfo {
+public class Help extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("help",
+            "help [command] - shows client command help",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -126,30 +132,6 @@ public class Help extends Command implements IntelligentCommand, CommandInfo {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                     + "--------------------------------------------------");
         }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getName() {
-        return "help";
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getHelp() {
-        return "help [command] - shows client command help";
     }
 
     /** {@inheritDoc} */

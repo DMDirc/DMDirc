@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -37,7 +38,12 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  * Allows the user to change user modes.
  */
 @CommandOptions(allowOffline=false)
-public class Umode extends Command implements CommandInfo {
+public class Umode extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("umode",
+            "umode [modes] - sets or displays your user modes",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -52,30 +58,6 @@ public class Umode extends Command implements CommandInfo {
         server.getParser().sendRawMessage("MODE "
                 + server.getParser().getLocalClient().getNickname()
                 + " " + args.getArgumentsAsString());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "umode";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "umode [modes] - sets or displays your user modes";
     }
 
 }

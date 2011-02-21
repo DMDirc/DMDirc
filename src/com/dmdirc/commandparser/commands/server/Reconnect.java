@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -34,7 +35,12 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 /**
  * The reconnect command reconnects to the current server.
  */
-public class Reconnect extends Command implements CommandInfo {
+public class Reconnect extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("reconnect",
+            "reconnect [reason] - reconnect to this server",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -50,31 +56,6 @@ public class Reconnect extends Command implements CommandInfo {
         }
 
         server.reconnect(line);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "reconnect";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "reconnect [reason] - reconnect to this server";
     }
 
 }

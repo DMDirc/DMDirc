@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,8 +37,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Allows the user to reload a plugin.
  */
-public class ReloadPlugin extends Command implements IntelligentCommand,
-        CommandInfo {
+public class ReloadPlugin extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("reloadplugin",
+            "reloadplugin <plugin> - Reloads the specified plugin",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -58,30 +63,6 @@ public class ReloadPlugin extends Command implements IntelligentCommand,
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Reloading failed");
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "reloadplugin";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "reloadplugin <plugin> - Reloads the specified plugin";
     }
 
     /** {@inheritDoc} */

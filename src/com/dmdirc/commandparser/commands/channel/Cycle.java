@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,7 +37,12 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  * The cycle command allows users to rapidly part and rejoin a channel.
  */
 @CommandOptions(allowOffline = false)
-public class Cycle extends Command implements CommandInfo {
+public class Cycle extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("cycle",
+            "cycle [message] - parts and rejoins the channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -48,27 +54,4 @@ public class Cycle extends Command implements CommandInfo {
         channel.join();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "cycle";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "cycle [message] - parts and rejoins the channel";
-    }
 }

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -45,8 +46,12 @@ import java.util.regex.Pattern;
 /**
  * The new server command allows users to open a new server window.
  */
-public class NewServer extends Command implements IntelligentCommand,
-        CommandInfo {
+public class NewServer extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("newserver",
+            "newserver <host[:[+]port]> [password] - connect to a new server",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -210,30 +215,6 @@ public class NewServer extends Command implements IntelligentCommand,
 
             return null;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "newserver";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "newserver <host[:[+]port]> [password] - connect to a new server";
     }
 
     /** {@inheritDoc} */

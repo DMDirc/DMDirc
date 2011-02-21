@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -37,7 +38,12 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  * irc server.
  */
 @CommandOptions(allowOffline=false)
-public class Raw extends Command implements CommandInfo {
+public class Raw extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("raw",
+            "raw <text> - sends the specified text directly to the server",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -48,30 +54,6 @@ public class Raw extends Command implements CommandInfo {
 
         server.getParser().sendRawMessage(line);
         sendLine(origin, args.isSilent(), "rawCommand", line);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "raw";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "raw <text> - sends the specified text directly to the server";
     }
 
 }

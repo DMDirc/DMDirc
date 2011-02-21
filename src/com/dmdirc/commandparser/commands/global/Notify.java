@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,8 +39,12 @@ import java.awt.Color;
  * The notify command allows the user to set the notification colour for a
  * window.
  */
-public class Notify extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Notify extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("notify",
+            "notify <colour> - sets the notification colour for this window",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -61,30 +66,6 @@ public class Notify extends Command implements IntelligentCommand,
             // valid, as errors go to the origin!
             origin.sendNotification(colour);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "notify";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "notify <colour> - sets the notification colour for this window";
     }
 
     /** {@inheritDoc} */

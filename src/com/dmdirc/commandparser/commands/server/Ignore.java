@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -42,8 +43,12 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Allows the user to add/view/delete ignores.
  */
-public class Ignore extends Command implements IntelligentCommand,
-        CommandInfo {
+public class Ignore extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("ignore",
+            "ignore [--remove|--regex] [host] - manages the network's ignore list",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -147,30 +152,6 @@ public class Ignore extends Command implements IntelligentCommand,
         }
 
         sendLine(origin, args.isSilent(), FORMAT_ERROR, "Ignore list doesn't contain '" + host + "'.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "ignore";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "ignore [--remove|--regex] [host] - manages the network's ignore list";
     }
 
     /** {@inheritDoc} */

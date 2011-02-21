@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -43,7 +44,12 @@ import com.dmdirc.ui.input.TabCompletionType;
  */
 @CommandOptions(allowOffline = false)
 public class Mode extends Command implements IntelligentCommand,
-        ExternalCommand, CommandInfo {
+        ExternalCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("mode",
+            "mode [changes] - displays or changes the current channel modes",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -69,30 +75,6 @@ public class Mode extends Command implements IntelligentCommand,
         } else {
             server.getParser().sendRawMessage("MODE " + channel + " " + args.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "mode";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "mode [changes] - displays or changes the current channel modes";
     }
 
     /** {@inheritDoc} */

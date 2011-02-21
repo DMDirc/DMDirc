@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,7 +39,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
  */
 @CommandOptions(allowOffline = false)
 public class ChannelSettings extends Command implements
-        IntelligentCommand, CommandInfo {
+        IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("channelsettings",
+            "channelsettings - opens the channel settings window",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -46,30 +52,6 @@ public class ChannelSettings extends Command implements
             final CommandArguments args, final CommandContext context) {
         context.getSource().getController().showChannelSettingsDialog(
                 ((ChannelCommandContext) context).getChannel());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "channelsettings";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "channelsettings - opens the channel settings window";
     }
 
     /** {@inheritDoc} */

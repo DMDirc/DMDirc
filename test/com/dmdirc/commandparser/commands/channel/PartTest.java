@@ -50,11 +50,11 @@ public class PartTest {
     @Before
     public void setUp() throws InvalidIdentityFileException {
         IdentityManager.load();
-        
+
         channel = mock(Channel.class);
         origin = mock(FrameContainer.class);
         manager = mock(ConfigManager.class);
-        
+
         when(origin.getConfigManager()).thenReturn(manager);
         when(manager.getOption("general", "partmessage")).thenReturn("config part message");
     }
@@ -62,7 +62,7 @@ public class PartTest {
     @Test
     public void testWithoutArgs() {
         command.execute(origin, new CommandArguments("/part"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("config part message");
         verify(channel).close();
@@ -71,7 +71,7 @@ public class PartTest {
     @Test
     public void testWithArgs() {
         command.execute(origin, new CommandArguments("/part custom part"),
-                new ChannelCommandContext(null, command, channel));
+                new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("custom part");
         verify(channel).close();

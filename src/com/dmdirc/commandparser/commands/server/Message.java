@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -43,7 +44,12 @@ import com.dmdirc.ui.interfaces.InputWindow;
  */
 @CommandOptions(allowOffline = false)
 public class Message extends Command implements IntelligentCommand,
-        WrappableCommand, CommandInfo {
+        WrappableCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("msg",
+            "msg <target> <message> - sends a private message",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -77,30 +83,6 @@ public class Message extends Command implements IntelligentCommand,
                 }
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "msg";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "msg <target> <message> - sends a private message";
     }
 
     /** {@inheritDoc} */

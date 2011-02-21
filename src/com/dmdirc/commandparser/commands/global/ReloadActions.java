@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -35,8 +36,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 /**
  * Allows the user to reload actions.
  */
-public final class ReloadActions extends Command implements IntelligentCommand,
-        CommandInfo {
+public final class ReloadActions extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("reloadactions",
+            "reloadactions - reloads actions from disk",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -44,30 +49,6 @@ public final class ReloadActions extends Command implements IntelligentCommand,
             final CommandArguments args, final CommandContext context) {
         ActionManager.getActionManager().loadUserActions();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getName() {
-        return "reloadactions";
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public String getHelp() {
-        return "reloadactions - reloads actions from disk";
     }
 
     /** {@inheritDoc} */

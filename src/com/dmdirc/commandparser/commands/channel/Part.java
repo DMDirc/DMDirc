@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,7 +37,12 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
  * The part command parts the current channel with a specified part message.
  */
 @CommandOptions(allowOffline=false)
-public class Part extends Command implements CommandInfo {
+public class Part extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("part",
+            "part [reason] - parts the channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -48,27 +54,4 @@ public class Part extends Command implements CommandInfo {
         channel.close();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "part";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "part [reason] - parts the channel";
-    }
 }

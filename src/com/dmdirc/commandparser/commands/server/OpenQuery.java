@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -43,7 +44,12 @@ import com.dmdirc.ui.messages.Styliser;
  * Allows the user to open a query dialog with another user.
  */
 public class OpenQuery extends Command implements IntelligentCommand,
-        WrappableCommand, CommandInfo {
+        WrappableCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("query",
+            "query <user> [message] - opens a query with the specified user",
+            CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -75,30 +81,6 @@ public class OpenQuery extends Command implements IntelligentCommand,
         if (!args.isSilent()) {
             context.getSource().getController().requestWindowFocus(query);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "query";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "query <user> [message] - opens a query with the specified user";
     }
 
     /** {@inheritDoc} */

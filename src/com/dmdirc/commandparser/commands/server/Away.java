@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -36,7 +37,11 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
  * The away command allows the user to set their away message.
  */
 @CommandOptions(allowOffline = false)
-public class Away extends Command implements CommandInfo {
+public class Away extends Command {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("away",
+           "away <reason> - marks you as away", CommandType.TYPE_SERVER);
 
     /** {@inheritDoc} */
     @Override
@@ -50,30 +55,6 @@ public class Away extends Command implements CommandInfo {
         } else {
             server.getParser().getLocalClient().setAway(line);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "away";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_SERVER;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "away <reason> - marks you as away";
     }
 
 }

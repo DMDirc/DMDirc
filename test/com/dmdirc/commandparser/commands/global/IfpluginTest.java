@@ -43,7 +43,7 @@ public class IfpluginTest {
     public void testUsageNoArgs() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo"),
-                new CommandContext(null, command));
+                new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -52,7 +52,7 @@ public class IfpluginTest {
     public void testUsageOneArg() {
         final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments("/foo bar"),
-                new CommandContext(null, command));
+                new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }

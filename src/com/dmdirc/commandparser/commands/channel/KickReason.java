@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -41,8 +42,12 @@ import com.dmdirc.ui.input.TabCompletionType;
  * This version allows the user to specify a reason.
  */
 @CommandOptions(allowOffline = false)
-public class KickReason extends Command implements IntelligentCommand,
-        CommandInfo {
+public class KickReason extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("kick",
+            "kick <user> [reason] - kicks the specified user from the channel",
+            CommandType.TYPE_CHANNEL);
 
     /** {@inheritDoc} */
     @Override
@@ -64,30 +69,6 @@ public class KickReason extends Command implements IntelligentCommand,
             victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1)
                     : origin.getConfigManager().getOption("general", "kickmessage"));
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "kick";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_CHANNEL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "kick <user> [reason] - kicks the specified user from the channel";
     }
 
     /** {@inheritDoc} */

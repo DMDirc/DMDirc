@@ -24,6 +24,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -38,7 +39,13 @@ import com.dmdirc.ui.interfaces.InputWindow;
  *
  * @since 0.6.4
  */
-public class Input extends Command implements IntelligentCommand, CommandInfo {
+public class Input extends Command implements IntelligentCommand {
+
+    /** A command info object for this command. */
+    public static final CommandInfo INFO = new BaseCommandInfo("input",
+            "input [--clear] <text to insert into inputfield> - Adds text to"
+            + " the active window's input field",
+            CommandType.TYPE_GLOBAL);
 
     /** {@inheritDoc} */
     @Override
@@ -56,31 +63,6 @@ public class Input extends Command implements IntelligentCommand, CommandInfo {
             ((InputWindow) context.getSource()).getInputHandler()
                     .addToInputField(args.getArgumentsAsString());
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "input";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean showInHelp() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.TYPE_GLOBAL;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return "input [--clear] <text to insert into inputfield> - Adds text to"
-                + " the active window's input field";
     }
 
     /** {@inheritDoc} */
