@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser used in the context of a server.
@@ -68,8 +67,8 @@ public class ServerCommandParser extends GlobalCommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer origin,
-            final Window window, final CommandInfo commandInfo,
-            final Command command, final CommandArguments args) {
+            final CommandInfo commandInfo, final Command command,
+            final CommandArguments args) {
         if (commandInfo.getType() == CommandType.TYPE_SERVER) {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
                     && (server == null || (server.getState() != ServerState.CONNECTED
@@ -79,10 +78,10 @@ public class ServerCommandParser extends GlobalCommandParser {
                     origin.addLine("commandError", "You must be connected to use this command");
                 }
             } else {
-                command.execute(origin, args, new ServerCommandContext(window, commandInfo, server));
+                command.execute(origin, args, new ServerCommandContext(origin, commandInfo, server));
             }
         } else {
-            super.executeCommand(origin, window, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args);
         }
     }
 

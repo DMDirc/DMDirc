@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.parsers.*;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.ui.interfaces.Window;
 
 public class TestCommandParser extends CommandParser {
     private static final long serialVersionUID = 7073002401375438532L;
@@ -50,7 +49,7 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(FrameContainer origin, Window window,
+    protected void executeCommand(FrameContainer origin,
             CommandInfo commandInfo, Command command, CommandArguments args) {
         executedCommand = command;
         wasSilent = args.isSilent();

@@ -26,6 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -37,7 +38,6 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
 /**
@@ -79,7 +79,9 @@ public class OpenQuery extends Command implements IntelligentCommand,
         }
 
         if (!args.isSilent()) {
-            context.getSource().getController().requestWindowFocus(query);
+            //TODO how are we going to handle focusing an existing query?
+            //context.getSource().getController().requestWindowFocus(query);
+            return; //NOPMD
         }
     }
 
@@ -99,10 +101,11 @@ public class OpenQuery extends Command implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public int getLineCount(final InputWindow origin, final CommandArguments arguments) {
+    public int getLineCount(final WritableFrameContainer origin,
+            final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return origin.getContainer().getServer().getNumLines("PRIVMSG "
+            return origin.getServer().getNumLines("PRIVMSG "
                     + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;

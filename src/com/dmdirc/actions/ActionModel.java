@@ -28,7 +28,6 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,7 +140,6 @@ public class ActionModel {
             return false;
         }
 
-        Window window = null;
         WritableFrameContainer container = null;
         CommandParser cp = null;
 
@@ -152,10 +150,6 @@ public class ActionModel {
             container = ServerManager.getServerManager().getServers().get(0);
         }
 
-        if (arguments.length > 0 && arguments[0] instanceof Window) {
-            window = (Window) arguments[0];
-        }
-
         if (container == null) {
             cp = GlobalCommandParser.getGlobalCommandParser();
         } else {
@@ -163,7 +157,7 @@ public class ActionModel {
         }
 
         for (String command : response) {
-            cp.parseCommand(container, window, sub.doSubstitution(command, arguments));
+            cp.parseCommand(container, sub.doSubstitution(command, arguments));
         }
 
         if (newFormat != null && format != null) {

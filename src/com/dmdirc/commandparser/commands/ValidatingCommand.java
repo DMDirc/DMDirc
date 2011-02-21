@@ -21,8 +21,8 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.validators.ValidationResponse;
 
 /**
@@ -39,6 +39,7 @@ public interface ValidatingCommand {
      * @return A validation response indicating the validity of the arguments
      * @since 0.6.3m1
      */
-    ValidationResponse validateArguments(InputWindow origin, CommandArguments arguments);
+    ValidationResponse validateArguments(WritableFrameContainer origin,
+            CommandArguments arguments);
 
 }

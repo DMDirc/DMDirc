@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command context for server commands.
@@ -44,7 +44,7 @@ public class ServerCommandContext extends CommandContext {
      * @param commandInfo The command info object which associated the command with the input
      * @param server The server associated with the command
      */
-    public ServerCommandContext(final Window source, final CommandInfo commandInfo,
+    public ServerCommandContext(final FrameContainer source, final CommandInfo commandInfo,
             final Server server) {
         super(source, commandInfo);
         this.server = server;

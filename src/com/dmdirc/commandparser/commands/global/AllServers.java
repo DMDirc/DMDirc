@@ -52,7 +52,7 @@ public class AllServers extends Command implements IntelligentCommand {
         final String command = args.getArgumentsAsString();
 
         for (Server target : ServerManager.getServerManager().getServers()) {
-            target.getCommandParser().parseCommand(target, context.getSource(), command);
+            target.getCommandParser().parseCommand(target, command);
         }
     }
 

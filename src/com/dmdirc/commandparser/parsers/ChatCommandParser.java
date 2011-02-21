@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser which implements common functionality for chat windows
@@ -71,18 +70,20 @@ public class ChatCommandParser extends ServerCommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer origin,
-            final Window window, final CommandInfo commandInfo,
-            final Command command, final CommandArguments args) {
+            final CommandInfo commandInfo, final Command command,
+            final CommandArguments args) {
         if (commandInfo.getType() == CommandType.TYPE_CHAT) {
-            command.execute(origin, args, new ChatCommandContext(window, commandInfo, owner));
+            command.execute(origin, args, new ChatCommandContext(origin,
+                    commandInfo, owner));
         } else {
-            super.executeCommand(origin, window, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final FrameContainer origin,
+            final String line) {
         owner.sendLine(line);
     }
 

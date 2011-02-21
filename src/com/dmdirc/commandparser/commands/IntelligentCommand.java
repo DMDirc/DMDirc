@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public interface IntelligentCommand {
     class IntelligentCommandContext {
 
         /** The window the command is being entered in. */
-        private final InputWindow window;
+        private final WritableFrameContainer window;
 
         /** The previously supplied arguments, if any. */
         private final List<String> previousArgs;
@@ -67,7 +67,7 @@ public interface IntelligentCommand {
          * @param previousArgs The previously supplied arguments, if any
          * @param partial The partially-typed word being completed
          */
-        public IntelligentCommandContext(final InputWindow window,
+        public IntelligentCommandContext(final WritableFrameContainer window,
                 final List<String> previousArgs, final String partial) {
             this.window = window;
             this.previousArgs = previousArgs;
@@ -79,7 +79,7 @@ public interface IntelligentCommand {
          *
          * @return The command's input window
          */
-        public InputWindow getWindow() {
+        public WritableFrameContainer getWindow() {
             return window;
         }
 

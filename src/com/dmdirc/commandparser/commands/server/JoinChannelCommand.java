@@ -118,7 +118,7 @@ public class JoinChannelCommand extends Command implements
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        final FrameContainer source = context.getWindow().getContainer();
+        final FrameContainer source = context.getWindow();
         final Server server = source.getServer();
         final List<String> results = checkSource(source, true, true);
 

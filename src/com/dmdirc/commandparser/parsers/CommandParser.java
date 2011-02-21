@@ -36,7 +36,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
@@ -132,18 +131,18 @@ public abstract class CommandParser implements Serializable {
      * @since 0.6.4
      */
     public final void parseCommand(final FrameContainer origin,
-            final Window window, final String line, final boolean parseChannel) {
+            final String line, final boolean parseChannel) {
         final CommandArguments args = new CommandArguments(line);
 
         if (args.isCommand()) {
-            if (handleChannelCommand(origin, window, args, parseChannel)) {
+            if (handleChannelCommand(origin, args, parseChannel)) {
                 return;
             }
 
             if (commands.containsKey(args.getCommandName().toLowerCase())) {
                 final CommandInfoPair pair = commands.get(args.getCommandName().toLowerCase());
                 addHistory(args.getStrippedLine());
-                executeCommand(origin, window, pair.getCommandInfo(), pair.getCommand(), args);
+                executeCommand(origin, pair.getCommandInfo(), pair.getCommand(), args);
             } else {
                 handleInvalidCommand(origin, args);
             }
@@ -167,7 +166,7 @@ public abstract class CommandParser implements Serializable {
      * @return True iff the command was handled, false otherwise
      */
     protected boolean handleChannelCommand(final FrameContainer origin,
-            final Window window, final CommandArguments args, final boolean parseChannel) {
+            final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
@@ -194,7 +193,7 @@ public abstract class CommandParser implements Serializable {
 
                 if (server.hasChannel(channel)) {
                     server.getChannel(channel).getCommandParser()
-                            .parseCommand(origin, window, commandManager.getCommandChar()
+                            .parseCommand(origin, commandManager.getCommandChar()
                             + args.getCommandName() + " " + args.getWordsAsString(2), false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand
@@ -258,8 +257,8 @@ public abstract class CommandParser implements Serializable {
      * @since 0.6.4
      */
     public final void parseCommand(final FrameContainer origin,
-            final Window window, final String line) {
-        parseCommand(origin, window, line, true);
+            final String line) {
+        parseCommand(origin, line, true);
     }
 
     /**
@@ -283,8 +282,8 @@ public abstract class CommandParser implements Serializable {
      * @since 0.6.4
      */
     protected abstract void executeCommand(final FrameContainer origin,
-            final Window window, final CommandInfo commandInfo,
-            final Command command, final CommandArguments args);
+            final CommandInfo commandInfo, final Command command,
+            final CommandArguments args);
 
     /**
      * Called when the user attempted to issue a command (i.e., used the command

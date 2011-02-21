@@ -229,7 +229,6 @@ public class CommandManager {
 
         // Channel commands
         registerCommand(new Ban(), Ban.INFO);
-        registerCommand(new ChannelSettings(), ChannelSettings.INFO);
         registerCommand(new Cycle(), Cycle.INFO);
         registerCommand(new Invite(), Invite.INFO);
         registerCommand(new KickReason(), KickReason.INFO);
@@ -254,7 +253,6 @@ public class CommandManager {
         registerCommand(new OpenQuery(), OpenQuery.INFO);
         registerCommand(new Raw(), Raw.INFO);
         registerCommand(new Reconnect(), Reconnect.INFO);
-        registerCommand(new ServerSettings(), ServerSettings.INFO);
         registerCommand(new Umode(), Umode.INFO);
 
         registerCommand(new RawServerCommand("lusers"));

@@ -73,10 +73,10 @@ public class Ifplugin extends Command implements IntelligentCommand {
         if (result != negative) {
             if (origin == null) {
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
-                        context.getSource(), args.getArgumentsAsString(1));
+                        args.getArgumentsAsString(1));
             } else {
                 ((WritableFrameContainer) origin).getCommandParser()
-                        .parseCommand(origin, context.getSource(), args.getArgumentsAsString(1));
+                        .parseCommand(origin, args.getArgumentsAsString(1));
             }
         }
     }

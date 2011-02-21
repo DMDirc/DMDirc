@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command parser that is tailored for use in a query environment. Handles
@@ -79,12 +78,13 @@ public class QueryCommandParser extends ChatCommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer origin,
-            final Window window, final CommandInfo commandInfo,
-            final Command command, final CommandArguments args) {
+            final CommandInfo commandInfo, final Command command,
+            final CommandArguments args) {
         if (commandInfo.getType() == CommandType.TYPE_QUERY) {
-            command.execute(origin, args, new QueryCommandContext(window, commandInfo, query));
+            command.execute(origin, args, new QueryCommandContext(origin,
+                    commandInfo, query));
         } else {
-            super.executeCommand(origin, window, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args);
         }
     }
 

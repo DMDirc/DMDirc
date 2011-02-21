@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A command context specific to chat windows.
@@ -43,8 +43,8 @@ public class ChatCommandContext extends ServerCommandContext {
      * @param commandInfo The command info object which associated the command with the input
      * @param chat The chat container associated with the command
      */
-    public ChatCommandContext(final Window source, final CommandInfo commandInfo,
-            final MessageTarget chat) {
+    public ChatCommandContext(final FrameContainer source,
+            final CommandInfo commandInfo, final MessageTarget chat) {
         super(source, commandInfo, chat.getServer());
         this.chat = chat;
     }

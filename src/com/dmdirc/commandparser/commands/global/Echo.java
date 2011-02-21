@@ -128,11 +128,10 @@ public class Echo extends Command implements IntelligentCommand {
                 && context.getPreviousArgs().get(0).equals("--ts"))) {
 
             final List<FrameContainer> windowList = new ArrayList<FrameContainer>();
-            final Server currentServer = context.getWindow().getContainer()
-                    .getServer();
+            final Server currentServer = context.getWindow().getServer();
 
             //Active window's Children
-            windowList.addAll(context.getWindow().getContainer().getChildren());
+            windowList.addAll(context.getWindow().getChildren());
 
             //Children of Current Window's server
             if (currentServer != null) {

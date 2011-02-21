@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * The command parser used for global commands.
@@ -76,9 +75,9 @@ public class GlobalCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final FrameContainer origin,
-            final Window window, final CommandInfo commandInfo,
-            final Command command, final CommandArguments args) {
-        command.execute(origin, args, new CommandContext(window, commandInfo));
+            final CommandInfo commandInfo, final Command command,
+            final CommandArguments args) {
+        command.execute(origin, args, new CommandContext(origin, commandInfo));
     }
 
     /**

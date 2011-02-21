@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.input;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
@@ -30,7 +31,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.MapList;
 
 import java.util.Arrays;
@@ -234,7 +234,8 @@ public class TabCompleter {
      * @return Additional tab targets for the text, or null if none are available
      * @since 0.6.4
      */
-    private static AdditionalTabTargets getIntelligentResults(final InputWindow window,
+    private static AdditionalTabTargets getIntelligentResults(
+            final WritableFrameContainer window,
             final CommandArguments args, final String partial) {
         if (!args.isCommand()) {
             return null;
@@ -274,8 +275,9 @@ public class TabCompleter {
      * @return Additional tab targets for the text, or null if none are available
      * @since 0.6.4
      */
-    public static AdditionalTabTargets getIntelligentResults(final InputWindow window,
-            final String text, final String partial) {
+    public static AdditionalTabTargets getIntelligentResults(
+            final WritableFrameContainer window, final String text,
+            final String partial) {
         return getIntelligentResults(window, new CommandArguments(text), partial);
     }
 }

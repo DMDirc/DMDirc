@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.chat;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.BaseCommandInfo;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -32,7 +33,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.validators.ValidationResponse;
 
 /**
@@ -59,17 +59,18 @@ public class Me extends Command implements ValidatingCommand {
 
     /** {@inheritDoc} */
     @Override
-    public ValidationResponse validateArguments(final InputWindow origin,
+    public ValidationResponse validateArguments(
+            final WritableFrameContainer origin,
             final CommandArguments arguments) {
-        if (origin.getContainer().getServer() == null
-                || origin.getContainer().getServer().getParser() == null) {
+        if (origin.getServer() == null
+                || origin.getServer().getParser() == null) {
             return new ValidationResponse();
         }
 
         final int length = 2 + arguments.getArgumentsAsString().length();
 
-        if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
-                origin.getContainer().getName()) <= length) {
+        if (origin.getServer().getParser().getMaxLength("PRIVMSG",
+                origin.getName()) <= length) {
             return new ValidationResponse("Too long");
         } else {
             return new ValidationResponse();

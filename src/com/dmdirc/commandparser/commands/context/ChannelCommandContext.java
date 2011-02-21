@@ -23,8 +23,8 @@
 package com.dmdirc.commandparser.commands.context;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A specialised {@link CommandContext} for commands executed in channels.
@@ -44,7 +44,7 @@ public class ChannelCommandContext extends ChatCommandContext {
      * with the input
      * @param channel The channel associated with the command
      */
-    public ChannelCommandContext(final Window source,
+    public ChannelCommandContext(final FrameContainer source,
             final CommandInfo commandInfo, final Channel channel) {
         super(source, commandInfo, channel);
         this.channel = channel;

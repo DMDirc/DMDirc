@@ -289,7 +289,7 @@ public class Set extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 
         if (arg == 0) {
-            res.addAll(context.getWindow().getContainer().getConfigManager()
+            res.addAll(context.getWindow().getConfigManager()
                     .getDomains());
             res.add("--unset");
             res.add("--append");
@@ -301,10 +301,10 @@ public class Set extends Command implements IntelligentCommand {
                     || previousArgs.get(0).equalsIgnoreCase("--append")
                     || previousArgs.get(0).equalsIgnoreCase("--server")
                     || previousArgs.get(0).equalsIgnoreCase("--channel")) {
-                res.addAll(context.getWindow().getContainer().getConfigManager()
+                res.addAll(context.getWindow().getConfigManager()
                         .getDomains());
             } else {
-                res.addAll(context.getWindow().getContainer().getConfigManager()
+                res.addAll(context.getWindow().getConfigManager()
                         .getOptions(previousArgs.get(0)).keySet());
             }
             res.excludeAll();
@@ -312,7 +312,7 @@ public class Set extends Command implements IntelligentCommand {
                 || previousArgs.get(0).equalsIgnoreCase("--append")
                 || previousArgs.get(0).equalsIgnoreCase("--server")
                 || previousArgs.get(0).equalsIgnoreCase("--channel"))) {
-            res.addAll(context.getWindow().getContainer().getConfigManager()
+            res.addAll(context.getWindow().getConfigManager()
                     .getOptions(previousArgs.get(1)).keySet());
             res.excludeAll();
         }

@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.input;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandArguments;
@@ -37,7 +38,6 @@ import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputValidationListener;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.RollingList;
@@ -93,7 +93,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The CommandParser to use for our input. */
     protected final CommandParser commandParser;
     /** The frame that we belong to. */
-    protected final InputWindow parentWindow;
+    protected final WritableFrameContainer parentWindow;
     /** The tab completion style. */
     protected TabCompletionStyle style;
     /** Our listener list. */
@@ -109,10 +109,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     public InputHandler(final InputField thisTarget,
             final CommandParser thisCommandParser,
-            final InputWindow thisParentWindow) {
+            final WritableFrameContainer thisParentWindow) {
 
-        buffer = new RollingList<String>(thisParentWindow.getContainer()
-                .getConfigManager().getOptionInt("ui", "inputbuffersize"), "");
+        buffer = new RollingList<String>(thisParentWindow.getConfigManager()
+                .getOptionInt("ui", "inputbuffersize"), "");
 
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
@@ -120,7 +120,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
         setStyle();
 
-        parentWindow.getContainer().getConfigManager().addChangeListener(
+        parentWindow.getConfigManager().addChangeListener(
                 "tabcompletion", "style", this);
 
         addUpHandler();
@@ -177,9 +177,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     private void setStyle() {
         style = (TabCompletionStyle) PluginManager.getPluginManager()
-                .getServiceProvider("tabcompletion", parentWindow.getContainer()
+                .getServiceProvider("tabcompletion", parentWindow
                 .getConfigManager().getOption("tabcompletion", "style"))
-                .getExportedService("getCompletionStyle").execute(tabCompleter, parentWindow);
+                .getExportedService("getCompletionStyle").execute(tabCompleter,
+                parentWindow);
     }
 
     /**
@@ -240,7 +241,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 fireLineWrap(count);
             }
         } else {
-            final int lines = parentWindow.getContainer().getNumLines(text);
+            final int lines = parentWindow.getNumLines(text);
                 fireLineWrap(lines);
         }
     }
@@ -330,7 +331,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             case KeyEvent.VK_ENTER:
                 if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
-                    commandParser.parseCommandCtrl(parentWindow.getContainer(), line);
+                    commandParser.parseCommandCtrl(parentWindow, line);
                     addToBuffer(line);
                 }
                 break;
@@ -486,12 +487,11 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             ActionManager.getActionManager().triggerEvent(
                     CoreActionType.CLIENT_USER_INPUT, null,
-                    parentWindow.getContainer(), thisBuffer);
+                    parentWindow, thisBuffer);
 
             addToBuffer(thisBuffer.toString());
 
-            commandParser.parseCommand(parentWindow.getContainer(),
-                    parentWindow, thisBuffer.toString());
+            commandParser.parseCommand(parentWindow, thisBuffer.toString());
         }
         fireLineWrap(0);
         fireCommandPassed();

@@ -55,7 +55,7 @@ public class AllChannels extends Command implements IntelligentCommand {
 
         for (String channel : server.getChannels()) {
             server.getChannel(channel).getCommandParser()
-                    .parseCommand(server.getChannel(channel), context.getSource(), command);
+                    .parseCommand(server.getChannel(channel), command);
         }
     }
 
