@@ -272,7 +272,6 @@ public class CommandManager {
         registerCommand(new Exit(), Exit.INFO);
         registerCommand(new Help(), Help.INFO);
         registerCommand(new Ifplugin(), Ifplugin.INFO);
-        registerCommand(new Input(), Input.INFO);
         registerCommand(new NewServer(), NewServer.INFO);
         registerCommand(new Notify(), Notify.INFO);
         registerCommand(new LoadPlugin(), LoadPlugin.INFO);
