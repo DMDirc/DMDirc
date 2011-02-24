@@ -2,6 +2,8 @@
 <project name="DMDirc-versioning" default="default" basedir=".">
     <description>Adds automatic versioning information to DMDirc</description>
 
+    <include file="build-gitversion.xml"/>
+
     <property name="version.config" value="build/classes/com/dmdirc/version.config"/>
     <property name="defaults.path" value="modules/defaults/.git/"/>
     <property name="defaults.output" value="build/classes/com/dmdirc/config/defaults/"/>
@@ -84,14 +86,8 @@ identity:
     <target name="-read-identities" depends="-read-identities-git"/>
 
     <target name="-read-identities-git" if="is.git">
-        <exec dir="." executable="bash" outputproperty="defaults.version">
-            <arg value="-c"/>
-            <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- default | xargs git --git-dir ${defaults.path} describe --tags"/>
-        </exec>
-        <exec dir="." executable="bash" outputproperty="modealiases.version">
-            <arg value="-c"/>
-            <arg value="git --git-dir ${defaults.path} rev-list --all -n 1 -- modealiases | xargs git --git-dir ${defaults.path} describe --tags"/>
-        </exec>
+        <gitversion target="default" gitdir="${defaults.path}" outputproperty="defaults.version"/>
+        <gitversion target="modealiases" gitdir="${defaults.path}" outputproperty="modealiases.version"/>
     </target>
 
 </project>

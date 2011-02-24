@@ -14,10 +14,9 @@
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
 
     <target name="build-plugins" description="Build all plugins">
-        <exec executable="bash">
-            <arg value="createAllPluginJar.sh"/>
-            <arg value="${src.dir}/com/dmdirc/addons/"/>
-        </exec>
+        <subant buildpath="modules/plugins" target="jar">
+            <property name="plugins.dmdirc.build.dir" value="../../${build.classes.dir}"/>
+        </subant>
     </target>
 
     <target name="-update-bundled-plugins">

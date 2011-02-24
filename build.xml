@@ -4,7 +4,6 @@
 
     <import file="nbproject/build-impl.xml"/>
     <import file="build-installer.xml"/>
-    <import file="build-jar.xml"/>
     <import file="build-plugins.xml"/>
     <import file="build-reports.xml"/>
     <import file="build-tests.xml"/>
@@ -21,8 +20,8 @@
         </get>
     </target>
 
-    <target name="-post-compile" depends="-write-version, build-plugins, -addpluginlibs"/>
+    <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-addjarlibs,-update-bundled-plugins"/>
+    <target name="-post-jar" depends="-update-bundled-plugins"/>
 
 </project>
