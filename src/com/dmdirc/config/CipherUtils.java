@@ -52,9 +52,6 @@ import net.miginfocom.Base64;
  */
 public abstract class CipherUtils {
 
-    /** Singleton instance. */
-    private static CipherUtils me;
-
     /** Salt. */
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
