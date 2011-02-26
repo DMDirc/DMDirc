@@ -1056,13 +1056,18 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         classloader = pi.getPluginClassLoader().getSubClassLoader(this);
                     }
                 }
+
                 // Now unload ourself
                 try {
                     plugin.onUnload();
                 } catch (Exception e) {
                     lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+                } catch (LinkageError e) {
+                    lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
+                    Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 }
+
                 ActionManager.getActionManager().triggerEvent(
                         CoreActionType.PLUGIN_UNLOADED, null, this);
                 synchronized (provides) {
