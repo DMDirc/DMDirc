@@ -61,7 +61,7 @@
 <rule ref="rulesets/codesize.xml/NcssConstructorCount"><priority>4</priority></rule>
 <rule ref="rulesets/codesize.xml/TooManyMethods"><priority>3</priority></rule>
 
-<rule ref="rulesets/controversial.xml/UnnecessaryConstructor"><priority>2</priority></rule>
+<rule ref="rulesets/controversial.xml/UnnecessaryConstructor"><priority>1</priority></rule>
 <rule ref="rulesets/controversial.xml/NullAssignment"><priority>3</priority></rule>
 <rule ref="rulesets/controversial.xml/UnusedModifier"><priority>1</priority></rule>
 <rule ref="rulesets/controversial.xml/AssignmentInOperand"><priority>2</priority></rule>

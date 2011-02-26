@@ -69,11 +69,6 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
     /** The user-defined ordering for this target. */
     protected int order = 50000;
 
-    /** Creates a new instance of ConfigTarget. */
-    public ConfigTarget() {
-        //Do nothing.
-    }
-
     /**
      * Sets the ordering value for this target. Lower means higher preference.
      *

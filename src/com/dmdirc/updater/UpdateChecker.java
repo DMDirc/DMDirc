@@ -111,13 +111,6 @@ public final class UpdateChecker implements Runnable {
         COMPONENTS.add(new DefaultsComponent());
     }
 
-    /**
-     * Instantiates an Updatechecker.
-     */
-    public UpdateChecker() {
-        //Ignore
-    }
-
     /** {@inheritDoc} */
     @Override
     public void run() {

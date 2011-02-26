@@ -43,12 +43,6 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     private List<TabCompletionType> includes
             = new ArrayList<TabCompletionType>(Arrays.asList(TabCompletionType.values()));
 
-    /** Initialises the AdditionalTabTargets. */
-    public AdditionalTabTargets() {
-        super();
-        //Do nothing
-    }
-
     /**
      * Determines if the specified type of completion should be used.
      *

@@ -28,11 +28,6 @@ package com.dmdirc.logger;
 public final class DMDircExceptionHandler implements
         Thread.UncaughtExceptionHandler {
 
-    /** Instantiates the Exception handler. */
-    public DMDircExceptionHandler() {
-        super();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
