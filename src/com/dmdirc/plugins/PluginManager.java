@@ -37,6 +37,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -261,7 +262,9 @@ public class PluginManager implements ActionListener {
         }
 
         try {
-            final PluginInfo pluginInfo = new PluginInfo(new URL("file:" + getDirectory() + filename));
+            final PluginMetaData metadata = new PluginMetaData(new URL("jar:file://" + getDirectory() + filename + "!/META-INF/plugin.config"));
+            metadata.load();
+            final PluginInfo pluginInfo = new PluginInfo(metadata, new URL("file:" + getDirectory() + filename));
             final PluginInfo existing = getPluginInfoByName(pluginInfo.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + " is the same as " + existing.getFilename() + ")");
@@ -418,19 +421,18 @@ public class PluginManager implements ActionListener {
         while (!dirs.isEmpty()) {
             final File dir = dirs.pop();
             if (dir.isDirectory()) {
-                for (File file : dir.listFiles()) {
-                    dirs.add(file);
-                }
+                dirs.addAll(Arrays.asList(dir.listFiles()));
             } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
-                String target = dir.getPath();
-
                 // Remove the plugin dir
-                target = target.substring(myDir.length(), target.length());
+                final String target = dir.getPath().substring(myDir.length());
+
                 if (addPlugins) {
                     addPlugin(target);
                 } else {
                     try {
-                        final PluginInfo pi = new PluginInfo(new URL("file:" + getDirectory() + target), false);
+                        final PluginMetaData metadata = new PluginMetaData(new URL("jar:file://" + getDirectory() + target + "!/META-INF/plugin.config"));
+                        metadata.load();
+                        final PluginInfo pi = new PluginInfo(metadata, new URL("file:" + getDirectory() + target), false);
                         res.put(target, pi);
                     } catch (MalformedURLException mue) {
                         Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + target + ": " + mue.getMessage(), mue);

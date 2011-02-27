@@ -30,8 +30,6 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.ConfigFile;
-import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
 
@@ -42,6 +40,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +56,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER
             = java.util.logging.Logger.getLogger(PluginInfo.class.getName());
-    /** Plugin Meta Data. */
-    private volatile ConfigFile metaData;
+
+    /** The metadata for this plugin. */
+    private final PluginMetaData metadata;
     /** URL that this plugin was loaded from. */
     private final URL url;
     /** Filename for this plugin (taken from URL). */
@@ -91,41 +91,46 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Create a new PluginInfo.
      *
+     * @param metadata The plugin's metadata information
      * @param url URL to file that this plugin is stored in.
      * @throws PluginException if there is an error loading the Plugin
-     * @since 0.6
+     * @since 0.6.6
      */
-    public PluginInfo(final URL url) throws PluginException {
-        this(url, true);
+    public PluginInfo(final PluginMetaData metadata, final URL url) throws PluginException {
+        this(metadata, url, true);
     }
 
     /**
      * Create a new PluginInfo.
      *
+     * @param metadata The plugin's metadata information
      * @param url URL to file that this plugin is stored in.
      * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
      * @throws PluginException if there is an error loading the Plugin
-     * @since 0.6
+     * @since 0.6.6
      */
-    public PluginInfo(final URL url, final boolean load) throws PluginException {
+    public PluginInfo(final PluginMetaData metadata, final URL url, final boolean load) throws PluginException {
         this.url = url;
         this.filename = new File(url.getPath()).getName();
+        this.metadata = metadata;
 
         ResourceManager res;
 
         // Check for updates.
         if (new File(getFullFilename() + ".update").exists() && new File(getFullFilename()).delete()) {
             new File(getFullFilename() + ".update").renameTo(new File(getFullFilename()));
+
+            updateMetaData();
         }
 
         if (!load) {
-            // Load the metaData if available.
-            try {
-                metaData = getConfigFile();
-            } catch (IOException ioe) {
-                metaData = null;
-            }
+            // TODO: This is pointless now
             return;
+        }
+
+        if (metadata.hasErrors()) {
+            throw new PluginException("Plugin " + filename + " has metadata "
+                    + "errors: " + metadata.getErrors());
         }
 
         try {
@@ -133,20 +138,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         } catch (IOException ioe) {
             lastError = "Error with resourcemanager: " + ioe.getMessage();
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
-        }
-
-        try {
-            metaData = getConfigFile();
-            if (metaData == null) {
-                lastError = "plugin.config doesn't exist in jar";
-                throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
-            }
-        } catch (IOException e) {
-            lastError = "plugin.config IOException: " + e.getMessage();
-            throw new PluginException("Plugin " + filename + " failed to load, plugin.config failed to open - " + e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            lastError = "plugin.config IllegalArgumentException: " + e.getMessage();
-            throw new PluginException("Plugin " + filename + " failed to load, plugin.config failed to open - " + e.getMessage(), e);
         }
 
         if (!getVersion().isValid()) {
@@ -177,10 +168,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     myClasses.add(classname);
                 }
             }
-
-            if (isPersistent() && loadAll()) {
-                loadEntirePlugin();
-            }
         } else {
             lastError = "One or more requirements not met (" + requirementsError + ")";
             throw new PluginException("Plugin " + filename + " was not loaded. " + lastError);
@@ -188,28 +175,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
-    }
-
-    /**
-     * Get a ConfigFile object for this plugin.
-     * This will load a ConfigFile
-     *
-     * @return the ConfigFile object for this plugin, or null if the plugin has no config
-     * @throws IOException if there is an error with the ResourceManager.
-     */
-    private ConfigFile getConfigFile() throws IOException {
-        ConfigFile file = null;
-        final ResourceManager res = getResourceManager();
-        if (res.resourceExists("META-INF/plugin.config")) {
-            try {
-                file = new ConfigFile(res.getResourceInputStream("META-INF/plugin.config"));
-                file.read();
-            } catch (InvalidConfigFileException icfe) {
-                throw new IOException("Unable to read plugin.config", icfe);
-            }
-        }
-
-        return file;
     }
 
     /**
@@ -231,46 +196,30 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the defaults, formatters and icons for this plugin.
      */
     private void getDefaults() {
-        if (metaData == null) {
-            return;
-        }
-
         final Identity defaults = IdentityManager.getAddonIdentity();
         final String domain = "plugin-" + getName();
 
         LOGGER.finer(getName() + ": Using domain '" + domain + "'");
 
-        if (metaData.isKeyDomain("defaults")) {
-            final Map<String, String> keysection = metaData.getKeyDomain("defaults");
+        for (Map.Entry<String, String> entry : metadata.getDefaultSettings().entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
 
-            for (Map.Entry<String, String> entry : keysection.entrySet()) {
-                final String key = entry.getKey();
-                final String value = entry.getValue();
-
-                defaults.setOption(domain, key, value);
-            }
+            defaults.setOption(domain, key, value);
         }
 
-        if (metaData.isKeyDomain("formatters")) {
-            final Map<String, String> keysection = metaData.getKeyDomain("formatters");
+        for (Map.Entry<String, String> entry : metadata.getFormatters().entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
 
-            for (Map.Entry<String, String> entry : keysection.entrySet()) {
-                final String key = entry.getKey();
-                final String value = entry.getValue();
-
-                defaults.setOption("formatter", key, value);
-            }
+            defaults.setOption("formatter", key, value);
         }
 
-        if (metaData.isKeyDomain("icons")) {
-            final Map<String, String> keysection = metaData.getKeyDomain("icons");
+        for (Map.Entry<String, String> entry : metadata.getIcons().entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
 
-            for (Map.Entry<String, String> entry : keysection.entrySet()) {
-                final String key = entry.getKey();
-                final String value = entry.getValue();
-
-                defaults.setOption("icon", key, value);
-            }
+            defaults.setOption("icon", key, value);
         }
     }
 
@@ -339,7 +288,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         // Get services provided by this plugin
-        final List<String> providesList = metaData.getFlatDomain("provides");
+        final Collection<String> providesList = metadata.getServices();
         if (providesList != null) {
             for (String item : providesList) {
                 final String[] bits = item.split(" ");
@@ -391,19 +340,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if metaData was reloaded ok, else false.
      */
     private boolean updateMetaData() {
-        // Force a new resourcemanager just incase.
-        try {
-            getResourceManager(true);
-            final ConfigFile newMetaData = getConfigFile();
-            if (newMetaData != null) {
-                metaData = newMetaData;
-                return true;
-            }
-        } catch (IOException ioe) {
-            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating the metadata for "+getName(), ioe);
-        }
+        metadata.load();
 
-        return false;
+        return !metadata.hasErrors();
     }
 
     /**
@@ -532,7 +471,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the test passes, false otherwise
      */
     protected boolean checkOS(final String desired, final String actualName, final String actualVersion, final String actualArch) {
-        if (desired.isEmpty()) {
+        if (desired == null || desired.isEmpty()) {
             return true;
         }
 
@@ -553,30 +492,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Checks to see if the UI requirements of the plugin are satisfied.
-     * If the desired string is empty, the test passes.
-     * Otherwise it is used as a regular expressions against the package of the
-     * UIController to test what UI is currently in use.
-     * On failure, the requirementsError field will contain a user-friendly
-     * error message.
-     *
-     * @param desired The desired UI requirements
-     * @param actual The package of the current UI in use.
-     * @return True if the test passes, false otherwise
-     */
-    protected boolean checkUI(final String desired, final String actual) {
-        if (desired.isEmpty()) {
-            return true;
-        }
-
-        if (!actual.toLowerCase().matches(desired)) {
-            requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Checks to see if the file requirements of the plugin are satisfied.
      * If the desired string is empty, the test passes.
      * Otherwise it is passed to File.exists() to see if the file is valid.
@@ -589,7 +504,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the test passes, false otherwise
      */
     protected boolean checkFiles(final String desired) {
-        if (desired.isEmpty()) {
+        if (desired == null || desired.isEmpty()) {
             return true;
         }
 
@@ -624,7 +539,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the test passes, false otherwise
      */
     protected boolean checkPlugins(final String desired) {
-        if (desired.isEmpty()) {
+        if (desired == null || desired.isEmpty()) {
             return true;
         }
 
@@ -665,15 +580,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true/false (Actual error if false is in the requirementsError field)
      */
     public boolean checkRequirements(final boolean preliminary) {
-        if (metaData == null) {
-            // No meta-data, so no requirements.
-            return true;
-        }
-
-        if (!checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
-                || !checkFiles(getKeyValue("requires", "files", ""))
-                || (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", "")))
-                || (!preliminary && !checkServices(metaData.getFlatDomain("required-services")))) {
+        if (!checkOS(metadata.getRequirements().get("os"), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
+                || !checkFiles(metadata.getRequirements().get("files"))
+                || (!preliminary && !checkPlugins(metadata.getRequirements().get("plugins")))
+                || (!preliminary && !checkServices(metadata.getRequiredServices()))) {
             return false;
         }
 
@@ -687,8 +597,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @param services Required services
      * @return true if all services are available
      */
-    private boolean checkServices(final List<String> services) {
-        if (services == null || services.size() < 1) {
+    private boolean checkServices(final Collection<String> services) {
+        if (services == null || services.isEmpty()) {
             return true;
         }
 
@@ -763,7 +673,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * otherwise
      */
     public boolean isLoaded() {
-        return (plugin != null) && !tempLoaded;
+        return plugin != null && !tempLoaded;
     }
 
     /**
@@ -773,23 +683,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * otherwise
      */
     public boolean isTempLoaded() {
-        return (plugin != null) && tempLoaded;
-    }
-
-    /**
-     * Load entire plugin.
-     * This loads all files in the jar immediately.
-     *
-     * @throws PluginException if there is an error with the resourcemanager
-     */
-    private void loadEntirePlugin() throws PluginException {
-        // Load the main "Plugin" from the jar
-        loadPlugin();
-
-        // Now load all the rest.
-        for (String classname : myClasses) {
-            loadClass(classname);
-        }
+        return plugin != null && tempLoaded;
     }
 
     /**
@@ -804,7 +698,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Load any required plugins
      */
     public void loadRequired() {
-        final String required = getKeyValue("requires", "plugins", "");
+        final String required = metadata.getRequirements().get("plugins");
+
+        if (required == null) {
+            return;
+        }
+
         for (String pluginName : required.split(",")) {
             final String[] data = pluginName.split(":");
             if (!data[0].trim().isEmpty()) {
@@ -826,8 +725,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Load the plugin files.
      */
     public void loadPlugin() {
-        if (isLoaded() || metaData == null || isLoading) {
-            lastError = "Not Loading: (" + isLoaded() + "||" + (metaData == null) + "||" + isLoading + ")";
+        if (isLoaded() || isLoading) {
+            lastError = "Not Loading: (" + isLoaded() + "||" + isLoading + ")";
             return;
         }
 
@@ -912,10 +811,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private void loadClass(final String classname) {
         try {
             if (classloader == null) {
-                if (getKeyValue("requires", "parent", "").isEmpty()) {
+                if (metadata.getParent() == null) {
                     classloader = new PluginClassLoader(this);
                 } else {
-                    final String parentName = getKeyValue("requires", "parent", "");
+                    final String parentName = metadata.getParent();
                     final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
                     if (pi == null) {
                         lastError = "Required parent '" + parentName + "' was not found";
@@ -1027,12 +926,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if plugin can be unloaded
      */
     public boolean isUnloadable() {
-        if (isPersistent() || (!isLoaded() && !isTempLoaded())) {
-            return false;
-        } else {
-            final String unloadable = getKeyValue("metadata", "unloadable", "true");
-            return unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1");
-        }
+        return !isPersistent() && (isTempLoaded() || isLoaded())
+                && metadata.isUnloadable();
     }
 
     /**
@@ -1048,8 +943,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     child.unloadPlugin(true);
                 }
                 // Delete ourself as a child of our parent.
-                if (!parentUnloading && !getKeyValue("requires", "parent", "").isEmpty()) {
-                    final String parentName = getKeyValue("requires", "parent", "");
+                final String parentName = metadata.getParent();
+                if (!parentUnloading && parentName != null) {
                     final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
                     if (pi != null) {
                         pi.delChild(this);
@@ -1104,29 +999,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get the value of the given key from the given keysection, or fallback.
-     *
-     * @param section Section to look in
-     * @param key Key to check
-     * @param fallback Value to use if key doesn't exist.
-     * @return Value of the key in the keysection, or the fallback if not present
-     */
-    public String getKeyValue(final String section, final String key, final String fallback) {
-        if (metaData != null && metaData.isKeyDomain(section)) {
-            final Map<String, String> keysection = metaData.getKeyDomain(section);
-            return keysection.containsKey(key) ? keysection.get(key) : fallback;
-        }
-
-        return fallback;
-    }
-
-    /**
      * Get the main Class
      *
      * @return Main Class to begin loading.
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getMainClass() {
-        return getKeyValue("metadata", "mainclass", "");
+        return metadata.getMainClass();
     }
 
     /**
@@ -1151,18 +1031,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the plugin friendly version
      *
      * @return Plugin friendly Version
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getFriendlyVersion() {
-        return getKeyValue("version", "friendly", String.valueOf(getVersion()));
+        return metadata.getFriendlyVersion();
     }
 
     /**
      * Get the plugin version
      *
      * @return Plugin Version
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public Version getVersion() {
-        return new Version(getKeyValue("version", "number", "0"));
+        return metadata.getVersion();
     }
 
     /**
@@ -1175,13 +1059,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return Addon Site ID number
      *         -1 If not present
      *         -2 If non-integer
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public int getAddonID() {
-        try {
-            return Integer.parseInt(getKeyValue("updates", "id", "-1"));
-        } catch (NumberFormatException nfe) {
-            return -2;
-        }
+        return metadata.getUpdaterId();
     }
 
     /**
@@ -1190,12 +1072,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if persistent, else false
      */
     public boolean isPersistent() {
-        if (metaData != null && metaData.isFlatDomain("persistent")) {
-            final List<String> items = metaData.getFlatDomain("persistent");
-            return items.contains("*");
-        }
-
-        return false;
+        return metadata.getPersistentClasses().contains("*");
     }
 
     /**
@@ -1204,12 +1081,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if this plugin contains any persistent classes, else false
      */
     public boolean hasPersistent() {
-        if (metaData != null && metaData.isFlatDomain("persistent")) {
-            final List<String> items = metaData.getFlatDomain("persistent");
-            return !items.isEmpty();
-        }
-
-        return false;
+        return !metadata.getPersistentClasses().isEmpty();
     }
 
     /**
@@ -1217,8 +1089,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @return List of all persistent classes in this plugin
      */
-    public List<String> getPersistentClasses() {
-        final List<String> result = new ArrayList<String>();
+    public Collection<String> getPersistentClasses() {
+        final Collection<String> result = new ArrayList<String>();
 
         if (isPersistent()) {
             try {
@@ -1232,11 +1104,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             } catch (IOException e) {
                 // Jar no longer exists?
             }
-        } else if (metaData != null && metaData.isFlatDomain("persistent")) {
-            return metaData.getFlatDomain("persistent");
         }
 
-        return result;
+        return metadata.getPersistentClasses();
     }
 
     /**
@@ -1248,11 +1118,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public boolean isPersistent(final String classname) {
         if (isPersistent()) {
             return true;
-        } else if (metaData != null && metaData.isFlatDomain("persistent")) {
-            final List<String> items = metaData.getFlatDomain("persistent");
-            return items.contains(classname);
         } else {
-            return false;
+            return metadata.getPersistentClasses().contains(classname);
         }
     }
 
@@ -1293,18 +1160,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the plugin Author.
      *
      * @return Author of plugin
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getAuthor() {
-        return getKeyValue("metadata", "author", "");
+        return metadata.getAuthor();
     }
 
     /**
      * Get the plugin Description.
      *
      * @return Description of plugin
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getDescription() {
-        return getKeyValue("metadata", "description", "");
+        return metadata.getDescription();
     }
 
     /**
@@ -1313,8 +1184,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return minimum dmdirc version required to run the plugin.
      */
     public String getMinVersion() {
-        final String requiredVersion = getKeyValue("requires", "dmdirc", "");
-        if (!requiredVersion.isEmpty()) {
+        final String requiredVersion = metadata.getRequirements().get("dmdirc");
+
+        if (requiredVersion != null) {
             final String[] bits = requiredVersion.split("-");
             return bits[0];
         }
@@ -1328,8 +1200,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return optional maximum dmdirc version on which this plugin can run
      */
     public String getMaxVersion() {
-        final String requiredVersion = getKeyValue("requires", "dmdirc", "");
-        if (!requiredVersion.isEmpty()) {
+        final String requiredVersion = metadata.getRequirements().get("dmdirc");
+
+        if (requiredVersion != null) {
             final String[] bits = requiredVersion.split("-");
             if (bits.length > 1) {
                 return bits[1];
@@ -1343,18 +1216,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the name of the plugin. (Used to identify the plugin)
      *
      * @return Name of plugin
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getName() {
-        return getKeyValue("metadata", "name", "");
+        return metadata.getName();
     }
 
     /**
      * Get the nice name of the plugin. (Displayed to users)
      *
      * @return Nice Name of plugin
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getNiceName() {
-        return getKeyValue("metadata", "nicename", getName());
+        return metadata.getFriendlyName();
     }
 
     /**
@@ -1365,16 +1242,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     @Override
     public String toString() {
         return getNiceName() + " - " + filename;
-    }
-
-    /**
-     * Does this plugin want all its classes loaded?
-     *
-     * @return true/false if loadall=true || loadall=yes
-     */
-    public boolean loadAll() {
-        final String loadAll = getKeyValue("metadata", "loadall", "no");
-        return loadAll.equalsIgnoreCase("true") || loadAll.equalsIgnoreCase("yes");
     }
 
     /** {@inheritDoc} */
@@ -1390,24 +1257,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         exports.clear();
 
         // Get exports provided by this plugin
-        final List<String> exportsList = metaData.getFlatDomain("exports");
-        if (exportsList != null) {
-            for (String item : exportsList) {
-                final String[] bits = item.split(" ");
-                if (bits.length > 2) {
-                    final String methodName = bits[0];
-                    final String methodClass = bits[2];
-                    final String serviceName = (bits.length > 4) ? bits[4] : bits[0];
+        final Collection<String> exportsList = metadata.getExports();
+        for (String item : exportsList) {
+            final String[] bits = item.split(" ");
+            if (bits.length > 2) {
+                final String methodName = bits[0];
+                final String methodClass = bits[2];
+                final String serviceName = (bits.length > 4) ? bits[4] : bits[0];
 
-                    // Add a provides for this
-                    final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
-                    synchronized (provides) {
-                        service.addProvider(this);
-                        provides.add(service);
-                    }
-                    // Add is as an export
-                    exports.put(serviceName, new ExportInfo(methodName, methodClass, this));
+                // Add a provides for this
+                final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
+                synchronized (provides) {
+                    service.addProvider(this);
+                    provides.add(service);
                 }
+                // Add is as an export
+                exports.put(serviceName, new ExportInfo(methodName, methodClass, this));
             }
         }
     }
