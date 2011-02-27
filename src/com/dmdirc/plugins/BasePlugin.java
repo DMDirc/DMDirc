@@ -22,10 +22,16 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Base implementation of the Plugin interface.
@@ -40,6 +46,9 @@ public abstract class BasePlugin implements Plugin {
     private PluginInfo pluginInfo;
     /** Files directory for this plugin. */
     private File filesDir;
+    /** List of commands to load and unload. */
+    private final Map<CommandInfo, Command> commands =
+            new HashMap<CommandInfo, Command>();
 
     /** {@inheritDoc} */
     @Override
@@ -48,6 +57,53 @@ public abstract class BasePlugin implements Plugin {
             domainSet = true;
             myDomain = newDomain;
             domainUpdated();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        loadCommands();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        unloadCommands();
+    }
+
+    /**
+     * Registers a command from this plugin.
+     *
+     * @param command Command to register
+     * @param commandInfo Command info to register
+     */
+    protected void registerCommand(final Command command,
+            final CommandInfo commandInfo) {
+        commands.put(commandInfo, command);
+    }
+
+    /**
+     * Unregisters a command from this plugin.
+     *
+     * @param commandInfo Command info to register
+     */
+    protected void unregisterCommand(final CommandInfo commandInfo) {
+        commands.remove(commandInfo);
+    }
+
+    /** Loads the commands provided by this plugin. */
+    private void loadCommands() {
+        for (Entry<CommandInfo, Command> command : commands.entrySet()) {
+            CommandManager.getCommandManager().registerCommand(
+                    command.getValue(), command.getKey());
+        }
+    }
+
+    /** Unloads the commands loaded by this plugin. */
+    private void unloadCommands() {
+        for (CommandInfo command : commands.keySet()) {
+            CommandManager.getCommandManager().unregisterCommand(command);
         }
     }
 
