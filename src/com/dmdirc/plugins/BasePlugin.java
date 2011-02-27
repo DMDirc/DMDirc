@@ -90,6 +90,7 @@ public abstract class BasePlugin implements Plugin {
      */
     protected void unregisterCommand(final CommandInfo commandInfo) {
         commands.remove(commandInfo);
+        CommandManager.getCommandManager().unregisterCommand(commandInfo);
     }
 
     /** Loads the commands provided by this plugin. */
