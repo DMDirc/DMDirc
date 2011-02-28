@@ -73,8 +73,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private boolean tempLoaded;
     /** List of classes this plugin has. */
     private final List<String> myClasses = new ArrayList<String>();
-    /** Requirements error message. */
-    private String requirementsError = "";
     /** Last Error Message. */
     private String lastError = "No Error";
     /** Are we trying to load? */
@@ -140,37 +138,18 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
 
-        if (!getVersion().isValid()) {
-            lastError = "Incomplete plugin.config (Missing or invalid 'version')";
-            throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
-        } else if (getAuthor().isEmpty()) {
-            lastError = "Incomplete plugin.config (Missing or invalid 'author')";
-            throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
-        } else if (getName().isEmpty() || getName().indexOf(' ') != -1) {
-            lastError = "Incomplete plugin.config (Missing or invalid 'name')";
-            throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
-        } else if (getMainClass().isEmpty()) {
-            lastError = "Incomplete plugin.config (Missing or invalid 'mainclass')";
+        final String mainClass = getMainClass().replace('.', '/') + ".class";
+        if (!res.resourceExists(mainClass)) {
+            lastError = "main class file (" + mainClass + ") not found in jar.";
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
         }
 
-        if (checkRequirements(true)) {
-            final String mainClass = getMainClass().replace('.', '/') + ".class";
-            if (!res.resourceExists(mainClass)) {
-                lastError = "main class file (" + mainClass + ") not found in jar.";
-                throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
+        for (final String classfilename : res.getResourcesStartingWith("")) {
+            String classname = classfilename.replace('/', '.');
+            if (classname.matches("^.*\\.class$")) {
+                classname = classname.replaceAll("\\.class$", "");
+                myClasses.add(classname);
             }
-
-            for (final String classfilename : res.getResourcesStartingWith("")) {
-                String classname = classfilename.replace('/', '.');
-                if (classname.matches("^.*\\.class$")) {
-                    classname = classname.replaceAll("\\.class$", "");
-                    myClasses.add(classname);
-                }
-            }
-        } else {
-            lastError = "One or more requirements not met (" + requirementsError + ")";
-            throw new PluginException("Plugin " + filename + " was not loaded. " + lastError);
         }
 
         updateProvides();
@@ -346,15 +325,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get the contents of requirementsError
-     *
-     * @return requirementsError
-     */
-    public String getRequirementsError() {
-        return requirementsError;
-    }
-
-    /**
      * Gets a resource manager for this plugin
      *
      * @return The resource manager for this plugin
@@ -389,255 +359,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         return myResourceManager;
-    }
-
-    /**
-     * Checks to see if the minimum version requirement of the plugin is
-     * satisfied.
-     * If either version is non-positive, the test passes.
-     * On failure, the requirementsError field will contain a user-friendly
-     * error message.
-     *
-     * @param desired The desired minimum version of DMDirc.
-     * @param actual The actual current version of DMDirc.
-     * @return True if the test passed, false otherwise
-     */
-    protected boolean checkMinimumVersion(final String desired, final int actual) {
-        if (desired.isEmpty()) {
-            return true;
-        }
-
-        int minversion;
-        try {
-            minversion = Integer.parseInt(desired);
-        } catch (NumberFormatException ex) {
-            requirementsError = "'minversion' is a non-integer";
-            return false;
-        }
-
-        if (actual > 0 && minversion > 0 && actual < minversion) {
-            requirementsError = "Plugin is for a newer version of DMDirc";
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Checks to see if the maximum version requirement of the plugin is
-     * satisfied.
-     * If either version is non-positive, the test passes.
-     * If the desired version is empty, the test passes.
-     * On failure, the requirementsError field will contain a user-friendly
-     * error message.
-     *
-     * @param desired The desired maximum version of DMDirc.
-     * @param actual The actual current version of DMDirc.
-     * @return True if the test passed, false otherwise
-     */
-    protected boolean checkMaximumVersion(final String desired, final int actual) {
-        if (desired.isEmpty()) {
-            return true;
-        }
-
-        int maxversion;
-        try {
-            maxversion = Integer.parseInt(desired);
-        } catch (NumberFormatException ex) {
-            requirementsError = "'maxversion' is a non-integer";
-            return false;
-        }
-
-        if (actual > 0 && maxversion > 0 && actual > maxversion) {
-            requirementsError = "Plugin is for an older version of DMDirc";
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Checks to see if the OS requirements of the plugin are satisfied.
-     * If the desired string is empty, the test passes.
-     * Otherwise it is used as one to three colon-delimited regular expressions,
-     * to test the name, version and architecture of the OS, respectively.
-     * On failure, the requirementsError field will contain a user-friendly
-     * error message.
-     *
-     * @param desired The desired OS requirements
-     * @param actualName The actual name of the OS
-     * @param actualVersion The actual version of the OS
-     * @param actualArch The actual architecture of the OS
-     * @return True if the test passes, false otherwise
-     */
-    protected boolean checkOS(final String desired, final String actualName, final String actualVersion, final String actualArch) {
-        if (desired == null || desired.isEmpty()) {
-            return true;
-        }
-
-        final String[] desiredParts = desired.split(":");
-
-        if (!actualName.toLowerCase().matches(desiredParts[0])) {
-            requirementsError = "Invalid OS. (Wanted: '" + desiredParts[0] + "', actual: '" + actualName + "')";
-            return false;
-        } else if (desiredParts.length > 1 && !actualVersion.toLowerCase().matches(desiredParts[1])) {
-            requirementsError = "Invalid OS version. (Wanted: '" + desiredParts[1] + "', actual: '" + actualVersion + "')";
-            return false;
-        } else if (desiredParts.length > 2 && !actualArch.toLowerCase().matches(desiredParts[2])) {
-            requirementsError = "Invalid OS architecture. (Wanted: '" + desiredParts[2] + "', actual: '" + actualArch + "')";
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks to see if the file requirements of the plugin are satisfied.
-     * If the desired string is empty, the test passes.
-     * Otherwise it is passed to File.exists() to see if the file is valid.
-     * Multiple files can be specified by using a "," to separate. And either/or
-     * files can be specified using a "|" (eg /usr/bin/bash|/bin/bash)
-     * If the test fails, the requirementsError field will contain a
-     * user-friendly error message.
-     *
-     * @param desired The desired file requirements
-     * @return True if the test passes, false otherwise
-     */
-    protected boolean checkFiles(final String desired) {
-        if (desired == null || desired.isEmpty()) {
-            return true;
-        }
-
-        for (String files : desired.split(",")) {
-            final String[] filelist = files.split("\\|");
-            boolean foundFile = false;
-            for (String file : filelist) {
-                if (new File(file).exists()) {
-                    foundFile = true;
-                    break;
-                }
-            }
-            if (!foundFile) {
-                requirementsError = "Required file '" + files + "' not found";
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks to see if the plugin requirements of the plugin are satisfied.
-     * If the desired string is empty, the test passes.
-     * Plugins should be specified as:
-     * plugin1[:minversion[:maxversion]],plugin2[:minversion[:maxversion]]
-     * Plugins will be attempted to be loaded if not loaded, else the test will
-     * fail if the versions don't match, or the plugin isn't known.
-     * If the test fails, the requirementsError field will contain a
-     * user-friendly error message.
-     *
-     * @param desired The desired file requirements
-     * @return True if the test passes, false otherwise
-     */
-    protected boolean checkPlugins(final String desired) {
-        if (desired == null || desired.isEmpty()) {
-            return true;
-        }
-
-        for (String pluginName : desired.split(",")) {
-            final String[] data = pluginName.split(":");
-            final PluginInfo pi = PluginManager.getPluginManager()
-                    .getPluginInfoByName(data[0]);
-            if (pi == null) {
-                requirementsError = "Required plugin '" + data[0]
-                        + "' was not found";
-                return false;
-            }
-            if (data.length > 1) {
-                // Check plugin minimum version matches.
-                if (pi.getVersion().compareTo(new Version(data[1])) < 0) {
-                    requirementsError = "Plugin '" + data[0]
-                            + "' is too old (Required Version: " + data[1]
-                            + ", Actual Version: " + pi.getVersion() + ")";
-                    return false;
-                }
-                // Check plugin maximum version matches.
-                if (data.length > 2 && pi.getVersion().compareTo(
-                        new Version(data[2])) > 0) {
-                    requirementsError = "Plugin '" + data[0]
-                            + "' is too new (Required Version: " + data[2]
-                            + ", Actual Version: " + pi.getVersion() + ")";
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Are the requirements for this plugin met?
-     *
-     * @param preliminary Is this a preliminary check?
-     * @return true/false (Actual error if false is in the requirementsError field)
-     */
-    public boolean checkRequirements(final boolean preliminary) {
-        if (!checkOS(metadata.getRequirements().get("os"), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
-                || !checkFiles(metadata.getRequirements().get("files"))
-                || (!preliminary && !checkPlugins(metadata.getRequirements().get("plugins")))
-                || (!preliminary && !checkServices(metadata.getRequiredServices()))) {
-            return false;
-        }
-
-        // All requirements passed, woo \o
-        return true;
-    }
-
-    /**
-     * Check if the services required by this plugin are available.
-     *
-     * @param services Required services
-     * @return true if all services are available
-     */
-    private boolean checkServices(final Collection<String> services) {
-        if (services == null || services.isEmpty()) {
-            return true;
-        }
-
-        for (String requirement : services) {
-            boolean available = false;
-            final String[] bits = requirement.split(" ", 2);
-            final String name = bits[0];
-            final String type = bits.length > 1 ? bits[1] : "misc";
-
-            Service best = null;
-            if (name.equalsIgnoreCase("any")) {
-                final List<Service> serviceList = PluginManager.getPluginManager().getServicesByType(type);
-                for (Service service : serviceList) {
-                    if (service.isActive()) {
-                        // There's a service already active, let's use that.
-                        best = service;
-                        available = true;
-                        break;
-                    }
-                }
-
-                if (!available && !serviceList.isEmpty()) {
-                    // If none are already active, default to the first one
-                    best = serviceList.get(0);
-                }
-            } else {
-                best = PluginManager.getPluginManager().getService(type, name, false);
-            }
-
-            if (best != null) {
-                available = best.activate();
-            }
-
-            if (!available) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /** {@inheritDoc} */
@@ -727,11 +448,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public void loadPlugin() {
         if (isLoaded() || isLoading) {
             lastError = "Not Loading: (" + isLoaded() + "||" + isLoading + ")";
-            return;
-        }
-
-        if (!checkRequirements(isTempLoaded() || tempLoaded)) {
-            lastError = "Unable to loadPlugin, all requirements not met. (" + requirementsError + ")";
             return;
         }
 
@@ -1179,40 +895,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get the minimum dmdirc version required to run the plugin.
-     *
-     * @return minimum dmdirc version required to run the plugin.
-     */
-    public String getMinVersion() {
-        final String requiredVersion = metadata.getRequirements().get("dmdirc");
-
-        if (requiredVersion != null) {
-            final String[] bits = requiredVersion.split("-");
-            return bits[0];
-        }
-
-        return "";
-    }
-
-    /**
-     * Get the (optional) maximum dmdirc version on which this plugin can run
-     *
-     * @return optional maximum dmdirc version on which this plugin can run
-     */
-    public String getMaxVersion() {
-        final String requiredVersion = metadata.getRequirements().get("dmdirc");
-
-        if (requiredVersion != null) {
-            final String[] bits = requiredVersion.split("-");
-            if (bits.length > 1) {
-                return bits[1];
-            }
-        }
-
-        return "";
-    }
-
-    /**
      * Get the name of the plugin. (Used to identify the plugin)
      *
      * @return Name of plugin
@@ -1263,7 +945,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             if (bits.length > 2) {
                 final String methodName = bits[0];
                 final String methodClass = bits[2];
-                final String serviceName = (bits.length > 4) ? bits[4] : bits[0];
+                final String serviceName = bits.length > 4 ? bits[4] : bits[0];
 
                 // Add a provides for this
                 final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);

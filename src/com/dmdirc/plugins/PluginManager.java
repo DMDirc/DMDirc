@@ -32,6 +32,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.PluginComponent;
+import com.dmdirc.util.MapList;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -272,16 +273,11 @@ public class PluginManager implements ActionListener {
             }
             new PluginComponent(pluginInfo);
 
-            final String requirements = pluginInfo.getRequirementsError();
-            if (requirements.isEmpty()) {
-                knownPlugins.put(filename.toLowerCase(), pluginInfo);
+            knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.PLUGIN_REFRESH, null, this);
-                return true;
-            } else {
-                throw new PluginException("Plugin " + filename + " was not loaded, one or more requirements not met (" + requirements + ")");
-            }
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.PLUGIN_REFRESH, null, this);
+            return true;
         } catch (MalformedURLException mue) {
             Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + filename + ": " + mue.getMessage(), mue);
         } catch (PluginException e) {
@@ -415,6 +411,7 @@ public class PluginManager implements ActionListener {
         final Map<String, PluginInfo> res = new HashMap<String, PluginInfo>();
 
         final Deque<File> dirs = new LinkedList<File>();
+        final Collection<String> pluginPaths = new LinkedList<String>();
 
         dirs.add(new File(myDir));
 
@@ -423,23 +420,72 @@ public class PluginManager implements ActionListener {
             if (dir.isDirectory()) {
                 dirs.addAll(Arrays.asList(dir.listFiles()));
             } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
-                // Remove the plugin dir
-                final String target = dir.getPath().substring(myDir.length());
+                pluginPaths.add(dir.getPath().substring(myDir.length()));
+            }
+        }
 
+        final MapList<String, String> newServices = new MapList<String, String>();
+        final Map<String, PluginMetaData> newPluginsByName = new HashMap<String, PluginMetaData>();
+        final Map<String, PluginMetaData> newPluginsByPath = new HashMap<String, PluginMetaData>();
+
+        // Initialise all of our metadata objects
+        for (String target : pluginPaths) {
+            try {
+                final PluginMetaData targetMetaData = new PluginMetaData(
+                        new URL("jar:file://" + getDirectory() + target
+                        + "!/META-INF/plugin.config"));
+                targetMetaData.load();
+
+                if (targetMetaData.hasErrors()) {
+                    Logger.userError(ErrorLevel.MEDIUM,
+                            "Error reading plugin metadata for plugin " + target
+                            + ": " + targetMetaData.getErrors());
+                } else {
+                    newPluginsByName.put(targetMetaData.getName(), targetMetaData);
+                    newPluginsByPath.put(target, targetMetaData);
+
+                    for (String service : targetMetaData.getServices()) {
+                        final String[] parts = service.split(" ", 2);
+                        newServices.add(parts[1], parts[0]);
+                    }
+
+                    for (String export : targetMetaData.getExports()) {
+                        final String[] parts = export.split(" ");
+                        final String name = parts.length > 4 ? parts[4] : parts[0];
+                        newServices.add("export", name);
+                    }
+                }
+            } catch (MalformedURLException mue) {
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "Error creating URL for plugin " + target + ": "
+                        + mue.getMessage(), mue);
+            }
+        }
+
+        // Now validate all of the plugins
+        for (Map.Entry<String, PluginMetaData> target : newPluginsByPath.entrySet()) {
+            final PluginMetaDataValidator validator
+                    = new PluginMetaDataValidator(target.getValue());
+            final Collection<String> results
+                    = validator.validate(newPluginsByName, newServices);
+
+            if (results.isEmpty()) {
                 if (addPlugins) {
-                    addPlugin(target);
+                    addPlugin(target.getKey());
                 } else {
                     try {
-                        final PluginMetaData metadata = new PluginMetaData(new URL("jar:file://" + getDirectory() + target + "!/META-INF/plugin.config"));
-                        metadata.load();
-                        final PluginInfo pi = new PluginInfo(metadata, new URL("file:" + getDirectory() + target), false);
-                        res.put(target, pi);
+                        res.put(target.getKey(), new PluginInfo(target.getValue(),
+                                new URL("file:" + getDirectory() + target.getKey()),
+                                false));
                     } catch (MalformedURLException mue) {
                         Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + target + ": " + mue.getMessage(), mue);
                     } catch (PluginException pe) { /* This can not be thrown when the second param is false */
 
                     }
                 }
+            } else {
+                Logger.userError(ErrorLevel.MEDIUM, "Plugin validation failed for "
+                        + target.getKey() + ": " + results);
             }
         }
 
