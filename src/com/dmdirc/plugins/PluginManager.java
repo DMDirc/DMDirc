@@ -231,12 +231,11 @@ public class PluginManager implements ActionListener {
      *
      * @return A singleton instance of PluginManager.
      */
-    public static final synchronized PluginManager getPluginManager() {
+    public static synchronized PluginManager getPluginManager() {
         if (me == null) {
             me = new PluginManager();
             me.getPossiblePluginInfos(true);
         }
-
 
         return me;
     }
@@ -263,10 +262,13 @@ public class PluginManager implements ActionListener {
         }
 
         try {
-            final PluginMetaData metadata = new PluginMetaData(new URL("jar:file://" + getDirectory() + filename + "!/META-INF/plugin.config"));
+            final PluginMetaData metadata = new PluginMetaData(
+                    new URL("jar:file://" + getDirectory() + filename
+                    + "!/META-INF/plugin.config"),
+                    new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata, new URL("file:" + getDirectory() + filename));
-            final PluginInfo existing = getPluginInfoByName(pluginInfo.getName());
+            final PluginInfo pluginInfo = new PluginInfo(metadata);
+            final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + " is the same as " + existing.getFilename() + ")");
                 return false;
@@ -433,7 +435,8 @@ public class PluginManager implements ActionListener {
             try {
                 final PluginMetaData targetMetaData = new PluginMetaData(
                         new URL("jar:file://" + getDirectory() + target
-                        + "!/META-INF/plugin.config"));
+                        + "!/META-INF/plugin.config"),
+                        new URL("file:" + getDirectory() + target));
                 targetMetaData.load();
 
                 if (targetMetaData.hasErrors()) {
@@ -474,11 +477,8 @@ public class PluginManager implements ActionListener {
                     addPlugin(target.getKey());
                 } else {
                     try {
-                        res.put(target.getKey(), new PluginInfo(target.getValue(),
-                                new URL("file:" + getDirectory() + target.getKey()),
-                                false));
-                    } catch (MalformedURLException mue) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + target + ": " + mue.getMessage(), mue);
+                        res.put(target.getKey(),
+                                new PluginInfo(target.getValue(), false));
                     } catch (PluginException pe) { /* This can not be thrown when the second param is false */
 
                     }

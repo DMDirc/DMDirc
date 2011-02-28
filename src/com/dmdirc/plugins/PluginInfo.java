@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,8 +58,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /** The metadata for this plugin. */
     private final PluginMetaData metadata;
-    /** URL that this plugin was loaded from. */
-    private final URL url;
     /** Filename for this plugin (taken from URL). */
     private final String filename;
     /** The actual Plugin from this jar. */
@@ -90,26 +87,23 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Create a new PluginInfo.
      *
      * @param metadata The plugin's metadata information
-     * @param url URL to file that this plugin is stored in.
      * @throws PluginException if there is an error loading the Plugin
      * @since 0.6.6
      */
-    public PluginInfo(final PluginMetaData metadata, final URL url) throws PluginException {
-        this(metadata, url, true);
+    public PluginInfo(final PluginMetaData metadata) throws PluginException {
+        this(metadata, true);
     }
 
     /**
      * Create a new PluginInfo.
      *
      * @param metadata The plugin's metadata information
-     * @param url URL to file that this plugin is stored in.
      * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
      * @throws PluginException if there is an error loading the Plugin
      * @since 0.6.6
      */
-    public PluginInfo(final PluginMetaData metadata, final URL url, final boolean load) throws PluginException {
-        this.url = url;
-        this.filename = new File(url.getPath()).getName();
+    public PluginInfo(final PluginMetaData metadata, final boolean load) throws PluginException {
+        this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metadata = metadata;
 
         ResourceManager res;
@@ -854,7 +848,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return Filename of plugin
      */
     public String getFullFilename() {
-        return url.getPath();
+        return metadata.getPluginUrl().getPath();
     }
 
     /**

@@ -128,6 +128,9 @@ public class PluginMetaData {
     /** Whether or not the plugin is marked as unloadable. */
     private boolean unloadable;
 
+    /** The URL to the plugin. */
+    private final URL pluginUrl;
+
     /** The URL to load the metadata from. */
     private final URL url;
 
@@ -135,8 +138,10 @@ public class PluginMetaData {
      * Creates a new meta data reader for a config file at the specified URL.
      *
      * @param url The URL to load the config file from
+     * @param pluginUrl The URL to the plugin that this data corresponds to
      */
-    public PluginMetaData(final URL url) {
+    public PluginMetaData(final URL url, final URL pluginUrl) {
+        this.pluginUrl = pluginUrl;
         this.url = url;
     }
 
@@ -362,6 +367,15 @@ public class PluginMetaData {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
+
+    /**
+     * Retrieves the URL to the plugin that this metadata corresponds to.
+     *
+     * @return The plugin's URL
+     */
+    public URL getPluginUrl() {
+        return pluginUrl;
+    }
 
     /**
      * Retrieves a collection of errors that occurred while trying to read
