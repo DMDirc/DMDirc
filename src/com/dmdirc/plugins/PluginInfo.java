@@ -552,17 +552,16 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 return;
             }
 
-            final Class<?> c = classloader.loadClass(classname);
-            if (c == null) {
+            final Class<?> clazz = classloader.loadClass(classname);
+            if (clazz == null) {
                 lastError = "Class '"+classname+"' was not able to load.";
                 return;
             }
 
             // Only try and construct the main class, anything else should be constructed
             // by the plugin itself.
-            if (classname.equals(getMainClass())) {
-                final Constructor<?> constructor = c.getConstructor();
-                final Object temp = constructor.newInstance();
+            if (classname.equals(metadata.getMainClass())) {
+                final Object temp = createInstance(clazz);
 
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
@@ -595,21 +594,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         } catch (ClassNotFoundException cnfe) {
             lastError = "Class not found ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + cnfe.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, cnfe);
-        } catch (NoSuchMethodException nsme) {
-            // Don't moan about missing constructors for any class thats not the main Class
-            lastError = "Constructor missing ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + nsme.getMessage();
-            if (classname.equals(getMainClass())) {
-                Logger.userError(ErrorLevel.LOW, lastError, nsme);
-            }
-        } catch (IllegalAccessException iae) {
-            lastError = "Unable to access constructor ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + iae.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, iae);
-        } catch (InvocationTargetException ite) {
-            lastError = "Unable to invoke target ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + ite.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, ite);
-        } catch (InstantiationException ie) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + ie.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, ie);
         } catch (NoClassDefFoundError ncdf) {
             lastError = "Unable to instantiate plugin ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - Unable to find class: " + ncdf.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, ncdf);
@@ -638,6 +622,74 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public boolean isUnloadable() {
         return !isPersistent() && (isTempLoaded() || isLoaded())
                 && metadata.isUnloadable();
+    }
+
+    /**
+     * Creates a new instance of the specified class facilitating basic
+     * dependency injection.
+     *
+     * @param clazz The class to be instantiated
+     * @return A new instance of the specified class, or null if no suitable
+     * constructor could be found and created.
+     */
+    private Object createInstance(final Class<?> clazz) {
+        // Create a map of classes we're willing to inject
+        final Map<Class<?>, Object> implementations
+                = new HashMap<Class<?>, Object>();
+        implementations.put(PluginInfo.class, this);
+        implementations.put(PluginManager.class, PluginManager.getPluginManager());
+        implementations.put(ActionManager.class, ActionManager.getActionManager());
+
+        // Add the parent plugin
+        if (metadata.getParent() != null && !metadata.getParent().isEmpty()) {
+            // TODO: This should recurse to the parent's parent etc too
+            final Object parent = PluginManager.getPluginManager().getPluginInfoByName(metadata.getParent()).getPlugin();
+
+            // Iterate the object hierarchy up
+            Class<?> target = parent.getClass();
+            do {
+                implementations.put(target, parent);
+                target = target.getSuperclass();
+            } while (target != null);
+
+            // Add all interfaces
+            for (Class<?> parentClazz : parent.getClass().getInterfaces()) {
+                implementations.put(parentClazz, parent);
+            }
+        }
+
+        for (Constructor<?> ctor : clazz.getConstructors()) {
+            final Object[] args = new Object[ctor.getParameterTypes().length];
+
+            int i = 0;
+            for (Class<?> paramType : ctor.getParameterTypes()) {
+                if (implementations.containsKey(paramType)) {
+                    args[i++] = implementations.get(paramType);
+                } else {
+                    break;
+                }
+            }
+
+            if (i == args.length) {
+                try {
+                    return ctor.newInstance(args);
+                } catch (IllegalAccessException ex) {
+                    lastError = "Unable to create new instance of plugin "
+                            + filename + ": " + ex.getMessage();
+                } catch (IllegalArgumentException ex) {
+                    lastError = "Unable to create new instance of plugin "
+                            + filename + ": " + ex.getMessage();
+                } catch (InstantiationException ex) {
+                    lastError = "Unable to create new instance of plugin "
+                            + filename + ": " + ex.getMessage();
+                } catch (InvocationTargetException ex) {
+                    lastError = "Unable to create new instance of plugin "
+                            + filename + ": " + ex.getMessage();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
