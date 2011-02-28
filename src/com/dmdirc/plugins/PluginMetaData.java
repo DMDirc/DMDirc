@@ -26,6 +26,7 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.StreamUtil;
+import java.io.File;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -174,6 +175,24 @@ public class PluginMetaData {
             errors.add("Unable to read config file: " + ex.getMessage());
             StreamUtil.close(stream);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final PluginMetaData other = (PluginMetaData) obj;
+        return pluginUrl == other.getPluginUrl() || (pluginUrl != null
+                && pluginUrl.equals(other.getPluginUrl()));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return pluginUrl == null ? 0 : pluginUrl.hashCode();
     }
 
     // <editor-fold desc="Read methods">
@@ -365,6 +384,23 @@ public class PluginMetaData {
     }
 
     // </editor-fold>
+
+    /**
+     * Calculates the relative path of this plugin in relation to the main
+     * plugin directory.
+     *
+     * @return The plugin's relative path, or absolute path if not within the
+     * plugins directory
+     */
+    public String getRelativeFilename() {
+        // Yuck...
+        final String filename = getPluginUrl().getPath();
+        final String dir = new File(PluginManager.getPluginManager().getDirectory())
+                .getAbsolutePath() + File.separator;
+        final String file = new File(filename).getAbsolutePath();
+
+        return file.startsWith(dir) ? filename.substring(dir.length()) : filename;
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
 

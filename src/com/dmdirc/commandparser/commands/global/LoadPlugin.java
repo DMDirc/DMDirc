@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -88,9 +89,8 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         res.excludeAll();
 
         if (arg == 0) {
-            for (PluginInfo possPlugin
-                    : PluginManager.getPluginManager()
-                            .getPossiblePluginInfos(false)) {
+            for (PluginMetaData possPlugin
+                    : PluginManager.getPluginManager().getAllPlugins()) {
                 res.add(possPlugin.getRelativeFilename());
             }
         }

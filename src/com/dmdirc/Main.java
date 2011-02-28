@@ -134,7 +134,7 @@ public final class Main {
         // will satisfy the service existance check above, but will render the
         // client pretty useless, so we'll force IRC extraction for now.
         extractCorePlugins("parser_irc");
-        pm.getPossiblePluginInfos(true);
+        pm.refreshPlugins();
 
         loadUIs(pm);
 
@@ -256,7 +256,7 @@ public final class Main {
     public static void ensureExists(final PluginManager pm, final String serviceType) {
         if (pm.getServicesByType(serviceType).isEmpty()) {
             extractCorePlugins(serviceType + "_");
-            pm.getPossiblePluginInfos(true);
+            pm.refreshPlugins();
         }
     }
 

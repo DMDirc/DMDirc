@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,9 @@ public class PluginManager implements ActionListener {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<String, PluginInfo>();
+
+    /** Set of known plugins' metadata. */
+    private final Collection<PluginMetaData> plugins = new HashSet<PluginMetaData>();
 
     /** Directory where plugins are stored. */
     private final String myDir;
@@ -234,7 +238,7 @@ public class PluginManager implements ActionListener {
     public static synchronized PluginManager getPluginManager() {
         if (me == null) {
             me = new PluginManager();
-            me.getPossiblePluginInfos(true);
+            me.refreshPlugins();
         }
 
         return me;
@@ -402,15 +406,41 @@ public class PluginManager implements ActionListener {
     }
 
     /**
+     * Refreshes the list of known plugins.
+     */
+    public void refreshPlugins() {
+        final Collection<PluginMetaData> newPlugins = getAllPlugins();
+
+        for (PluginMetaData plugin : newPlugins) {
+            addPlugin(plugin.getRelativeFilename());
+        }
+
+        // Update our list of plugins
+        synchronized (plugins) {
+            plugins.removeAll(newPlugins);
+
+            for (PluginMetaData oldPlugin : new HashSet<PluginMetaData>(plugins)) {
+                delPlugin(oldPlugin.getRelativeFilename());
+            }
+
+            plugins.clear();
+            plugins.addAll(newPlugins);
+        }
+
+        ActionManager.getActionManager().triggerEvent(
+                CoreActionType.PLUGIN_REFRESH, null, this);
+    }
+
+    /**
      * Retrieves a list of all installed plugins.
      * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
      * that matches *.jar is deemed to be a valid plugin.
      *
-     * @param addPlugins Should all found plugins be automatically have addPlugin() called?
-     * @return A list of all installed plugins
+     * @return A list of all installed or known plugins
      */
-    public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
-        final Map<String, PluginInfo> res = new HashMap<String, PluginInfo>();
+    public Collection<PluginMetaData> getAllPlugins() {
+        final Collection<PluginMetaData> res
+                = new HashSet<PluginMetaData>(plugins.size());
 
         final Deque<File> dirs = new LinkedList<File>();
         final Collection<String> pluginPaths = new LinkedList<String>();
@@ -473,34 +503,14 @@ public class PluginManager implements ActionListener {
                     = validator.validate(newPluginsByName, newServices);
 
             if (results.isEmpty()) {
-                if (addPlugins) {
-                    addPlugin(target.getKey());
-                } else {
-                    try {
-                        res.put(target.getKey(),
-                                new PluginInfo(target.getValue(), false));
-                    } catch (PluginException pe) { /* This can not be thrown when the second param is false */
-
-                    }
-                }
+                res.add(target.getValue());
             } else {
                 Logger.userError(ErrorLevel.MEDIUM, "Plugin validation failed for "
                         + target.getKey() + ": " + results);
             }
         }
 
-        final Map<String, PluginInfo> knownPluginsCopy = new HashMap<String, PluginInfo>(knownPlugins);
-        for (PluginInfo pi : knownPluginsCopy.values()) {
-            if (!(new File(pi.getFullFilename())).exists()) {
-                delPlugin(pi.getFilename());
-            } else if (addPlugins) {
-                res.put(pi.getFilename().toLowerCase(), pi);
-            }
-        }
-
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.PLUGIN_REFRESH, null, this);
-        return new LinkedList<PluginInfo>(res.values());
+        return res;
     }
 
     /**

@@ -846,7 +846,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the full plugin Filename (inc dirname)
      *
      * @return Filename of plugin
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getFullFilename() {
         return metadata.getPluginUrl().getPath();
     }
@@ -857,13 +859,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @return A relative path to the plugin if it is situated under the main
      * plugin directory, or an absolute path otherwise.
+     * @deprecated Retrieve this from {@link PluginMetaData} directly
      */
+    @Deprecated
     public String getRelativeFilename() {
-        final String dir = new File(PluginManager.getPluginManager().getDirectory())
-                .getAbsolutePath() + File.separator;
-        final String file = new File(getFullFilename()).getAbsolutePath();
-
-        return file.startsWith(dir) ? getFullFilename().substring(dir.length()) : getFullFilename();
+        return metadata.getRelativeFilename();
     }
 
     /**
