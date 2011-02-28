@@ -100,7 +100,7 @@ else
 
 	# Submit plugins to addons site
 	if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
-		for plugin in `ls plugins/*.jar`; do
+		for plugin in `ls modules/plugins/dist/*.jar`; do
 			$PHP ${HOME}/www/addons/submitplugin.php $plugin
 		done;
 	fi;
