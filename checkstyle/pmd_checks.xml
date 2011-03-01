@@ -148,7 +148,7 @@
 <rule ref="rulesets/logging-java.xml/SystemPrintln"><priority>2</priority></rule>
 <rule ref="rulesets/logging-java.xml/AvoidPrintStackTrace"><priority>2</priority></rule>
 
-<rule ref="rulesets/migrating.xml/ReplaceVectorWithList"><priority>3</priority></rule>
+<rule ref="rulesets/migrating.xml/ReplaceVectorWithList"><priority>1</priority></rule>
 <rule ref="rulesets/migrating.xml/ReplaceHashtableWithMap"><priority>1</priority></rule>
 <rule ref="rulesets/migrating.xml/ReplaceEnumerationWithIterator"><priority>1</priority></rule>
 <rule ref="rulesets/migrating.xml/AvoidEnumAsIdentifier"><priority>1</priority></rule>
