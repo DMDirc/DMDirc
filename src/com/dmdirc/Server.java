@@ -1526,7 +1526,7 @@ public class Server extends WritableFrameContainer
                     requests.add(new ChannelJoinRequest(chan.getName()));
                 }
             }
-            join(requests.toArray(new ChannelJoinRequest[0]));
+            join(requests.toArray(new ChannelJoinRequest[requests.size()]));
 
             checkModeAliases();
         }

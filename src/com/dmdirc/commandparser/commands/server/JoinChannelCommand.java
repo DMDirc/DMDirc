@@ -94,7 +94,7 @@ public class JoinChannelCommand extends Command implements
             }
         }
 
-        server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[0]));
+        server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
     /** {@inheritDoc} */
