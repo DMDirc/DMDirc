@@ -93,7 +93,7 @@
 <rule ref="rulesets/design.xml/NonStaticInitializer"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/DefaultLabelNotLastInSwitchStmt"><priority>4</priority></rule>
 <rule ref="rulesets/design.xml/NonCaseLabelInSwitchStatement"><priority>4</priority></rule>
-<rule ref="rulesets/design.xml/OptimizableToArrayCall"><priority>3</priority></rule>
+<rule ref="rulesets/design.xml/OptimizableToArrayCall"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/BadComparison"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/EqualsNull"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/ConfusingTernary"><priority>2</priority></rule>
