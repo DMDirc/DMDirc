@@ -81,7 +81,7 @@ public class Styliser implements ConfigChangeListener {
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
 
     /** Characters used for hyperlinks. */
-    private static final String HYPERLINK_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
+    private static final String HYPERLINK_CHARS = Character.toString(CODE_HYPERLINK) + CODE_CHANNEL;
 
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR

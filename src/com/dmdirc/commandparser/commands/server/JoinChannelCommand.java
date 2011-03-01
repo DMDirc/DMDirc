@@ -105,7 +105,7 @@ public class JoinChannelCommand extends Command implements
         final String message = (String) arguments[1];
 
         final String[] parts = source.getStyliser().doLinks(message)
-                .split("" + Styliser.CODE_CHANNEL);
+                .split(Character.toString(Styliser.CODE_CHANNEL));
 
         int i = 1;
         for (i = 1; i < parts.length; i += 2) {

@@ -190,7 +190,7 @@ public final class ColourManager {
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         };
 
-        return ("" + chars[value / 16]) + chars[value % 16];
+        return (Character.toString(chars[value / 16])) + chars[value % 16];
     }
 
     static {
