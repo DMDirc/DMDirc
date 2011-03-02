@@ -75,7 +75,10 @@ public interface Plugin {
      * Sets the associated plugin info for this plugin.
      *
      * @param pluginInfo Associated plugin info
+     * @deprecated PluginInfo should be obtained using a constructor parameter,
+     * if required
      */
+    @Deprecated
     void setPluginInfo(final PluginInfo pluginInfo);
 
     /**

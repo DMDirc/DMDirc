@@ -414,6 +414,8 @@ public class PluginManager implements ActionListener {
      * Refreshes the list of known plugins.
      */
     public void refreshPlugins() {
+        applyUpdates();
+
         final Collection<PluginMetaData> newPlugins = getAllPlugins();
 
         for (PluginMetaData plugin : newPlugins) {
@@ -434,6 +436,29 @@ public class PluginManager implements ActionListener {
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.PLUGIN_REFRESH, null, this);
+    }
+
+    /**
+     * Recursively scans the plugin directory and attempts to apply any
+     * available updates.
+     */
+    public void applyUpdates() {
+        final Deque<File> dirs = new LinkedList<File>();
+
+        dirs.add(new File(myDir));
+
+        while (!dirs.isEmpty()) {
+            final File dir = dirs.pop();
+            if (dir.isDirectory()) {
+                dirs.addAll(Arrays.asList(dir.listFiles()));
+            } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
+                final File update = new File(dir.getAbsolutePath() + ".update");
+
+                if (update.exists() && dir.delete()) {
+                    update.renameTo(dir);
+                }
+            }
+        }
     }
 
     /**

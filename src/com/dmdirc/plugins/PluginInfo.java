@@ -97,18 +97,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         ResourceManager res;
 
-        // Check for updates.
-        if (new File(getFullFilename() + ".update").exists() && new File(getFullFilename()).delete()) {
-            new File(getFullFilename() + ".update").renameTo(new File(getFullFilename()));
-
-            updateMetaData();
-        }
-
-        if (metadata.hasErrors()) {
-            throw new PluginException("Plugin " + filename + " has metadata "
-                    + "errors: " + metadata.getErrors());
-        }
-
         try {
             res = getResourceManager();
         } catch (IOException ioe) {
@@ -116,22 +104,30 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
 
-        final String mainClass = metadata.getMainClass().replace('.', '/') + ".class";
-        if (!res.resourceExists(mainClass)) {
-            lastError = "main class file (" + mainClass + ") not found in jar.";
-            throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
-        }
+        updateClassList(res);
 
-        for (final String classfilename : res.getResourcesStartingWith("")) {
-            String classname = classfilename.replace('/', '.');
-            if (classname.matches("^.*\\.class$")) {
-                classname = classname.replaceAll("\\.class$", "");
-                myClasses.add(classname);
-            }
+        if (!myClasses.contains(metadata.getMainClass())) {
+            lastError = "main class file (" + metadata.getMainClass() + ") not found in jar.";
+            throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
         }
 
         updateProvides();
         getDefaults();
+    }
+
+    /**
+     * Updates the list of known classes within this plugin from the specified
+     * resource manager.
+     */
+    private void updateClassList(final ResourceManager res) {
+        myClasses.clear();
+
+        for (final String classfilename : res.getResourcesStartingWith("")) {
+            final String classname = classfilename.replace('/', '.');
+            if (classname.endsWith(".class")) {
+                myClasses.add(classname.substring(0, classname.length() - 6));
+            }
+        }
     }
 
     /**
@@ -297,21 +293,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public void pluginUpdated() {
         try {
             // Force a new resourcemanager just incase.
-            final ResourceManager res = getResourceManager(true);
+            updateClassList(getResourceManager(true));
 
-            myClasses.clear();
-            for (final String classfilename : res.getResourcesStartingWith("")) {
-                String classname = classfilename.replace('/', '.');
-                if (classname.matches("^.*\\.class$")) {
-                    classname = classname.replaceAll("\\.class$", "");
-                    myClasses.add(classname);
-                }
-            }
             updateMetaData();
             updateProvides();
             getDefaults();
         } catch (IOException ioe) {
-            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating "+getName(), ioe);
+            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating "
+                    + metadata.getName(), ioe);
         }
     }
 
@@ -573,7 +562,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             final Class<?> clazz = classloader.loadClass(classname);
             if (clazz == null) {
-                lastError = "Class '"+classname+"' was not able to load.";
+                lastError = "Class '" + classname + "' was not able to load.";
                 return;
             }
 
@@ -824,23 +813,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return List of all persistent classes in this plugin
      */
     public Collection<String> getPersistentClasses() {
-        final Collection<String> result = new ArrayList<String>();
-
         if (isPersistent()) {
-            try {
-                final ResourceManager res = getResourceManager();
-
-                for (final String resourceFilename : res.getResourcesStartingWith("")) {
-                    if (resourceFilename.matches("^.*\\.class$")) {
-                        result.add(resourceFilename.replaceAll("\\.class$", "").replace('/', '.'));
-                    }
-                }
-            } catch (IOException e) {
-                // Jar no longer exists?
-            }
+            return getClassList();
+        } else {
+            return metadata.getPersistentClasses();
         }
-
-        return metadata.getPersistentClasses();
     }
 
     /**
@@ -850,11 +827,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if file (or whole plugin) is persistent, else false
      */
     public boolean isPersistent(final String classname) {
-        if (isPersistent()) {
-            return true;
-        } else {
-            return metadata.getPersistentClasses().contains(classname);
-        }
+        return isPersistent() || metadata.getPersistentClasses().contains(classname);
     }
 
     /**
@@ -941,7 +914,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     @Override
     public String toString() {
-        return getNiceName() + " - " + filename;
+        return metadata.getFriendlyName() + " - " + filename;
     }
 
     /** {@inheritDoc} */
@@ -992,7 +965,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @param name Name of the service to check
      *
-     * @return true iif the plugin exports the service
+     * @return true iff the plugin exports the service
      */
     public boolean hasExportedService(final String name) {
         return exports.containsKey(name);
