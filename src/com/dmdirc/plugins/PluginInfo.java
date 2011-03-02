@@ -30,22 +30,23 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
+import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 /**
  * Stores plugin metadata and handles loading of plugin resources.
@@ -91,18 +92,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @since 0.6.6
      */
     public PluginInfo(final PluginMetaData metadata) throws PluginException {
-        this(metadata, true);
-    }
-
-    /**
-     * Create a new PluginInfo.
-     *
-     * @param metadata The plugin's metadata information
-     * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
-     * @throws PluginException if there is an error loading the Plugin
-     * @since 0.6.6
-     */
-    public PluginInfo(final PluginMetaData metadata, final boolean load) throws PluginException {
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metadata = metadata;
 
@@ -113,11 +102,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             new File(getFullFilename() + ".update").renameTo(new File(getFullFilename()));
 
             updateMetaData();
-        }
-
-        if (!load) {
-            // TODO: This is pointless now
-            return;
         }
 
         if (metadata.hasErrors()) {
@@ -132,7 +116,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
 
-        final String mainClass = getMainClass().replace('.', '/') + ".class";
+        final String mainClass = metadata.getMainClass().replace('.', '/') + ".class";
         if (!res.resourceExists(mainClass)) {
             lastError = "main class file (" + mainClass + ") not found in jar.";
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError);
@@ -148,6 +132,32 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
+    }
+
+    /**
+     * Retrieves the injector used to inject parameters into this
+     * plugin's methods.
+     *
+     * @return The injector used for this plugin
+     */
+    public SimpleInjector getInjector() {
+        final SimpleInjector injector;
+        if (metadata.getParent() == null || metadata.getParent().isEmpty()) {
+            injector = new SimpleInjector();
+            injector.addParameter(PluginManager.class,
+                    PluginManager.getPluginManager());
+            injector.addParameter(ActionManager.class,
+                    ActionManager.getActionManager());
+        } else {
+            final PluginInfo parent = PluginManager.getPluginManager()
+                    .getPluginInfoByName(metadata.getParent());
+            injector = new SimpleInjector(parent.getInjector());
+            injector.addParameter(parent.getPlugin());
+        }
+
+        injector.addParameter(PluginInfo.class, this);
+
+        return injector;
     }
 
     /**
@@ -170,9 +180,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void getDefaults() {
         final Identity defaults = IdentityManager.getAddonIdentity();
-        final String domain = "plugin-" + getName();
+        final String domain = "plugin-" + metadata.getName();
 
-        LOGGER.finer(getName() + ": Using domain '" + domain + "'");
+        LOGGER.log(Level.FINER, "{0}: Using domain ''{1}''",
+                new Object[]{metadata.getName(), domain});
 
         for (Map.Entry<String, String> entry : metadata.getDefaultSettings().entrySet()) {
             final String key = entry.getKey();
@@ -210,13 +221,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String name = entry.getKey();
                 final InputStream stream = entry.getValue();
 
-                if (name.endsWith("/")) {
-                    // Don't try to load folders as identities
-                    continue;
-                }
-
-                if (stream == null) {
-                    //Don't add null streams
+                if (name.endsWith("/") || stream == null) {
+                    // Don't try to load folders or null streams
                     continue;
                 }
 
@@ -226,12 +232,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         IdentityManager.addIdentity(thisIdentity);
                         identities.add(thisIdentity);
                     } catch (final InvalidIdentityFileException ex) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error with identity file '" + name + "' in plugin '" + getName() + "'", ex);
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "Error with identity file '" + name
+                                + "' in plugin '" + metadata.getName() + "'", ex);
                     }
                 }
             }
         } catch (final IOException ioe) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error finding identities in plugin '" + getName() + "'", ioe);
+            Logger.userError(ErrorLevel.MEDIUM, "Error finding identities in plugin '"
+                    + metadata.getName() + "'", ioe);
         }
     }
 
@@ -370,7 +379,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** {@inheritDoc} */
     @Override
     public String getProviderName() {
-        return "Plugin: " + getNiceName() + " (" + getName() + " / " + getFilename() + ")";
+        return "Plugin: " + metadata.getFriendlyName() + " ("
+                + metadata.getName() + " / " + getFilename() + ")";
     }
 
     /** {@inheritDoc} */
@@ -410,7 +420,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Load any required plugins
+     * Load any required plugins.
      */
     public void loadRequired() {
         final String required = metadata.getRequirements().get("plugins");
@@ -454,11 +464,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             try {
                 plugin.onLoad();
             } catch (LinkageError e) {
-                lastError = "Error in onLoad for " + getName() + ":" + e.getMessage();
+                lastError = "Error in onLoad for " + metadata.getName() + ":"
+                        + e.getMessage();
                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 unloadPlugin();
             } catch (Exception e) {
-                lastError = "Error in onLoad for " + getName() + ":" + e.getMessage();
+                lastError = "Error in onLoad for " + metadata.getName() + ":"
+                        + e.getMessage();
                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 unloadPlugin();
             }
@@ -466,7 +478,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             isLoading = true;
             loadIdentities();
             loadRequired();
-            loadClass(getMainClass());
+            loadClass(metadata.getMainClass());
 
             if (isLoaded()) {
                 ActionManager.getActionManager().triggerEvent(
@@ -507,10 +519,41 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Checks if this plugin has any children.
      *
-     * @return true iif this plugin has children
+     * @return true iff this plugin has children
      */
     public boolean hasChildren() {
         return !children.isEmpty();
+    }
+
+    /**
+     * Initialises this plugin's classloader.
+     */
+    private void initialiseClassLoader() {
+        if (classloader == null) {
+            if (metadata.getParent() == null) {
+                classloader = new PluginClassLoader(this);
+            } else {
+                final String parentName = metadata.getParent();
+                final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
+                if (pi == null) {
+                    lastError = "Required parent '" + parentName + "' was not found";
+                    return;
+                } else {
+                    pi.addChild(this);
+                    PluginClassLoader parentCL = pi.getPluginClassLoader();
+                    if (parentCL == null) {
+                        // Parent appears not to be loaded.
+                        pi.loadPlugin();
+                        parentCL = pi.getPluginClassLoader();
+                        if (parentCL == null) {
+                            lastError = "Unable to get classloader from required parent '" + parentName + "' for "+getName();
+                            return;
+                        }
+                    }
+                    classloader = parentCL.getSubClassLoader(this);
+                }
+            }
+        }
     }
 
     /**
@@ -520,31 +563,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void loadClass(final String classname) {
         try {
-            if (classloader == null) {
-                if (metadata.getParent() == null) {
-                    classloader = new PluginClassLoader(this);
-                } else {
-                    final String parentName = metadata.getParent();
-                    final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
-                    if (pi == null) {
-                        lastError = "Required parent '" + parentName + "' was not found";
-                        return;
-                    } else {
-                        pi.addChild(this);
-                        PluginClassLoader parentCL = pi.getPluginClassLoader();
-                        if (parentCL == null) {
-                            // Parent appears not to be loaded.
-                            pi.loadPlugin();
-                            parentCL = pi.getPluginClassLoader();
-                            if (parentCL == null) {
-                                lastError = "Unable to get classloader from required parent '" + parentName + "' for "+getName();
-                                return;
-                            }
-                        }
-                        classloader = parentCL.getSubClassLoader(this);
-                    }
-                }
-            }
+            initialiseClassLoader();
 
             // Don't reload a class if its already loaded.
             if (classloader.isClassLoaded(classname, true)) {
@@ -561,29 +580,34 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             // Only try and construct the main class, anything else should be constructed
             // by the plugin itself.
             if (classname.equals(metadata.getMainClass())) {
-                final Object temp = createInstance(clazz);
+                final Object temp = getInjector().createInstance(clazz);
 
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
                     if (prerequisites.isFailure()) {
                         if (!tempLoaded) {
-                            lastError = "Prerequisites for plugin not met. ('" + filename + ":" + getMainClass() + "' -> '" + prerequisites.getFailureReason() + "') ";
+                            lastError = "Prerequisites for plugin not met. ('"
+                                    + filename + ":" + metadata.getMainClass()
+                                    + "' -> '" + prerequisites.getFailureReason() + "') ";
                             Logger.userError(ErrorLevel.LOW, lastError);
                         }
                     } else {
                         plugin = (Plugin) temp;
-                        LOGGER.finer(getName() + ": Setting domain 'plugin-" + getName() + "'");
+                        LOGGER.log(Level.FINER, "{0}: Setting domain ''plugin-{0}''",
+                                new Object[]{metadata.getName()});
                         plugin.setPluginInfo(this);
-                        plugin.setDomain("plugin-" + getName());
+                        plugin.setDomain("plugin-" + metadata.getName());
                         if (!tempLoaded) {
                             try {
                                 plugin.onLoad();
                             } catch (LinkageError e) {
-                                lastError = "Error in onLoad for " + getName() + ":" + e.getMessage();
+                                lastError = "Error in onLoad for "
+                                        + metadata.getName() + ":" + e.getMessage();
                                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                                 unloadPlugin();
                             } catch (Exception e) {
-                                lastError = "Error in onLoad for " + getName() + ":" + e.getMessage();
+                                lastError = "Error in onLoad for "
+                                        + metadata.getName() + ":" + e.getMessage();
                                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                                 unloadPlugin();
                             }
@@ -592,14 +616,28 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 }
             }
         } catch (ClassNotFoundException cnfe) {
-            lastError = "Class not found ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - " + cnfe.getMessage();
+            lastError = "Class not found ('" + filename + ":" + classname + ":"
+                    + classname.equals(metadata.getMainClass()) + "') - "
+                    + cnfe.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, cnfe);
         } catch (NoClassDefFoundError ncdf) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - Unable to find class: " + ncdf.getMessage();
+            lastError = "Unable to instantiate plugin ('" + filename + ":"
+                    + classname + ":"
+                    + classname.equals(metadata.getMainClass())
+                    + "') - Unable to find class: " + ncdf.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, ncdf);
         } catch (VerifyError ve) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":" + classname + ":" + classname.equals(getMainClass()) + "') - Incompatible: " + ve.getMessage();
+            lastError = "Unable to instantiate plugin ('" + filename + ":"
+                    + classname + ":"
+                    + classname.equals(metadata.getMainClass())
+                    + "') - Incompatible: " + ve.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, ve);
+        } catch (IllegalArgumentException ex) {
+            lastError = "Unable to instantiate plugin ('" + filename + ":"
+                    + classname + ":"
+                    + classname.equals(metadata.getMainClass())
+                    + "') - Unable to construct: " + ex.getMessage();
+            Logger.userError(ErrorLevel.LOW, lastError, ex);
         }
     }
 
@@ -622,74 +660,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public boolean isUnloadable() {
         return !isPersistent() && (isTempLoaded() || isLoaded())
                 && metadata.isUnloadable();
-    }
-
-    /**
-     * Creates a new instance of the specified class facilitating basic
-     * dependency injection.
-     *
-     * @param clazz The class to be instantiated
-     * @return A new instance of the specified class, or null if no suitable
-     * constructor could be found and created.
-     */
-    private Object createInstance(final Class<?> clazz) {
-        // Create a map of classes we're willing to inject
-        final Map<Class<?>, Object> implementations
-                = new HashMap<Class<?>, Object>();
-        implementations.put(PluginInfo.class, this);
-        implementations.put(PluginManager.class, PluginManager.getPluginManager());
-        implementations.put(ActionManager.class, ActionManager.getActionManager());
-
-        // Add the parent plugin
-        if (metadata.getParent() != null && !metadata.getParent().isEmpty()) {
-            // TODO: This should recurse to the parent's parent etc too
-            final Object parent = PluginManager.getPluginManager().getPluginInfoByName(metadata.getParent()).getPlugin();
-
-            // Iterate the object hierarchy up
-            Class<?> target = parent.getClass();
-            do {
-                implementations.put(target, parent);
-                target = target.getSuperclass();
-            } while (target != null);
-
-            // Add all interfaces
-            for (Class<?> parentClazz : parent.getClass().getInterfaces()) {
-                implementations.put(parentClazz, parent);
-            }
-        }
-
-        for (Constructor<?> ctor : clazz.getConstructors()) {
-            final Object[] args = new Object[ctor.getParameterTypes().length];
-
-            int i = 0;
-            for (Class<?> paramType : ctor.getParameterTypes()) {
-                if (implementations.containsKey(paramType)) {
-                    args[i++] = implementations.get(paramType);
-                } else {
-                    break;
-                }
-            }
-
-            if (i == args.length) {
-                try {
-                    return ctor.newInstance(args);
-                } catch (IllegalAccessException ex) {
-                    lastError = "Unable to create new instance of plugin "
-                            + filename + ": " + ex.getMessage();
-                } catch (IllegalArgumentException ex) {
-                    lastError = "Unable to create new instance of plugin "
-                            + filename + ": " + ex.getMessage();
-                } catch (InstantiationException ex) {
-                    lastError = "Unable to create new instance of plugin "
-                            + filename + ": " + ex.getMessage();
-                } catch (InvocationTargetException ex) {
-                    lastError = "Unable to create new instance of plugin "
-                            + filename + ": " + ex.getMessage();
-                }
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -718,10 +688,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 try {
                     plugin.onUnload();
                 } catch (Exception e) {
-                    lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
+                    lastError = "Error in onUnload for " + metadata.getName()
+                            + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 } catch (LinkageError e) {
-                    lastError = "Error in onUnload for " + getName() + ":" + e + " - " + e.getMessage();
+                    lastError = "Error in onUnload for " + metadata.getName()
+                            + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);
                 }
 
@@ -757,7 +729,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return Classes this plugin has
      */
     public List<String> getClassList() {
-        return myClasses;
+        return Collections.unmodifiableList(myClasses);
     }
 
     /**

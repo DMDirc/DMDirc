@@ -261,7 +261,8 @@ public class PluginManager implements ActionListener {
         }
 
         if (!new File(getDirectory() + filename).exists()) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": File does not exist");
+            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin "
+                    + filename + ": File does not exist");
             return false;
         }
 
@@ -274,7 +275,9 @@ public class PluginManager implements ActionListener {
             final PluginInfo pluginInfo = new PluginInfo(metadata);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
-                Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + " is the same as " + existing.getFilename() + ")");
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "Duplicate Plugin detected, Ignoring. (" + filename
+                        + " is the same as " + existing.getFilename() + ")");
                 return false;
             }
             new PluginComponent(pluginInfo);
@@ -285,9 +288,11 @@ public class PluginManager implements ActionListener {
                     CoreActionType.PLUGIN_REFRESH, null, this);
             return true;
         } catch (MalformedURLException mue) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + filename + ": " + mue.getMessage(), mue);
+            Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin "
+                    + filename + ": " + mue.getMessage(), mue);
         } catch (PluginException e) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": " + e.getMessage(), e);
+            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin "
+                    + filename + ": " + e.getMessage(), e);
         }
 
         return false;
