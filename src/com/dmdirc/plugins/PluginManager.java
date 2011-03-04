@@ -268,7 +268,7 @@ public class PluginManager implements ActionListener {
 
         try {
             final PluginMetaData metadata = new PluginMetaData(
-                    new URL("jar:file://" + getDirectory() + filename
+                    new URL("jar:file:" + getDirectory() + filename
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
@@ -494,7 +494,7 @@ public class PluginManager implements ActionListener {
         for (String target : pluginPaths) {
             try {
                 final PluginMetaData targetMetaData = new PluginMetaData(
-                        new URL("jar:file://" + getDirectory() + target
+                        new URL("jar:file:" + getDirectory() + target
                         + "!/META-INF/plugin.config"),
                         new URL("file:" + getDirectory() + target));
                 targetMetaData.load();

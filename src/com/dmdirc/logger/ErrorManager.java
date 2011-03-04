@@ -45,7 +45,7 @@ public final class ErrorManager implements ConfigChangeListener {
     private static final ErrorManager ME = new ErrorManager();
 
     /** A list of exceptions which we don't consider bugs and thus don't report. */
-    private static final Class[] BANNED_EXCEPTIONS = new Class[]{
+    private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
         NoSuchMethodError.class, NoClassDefFoundError.class,
         UnsatisfiedLinkError.class, AbstractMethodError.class,
         IllegalAccessError.class, OutOfMemoryError.class,
@@ -236,7 +236,7 @@ public final class ErrorManager implements ConfigChangeListener {
         Throwable target = exception;
 
         while (target != null) {
-            for (Class bad : BANNED_EXCEPTIONS) {
+            for (Class<?> bad : BANNED_EXCEPTIONS) {
                 if (bad.equals(target.getClass())) {
                     return false;
                 }
