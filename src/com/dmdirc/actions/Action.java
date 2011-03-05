@@ -570,10 +570,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @since 0.6.3
      */
     protected void checkDisabled() {
-        boolean disabled = IdentityManager.getGlobalConfig().hasOptionBool("disable_action",
-                (group + "/" + name).replace(' ', '.'))
-                && IdentityManager.getGlobalConfig().getOptionBool("disable_action",
-                (group + "/" + name).replace(' ', '.'));
+        final String key = (group + "/" + name).replace(' ', '.');
+        final boolean disabled = IdentityManager.getGlobalConfig()
+                .hasOptionBool("disable_action", key)
+                && IdentityManager.getGlobalConfig()
+                .getOptionBool("disable_action", key);
 
         if (disabled && status == ActionStatus.ACTIVE) {
             status = ActionStatus.DISABLED;

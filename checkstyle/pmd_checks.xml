@@ -175,7 +175,7 @@
 <rule ref="rulesets/naming.xml/PackageCase"><priority>1</priority></rule>
 <rule ref="rulesets/naming.xml/BooleanGetMethodName"><priority>2</priority></rule>
 
-<rule ref="rulesets/optimizations.xml/LocalVariableCouldBeFinal"><priority>2</priority></rule>
+<rule ref="rulesets/optimizations.xml/LocalVariableCouldBeFinal"><priority>1</priority></rule>
 <rule ref="rulesets/optimizations.xml/MethodArgumentCouldBeFinal"><priority>1</priority></rule>
 <rule ref="rulesets/optimizations.xml/AvoidInstantiatingObjectsInLoops"><priority>3</priority></rule>
 <rule ref="rulesets/optimizations.xml/UseArrayListInsteadOfVector"><priority>1</priority></rule>
