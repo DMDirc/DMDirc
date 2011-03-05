@@ -27,8 +27,6 @@ import com.dmdirc.plugins.PluginInfo;
 
 /**
  * Defines plugin-related events.
- *
- * @author Chris
  */
 public enum PluginEvents implements ActionMetaType {
 

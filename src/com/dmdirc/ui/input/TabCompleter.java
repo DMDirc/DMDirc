@@ -40,8 +40,6 @@ import java.util.Map;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
- *
- * @author chris
  */
 public class TabCompleter {
 

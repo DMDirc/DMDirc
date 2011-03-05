@@ -32,8 +32,6 @@ import java.net.URL;
 
 /**
  * Provides methods for building URLs to reference DMDirc resources.
- *
- * @author chris
  */
 public final class URLBuilder {
 

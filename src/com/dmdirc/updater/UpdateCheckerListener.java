@@ -25,8 +25,6 @@ package com.dmdirc.updater;
 /**
  * Update Checker Listeners receive notifications when the status of the update
  * checker changes.
- *
- * @author chris
  */
 public interface UpdateCheckerListener {
 

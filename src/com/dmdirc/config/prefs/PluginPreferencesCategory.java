@@ -29,7 +29,6 @@ import com.dmdirc.plugins.PluginInfo;
  * associated plugin is not loaded
  *
  * @since 0.6.3
- * @author chris
  */
 public class PluginPreferencesCategory extends PreferencesCategory {
 

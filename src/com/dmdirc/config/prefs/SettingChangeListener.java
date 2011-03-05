@@ -24,8 +24,6 @@ package com.dmdirc.config.prefs;
 
 /**
  * Defines the methods required for setting change listeners.
- *
- * @author chris
  */
 public interface SettingChangeListener {
 

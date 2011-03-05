@@ -45,8 +45,6 @@ import java.util.concurrent.Semaphore;
 /**
  * The update checker contacts the DMDirc website to check to see if there
  * are any updates available.
- *
- * @author chris
  */
 public final class UpdateChecker implements Runnable {
 

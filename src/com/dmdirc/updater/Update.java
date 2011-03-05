@@ -34,8 +34,6 @@ import java.util.List;
 
 /**
  * Represents a single available update for some component.
- *
- * @author chris
  */
 public final class Update implements DownloadListener {
 

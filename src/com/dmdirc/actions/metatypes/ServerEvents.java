@@ -28,8 +28,6 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Defines server-related events.
- *
- * @author Chris
  */
 public enum ServerEvents implements ActionMetaType {
 

@@ -32,7 +32,6 @@ import com.dmdirc.util.validators.NumericalValidator;
  * Manages preferences for the client.
  *
  * @since 0.6.5
- * @author chris
  */
 public final class PreferencesManager {
 

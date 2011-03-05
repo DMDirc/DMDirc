@@ -28,8 +28,6 @@ import com.dmdirc.commandparser.CommandArguments;
 /**
  * Wrapping commands are commands whose arguments may be wrapped into multiple
  * lines when sending.
- *
- * @author chris
  */
 public interface WrappableCommand {
 

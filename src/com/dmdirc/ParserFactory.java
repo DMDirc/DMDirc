@@ -38,7 +38,6 @@ import java.net.URI;
  * Provides a method to retrieve a parser.
  *
  * @since 0.6
- * @author chris
  */
 public class ParserFactory {
 

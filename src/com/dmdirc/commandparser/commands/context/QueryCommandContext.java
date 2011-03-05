@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandInfo;
  * A query-specific command context.
  *
  * @since 0.6.4
- * @author chris
  */
 public class QueryCommandContext extends ChatCommandContext {
 

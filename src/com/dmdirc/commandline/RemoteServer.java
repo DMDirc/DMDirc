@@ -36,8 +36,6 @@ import java.util.List;
 
 /**
  * An RMI server that allows other clients to interact with DMDirc.
- *
- * @author chris
  */
 public class RemoteServer implements RemoteInterface {
 

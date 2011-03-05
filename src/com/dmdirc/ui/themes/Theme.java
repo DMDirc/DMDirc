@@ -36,8 +36,6 @@ import java.io.InputStream;
 
 /**
  * Represents one theme file.
- *
- * @author Chris
  */
 public class Theme implements Comparable<Theme> {
 

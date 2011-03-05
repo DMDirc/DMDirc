@@ -24,8 +24,6 @@ package com.dmdirc.updater;
 
 /**
  * Represents one update channel (e.g., stable, nightly, etc).
- *
- * @author chris
  */
 public enum UpdateChannel {
 

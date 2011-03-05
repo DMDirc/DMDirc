@@ -25,8 +25,6 @@ package com.dmdirc.commandparser;
 /**
  * An enumeration of the types of popup menu which are supported by the
  * PopupManager.
- *
- * @author chris
  */
 public enum PopupType {
 

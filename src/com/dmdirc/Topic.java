@@ -24,8 +24,6 @@ package com.dmdirc;
 
 /**
  * Stores information about a channel topic.
- *
- * @author chris
  */
 public class Topic {
 

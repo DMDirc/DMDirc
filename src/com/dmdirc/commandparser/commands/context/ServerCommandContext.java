@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandInfo;
  * A command context for server commands.
  *
  * @since 0.6.4
- * @author chris
  */
 public class ServerCommandContext extends CommandContext {
 

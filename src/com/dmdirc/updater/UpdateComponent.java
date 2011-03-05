@@ -26,8 +26,6 @@ package com.dmdirc.updater;
  * The update component interface defines the methods needed to be implemented
  * by updatable components. The components handle determining the current
  * version and installing updated files.
- *
- * @author chris
  */
 public interface UpdateComponent {
 

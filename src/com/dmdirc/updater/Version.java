@@ -27,7 +27,6 @@ package com.dmdirc.updater;
  * corresponds to the output of `git-describe --tags`.
  *
  * @since 0.6.3m1
- * @author chris
  */
 public class Version implements Comparable<Version> {
 

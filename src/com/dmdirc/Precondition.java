@@ -28,8 +28,6 @@ import java.lang.annotation.Documented;
  * The precondition annotation is used to indicate that a particular method
  * has one or more preconditions. The preconditions are specified in plain
  * English.
- *
- * @author chris
  */
 @Documented
 public @interface Precondition {

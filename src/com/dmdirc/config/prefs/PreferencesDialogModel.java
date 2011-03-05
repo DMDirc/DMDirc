@@ -39,8 +39,6 @@ import java.util.Map;
 
 /**
  * Manages categories that should appear in the preferences dialog.
- *
- * @author chris
  */
 public class PreferencesDialogModel {
 

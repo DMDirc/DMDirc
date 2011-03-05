@@ -38,8 +38,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
- *
- * @author chris
  */
 public final class ServerManager {
 

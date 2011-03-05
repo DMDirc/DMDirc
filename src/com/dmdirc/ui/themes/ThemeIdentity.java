@@ -32,8 +32,6 @@ import java.io.InputStream;
 /**
  * An identity that only claims to know about settings under the UI domain,
  * for use with themes.
- *
- * @author Chris
  */
 public class ThemeIdentity extends Identity {
 

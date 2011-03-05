@@ -36,7 +36,6 @@ import java.util.Map;
  * Listens for whois-like numeric events and automatically formats them.
  *
  * @since 0.6.3
- * @author chris
  */
 public class WhoisNumericFormatter implements ActionListener {
 

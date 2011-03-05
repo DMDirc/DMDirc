@@ -26,8 +26,6 @@ import java.util.Date;
 
 /**
  * Stores information about a previously executed command.
- *
- * @author chris
  */
 public final class PreviousCommand {
 

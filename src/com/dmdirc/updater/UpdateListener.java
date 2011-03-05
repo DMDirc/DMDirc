@@ -24,8 +24,6 @@ package com.dmdirc.updater;
 
 /**
  * Defines the method that must be implemented by update listeners.
- *
- * @author chris
  */
 public interface UpdateListener {
 

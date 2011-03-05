@@ -30,7 +30,6 @@ import com.dmdirc.Topic;
  * a {@link Channel}.
  *
  * @since 0.6.3
- * @author chris
  */
 public interface TopicChangeListener {
 

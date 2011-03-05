@@ -28,8 +28,6 @@ import java.util.List;
 
 /**
  * Represents an abstract, UI-independent popup menu.
- *
- * @author chris
  */
 public class PopupMenu {
 

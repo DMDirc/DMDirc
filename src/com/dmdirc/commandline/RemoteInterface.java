@@ -29,8 +29,6 @@ import java.util.List;
 
 /**
  * Defines the interface that is available using RMI.
- *
- * @author chris
  */
 public interface RemoteInterface extends Remote {
 

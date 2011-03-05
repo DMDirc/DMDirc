@@ -29,8 +29,6 @@ import com.dmdirc.config.ConfigManager;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
- *
- * @author Chris
  */
 public class PopupManager {
 

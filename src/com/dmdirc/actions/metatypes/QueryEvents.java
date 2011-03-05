@@ -28,8 +28,6 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Defines query-related events.
- *
- * @author Chris
  */
 public enum QueryEvents implements ActionMetaType {
 
