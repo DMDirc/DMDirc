@@ -166,7 +166,7 @@ public class PluginManager implements ActionListener {
 
         if (fallback) {
             final List<Service> servicesType = getServicesByType(type);
-            if (servicesType.size() > 0) {
+            if (!servicesType.isEmpty()) {
                 final Service service = servicesType.get(0);
                 return getServiceProvider(type, service.getName());
             }
