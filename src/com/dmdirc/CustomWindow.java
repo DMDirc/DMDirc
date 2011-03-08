@@ -44,7 +44,8 @@ public class CustomWindow extends FrameContainer {
     public CustomWindow(final String name, final String title,
             final FrameContainer parent) {
         super("custom", name, title, Window.class, parent.getConfigManager(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+                Arrays.asList(WindowComponent
+                .TEXTAREA.getIdentifier()));
 
         WindowManager.getWindowManager().addWindow(parent, this);
     }

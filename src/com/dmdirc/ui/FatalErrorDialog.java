@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
@@ -134,7 +135,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc: Fatal Error");
-        setIconImage(IconManager.getIconManager().getImage("icon"));
+        setIconImage(new IconManager(IdentityManager.getGlobalConfig())
+                .getImage("icon"));
 
         infoLabel.setText("DMDirc has encountered a fatal error, and is "
                 + "not able to recover. \nThe application will now terminate.");
@@ -144,7 +146,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         ((StyledDocument) messageLabel.getDocument()).setParagraphAttributes(0,
                 messageLabel.getText().length(), sas, false);
 
-        icon = new ImageIcon(IconManager.getIconManager().getImage("error"));
+        icon = new ImageIcon(new IconManager(IdentityManager.getGlobalConfig())
+                .getImage("error"));
 
         stacktraceField.setEditable(false);
 

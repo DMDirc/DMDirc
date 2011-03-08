@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.URLBuilder;
@@ -47,27 +48,37 @@ import javax.swing.ImageIcon;
 public final class IconManager implements ConfigChangeListener {
 
     /** Previously created IconManager instance. */
-    private static final IconManager ME = new IconManager();
+    private static final IconManager ME = new IconManager(IdentityManager
+            .getGlobalConfig());
 
     /** A map of existing icons. */
     private final Map<String, Icon> icons;
-
     /** A map of existing images. */
     private final Map<String, Image> images;
+    /** Config manager to retrieve settings from. */
+    private final ConfigManager configManager;
 
-    /** Creates a new instance of IconManager. */
-    private IconManager() {
+    /**
+     * Creates a new instance of IconManager.
+     *
+     * @param configManager Config manager to retrieve settings from
+     */
+    public IconManager(final ConfigManager configManager) {
+        this.configManager = configManager;
         icons = new HashMap<String, Icon>();
         images = new HashMap<String, Image>();
 
-        IdentityManager.getGlobalConfig().addChangeListener("icon", this);
+        configManager.addChangeListener("icon", this);
     }
 
     /**
      * Returns an instance of IconManager.
      *
      * @return Instance of IconManager
+     *
+     * @deprecated Instantiate an instance of this class instead
      */
+    @Deprecated
     public static IconManager getIconManager() {
         return ME;
     }
@@ -152,8 +163,8 @@ public final class IconManager implements ConfigChangeListener {
         final URL defaultURL = cldr.getResource("com/dmdirc/res/" + iconType + ".png");
 
         //Get the path for the url
-        final String path = IdentityManager.getGlobalConfig().hasOptionString("icon", iconType)
-                ? IdentityManager.getGlobalConfig().getOption("icon", iconType)
+        final String path = configManager.hasOptionString("icon", iconType)
+                ? configManager.getOption("icon", iconType)
                 : "dmdirc://com/dmdirc/res/" + iconType + ".png";
 
         //Get the url for the speficied path

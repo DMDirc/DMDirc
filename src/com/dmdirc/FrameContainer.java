@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
@@ -100,6 +101,8 @@ public abstract class FrameContainer {
     private final Object styliserSync = new Object();
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
+    /** The IconManager for this container. */
+    private final IconManager iconManager;
 
     /**
      * Instantiate new frame container.
@@ -120,6 +123,8 @@ public abstract class FrameContainer {
         this.title = title;
         this.windowClass = windowClass;
         this.components = new HashSet<String>(components);
+
+        iconManager = new IconManager(config);
 
         setIcon(icon);
     }
@@ -338,6 +343,15 @@ public abstract class FrameContainer {
      */
     public ConfigManager getConfigManager() {
         return config;
+    }
+
+    /**
+     * Returns the icon manager for this container.
+     *
+     * @return This container's icon manager
+     */
+    public IconManager getIconManager() {
+        return iconManager;
     }
 
     /**
