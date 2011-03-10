@@ -116,6 +116,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
+     * Gets this plugin's meta data object.
+     *
+     * @return Plugin meta data object
+     */
+    public PluginMetaData getMetaData() {
+        return metadata;
+    }
+
+    /**
      * Updates the list of known classes within this plugin from the specified
      * resource manager.
      */

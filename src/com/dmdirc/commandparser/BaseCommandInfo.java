@@ -57,8 +57,13 @@ public class BaseCommandInfo implements CommandInfo {
         return name;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated All commands should be shown in help messages
+     */
     @Override
+    @Deprecated
     public boolean showInHelp() {
         return true;
     }

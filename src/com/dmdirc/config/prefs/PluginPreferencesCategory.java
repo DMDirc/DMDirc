@@ -97,9 +97,10 @@ public class PluginPreferencesCategory extends PreferencesCategory {
      */
     private void setPlugin(final PluginInfo plugin) {
         if (!plugin.isLoaded()) {
-            setWarning("These are settings for the '" + plugin.getNiceName() + "' plugin, "
-                    + "which is not currently loaded. You must enable the plugin in the "
-                    + "main 'Plugins' category for these settings to have any effect.");
+            setWarning("These are settings for the '" + plugin.getMetaData()
+                    .getFriendlyName() + "' plugin, " + "which is not currently"
+                    + " loaded. You must enable the plugin in the main 'Plugins'"
+                    + " category for these settings to have any effect.");
         }
     }
 

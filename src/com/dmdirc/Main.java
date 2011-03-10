@@ -270,13 +270,13 @@ public final class Main {
      */
     private static void checkBundledPlugins(final PluginManager pm, final ConfigManager config) {
         for (PluginInfo plugin : pm.getPluginInfos()) {
-            if (config.hasOptionString("bundledplugins_versions", plugin.getName())) {
+            if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
                 final Version bundled = new Version(config.getOption("bundledplugins_versions",
-                        plugin.getName()));
-                final Version installed = plugin.getVersion();
+                        plugin.getMetaData().getName()));
+                final Version installed = plugin.getMetaData().getVersion();
 
                 if (installed.compareTo(bundled) < 0) {
-                    extractCorePlugins(plugin.getName());
+                    extractCorePlugins(plugin.getMetaData().getName());
                     PluginManager.getPluginManager().reloadPlugin(plugin.getFilename());
                 }
             }

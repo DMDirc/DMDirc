@@ -375,7 +375,7 @@ public class PluginManager implements ActionListener {
      */
     public PluginInfo getPluginInfoByName(final String name) {
         for (PluginInfo pluginInfo : getPluginInfos()) {
-            if (pluginInfo.getName().equalsIgnoreCase(name)) {
+            if (pluginInfo.getMetaData().getName().equalsIgnoreCase(name)) {
                 return pluginInfo;
             }
         }
@@ -550,7 +550,7 @@ public class PluginManager implements ActionListener {
      */
     public void updateAutoLoad(final PluginInfo plugin) {
         final List<String> list = IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload");
-        final String path = plugin.getRelativeFilename();
+        final String path = plugin.getMetaData().getRelativeFilename();
 
         if (plugin.isLoaded() && !list.contains(path)) {
             list.add(path);
@@ -582,9 +582,9 @@ public class PluginManager implements ActionListener {
                     try {
                         pi.getPlugin().showConfig((PreferencesDialogModel) arguments[0]);
                     } catch (LinkageError le) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getNiceName() + "), unable to show config (" + le + ")", le);
+                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getMetaData().getFriendlyName() + "), unable to show config (" + le + ")", le);
                     } catch (Exception ex) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getNiceName() + "), unable to show config (" + ex + ")", ex);
+                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getMetaData().getFriendlyName() + "), unable to show config (" + ex + ")", ex);
                     }
                 }
             }

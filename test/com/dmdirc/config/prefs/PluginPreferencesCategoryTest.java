@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.plugins.PluginInfo;
 
 import org.junit.BeforeClass;
@@ -31,16 +32,21 @@ import static org.mockito.Mockito.*;
 public class PluginPreferencesCategoryTest {
 
     private static PluginInfo loaded, unloaded;
+    private static PluginMetaData metaData;
     private static PreferencesInterface obj;
 
     @BeforeClass
     public static void setupClass() {
+        metaData = mock(PluginMetaData.class);
+        when(metaData.getFriendlyName()).thenReturn("nice name");
+
         loaded = mock(PluginInfo.class);
         when(loaded.isLoaded()).thenReturn(true);
+        when(loaded.getMetaData()).thenReturn(metaData);
 
         unloaded = mock(PluginInfo.class);
         when(unloaded.isLoaded()).thenReturn(false);
-        when(unloaded.getNiceName()).thenReturn("nice name");
+        when(unloaded.getMetaData()).thenReturn(metaData);
 
         obj = mock(PreferencesInterface.class);
     }

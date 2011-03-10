@@ -110,8 +110,8 @@ public final class URLBuilder {
      */
     public static URL buildPluginURL(final String plugin, final String path) {
         return buildJarURL(
-                PluginManager.getPluginManager().getPluginInfoByName(plugin).getFullFilename(),
-                path);
+                PluginManager.getPluginManager().getPluginInfoByName(plugin)
+                .getMetaData().getPluginUrl().getPath(), path);
     }
 
     /**

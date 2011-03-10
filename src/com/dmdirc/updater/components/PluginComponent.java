@@ -52,8 +52,8 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     public PluginComponent(final PluginInfo plugin) {
         this.plugin = plugin;
 
-        if ((plugin.getAddonID() > 0 && plugin.getVersion().isValid())
-                || (CONFIG.hasOptionInt("plugin-addonid", plugin.getName()))) {
+        if ((plugin.getMetaData().getUpdaterId() > 0 && plugin.getMetaData().getVersion().isValid())
+                || (CONFIG.hasOptionInt("plugin-addonid", plugin.getMetaData().getName()))) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
         }
@@ -62,29 +62,29 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        if (plugin.getAddonID() > 0) {
-            return "addon-" + plugin.getAddonID();
+        if (plugin.getMetaData().getUpdaterId() > 0) {
+            return "addon-" + plugin.getMetaData().getUpdaterId();
         } else {
-            return "addon-" + CONFIG.getOption("plugin-addonid", plugin.getName());
+            return "addon-" + CONFIG.getOption("plugin-addonid", plugin.getMetaData().getName());
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
-        return plugin.getNiceName();
+        return plugin.getMetaData().getFriendlyName();
     }
 
     /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
-        return plugin.getFriendlyVersion();
+        return plugin.getMetaData().getFriendlyVersion();
     }
 
     /** {@inheritDoc} */
     @Override
     public Version getVersion() {
-        return plugin.getVersion();
+        return plugin.getMetaData().getVersion();
     }
 
     /** {@inheritDoc} */
@@ -108,7 +108,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) {
-        final File target = new File(plugin.getFullFilename());
+        final File target = new File(plugin.getMetaData().getPluginUrl().getPath());
 
         boolean returnCode = false;
         final boolean wasLoaded = plugin.isLoaded();
@@ -128,7 +128,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         // If it does, update the metadata.
         if (requiresRestart() || !new File(path).renameTo(target)) {
             // Windows rocks!
-            final File newTarget = new File(plugin.getFullFilename() + ".update");
+            final File newTarget = new File(plugin.getMetaData().getPluginUrl().getPath() + ".update");
 
             if (newTarget.exists()) {
                 newTarget.delete();

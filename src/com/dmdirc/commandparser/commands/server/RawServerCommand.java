@@ -67,8 +67,13 @@ public class RawServerCommand extends Command implements CommandInfo {
         return myName;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated All commands should be shown in help messages
+     */
     @Override
+    @Deprecated
     public boolean showInHelp() {
         return true;
     }

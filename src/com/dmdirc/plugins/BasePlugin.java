@@ -108,8 +108,14 @@ public abstract class BasePlugin implements Plugin {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated PluginInfo should be obtained using a constructor parameter,
+     * if required
+     */
     @Override
+    @Deprecated
     public void setPluginInfo(final PluginInfo pluginInfo) {
         this.pluginInfo = pluginInfo;
     }
@@ -147,7 +153,7 @@ public abstract class BasePlugin implements Plugin {
             final String fs = System.getProperty("file.separator");
             final String dir = PluginManager.getPluginManager()
                     .getFilesDirectory();
-            filesDir = new File(dir + pluginInfo.getName() + fs);
+            filesDir = new File(dir + pluginInfo.getMetaData().getName() + fs);
             if (!filesDir.exists()) {
                 filesDir.mkdirs();
             }

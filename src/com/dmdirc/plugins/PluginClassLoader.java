@@ -137,7 +137,7 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         } catch (NoClassDefFoundError e) {
-            throw new ClassNotFoundException("Error loading '" + name + "' (wanted by " + pluginInfo.getName() + ") -> " + e.getMessage(), e);
+            throw new ClassNotFoundException("Error loading '" + name + "' (wanted by " + pluginInfo.getMetaData().getName() + ") -> " + e.getMessage(), e);
         }
 
 
@@ -152,7 +152,7 @@ public class PluginClassLoader extends ClassLoader {
         if (res.resourceExists(fileName)) {
             data = res.getResourceBytes(fileName);
         } else {
-            throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.getName() + ") does not exist.");
+            throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.getMetaData().getName() + ") does not exist.");
         }
 
         try {

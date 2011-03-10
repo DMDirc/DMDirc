@@ -92,8 +92,8 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
             for (PluginInfo possPlugin
                     : PluginManager.getPluginManager().getPluginInfos()) {
-                res.add(possPlugin.getName());
-                res.add("!" + possPlugin.getName());
+                res.add(possPlugin.getMetaData().getName());
+                res.add("!" + possPlugin.getMetaData().getName());
             }
         } else {
             res = TabCompleter.getIntelligentResults(arg, context, 1);
