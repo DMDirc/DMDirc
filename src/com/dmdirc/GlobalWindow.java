@@ -32,7 +32,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Arrays;
 
@@ -49,8 +48,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon", "Global", "(Global)", InputWindow.class,
-                IdentityManager.getGlobalConfig(),
+        super("icon", "Global", "(Global)",IdentityManager.getGlobalConfig(),
                 GlobalCommandParser.getGlobalCommandParser(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));

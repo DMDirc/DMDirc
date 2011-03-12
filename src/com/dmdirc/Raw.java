@@ -32,7 +32,6 @@ import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -53,8 +52,8 @@ public final class Raw extends WritableFrameContainer
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
-        super("raw", "Raw", "(Raw log)", InputWindow.class,
-                newServer.getConfigManager(), new ServerCommandParser(),
+        super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
+                new ServerCommandParser(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
 

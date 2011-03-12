@@ -32,7 +32,6 @@ import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.util.ArrayList;
@@ -62,17 +61,15 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
-     * @param windowClass The class of window to use to represent this container
      * @param config The config manager for this container
      * @param parser The command parser for this container
      * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
-            final String title, final Class<? extends InputWindow> windowClass,
-            final ConfigManager config, final CommandParser parser,
-            final Collection<String> components) {
-        super(icon, name, title, windowClass, config, components);
+            final String title, final ConfigManager config,
+            final CommandParser parser, final Collection<String> components) {
+        super(icon, name, title, config, components);
 
         this.commandParser = parser;
         parser.setOwner(this);

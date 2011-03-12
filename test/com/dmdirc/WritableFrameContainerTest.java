@@ -38,12 +38,12 @@ public class WritableFrameContainerTest {
     public static void setupClass() throws InvalidIdentityFileException {
         IdentityManager.load();
     }
-    
+
     @Test
     public void testGetNumLines() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, InputWindow.class);
-        
+                = new TestWritableFrameContainer(10);
+
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
         final int res0c = container10.getNumLines("\r\n");
@@ -55,7 +55,7 @@ public class WritableFrameContainerTest {
         final int res2a = container10.getNumLines("01234567890");
         final int res2b = container10.getNumLines("012345\r\n\r\n34567890");
         final int res2c = container10.getNumLines("01234567890\r\n\r\n");
-        
+
         assertEquals(0, res0a);
         assertEquals(0, res0b);
         assertEquals(0, res0c);
@@ -63,16 +63,16 @@ public class WritableFrameContainerTest {
         assertEquals(1, res1a);
         assertEquals(1, res1b);
         assertEquals(1, res1c);
-        
+
         assertEquals(2, res2a);
         assertEquals(2, res2b);
-        assertEquals(2, res2c);        
+        assertEquals(2, res2c);
     }
 
     @Test
     public void testSplitLine() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, InputWindow.class);
+                = new TestWritableFrameContainer(10);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

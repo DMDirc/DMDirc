@@ -56,7 +56,6 @@ import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URI;
@@ -188,7 +187,6 @@ public class Server extends WritableFrameContainer
      */
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", getHost(uri), getHost(uri),
-                InputWindow.class,
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),

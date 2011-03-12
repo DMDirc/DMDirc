@@ -36,16 +36,16 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
-            final ConfigManager cm, final Class<? extends InputWindow> clazz) {
-        super("raw", "Raw", "(Raw)", clazz, cm,
+            final ConfigManager cm) {
+        super("raw", "Raw", "(Raw)", cm,
                 GlobalCommandParser.getGlobalCommandParser(),
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;
     }
 
-    public TestWritableFrameContainer(final int lineLength, final Class<? extends InputWindow> clazz) {
-        this(lineLength, IdentityManager.getGlobalConfig(), clazz);
+    public TestWritableFrameContainer(final int lineLength) {
+        this(lineLength, IdentityManager.getGlobalConfig());
     }
 
     @Override

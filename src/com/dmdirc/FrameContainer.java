@@ -31,7 +31,6 @@ import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
@@ -65,14 +64,6 @@ public abstract class FrameContainer {
     /** The children of this frame. */
     protected final Collection<FrameContainer> children
             = new CopyOnWriteArrayList<FrameContainer>();
-
-    /**
-     * The class of windows we want to represent this container.
-     *
-     * @deprecated Replaced with {@link #components}
-     */
-    @Deprecated
-    protected final Class<? extends Window> windowClass;
 
     /** The parent of this frame. */
     protected FrameContainer parent;
@@ -110,18 +101,16 @@ public abstract class FrameContainer {
      * @param icon The icon to use for this container
      * @param name The name of this container
      * @param title The title of this container
-     * @param windowClass The class of windows required to represent this container
      * @param config The config manager for this container
      * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     protected FrameContainer(final String icon, final String name,
-            final String title, final Class<? extends Window> windowClass,
-            final ConfigManager config, final Collection<String> components) {
+            final String title, final ConfigManager config,
+            final Collection<String> components) {
         this.config = config;
         this.name = name;
         this.title = title;
-        this.windowClass = windowClass;
         this.components = new HashSet<String>(components);
 
         iconManager = new IconManager(config);
@@ -602,20 +591,6 @@ public abstract class FrameContainer {
      */
     public void removeFrameInfoListener(final FrameInfoListener listener) {
         listeners.remove(FrameInfoListener.class, listener);
-    }
-
-    /**
-     * Retrieves the class of windows which should be used to represent this
-     * container.
-     *
-     * @return This container's window class
-     * @deprecated UIs should base their implementations on the value of
-     * {@link #getComponents()}
-     * @since 0.6.4
-     */
-    @Deprecated
-    public Class<? extends Window> getWindowClass() {
-        return windowClass;
     }
 
     /**

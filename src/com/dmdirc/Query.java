@@ -41,7 +41,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -86,8 +85,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final boolean focus) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
-                InputWindow.class, newServer.getConfigManager(),
-                new QueryCommandParser(newServer),
+                newServer.getConfigManager(), new QueryCommandParser(newServer),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
 

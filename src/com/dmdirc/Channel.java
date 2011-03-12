@@ -38,7 +38,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
@@ -96,7 +95,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             final boolean focus) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
-                InputWindow.class,
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
                 new ChannelCommandParser(newServer),
