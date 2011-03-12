@@ -25,7 +25,6 @@ package com.dmdirc.ui.core.components;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
-import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -61,82 +60,6 @@ public class StatusBarManager implements StatusBar {
      */
     public void unregisterStatusBar(final StatusBar statusBar) {
         statusBars.remove(statusBar);
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String newMessage) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(newMessage);
-        }
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String iconType, final String newMessage) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(iconType, newMessage);
-        }
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String newMessage,
-            final StatusMessageNotifier newNotifier) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(newMessage, newNotifier);
-        }
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String iconType, final String newMessage,
-            final StatusMessageNotifier newNotifier) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(iconType, newMessage, newNotifier);
-        }
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String newMessage,
-            final StatusMessageNotifier newNotifier, final int timeout) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(newMessage, newNotifier, timeout);
-        }
-    }
-
-    /** {@inheritDoc}
-     *
-     * @deprecated Should use {@link setMessage(StatusMessage)} instead
-     */
-    @Deprecated
-    @Override
-    public void setMessage(final String iconType, final String newMessage,
-            final StatusMessageNotifier newNotifier, final int timeout) {
-        for (StatusBar statusBar : statusBars) {
-            statusBar.setMessage(iconType, newMessage, newNotifier, timeout);
-        }
     }
 
     /** {@inheritDoc} */
