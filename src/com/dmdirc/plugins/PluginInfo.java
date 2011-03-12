@@ -161,6 +161,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         injector.addParameter(PluginInfo.class, this);
+        injector.addParameter(PluginMetaData.class, this);
 
         return injector;
     }
@@ -593,7 +594,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         plugin = (Plugin) temp;
                         LOGGER.log(Level.FINER, "{0}: Setting domain ''plugin-{0}''",
                                 new Object[]{metadata.getName()});
-                        plugin.setPluginInfo(this);
                         plugin.setDomain("plugin-" + metadata.getName());
                         if (!tempLoaded) {
                             try {

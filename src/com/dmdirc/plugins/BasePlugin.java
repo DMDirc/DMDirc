@@ -28,7 +28,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,10 +41,6 @@ public abstract class BasePlugin implements Plugin {
     private String myDomain = "plugin-unknown";
     /** Has the domain been set? */
     private boolean domainSet;
-    /** Associated Plugin info. */
-    private PluginInfo pluginInfo;
-    /** Files directory for this plugin. */
-    private File filesDir;
     /** List of commands to load and unload. */
     private final Map<CommandInfo, Command> commands =
             new HashMap<CommandInfo, Command>();
@@ -108,24 +103,6 @@ public abstract class BasePlugin implements Plugin {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated PluginInfo should be obtained using a constructor parameter,
-     * if required
-     */
-    @Override
-    @Deprecated
-    public void setPluginInfo(final PluginInfo pluginInfo) {
-        this.pluginInfo = pluginInfo;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PluginInfo getPluginInfo() {
-        return pluginInfo;
-    }
-
     /** {@inheritDoc} */
     @Override
     public String getDomain() {
@@ -139,37 +116,6 @@ public abstract class BasePlugin implements Plugin {
      */
     protected void domainUpdated() {
         //Define this here so only implementations that care have to override
-    }
-
-    /**
-     * Get the files directory for this plugin.
-     * This will attempt to create the directory if it doesn't exist the first
-     * time the directory name is requested.
-     *
-     * @return Files directory for this plugin.
-     */
-    protected File getFilesDir() {
-        if (filesDir == null) {
-            final String fs = System.getProperty("file.separator");
-            final String dir = PluginManager.getPluginManager()
-                    .getFilesDirectory();
-            filesDir = new File(dir + pluginInfo.getMetaData().getName() + fs);
-            if (!filesDir.exists()) {
-                filesDir.mkdirs();
-            }
-        }
-
-        return filesDir;
-    }
-
-    /**
-     * Convenience Method.
-     *
-     * @return Filesdir as a string with trailing path separator
-     */
-    protected String getFilesDirString() {
-        return getFilesDir().getAbsolutePath()
-                + System.getProperty("file.separator");
     }
 
     /** {@inheritDoc} */

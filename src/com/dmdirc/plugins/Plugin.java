@@ -47,13 +47,6 @@ public interface Plugin {
     String getDomain();
 
     /**
-     * Returns the plugin info associated with this plugin.
-     *
-     * @return Plugin info or null
-     */
-    PluginInfo getPluginInfo();
-
-    /**
      * Called when the plugin is loaded.
      */
     void onLoad();
@@ -70,16 +63,6 @@ public interface Plugin {
      * @param newDomain Domain name for plugin settings
      */
     void setDomain(final String newDomain);
-
-    /**
-     * Sets the associated plugin info for this plugin.
-     *
-     * @param pluginInfo Associated plugin info
-     * @deprecated PluginInfo should be obtained using a constructor parameter,
-     * if required
-     */
-    @Deprecated
-    void setPluginInfo(final PluginInfo pluginInfo);
 
     /**
      * Called to allow plugins to add their configuration options to the
