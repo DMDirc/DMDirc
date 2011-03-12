@@ -23,7 +23,6 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.URLBuilder;
 
@@ -45,11 +44,7 @@ import javax.swing.ImageIcon;
  * It allows the user to override the default actions using config settings
  * under the icons domain.
  */
-public final class IconManager implements ConfigChangeListener {
-
-    /** Previously created IconManager instance. */
-    private static final IconManager ME = new IconManager(IdentityManager
-            .getGlobalConfig());
+public class IconManager implements ConfigChangeListener {
 
     /** A map of existing icons. */
     private final Map<String, Icon> icons;
@@ -69,18 +64,6 @@ public final class IconManager implements ConfigChangeListener {
         images = new HashMap<String, Image>();
 
         configManager.addChangeListener("icon", this);
-    }
-
-    /**
-     * Returns an instance of IconManager.
-     *
-     * @return Instance of IconManager
-     *
-     * @deprecated Instantiate an instance of this class instead
-     */
-    @Deprecated
-    public static IconManager getIconManager() {
-        return ME;
     }
 
     /**
