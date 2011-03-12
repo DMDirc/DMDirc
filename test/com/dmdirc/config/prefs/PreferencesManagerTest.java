@@ -48,7 +48,7 @@ public class PreferencesManagerTest {
 
     @Test
     public void testDefaults() {
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         assertNotNull(pm.getCategory("General"));
         assertNotNull(pm.getCategory("Connection"));
         assertNotNull(pm.getCategory("Messages"));
@@ -62,7 +62,7 @@ public class PreferencesManagerTest {
     @Test
     public void testDismiss() {
         final PreferencesCategory category = mock(PreferencesCategory.class);
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         pm.addCategory(category);
         pm.dismiss();
 
@@ -74,7 +74,7 @@ public class PreferencesManagerTest {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(false);
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         pm.addCategory(category);
         assertFalse(pm.save());
 
@@ -86,7 +86,7 @@ public class PreferencesManagerTest {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(true);
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         pm.addCategory(category);
         assertTrue(pm.save());
 
@@ -95,13 +95,13 @@ public class PreferencesManagerTest {
 
     @Test
     public void testGetCategory() {
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         assertNull(pm.getCategory("unittest123"));
     }
 
     @Test
     public void testGetCategories() {
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         assertNotNull(pm.getCategories());
         assertFalse(pm.getCategories().isEmpty());
 
@@ -112,7 +112,7 @@ public class PreferencesManagerTest {
 
     @Test
     public void testSaveListener() {
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
 
         pm.registerSaveListener(tpi);
@@ -127,7 +127,7 @@ public class PreferencesManagerTest {
         ActionManager.getActionManager().initialise();
         ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
 
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
                 (StringBuffer) same(null), same(pm));
@@ -140,7 +140,7 @@ public class PreferencesManagerTest {
         ActionManager.getActionManager().initialise();
         ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(controller);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null);
         pm.close();
 
         verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),

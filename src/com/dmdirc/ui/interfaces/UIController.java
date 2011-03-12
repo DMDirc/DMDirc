@@ -25,7 +25,6 @@ package com.dmdirc.ui.interfaces;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.config.prefs.PreferencesInterface;
 
 import java.net.URI;
 
@@ -88,33 +87,4 @@ public interface UIController {
      * @param message Message to display
      */
     void showMessageDialog(final String title, final String message);
-
-    /**
-     * Retrieves the object used to display the plugin preferences panel.
-     *
-     * @return The plugin preferences panel
-     */
-    PreferencesInterface getPluginPrefsPanel();
-
-    /**
-     * Retrieves the object used to display the updates preferences panel.
-     *
-     * @return The updates preferences panel
-     */
-    PreferencesInterface getUpdatesPrefsPanel();
-
-    /**
-     * Retrieves the object used to display the URL handlers preferences panel.
-     *
-     * @return The url handlers preferences panel
-     */
-    PreferencesInterface getUrlHandlersPrefsPanel();
-
-    /**
-     * Retrieves the object used to display the themes preferences panel.
-     *
-     * @return The themes preferences panel
-     */
-    PreferencesInterface getThemesPrefsPanel();
-
 }

@@ -26,7 +26,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
-import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
@@ -42,24 +41,37 @@ import java.util.Map;
  */
 public class PreferencesDialogModel {
 
-    /** The UI controller to use for custom categories. */
-    private final UIController controller;
-
     /** A list of categories. */
     private final List<PreferencesCategory> categories
             = new ArrayList<PreferencesCategory>();
-
     /** A list of listeners. */
     private final ListenerList listeners = new ListenerList();
+    /** UI specific plugin panel. */
+    private final PreferencesInterface pluginPanel;
+    /** UI specific theme panel. */
+    private final PreferencesInterface themePanel;
+    /** UI specific updates panel. */
+    private final PreferencesInterface updatesPanel;
+    /** UI specific URL panel. */
+    private final PreferencesInterface urlHandlerPanel;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
      *
-     * @param controller The UI controller to use to retrieve custom UIs for
-     * preferences panels.
+     * @param pluginPanel UI specific plugin panel
+     * @param themePanel UI specific theme panel
+     * @param updatesPanel UI specific updates panel
+     * @param urlHandlerPanel UI specific URL panel
      */
-    public PreferencesDialogModel(final UIController controller) {
-        this.controller = controller;
+    public PreferencesDialogModel(final PreferencesInterface pluginPanel,
+            final PreferencesInterface themePanel,
+            final PreferencesInterface updatesPanel,
+            final PreferencesInterface urlHandlerPanel) {
+        this.pluginPanel = pluginPanel;
+        this.themePanel = themePanel;
+        this.updatesPanel = updatesPanel;
+        this.urlHandlerPanel = urlHandlerPanel;
+
 
         addDefaultCategories();
 
@@ -485,7 +497,7 @@ public class PreferencesDialogModel {
      */
     private void addThemesCategory(final PreferencesCategory parent) {
         parent.addSubCategory(new PreferencesCategory("Themes", "",
-                "category-addons", controller.getThemesPrefsPanel()));
+                "category-addons", themePanel));
     }
 
     /**
@@ -493,7 +505,7 @@ public class PreferencesDialogModel {
      */
     private void addPluginsCategory() {
         addCategory(new PreferencesCategory("Plugins", "", "category-addons",
-                controller.getPluginPrefsPanel()));
+                pluginPanel));
     }
 
     /**
@@ -501,7 +513,7 @@ public class PreferencesDialogModel {
      */
     private void addUpdatesCategory() {
         addCategory(new PreferencesCategory("Updates", "", "category-updates",
-                controller.getUpdatesPrefsPanel()));
+                updatesPanel));
     }
 
     /**
@@ -510,7 +522,7 @@ public class PreferencesDialogModel {
     private void addUrlHandlerCategory() {
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
-                "category-urlhandlers", controller.getUrlHandlersPrefsPanel()));
+                "category-urlhandlers", urlHandlerPanel));
     }
 
     /**
