@@ -373,6 +373,9 @@ public class CertificateManager implements X509TrustManager {
                     break;
             }
         }
+        if (manual) {
+            problems.clear();
+        }
     }
 
     /**
