@@ -158,8 +158,6 @@
 <rule ref="rulesets/migrating.xml/ShortInstantiation"><priority>1</priority></rule>
 <rule ref="rulesets/migrating.xml/LongInstantiation"><priority>1</priority></rule>
 
-<rule ref="rulesets/naming.xml/ShortVariable"><priority>3</priority></rule>
-<rule ref="rulesets/naming.xml/LongVariable"><priority>2</priority></rule>
 <rule ref="rulesets/naming.xml/ShortMethodName"><priority>2</priority></rule>
 <rule ref="rulesets/naming.xml/VariableNamingConventions"><priority>1</priority></rule>
 <rule ref="rulesets/naming.xml/MethodNamingConventions"><priority>1</priority></rule>
