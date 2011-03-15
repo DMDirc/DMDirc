@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -38,7 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Provides a launch method independant way of accessing resources.
+ * Provides a launch method independent way of accessing resources.
  */
 public abstract class ResourceManager {
 
@@ -50,34 +49,22 @@ public abstract class ResourceManager {
      *
      * @return ResourceManager implementation
      */
-    public static final synchronized ResourceManager getResourceManager() {
+    public static synchronized ResourceManager getResourceManager() {
         if (me == null) {
-            String path = Thread.currentThread().getContextClassLoader().
-                    getResource("com/dmdirc/Main.class").getPath();
-
+            final URL mainClassURL = Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResource("com/dmdirc/Main.class");
             try {
-                path = java.net.URLDecoder.decode(path, "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
-            }
-
-            final String protocol = Thread.currentThread().getContextClassLoader().
-                    getResource("com/dmdirc/Main.class").getProtocol();
-
-            try {
-                if ("file".equals(protocol)) {
-                    me = new FileResourceManager(Thread.currentThread().
-                            getContextClassLoader().getResource("").getPath());
-                } else if ("jar".equals(protocol)) {
-                    if (System.getProperty("os.name").startsWith("Windows")) {
-                        me = new ZipResourceManager(path.substring(6, path.length() - 23));
-                    } else {
-                        me = new ZipResourceManager(path.substring(5, path.length() - 23));
-                    }
+                if (DMDircResourceManager.isRunningFromJar(mainClassURL)) {
+                    me = new FileResourceManager(DMDircResourceManager
+                            .getWorkingDirectoryString(mainClassURL));
+                } else {
+                    me = new ZipResourceManager(DMDircResourceManager
+                            .getWorkingDirectoryString(mainClassURL));
                 }
             } catch (IOException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to determine how DMDirc"
-                        + " has been executed", ex);
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "Unable to determine how DMDirc has been executed", ex);
             }
         }
         return me;
@@ -99,7 +86,7 @@ public abstract class ResourceManager {
      * @throws IOException if an IO Error occurs opening the file
      * @throws IllegalArgumentException if the URL type is not valid
      */
-    public static final ResourceManager getResourceManager(final String url)
+    public static ResourceManager getResourceManager(final String url)
             throws IOException, IllegalArgumentException {
         if (url.startsWith("file://")) {
             return new FileResourceManager(url.substring(7));

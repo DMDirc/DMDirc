@@ -25,6 +25,7 @@ package com.dmdirc.util.resourcemanager;
 import com.dmdirc.util.StreamUtil;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -51,13 +52,31 @@ public final class ZipResourceManager extends ResourceManager {
     /**
      * Instantiates ZipResourceManager.
      *
-     * @param filename Filename of the zip to load
+     * @param file Filename of the zip to load
      * @throws IOException Throw when the zip fails to load
      */
-    protected ZipResourceManager(final String filename) throws IOException {
-        super();
+    protected ZipResourceManager(final String file) throws IOException {
+        this(new File(file));
+    }
 
-        this.zipFile = new ZipFile(filename);
+    /**
+     * Instantiates ZipResourceManager.
+     *
+     * @param file File of the zip to load
+     * @throws IOException Throw when the zip fails to load
+     */
+    protected ZipResourceManager(final File file) throws IOException {
+        this(new ZipFile(file));
+    }
+
+    /**
+     * Instantiates ZipResourceManager.
+     *
+     * @param file ZipFile to load
+     */
+    protected ZipResourceManager(final ZipFile file) {
+        super();
+        zipFile = file;
         entries = new ArrayList<String>();
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while (zipEntries.hasMoreElements()) {

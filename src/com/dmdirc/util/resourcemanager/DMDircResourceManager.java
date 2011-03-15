@@ -26,6 +26,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -41,34 +44,68 @@ public class DMDircResourceManager {
      * @return Current working directory
      */
     public static synchronized String getCurrentWorkingDirectory() {
-        String path = "";
-        final URL resource = Thread.currentThread().getContextClassLoader().
-                        getResource("com/dmdirc/Main.class");
+        return getWorkingDirectoryString(Thread.currentThread()
+                .getContextClassLoader().getResource("com/dmdirc/Main.class"));
+    }
 
-        final String protocol = resource.getProtocol();
-
-        if ("file".equals(protocol)) {
-            path = Thread.currentThread().
-                    getContextClassLoader().getResource("").getPath();
-        } else if ("jar".equals(protocol)) {
-            final String tempPath = resource.getPath();
-
-            if (System.getProperty("os.name").startsWith("Windows")) {
-                path = tempPath.substring(6, tempPath.length() - 23);
-            } else {
-                path = tempPath.substring(5, tempPath.length() - 23);
-            }
-
-            path = path.substring(0, path.lastIndexOf('/') + 1);
-        }
-
+    /**
+     * Returns the working directory for the application
+     *
+     * @param mainClassURL Main class of the application
+     *
+     * @return location or null
+     */
+    public static String getWorkingDirectoryString(final URL mainClassURL) {
         try {
-            path = URLDecoder.decode(path, "UTF-8");
+            return URLDecoder.decode(
+                    getWorkingDirectoryURL(mainClassURL).getPath(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
-            path = "";
         }
-        return path;
+        return "";
+    }
+
+    /**
+     * Returns the working directory for the application
+     *
+     * @param mainClassURL Main class of the application
+     *
+     * @return URL location or null
+     */
+    public static URL getWorkingDirectoryURL(final URL mainClassURL) {
+        if (isRunningFromJar(mainClassURL)) {
+            return getJarURL(mainClassURL);
+        } else {
+            return getFileURL();
+        }
+    }
+
+    /**
+     * Returns the URL of the folder the client is loaded from.
+     *
+     * @return URL of client folder file or null
+     */
+    protected static URL getFileURL() {
+        return Thread.currentThread().getContextClassLoader()
+                    .getResource("");
+    }
+
+    /**
+     * Returns the URL of the jar the class is loaded from.
+     *
+     * @param mainClassURL Class to get Jar file from.
+     *
+     * @return URL of jar file or null
+     */
+    protected static URL getJarURL(final URL mainClassURL) {
+        try {
+            return new URI(mainClassURL.getPath()
+                    .substring(0,mainClassURL.getPath().indexOf("!/"))).toURL();
+        } catch(MalformedURLException ex) {
+            return null;
+        } catch (URISyntaxException ex) {
+            return null;
+        }
     }
 
     /**
@@ -77,9 +114,19 @@ public class DMDircResourceManager {
      * @return True if this instance is running from a JAR, false otherwise
      */
     public static boolean isRunningFromJar() {
-        final URL resource = Thread.currentThread().getContextClassLoader().
-                        getResource("com/dmdirc/Main.class");
-        return "jar".equals(resource.getProtocol());
+        return isRunningFromJar(Thread.currentThread().getContextClassLoader().
+                        getResource("com/dmdirc/Main.class"));
+
     }
 
+    /**
+     * Determines if this instance of DMDirc is running from a jar or not.
+     *
+     * @param mainClassURL URL of main class
+     *
+     * @return True if this instance is running from a JAR, false otherwise
+     */
+    protected static boolean isRunningFromJar(final URL mainClassURL) {
+        return "jar".equals(mainClassURL.getProtocol());
+    }
 }
