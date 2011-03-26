@@ -56,10 +56,10 @@ public abstract class ResourceManager {
                     .getResource("com/dmdirc/Main.class");
             try {
                 if (DMDircResourceManager.isRunningFromJar(mainClassURL)) {
-                    me = new FileResourceManager(DMDircResourceManager
+                    me = new ZipResourceManager(DMDircResourceManager
                             .getWorkingDirectoryString(mainClassURL));
                 } else {
-                    me = new ZipResourceManager(DMDircResourceManager
+                    me = new FileResourceManager(DMDircResourceManager
                             .getWorkingDirectoryString(mainClassURL));
                 }
             } catch (IOException ex) {
