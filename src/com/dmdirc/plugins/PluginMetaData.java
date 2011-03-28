@@ -26,8 +26,8 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.StreamUtil;
-import java.io.File;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;

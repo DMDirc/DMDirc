@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * Searches for and manages plugins and services.
  */
-public class PluginManager implements ActionListener {
+public class PluginManager implements ActionListener, ServiceManager {
 
     /** Singleton instance of the plugin manager. */
     private static PluginManager me;
@@ -78,25 +78,14 @@ public class PluginManager implements ActionListener {
                 CoreActionType.CLIENT_PREFS_CLOSED);
     }
 
-    /**
-     * Get a service object for the given name/type if one exists.
-     *
-     * @param type Type of this service
-     * @param name Name of this service
-     * @return The service requested, or null if service wasn't found and create wasn't specifed
-     */
+    /** {@inheritDoc} */
+    @Override
     public Service getService(final String type, final String name) {
         return getService(type, name, false);
     }
 
-    /**
-     * Get a service object for the given name/type.
-     *
-     * @param type Type of this service
-     * @param name Name of this service
-     * @param create If the requested service doesn't exist, should it be created?
-     * @return The service requested, or null if service wasn't found and create wasn't specifed
-     */
+    /** {@inheritDoc} */
+    @Override
     public Service getService(final String type, final String name, final boolean create) {
         // Find the type first
         if (services.containsKey(type)) {
@@ -120,14 +109,8 @@ public class PluginManager implements ActionListener {
         return null;
     }
 
-    /**
-     * Get a ServiceProvider object for the given name/type if one exists.
-     *
-     * @param type Type of this service
-     * @param name Name of this service
-     * @return A ServiceProvider that provides the requested service.
-     * @throws NoSuchProviderException If no provider exists for the requested service
-     */
+    /** {@inheritDoc} */
+    @Override
     public ServiceProvider getServiceProvider(final String type, final String name) throws NoSuchProviderException {
         final Service service = getService(type, name);
         if (service != null) {
@@ -147,15 +130,8 @@ public class PluginManager implements ActionListener {
         throw new NoSuchProviderException("No provider found for: " + type + "->" + name);
     }
 
-    /**
-     * Get a ServiceProvider object for the given tpye, prioritising those in the list of names.
-     *
-     * @param type Type to look for
-     * @param names Names to look for
-     * @param fallback Fallback to the first provider of type that exists if one from the list is not found.
-     * @return A ServiceProvider that provides the requested service.
-     * @throws NoSuchProviderException If no provider exists for the requested service and fallback is false, or no providers exist at all.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ServiceProvider getServiceProvider(final String type, final List<String> names, final boolean fallback) throws NoSuchProviderException {
         for (final String name : names) {
             final ServiceProvider provider = getServiceProvider(type, name);
@@ -175,24 +151,14 @@ public class PluginManager implements ActionListener {
         throw new NoSuchProviderException("No provider found for " + type + "from the given list");
     }
 
-    /**
-     * Get an ExportedService object of the given name from any provider that provides it.
-     * This is the same as doing getServiceProvider("export", name).getExportedService(name)
-     *
-     * @param name Name of this service
-     * @return An ExportedService object.
-     * @throws NoSuchProviderException If no provider exists for the requested service.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ExportedService getExportedService(final String name) {
         return getServiceProvider("export", name).getExportedService(name);
     }
 
-    /**
-     * Get a List of all services of a specifed type.
-     *
-     * @param type Type of service
-     * @return The list of services requested.
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<Service> getServicesByType(final String type) {
         // Find the type first
         if (services.containsKey(type)) {
@@ -203,11 +169,8 @@ public class PluginManager implements ActionListener {
         return new ArrayList<Service>();
     }
 
-    /**
-     * Get a List of all services
-     *
-     * @return The list of all services.
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<Service> getAllServices() {
         // Find the type first
         final List<Service> allServices = new ArrayList<Service>();

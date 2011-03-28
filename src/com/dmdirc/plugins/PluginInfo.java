@@ -29,7 +29,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.Version;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -66,7 +65,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** The classloader used for this Plugin. */
     private PluginClassLoader classloader;
     /** The resource manager used by this pluginInfo. */
-    private ResourceManager myResourceManager;
+    private ResourceManager resourceManager;
     /** Is this plugin only loaded temporarily? */
     private boolean tempLoaded;
     /** List of classes this plugin has. */
@@ -345,8 +344,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @since 0.6
      */
     public synchronized ResourceManager getResourceManager(final boolean forceNew) throws IOException {
-        if (myResourceManager == null || forceNew) {
-            myResourceManager = ResourceManager.getResourceManager("jar://" + getFullFilename());
+        if (resourceManager == null || forceNew) {
+            resourceManager = ResourceManager.getResourceManager("jar://" + metadata.getPluginUrl().getPath());
 
             // Clear the resourcemanager in 10 seconds to stop us holding the file open
             new Timer(filename + "-resourcemanagerTimer").schedule(new TimerTask() {
@@ -354,13 +353,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
-                    myResourceManager = null;
+                    resourceManager = null;
                 }
 
             }, 10000);
         }
 
-        return myResourceManager;
+        return resourceManager;
     }
 
     /** {@inheritDoc} */
@@ -433,7 +432,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True iff all required services were found and satisfied
      */
     protected boolean loadRequiredServices() {
-        final PluginManager manager = PluginManager.getPluginManager();
+        final ServiceManager manager = PluginManager.getPluginManager();
 
         for (String serviceInfo : metadata.getRequiredServices()) {
             final String[] parts = serviceInfo.split(" ", 2);
@@ -598,7 +597,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return List of child plugins
      */
     public List<PluginInfo> getChildren() {
-        return new ArrayList<PluginInfo>(children);
+        return Collections.unmodifiableList(children);
     }
 
     /**
@@ -631,7 +630,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         pi.loadPlugin();
                         parentCL = pi.getPluginClassLoader();
                         if (parentCL == null) {
-                            lastError = "Unable to get classloader from required parent '" + parentName + "' for "+getName();
+                            lastError = "Unable to get classloader from required parent '" + parentName + "' for " + metadata.getName();
                             return;
                         }
                     }
@@ -817,17 +816,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Get the main Class
-     *
-     * @return Main Class to begin loading.
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getMainClass() {
-        return metadata.getMainClass();
-    }
-
-    /**
      * Get the Plugin for this plugin.
      *
      * @return Plugin
@@ -843,45 +831,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     protected PluginClassLoader getPluginClassLoader() {
         return classloader;
-    }
-
-    /**
-     * Get the plugin friendly version
-     *
-     * @return Plugin friendly Version
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getFriendlyVersion() {
-        return metadata.getFriendlyVersion();
-    }
-
-    /**
-     * Get the plugin version
-     *
-     * @return Plugin Version
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public Version getVersion() {
-        return metadata.getVersion();
-    }
-
-    /**
-     * Get the id for this plugin on the addons site.
-     * If a plugin has been submitted to addons.dmdirc.com, and plugin.config
-     * contains a property addonid then this will return it.
-     * This is used along with the version property to allow the auto-updater to
-     * update the addon if the author submits a new version to the addons site.
-     *
-     * @return Addon Site ID number
-     *         -1 If not present
-     *         -2 If non-integer
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public int getAddonID() {
-        return metadata.getUpdaterId();
     }
 
     /**
@@ -932,74 +881,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public String getFilename() {
         return filename;
-    }
-
-    /**
-     * Get the full plugin Filename (inc dirname)
-     *
-     * @return Filename of plugin
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getFullFilename() {
-        return metadata.getPluginUrl().getPath();
-    }
-
-    /**
-     * Retrieves the path to this plugin relative to the main plugin directory,
-     * if appropriate.
-     *
-     * @return A relative path to the plugin if it is situated under the main
-     * plugin directory, or an absolute path otherwise.
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getRelativeFilename() {
-        return metadata.getRelativeFilename();
-    }
-
-    /**
-     * Get the plugin Author.
-     *
-     * @return Author of plugin
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getAuthor() {
-        return metadata.getAuthor();
-    }
-
-    /**
-     * Get the plugin Description.
-     *
-     * @return Description of plugin
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getDescription() {
-        return metadata.getDescription();
-    }
-
-    /**
-     * Get the name of the plugin. (Used to identify the plugin)
-     *
-     * @return Name of plugin
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getName() {
-        return metadata.getName();
-    }
-
-    /**
-     * Get the nice name of the plugin. (Displayed to users)
-     *
-     * @return Nice Name of plugin
-     * @deprecated Retrieve this from {@link PluginMetaData} directly
-     */
-    @Deprecated
-    public String getNiceName() {
-        return metadata.getFriendlyName();
     }
 
     /**
