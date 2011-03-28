@@ -281,7 +281,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             for (String item : providesList) {
                 final String[] bits = item.split(" ");
                 final String name = bits[0];
-                final String type = (bits.length > 1) ? bits[1] : "misc";
+                final String type = bits.length > 1 ? bits[1] : "misc";
 
                 if (!name.equalsIgnoreCase("any") && !type.equalsIgnoreCase("export")) {
                     final Service service = PluginManager.getPluginManager().getService(type, name, true);
@@ -419,30 +419,104 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Load any required plugins.
+     * Load any required plugins or services.
+     *
+     * @return True if all requirements have been satisfied, false otherwise
      */
-    public void loadRequired() {
-        final String required = metadata.getRequirements().get("plugins");
+    protected boolean loadRequirements() {
+        return loadRequiredPlugins() && loadRequiredServices();
+    }
 
-        if (required == null) {
-            return;
-        }
+    /**
+     * Attempts to load all services that are required by this plugin.
+     *
+     * @return True iff all required services were found and satisfied
+     */
+    protected boolean loadRequiredServices() {
+        final PluginManager manager = PluginManager.getPluginManager();
 
-        for (String pluginName : required.split(",")) {
-            final String[] data = pluginName.split(":");
-            if (!data[0].trim().isEmpty()) {
-                final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
+        for (String serviceInfo : metadata.getRequiredServices()) {
+            final String[] parts = serviceInfo.split(" ", 2);
 
-                if (pi == null) {
-                    return;
+            if ("any".equals(parts[0])) {
+                Service best = null;
+                boolean found = false;
+
+                for (Service service : manager.getServicesByType(parts[1])) {
+                    if (service.isActive()) {
+                        found = true;
+                        break;
+                    }
+
+                    best = service;
                 }
-                if (tempLoaded) {
-                    pi.loadPluginTemp();
-                } else {
-                    pi.loadPlugin();
+
+                if (!found && best != null) {
+                    found = best.activate();
+                }
+
+                if (!found) {
+                    return false;
+                }
+            } else {
+                final Service service = manager.getService(parts[1], parts[0]);
+
+                if (service == null || !service.activate()) {
+                    return false;
                 }
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Attempts to load all plugins that are required by this plugin.
+     *
+     * @return True if all required plugins were found and loaded
+     */
+    protected boolean loadRequiredPlugins() {
+        final String required = metadata.getRequirements().get("plugins");
+
+        if (required != null) {
+            for (String pluginName : required.split(",")) {
+                final String[] data = pluginName.split(":");
+                if (!data[0].trim().isEmpty() && !loadRequiredPlugin(data[0])) {
+                    return false;
+                }
+            }
+        }
+
+        if (metadata.getParent() != null) {
+            return loadRequiredPlugin(metadata.getParent());
+        }
+
+        return true;
+    }
+
+    /**
+     * Attempts to load the specified required plugin.
+     *
+     * @param name The name of the plugin to be loaded
+     * @return True if the plugin was found and loaded, false otherwise
+     */
+    protected boolean loadRequiredPlugin(final String name) {
+        LOGGER.log(Level.FINE, "Loading required plugin '{0}' for plugin {1}",
+                new Object[] { name, metadata.getName() });
+
+        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(name);
+
+        if (pi == null) {
+            return false;
+        }
+
+        if (tempLoaded) {
+            pi.loadPluginTemp();
+        } else {
+            pi.loadPlugin();
+        }
+
+        return true;
     }
 
     /**
@@ -458,7 +532,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         if (isTempLoaded()) {
             tempLoaded = false;
-            loadRequired();
+
+            if (!loadRequirements()) {
+                tempLoaded = true;
+                lastError = "Unable to satisfy dependencies for " + metadata.getName();
+                return;
+            }
 
             try {
                 plugin.onLoad();
@@ -475,8 +554,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
         } else {
             isLoading = true;
+
+            if (!loadRequirements()) {
+                isLoading = false;
+                lastError = "Unable to satisfy dependencies for " + metadata.getName();
+                return;
+            }
+
             loadIdentities();
-            loadRequired();
+
             loadClass(metadata.getMainClass());
 
             if (isLoaded()) {
