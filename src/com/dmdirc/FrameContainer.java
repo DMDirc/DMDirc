@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameCloseListener;
+import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.ui.IconManager;
@@ -52,21 +53,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class FrameContainer {
 
-    /** The colour of our frame's notifications. */
-    protected Color notification = Color.BLACK;
-
     /** A list of listeners for this container's events. */
     protected final ListenerList listeners = new ListenerList();
 
+    /** The colour of our frame's notifications. */
+    private Color notification = Color.BLACK;
+
     /** The document used to store this container's content. */
-    protected IRCDocument document;
+    private IRCDocument document;
 
     /** The children of this frame. */
-    protected final Collection<FrameContainer> children
+    private final Collection<FrameContainer> children
             = new CopyOnWriteArrayList<FrameContainer>();
 
     /** The parent of this frame. */
-    protected FrameContainer parent;
+    private FrameContainer parent;
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
@@ -88,10 +89,13 @@ public abstract class FrameContainer {
 
     /** The styliser used by this container. */
     private Styliser styliser;
+
     /** Object used to synchronise styliser access. */
     private final Object styliserSync = new Object();
+
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
+
     /** The IconManager for this container. */
     private final IconManager iconManager;
 
@@ -179,7 +183,7 @@ public abstract class FrameContainer {
      * @since 0.6.4
      */
     public synchronized void setParent(final FrameContainer parent) {
-        if (this.parent != null && !parent.equals(this.parent)) {
+        if (this.parent != null && (parent == null || !parent.equals(this.parent))) {
             this.parent.removeChild(this);
         }
 
@@ -270,6 +274,36 @@ public abstract class FrameContainer {
      */
     public Set<String> getComponents() {
         return Collections.unmodifiableSet(components);
+    }
+
+    /**
+     * Adds a new component to this container.
+     *
+     * @since 0.6.6
+     * @param component The component to be added
+     */
+    public void addComponent(final String component) {
+        components.add(component);
+
+        for (FrameComponentChangeListener listener
+                : listeners.get(FrameComponentChangeListener.class)) {
+            listener.componentAdded(this, component);
+        }
+    }
+
+    /**
+     * Removes a component from this container.
+     *
+     * @since 0.6.6
+     * @param component The component to be removed
+     */
+    public void removeComponent(final String component) {
+        components.remove(component);
+
+        for (FrameComponentChangeListener listener
+                : listeners.get(FrameComponentChangeListener.class)) {
+            listener.componentRemoved(this, component);
+        }
     }
 
     /**
@@ -573,6 +607,26 @@ public abstract class FrameContainer {
      */
     public void removeCloseListener(final FrameCloseListener listener) {
         listeners.remove(FrameCloseListener.class, listener);
+    }
+
+    /**
+     * Adds a component listener to this container.
+     *
+     * @since 0.6.6
+     * @param listener The listener to be added
+     */
+    public void addComponentListener(final FrameComponentChangeListener listener) {
+        listeners.add(FrameComponentChangeListener.class, listener);
+    }
+
+    /**
+     * Removes a component listener from this container.
+     *
+     * @since 0.6.6
+     * @param listener The listener to be removed
+     */
+    public void removeComponentListener(final FrameComponentChangeListener listener) {
+        listeners.remove(FrameComponentChangeListener.class, listener);
     }
 
     /**

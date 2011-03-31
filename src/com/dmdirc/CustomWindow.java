@@ -74,13 +74,12 @@ public class CustomWindow extends FrameContainer {
     @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
-        parent = null; // NOPMD
     }
 
     /** {@inheritDoc} */
     @Override
     public Server getServer() {
-        return parent == null ? null : parent.getServer();
+        return getParent() == null ? null : getParent().getServer();
     }
 
 }
