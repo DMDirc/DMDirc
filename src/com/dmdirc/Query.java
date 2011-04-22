@@ -31,8 +31,10 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
+import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.callbacks.CompositionStateChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
@@ -53,7 +55,8 @@ import java.util.List;
  * corresponding QueryWindow, and handles user input for the query.
  */
 public class Query extends MessageTarget implements PrivateActionListener,
-        PrivateMessageListener, NickChangeListener, QuitListener {
+        PrivateMessageListener, NickChangeListener, QuitListener,
+        CompositionStateChangeListener {
 
     /** The Server this Query is on. */
     private Server server;
@@ -246,6 +249,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         try {
             callbackManager.addCallback(PrivateActionListener.class, this, nick);
             callbackManager.addCallback(PrivateMessageListener.class, this, nick);
+            callbackManager.addCallback(CompositionStateChangeListener.class, this, nick);
             callbackManager.addCallback(QuitListener.class, this);
             callbackManager.addCallback(NickChangeListener.class, this);
         } catch (CallbackNotFoundException ex) {
@@ -262,10 +266,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);
+            callbackManager.delCallback(CompositionStateChangeListener.class, this);
 
             try {
                 callbackManager.addCallback(PrivateActionListener.class, this, client.getNickname());
                 callbackManager.addCallback(PrivateMessageListener.class, this, client.getNickname());
+                callbackManager.addCallback(CompositionStateChangeListener.class, this, client.getNickname());
             } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
@@ -300,6 +306,17 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onCompositionStateCanged(final Parser parser, final Date date,
+            final CompositionState state, final String host) {
+        if (state == CompositionState.TYPING) {
+            addComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
+        } else {
+            removeComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
         }
     }
 
