@@ -375,4 +375,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
         return nickname;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setCompositionState(final CompositionState state) {
+        getServer().getParser().setCompositionState(host, state);
+    }
+
 }

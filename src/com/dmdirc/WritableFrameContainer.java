@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -393,6 +394,16 @@ public abstract class WritableFrameContainer extends FrameContainer {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
         }
+    }
+
+    /**
+     * Sets the composition state for the local user for this chat.
+     *
+     * @param state The new composition state
+     */
+    public void setCompositionState(final CompositionState state) {
+        // Default implementation does nothing. Subclasses that support
+        // composition should override this.
     }
 
 }
