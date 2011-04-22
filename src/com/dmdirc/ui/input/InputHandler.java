@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
@@ -48,6 +49,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 
 /**
@@ -71,6 +74,12 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected static final int HANDLE_FORMATTING = 4;
     /** Flag to indicate that this input handler should handle returns. */
     protected static final int HANDLE_RETURN = 8;
+
+    /**
+     * Time in milliseconds after which we switch from "typing" to"text entered"
+     * composing states.
+     */
+    private static final int TYPING_TIMEOUT = 5000;
 
     /**
      * Indicates that the caret should be moved to the end of a selection when
@@ -98,6 +107,10 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected TabCompletionStyle style;
     /** Our listener list. */
     private final ListenerList listeners = new ListenerList();
+    /** The current composition state. */
+    private CompositionState state = CompositionState.IDLE;
+    /** Timer used to manage timeouts of composition state. */
+    private Timer compositionTimer;
 
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
@@ -209,6 +222,12 @@ public abstract class InputHandler implements ConfigChangeListener {
             handleControlKey(line, keyCode, shiftPressed);
         }
 
+        if (target.getText().isEmpty()) {
+            cancelTypingNotification();
+        } else {
+            updateTypingNotification();
+        }
+
         validateText();
     }
 
@@ -243,6 +262,50 @@ public abstract class InputHandler implements ConfigChangeListener {
         } else {
             final int lines = parentWindow.getNumLines(text);
                 fireLineWrap(lines);
+        }
+    }
+
+    /** Resets the composition state to idle and notifies the parent if relevant. */
+    private void cancelTypingNotification() {
+        setCompositionState(CompositionState.IDLE);
+    }
+
+    /** Updates the composition state to typing and starts/resets the idle timer. */
+    private void updateTypingNotification() {
+        if (compositionTimer != null) {
+            compositionTimer.cancel();
+        }
+
+        compositionTimer = new Timer("Composition state timer");
+        compositionTimer.schedule(new TimerTask() {
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                timeoutTypingNotification();
+            }
+        }, TYPING_TIMEOUT);
+
+        setCompositionState(CompositionState.TYPING);
+    }
+
+    /** Updates the composition state to "entered text". */
+    private void timeoutTypingNotification() {
+        setCompositionState(CompositionState.ENTERED_TEXT);
+    }
+
+    /**
+     * Sets the composition state to the specified one. If the state has
+     * changed, the parent window is notified of the new state.
+     *
+     * @param newState The new composition state
+     */
+    private void setCompositionState(final CompositionState newState) {
+        if (state != newState) {
+            state = newState;
+
+            if (parentWindow != null) {
+                parentWindow.setCompositionState(state);
+            }
         }
     }
 
@@ -493,6 +556,8 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             commandParser.parseCommand(parentWindow, thisBuffer.toString());
         }
+
+        cancelTypingNotification();
         fireLineWrap(0);
         fireCommandPassed();
     }
