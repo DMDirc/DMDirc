@@ -413,6 +413,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Try to Load the plugin files temporarily.
      */
     public void loadPluginTemp() {
+        if (isLoaded() || isTempLoaded()) {
+            // Already loaded, don't do anything
+            return;
+        }
+
         tempLoaded = true;
         loadPlugin();
     }
