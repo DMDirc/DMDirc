@@ -218,6 +218,18 @@ public abstract class InputHandler implements ConfigChangeListener {
             final boolean shiftPressed, final boolean ctrlPressed) {
         target.hideColourPicker();
 
+        if (keyCode == KeyEvent.VK_COMMA) {
+            // Reshow the colour picker dialog if the user follows a colour
+            // or control code with a comma (so they can pick a background)
+            final String partialLine = line.substring(0, target.getCaretPosition() - 1);
+
+            if (partialLine.matches("^.*" + Styliser.CODE_COLOUR + "[0-9]{0,2}$")) {
+                target.showColourPicker(true, false);
+            } else if (partialLine.matches("^.*" + Styliser.CODE_HEXCOLOUR + "[0-9A-Z]{6}?$")) {
+                target.showColourPicker(false, true);
+            }
+        }
+
         if (ctrlPressed && (flags & HANDLE_FORMATTING) != 0) {
             handleControlKey(line, keyCode, shiftPressed);
         }
