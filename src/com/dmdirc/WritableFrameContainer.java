@@ -26,14 +26,9 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
-import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.messages.Formatter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -256,144 +251,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param args The arguments for the message
      */
     public void handleNotification(final Date date, final String messageType, final Object... args) {
-        despatchNotification(date, messageType, getConfigManager().hasOptionString("notifications",
-                messageType) ? getConfigManager().getOption("notifications", messageType)
-                : "self", args);
-    }
-
-    /**
-     * Despatches a notification of the specified type to the specified target.
-     *
-     * @param date The date/time at which the event occured
-     * @param messageType The type of the message that is being sent
-     * @param messageTarget The target of the message
-     * @param args The arguments for the message
-     */
-    protected void despatchNotification(final Date date, final String messageType,
-            final String messageTarget, final Object... args) {
-
-        String target = messageTarget;
-        String format = messageType;
-
-        if (target.startsWith("format:")) {
-            format = target.substring(7);
-            format = format.substring(0, format.indexOf(':'));
-            target = target.substring(8 + format.length());
-        }
-
-        if (target.startsWith("group:")) {
-            target = getConfigManager().hasOptionString("notifications", target.substring(6))
-                    ? getConfigManager().getOption("notifications", target.substring(6))
-                    : "self";
-        }
-
-        if (target.startsWith("fork:")) {
-            for (String newtarget : target.substring(5).split("\\|")) {
-                despatchNotification(date, format, newtarget, args);
-            }
-
-            return;
-        }
-
-        if ("self".equals(target)) {
-            addLine(format, date, args);
-        }  else if (NOTIFICATION_SERVER.equals(target)) {
-            getServer().addLine(format, date, args);
-        } else if ("all".equals(target)) {
-            getServer().addLineToAll(format, args);
-        } else if ("statusbar".equals(target)) {
-            final String message = Formatter.formatMessage(getConfigManager(), format, args);
-            StatusBarManager.getStatusBarManager().setMessage(new StatusMessage(message, getConfigManager()));
-        } else if (target.startsWith("window:")) {
-            final String windowName = target.substring(7);
-
-            FrameContainer targetWindow = WindowManager.getWindowManager()
-                    .findCustomWindow(getServer(), windowName);
-
-            if (targetWindow == null) {
-                targetWindow = new CustomWindow(windowName, windowName, getServer());
-            }
-
-            targetWindow.addLine(format, date, args);
-        } else if (target.startsWith("lastcommand:")) {
-            final Object[] escapedargs = new Object[args.length];
-
-            for (int i = 0; i < args.length; i++) {
-                escapedargs[i] = "\\Q" + args[i] + "\\E";
-            }
-
-            final String command = String.format(target.substring(12), escapedargs);
-
-            WritableFrameContainer best = this;
-            long besttime = 0;
-
-            final List<FrameContainer> containers = new ArrayList<FrameContainer>();
-
-            containers.add(getServer());
-            containers.addAll(getServer().getChildren());
-
-            for (FrameContainer container : containers) {
-                if (!(container instanceof WritableFrameContainer)) {
-                    continue;
-                }
-
-                final long time = ((WritableFrameContainer) container)
-                        .getCommandParser().getCommandTime(command);
-                if (time > besttime) {
-                    besttime = time;
-                    best = (WritableFrameContainer) container;
-                }
-            }
-
-            best.addLine(format, date, args);
-        } else if (target.startsWith(NOTIFICATION_CHANNEL + ":")) {
-            final int sp = target.indexOf(' ');
-            final String channel = String.format(
-                   target.substring(8, sp > -1 ? sp : target.length()), args);
-
-           if (getServer().hasChannel(channel)) {
-               getServer().getChannel(channel).addLine(messageType, date, args);
-           } else if (sp > -1) {
-               // They specified a fallback
-               despatchNotification(date, format, target.substring(sp + 1), args);
-           } else {
-                // No fallback specified
-               addLine(format, date, args);
-               Logger.userError(ErrorLevel.LOW,
-                       "Invalid notification target for type " + messageType
-                       + ": channel " + channel + " doesn't exist");
-           }
-        } else if (target.startsWith("comchans:")) {
-            final int sp = target.indexOf(' ');
-            final String user = String.format(
-                   target.substring(9, sp > -1 ? sp : target.length()), args);
-            boolean found = false;
-
-            for (String channelName : getServer().getChannels()) {
-                final Channel channel = getServer().getChannel(channelName);
-                if (channel.getChannelInfo().getChannelClient(user) != null) {
-                    channel.addLine(messageType, date, args);
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                if (sp > -1) {
-                    // They specified a fallback
-                    despatchNotification(date, format, target.substring(sp + 1), args);
-                } else {
-                    // No fallback specified
-                    addLine(messageType, date, args);
-                       Logger.userError(ErrorLevel.LOW,
-                       "Invalid notification target for type " + messageType
-                       + ": no common channels with " + user);
-                }
-            }
-        } else if (!"none".equals(target)) {
-            addLine(format, date, args);
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Invalid notification target for type " + messageType + ": " + target);
-        }
+        MessageSinkManager.getManager().despatchMessage(this, date, messageType, args);
     }
 
     /**

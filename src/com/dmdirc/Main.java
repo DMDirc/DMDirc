@@ -32,6 +32,7 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -116,6 +117,8 @@ public final class Main {
         } catch (InvalidIdentityFileException iife) {
             handleInvalidConfigFile();
         }
+
+        MessageSinkManager.getManager().loadDefaultSinks();
 
         final PluginManager pm = PluginManager.getPluginManager();
         checkBundledPlugins(pm, IdentityManager.getGlobalConfig());
