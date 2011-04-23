@@ -159,13 +159,25 @@ public class Ignore extends Command implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
-        targets.excludeAll();
 
+        targets.excludeAll();
         if (arg == 0) {
             targets.add("--regex");
             targets.add("--remove");
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
+        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
+            final IgnoreList ignoreList = context.getWindow().getServer()
+                .getIgnoreList();
+            if (ignoreList.canConvert()) {
+                for (String entry : ignoreList.getSimpleList()) {
+                    targets.add(entry);
+                }
+            }
+            for (String entry : ignoreList.getRegexList()) {
+                targets.add(entry);
+            }
+
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--regex")) {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
