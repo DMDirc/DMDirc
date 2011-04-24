@@ -129,6 +129,7 @@ public class MessageSinkManager {
     public void loadDefaultSinks() {
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
+        addSink(new CommonChanelsMessageSink());
         addSink(new CustomWindowMessageSink());
         addSink(new ForkMessageSink());
         addSink(new FormatMessageSink());
