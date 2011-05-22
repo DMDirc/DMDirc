@@ -48,7 +48,7 @@ public class AllMessageSink implements MessageSink {
             final WritableFrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        source.getServer().addLineToAll(messageType, args);
+        source.getServer().addLineToAll(messageType, date, args);
     }
 
 }

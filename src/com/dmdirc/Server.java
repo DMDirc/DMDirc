@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -1156,18 +1157,20 @@ public class Server extends WritableFrameContainer
      * Passes the arguments to all frames for this server.
      *
      * @param messageType The type of message to send
+     * @param date The date at which the event occurred
      * @param args The arguments of the message
      */
-    public void addLineToAll(final String messageType, final Object... args) {
+    public void addLineToAll(final String messageType, final Date date,
+            final Object... args) {
         for (Channel channel : channels.values()) {
-            channel.addLine(messageType, args);
+            channel.addLine(messageType, date, args);
         }
 
         for (Query query : queries.values()) {
-            query.addLine(messageType, args);
+            query.addLine(messageType, date, args);
         }
 
-        addLine(messageType, args);
+        addLine(messageType, date, args);
     }
 
     /**
