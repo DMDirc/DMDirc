@@ -6,6 +6,8 @@
     <property file="nbproject/private/private.properties"/>
     <property file="${user.properties.file}"/>
 
+    <import file="modules/plugins/build-pluginutils.xml"/>
+
     <path id="libclasspath">
         <fileset dir="lib" includes="*.jar"/>
     </path>
@@ -20,10 +22,13 @@
     </target>
 
     <target name="-update-bundled-plugins">
-       <exec executable="bash">
-            <arg value="updateBundledPlugins.sh"/>
-            <arg value="${dist.jar}"/>
-       </exec>
+        <bundleplugins jar="${dist.jar}">
+            <fileset dir="modules/plugins/dist/">
+                <include name="tabcompletion_*.jar"/>
+                <include name="parser_irc.jar"/>
+                <include name="ui_swing.jar"/>
+            </fileset>
+        </bundleplugins>
     </target>
 
     <target name="-check-addons-key" unless="dmdirc.addons.apikey">
