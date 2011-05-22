@@ -49,6 +49,8 @@ public final class PreferencesManager {
      * Retrieves a category containing preferences settings which should be
      * displayed in channel-specific contexts.
      *
+     * @param manager The config manager to load settings from
+     * @param identity The identity to save settings to
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getServerSettings(final ConfigManager manager,
@@ -133,6 +135,8 @@ public final class PreferencesManager {
      * Retrieves a category containing preferences settings which should be
      * displayed in channel-specific contexts.
      *
+     * @param manager The config manager to load settings from
+     * @param identity The identity to save settings to
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getChannelSettings(final ConfigManager manager,

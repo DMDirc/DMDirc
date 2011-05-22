@@ -452,9 +452,6 @@ public class PreferencesDialogModel {
                 "ui", "antialias", "System anti-alias",
                 "Anti-alias all fonts").setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "maximisewindows", "Auto-maximise windows",
-                "Automatically maximise newly opened windows"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursintext", "Show nick colours in text area",
                 "Show nickname colours (if set) in text areas"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
