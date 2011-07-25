@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -86,7 +87,7 @@ import javax.net.ssl.TrustManager;
  * to the server.
  */
 public class Server extends WritableFrameContainer
-        implements ConfigChangeListener, CertificateProblemListener {
+        implements ConfigChangeListener, CertificateProblemListener, Connection {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
@@ -253,22 +254,14 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Connects to a new server with the previously supplied address and profile.
-     *
-     * @since 0.6.3m2
-     */
+    /** {@inheritDoc} */
+    @Override
     public void connect() {
         connect(address, profile);
     }
 
-    /**
-     * Connects to a new server with the specified details.
-     *
-     * @param address The address of the server to connect to
-     * @param profile The profile to use
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     @Precondition({
         "The current parser is null or not connected",
         "The specified profile is not null"
@@ -347,11 +340,8 @@ public class Server extends WritableFrameContainer
                 CoreActionType.SERVER_CONNECTING, null, this);
     }
 
-    /**
-     * Reconnects to the server with a specified reason.
-     *
-     * @param reason The quit reason to send
-     */
+    /** {@inheritDoc} */
+    @Override
     public void reconnect(final String reason) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
@@ -364,25 +354,20 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Reconnects to the server.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void reconnect() {
         reconnect(getConfigManager().getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
 
-    /**
-     * Disconnects from the server with the default quit message.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void disconnect() {
         disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
     }
 
-    /**
-     * Disconnects from the server.
-     *
-     * @param reason disconnect reason
-     */
+    /** {@inheritDoc} */
+    @Override
     public void disconnect(final String reason) {
         synchronized (myStateLock) {
             switch (myState.getState()) {
@@ -468,64 +453,38 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="Child windows">
 
-    /**
-     * Determines whether the server knows of the specified channel.
-     *
-     * @param channel The channel to be checked
-     * @return True iff the channel is known, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasChannel(final String channel) {
         return channels.containsKey(converter.toLowerCase(channel));
     }
 
-    /**
-     * Retrieves the specified channel belonging to this server.
-     *
-     * @param channel The channel to be retrieved
-     * @return The appropriate channel object
-     */
+    /** {@inheritDoc} */
+    @Override
     public Channel getChannel(final String channel) {
         return channels.get(converter.toLowerCase(channel));
     }
 
-    /**
-     * Retrieves a list of channel names belonging to this server.
-     *
-     * @return list of channel names belonging to this server
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<String> getChannels() {
         return new ArrayList<String>(channels.keySet());
     }
 
-    /**
-     * Determines whether the server knows of the specified query.
-     *
-     * @param host The host of the query to look for
-     * @return True iff the query is known, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasQuery(final String host) {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }
 
-    /**
-     * Retrieves the specified query belonging to this server. If the query
-     * does not yet exist, it is created automatically.
-     *
-     * @param host The host of the query to look for
-     * @return The appropriate query object
-     */
+    /** {@inheritDoc} */
+    @Override
     public Query getQuery(final String host) {
         return getQuery(host, false);
     }
 
-    /**
-     * Retrieves the specified query belonging to this server. If the query
-     * does not yet exist, it is created automatically.
-     *
-     * @param host The host of the query to look for
-     * @param focus Should we focus the window on open?
-     * @return The appropriate query object
-     */
+    /** {@inheritDoc} */
+    @Override
     public Query getQuery(final String host, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
@@ -547,17 +506,8 @@ public class Server extends WritableFrameContainer
         return queries.get(lnick);
     }
 
-    /**
-     * Updates the state of this server following a nick change of someone
-     * that the user has a query open with. Namely, this updates the
-     * tabcompleter with the new name, and ensures that the <code>queries</code>
-     * map uses the correct nickname.
-     *
-     * @param query The query object being updated
-     * @param oldNick The old nickname of the user
-     * @param newNick The new nickname of the user
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public void updateQuery(final Query query, final String oldNick, final String newNick) {
         tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, oldNick);
         tabCompleter.addEntry(TabCompletionType.QUERY_NICK, newNick);
@@ -566,28 +516,21 @@ public class Server extends WritableFrameContainer
         queries.remove(converter.toLowerCase(oldNick));
     }
 
-    /**
-     * Retrieves a list of queries belonging to this server.
-     *
-     * @return list of queries belonging to this server
-     */
+    /** {@inheritDoc} */
+    @Override
     public Collection<Query> getQueries() {
         return Collections.unmodifiableCollection(queries.values());
     }
 
-    /**
-     * Deletes a query from this server.
-     *
-     * @param query The query that should be removed.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void delQuery(final Query query) {
         tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
     }
 
-    /**
-     * Adds a raw window to this server.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addRaw() {
         if (raw == null) {
             raw = new Raw(this);
@@ -603,52 +546,35 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retrieves the raw window associated with this server.
-     *
-     * @return The raw window associated with this server.
-     */
+    /** {@inheritDoc} */
+    @Override
     public Raw getRaw() {
         return raw;
     }
 
-    /**
-     * Removes our reference to the raw object (presumably after it has been
-     * closed).
-     */
+    /** {@inheritDoc} */
+    @Override
     public void delRaw() {
         raw = null; //NOPMD
     }
 
-    /**
-     * Removes a specific channel and window from this server.
-     *
-     * @param chan channel to remove
-     */
+    /** {@inheritDoc} */
+    @Override
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(TabCompletionType.CHANNEL, chan);
         channels.remove(converter.toLowerCase(chan));
     }
 
-    /**
-     * Adds a specific channel and window to this server.
-     *
-     * @param chan channel to add
-     * @return The channel that was added (may be null if closing)
-     */
+    /** {@inheritDoc} */
+    @Override
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
                 || getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "hidechannels"));
     }
 
-    /**
-     * Adds a specific channel and window to this server.
-     *
-     * @param chan channel to add
-     * @param focus Whether or not to focus the channel
-     * @return The channel that was added (may be null if closing)
-     */
+    /** {@inheritDoc} */
+    @Override
     public Channel addChannel(final ChannelInfo chan, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
@@ -758,15 +684,8 @@ public class Server extends WritableFrameContainer
         return myParser;
     }
 
-    /**
-     * Compare the given URI to the URI we are currently using to see if they
-     * would both result in the server connecting to the same place, even if the
-     * URIs do not match exactly.
-     *
-     * @param uri URI to compare with the Servers own URI.
-     * @return True if the Given URI is the "same" as the one we are using.
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean compareURI(final URI uri) {
         if (parser != null) {
             return parser.compareURI(uri);
@@ -779,15 +698,8 @@ public class Server extends WritableFrameContainer
         return false;
     }
 
-    /**
-     * Parses the specified hostmask in a manner prescribed by the protocol
-     * currently used by this server.
-     *
-     * @see ProtocolDescription#parseHostmask(java.lang.String)
-     * @param hostmask The hostmask to be parsed
-     * @return An array containing the nickname, username and hostname
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public String[] parseHostmask(final String hostmask) {
         return protocolDescription.parseHostmask(hostmask);
     }
@@ -841,25 +753,14 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Attempts to join the specified channels. If channels with the same name
-     * already exist, they are (re)joined and their windows activated.
-     *
-     * @param requests The channel join requests to process
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public void join(final ChannelJoinRequest ... requests) {
         join(true, requests);
     }
 
-    /**
-     * Attempts to join the specified channels. If channels with the same name
-     * already exist, they are (re)joined.
-     *
-     * @param focus Whether or not to focus any new channels
-     * @param requests The channel join requests to process
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public void join(final boolean focus, final ChannelJoinRequest ... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
@@ -918,29 +819,20 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retrieves the parser used for this connection.
-     *
-     * @return this connection's parser
-     */
+    /** {@inheritDoc} */
+    @Override
     public Parser getParser() {
         return parser;
     }
 
-    /**
-     * Retrieves the profile that's in use for this server.
-     *
-     * @return The profile in use by this server
-     */
+    /** {@inheritDoc} */
+    @Override
     public Identity getProfile() {
         return profile;
     }
 
-    /**
-     * Retrieves the possible channel prefixes in use on this server.
-     *
-     * @return This server's possible channel prefixes
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getChannelPrefixes() {
         try {
             parserLock.readLock().lock();
@@ -950,11 +842,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retrieves the address of this server.
-     *
-     * @return This sever's address
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getAddress() {
         try {
             parserLock.readLock().lock();
@@ -964,20 +853,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retrieves the name of this server's network. The network name is
-     * determined using the following rules:
-     *
-     *  1. If the server includes its network name in the 005 information, we
-     *     use that
-     *  2. If the server's name ends in biz, com, info, net or org, we use the
-     *     second level domain (e.g., foo.com)
-     *  3. If the server's name contains more than two dots, we drop everything
-     *     up to and including the first part, and use the remainder
-     *  4. In all other cases, we use the full server name
-     *
-     * @return The name of this server's network
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getNetwork() {
         try {
             parserLock.readLock().lock();
@@ -994,14 +871,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Determines whether this server is currently connected to the specified
-     * network.
-     *
-     * @param target The network to check for
-     * @return True if this server is connected to the network, false otherwise
-     * @since 0.6.3m1rc3
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isNetwork(final String target) {
         synchronized (myStateLock) {
             try {
@@ -1055,39 +926,26 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retrieves the name of this server's IRCd.
-     *
-     * @return The name of this server's IRCd
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getIrcd() {
         return parser.getServerSoftwareType();
     }
 
-    /**
-     * Retrieves the protocol used by this server.
-     *
-     * @return This server's protocol
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getProtocol() {
         return address.getScheme();
     }
 
-    /**
-     * Returns the current away status.
-     *
-     * @return True if the client is marked as away, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isAway() {
         return awayMessage != null;
     }
 
-    /**
-     * Gets the current away message.
-     *
-     * @return Null if the client isn't away, or a textual away message if it is
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getAwayMessage() {
         return awayMessage;
     }
@@ -1098,23 +956,14 @@ public class Server extends WritableFrameContainer
         return tabCompleter;
     }
 
-    /**
-     * Retrieves the current state for this server.
-     *
-     * @return This server's state
-     */
+    /** {@inheritDoc} */
+    @Override
     public ServerState getState() {
         return myState.getState();
     }
 
-    /**
-     * Retrieves the status object for this server. Effecting state transitions
-     * on the object returned by this method will almost certainly cause
-     * problems.
-     *
-     * @since 0.6.3m1
-     * @return This server's status object.
-     */
+    /** {@inheritDoc} */
+    @Override
     public ServerStatus getStatus() {
         return myState;
     }
@@ -1153,13 +1002,8 @@ public class Server extends WritableFrameContainer
         parser = null; //NOPMD
     }
 
-    /**
-     * Passes the arguments to all frames for this server.
-     *
-     * @param messageType The type of message to send
-     * @param date The date at which the event occurred
-     * @param args The arguments of the message
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
         for (Channel channel : channels.values()) {
@@ -1173,13 +1017,8 @@ public class Server extends WritableFrameContainer
         addLine(messageType, date, args);
     }
 
-    /**
-     * Replies to an incoming CTCP message.
-     *
-     * @param source The source of the message
-     * @param type The CTCP type
-     * @param args The CTCP arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void sendCTCPReply(final String source, final String type, final String args) {
         if (type.equalsIgnoreCase("VERSION")) {
             parser.sendCTCPReply(source, "VERSION", "DMDirc "
@@ -1192,14 +1031,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Determines if the specified channel name is valid. A channel name is
-     * valid if we already have an existing Channel with the same name, or
-     * we have a valid parser instance and the parser says it's valid.
-     *
-     * @param channelName The name of the channel to test
-     * @return True if the channel name is valid, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isValidChannelName(final String channelName) {
         try {
             parserLock.readLock().lock();
@@ -1210,11 +1043,7 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Returns the server instance associated with this frame.
-     *
-     * @return the associated server connection
-     */
+    /** {@inheritDoc} */
     @Override
     public Server getServer() {
         return this;
@@ -1234,9 +1063,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Updates the name and title of this window.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void updateTitle() {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
@@ -1589,27 +1417,21 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="Ignore lists">
 
-    /**
-     * Retrieves this server's ignore list.
-     *
-     * @return This server's ignore list
-     */
+    /** {@inheritDoc} */
+    @Override
     public IgnoreList getIgnoreList() {
         return ignoreList;
     }
 
-    /**
-     * Updates this server's ignore list to use the entries stored in the
-     * config manager.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void updateIgnoreList() {
         ignoreList.clear();
         ignoreList.addAll(getConfigManager().getOptionList("network", "ignorelist"));
     }
 
-    /**
-     * Saves the contents of our ignore list to the network identity.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void saveIgnoreList() {
         getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
     }
@@ -1618,20 +1440,14 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="Identity handling">
 
-    /**
-     * Retrieves the identity for this server.
-     *
-     * @return This server's identity
-     */
+    /** {@inheritDoc} */
+    @Override
     public Identity getServerIdentity() {
         return IdentityManager.getServerConfig(parser.getServerName());
     }
 
-    /**
-     * Retrieves the identity for this server's network.
-     *
-     * @return This server's network identity
-     */
+    /** {@inheritDoc} */
+    @Override
     public Identity getNetworkIdentity() {
         return IdentityManager.getNetworkConfig(getNetwork());
     }
@@ -1640,33 +1456,24 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="Invite handling">
 
-    /**
-     * Adds an invite listener to this server.
-     *
-     * @param listener The listener to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addInviteListener(final InviteListener listener) {
         synchronized (listeners) {
             listeners.add(InviteListener.class, listener);
         }
     }
 
-    /**
-     * Removes an invite listener from this server.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeInviteListener(final InviteListener listener) {
         synchronized (listeners) {
             listeners.remove(InviteListener.class, listener);
         }
     }
 
-    /**
-     * Adds an invite to this server, and fires the appropriate listeners.
-     *
-     * @param invite The invite to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addInvite(final Invite invite) {
         synchronized (invites) {
             for (Invite oldInvite : new ArrayList<Invite>(invites)) {
@@ -1685,13 +1492,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Attempts to accept the specified invites, and join the corresponding
-     * channels.
-     *
-     * @param invites The invites to process
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public void acceptInvites(final Invite ... invites) {
         final ChannelJoinRequest[] requests = new ChannelJoinRequest[invites.length];
 
@@ -1702,23 +1504,16 @@ public class Server extends WritableFrameContainer
         join(requests);
     }
 
-    /**
-     * Attempts to accept all active invites for this server, and join the
-     * corresponding channels.
-     *
-     * @since 0.6.4
-     */
+    /** {@inheritDoc} */
+    @Override
     public void acceptInvites() {
         synchronized (invites) {
             acceptInvites(invites.toArray(new Invite[invites.size()]));
         }
     }
 
-    /**
-     * Removes all invites for the specified channel.
-     *
-     * @param channel The channel to remove invites for
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeInvites(final String channel) {
         for (Invite invite : new ArrayList<Invite>(invites)) {
             if (invite.getChannel().equals(channel)) {
@@ -1727,20 +1522,16 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Removes all invites for all channels.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeInvites() {
         for (Invite invite : new ArrayList<Invite>(invites)) {
             removeInvite(invite);
         }
     }
 
-    /**
-     * Removes an invite from this server, and fires the appropriate listeners.
-     *
-     * @param invite The invite to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeInvite(final Invite invite) {
         synchronized (invites) {
             invites.remove(invite);
@@ -1753,11 +1544,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Retusnt the list of invites for this server.
-     *
-     * @return Invite list
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<Invite> getInvites() {
         return invites;
     }
@@ -1766,33 +1554,24 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="Away state handling">
 
-    /**
-     * Adds an away state lisener to this server.
-     *
-     * @param listener The listener to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addAwayStateListener(final AwayStateListener listener) {
         synchronized (listeners) {
             listeners.add(AwayStateListener.class, listener);
         }
     }
 
-    /**
-     * Removes an away state lisener from this server.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeAwayStateListener(final AwayStateListener listener) {
         synchronized (listeners) {
             listeners.remove(AwayStateListener.class, listener);
         }
     }
 
-    /**
-     * Updates our away state and fires the relevant listeners.
-     *
-     * @param message The away message to use, or null if we're not away.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void updateAwayState(final String message) {
         if ((awayMessage != null && awayMessage.equals(message))
                 || (awayMessage == null && message == null)) {
@@ -1825,13 +1604,8 @@ public class Server extends WritableFrameContainer
 
     // <editor-fold defaultstate="collapsed" desc="TLS listener handling">
 
-    /**
-     * Adds a new certificate problem listener to this server. If there is
-     * currently an on-going problem with a certificate, the listener will
-     * be called immediately before this method returns.
-     *
-     * @param listener The listener to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addCertificateProblemListener(final CertificateProblemListener listener) {
         listeners.add(CertificateProblemListener.class, listener);
 
@@ -1841,11 +1615,8 @@ public class Server extends WritableFrameContainer
         }
     }
 
-    /**
-     * Removes the specified listener from this server.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeCertificateProblemListener(final CertificateProblemListener listener) {
         listeners.remove(CertificateProblemListener.class, listener);
     }
