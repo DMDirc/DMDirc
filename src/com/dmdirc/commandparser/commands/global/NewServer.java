@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -52,6 +53,19 @@ public class NewServer extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("newserver",
             "newserver <host[:[+]port]> [password] - connect to a new server",
             CommandType.TYPE_GLOBAL);
+
+    /** The factory to use to construct servers. */
+    private final ServerFactory serverFactory;
+
+    /**
+     * Creates a new newserver command which will use the specified factory
+     * to construct servers.
+     *
+     * @param serverFactory The factory to use to construct servers
+     */
+    public NewServer(final ServerFactory serverFactory) {
+        this.serverFactory = serverFactory;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -80,8 +94,8 @@ public class NewServer extends Command implements IntelligentCommand {
             return;
         }
 
-        final Server server = new Server(address, IdentityManager
-                .getCustomIdentities("profile").get(0));
+        final Server server = serverFactory.createServer(address,
+                IdentityManager.getCustomIdentities("profile").get(0));
         server.connect();
     }
 

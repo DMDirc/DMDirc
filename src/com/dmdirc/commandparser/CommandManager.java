@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.BasicServerFactory;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
@@ -272,7 +273,7 @@ public class CommandManager {
         registerCommand(new Exit(), Exit.INFO);
         registerCommand(new Help(), Help.INFO);
         registerCommand(new Ifplugin(), Ifplugin.INFO);
-        registerCommand(new NewServer(), NewServer.INFO);
+        registerCommand(new NewServer(new BasicServerFactory()), NewServer.INFO);
         registerCommand(new Notify(), Notify.INFO);
         registerCommand(new LoadPlugin(), LoadPlugin.INFO);
         registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);

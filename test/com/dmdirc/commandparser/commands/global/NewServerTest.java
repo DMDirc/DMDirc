@@ -21,11 +21,17 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.Server;
+import com.dmdirc.config.Identity;
+import java.net.URI;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ServerFactory;
+import java.net.URISyntaxException;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -37,42 +43,79 @@ public class NewServerTest {
         IdentityManager.load();
     }
 
-    private final NewServer command = new NewServer();
+    private FrameContainer container;
+    private ServerFactory factory;
+    private Server server;
+    private NewServer command;
+
+    @Before
+    public void setup() {
+        container = mock(FrameContainer.class);
+        factory = mock(ServerFactory.class);
+        server = mock(Server.class);
+
+        when(factory.createServer(any(URI.class), any(Identity.class))).thenReturn(server);
+
+        command = new NewServer(factory);
+    }
+
+    @Test
+    public void testBasicUsage() throws URISyntaxException {
+        command.execute(container, new CommandArguments("/foo irc.foo.com"),
+                new CommandContext(null, NewServer.INFO));
+
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:6667")), any(Identity.class));
+        verify(server).connect();
+    }
+
+    @Test
+    public void testPortUsage() throws URISyntaxException {
+        command.execute(container, new CommandArguments("/foo irc.foo.com:1234"),
+                new CommandContext(null, NewServer.INFO));
+
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(Identity.class));
+        verify(server).connect();
+    }
+
+    @Test
+    public void testUriUsage() throws URISyntaxException {
+        command.execute(container, new CommandArguments("/foo otheruri://foo.com:123/blah"),
+                new CommandContext(null, NewServer.INFO));
+
+        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(Identity.class));
+        verify(server).connect();
+    }
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(container, new CommandArguments("/foo"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
     @Test
     public void testInvalidPort() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo foo:abc"),
+        command.execute(container, new CommandArguments("/foo foo:abc"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(container).addLine(eq("commandError"), anyString());
     }
 
     @Test
     public void testOutOfRangePort1() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo foo:0"),
+        command.execute(container, new CommandArguments("/foo foo:0"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(container).addLine(eq("commandError"), anyString());
     }
 
     @Test
     public void testOutOfRangePort2() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo foo:65537"),
+        command.execute(container, new CommandArguments("/foo foo:65537"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(container).addLine(eq("commandError"), anyString());
     }
 
 }
