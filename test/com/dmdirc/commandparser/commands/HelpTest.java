@@ -59,18 +59,16 @@ public class HelpTest {
     public static List<Object[]> data() throws InvalidIdentityFileException {
         final List<Object[]> res = new LinkedList<Object[]>();
 
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         CommandManager.getCommandManager().initCommands();
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {
-                if (command.showInHelp()) {
-                    res.add(new Object[]{command});
-                }
+                res.add(new Object[]{command});
             }
         }
 
         return res;
     }
-    
+
 }

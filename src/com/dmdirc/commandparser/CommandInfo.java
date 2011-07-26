@@ -35,15 +35,6 @@ public interface CommandInfo {
     String getName();
 
     /**
-     * Returns whether or not this command should be shown in help messages.
-     *
-     * @return True iff the command should be shown, false otherwise
-     * @deprecated All commands should be shown in help messages
-     */
-    @Deprecated
-    boolean showInHelp();
-
-    /**
      * Returns a string representing the help message for this command.
      * <p>
      * The help text should generally be one line, and must start with
