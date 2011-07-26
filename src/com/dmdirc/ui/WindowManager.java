@@ -240,28 +240,6 @@ public class WindowManager {
     }
 
     /**
-     * Removes a window from the Window Manager. If the specified window
-     * has child windows, they are recursively removed before the target window.
-     * If the window hasn't previously been added, the reques to remove it is
-     * ignored.
-     *
-     * @param window The window to be removed
-     * @param canWait Whether or not this method can wait for child windows
-     * to be closed. If canWait is false, a new thread is created.
-     * @deprecated The canWait parameter no longer has any effect. Call
-     * {@link #removeWindow(com.dmdirc.FrameContainer)} instead.
-     * @since 0.6.3
-     */
-    @Precondition({
-        "The specified window is not null",
-        "The specified window is in the window hierarchy"
-    })
-    @Deprecated
-    public void removeWindow(final FrameContainer window, final boolean canWait) {
-        removeWindow(window);
-    }
-
-    /**
      * Finds and returns a global custom window with the specified name.
      * If a custom window with the specified name isn't found, null is returned.
      *
