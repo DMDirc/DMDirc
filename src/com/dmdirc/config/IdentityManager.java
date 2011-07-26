@@ -22,6 +22,8 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.IdentityFactory;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
@@ -48,7 +50,14 @@ import java.util.logging.Level;
  * The identity manager manages all known identities, providing easy methods
  * to access them.
  */
-public final class IdentityManager {
+public class IdentityManager implements IdentityFactory, IdentityController {
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(IdentityManager.class.getName());
+
+    /** A singleton instance of IdentityManager. */
+    private static final IdentityManager INSTANCE = new IdentityManager();
 
     /**
      * The identities that have been loaded into this manager.
@@ -56,7 +65,7 @@ public final class IdentityManager {
      * Standard identities are inserted with a <code>null</code> key, custom
      * identities use their custom type as the key.
      */
-    private static final MapList<String, Identity> IDENTITIES
+    private final MapList<String, Identity> identities
             = new MapList<String, Identity>();
 
     /**
@@ -65,44 +74,36 @@ public final class IdentityManager {
      * Listeners for standard identities are inserted with a <code>null</code>
      * key, listeners for a specific custom type use their type as the key.
      */
-    private static final MapList<String, IdentityListener> LISTENERS
+    private final MapList<String, IdentityListener> listeners
             = new WeakMapList<String, IdentityListener>();
 
-    /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(IdentityManager.class.getName());
-
     /** The identity file used for the global config. */
-    private static Identity config;
+    private Identity config;
 
     /** The identity file used for addon defaults. */
-    private static Identity addonConfig;
+    private Identity addonConfig;
 
     /** The identity file bundled with the client containing version info. */
-    private static Identity versionConfig;
+    private Identity versionConfig;
 
     /** The config manager used for global settings. */
-    private static ConfigManager globalconfig;
+    private ConfigManager globalconfig;
 
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
     }
 
-    /**
-     * Loads all identity files.
-     *
-     * @throws InvalidIdentityFileException If there is an error with the config
-     *                                      file.
-     */
-    public static void load() throws InvalidIdentityFileException {
-        IDENTITIES.clear();
+    /** {@inheritDoc} */
+    @Override
+    public void initialise() throws InvalidIdentityFileException {
+        identities.clear();
 
-        loadVersion();
+        loadVersionIdentity();
         loadDefaults();
-        loadUser();
+        loadUserIdentities();
         loadConfig();
 
-        if (getCustomIdentities("profile").isEmpty()) {
+        if (getIdentitiesByType("profile").isEmpty()) {
             try {
                 Identity.buildProfile("Default Profile");
             } catch (IOException ex) {
@@ -121,16 +122,28 @@ public final class IdentityManager {
         addonConfigFile.addDomain("identity", addonSettings);
 
         addonConfig = new Identity(addonConfigFile, target);
-        IdentityManager.addIdentity(addonConfig);
+        registerIdentity(addonConfig);
 
-        if (!getGlobalConfig().hasOptionString("identity", "defaultsversion")) {
+        if (!getGlobalConfiguration().hasOptionString("identity", "defaultsversion")) {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
                     + "could not be loaded");
         }
     }
 
+    /**
+     * Loads all identity files.
+     *
+     * @throws InvalidIdentityFileException If there is an error with the config
+     *                                      file.
+     * @deprecated Use non-static methods instead
+     */
+    @Deprecated
+    public static void load() throws InvalidIdentityFileException {
+        INSTANCE.initialise();
+    }
+
     /** Loads the default (built in) identities. */
-    private static void loadDefaults() {
+    private void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
         final String dir = getDirectory();
 
@@ -165,8 +178,8 @@ public final class IdentityManager {
 
         // If the bundled defaults are newer than the ones the user is
         // currently using, extract them.
-        if (getGlobalConfig().hasOptionString("identity", "defaultsversion")
-                && getGlobalConfig().hasOptionString("updater", "bundleddefaultsversion")) {
+        if (getGlobalConfiguration().hasOptionString("identity", "defaultsversion")
+                && getGlobalConfiguration().hasOptionString("updater", "bundleddefaultsversion")) {
             final Version installedVersion = new Version(getGlobalConfig()
                     .getOption("identity", "defaultsversion"));
             final Version bundledVersion = new Version(getGlobalConfig()
@@ -179,11 +192,14 @@ public final class IdentityManager {
         }
     }
 
-    private static void extractFormatters() {
+    /**
+     * Extracts the bundled formatters to the user's identity folder.
+     */
+    private void extractFormatters() {
         try {
             ResourceManager.getResourceManager().extractResource(
                     "com/dmdirc/config/defaults/default/formatter",
-                    getDirectory() + "default/", false);
+                    getIdentityDirectory() + "default/", false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "formatters: " + ex.getMessage());
@@ -196,29 +212,38 @@ public final class IdentityManager {
      *
      * @param target The target to be extracted
      */
-    private static void extractIdentities(final String target) {
+    private void extractIdentities(final String target) {
         try {
             ResourceManager.getResourceManager().extractResources(
                     "com/dmdirc/config/defaults/" + target,
-                    getDirectory() + target, false);
+                    getIdentityDirectory() + target, false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "identities: " + ex.getMessage());
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getIdentityDirectory() {
+        return Main.getConfigDir() + "identities" + System.getProperty("file.separator");
+    }
+
     /**
      * Retrieves the directory used to store identities in.
      *
      * @return The identity directory path
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     public static String getDirectory() {
-        return Main.getConfigDir() + "identities" + System.getProperty("file.separator");
+        return INSTANCE.getIdentityDirectory();
     }
 
-    /** Loads user-defined identity files. */
-    public static void loadUser() {
-        final File dir = new File(getDirectory());
+    /** {@inheritDoc} */
+    @Override
+    public void loadUserIdentities() {
+        final File dir = new File(getIdentityDirectory());
 
         if (!dir.exists()) {
             try {
@@ -233,6 +258,15 @@ public final class IdentityManager {
     }
 
     /**
+     * Loads user-defined identity files.
+     * @deprecated Use non-static methods instead
+     */
+    @Deprecated
+    public static void loadUser() {
+        INSTANCE.loadUserIdentities();
+    }
+
+    /**
      * Recursively loads files from the specified directory.
      *
      * @param dir The directory to be loaded
@@ -241,7 +275,7 @@ public final class IdentityManager {
         "The specified File is not null",
         "The specified File is a directory"
     })
-    private static void loadUser(final File dir) {
+    private void loadUser(final File dir) {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
 
@@ -266,8 +300,8 @@ public final class IdentityManager {
      *
      * @param file The file to load the identity from.
      */
-    private static void loadIdentity(final File file) {
-        synchronized (IDENTITIES) {
+    private void loadIdentity(final File file) {
+        synchronized (identities) {
             for (Identity identity : getAllIdentities()) {
                 if (identity.isFile(file)) {
                     try {
@@ -286,7 +320,7 @@ public final class IdentityManager {
         }
 
         try {
-            addIdentity(new Identity(file, false));
+            registerIdentity(new Identity(file, false));
         } catch (InvalidIdentityFileException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid identity file: " + file.getAbsolutePath()
@@ -304,10 +338,10 @@ public final class IdentityManager {
      * @return A set of all known identities
      * @since 0.6.4
      */
-    private static Set<Identity> getAllIdentities() {
+    private Set<Identity> getAllIdentities() {
         final Set<Identity> res = new LinkedHashSet<Identity>();
 
-        for (Map.Entry<String, List<Identity>> entry : IDENTITIES.entrySet()) {
+        for (Map.Entry<String, List<Identity>> entry : identities.entrySet()) {
             res.addAll(entry.getValue());
         }
 
@@ -323,16 +357,17 @@ public final class IdentityManager {
      * @return The group of the specified identity
      * @since 0.6.4
      */
-    private static String getGroup(final Identity identity) {
+    private String getGroup(final Identity identity) {
         return identity.getTarget().getType() == ConfigTarget.TYPE.CUSTOM
                 ? identity.getTarget().getData() : null;
     }
 
-    /** Loads the version information. */
-    public static void loadVersion() {
+    /** {@inheritDoc} */
+    @Override
+    public void loadVersionIdentity() {
         try {
             versionConfig = new Identity(Main.class.getResourceAsStream("version.config"), false);
-            addIdentity(versionConfig);
+            registerIdentity(versionConfig);
         } catch (IOException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         } catch (InvalidIdentityFileException ex) {
@@ -341,12 +376,22 @@ public final class IdentityManager {
     }
 
     /**
+     * Loads the version information.
+     *
+     * @deprecated Use non-static methods instead
+     */
+    @Deprecated
+    public static void loadVersion() {
+        INSTANCE.loadVersionIdentity();
+    }
+
+    /**
      * Loads the config identity.
      *
      * @throws InvalidIdentityFileException if there is a problem with the
      * config file.
      */
-    private static void loadConfig() throws InvalidIdentityFileException {
+    private void loadConfig() throws InvalidIdentityFileException {
         try {
             final File file = new File(Main.getConfigDir() + "dmdirc.config");
 
@@ -356,29 +401,51 @@ public final class IdentityManager {
 
             config = new Identity(file, true);
             config.setOption("identity", "name", "Global config");
-            addIdentity(config);
+            registerIdentity(config);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.FATAL, "I/O error when loading global config: "
                     + ex.getMessage(), ex);
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Identity getGlobalConfigIdentity() {
+        return config;
+    }
+
     /**
      * Retrieves the identity used for the global config.
      *
      * @return The global config identity
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     public static Identity getConfigIdentity() {
-        return config;
+        return INSTANCE.getGlobalConfigIdentity();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Identity getGlobalAddonIdentity() {
+        return addonConfig;
     }
 
     /**
      * Retrieves the identity used for addons defaults.
      *
      * @return The addons defaults identity
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     public static Identity getAddonIdentity() {
-        return addonConfig;
+        return INSTANCE.getGlobalAddonIdentity();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Identity getGlobalVersionIdentity() {
+        return versionConfig;
     }
 
     /**
@@ -387,16 +454,17 @@ public final class IdentityManager {
      *
      * @return The version identity
      * @since 0.6.3m2
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     public static Identity getVersionIdentity() {
-        return versionConfig;
+        return INSTANCE.getGlobalVersionIdentity();
     }
 
-    /**
-     * Saves all modified identity files to disk.
-     */
-    public static void save() {
-        synchronized (IDENTITIES) {
+    /** {@inheritDoc} */
+    @Override
+    public void saveAll() {
+        synchronized (identities) {
             for (Identity identity : getAllIdentities()) {
                 identity.save();
             }
@@ -404,29 +472,67 @@ public final class IdentityManager {
     }
 
     /**
-     * Adds the specific identity to this manager.
-     * @param identity The identity to be added
+     * Saves all modified identity files to disk.
+     * @deprecated Use non-static methods instead
      */
-    @Precondition("The specified Identity is not null")
-    public static void addIdentity(final Identity identity) {
+    @Deprecated
+    public static void save() {
+        INSTANCE.saveAll();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void registerIdentity(final Identity identity) {
         Logger.assertTrue(identity != null);
 
         final String target = getGroup(identity);
 
-        if (IDENTITIES.containsValue(target, identity)) {
-            removeIdentity(identity);
+        if (identities.containsValue(target, identity)) {
+            unregisterIdentity(identity);
         }
 
-        synchronized (IDENTITIES) {
-            IDENTITIES.add(target, identity);
+        synchronized (identities) {
+            identities.add(target, identity);
         }
 
         LOGGER.log(Level.FINER, "Adding identity: {0} (group: {1})",
                 new Object[]{identity, target});
 
-        synchronized (LISTENERS) {
-            for (IdentityListener listener : LISTENERS.safeGet(target)) {
+        synchronized (listeners) {
+            for (IdentityListener listener : listeners.safeGet(target)) {
                 listener.identityAdded(identity);
+            }
+        }
+    }
+
+    /**
+     * Adds the specific identity to this manager.
+     *
+     * @param identity The identity to be added
+     * @deprecated Use non-static methods instead
+     */
+    @Deprecated
+    @Precondition("The specified Identity is not null")
+    public static void addIdentity(final Identity identity) {
+        INSTANCE.registerIdentity(identity);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void unregisterIdentity(final Identity identity) {
+        Logger.assertTrue(identity != null);
+
+        final String group = getGroup(identity);
+
+        Logger.assertTrue(identities.containsValue(group, identity));
+
+        synchronized (identities) {
+            identities.remove(group, identity);
+        }
+
+        synchronized (listeners) {
+            for (IdentityListener listener : listeners.safeGet(group)) {
+                listener.identityRemoved(identity);
             }
         }
     }
@@ -434,27 +540,21 @@ public final class IdentityManager {
     /**
      * Removes an identity from this manager.
      * @param identity The identity to be removed
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     @Precondition({
         "The specified Identity is not null",
         "The specified Identity has previously been added and not removed"
     })
     public static void removeIdentity(final Identity identity) {
-        Logger.assertTrue(identity != null);
+        INSTANCE.unregisterIdentity(identity);
+    }
 
-        final String group = getGroup(identity);
-
-        Logger.assertTrue(IDENTITIES.containsValue(group, identity));
-
-        synchronized (IDENTITIES) {
-            IDENTITIES.remove(group, identity);
-        }
-
-        synchronized (LISTENERS) {
-            for (IdentityListener listener : LISTENERS.safeGet(group)) {
-                listener.identityRemoved(identity);
-            }
-        }
+    /** {@inheritDoc} */
+    @Override
+    public void registerIdentityListener(final IdentityListener listener) {
+        registerIdentityListener(null, listener);
     }
 
     /**
@@ -463,10 +563,22 @@ public final class IdentityManager {
      *
      * @param listener The listener to be added
      * @since 0.6.4
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     @Precondition("The specified listener is not null")
     public static void addIdentityListener(final IdentityListener listener) {
-        addIdentityListener(null, listener);
+        INSTANCE.registerIdentityListener(listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void registerIdentityListener(final String type, final IdentityListener listener) {
+        Logger.assertTrue(listener != null);
+
+        synchronized (listeners) {
+            listeners.add(type, listener);
+        }
     }
 
     /**
@@ -476,14 +588,18 @@ public final class IdentityManager {
      * @param type The type of identities to listen for
      * @param listener The listener to be added
      * @since 0.6.4
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     @Precondition("The specified listener is not null")
     public static void addIdentityListener(final String type, final IdentityListener listener) {
-        Logger.assertTrue(listener != null);
+        INSTANCE.registerIdentityListener(type, listener);
+    }
 
-        synchronized (LISTENERS) {
-            LISTENERS.add(type, listener);
-        }
+    /** {@inheritDoc} */
+    @Override
+    public List<Identity> getIdentitiesByType(final String type) {
+        return Collections.unmodifiableList(identities.safeGet(type));
     }
 
     /**
@@ -492,24 +608,20 @@ public final class IdentityManager {
      * @param type The type of identity to search for
      * @return A list of matching identities
      * @since 0.6.4
+     * @deprecated Use non-static methods instead
      */
+    @Deprecated
     public static List<Identity> getCustomIdentities(final String type) {
-        return Collections.unmodifiableList(IDENTITIES.safeGet(type));
+        return INSTANCE.getIdentitiesByType(type);
     }
 
-    /**
-     * Retrieves a list of all config sources that should be applied to the
-     * specified config manager.
-     *
-     * @param manager The manager requesting sources
-     * @return A list of all matching config sources
-     */
-    public static List<Identity> getSources(final ConfigManager manager) {
-
+    /** {@inheritDoc} */
+    @Override
+    public List<Identity> getIdentitiesForManager(final ConfigManager manager) {
         final List<Identity> sources = new ArrayList<Identity>();
 
-        synchronized (IDENTITIES) {
-            for (Identity identity : IDENTITIES.safeGet(null)) {
+        synchronized (identities) {
+            for (Identity identity : identities.safeGet(null)) {
                 if (manager.identityApplies(identity)) {
                     sources.add(identity);
                 }
@@ -522,11 +634,21 @@ public final class IdentityManager {
     }
 
     /**
-     * Retrieves the global config manager.
+     * Retrieves a list of all config sources that should be applied to the
+     * specified config manager.
      *
-     * @return The global config manager
+     * @param manager The manager requesting sources
+     * @return A list of all matching config sources
+     * @deprecated Use non-static methods instead
      */
-    public static synchronized ConfigManager getGlobalConfig() {
+    @Deprecated
+    public static List<Identity> getSources(final ConfigManager manager) {
+        return INSTANCE.getIdentitiesForManager(manager);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized ConfigManager getGlobalConfiguration() {
         if (globalconfig == null) {
             globalconfig = new ConfigManager("", "", "", "");
         }
@@ -535,18 +657,19 @@ public final class IdentityManager {
     }
 
     /**
-     * Retrieves the config for the specified channel@network. The config is
-     * created if it doesn't exist.
+     * Retrieves the global config manager.
      *
-     * @param network The name of the network
-     * @param channel The name of the channel
-     * @return A config source for the channel
+     * @return The global config manager
+     * @deprecated Use non-static methods instead
      */
-    @Precondition({
-        "The specified network is non-null and not empty",
-        "The specified channel is non-null and not empty"
-    })
-    public static Identity getChannelConfig(final String network, final String channel) {
+    @Deprecated
+    public static ConfigManager getGlobalConfig() {
+        return INSTANCE.getGlobalConfiguration();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Identity createChannelConfig(final String network, final String channel) {
         if (network == null || network.isEmpty()) {
             throw new IllegalArgumentException("getChannelConfig called "
                     + "with null or empty network\n\nNetwork: " + network);
@@ -559,8 +682,8 @@ public final class IdentityManager {
 
         final String myTarget = (channel + "@" + network).toLowerCase();
 
-        synchronized (IDENTITIES) {
-            for (Identity identity : IDENTITIES.safeGet(null)) {
+        synchronized (identities) {
+            for (Identity identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -581,14 +704,26 @@ public final class IdentityManager {
     }
 
     /**
-     * Retrieves the config for the specified network. The config is
+     * Retrieves the config for the specified channel@network. The config is
      * created if it doesn't exist.
      *
      * @param network The name of the network
-     * @return A config source for the network
+     * @param channel The name of the channel
+     * @return A config source for the channel
+     * @deprecated Use non-static methods instead
      */
-    @Precondition("The specified network is non-null and not empty")
-    public static Identity getNetworkConfig(final String network) {
+    @Deprecated
+    @Precondition({
+        "The specified network is non-null and not empty",
+        "The specified channel is non-null and not empty"
+    })
+    public static Identity getChannelConfig(final String network, final String channel) {
+        return INSTANCE.createChannelConfig(network, channel);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Identity createNetworkConfig(final String network) {
         if (network == null || network.isEmpty()) {
             throw new IllegalArgumentException("getNetworkConfig called "
                     + "with null or empty network\n\nNetwork:" + network);
@@ -596,8 +731,8 @@ public final class IdentityManager {
 
         final String myTarget = network.toLowerCase();
 
-        synchronized (IDENTITIES) {
-            for (Identity identity : IDENTITIES.safeGet(null)) {
+        synchronized (identities) {
+            for (Identity identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -618,14 +753,22 @@ public final class IdentityManager {
     }
 
     /**
-     * Retrieves the config for the specified server. The config is
+     * Retrieves the config for the specified network. The config is
      * created if it doesn't exist.
      *
-     * @param server The name of the server
-     * @return A config source for the server
+     * @param network The name of the network
+     * @return A config source for the network
+     * @deprecated Use non-static methods instead
      */
-    @Precondition("The specified server is non-null and not empty")
-    public static Identity getServerConfig(final String server) {
+    @Deprecated
+    @Precondition("The specified network is non-null and not empty")
+    public static Identity getNetworkConfig(final String network) {
+        return INSTANCE.createNetworkConfig(network);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Identity createServerConfig(final String server) {
         if (server == null || server.isEmpty()) {
             throw new IllegalArgumentException("getServerConfig called "
                     + "with null or empty server\n\nServer: " + server);
@@ -633,8 +776,8 @@ public final class IdentityManager {
 
         final String myTarget = server.toLowerCase();
 
-        synchronized (IDENTITIES) {
-            for (Identity identity : IDENTITIES.safeGet(null)) {
+        synchronized (identities) {
+            for (Identity identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -652,6 +795,29 @@ public final class IdentityManager {
             Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
             return null;
         }
+    }
+
+    /**
+     * Retrieves the config for the specified server. The config is
+     * created if it doesn't exist.
+     *
+     * @param server The name of the server
+     * @return A config source for the server
+     * @deprecated Use non-static methods instead
+     */
+    @Deprecated
+    @Precondition("The specified server is non-null and not empty")
+    public static Identity getServerConfig(final String server) {
+        return INSTANCE.createServerConfig(server);
+    }
+
+    /**
+     * Gets a singleton instance of the Identity Manager.
+     *
+     * @return A singleton instance of the IdentityManager.
+     */
+    public static IdentityManager getIdentityManager() {
+        return INSTANCE;
     }
 
 }
