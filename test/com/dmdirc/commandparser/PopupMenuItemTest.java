@@ -22,17 +22,21 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.config.IdentityManager;
 
-import org.junit.BeforeClass;
+import com.dmdirc.interfaces.CommandController;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PopupMenuItemTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.load();
+    private CommandController manager;
+
+    @Before
+    public void setup() {
+        manager = mock(CommandController.class);
+        when(manager.getCommandChar()).thenReturn('_');
     }
 
     /**
@@ -41,9 +45,9 @@ public class PopupMenuItemTest {
      */
     @Test
     public void testUnaryCommandWithSingle() {
-        final PopupMenuItem item = new PopupMenuItem(null, 1, "foo %s");
+        final PopupMenuItem item = new PopupMenuItem(manager, null, 1, "foo %s");
 
-        assertEquals("/foo bar", item.getCommand(new Object[][]{{"bar"}}));
+        assertEquals("_foo bar", item.getCommand(new Object[][]{{"bar"}}));
     }
 
     /**
@@ -52,9 +56,9 @@ public class PopupMenuItemTest {
      */
     @Test
     public void testUnaryCommandWithMultiple() {
-        final PopupMenuItem item = new PopupMenuItem(null, 1, "foo %s");
+        final PopupMenuItem item = new PopupMenuItem(manager, null, 1, "foo %s");
 
-        assertEquals("/foo bar\n/foo b\n/foo 2",
+        assertEquals("_foo bar\n_foo b\n_foo 2",
                 item.getCommand(new Object[][]{
                     {"bar"}, {"b"}, {"2"},
                 }));
@@ -66,9 +70,9 @@ public class PopupMenuItemTest {
      */
     @Test
     public void testExplicitUnaryCommandWithSingle() {
-        final PopupMenuItem item = new PopupMenuItem(null, 1, "1:foo %s");
+        final PopupMenuItem item = new PopupMenuItem(manager, null, 1, "1:foo %s");
 
-        assertEquals("/foo bar", item.getCommand(new Object[][]{{"bar"}}));
+        assertEquals("_foo bar", item.getCommand(new Object[][]{{"bar"}}));
     }
 
     /**
@@ -77,9 +81,9 @@ public class PopupMenuItemTest {
      */
     @Test
     public void testExplicitUnaryCommandWithMultiple() {
-        final PopupMenuItem item = new PopupMenuItem(null, 1, "1:foo %s");
+        final PopupMenuItem item = new PopupMenuItem(manager, null, 1, "1:foo %s");
 
-        assertEquals("/foo bar\n/foo a\n/foo 1",
+        assertEquals("_foo bar\n_foo a\n_foo 1",
                 item.getCommand(new Object[][]{
                     {"bar"}, {"a"}, {"1"},
                 }));
@@ -90,9 +94,9 @@ public class PopupMenuItemTest {
      */
     @Test
     public void testMultipleCommand() {
-        final PopupMenuItem item = new PopupMenuItem(null, 2, "4:foo %s %s %s %s");
+        final PopupMenuItem item = new PopupMenuItem(manager, null, 2, "4:foo %s %s %s %s");
 
-        assertEquals("/foo 1 2 a b\n/foo bar baz",
+        assertEquals("_foo 1 2 a b\n_foo bar baz",
                 item.getCommand(new Object[][]{
                     {"1", "2"}, {"a", "b"}, {"bar", "baz"},
                 }).trim());

@@ -22,11 +22,15 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.interfaces.CommandController;
+
 /**
  * Represents an abstract, UI-independent popup menu item.
  */
 public class PopupMenuItem {
 
+    /** The command manager to use to retrieve command information. */
+    private final CommandController commandManager;
     /** Whether this item is a divider. */
     private boolean divider;
     /** The submenu for this item, if any. */
@@ -40,33 +44,40 @@ public class PopupMenuItem {
 
     /**
      * Creates a new PopupMenuItem that is used as a divider.
+     *
+     * @param manager The command manager to use to retrieve command information
      */
-    public PopupMenuItem() {
+    public PopupMenuItem(final CommandController manager) {
         divider = true;
+        this.commandManager = manager;
     }
 
     /**
      * Creates a new PopupMenuItem that is used as a submenu.
      *
+     * @param manager The command manager to use to retrieve command information
      * @param name The name of the menu item
      * @param submenu The submenu of this item
      */
-    public PopupMenuItem(final String name, final PopupMenu submenu) {
+    public PopupMenuItem(final CommandController manager, final String name, final PopupMenu submenu) {
         this.name = name;
         this.submenu = submenu;
+        this.commandManager = manager;
     }
 
     /**
      * Creates a new PopupMenuItem that executes a command.
      *
+     * @param manager The command manager to use to retrieve command information
      * @param name The name of the menu item
      * @param arity The arity of the command this item will execute
      * @param command The command to be executed
      */
-    public PopupMenuItem(final String name, final int arity, final String command) {
+    public PopupMenuItem(final CommandController manager, final String name, final int arity, final String command) {
         this.name = name;
         this.arity = arity;
         this.command = command;
+        this.commandManager = manager;
     }
 
     /**
@@ -141,7 +152,7 @@ public class PopupMenuItem {
                     builder.append("\n");
                 }
 
-                builder.append(CommandManager.getCommandManager().getCommandChar());
+                builder.append(commandManager.getCommandChar());
                 builder.append(String.format(actualCommand, args));
                 offset = 0;
             }
@@ -156,7 +167,7 @@ public class PopupMenuItem {
                 builder.append("\n");
             }
 
-            builder.append(CommandManager.getCommandManager().getCommandChar());
+            builder.append(commandManager.getCommandChar());
             builder.append(String.format(actualCommand, args));
         }
 

@@ -93,7 +93,7 @@ public class PopupManager {
         PopupMenuItem res;
 
         if ("-".equals(item)) {
-            res = new PopupMenuItem();
+            res = new PopupMenuItem(CommandManager.getCommandManager());
         } else {
             final int colon = item.indexOf(':');
 
@@ -106,10 +106,12 @@ public class PopupManager {
             final String command = item.substring(colon + 1);
 
             if (command.length() > 0 && command.charAt(0) == '<') {
-                res = new PopupMenuItem(name, getMenu(command.substring(1),
+                res = new PopupMenuItem(CommandManager.getCommandManager(),
+                        name, getMenu(command.substring(1),
                         type, configManager));
             } else {
-                res = new PopupMenuItem(name, type.getArity(), command);
+                res = new PopupMenuItem(CommandManager.getCommandManager(),
+                        name, type.getArity(), command);
             }
         }
 

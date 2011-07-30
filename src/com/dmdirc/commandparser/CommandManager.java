@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.BasicServerFactory;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -47,7 +48,7 @@ import java.util.Map;
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
-public class CommandManager {
+public class CommandManager implements CommandController {
 
     /** A singleton instance of the command manager. */
     private static final CommandManager INSTANCE = new CommandManager();
@@ -68,54 +69,32 @@ public class CommandManager {
     private char silenceChar = IdentityManager.getGlobalConfig()
             .getOptionChar("general", "silencechar");
 
-    /**
-     * Returns the current command character.
-     *
-     * @return the current command char
-     */
+    /** {@inheritDoc} */
+    @Override
     public char getCommandChar() {
         return commandChar;
     }
 
-    /**
-     * Returns the current silence character.
-     *
-     * @return the current silence char
-     */
+    /** {@inheritDoc} */
+    @Override
     public char getSilenceChar() {
         return silenceChar;
     }
 
-    /**
-     * Registers a command with the command manager.
-     *
-     * @param command The command to be registered
-     * @param info The information about the command
-     * @since 0.6.3m1
-     */
+    /** {@inheritDoc} */
+    @Override
     public void registerCommand(final Command command, final CommandInfo info) {
         registerCommand(info, command, true);
     }
 
-    /**
-     * Registers a {@link Command} which also implements the {@link CommandInfo}
-     * interface with the command manager.
-     *
-     * @param <T> The type of object that's being registered
-     * @param command An object that extends {@link Command} and implements
-     * {@link CommandInfo} to be registered.
-     * @since 0.6.3m1
-     */
+    /** {@inheritDoc} */
+    @Override
     public <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
     }
 
-    /**
-     * Unregisters a command with the command manager.
-     *
-     * @param info The information object for the command that should be unregistered
-     * @since 0.6.3m1
-     */
+    /** {@inheritDoc} */
+    @Override
     public void unregisterCommand(final CommandInfo info) {
         registerCommand(info, commands.get(info), false);
     }
@@ -221,9 +200,8 @@ public class CommandManager {
         }
     }
 
-    /**
-     * Instansiates the default commands.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void initCommands() {
         // Chat commands
         registerCommand(new Me(), Me.INFO);
@@ -299,14 +277,8 @@ public class CommandManager {
         IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
 
-    /**
-     * Loads all commands of the specified types into the specified parser.
-     *
-     * @see CommandType#getComponentTypes()
-     * @since 0.6.3m1
-     * @param parser The {@link CommandParser} to load commands in to
-     * @param supertypes The types of commands that should be loaded
-     */
+    /** {@inheritDoc} */
+    @Override
     public void loadCommands(final CommandParser parser,
             final CommandType ... supertypes) {
         for (CommandType supertype : supertypes) {
@@ -320,24 +292,14 @@ public class CommandManager {
         }
     }
 
-    /**
-     * Retrieves the command identified by the specified name, regardless of
-     * type.
-     *
-     * @param name The name to look for
-     * @return A command with a matching signature, or null if none were found
-     */
+    /** {@inheritDoc} */
+    @Override
     public Map.Entry<CommandInfo, Command> getCommand(final String name) {
         return getCommand(null, name);
     }
 
-    /**
-     * Retrieves a command of the specified type with the specified name.
-     *
-     * @param type The type of the command to look for
-     * @param name The name to look for
-     * @return A command with a matching signature, or null if none were found
-     */
+    /** {@inheritDoc} */
+    @Override
     public Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
             final String name) {
         final Map<CommandInfo, Command> res = getCommands(type, name);
@@ -345,23 +307,15 @@ public class CommandManager {
         return res.isEmpty() ? null : res.entrySet().iterator().next();
     }
 
-    /**
-     * Determines if the specified command is a valid channel command.
-     *
-     * @param command The name of the command to test
-     * @return True iff the command is a channel command, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isChannelCommand(final String command) {
         return getCommand(CommandType.TYPE_CHANNEL, command) != null
                 || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
 
-    /**
-     * Retrieves a list of the names of all commands of the specified type.
-     *
-     * @param type The type of command to list
-     * @return A list of command names
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
 
@@ -372,14 +326,8 @@ public class CommandManager {
         return res;
     }
 
-    /**
-     * Retrieves a map of all {@link CommandInfo}s and their associated
-     * {@link Command}s of the specified type.
-     *
-     * @param type The type of command to list
-     * @return A map of commands
-     * @since 0.6.3m1
-     */
+    /** {@inheritDoc} */
+    @Override
     public Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
     }
