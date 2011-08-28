@@ -34,6 +34,7 @@ import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ActionGroupComponent;
@@ -63,7 +64,7 @@ public class ActionManager implements ActionController {
             = java.util.logging.Logger.getLogger(ActionManager.class.getName());
 
     /** The identity manager to load configuration from. */
-    private final IdentityManager identityManager;
+    private final IdentityController identityManager;
 
     /** A list of registered action types. */
     private final List<ActionType> types
@@ -105,7 +106,7 @@ public class ActionManager implements ActionController {
      *
      * @param identityManager The IdentityManager to load configuration from.
      */
-    public ActionManager(final IdentityManager identityManager) {
+    public ActionManager(final IdentityController identityManager) {
         this.identityManager = identityManager;
         this.killSwitch = identityManager.getGlobalConfiguration().getOptionBool("actions", "killswitch");
     }
