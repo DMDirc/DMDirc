@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.interfaces.ActionComparison;
@@ -42,6 +43,7 @@ import com.dmdirc.util.resourcemanager.ZipResourceManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +52,18 @@ import java.util.logging.Level;
 /**
  * Manages all actions for the client.
  */
-public final class ActionManager {
+public class ActionManager implements ActionController {
 
     /** A singleton instance of the ActionManager. */
-    private static final ActionManager INSTANCE = new ActionManager();
+    private static final ActionManager INSTANCE
+            = new ActionManager(IdentityManager.getIdentityManager());
 
     /** A logger for the action manager to use. */
     private static final java.util.logging.Logger LOGGER
             = java.util.logging.Logger.getLogger(ActionManager.class.getName());
+
+    /** The identity manager to load configuration from. */
+    private final IdentityManager identityManager;
 
     /** A list of registered action types. */
     private final List<ActionType> types
@@ -92,12 +98,16 @@ public final class ActionManager {
             = new MapList<ActionType, ActionListener>();
 
     /** Indicates whether or not user actions should be killed (not processed). */
-    private boolean killSwitch
-            = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
+    private boolean killSwitch;
 
-    /** Creates a new instance of ActionManager. */
-    private ActionManager() {
-        // Shouldn't be instansiated
+    /**
+     * Creates a new instance of ActionManager.
+     *
+     * @param identityManager The IdentityManager to load configuration from.
+     */
+    public ActionManager(final IdentityManager identityManager) {
+        this.identityManager = identityManager;
+        this.killSwitch = identityManager.getGlobalConfiguration().getOptionBool("actions", "killswitch");
     }
 
     /**
@@ -109,9 +119,8 @@ public final class ActionManager {
         return INSTANCE;
     }
 
-    /**
-     * Initialises the action manager.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void initialise() {
         registerTypes(CoreActionType.values());
         registerComparisons(CoreActionComparison.values());
@@ -120,7 +129,7 @@ public final class ActionManager {
         addGroup(AliasWrapper.getAliasWrapper());
         addGroup(PerformWrapper.getPerformWrapper());
 
-        new WhoisNumericFormatter(IdentityManager.getAddonIdentity()).register();
+        new WhoisNumericFormatter(identityManager.getGlobalAddonIdentity()).register();
 
         // Register a listener for the closing event, so we can save actions
         registerListener(new ActionListener() {
@@ -133,20 +142,19 @@ public final class ActionManager {
         }, CoreActionType.CLIENT_CLOSED);
 
         // Make sure we listen for the killswitch
-        IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",
+        identityManager.getGlobalConfiguration().addChangeListener("actions", "killswitch",
                 new ConfigChangeListener() {
             /** {@inheritDoc} */
             @Override
             public void configChanged(final String domain, final String key) {
-                killSwitch = IdentityManager.getGlobalConfig().getOptionBool(
-                        "actions", "killswitch");
+                killSwitch = identityManager.getGlobalConfiguration()
+                        .getOptionBool("actions", "killswitch");
             }
         });
     }
 
-    /**
-     * Saves all actions.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void saveAllActions() {
         for (ActionGroup group : groups.values()) {
             for (Action action : group) {
@@ -155,31 +163,20 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Registers the specified default setting for actions.
-     *
-     * @param name The name of the setting to be registered
-     * @param value The default value for the setting
-     */
+    /** {@inheritDoc} */
+    @Override
     public void registerSetting(final String name, final String value) {
-        IdentityManager.getAddonIdentity().setOption("actions", name, value);
+        identityManager.getGlobalAddonIdentity().setOption("actions", name, value);
     }
 
-    /**
-     * Registers the specified group of actions with the manager.
-     *
-     * @param group The group of actions to be registered
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addGroup(final ActionGroup group) {
         groups.put(group.getName(), group);
     }
 
-    /**
-     * Registers a set of action types with the manager.
-     *
-     * @param newTypes An array of ActionTypes to be registered
-     */
-    @Precondition("None of the specified ActionTypes are null")
+    /** {@inheritDoc} */
+    @Override
     public void registerTypes(final ActionType[] newTypes) {
         for (ActionType type : newTypes) {
             Logger.assertTrue(type != null);
@@ -192,12 +189,8 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Registers a set of action components with the manager.
-     *
-     * @param comps An array of ActionComponents to be registered
-     */
-    @Precondition("None of the specified ActionComponents are null")
+    /** {@inheritDoc} */
+    @Override
     public void registerComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
             Logger.assertTrue(comp != null);
@@ -207,12 +200,8 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Registers a set of action comparisons with the manager.
-     *
-     * @param comps An array of ActionComparisons to be registered
-     */
-    @Precondition("None of the specified ActionComparisons are null")
+    /** {@inheritDoc} */
+    @Override
     public void registerComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
             Logger.assertTrue(comp != null);
@@ -222,27 +211,20 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Returns a map of groups to action lists.
-     *
-     * @return a map of groups to action lists
-     */
+    /** {@inheritDoc} */
+    @Override
     public Map<String, ActionGroup> getGroupsMap() {
-        return groups;
+        return Collections.unmodifiableMap(groups);
     }
 
-    /**
-     * Returns a map of type groups to types.
-     *
-     * @return A map of type groups to types
-     */
+    /** {@inheritDoc} */
+    @Override
     public MapList<String, ActionType> getGroupedTypes() {
-        return typeGroups;
+        return new MapList<String, ActionType>(typeGroups);
     }
 
-    /**
-     * Loads actions from the user's directory.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void loadUserActions() {
         actions.clear();
 
@@ -305,12 +287,8 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Registers an action with the manager.
-     *
-     * @param action The action to be registered
-     */
-    @Precondition("The specified action is not null")
+    /** {@inheritDoc} */
+    @Override
     public void addAction(final Action action) {
         Logger.assertTrue(action != null);
 
@@ -327,13 +305,8 @@ public final class ActionManager {
         getOrCreateGroup(action.getGroup()).add(action);
     }
 
-    /**
-     * Retrieves the action group with the specified name. A new group is
-     * created if it doesn't already exist.
-     *
-     * @param name The name of the group to retrieve
-     * @return The corresponding ActionGroup
-     */
+    /** {@inheritDoc} */
+    @Override
     public ActionGroup getOrCreateGroup(final String name) {
         if (!groups.containsKey(name)) {
             groups.put(name, new ActionGroup(name));
@@ -342,12 +315,8 @@ public final class ActionManager {
         return groups.get(name);
     }
 
-    /**
-     * Unregisters an action with the manager.
-     *
-     * @param action The action to be unregistered
-     */
-    @Precondition("The specified action is not null")
+    /** {@inheritDoc} */
+    @Override
     public void removeAction(final Action action) {
         Logger.assertTrue(action != null);
 
@@ -355,32 +324,15 @@ public final class ActionManager {
         getOrCreateGroup(action.getGroup()).remove(action);
     }
 
-    /**
-     * Reregisters the specified action. Should be used when the action's
-     * triggers change.
-     *
-     * @param action The action to be reregistered
-     */
+    /** {@inheritDoc} */
+    @Override
     public void reregisterAction(final Action action) {
         removeAction(action);
         addAction(action);
     }
 
-    /**
-     * Processes an event of the specified type.
-     *
-     * @param type The type of the event to process
-     * @param format The format of the message that's going to be displayed for
-     * the event. Actions may change this format.
-     * @param arguments The arguments for the event
-     * @return True if the event should be processed, or false if an action
-     * listener has requested the event be skipped.
-     */
-    @Precondition({
-        "The specified ActionType is not null",
-        "The specified ActionType has a valid ActionMetaType",
-        "The length of the arguments array equals the arity of the ActionType's ActionMetaType"
-    })
+    /** {@inheritDoc} */
+    @Override
     public boolean triggerEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         Logger.assertTrue(type != null);
@@ -462,17 +414,8 @@ public final class ActionManager {
         return Main.getConfigDir() + "actions" + System.getProperty("file.separator");
     }
 
-    /**
-     * Creates a new group with the specified name.
-     *
-     * @param group The group to be created
-     *
-     * @return The newly created group
-     */
-    @Precondition({
-        "The specified group is non-null and not empty",
-        "The specified group is not an existing group"
-    })
+    /** {@inheritDoc} */
+    @Override
     public ActionGroup createGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
@@ -489,15 +432,8 @@ public final class ActionManager {
         }
     }
 
-    /**
-     * Removes the group with the specified name.
-     *
-     * @param group The group to be removed
-     */
-    @Precondition({
-        "The specified group is non-null and not empty",
-        "The specified group is an existing group"
-    })
+    /** {@inheritDoc} */
+    @Override
     public void deleteGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
@@ -528,19 +464,8 @@ public final class ActionManager {
         groups.remove(group);
     }
 
-    /**
-     * Renames the specified group.
-     *
-     * @param oldName The old name of the group
-     * @param newName The new name of the group
-     */
-    @Precondition({
-        "The old name is non-null and not empty",
-        "The old name is an existing group",
-        "The new name is non-null and not empty",
-        "The new name is not an existing group",
-        "The old name does not equal the new name"
-    })
+    /** {@inheritDoc} */
+    @Override
     public void changeGroupName(final String oldName, final String newName) {
         Logger.assertTrue(oldName != null);
         Logger.assertTrue(!oldName.isEmpty());
@@ -561,13 +486,8 @@ public final class ActionManager {
         deleteGroup(oldName);
     }
 
-    /**
-     * Returns the action comparison specified by the given string, or null if it
-     * doesn't match a valid registered action comparison.
-     *
-     * @param type The name of the action comparison to try and find
-     * @return The type with the specified name, or null on failure
-     */
+    /** {@inheritDoc} */
+    @Override
     public ActionType getType(final String type) {
         if (type == null || type.isEmpty()) {
             return null;
@@ -582,14 +502,8 @@ public final class ActionManager {
         return null;
     }
 
-    /**
-     * Returns a list of action types that are compatible with the one
-     * specified.
-     *
-     * @param type The type to be checked against
-     * @return A list of compatible action types
-     */
-    @Precondition("The specified type is not null")
+    /** {@inheritDoc} */
+    @Override
     public List<ActionType> findCompatibleTypes(final ActionType type) {
         Logger.assertTrue(type != null);
 
@@ -603,14 +517,8 @@ public final class ActionManager {
         return res;
     }
 
-    /**
-     * Returns a list of action components that are compatible with the
-     * specified class.
-     *
-     * @param target The class to be tested
-     * @return A list of compatible action components
-     */
-    @Precondition("The specified target is not null")
+    /** {@inheritDoc} */
+    @Override
     public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
         Logger.assertTrue(target != null);
 
@@ -624,14 +532,8 @@ public final class ActionManager {
         return res;
     }
 
-    /**
-     * Returns a list of action comparisons that are compatible with the
-     * specified class.
-     *
-     * @param target The class to be tested
-     * @return A list of compatible action comparisons
-     */
-    @Precondition("The specified target is not null")
+    /** {@inheritDoc} */
+    @Override
     public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
         Logger.assertTrue(target != null);
 
@@ -645,32 +547,20 @@ public final class ActionManager {
         return res;
     }
 
-    /**
-     * Returns a list of all the action types registered by this manager.
-     *
-     * @return A list of registered action types
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<ActionType> getAllTypes() {
-        return types;
+        return Collections.unmodifiableList(types);
     }
 
-    /**
-     * Returns a list of all the action types registered by this manager.
-     *
-     * @return A list of registered action comparisons
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<ActionComparison> getAllComparisons() {
-        return comparisons;
+        return Collections.unmodifiableList(comparisons);
     }
 
-    /**
-     * Returns the action component specified by the given string, or null if it
-     * doesn't match a valid registered action component.
-     *
-     * @param type The name of the action component to try and find
-     * @return The actioncomponent with the specified name, or null on failure
-     */
-    @Precondition("The specified type is non-null and not empty")
+    /** {@inheritDoc} */
+    @Override
     public ActionComponent getComponent(final String type) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
@@ -684,14 +574,8 @@ public final class ActionManager {
         return null;
     }
 
-    /**
-     * Returns the action type specified by the given string, or null if it
-     * doesn't match a valid registered action type.
-     *
-     * @param type The name of the action type to try and find
-     * @return The actiontype with the specified name, or null on failure
-     */
-    @Precondition("The specified type is non-null and not empty")
+    /** {@inheritDoc} */
+    @Override
     public ActionComparison getComparison(final String type) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());
@@ -721,35 +605,24 @@ public final class ActionManager {
         new File(path).delete();
     }
 
-    /**
-     * Adds a new listener for the specified action type.
-     *
-     * @param types The action types that are to be listened for
-     * @param listener The listener to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void registerListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
             listeners.add(type, listener);
         }
     }
 
-    /**
-     * Removes a listener for the specified action type.
-     *
-     * @param types The action types that were being listened for
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void unregisterListener(final ActionListener listener, final ActionType ... types) {
         for (ActionType type : types) {
             listeners.remove(type, listener);
         }
     }
 
-    /**
-     * Removes a listener for all action types.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void unregisterListener(final ActionListener listener) {
         listeners.removeFromAll(listener);
     }

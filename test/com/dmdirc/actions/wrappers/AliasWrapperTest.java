@@ -66,7 +66,7 @@ public class AliasWrapperTest {
         final Action action = new Action("unit-test", "foo",
                 new ActionType[]{CoreActionType.UNKNOWN_COMMAND}, new String[0],
                 conditions, null);
-        
+
         final int size = AliasWrapper.getAliasWrapper().getAliases().size();
         AliasWrapper.getAliasWrapper().add(action);
         assertEquals(size, AliasWrapper.getAliasWrapper().getAliases().size());
