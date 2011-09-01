@@ -20,37 +20,29 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.interfaces;
+package com.dmdirc.interfaces.ui;
+
+import com.dmdirc.FrameContainer;
 
 /**
- * Encapsulates the methods that all action types are required to implement.
+ * The Window interface specifies common methods that should be implemented
+ * by all windows. It is assumed that all windows have a main text area.
  */
-public interface ActionMetaType {
+public interface Window {
 
     /**
-     * Retrieves the arity of this type.
-     * @return The arity of this action type
-     */
-    int getArity();
-
-    /**
-     * Retrieves the type of arguments that actions of this type should expect.
-     * @return The type of arguments expected
-     */
-    Class[] getArgTypes();
-
-    /**
-     * Retrieves the names of the arguments that actions of this type should
-     * expect.
-     * @return The names of the expected arguments
-     */
-    String[] getArgNames();
-
-    /**
-     * Retrieves the name of a logical group for this meta-type to be put into.
+     * Retrieves the container that owns this command window.
      *
-     * @return The meta-type's group name
+     * @return The container that owns this command window.
      */
-    String getGroup();
+    FrameContainer getContainer();
+
+    /**
+     * Retrieves the UI controller this window is associated with.
+     *
+     * @return This window's UI controller
+     * @since 0.6.4
+     */
+    UIController getController();
 
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
@@ -149,7 +149,7 @@ public class ActionModelTest {
         assertFalse("test must fail if all conditions fail",
                 model.test(sub, null, null, "abeeef"));
     }
-    
+
     @Test
     public void testTestNoCondTree() {
         final ActionModel model = new ActionModel("group", "name",

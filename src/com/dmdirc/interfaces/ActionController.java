@@ -25,9 +25,9 @@ package com.dmdirc.interfaces;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.actions.interfaces.ActionComparison;
-import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionComparison;
+import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.util.MapList;
 
 import java.util.List;

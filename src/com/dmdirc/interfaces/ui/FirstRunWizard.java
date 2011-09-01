@@ -20,7 +20,17 @@
  * SOFTWARE.
  */
 
-/**
- * Interfaces associated with UI components.
- */
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
+
+/** First run wizard interface. */
+public interface FirstRunWizard {
+
+    /** Extracts the core plugins. */
+    void extractPlugins();
+
+    /** Extracts the core actions. */
+    void extractActions();
+
+    /** Displays the First run wizard. */
+    void display();
+}

@@ -29,7 +29,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
-import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.util.CommandUtils;
 
 import java.awt.Desktop;

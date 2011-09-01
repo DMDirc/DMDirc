@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.interfaces;
+package com.dmdirc.interfaces.actions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

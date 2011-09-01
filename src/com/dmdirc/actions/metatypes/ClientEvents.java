@@ -23,7 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.interfaces.actions.ActionMetaType;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;

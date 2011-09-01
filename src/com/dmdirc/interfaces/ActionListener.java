@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 
 /**
  * Defines the method that has to be implemented by classes wanting to receive

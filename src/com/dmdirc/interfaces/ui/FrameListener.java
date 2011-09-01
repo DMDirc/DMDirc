@@ -20,33 +20,46 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.interfaces;
+package com.dmdirc.interfaces.ui;
+
+import com.dmdirc.FrameContainer;
 
 /**
- * Encapsulates the methods that all actions are required to implement.
+ * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager}
+ * to receive events pertaining to frames.
  */
-public interface ActionType {
+public interface FrameListener {
 
     /**
-     * Retrieves the type of this action.
+     * Adds a window to this frame manager.
      *
-     * @return This action's type
+     * @param window The server to be added
+     * @param focus Should this window become focused
      */
-    ActionMetaType getType();
+    void addWindow(FrameContainer window, final boolean focus);
 
     /**
-     * Retrieves this type's friendly name.
+     * Removes a window from this frame manager.
      *
-     * @return The friendly name of this type
+     * @param window The server to be removed
      */
-    String getName();
+    void delWindow(FrameContainer window);
 
     /**
-     * Retrieves this type's internal name.
+     * Adds a new window to this frame manager.
      *
-     * @since 0.6.4
-     * @return The internal name of this type
+     * @param parent The parent to which the window belongs, or null
+     * @param window The custom window to be added
+     * @param focus Should this window become focused
      */
-    String name();
+    void addWindow(FrameContainer parent, FrameContainer window, final boolean focus);
+
+    /**
+     * Removes a window from this frame manager.
+     *
+     * @param parent The parent to which the window belongs, or null
+     * @param window The custom window to be removed
+     */
+    void delWindow(FrameContainer parent, FrameContainer window);
 
 }

@@ -27,7 +27,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 

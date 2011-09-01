@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
 
 /**
  * Search bar interface.

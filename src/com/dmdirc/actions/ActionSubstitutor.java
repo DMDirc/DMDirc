@@ -26,12 +26,12 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
-import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.interfaces.ui.Window;
 
 import java.util.Arrays;
 import java.util.HashMap;

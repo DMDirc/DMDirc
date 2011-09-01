@@ -23,8 +23,8 @@
 package com.dmdirc.ui.core.components;
 
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.interfaces.StatusBar;
-import com.dmdirc.ui.interfaces.StatusBarComponent;
+import com.dmdirc.interfaces.ui.StatusBar;
+import com.dmdirc.interfaces.ui.StatusBarComponent;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;

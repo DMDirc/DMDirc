@@ -20,17 +20,37 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.actions;
 
 /**
- * Statusbar component interface
+ * Encapsulates the methods that all action types are required to implement.
  */
-public interface StatusBarComponent {
+public interface ActionMetaType {
 
     /**
-     * Makes the component visible or invisible.
-     *
-     * @param visible component visibility
+     * Retrieves the arity of this type.
+     * @return The arity of this action type
      */
-    void setVisible(final boolean visible);
+    int getArity();
+
+    /**
+     * Retrieves the type of arguments that actions of this type should expect.
+     * @return The type of arguments expected
+     */
+    Class[] getArgTypes();
+
+    /**
+     * Retrieves the names of the arguments that actions of this type should
+     * expect.
+     * @return The names of the expected arguments
+     */
+    String[] getArgNames();
+
+    /**
+     * Retrieves the name of a logical group for this meta-type to be put into.
+     *
+     * @return The meta-type's group name
+     */
+    String getGroup();
+
 }

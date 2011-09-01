@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.interfaces.actions.ActionComparison;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class ActionComparisonNamesTest {
-    
+
     private ActionComparison comparison;
 
     public ActionComparisonNamesTest(final ActionComparison comparison) {
@@ -49,11 +49,11 @@ public class ActionComparisonNamesTest {
     @Parameterized.Parameters
     public static List<Object[]> data() {
         final List<Object[]> res = new LinkedList<Object[]>();
-        
+
         for (ActionComparison comp : CoreActionComparison.values()) {
             res.add(new Object[]{comp});
         }
-        
+
         return res;
     }
 

@@ -23,7 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;

@@ -23,7 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.interfaces.actions.ActionMetaType;
 
 /**
  * Defines action-related events.

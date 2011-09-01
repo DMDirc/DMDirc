@@ -20,19 +20,40 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
+
+import com.dmdirc.ui.StatusMessage;
 
 /**
- * Methods required to be implemented by classes wanting to respond to statusbar
- * events.
+ * Status bar interface.
  */
-public interface StatusMessageNotifier {
+public interface StatusBar {
 
     /**
-     * Called when a click event is received on the message component.
+     * Sets the message for this message label.
      *
-     * @param mousebutton Mouse button clicked
-     * @param clickCount Click count
+     * @param message Message object to show
+     *
+     * @since 0.6.6
      */
-    void clickReceived(final int mousebutton, final int clickCount);
+    void setMessage(final StatusMessage message);
+
+    /**
+     * Removes the message from the status bar.
+     */
+    void clearMessage();
+
+    /**
+     * Adds a component to the status bar.
+     *
+     * @param component component to add
+     */
+    void addComponent(final StatusBarComponent component);
+
+    /**
+     * Removes a component to the status bar.
+     *
+     * @param component component to add
+     */
+    void removeComponent(final StatusBarComponent component);
 }

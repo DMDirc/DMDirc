@@ -20,43 +20,33 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.interfaces;
+package com.dmdirc.interfaces.ui;
 
 /**
- * Describes the methods that must be implemented by an action comparison.
- * Action comparisons allow the user to compare an action component to a
- * string they entered.
+ * Defines methods that need to be implemented by validation listeners.
  */
-public interface ActionComparison {
+public interface InputValidationListener {
 
     /**
-     * Tests the specified arguments against each other.
-     * @param arg1 The first argument
-     * @param arg2 The second argument
-     * @return True iff the comparison between the args succeeds, false
-     * otherwise
-     */
-    boolean test(final Object arg1, final Object arg2);
-
-    /**
-     * Returns the class that this comparison deals with.
-     * @return The Class that this comparison can compare
-     */
-    Class<?> appliesTo();
-
-    /**
-     * Returns a friendly name for this comparison.
+     * Called when the command that has been entered is illegal.
      *
-     * @return This comparion's friendly name
+     * @param reason The reason that the command is illegal
      */
-    String getName();
+    void illegalCommand(final String reason);
 
     /**
-     * Returns the internal name of this comparison.
+     * Called when the command that has been entered is legal.
      *
-     * @since 0.6.4
-     * @return This comparison's internal name
+     * @since 0.6
      */
-    String name();
+    void legalCommand();
+
+    /**
+     * Called when the text or command that has been entered will be wrapped
+     * onto multiple lines.
+     *
+     * @param count The number of lines that the text will be sent as
+     */
+    void wrappedText(final int count);
 
 }

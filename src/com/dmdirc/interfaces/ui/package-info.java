@@ -20,29 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions;
-
-import com.dmdirc.interfaces.actions.ActionType;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
 /**
- * Implements a comparator for action types that compares their names.
+ * Interfaces associated with UI components.
  */
-public final class ActionTypeComparator implements Comparator<ActionType>, Serializable {
-
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
-
-    /** {@inheritDoc} */
-    @Override
-    public int compare(final ActionType o1, final ActionType o2) {
-        return o1.getName().compareTo(o2.getName());
-    }
-
-}
+package com.dmdirc.interfaces.ui;

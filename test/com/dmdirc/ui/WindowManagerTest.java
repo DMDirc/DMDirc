@@ -26,8 +26,8 @@ import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.ui.interfaces.FrameListener;
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.interfaces.ui.FrameListener;
+import com.dmdirc.interfaces.ui.Window;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

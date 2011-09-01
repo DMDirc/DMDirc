@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;

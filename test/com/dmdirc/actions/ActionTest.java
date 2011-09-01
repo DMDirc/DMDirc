@@ -21,7 +21,7 @@
  */
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesSetting;

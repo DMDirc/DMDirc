@@ -20,29 +20,33 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
-
-import com.dmdirc.FrameContainer;
+package com.dmdirc.interfaces.actions;
 
 /**
- * The Window interface specifies common methods that should be implemented
- * by all windows. It is assumed that all windows have a main text area.
+ * Encapsulates the methods that all actions are required to implement.
  */
-public interface Window {
+public interface ActionType {
 
     /**
-     * Retrieves the container that owns this command window.
+     * Retrieves the type of this action.
      *
-     * @return The container that owns this command window.
+     * @return This action's type
      */
-    FrameContainer getContainer();
+    ActionMetaType getType();
 
     /**
-     * Retrieves the UI controller this window is associated with.
+     * Retrieves this type's friendly name.
      *
-     * @return This window's UI controller
+     * @return The friendly name of this type
+     */
+    String getName();
+
+    /**
+     * Retrieves this type's internal name.
+     *
      * @since 0.6.4
+     * @return The internal name of this type
      */
-    UIController getController();
+    String name();
 
 }

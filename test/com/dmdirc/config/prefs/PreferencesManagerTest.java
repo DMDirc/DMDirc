@@ -28,7 +28,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.interfaces.ui.UIController;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;

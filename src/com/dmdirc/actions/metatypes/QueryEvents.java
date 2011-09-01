@@ -23,7 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.Query;
-import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.interfaces.actions.ActionMetaType;
 import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**

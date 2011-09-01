@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions.metatypes;
 
-import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.interfaces.actions.ActionMetaType;
 import com.dmdirc.plugins.PluginInfo;
 
 /**

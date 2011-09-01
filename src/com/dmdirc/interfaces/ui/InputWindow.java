@@ -20,40 +20,30 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.ui.StatusMessage;
+import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.ui.input.InputHandler;
 
 /**
- * Status bar interface.
+ * The Input Window interface specifies additional methods that windows should
+ * implement if they have an input field.
  */
-public interface StatusBar {
+public interface InputWindow extends Window {
 
     /**
-     * Sets the message for this message label.
+     * Retrieves the input handler for this input window.
      *
-     * @param message Message object to show
-     *
-     * @since 0.6.6
+     * @return This window's input handler
      */
-    void setMessage(final StatusMessage message);
+    InputHandler getInputHandler();
 
     /**
-     * Removes the message from the status bar.
-     */
-    void clearMessage();
-
-    /**
-     * Adds a component to the status bar.
+     * Retrieves the container that owns this command window.
      *
-     * @param component component to add
+     * @return The container that owns this command window.
      */
-    void addComponent(final StatusBarComponent component);
+    @Override
+    WritableFrameContainer getContainer();
 
-    /**
-     * Removes a component to the status bar.
-     *
-     * @param component component to add
-     */
-    void removeComponent(final StatusBarComponent component);
 }

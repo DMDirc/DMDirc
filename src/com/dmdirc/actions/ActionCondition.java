@@ -22,8 +22,8 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionComparison;
-import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionComparison;
+import com.dmdirc.interfaces.actions.ActionComponent;
 
 /**
  * An action condition represents one condition within an action.

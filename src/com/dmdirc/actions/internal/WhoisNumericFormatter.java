@@ -25,7 +25,7 @@ package com.dmdirc.actions.internal;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ActionListener;
 

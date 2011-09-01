@@ -20,33 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.ui;
 
 /**
- * Defines methods that need to be implemented by validation listeners.
+ * Methods required to be implemented by classes wanting to respond to statusbar
+ * events.
  */
-public interface InputValidationListener {
+public interface StatusMessageNotifier {
 
     /**
-     * Called when the command that has been entered is illegal.
+     * Called when a click event is received on the message component.
      *
-     * @param reason The reason that the command is illegal
+     * @param mousebutton Mouse button clicked
+     * @param clickCount Click count
      */
-    void illegalCommand(final String reason);
-
-    /**
-     * Called when the command that has been entered is legal.
-     *
-     * @since 0.6
-     */
-    void legalCommand();
-
-    /**
-     * Called when the text or command that has been entered will be wrapped
-     * onto multiple lines.
-     *
-     * @param count The number of lines that the text will be sent as
-     */
-    void wrappedText(final int count);
-
+    void clickReceived(final int mousebutton, final int clickCount);
 }

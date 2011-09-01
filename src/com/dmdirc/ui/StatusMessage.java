@@ -23,7 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.ui.interfaces.StatusMessageNotifier;
+import com.dmdirc.interfaces.ui.StatusMessageNotifier;
 
 /**
  * Describes a status bar message to be presented to a user.

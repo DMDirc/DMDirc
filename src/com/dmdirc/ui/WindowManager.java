@@ -27,7 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.FrameListener;
+import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.ListenerList;
 
 import java.util.Collection;

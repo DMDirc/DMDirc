@@ -20,30 +20,17 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
-
-import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.ui.input.InputHandler;
+package com.dmdirc.interfaces.ui;
 
 /**
- * The Input Window interface specifies additional methods that windows should
- * implement if they have an input field.
+ * Statusbar component interface
  */
-public interface InputWindow extends Window {
+public interface StatusBarComponent {
 
     /**
-     * Retrieves the input handler for this input window.
+     * Makes the component visible or invisible.
      *
-     * @return This window's input handler
+     * @param visible component visibility
      */
-    InputHandler getInputHandler();
-
-    /**
-     * Retrieves the container that owns this command window.
-     *
-     * @return The container that owns this command window.
-     */
-    @Override
-    WritableFrameContainer getContainer();
-
+    void setVisible(final boolean visible);
 }

@@ -20,17 +20,43 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
+package com.dmdirc.interfaces.actions;
 
-/** First run wizard interface. */
-public interface FirstRunWizard {
+/**
+ * Describes the methods that must be implemented by an action comparison.
+ * Action comparisons allow the user to compare an action component to a
+ * string they entered.
+ */
+public interface ActionComparison {
 
-    /** Extracts the core plugins. */
-    void extractPlugins();
+    /**
+     * Tests the specified arguments against each other.
+     * @param arg1 The first argument
+     * @param arg2 The second argument
+     * @return True iff the comparison between the args succeeds, false
+     * otherwise
+     */
+    boolean test(final Object arg1, final Object arg2);
 
-    /** Extracts the core actions. */
-    void extractActions();
+    /**
+     * Returns the class that this comparison deals with.
+     * @return The Class that this comparison can compare
+     */
+    Class<?> appliesTo();
 
-    /** Displays the First run wizard. */
-    void display();
+    /**
+     * Returns a friendly name for this comparison.
+     *
+     * @return This comparion's friendly name
+     */
+    String getName();
+
+    /**
+     * Returns the internal name of this comparison.
+     *
+     * @since 0.6.4
+     * @return This comparison's internal name
+     */
+    String name();
+
 }

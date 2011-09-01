@@ -38,7 +38,7 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
-import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.Version;

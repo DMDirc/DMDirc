@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.messages.MessageSinkManager;

@@ -25,7 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
-import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.interfaces.ui.InputWindow;
 
 import java.util.Arrays;
 import org.junit.BeforeClass;
