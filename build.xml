@@ -20,6 +20,15 @@
         </get>
     </target>
 
+    <target name="-post-clean">
+        <delete dir="modules/plugins/build"/>
+        <delete dir="modules/plugins/dist"/>
+        <delete dir="modules/parser/build"/>
+        <delete dir="modules/parser/dist"/>
+        <delete dir="modules/util/build"/>
+        <delete dir="modules/util/dist"/>
+    </target>
+
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
     <target name="-post-jar" depends="-update-bundled-plugins"/>
