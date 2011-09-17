@@ -71,12 +71,13 @@ else
 	# Build installers
 	# Delete all automatically added plugins from the jar to allow the installer
 	# to add its own on a per-os basis
-	unzip -l "${MYDIR}/dist/DMDirc.jar" | grep " plugins/" | tr -s ' ' | cut -d ' ' -f 5- | xargs zip "${MYDIR}/dist/DMDirc.jar" -d
+	# unzip -l "${MYDIR}/dist/DMDirc.jar" | grep " plugins/" | tr -s ' ' | cut -d ' ' -f 5- | xargs zip "${MYDIR}/dist/DMDirc.jar" -d
 
 	# Temporary, add certain plugins back in as the installer builds no
         # longer add any at all
-	cd "${MYDIR}"
-	$JAR -uvf "${MYDIR}/dist/DMDirc.jar" plugins/ui_swing.jar plugins/tabcompletion_bash.jar plugins/tabcompletion_mirc.jar plugins/parser_irc.jar
+	# cd "${MYDIR}"
+	#$JAR -uvf "${MYDIR}/dist/DMDirc.jar" plugins/ui_swing.jar plugins/tabcompletion_bash.jar plugins/tabcompletion_mirc.jar plugins/parser_irc.jar
+	# Build files automatically do the above, so lets just not remove them for now.
 
 	cd "${MYDIR}/modules/installer"
 	PACKAGENAME="DMDirc-Nightly"
