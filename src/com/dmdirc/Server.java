@@ -679,9 +679,54 @@ public class Server extends WritableFrameContainer
             if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
                 myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
             }
+
+            myParser.setProxy(buildProxyURI());
         }
 
         return myParser;
+    }
+
+    /**
+     * Constructs a URI for the configured proxy for this server, if any.
+     *
+     * @return An appropriate URI or null if no proxy is configured
+     */
+    private URI buildProxyURI() {
+        if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.address")) {
+            final String type;
+
+            if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.type")) {
+                type = getConfigManager().getOption(DOMAIN_SERVER, "proxy.type");
+            } else {
+                type = "socks";
+            }
+
+            final int port;
+            if (getConfigManager().hasOptionInt(DOMAIN_SERVER, "proxy.port")) {
+                port = getConfigManager().getOptionInt(DOMAIN_SERVER, "proxy.port");
+            } else {
+                port = 8080;
+            }
+
+            final String host = getConfigManager().getOptionString(DOMAIN_SERVER, "proxy.address");
+
+            final String userInfo;
+            if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.username")
+                    && getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.password")) {
+                userInfo = getConfigManager().getOption(DOMAIN_SERVER, "proxy.username")
+                        + getConfigManager().getOption(DOMAIN_SERVER, "proxy.password");
+            } else {
+                userInfo = "";
+            }
+
+            try {
+                return new URI(type, userInfo, host, port, "", "", "");
+            } catch (URISyntaxException ex) {
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to create proxy URI", ex);
+            }
+        }
+
+        return null;
     }
 
     /** {@inheritDoc} */
