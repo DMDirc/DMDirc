@@ -30,6 +30,7 @@ import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.Formatter;
@@ -37,7 +38,6 @@ import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ListenerList;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -57,7 +57,7 @@ public abstract class FrameContainer {
     protected final ListenerList listeners = new ListenerList();
 
     /** The colour of our frame's notifications. */
-    private Color notification = Color.BLACK;
+    private Colour notification = Colour.BLACK;
 
     /** The document used to store this container's content. */
     private IRCDocument document;
@@ -396,7 +396,7 @@ public abstract class FrameContainer {
      */
     public void clearNotification() {
         // TODO: This should default ot something colour independent
-        notification = Color.BLACK;
+        notification = Colour.BLACK;
 
         for (NotificationListener listener : listeners.get(
                 NotificationListener.class)) {
@@ -409,7 +409,7 @@ public abstract class FrameContainer {
      *
      * @param colour The colour to use for the notification
      */
-    public void sendNotification(final Color colour) {
+    public void sendNotification(final Colour colour) {
         if (!colour.equals(notification)) {
             notification = colour;
 
@@ -425,7 +425,7 @@ public abstract class FrameContainer {
      *
      * @return This channel's notification colour
      */
-    public Color getNotification() {
+    public Colour getNotification() {
         return notification;
     }
 

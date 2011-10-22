@@ -34,6 +34,7 @@ import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
@@ -42,7 +43,6 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -520,10 +520,10 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 String prefix;
 
                 if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    prefix = "," + ColourManager.getHex((Color)
+                    prefix = "," + ColourManager.getHex((Colour)
                             map.get(ChannelClientProperty.TEXT_BACKGROUND));
                 } else {
-                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Color)
+                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Colour)
                             map.get(ChannelClientProperty.TEXT_FOREGROUND));
                 }
 

@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.validators.ColourValidator;
 import com.dmdirc.util.validators.DisabledOptionValidator;
@@ -31,7 +32,6 @@ import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 import com.dmdirc.util.validators.ValidatorChain;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -278,7 +278,7 @@ public abstract class ConfigSource {
      * @return The colour representation of the option
      * @since 0.6.3m1
      */
-    public Color getOptionColour(final String domain, final String option,
+    public Colour getOptionColour(final String domain, final String option,
             final String ... fallbacks) {
         final String value = getOptionString(domain, option, true, COLOUR_VALIDATOR, fallbacks);
 

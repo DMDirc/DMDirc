@@ -33,9 +33,9 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.messages.Styliser;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -208,7 +208,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class<?> appliesTo() { return Channel.class; }
         /** {@inheritDoc} */
         @Override
-        public Class<?> getType() { return Color.class; }
+        public Class<?> getType() { return Colour.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
@@ -502,7 +502,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class<?> appliesTo() { return Query.class; }
         /** {@inheritDoc} */
         @Override
-        public Class<?> getType() { return Color.class; }
+        public Class<?> getType() { return Colour.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }
@@ -534,7 +534,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class<?> appliesTo() { return FrameContainer.class; }
         /** {@inheritDoc} */
         @Override
-        public Class<?> getType() { return Color.class; }
+        public Class<?> getType() { return Colour.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "notification colour"; }

@@ -30,6 +30,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.Colour;
 
 import java.awt.Color;
 import java.util.Locale;
@@ -138,11 +139,11 @@ public class Styliser implements ConfigChangeListener {
     private boolean styleURIs, styleChannels;
 
     /** Colours to use for URI and channel links. */
-    private Color uriColour, channelColour;
+    private Colour uriColour, channelColour;
 
     /** Server to get channel prefixes from, or null if not applicable. */
     private final Server server;
-    /** Config manager to retrive settings from. */
+    /** Config manager to retrieve settings from. */
     private final ConfigManager configManager;
 
     /**
@@ -415,7 +416,7 @@ public class Styliser implements ConfigChangeListener {
      * Helper function used in readUntilControl. Checks if i is a valid index of
      * the string (i.e., it's not -1), and then returns the minimum of pos and i.
      * @param pos The current position in the string
-     * @param i The index of the first occurance of some character
+     * @param i The index of the first occurrence of some character
      * @return The new position (see implementation)
      */
     private static int checkChar(final int pos, final int i) {
@@ -723,7 +724,7 @@ public class Styliser implements ConfigChangeListener {
      * @param colour The colour to colour the link
      */
     private void toggleLink(final SimpleAttributeSet attribs,
-            final IRCTextAttribute attribute, final Color colour) {
+            final IRCTextAttribute attribute, final Colour colour) {
 
         if (attribs.getAttribute(attribute) == null) {
             // Add the hyperlink style
@@ -743,7 +744,7 @@ public class Styliser implements ConfigChangeListener {
                     attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
                 }
 
-                attribs.addAttribute(StyleConstants.FontConstants.Foreground, colour);
+                attribs.addAttribute(StyleConstants.FontConstants.Foreground, convertColour(colour));
             }
 
         } else {
@@ -835,7 +836,7 @@ public class Styliser implements ConfigChangeListener {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
-        attribs.addAttribute(StyleConstants.Foreground, ColourManager.parseColour(foreground));
+        attribs.addAttribute(StyleConstants.Foreground, convertColour(ColourManager.parseColour(foreground)));
     }
 
     /**
@@ -849,7 +850,7 @@ public class Styliser implements ConfigChangeListener {
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
-        attribs.addAttribute(StyleConstants.Background, ColourManager.parseColour(background));
+        attribs.addAttribute(StyleConstants.Background, convertColour(ColourManager.parseColour(background)));
     }
 
     /**
@@ -859,7 +860,7 @@ public class Styliser implements ConfigChangeListener {
      */
     private static void setDefaultForeground(final SimpleAttributeSet attribs,
             final String foreground) {
-        attribs.addAttribute("DefaultForeground", ColourManager.parseColour(foreground));
+        attribs.addAttribute("DefaultForeground", convertColour(ColourManager.parseColour(foreground)));
     }
 
     /**
@@ -869,7 +870,7 @@ public class Styliser implements ConfigChangeListener {
      */
     private static void setDefaultBackground(final SimpleAttributeSet attribs,
             final String background) {
-        attribs.addAttribute("DefaultBackground", ColourManager.parseColour(background));
+        attribs.addAttribute("DefaultBackground", convertColour(ColourManager.parseColour(background)));
     }
 
     /** {@inheritDoc} */
@@ -884,6 +885,17 @@ public class Styliser implements ConfigChangeListener {
         } else if ("channelcolour".equals(key)) {
             channelColour = configManager.getOptionColour("ui", "channelcolour");
         }
+    }
+
+    /**
+     * Converts a DMDirc {@link Colour} into an AWT-specific {@link Color} by
+     * copying the values of the red, green and blue channels.
+     *
+     * @param colour The colour to be converted
+     * @return A corresponding AWT colour
+     */
+    private static Color convertColour(final Colour colour) {
+        return new Color(colour.getRed(), colour.getGreen(), colour.getBlue());
     }
 
 }

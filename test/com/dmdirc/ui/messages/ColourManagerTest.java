@@ -22,9 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.ui.Colour;
 import com.dmdirc.config.IdentityManager;
-
-import java.awt.Color;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,72 +40,72 @@ public class ColourManagerTest {
     public void testGetColourInt() {
         int spec = 4;
 
-        Color expResult = Color.RED;
-        Color result = ColourManager.getColour(spec);
+        Colour expResult = Colour.RED;
+        Colour result = ColourManager.getColour(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetColourOOB() {
-        Color result = ColourManager.getColour(20);
+        Colour result = ColourManager.getColour(20);
 
-        assertEquals(Color.WHITE, result);
+        assertEquals(Colour.WHITE, result);
     }
 
     @Test
     public void testGetColourHexInvalid() {
         String spec = "FFZZFF";
 
-        Color result = ColourManager.getColour(spec);
-        assertEquals(Color.WHITE, result);
+        Colour result = ColourManager.getColour(spec);
+        assertEquals(Colour.WHITE, result);
     }
 
     @Test
     public void testGetColourHex() {
         String spec = "FFFFFF";
 
-        Color expResult = Color.decode("#FFFFFF");
-        Color result = ColourManager.getColour(spec);
+        Colour expResult = Colour.WHITE;
+        Colour result = ColourManager.getColour(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testParseColourNull() {
-        Color fallback = Color.RED;
-        Color result = ColourManager.parseColour(null, fallback);
+        Colour fallback = Colour.RED;
+        Colour result = ColourManager.parseColour(null, fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourInvalidNumber() {
-        Color fallback = Color.RED;
-        Color result = ColourManager.parseColour("zz", fallback);
+        Colour fallback = Colour.RED;
+        Colour result = ColourManager.parseColour("zz", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourOOBNumber() {
-        Color fallback = Color.RED;
-        Color result = ColourManager.parseColour("20", fallback);
+        Colour fallback = Colour.RED;
+        Colour result = ColourManager.parseColour("20", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourShortNumber() {
-        Color fallback = Color.RED;
-        Color result = ColourManager.parseColour("1234", fallback);
+        Colour fallback = Colour.RED;
+        Colour result = ColourManager.parseColour("1234", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testColourCache() {
-        Color result1 = ColourManager.parseColour("ff0f0f");
-        Color result2 = ColourManager.parseColour("ff0f0f");
-        Color result3 = ColourManager.getColour("ff0f0f");
+        Colour result1 = ColourManager.parseColour("ff0f0f");
+        Colour result2 = ColourManager.parseColour("ff0f0f");
+        Colour result3 = ColourManager.getColour("ff0f0f");
 
         assertSame(result1, result2);
         assertSame(result2, result3);
@@ -114,7 +113,7 @@ public class ColourManagerTest {
 
     @Test
     public void testColourToHex() {
-        Color c1 = ColourManager.parseColour("ab3400");
+        Colour c1 = ColourManager.parseColour("ab3400");
 
         assertEquals("ab3400", ColourManager.getHex(c1).toLowerCase());
     }

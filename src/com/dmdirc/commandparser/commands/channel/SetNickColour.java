@@ -34,11 +34,10 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
-
-import java.awt.Color;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
@@ -95,7 +94,7 @@ public class SetNickColour extends Command implements IntelligentCommand {
             channel.refreshClients();
         } else {
             // We're setting the colour
-            final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
+            final Colour newColour = ColourManager.parseColour(args.getArguments()[offset], null);
             if (newColour == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
                 return;

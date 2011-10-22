@@ -30,10 +30,9 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
-
-import java.awt.Color;
 
 /**
  * The notify command allows the user to set the notification colour for a
@@ -55,7 +54,7 @@ public class Notify extends Command implements IntelligentCommand {
             return;
         }
 
-        final Color colour = ColourManager.parseColour(args.getArguments()[0], null);
+        final Colour colour = ColourManager.parseColour(args.getArguments()[0], null);
 
         if (colour == null) {
             showUsage(origin, args.isSilent(), "notify",
