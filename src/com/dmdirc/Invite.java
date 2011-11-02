@@ -24,18 +24,24 @@ package com.dmdirc;
 
 import java.util.Date;
 
+import lombok.Getter;
+
 /**
  * Model for a channel invitation.
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class Invite {
 
     /** The server this invite was on. */
+    @Getter
     private final Server server;
 
     /** The channel this invite is for. */
+    @Getter
     private final String channel;
 
     /** The time this invite was created. */
+    @Getter
     private final long timestamp;
 
     /** The source of this invite. */
@@ -56,36 +62,10 @@ public class Invite {
     }
 
     /**
-     * Retrieves the server that this invite is associated with.
-     *
-     * @return This invite's server
-     */
-    public Server getServer() {
-        return server;
-    }
-
-    /**
-     * Retrieves the name of the channel that this invite is for.
-     *
-     * @return This invite's channel
-     */
-    public String getChannel() {
-        return channel;
-    }
-
-    /**
-     * Retrieves the timestamp that this invite was received at.
-     *
-     * @return This invite's timestamp
-     */
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * Retrieves the nickname, ident and hostname of this invite's source.
+     * Retrieves the source of this invite.
      *
      * @return This invite's source
+     * @see Server#parseHostmask(java.lang.String)
      */
     public String[] getSource() {
         return server.parseHostmask(source);
@@ -97,7 +77,6 @@ public class Invite {
     public void accept() {
         server.acceptInvites(this);
     }
-
 
     /**
      * Decline this invite removing it from the invite list.
