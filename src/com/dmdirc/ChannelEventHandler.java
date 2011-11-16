@@ -34,9 +34,12 @@ import com.dmdirc.parser.interfaces.callbacks.*; //NOPMD
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+
 /**
  * Handles events for channel objects.
  */
+@AllArgsConstructor
 public class ChannelEventHandler extends EventHandler implements
         ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
         ChannelJoinListener, ChannelPartListener, ChannelKickListener,
@@ -48,17 +51,6 @@ public class ChannelEventHandler extends EventHandler implements
 
     /** The channel that owns this event handler. */
     private final Channel owner;
-
-    /**
-     * Creates a new instance of ChannelEventHandler.
-     *
-     * @param owner The channel that owns this event handler.
-     */
-    public ChannelEventHandler(final Channel owner) {
-        super();
-
-        this.owner = owner;
-    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")

@@ -49,20 +49,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.ListenerSupport;
+
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
  * ChannelWindow, and handles user input for the channel.
  */
+@ListenerSupport({TopicChangeListener.class, NicklistListener.class})
 public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** The parser's pChannel class. */
+    @Getter
     private ChannelInfo channelInfo;
 
     /** The server this channel is on. */
+    @Getter
     private Server server;
 
     /** The tabcompleter used for this channel. */
+    @Getter
     private final TabCompleter tabCompleter;
 
     /** A list of previous topics we've seen. */
@@ -72,7 +79,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private final ChannelEventHandler eventHandler;
 
     /** Whether we're in this channel or not. */
-    private boolean onChannel;
+    @Getter
+    private boolean isOnChannel;
 
     /** Whether we should send WHO requests for this channel. */
     private volatile boolean sendWho;
@@ -210,26 +218,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Returns the server object that this channel belongs to.
-     *
-     * @return The server object
-     */
-    @Override
-    public Server getServer() {
-        return server;
-    }
-
-    /**
-     * Returns the parser's ChannelInfo object that this object is associated
-     * with.
-     *
-     * @return The ChannelInfo object associated with this object
-     */
-    public ChannelInfo getChannelInfo() {
-        return channelInfo;
-    }
-
-    /**
      * Sets this object's ChannelInfo reference to the one supplied. This only
      * needs to be done if the channel window (and hence this channel object)
      * has stayed open while the user has been out of the channel.
@@ -241,26 +229,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         registerCallbacks();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
-    }
-
-    /**
-     * Are we on the channel?
-     *
-     * @return true iff we're on the channel
-     */
-    public boolean isOnChannel() {
-        return onChannel;
-    }
-
     /**
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
-        onChannel = true;
+        isOnChannel = true;
 
         final ClientInfo me = server.getParser().getLocalClient();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
@@ -319,13 +292,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * Resets the window state after the client has left a channel.
      */
     public void resetWindow() {
-        onChannel = false;
+        isOnChannel = false;
 
         setIcon("channel-inactive");
 
-        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
-            listener.clientListUpdated(new ArrayList<ChannelClientInfo>());
-        }
+        fireClientListUpdated(new ArrayList<ChannelClientInfo>());
     }
 
     /** {@inheritDoc} */
@@ -339,7 +310,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }
 
         // 3: Trigger any actions neccessary
-        if (onChannel) {
+        if (isOnChannel) {
             part(getConfigManager().getOption("general", "partmessage"));
         }
 
@@ -365,29 +336,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * to send a who request.
      */
     public void checkWho() {
-        if (onChannel && sendWho) {
+        if (isOnChannel && sendWho) {
             channelInfo.sendWho();
         }
-    }
-
-    /**
-     * Registers a new nicklist listener for this channel.
-     *
-     * @since 0.6.5
-     * @param listener The listener to be added
-     */
-    public void addNicklistListener(final NicklistListener listener) {
-        listeners.add(NicklistListener.class, listener);
-    }
-
-    /**
-     * Removes the specified nicklist listener from this channel.
-     *
-     * @since 0.6.5
-     * @param listener The listener to be removed
-     */
-    public void removeNicklistListener(final NicklistListener listener) {
-        listeners.remove(NicklistListener.class, listener);
     }
 
     /**
@@ -396,9 +347,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
-            listener.clientAdded(client);
-        }
+        fireClientAdded(client);
 
         tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
     }
@@ -409,9 +358,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
-            listener.clientRemoved(client);
-        }
+        fireClientRemoved(client);
 
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
 
@@ -427,9 +374,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
-            listener.clientListUpdated(clients);
-        }
+        fireClientListUpdated(clients);
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
@@ -455,13 +400,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * when (visible) user modes or nicknames change.
      */
     public void refreshClients() {
-        if (!onChannel) {
+        if (!isOnChannel) {
             return;
         }
 
-        for (NicklistListener listener : listeners.get(NicklistListener.class)) {
-            listener.clientListUpdated();
-        }
+        fireClientListUpdated();
     }
 
     /**
@@ -594,11 +537,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                synchronized (listeners) {
-                    for (TopicChangeListener listener : listeners.get(TopicChangeListener.class)) {
-                        listener.topicChanged(Channel.this, topic);
-                    }
-                }
+                fireTopicChanged(Channel.this, topic);
             }
         }, "Topic change listener runner").start();
     }
@@ -627,30 +566,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             } else {
                 return topics.get(topics.getList().size() - 1);
             }
-        }
-    }
-
-    /**
-     * Adds a new topic change listener to this channel.
-     *
-     * @param listener The listener to be added
-     * @since 0.6.3
-     */
-    public void addTopicChangeListener(final TopicChangeListener listener) {
-        synchronized (listeners) {
-            listeners.add(TopicChangeListener.class, listener);
-        }
-    }
-
-    /**
-     * Removes an existing topic change listener from this channel.
-     *
-     * @param listener The listener to be removed
-     * @since 0.6.3
-     */
-    public void removeTopicChangeListener(final TopicChangeListener listener) {
-        synchronized (listeners) {
-            listeners.remove(TopicChangeListener.class, listener);
         }
     }
 

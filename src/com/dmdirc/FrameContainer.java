@@ -36,8 +36,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.ListenerList;
 
+import com.dmdirc.util.ListenerList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -47,16 +47,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import lombok.Getter;
+import lombok.ListenerSupport;
+
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
  */
+@ListenerSupport({NotificationListener.class, FrameInfoListener.class})
+@SuppressWarnings("PMD.UnusedPrivateField")
 public abstract class FrameContainer {
 
-    /** A list of listeners for this container's events. */
+    /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
 
     /** The colour of our frame's notifications. */
+    @Getter
     private Colour notification = Colour.BLACK;
 
     /** The document used to store this container's content. */
@@ -67,19 +73,24 @@ public abstract class FrameContainer {
             = new CopyOnWriteArrayList<FrameContainer>();
 
     /** The parent of this frame. */
+    @Getter
     private FrameContainer parent;
 
     /** The name of the icon being used for this container's frame. */
+    @Getter
     private String icon;
 
     /** The name of this container. */
+    @Getter
     private String name;
 
     /** The title of this container. */
+    @Getter
     private String title;
 
     /** The config manager for this container. */
-    private final ConfigManager config;
+    @Getter
+    private final ConfigManager configManager;
 
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
@@ -97,6 +108,7 @@ public abstract class FrameContainer {
     private final Object documentSync = new Object();
 
     /** The IconManager for this container. */
+    @Getter
     private final IconManager iconManager;
 
     /**
@@ -112,7 +124,7 @@ public abstract class FrameContainer {
     protected FrameContainer(final String icon, final String name,
             final String title, final ConfigManager config,
             final Collection<String> components) {
-        this.config = config;
+        this.configManager = config;
         this.name = name;
         this.title = title;
         this.components = new HashSet<String>(components);
@@ -191,16 +203,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Retrieves the parent of this container, if there is one.
-     *
-     * @return This container's parent, or null if it is a top level window.
-     * @since 0.6.4
-     */
-    public FrameContainer getParent() {
-        return parent;
-    }
-
-    /**
      * Retrieves the {@link IRCDocument} used to store this frame's content.
      *
      * @return This frame's document
@@ -216,16 +218,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Retrieves the name of this container.
-     *
-     * @return This container's name
-     * @since 0.6.3m2
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Changes the name of this container, and notifies any
      * {@link FrameInfoListener}s of the change.
      *
@@ -234,20 +226,7 @@ public abstract class FrameContainer {
     protected void setName(final String name) {
         this.name = name;
 
-        for (FrameInfoListener listener : listeners.get(
-                FrameInfoListener.class)) {
-            listener.nameChanged(this, name);
-        }
-    }
-
-    /**
-     * Retrieves the title which should be used by this container's windows.
-     *
-     * @return This container's title
-     * @since 0.6.4
-     */
-    public String getTitle() {
-        return title;
+        fireNameChanged(this, name);
     }
 
     /**
@@ -259,10 +238,7 @@ public abstract class FrameContainer {
     public void setTitle(final String title) {
         this.title = title;
 
-        for (FrameInfoListener listener : listeners.get(
-                FrameInfoListener.class)) {
-            listener.titleChanged(this, title);
-        }
+        fireTitleChanged(this, title);
     }
 
     /**
@@ -336,45 +312,15 @@ public abstract class FrameContainer {
 
         iconUpdated();
 
-        config.removeListener(changer);
-        config.addChangeListener("icon", icon, changer);
+        configManager.removeListener(changer);
+        configManager.addChangeListener("icon", icon, changer);
     }
 
     /**
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        for (FrameInfoListener listener : listeners.get(
-                FrameInfoListener.class)) {
-            listener.iconChanged(this, icon);
-        }
-    }
-
-    /**
-     * Retrieves the name of the icon used by this container's window.
-     *
-     * @return This container's icon
-     */
-    public final String getIcon() {
-        return icon;
-    }
-
-    /**
-     * Returns the config manager for this container.
-     *
-     * @return the associated config manager
-     */
-    public ConfigManager getConfigManager() {
-        return config;
-    }
-
-    /**
-     * Returns the icon manager for this container.
-     *
-     * @return This container's icon manager
-     */
-    public IconManager getIconManager() {
-        return iconManager;
+        fireIconChanged(this, icon);
     }
 
     /**
@@ -398,10 +344,7 @@ public abstract class FrameContainer {
         // TODO: This should default ot something colour independent
         notification = Colour.BLACK;
 
-        for (NotificationListener listener : listeners.get(
-                NotificationListener.class)) {
-            listener.notificationCleared(this);
-        }
+        fireNotificationCleared(this);
     }
 
     /**
@@ -413,20 +356,8 @@ public abstract class FrameContainer {
         if (!colour.equals(notification)) {
             notification = colour;
 
-            for (NotificationListener listener : listeners.get(
-                    NotificationListener.class)) {
-                listener.notificationSet(this, colour);
-            }
+            fireNotificationSet(this, colour);
         }
-    }
-
-    /**
-     * Retrieves the current notification colour of this channel.
-     *
-     * @return This channel's notification colour
-     */
-    public Colour getNotification() {
-        return notification;
     }
 
     /**
@@ -572,24 +503,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds a notification listener for this frame container.
-     *
-     * @param listener The listener to be added
-     */
-    public void addNotificationListener(final NotificationListener listener) {
-        listeners.add(NotificationListener.class, listener);
-    }
-
-    /**
-     * Removes a notification listener from this frame container.
-     *
-     * @param listener The listener to be removed
-     */
-    public void removeNotificationListener(final NotificationListener listener) {
-        listeners.remove(NotificationListener.class, listener);
-    }
-
-    /**
      * Adds a close listener for this frame container.
      *
      * @since 0.6.5
@@ -627,24 +540,6 @@ public abstract class FrameContainer {
      */
     public void removeComponentListener(final FrameComponentChangeListener listener) {
         listeners.remove(FrameComponentChangeListener.class, listener);
-    }
-
-    /**
-     * Adds a frame info listener for this frame container.
-     *
-     * @param listener The listener to be added
-     */
-    public void addFrameInfoListener(final FrameInfoListener listener) {
-        listeners.add(FrameInfoListener.class, listener);
-    }
-
-    /**
-     * Removes a frame info listener from this frame container.
-     *
-     * @param listener The listener to be removed
-     */
-    public void removeFrameInfoListener(final FrameInfoListener listener) {
-        listeners.remove(FrameInfoListener.class, listener);
     }
 
     /**
