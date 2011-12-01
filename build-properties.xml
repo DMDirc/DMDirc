@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMDirc-properties" default="default" basedir=".">
+    <description>Automatically initialises build properties</description>
+
+    <condition property="private.property.exists">
+        <available file="nbproject/private/private.properties"/>
+    </condition>
+    
+    <target name="-create-private-properties" unless="private.properties.exists">
+        <mkdir dir="nbproject/private"/>
+        <echo file="nbproject/private/private.properties"/>
+    </target>
+    
+    <target name="-check-private-classpath">
+        <loadfile property="private.properties.old" srcFile="nbproject/private/private.properties"/>
+        <condition property="private.properties.needsinsert">
+            <not>
+                <matches string="${private.properties.old}" pattern="^private.classpath=(.*)$" multiline="true" casesensitive="true"/>
+            </not>
+        </condition>
+    </target>
+    
+    <target name="-create-private-classpath" if="private.properties.needsinsert">
+        <echo append="true" file="nbproject/private/private.properties">${line.separator}private.classpath=${line.separator}</echo>
+    </target>
+
+    <target name="-init-private-properties" depends="-create-private-properties,-check-private-classpath,-create-private-classpath">
+        <propertyregex property="private.classpath.value" input="${toString:plugins.libs}" regexp="\\" replace="/" global="true"/>
+        <replaceregexp file="nbproject/private/private.properties" match="^private.classpath=(.*)$" flags="im" replace="private.classpath=${private.classpath.value}"/>
+    </target>
+    
+</project>
