@@ -90,7 +90,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
     /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
-        return !plugin.isUnloadable() && plugin.isLoaded();
+        return plugin.isLoaded();
     }
 
     /** {@inheritDoc} */
