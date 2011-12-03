@@ -24,6 +24,8 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.util.ListenerList;
@@ -35,6 +37,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -54,6 +58,12 @@ public class PreferencesDialogModel {
     private final PreferencesInterface updatesPanel;
     /** UI specific URL panel. */
     private final PreferencesInterface urlHandlerPanel;
+    /** Config Manager to read settings from. */
+    @Getter
+    private final ConfigManager configManager;
+    /** Identity to write settings to. */
+    @Getter
+    private final Identity identity;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -62,15 +72,21 @@ public class PreferencesDialogModel {
      * @param themePanel UI specific theme panel
      * @param updatesPanel UI specific updates panel
      * @param urlHandlerPanel UI specific URL panel
+     * @param configManager Config manager to read settings from
+     * @param identity Identity to write settings to
      */
     public PreferencesDialogModel(final PreferencesInterface pluginPanel,
             final PreferencesInterface themePanel,
             final PreferencesInterface updatesPanel,
-            final PreferencesInterface urlHandlerPanel) {
+            final PreferencesInterface urlHandlerPanel,
+            final ConfigManager configManager,
+            final Identity identity) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;
         this.urlHandlerPanel = urlHandlerPanel;
+        this.configManager = configManager;
+        this.identity = identity;
 
 
         addDefaultCategories();
@@ -162,28 +178,33 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "confirmQuit", "Confirm quit",
-                "Show a confirmation message when you try to close the client"));
+                "Show a confirmation message when you try to close the client",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "splitusermodes", "Split user modes",
                 "Show individual mode lines for each mode change that affects"
-                + " a user (e.g. op, devoice)"));
+                + " a user (e.g. op, devoice)", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "sendwho", "Send channel WHOs",
                 "Request information (away state, hostname, etc) on channel "
-                + "users automatically"));
+                + "users automatically", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "general", "whotime", "Who request interval",
-                "How often to send WHO requests for a channel (if enabled)"));
+                "How often to send WHO requests for a channel (if enabled)",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "showmodeprefix", "Show mode prefix",
-                "Prefix users' names with their mode (e.g. @) in channels"));
+                "Prefix users' names with their mode (e.g. @) in channels",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "awayindicator", "Away indicator",
-                "Show an indicator in windows when you are marked as away"));
+                "Show an indicator in windows when you are marked as away",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
-                new OptionalValidator(new NumericalValidator(0, 100)), "ui", "pasteProtectionLimit",
-                "Paste protection trigger", "Confirm pasting of text that "
-                + "contains more than this many lines."));
+                new OptionalValidator(new NumericalValidator(0, 100)), "ui",
+                "pasteProtectionLimit", "Paste protection trigger",
+                "Confirm pasting of text that contains more than this many "
+                + "lines.", configManager, identity));
 
         addTabCompletionCategory(category);
         addCategory(category.setInlineAfter());
@@ -206,14 +227,15 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
                 "Tab completion style", "Determines the behaviour of "
-                + "the tab completer when there are multiple matches", taboptions));
+                + "the tab completer when there are multiple matches",
+                taboptions, configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "casesensitive", "Case-sensitive tab completion",
-                "Respect case when tab completing"));
+                "Respect case when tab completing", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "allowempty", "Allow empty tab completion",
                 "Attempt to tab complete when the Tab key is pressed even "
-                + "if there is nothing to complete"));
+                + "if there is nothing to complete", configManager, identity));
 
         parent.addSubCategory(category.setInline());
     }
@@ -227,42 +249,50 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsonquit", "Close channels on quit",
-                "Close channel windows when you manually disconnect from the server"));
+                "Close channel windows when you manually disconnect from the server",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsondisconnect",
                 "Close channels on disconnect", "Close channel windows when "
-                + "the server is disconnected (because of an error)"));
+                + "the server is disconnected (because of an error)",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesonquit", "Close queries on quit",
-                "Close query windows when you manually disconnect from the server"));
+                "Close query windows when you manually disconnect from the server",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closequeriesondisconnect",
                 "Close queries on disconnect", "Close query windows when "
-                + "the server is disconnected (because of an error)"));
+                + "the server is disconnected (because of an error)",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimer", "Ping warning time",
                 "How long to wait after a ping reply is sent before showing "
-                + "a warning message"));
+                + "a warning message", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingtimeout", "Ping timeout",
                 "How long to wait for a server to reply to a PING request "
-                + "before assuming the server has died"));
+                + "before assuming the server has died", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "server", "pingfrequency", "Ping frequency",
                 "How often a PING request should be sent to the server (to "
-                + "check that it is still alive)"));
+                + "check that it is still alive)", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectonconnectfailure", "Reconnect on failure",
-                "Attempt to reconnect if there is an error when connecting"));
+                "Attempt to reconnect if there is an error when connecting",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectondisconnect", "Reconnect on disconnect",
-                "Attempt to reconnect if the server is disconnected"));
+                "Attempt to reconnect if the server is disconnected",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "general", "reconnectdelay", "Reconnect delay",
-                "How long to wait before attempting to reconnect to a server"));
+                "How long to wait before attempting to reconnect to a server",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "rejoinchannels", "Rejoin open channels",
-                "Rejoin open channels when reconnecting to a server"));
+                "Rejoin open channels when reconnecting to a server",
+                configManager, identity));
 
         addSSLCategory(category);
         addCategory(category);
@@ -279,10 +309,11 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting(PreferencesType.FILE, "ssl",
                 "clientcert.file", "Client certificate", "Path to PKCS12 client "
-                + "certificate to send when connecting to servers using SSL"));
+                + "certificate to send when connecting to servers using SSL",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT, "ssl",
                 "clientcert.pass", "Client password", "Password for client "
-                + "certificate file"));
+                + "certificate file", configManager, identity));
 
         parent.addSubCategory(category);
     }
@@ -296,22 +327,28 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "closemessage",
-                "Close message", "Default quit message to use when closing DMDirc"));
+                "Close message", "Default quit message to use when closing DMDirc",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "partmessage",
-                "Part message", "Default part message to use when leaving channels"));
+                "Part message", "Default part message to use when leaving channels",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "quitmessage",
-                "Quit message", "Default quit message to use when disconnecting"));
+                "Quit message", "Default quit message to use when disconnecting",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "cyclemessage",
-                "Cycle message", "Default part message to use when cycling channels"));
+                "Cycle message", "Default part message to use when cycling channels",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "kickmessage",
-                "Kick message", "Default message to use when kicking people"));
+                "Kick message", "Default message to use when kicking people",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "reconnectmessage",
-                "Reconnect message", "Default quit message to use when reconnecting"));
+                "Reconnect message", "Default quit message to use when reconnecting",
+                configManager, identity));
 
         addNotificationsCategory(category);
         addCategory(category);
@@ -352,43 +389,43 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting("notifications", "socketClosed",
                 "Socket closed", "Where to display socket closed notifications",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "privateNotice",
                 "Private notice", "Where to display private notices",
-                commonOptions));
+                commonOptions, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "serverNotice",
                 "Server notice", "Where to display server notices",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCP",
                 "CTCP request", "Where to display CTCP request notifications",
-                commonOptions));
+                commonOptions, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCPreply",
                 "CTCP reply", "Where to display CTCP replies",
-                ctcprOptions));
+                ctcprOptions, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "connectError",
                 "Connect error", "Where to display connect error notifications",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "connectRetry",
                 "Connect retry", "Where to display connect retry notifications",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "stonedServer",
                 "Stoned server", "Where to display stoned server notifications",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "whois",
                 "Whois output", "Where to display /whois output",
-                whoisOptions));
+                whoisOptions, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "lusers",
                 "Lusers output", "Where to display /lusers output",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "map",
                 "Map output", "Where to display /map output",
-                mapOptions));
+                mapOptions, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "away",
                 "Away notification", "Where to display /away output",
-                options));
+                options, configManager, identity));
         category.addSetting(new PreferencesSetting("notifications", "back",
                 "Back notification", "Where to display /away output",
-                options));
+                options, configManager, identity));
 
         parent.addSubCategory(category);
     }
@@ -403,25 +440,31 @@ public class PreferencesDialogModel {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "uselaunchdelay", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly"
-                + " double clicking)"));
+                + " double clicking)", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
                 "browser", "launchdelay", "Browser launch delay",
-                "Minimum time between opening of URLs if enabled"));
+                "Minimum time between opening of URLs if enabled",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "submitErrors", "Automatically submit errors",
-                "Automatically submit client errors to the developers"));
+                "Automatically submit client errors to the developers",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "logerrors", "Log errors to disk",
-                "Save copies of all client errors to disk"));
+                "Save copies of all client errors to disk",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "quickCopy", "Quick copy", "Automatically copy"
-                + " text that's selected when the mouse button is released"));
+                + " text that's selected when the mouse button is released",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "showversion", "Show version",
-                "Show the current DMDirc version in the titlebar"));
+                "Show the current DMDirc version in the titlebar",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showglobalwindow", "Show global window",
-                "Show a global window which can be used to enter commands"));
+                "Show a global window which can be used to enter commands",
+                configManager, identity));
 
         addCategory(category);
     }
@@ -435,28 +478,33 @@ public class PreferencesDialogModel {
 
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 "ui", "backgroundcolour", "Background colour", "Default "
-                + "background colour to use"));
+                + "background colour to use", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 "ui", "foregroundcolour", "Foreground colour", "Default "
-                + "foreground colour to use"));
+                + "foreground colour to use", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "inputbackgroundcolour", "Input background colour",
-                "Default background colour to use for input fields"));
+                "Default background colour to use for input fields",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "inputforegroundcolour", "Input foreground colour",
-                "Default foreground colour to use for input fields"));
+                "Default foreground colour to use for input fields",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showcolourdialog", "Show colour dialog",
-                "Show colour picker dialog when using colour control codes"));
+                "Show colour picker dialog when using colour control codes",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "System anti-alias",
-                "Anti-alias all fonts").setRestartNeeded());
+                "Anti-alias all fonts", configManager, identity).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursintext", "Show nick colours in text area",
-                "Show nickname colours (if set) in text areas"));
+                "Show nickname colours (if set) in text areas",
+                configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursinnicklist", "Show nick colours in nicklists",
-                "Show nickname colours (if set) in channel nicklists"));
+                "Show nickname colours (if set) in channel nicklists",
+                configManager, identity));
 
         addThemesCategory(category);
         addStyleSubCategory(category);
@@ -474,16 +522,16 @@ public class PreferencesDialogModel {
                 + " and colours", "");
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylelinks", "Style hyperlinks", "Style hyperlinks in "
-                + "text areas with underlines"));
+                + "text areas with underlines", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "linkcolour", "Hyperlink colour", "Default colour to use "
-                + "for hyperlinks in the text area"));
+                + "for hyperlinks in the text area", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylechannels", "Style channel links", "Styles channel "
-                + "links in text areas with underlines"));
+                + "links in text areas with underlines", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "channelcolour", "Channel link colour", "Default colour to use "
-                + "for channel links in the text area"));
+                + "for channel links in the text area", configManager, identity));
 
         parent.addSubCategory(category.setInline());
     }

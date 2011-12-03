@@ -24,7 +24,6 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
@@ -33,30 +32,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+
 /**
  * Represents a single setting.
  */
 public class PreferencesSetting {
 
     /** The type of this setting. */
+    @Getter
     protected final PreferencesType type;
     /** The possible options for a multichoice setting. */
-    protected final Map<String, String> combooptions;
+    @Getter
+    protected final Map<String, String> comboOptions;
     /** The validator to use to validate this setting. */
+    @Getter
     protected final Validator<String> validator;
     /** The domain of the setting. */
     protected final String domain;
     /** The option name of the setting. */
     protected final String option;
     /** The title of this setting. */
+    @Getter
     protected final String title;
     /** Text to inform the user what the setting is for. */
+    @Getter
     protected final String helptext;
     /** The current value of the setting. */
-    protected String current;
+    @Getter
+    protected String value;
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
-    /** The original value of this vsetting. */
+    /** The original value of this setting. */
     private String original;
     /** A list of change listeners. */
     private final List<SettingChangeListener> listeners
@@ -73,24 +80,6 @@ public class PreferencesSetting {
      * @param option The option name of the setting
      * @param title The title of this setting
      * @param helptext Text to display to help the user
-     */
-    public PreferencesSetting(final PreferencesType type,
-            final Validator<String> validator, final String domain,
-            final String option, final String title, final String helptext) {
-        this(type, validator, domain, option, title, helptext,
-                IdentityManager.getGlobalConfig(),
-                IdentityManager.getConfigIdentity());
-    }
-
-    /**
-     * Creates a new preferences setting for any type except multi-choice.
-     *
-     * @param type The type of the setting to create
-     * @param validator A validator to validate the setting's value
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
      * @param configManager Config Manager
      * @param identity Identity to save setting to
      */
@@ -104,7 +93,7 @@ public class PreferencesSetting {
         }
 
         this.type = type;
-        this.combooptions = null;
+        this.comboOptions = null;
         this.validator = validator;
         this.domain = domain;
         this.option = option;
@@ -112,25 +101,8 @@ public class PreferencesSetting {
         this.helptext = helptext;
         this.identity = identity;
 
-        current = configManager.getOption(domain, option);
-        original = current;
-    }
-
-    /**
-     * Creates a new preferences setting for any type except multi-choice, with
-     * a default permissive validator.
-     *
-     * @param type The type of the setting to create
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
-     */
-    public PreferencesSetting(final PreferencesType type, final String domain,
-            final String option, final String title, final String helptext) {
-        this(type, domain, option, title, helptext,
-                IdentityManager.getGlobalConfig(),
-                IdentityManager.getConfigIdentity());
+        value = configManager.getOption(domain, option);
+        original = value;
     }
 
     /**
@@ -154,7 +126,7 @@ public class PreferencesSetting {
         }
 
         this.type = type;
-        this.combooptions = null;
+        this.comboOptions = null;
         this.validator = new PermissiveValidator<String>();
         this.domain = domain;
         this.option = option;
@@ -162,25 +134,8 @@ public class PreferencesSetting {
         this.helptext = helptext;
         this.identity = identity;
 
-        current = configManager.getOption(domain, option);
-        original = current;
-    }
-
-    /**
-     * Creates a new preferences setting for multi-choice preferences.
-     *
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param options A map of setting values to display names for this setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
-     */
-    public PreferencesSetting(final String domain, final String option,
-            final String title, final String helptext,
-            final Map<String, String> options) {
-        this(domain, option, title, helptext, options,
-                IdentityManager.getGlobalConfig(),
-                IdentityManager.getConfigIdentity());
+        value = configManager.getOption(domain, option);
+        original = value;
     }
 
     /**
@@ -199,7 +154,7 @@ public class PreferencesSetting {
             final Map<String, String> options,
             final ConfigManager configManager, final Identity identity) {
         this.type = PreferencesType.MULTICHOICE;
-        this.combooptions = new HashMap<String, String>(options);
+        this.comboOptions = new HashMap<String, String>(options);
         this.validator = new PermissiveValidator<String>();
         this.domain = domain;
         this.option = option;
@@ -207,67 +162,12 @@ public class PreferencesSetting {
         this.helptext = helptext;
         this.identity = identity;
 
-        current = configManager.getOption(domain, option);
-        original = current;
+        value = configManager.getOption(domain, option);
+        original = value;
 
-        if (!combooptions.containsKey(current)) {
-            combooptions.put(current, "Current (" + current + ")");
+        if (!comboOptions.containsKey(value)) {
+            comboOptions.put(value, "Current (" + value + ")");
         }
-    }
-
-    /**
-     * Retrieves the possible options for use in a multi-choice preference.
-     *
-     * @return A map of setting values to display names, representing the
-     * possible options for this setting.
-     */
-    public Map<String, String> getComboOptions() {
-        return combooptions;
-    }
-
-    /**
-     * Retrieves the help text for this setting.
-     *
-     * @return This setting's help text.
-     */
-    public String getHelptext() {
-        return helptext;
-    }
-
-    /**
-     * Retrieves the title of this setting.
-     *
-     * @return This setting's title.
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Retrieves the current value of this setting.
-     *
-     * @return The current value of this setting.
-     */
-    public String getValue() {
-        return current;
-    }
-
-    /**
-     * Retieves the type of this setting.
-     *
-     * @return This setting's type.
-     */
-    public PreferencesType getType() {
-        return type;
-    }
-
-    /**
-     * Returns a validator that can validate this setting.
-     *
-     * @return This setting's validator.
-     */
-    public Validator<String> getValidator() {
-        return validator;
     }
 
     /**
@@ -277,7 +177,7 @@ public class PreferencesSetting {
      * @param newValue The new value of the setting
      */
     public void setValue(final String newValue) {
-        current = newValue;
+        value = newValue;
 
         for (SettingChangeListener listener : listeners) {
             listener.settingChanged(this);
@@ -325,13 +225,13 @@ public class PreferencesSetting {
             return false;
         }
 
-        if (current == null) {
+        if (value == null) {
             identity.unsetOption(domain, option);
         } else {
-            identity.setOption(domain, option, current);
+            identity.setOption(domain, option, value);
         }
 
-        original = current;
+        original = value;
         return true;
     }
 
@@ -339,12 +239,12 @@ public class PreferencesSetting {
      * Dismisses changes to this setting.
      */
     public void dismiss() {
-        if ((original != null && original.equals(current))
-                || (original == null && current == null)) {
+        if ((original != null && original.equals(value))
+                || (original == null && value == null)) {
             return;
         }
 
-        current = original;
+        value = original;
 
         for (SettingChangeListener listener : listeners) {
             listener.settingChanged(this);
@@ -357,9 +257,9 @@ public class PreferencesSetting {
      * @return true iif the setting will be changed if saved
      */
     public boolean needsSaving() {
-        return (current == null || !current.equals(original))
-                && (current != null || original != null)
-                && (validator == null || !validator.validate(current).isFailure());
+        return (value == null || !value.equals(original))
+                && (value != null || original != null)
+                && (validator == null || !validator.validate(value).isFailure());
     }
 
     /**

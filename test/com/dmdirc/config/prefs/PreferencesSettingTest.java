@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
@@ -33,30 +34,31 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesSettingTest {
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         IdentityManager.load();
-    }    
+    }
 
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice1() {
         new PreferencesSetting(PreferencesType.MULTICHOICE, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", null, null);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice2() {
         new PreferencesSetting(PreferencesType.MULTICHOICE,
                 new PermissiveValidator<String>(), "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", null, null);
     }
 
     @Test
     public void testNormalConstructor() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
 
         assertEquals(PreferencesType.TEXT, ps.getType());
         assertEquals("fallback", ps.getValue());
@@ -68,10 +70,11 @@ public class PreferencesSettingTest {
 
     @Test
     public void testValidatorConstructor() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 new NotEmptyValidator(), "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
 
         assertEquals(PreferencesType.TEXT, ps.getType());
         assertEquals("fallback", ps.getValue());
@@ -83,9 +86,10 @@ public class PreferencesSettingTest {
 
     @Test
     public void testRestartNeeded() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
 
         assertFalse(ps.isRestartNeeded());
         assertSame(ps, ps.setRestartNeeded());
@@ -94,13 +98,14 @@ public class PreferencesSettingTest {
 
     @Test
     public void testMultichoiceAdding() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "new");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("new");
         final Map<String, String> map = new HashMap<String, String>();
         map.put("a", "b");
         map.put("c", "d");
 
         final PreferencesSetting ps = new PreferencesSetting("domain",
-                "option", "title", "helptext", map);
+                "option", "title", "helptext", map, cm, null);
         assertEquals(3, ps.getComboOptions().size());
         assertNotNull(ps.getComboOptions().get("new"));
         assertTrue(ps.getComboOptions().get("new").startsWith("Current"));
@@ -108,34 +113,37 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSetValue() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
         ps.setValue("newvalue");
         assertEquals("newvalue", ps.getValue());
     }
-    
+
     @Test
     public void testDismiss() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
         ps.setValue("newvalue");
         ps.dismiss();
         assertEquals("fallback", ps.getValue());
-        
+
         final PreferencesSetting ps2 = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
         ps2.setValue(null);
         ps2.dismiss();
         assertEquals("fallback", ps2.getValue());
     }
-    
+
     @Test
     public void testListener() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
         final SettingChangeListener tl = mock(SettingChangeListener.class);
         ps.registerChangeListener(tl);
         ps.setValue("newvalue");
@@ -144,53 +152,56 @@ public class PreferencesSettingTest {
 
         verify(tl, times(2)).settingChanged(ps);
     }
-    
+
     @Test
     public void testNeedsSaving() {
-        IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
-        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, 
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
+        when(cm.getOption("domain", "option2")).thenReturn("fallback");
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 new StringLengthValidator(5, 100), "domain",
-                "option", "title", "helptext");
+                "option", "title", "helptext", cm, null);
         assertFalse(ps.needsSaving());
         ps.setValue("abc");
         assertFalse(ps.needsSaving());
         ps.setValue("abcdefg");
         assertTrue(ps.needsSaving());
 
-        IdentityManager.getConfigIdentity().setOption("domain", "option2", "fallback");
         final PreferencesSetting ps2 = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option2", "title", "helptext");
-        
+                "option2", "title", "helptext", cm, null);
+
         ps2.setValue(null);
         assertTrue(ps2.needsSaving());
     }
-    
+
     @Test
     public void testSaveUnset() {
         IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
-        
+
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext");
-        
+                "unit-test", "ps", "title", "helptext",
+                IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity());
+
         assertFalse(ps.save());
         ps.setValue(null);
         assertTrue(ps.save());
-        
+
         assertFalse(IdentityManager.getConfigIdentity().hasOptionString("unit-test", "ps"));
     }
-    
+
     @Test
     public void testSaveNormal() {
         IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
-        
+
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext");
-        
+                "unit-test", "ps", "title", "helptext",
+                IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity());
+
         assertFalse(ps.save());
         ps.setValue("def");
         assertTrue(ps.save());
-        
+
         assertEquals("def", IdentityManager.getConfigIdentity().getOption("unit-test", "ps"));
-    }    
+    }
 
 }

@@ -265,7 +265,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
                         data.get("setting"), data.get("default"));
                 myGroup.getSettings().put(data.get("setting"), new PreferencesSetting(
                         PreferencesType.valueOf(data.get("type")), "actions",
-                        data.get("setting"), data.get("title"), data.get("tooltip")));
+                        data.get("setting"), data.get("title"), data.get("tooltip"),
+                        IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity()));
             }
         }
     }
