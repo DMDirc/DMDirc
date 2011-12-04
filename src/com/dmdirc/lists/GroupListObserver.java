@@ -22,13 +22,11 @@
 
 package com.dmdirc.lists;
 
-import com.dmdirc.util.ListObserver;
-
 /**
  * Interface for objects interested in events raised by a
  * {@link GroupListManager}.
  */
-public interface GroupListObserver extends ListObserver {
+public interface GroupListObserver {
 
     /**
      * Called when the start of list results has been received.

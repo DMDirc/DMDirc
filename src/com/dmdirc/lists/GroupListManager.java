@@ -34,12 +34,15 @@ import com.dmdirc.util.ObservableListDecorator;
 import java.util.Date;
 import java.util.LinkedList;
 
+import lombok.Getter;
+import lombok.ListenerSupport;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Manages a group list request.
  */
 @RequiredArgsConstructor
+@ListenerSupport(GroupListObserver.class)
 public class GroupListManager implements GroupListStartListener,
         GroupListEntryListener, GroupListEndListener {
 
@@ -50,6 +53,7 @@ public class GroupListManager implements GroupListStartListener,
     private final ListenerList listeners = new ListenerList();
 
     /** The cached groups. */
+    @Getter
     private final ObservableList<GroupListEntry> groups
             = new ObservableListDecorator<GroupListEntry>(new LinkedList<GroupListEntry>());
 
@@ -86,26 +90,6 @@ public class GroupListManager implements GroupListStartListener,
     public void onGroupListEnd(final Parser parser, final Date date) {
         parser.getCallbackManager().delAllCallback(this);
         listeners.getCallable(GroupListObserver.class).onGroupListFinished();
-    }
-
-    /**
-     * Adds the specified observer to this manager.
-     *
-     * @param listener The observer to be added
-     */
-    public void addGroupListObserver(final GroupListObserver listener) {
-        listeners.add(GroupListObserver.class, listener);
-        groups.addListListener(listener);
-    }
-
-    /**
-     * Removes the specified observer from this manager.
-     *
-     * @param listener The observer to be removed
-     */
-    public void removeGroupListObserver(final GroupListObserver listener) {
-        listeners.remove(GroupListObserver.class, listener);
-        groups.removeListListener(listener);
     }
 
 }
