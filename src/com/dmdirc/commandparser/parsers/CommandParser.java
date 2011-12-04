@@ -124,7 +124,6 @@ public abstract class CommandParser implements Serializable {
      * Parses the specified string as a command.
      *
      * @param origin The container which received the command
-     * @param window The window in which the line was typed
      * @param line The line to be parsed
      * @param parseChannel Whether or not to try and parse the first argument
      * as a channel name
@@ -160,7 +159,6 @@ public abstract class CommandParser implements Serializable {
      * handled, the method returns false.
      *
      * @param origin The container which received the command
-     * @param window The window in which the command was typed
      * @param args The command and its arguments
      * @param parseChannel Whether or not to try parsing channel names
      * @return True iff the command was handled, false otherwise
@@ -252,7 +250,6 @@ public abstract class CommandParser implements Serializable {
      * Parses the specified string as a command.
      *
      * @param origin The container which received the command
-     * @param window The window in which the command was typed
      * @param line The line to be parsed
      * @since 0.6.4
      */
@@ -275,7 +272,6 @@ public abstract class CommandParser implements Serializable {
      * Executes the specified command with the given arguments.
      *
      * @param origin The container which received the command
-     * @param window The window in which the command was typed
      * @param commandInfo The command information object matched by the command
      * @param command The command to be executed
      * @param args The arguments to the command
