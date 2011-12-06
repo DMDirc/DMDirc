@@ -36,25 +36,18 @@ public class PluginClassLoader extends ClassLoader {
     /** The plugin Info object for the plugin we are loading. */
     private final PluginInfo pluginInfo;
 
-    /**
-     * Create a new PluginClassLoader.
-     *
-     * @param info PluginInfo this classloader will be for
-     */
-    public PluginClassLoader(final PluginInfo info) {
-        super();
-        pluginInfo = info;
-    }
+    /** The parent class loaders. */
+    private final PluginClassLoader[] parents;
 
     /**
      * Create a new PluginClassLoader.
      *
      * @param info PluginInfo this classloader will be for
-     * @param parent Parent ClassLoader
+     * @param parents Parent ClassLoaders
      */
-    private PluginClassLoader(final PluginInfo info, final PluginClassLoader parent) {
-        super(parent);
-        pluginInfo = info;
+    public PluginClassLoader(final PluginInfo info, final PluginClassLoader ... parents) {
+        this.pluginInfo = info;
+        this.parents = parents;
     }
 
     /**
@@ -102,14 +95,14 @@ public class PluginClassLoader extends ClassLoader {
     @Override
     public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
         Class<?> loadedClass = null;
-        if (getParent() instanceof PluginClassLoader) {
+        for (PluginClassLoader parent : parents) {
             try {
-                loadedClass = ((PluginClassLoader) getParent()).loadClass(name, false);
+                loadedClass = parent.loadClass(name, false);
                 if (loadedClass != null) {
                     return loadedClass;
                 }
             } catch (ClassNotFoundException cnfe) {
-                /* Parent doesn't have the class, load ourself */
+                // Parent doesn't have the class, carry on trying...
             }
         }
 
@@ -146,7 +139,7 @@ public class PluginClassLoader extends ClassLoader {
             return findLoadedClass(name);
         }
 
-        // We are ment to be loading this one!
+        // We are meant to be loading this one!
         byte[] data = null;
 
         if (res.resourceExists(fileName)) {
@@ -190,6 +183,15 @@ public class PluginClassLoader extends ClassLoader {
             }
         } catch (IOException ioe) {
             // Do nothing, fall through
+        }
+
+        // Try the parents
+        for (PluginClassLoader parent : parents) {
+            final URL url = parent.findResource(name);
+
+            if (url != null) {
+                return url;
+            }
         }
 
         return super.findResource(name);

@@ -146,20 +146,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public SimpleInjector getInjector() {
         final SimpleInjector injector;
-        if (metadata.getParent() == null || metadata.getParent().isEmpty()) {
-            injector = new SimpleInjector();
-            injector.addParameter(PluginManager.class,
-                    PluginManager.getPluginManager());
-            injector.addParameter(ActionManager.getActionManager());
-        } else {
+        final SimpleInjector[] parents = new SimpleInjector[metadata.getParents().length];
+
+        for (int i = 0; i < metadata.getParents().length; i++) {
             final PluginInfo parent = PluginManager.getPluginManager()
-                    .getPluginInfoByName(metadata.getParent());
-            injector = new SimpleInjector(parent.getInjector());
-            injector.addParameter(parent.getPlugin());
+                    .getPluginInfoByName(metadata.getParents()[i]);
+            parents[i] = parent.getInjector();
         }
 
+        injector = new SimpleInjector(parents);
+        injector.addParameter(PluginManager.class, PluginManager.getPluginManager());
+        injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
-        injector.addParameter(PluginMetaData.class, this);
+        injector.addParameter(PluginMetaData.class, metadata);
 
         return injector;
     }
@@ -490,8 +489,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
         }
 
-        if (metadata.getParent() != null) {
-            return loadRequiredPlugin(metadata.getParent());
+        for (String parent : metadata.getParents()) {
+            return loadRequiredPlugin(parent);
         }
 
         return true;
@@ -618,29 +617,29 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void initialiseClassLoader() {
         if (classloader == null) {
-            if (metadata.getParent() == null) {
-                classloader = new PluginClassLoader(this);
-            } else {
-                final String parentName = metadata.getParent();
-                final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
-                if (pi == null) {
-                    lastError = "Required parent '" + parentName + "' was not found";
-                    return;
-                } else {
-                    pi.addChild(this);
-                    PluginClassLoader parentCL = pi.getPluginClassLoader();
-                    if (parentCL == null) {
-                        // Parent appears not to be loaded.
-                        pi.loadPlugin();
-                        parentCL = pi.getPluginClassLoader();
-                        if (parentCL == null) {
-                            lastError = "Unable to get classloader from required parent '" + parentName + "' for " + metadata.getName();
-                            return;
-                        }
+            final PluginClassLoader[] loaders = new PluginClassLoader[metadata.getParents().length];
+
+            for (int i = 0; i < metadata.getParents().length; i++) {
+                final String parentName = metadata.getParents()[i];
+                final PluginInfo parent = PluginManager.getPluginManager()
+                        .getPluginInfoByName(parentName);
+                parent.addChild(this);
+                loaders[i] = parent.getPluginClassLoader();
+
+                if (loaders[i] == null) {
+                    // Not loaded? Try again...
+
+                    parent.loadPlugin();
+                    loaders[i] = parent.getPluginClassLoader();
+
+                    if (loaders[i] == null) {
+                        lastError = "Unable to get classloader from required parent '" + parentName + "' for " + metadata.getName();
+                        return;
                     }
-                    classloader = parentCL.getSubClassLoader(this);
                 }
             }
+
+            classloader = new PluginClassLoader(this, loaders);
         }
     }
 
@@ -761,13 +760,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 for (PluginInfo child : children) {
                     child.unloadPlugin(true);
                 }
+
                 // Delete ourself as a child of our parent.
-                final String parentName = metadata.getParent();
-                if (!parentUnloading && parentName != null) {
-                    final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
-                    if (pi != null) {
-                        pi.delChild(this);
-                        classloader = pi.getPluginClassLoader().getSubClassLoader(this);
+                if (!parentUnloading) {
+                    for (String parent : metadata.getParents()) {
+                        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parent);
+                        if (pi != null) {
+                            pi.delChild(this);
+                        }
                     }
                 }
 

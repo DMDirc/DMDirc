@@ -100,7 +100,7 @@ public class PluginMetaData {
             = new ArrayList<String>();
 
     /** The name of the parent plugin, if any. */
-    private String parent;
+    private String[] parents;
 
     /** The name of the main class, if any. */
     private String mainClass;
@@ -327,7 +327,11 @@ public class PluginMetaData {
             final List<String> requiredServices) {
         readSettings(requirements, data);
 
-        parent = requirements.get("parent");
+        if (requirements.containsKey("parent")) {
+            parents = requirements.get("parent").split(",");
+        } else {
+            parents = new String[0];
+        }
 
         this.requiredServices.clear();
 
@@ -543,12 +547,12 @@ public class PluginMetaData {
     }
 
     /**
-     * Retrieves this plugin's parent, if specified.
+     * Retrieves this plugin's parents, if specified.
      *
-     * @return The desired parent plugin, or null if none specified
+     * @return The desired parent plugins
      */
-    public String getParent() {
-        return parent;
+    public String[] getParents() {
+        return parents;
     }
 
     /**
