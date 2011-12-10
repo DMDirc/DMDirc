@@ -27,7 +27,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEntryListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListStartListener;
-import com.dmdirc.util.ListenerList;
 import com.dmdirc.util.ObservableList;
 import com.dmdirc.util.ObservableListDecorator;
 
@@ -48,9 +47,6 @@ public class GroupListManager implements GroupListStartListener,
 
     /** The server to request group information from. */
     private final Server server;
-
-    /** Our listeners. */
-    private final ListenerList listeners = new ListenerList();
 
     /** The cached groups. */
     @Getter
@@ -75,7 +71,7 @@ public class GroupListManager implements GroupListStartListener,
     /** {@inheritDoc} */
     @Override
     public void onGroupListStart(final Parser parser, final Date date) {
-        listeners.getCallable(GroupListObserver.class).onGroupListStarted();
+        fireOnGroupListStarted();
     }
 
     /** {@inheritDoc} */
@@ -89,7 +85,7 @@ public class GroupListManager implements GroupListStartListener,
     @Override
     public void onGroupListEnd(final Parser parser, final Date date) {
         parser.getCallbackManager().delAllCallback(this);
-        listeners.getCallable(GroupListObserver.class).onGroupListFinished();
+        fireOnGroupListFinished();
     }
 
 }
