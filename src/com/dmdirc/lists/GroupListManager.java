@@ -23,6 +23,7 @@
 package com.dmdirc.lists;
 
 import com.dmdirc.Server;
+import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEntryListener;
@@ -86,6 +87,15 @@ public class GroupListManager implements GroupListStartListener,
     public void onGroupListEnd(final Parser parser, final Date date) {
         parser.getCallbackManager().delAllCallback(this);
         fireOnGroupListFinished();
+    }
+
+    /**
+     * Joins a group list entry.
+     *
+     * @param entry Group list entry to join
+     */
+    public void joinGroupListEntry(final GroupListEntry entry) {
+        server.join(new ChannelJoinRequest(entry.getName()));
     }
 
 }
