@@ -67,7 +67,7 @@ public class ThemeIdentity extends Identity {
             final String option, final Validator<String> validator) {
         final String result = super.getOption(domain, option, validator);
 
-        if (result == null) {
+        if (result == null || !result.contains("$theme")) {
             return result;
         } else {
             return result.replace("$theme", theme.getFileName(false));
