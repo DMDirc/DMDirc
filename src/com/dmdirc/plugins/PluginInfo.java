@@ -147,14 +147,21 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public SimpleInjector getInjector() {
         final SimpleInjector injector;
         final SimpleInjector[] parents = new SimpleInjector[metadata.getParents().length];
+        final Plugin[] plugins = new Plugin[parents.length];
 
         for (int i = 0; i < metadata.getParents().length; i++) {
             final PluginInfo parent = PluginManager.getPluginManager()
                     .getPluginInfoByName(metadata.getParents()[i]);
             parents[i] = parent.getInjector();
+            plugins[i] = parent.getPlugin();
         }
 
         injector = new SimpleInjector(parents);
+
+        for (Plugin parentPlugin : plugins) {
+            injector.addParameter(parentPlugin);
+        }
+
         injector.addParameter(PluginManager.class, PluginManager.getPluginManager());
         injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
