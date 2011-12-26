@@ -166,6 +166,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
         injector.addParameter(PluginMetaData.class, metadata);
+        injector.addParameter(IdentityManager.class, IdentityManager.getIdentityManager());
 
         return injector;
     }
