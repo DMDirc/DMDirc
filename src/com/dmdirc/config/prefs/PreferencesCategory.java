@@ -22,7 +22,7 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.collections.ListenerList;
 
 import java.util.ArrayList;
 import java.util.List;

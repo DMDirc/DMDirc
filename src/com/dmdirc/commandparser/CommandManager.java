@@ -37,7 +37,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.collections.MapList;
 
 import java.util.ArrayList;
 import java.util.HashMap;

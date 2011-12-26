@@ -23,7 +23,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.collections.MapList;
 
 import java.io.File;
 import java.util.ArrayList;

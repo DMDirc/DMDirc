@@ -30,8 +30,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.DefaultsComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
-import com.dmdirc.util.Downloader;
-import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.io.Downloader;
+import com.dmdirc.util.collections.ListenerList;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

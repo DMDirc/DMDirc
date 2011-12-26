@@ -29,10 +29,10 @@ import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.ConfigFile;
-import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.util.MapList;
-import com.dmdirc.util.WeakMapList;
+import com.dmdirc.util.io.ConfigFile;
+import com.dmdirc.util.io.InvalidConfigFileException;
+import com.dmdirc.util.collections.MapList;
+import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;

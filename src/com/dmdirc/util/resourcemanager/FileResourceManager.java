@@ -22,7 +22,7 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.io.StreamUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,7 +98,7 @@ public final class FileResourceManager extends ResourceManager {
         } catch (IOException ex) {
             return new byte[0];
         } finally {
-            StreamUtil.close(inputStream);
+            StreamUtils.close(inputStream);
         }
 
         return bytes;

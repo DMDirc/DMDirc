@@ -23,9 +23,9 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.ConfigFile;
-import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.io.ConfigFile;
+import com.dmdirc.util.io.InvalidConfigFileException;
+import com.dmdirc.util.io.StreamUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -170,10 +170,10 @@ public class PluginMetaData {
             readExports(configFile.getFlatDomain("exports"));
         } catch (IOException ex) {
             errors.add("Unable to read config file: " + ex.getMessage());
-            StreamUtil.close(stream);
+            StreamUtils.close(stream);
         } catch (InvalidConfigFileException ex) {
             errors.add("Unable to read config file: " + ex.getMessage());
-            StreamUtil.close(stream);
+            StreamUtils.close(stream);
         }
     }
 

@@ -28,7 +28,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
-import com.dmdirc.util.ListenerList;
+import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 

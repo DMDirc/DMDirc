@@ -22,7 +22,7 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.io.StreamUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -132,7 +132,7 @@ public final class ZipResourceManager extends ResourceManager {
         } catch (IOException ex) {
             return new byte[0];
         } finally {
-            StreamUtil.close(inputStream);
+            StreamUtils.close(inputStream);
         }
 
         return bytes;

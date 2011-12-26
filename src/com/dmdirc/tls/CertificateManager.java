@@ -26,8 +26,8 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.util.ListenerList;
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.collections.ListenerList;
+import com.dmdirc.util.io.StreamUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -142,7 +142,7 @@ public class CertificateManager implements X509TrustManager {
         } catch (NoSuchAlgorithmException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } finally {
-            StreamUtil.close(is);
+            StreamUtils.close(is);
         }
     }
 
@@ -186,7 +186,7 @@ public class CertificateManager implements X509TrustManager {
             } catch (UnrecoverableKeyException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } finally {
-                StreamUtil.close(fis);
+                StreamUtils.close(fis);
             }
         }
 

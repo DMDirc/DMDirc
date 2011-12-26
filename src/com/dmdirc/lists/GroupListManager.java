@@ -28,8 +28,8 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEntryListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListStartListener;
-import com.dmdirc.util.ObservableList;
-import com.dmdirc.util.ObservableListDecorator;
+import com.dmdirc.util.collections.ObservableList;
+import com.dmdirc.util.collections.ObservableListDecorator;
 
 import java.util.Date;
 import java.util.LinkedList;

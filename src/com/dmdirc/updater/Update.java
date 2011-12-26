@@ -25,9 +25,9 @@ package com.dmdirc.updater;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.util.DownloadListener;
-import com.dmdirc.util.Downloader;
-import com.dmdirc.util.WeakList;
+import com.dmdirc.util.io.DownloadListener;
+import com.dmdirc.util.io.Downloader;
+import com.dmdirc.util.collections.WeakList;
 
 import java.io.IOException;
 import java.util.List;

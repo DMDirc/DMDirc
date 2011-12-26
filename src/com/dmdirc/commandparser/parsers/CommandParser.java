@@ -36,7 +36,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.util.RollingList;
+import com.dmdirc.util.collections.RollingList;
 
 import java.io.Serializable;
 import java.util.HashMap;

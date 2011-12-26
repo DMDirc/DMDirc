@@ -24,8 +24,8 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.util.ListenerList;
-import com.dmdirc.util.RollingList;
+import com.dmdirc.util.collections.ListenerList;
+import com.dmdirc.util.collections.RollingList;
 
 import java.awt.Font;
 import java.io.Serializable;

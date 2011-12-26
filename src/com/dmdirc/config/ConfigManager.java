@@ -23,7 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.ArrayList;

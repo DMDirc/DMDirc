@@ -38,7 +38,7 @@ import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ActionGroupComponent;
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;

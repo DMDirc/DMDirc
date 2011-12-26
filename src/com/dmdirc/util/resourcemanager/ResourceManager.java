@@ -24,7 +24,7 @@ package com.dmdirc.util.resourcemanager;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.io.StreamUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -114,7 +114,7 @@ public abstract class ResourceManager {
             out.write(resource);
             out.flush();
         } finally {
-            StreamUtil.close(out);
+            StreamUtils.close(out);
         }
     }
 

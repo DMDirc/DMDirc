@@ -39,7 +39,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.collections.MapList;
 
 import java.util.ArrayList;
 import java.util.List;

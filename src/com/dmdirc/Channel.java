@@ -41,7 +41,7 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.RollingList;
+import com.dmdirc.util.collections.RollingList;
 
 import java.util.ArrayList;
 import java.util.Arrays;

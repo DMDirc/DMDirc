@@ -32,8 +32,8 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.ConfigFile;
-import com.dmdirc.util.InvalidConfigFileException;
+import com.dmdirc.util.io.ConfigFile;
+import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.File;
 import java.io.IOException;

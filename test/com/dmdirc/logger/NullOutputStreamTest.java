@@ -21,7 +21,7 @@
  */
 package com.dmdirc.logger;
 
-import com.dmdirc.util.StreamUtil;
+import com.dmdirc.util.io.StreamUtils;
 import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -39,7 +39,7 @@ public class NullOutputStreamTest {
         } catch (IOException ex) {
             exception = true;
         } finally {
-            StreamUtil.close(os);
+            StreamUtils.close(os);
         }
         
         assertFalse(exception);

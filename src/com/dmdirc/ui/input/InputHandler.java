@@ -40,8 +40,8 @@ import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.ListenerList;
-import com.dmdirc.util.RollingList;
+import com.dmdirc.util.collections.ListenerList;
+import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.awt.Toolkit;

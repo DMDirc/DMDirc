@@ -24,7 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.util.Downloader;
+import com.dmdirc.util.io.Downloader;
 
 import java.io.File;
 import java.io.FileOutputStream;
