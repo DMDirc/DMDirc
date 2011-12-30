@@ -36,9 +36,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import lombok.Getter;
+
 /**
  * The config manager manages the various config sources for each entity.
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         IdentityListener {
 
@@ -58,6 +61,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners
             = new MapList<String, ConfigChangeListener>();
+
+    /** The config binder to use for this manager. */
+    @Getter
+    private final ConfigBinder binder = new ConfigBinder(this);
 
     /** The protocol this manager is for. */
     private String protocol;
@@ -104,7 +111,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         this.server = server;
         this.channel = chanName;
 
-        sources = IdentityManager.getSources(this);
+        sources = IdentityManager.getIdentityManager().getIdentitiesForManager(this);
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Found " + sources.size() + " source(s) for: "
@@ -116,7 +123,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
             identity.addListener(this);
         }
 
-        IdentityManager.addIdentityListener(this);
+        IdentityManager.getIdentityManager().registerIdentityListener(this);
     }
 
     /** {@inheritDoc} */
@@ -126,7 +133,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getVersionIdentity().getOption(domain, option, validator);
+            return IdentityManager.getIdentityManager()
+                    .getGlobalVersionIdentity().getOption(domain, option, validator);
         }
 
         synchronized (sources) {
@@ -147,7 +155,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getVersionIdentity().hasOption(domain, option, validator);
+            return IdentityManager.getIdentityManager()
+                    .getGlobalVersionIdentity().hasOption(domain, option, validator);
         }
 
         synchronized (sources) {
@@ -170,7 +179,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      */
     public Map<String, String> getOptions(final String domain) {
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getVersionIdentity().getOptions(domain);
+            return IdentityManager.getIdentityManager()
+                    .getGlobalVersionIdentity().getOptions(domain);
         }
 
         final Map<String, String> res = new HashMap<String, String>();
@@ -226,7 +236,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      */
     protected Identity getScope(final String domain, final String option) {
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getVersionIdentity();
+            return IdentityManager.getIdentityManager()
+                    .getGlobalVersionIdentity();
         }
 
         synchronized (sources) {
