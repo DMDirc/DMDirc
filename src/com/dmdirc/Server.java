@@ -42,6 +42,7 @@ import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.ParserError;
+import com.dmdirc.parser.common.ThreadedParser;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.EncodingParser;
@@ -118,7 +119,7 @@ public class Server extends WritableFrameContainer
     private ProtocolDescription protocolDescription;
 
     /**
-     * Object used to synchronoise access to parser. This object should be
+     * Object used to synchronise access to parser. This object should be
      * locked by anything requiring that the parser reference remains the same
      * for a duration of time, or by anything which is updating the parser
      * reference.
@@ -127,9 +128,6 @@ public class Server extends WritableFrameContainer
      * locked INSIDE the myStateLock to prevent deadlocks.
      */
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
-
-    /** The Parser Thread. */
-    private Thread parserThread;
 
     /** The raw frame used for this server instance. */
     private Raw raw;
@@ -332,8 +330,10 @@ public class Server extends WritableFrameContainer
             updateAwayState(null);
             removeInvites();
 
-            parserThread = new Thread(parser, "Parser thread");
-            parserThread.start();
+            parser.connect();
+            if (parser instanceof ThreadedParser) {
+                ((ThreadedParser)parser).getControlThread().setName("Parser - " + connectAddress.toString());
+            }
         }
 
         ActionManager.getActionManager().triggerEvent(
@@ -396,7 +396,6 @@ public class Server extends WritableFrameContainer
                     removeInvites();
                     updateIcon();
 
-                    parserThread.interrupt();
                     parser.disconnect(reason);
                 }
             } finally {
