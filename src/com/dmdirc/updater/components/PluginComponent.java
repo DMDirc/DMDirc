@@ -38,7 +38,7 @@ import java.io.File;
 public class PluginComponent implements UpdateComponent, FileComponent {
 
     /** The config to use. */
-    private static final ConfigManager CONFIG = IdentityManager.getGlobalConfig();
+    private static final ConfigManager CONFIG = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
     /** The plugin this component is for. */
     private final PluginInfo plugin;

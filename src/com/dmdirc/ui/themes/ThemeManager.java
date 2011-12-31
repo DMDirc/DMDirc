@@ -44,7 +44,8 @@ public final class ThemeManager {
     private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
 
     static {
-        IdentityManager.getGlobalConfig().addChangeListener("themes", "enabled",
+        IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .addChangeListener("themes", "enabled",
                 new ConfigChangeListener() {
             /** {@inheritDoc} */
             @Override
@@ -76,7 +77,7 @@ public final class ThemeManager {
             return;
         }
 
-        final List<String> enabled = IdentityManager.getGlobalConfig()
+        final List<String> enabled = IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionList("themes", "enabled");
 
         synchronized (THEMES) {

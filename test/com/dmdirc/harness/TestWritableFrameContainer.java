@@ -45,7 +45,7 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     }
 
     public TestWritableFrameContainer(final int lineLength) {
-        this(lineLength, IdentityManager.getGlobalConfig());
+        this(lineLength, IdentityManager.getIdentityManager().getGlobalConfiguration());
     }
 
     @Override

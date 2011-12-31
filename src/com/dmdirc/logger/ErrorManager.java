@@ -78,7 +78,7 @@ public final class ErrorManager implements ConfigChangeListener {
         errors = new LinkedList<ProgramError>();
         nextErrorID = new AtomicLong();
 
-        final ConfigManager config = IdentityManager.getGlobalConfig();
+        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
@@ -465,7 +465,7 @@ public final class ErrorManager implements ConfigChangeListener {
 
     /** Updates the settings used by this error manager. */
     protected void updateSettings() {
-        final ConfigManager config = IdentityManager.getGlobalConfig();
+        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         try {
             sendReports = config.getOptionBool("general", "submitErrors")

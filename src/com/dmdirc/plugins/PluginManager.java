@@ -185,7 +185,8 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Autoloads plugins.
      */
     public void doAutoLoad() {
-        for (String plugin : IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload")) {
+        for (String plugin : IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOptionList("plugins", "autoload")) {
             plugin = plugin.trim();
             if (!plugin.isEmpty() && plugin.charAt(0) != '#' && getPluginInfo(plugin) != null) {
                 getPluginInfo(plugin).loadPlugin();
@@ -363,8 +364,11 @@ public class PluginManager implements ActionListener, ServiceManager {
     public String getFilesDirectory() {
         final String fs = System.getProperty("file.separator");
         String filesDir = myDir + "files" + fs;
-        if (IdentityManager.getGlobalConfig().hasOptionString("plugins", "filesdir")) {
-            final String fdopt = IdentityManager.getGlobalConfig().getOptionString("plugins", "filesdir");
+        if (IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .hasOptionString("plugins", "filesdir")) {
+            final String fdopt = IdentityManager.getIdentityManager()
+                    .getGlobalConfiguration().getOptionString("plugins", "filesdir");
+
             if (fdopt != null && !fdopt.isEmpty() && new File(fdopt).exists()) {
                 filesDir = fdopt;
             }
@@ -512,7 +516,8 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param plugin to add/remove (Decided automatically based on isLoaded())
      */
     public void updateAutoLoad(final PluginInfo plugin) {
-        final List<String> list = IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload");
+        final List<String> list = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOptionList("plugins", "autoload");
         final String path = plugin.getMetaData().getRelativeFilename();
 
         if (plugin.isLoaded() && !list.contains(path)) {
@@ -521,7 +526,8 @@ public class PluginManager implements ActionListener, ServiceManager {
             list.remove(path);
         }
 
-        IdentityManager.getConfigIdentity().setOption("plugins", "autoload", list);
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("plugins", "autoload", list);
     }
 
     /**

@@ -121,7 +121,7 @@ public final class Main {
         MessageSinkManager.getManager().loadDefaultSinks();
 
         final PluginManager pm = PluginManager.getPluginManager();
-        checkBundledPlugins(pm, IdentityManager.getGlobalConfig());
+        checkBundledPlugins(pm, IdentityManager.getIdentityManager().getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
@@ -178,13 +178,13 @@ public final class Main {
      */
     private static void handleMissingUI() {
         // Check to see if we have already tried this
-        if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+        if (IdentityManager.getIdentityManager().getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
             System.out.println("DMDirc is unable to load any compatible UI plugins.");
             if (!GraphicsEnvironment.isHeadless()) {
                 new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
                         WarningDialog.NO_RECOV_UIS).displayBlocking();
             }
-            IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
             System.exit(1);
         } else {
             // Try to extract the UIs again incase they changed between versions
@@ -312,7 +312,7 @@ public final class Main {
             handleMissingUI();
         } else {
             // The fix worked!
-            if (IdentityManager.getGlobalConfig().hasOptionBool("debug", "uiFixAttempted")) {
+            if (IdentityManager.getIdentityManager().getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
                 IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
             }
         }
@@ -322,7 +322,7 @@ public final class Main {
      * Executes the first run or migration wizards as required.
      */
     private static void doFirstRun() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun")) {
+        if (IdentityManager.getIdentityManager().getGlobalConfiguration().getOptionBool("general", "firstRun")) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             for (UIController controller : CONTROLLERS) {
                 controller.showFirstRunWizard();
@@ -355,7 +355,7 @@ public final class Main {
      *                  operating system when the client exits
      */
     public static void quit(final int exitCode) {
-        quit(IdentityManager.getGlobalConfig().getOption("general",
+        quit(IdentityManager.getIdentityManager().getGlobalConfiguration().getOption("general",
                 "closemessage"), exitCode);
     }
 

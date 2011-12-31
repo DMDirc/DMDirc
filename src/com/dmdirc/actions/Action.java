@@ -93,7 +93,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             error(ActionErrorType.FILE, "I/O error when loading action: " + ex.getMessage());
         }
 
-        IdentityManager.getGlobalConfig().addChangeListener("disable_action",
+        IdentityManager.getIdentityManager().getGlobalConfiguration().addChangeListener("disable_action",
                 (group + "/" + name).replace(' ', '.'), this);
         checkDisabled();
     }
@@ -144,7 +144,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         save();
 
-        IdentityManager.getGlobalConfig().addChangeListener("disable_action",
+        IdentityManager.getIdentityManager().getGlobalConfiguration().addChangeListener("disable_action",
                 (group + "/" + name).replace(' ', '.'), this);
         checkDisabled();
 
@@ -266,7 +266,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 myGroup.getSettings().put(data.get("setting"), new PreferencesSetting(
                         PreferencesType.valueOf(data.get("type")), "actions",
                         data.get("setting"), data.get("title"), data.get("tooltip"),
-                        IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity()));
+                        IdentityManager.getIdentityManager().getGlobalConfiguration(),
+                        IdentityManager.getConfigIdentity()));
             }
         }
     }
@@ -572,9 +573,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     protected void checkDisabled() {
         final String key = (group + "/" + name).replace(' ', '.');
-        final boolean disabled = IdentityManager.getGlobalConfig()
-                .hasOptionBool("disable_action", key)
-                && IdentityManager.getGlobalConfig()
+        final boolean disabled = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().hasOptionBool("disable_action", key)
+                && IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionBool("disable_action", key);
 
         if (disabled && status == ActionStatus.ACTIVE) {

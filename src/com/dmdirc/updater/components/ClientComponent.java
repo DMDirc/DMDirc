@@ -98,8 +98,8 @@ public class ClientComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
-        return IdentityManager.getGlobalConfig().getOption("version",
-                "version");
+        return IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .getOption("version", "version");
     }
 
     /** {@inheritDoc} */

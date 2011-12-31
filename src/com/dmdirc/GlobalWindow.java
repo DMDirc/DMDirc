@@ -48,7 +48,8 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon", "Global", "(Global)",IdentityManager.getGlobalConfig(),
+        super("icon", "Global", "(Global)",
+                IdentityManager.getIdentityManager().getGlobalConfiguration(),
                 GlobalCommandParser.getGlobalCommandParser(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
@@ -106,7 +107,8 @@ public class GlobalWindow extends WritableFrameContainer {
      * Initialises the global window if it's enabled in the config.
      */
     public static void init() {
-        IdentityManager.getGlobalConfig().addChangeListener("general", "showglobalwindow",
+        IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .addChangeListener("general", "showglobalwindow",
                 new ConfigChangeListener() {
 
             @Override
@@ -124,7 +126,8 @@ public class GlobalWindow extends WritableFrameContainer {
      */
     protected static void updateWindowState() {
         synchronized (GlobalWindow.class) {
-            if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
+            if (IdentityManager.getIdentityManager().getGlobalConfiguration()
+                    .getOptionBool("general", "showglobalwindow")) {
                 if (globalWindow == null) {
                     globalWindow = new GlobalWindow();
                 }

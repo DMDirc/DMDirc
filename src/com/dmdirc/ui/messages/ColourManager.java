@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -59,10 +60,12 @@ public final class ColourManager {
      * Initialises the IRC_COLOURS array.
      */
     private static void initColours() {
+        final ConfigManager configManager = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration();
+
         for (int i = 0; i < 16; i++) {
-            if (IdentityManager.getGlobalConfig().hasOptionColour("colour", String.valueOf(i))) {
-                ircColours[i] = IdentityManager.getGlobalConfig()
-                        .getOptionColour("colour", String.valueOf(i));
+            if (configManager.hasOptionColour("colour", String.valueOf(i))) {
+                ircColours[i] = configManager.getOptionColour("colour", String.valueOf(i));
                 COLOUR_CACHE.remove(String.valueOf(i));
             } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
                 ircColours[i] = DEFAULT_COLOURS[i];

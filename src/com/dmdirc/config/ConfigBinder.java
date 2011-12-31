@@ -175,6 +175,10 @@ public class ConfigBinder {
             return manager.getOptionBool(binding.domain(), binding.key());
         }
 
+        if (targetClass.equals(Character.class) || targetClass.equals(Character.TYPE)) {
+            return manager.getOptionChar(binding.domain(), binding.key());
+        }
+
         return null;
     }
 

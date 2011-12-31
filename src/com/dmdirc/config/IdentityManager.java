@@ -180,9 +180,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         // currently using, extract them.
         if (getGlobalConfiguration().hasOptionString("identity", "defaultsversion")
                 && getGlobalConfiguration().hasOptionString("updater", "bundleddefaultsversion")) {
-            final Version installedVersion = new Version(getGlobalConfig()
+            final Version installedVersion = new Version(getGlobalConfiguration()
                     .getOption("identity", "defaultsversion"));
-            final Version bundledVersion = new Version(getGlobalConfig()
+            final Version bundledVersion = new Version(getGlobalConfiguration()
                     .getOption("updater", "bundleddefaultsversion"));
 
             if (bundledVersion.compareTo(installedVersion) > 0) {

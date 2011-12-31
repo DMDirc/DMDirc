@@ -22,26 +22,26 @@
 
 package com.dmdirc.config;
 
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class IdentityManagerTest {
 
     @Before
-    public void setUp() throws Exception {        
-        IdentityManager.load();
+    public void setUp() throws Exception {
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test
     public void testGetGlobalConfig() {
-        final ConfigManager gcm = IdentityManager.getGlobalConfig();
-        
+        final ConfigManager gcm = IdentityManager.getIdentityManager().getGlobalConfiguration();
+
         for (Identity identity : gcm.getSources()) {
             assertTrue(identity.getTarget().getType() == ConfigTarget.TYPE.GLOBAL
                     || identity.getTarget().getType() == ConfigTarget.TYPE.GLOBALDEFAULT
                     || identity.getTarget().getType() == ConfigTarget.TYPE.THEME);
         }
     }
-    
+
 }

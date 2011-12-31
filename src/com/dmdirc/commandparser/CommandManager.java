@@ -22,19 +22,58 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.BasicServerFactory;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.channel.*; //NOPMD
-import com.dmdirc.commandparser.commands.chat.*; //NOPMD
-import com.dmdirc.commandparser.commands.global.*; //NOPMD
-import com.dmdirc.commandparser.commands.server.*; //NOPMD
+import com.dmdirc.commandparser.commands.channel.Ban;
+import com.dmdirc.commandparser.commands.channel.Cycle;
+import com.dmdirc.commandparser.commands.channel.Invite;
+import com.dmdirc.commandparser.commands.channel.KickReason;
+import com.dmdirc.commandparser.commands.channel.Mode;
+import com.dmdirc.commandparser.commands.channel.Names;
+import com.dmdirc.commandparser.commands.channel.Part;
+import com.dmdirc.commandparser.commands.channel.SetNickColour;
+import com.dmdirc.commandparser.commands.channel.ShowTopic;
+import com.dmdirc.commandparser.commands.chat.Me;
+import com.dmdirc.commandparser.commands.global.AliasCommand;
+import com.dmdirc.commandparser.commands.global.AllServers;
+import com.dmdirc.commandparser.commands.global.Clear;
+import com.dmdirc.commandparser.commands.global.Echo;
+import com.dmdirc.commandparser.commands.global.Exit;
+import com.dmdirc.commandparser.commands.global.Help;
+import com.dmdirc.commandparser.commands.global.Ifplugin;
+import com.dmdirc.commandparser.commands.global.LoadPlugin;
+import com.dmdirc.commandparser.commands.global.NewServer;
+import com.dmdirc.commandparser.commands.global.Notify;
+import com.dmdirc.commandparser.commands.global.OpenWindow;
+import com.dmdirc.commandparser.commands.global.ReloadActions;
+import com.dmdirc.commandparser.commands.global.ReloadIdentities;
+import com.dmdirc.commandparser.commands.global.ReloadPlugin;
+import com.dmdirc.commandparser.commands.global.SaveConfig;
+import com.dmdirc.commandparser.commands.global.Set;
+import com.dmdirc.commandparser.commands.global.UnloadPlugin;
+import com.dmdirc.commandparser.commands.server.AllChannels;
+import com.dmdirc.commandparser.commands.server.Away;
+import com.dmdirc.commandparser.commands.server.Back;
+import com.dmdirc.commandparser.commands.server.ChangeServer;
+import com.dmdirc.commandparser.commands.server.Ctcp;
+import com.dmdirc.commandparser.commands.server.Disconnect;
+import com.dmdirc.commandparser.commands.server.Ignore;
+import com.dmdirc.commandparser.commands.server.JoinChannelCommand;
+import com.dmdirc.commandparser.commands.server.Message;
+import com.dmdirc.commandparser.commands.server.Nick;
+import com.dmdirc.commandparser.commands.server.Notice;
+import com.dmdirc.commandparser.commands.server.OpenQuery;
+import com.dmdirc.commandparser.commands.server.Raw;
+import com.dmdirc.commandparser.commands.server.RawServerCommand;
+import com.dmdirc.commandparser.commands.server.Reconnect;
+import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.collections.MapList;
@@ -44,10 +83,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandManager implements CommandController {
 
     /** A singleton instance of the command manager. */
@@ -62,23 +104,21 @@ public class CommandManager implements CommandController {
             = new MapList<CommandType, CommandParser>();
 
     /** The command char we're using. */
-    private char commandChar = IdentityManager.getGlobalConfig()
-            .getOptionChar("general", "commandchar");
+    @ConfigBinding(domain="general", key="commandchar")
+    @Getter
+    private char commandChar;
 
     /** The silence char we're using. */
-    private char silenceChar = IdentityManager.getGlobalConfig()
-            .getOptionChar("general", "silencechar");
+    @ConfigBinding(domain="general", key="silencechar")
+    @Getter
+    private char silenceChar;
 
-    /** {@inheritDoc} */
-    @Override
-    public char getCommandChar() {
-        return commandChar;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public char getSilenceChar() {
-        return silenceChar;
+    /**
+     * Creates a new instance of the Command Manager.
+     */
+    public CommandManager() {
+        IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .getBinder().bind(this, CommandManager.class);
     }
 
     /** {@inheritDoc} */
@@ -261,20 +301,6 @@ public class CommandManager implements CommandController {
         registerCommand(new ReloadPlugin(), ReloadPlugin.INFO);
         registerCommand(new SaveConfig(), SaveConfig.INFO);
         registerCommand(new Set(), Set.INFO);
-
-        // Set up a listener for config changes
-        final ConfigChangeListener listener = new ConfigChangeListener() {
-            @Override
-            public void configChanged(final String domain, final String key) {
-                commandChar = IdentityManager.getGlobalConfig()
-                        .getOptionChar("general", "commandchar");
-                silenceChar = IdentityManager.getGlobalConfig()
-                        .getOptionChar("general", "silencechar");
-            }
-        };
-
-        IdentityManager.getGlobalConfig().addChangeListener("general", "commandchar", listener);
-        IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
 
     /** {@inheritDoc} */

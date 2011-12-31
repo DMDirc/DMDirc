@@ -302,10 +302,10 @@ public class CommandLineParser {
     private static void doVersion() {
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
-        System.out.println("        Version: "
-                + IdentityManager.getGlobalConfig().getOption("version", "version"));
-        System.out.println(" Update channel: "
-                + IdentityManager.getGlobalConfig().getOption("updater", "channel"));
+        System.out.println("        Version: " + IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOption("version", "version"));
+        System.out.println(" Update channel: " + IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOption("updater", "channel"));
         exit();
     }
 

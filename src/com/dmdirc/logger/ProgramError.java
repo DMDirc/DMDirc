@@ -315,7 +315,8 @@ public final class ProgramError implements Serializable {
         }
         postData.put("message", getMessage());
         postData.put("trace", traceString);
-        postData.put("version", IdentityManager.getGlobalConfig().getOption("version", "version"));
+        postData.put("version", IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOption("version", "version"));
 
         setReportStatus(ErrorReportStatus.SENDING);
 

@@ -83,9 +83,9 @@ public class TabCompleter {
         final MapList<TabCompletionType, String> targets
                 = new MapList<TabCompletionType, String>(entries);
 
-        final boolean caseSensitive = IdentityManager.getGlobalConfig()
+        final boolean caseSensitive = IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionBool("tabcompletion", "casesensitive");
-        final boolean allowEmpty = IdentityManager.getGlobalConfig()
+        final boolean allowEmpty = IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionBool("tabcompletion", "allowempty");
 
         if (partial.isEmpty() && !allowEmpty) {

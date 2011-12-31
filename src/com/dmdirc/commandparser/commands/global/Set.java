@@ -91,8 +91,8 @@ public class Set extends Command implements IntelligentCommand {
             return;
         }
 
-        Identity identity = IdentityManager.getConfigIdentity();
-        ConfigManager manager = IdentityManager.getGlobalConfig();
+        Identity identity = IdentityManager.getIdentityManager().getGlobalConfigIdentity();
+        ConfigManager manager = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         if (res.hasFlag(serverFlag)) {
             if (origin.getServer() == null) {
@@ -113,8 +113,8 @@ public class Set extends Command implements IntelligentCommand {
             }
 
             final Channel channel = ((ChannelCommandContext) context).getChannel();
-            identity = IdentityManager.getChannelConfig(origin.getServer().getNetwork(),
-                    channel.getName());
+            identity = IdentityManager.getIdentityManager().createChannelConfig(
+                    origin.getServer().getNetwork(), channel.getName());
             manager = channel.getConfigManager();
         }
 

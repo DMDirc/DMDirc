@@ -194,24 +194,25 @@ public abstract class CipherUtils {
      * @return true if auth was successful, false otherwise.
      */
     public boolean auth() {
+        final ConfigManager configManager = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration();
+
         String passwordHash = null;
         String prompt = "Please enter your password";
         int tries = 1;
-        if (IdentityManager.getGlobalConfig().hasOptionString("encryption", "password")) {
-            password = IdentityManager.getGlobalConfig().getOption("encryption", "password");
+        if (configManager.hasOptionString("encryption", "password")) {
+            password = configManager.getOption("encryption", "password");
         } else {
-            if (IdentityManager.getGlobalConfig().hasOptionString("encryption",
-                    "passwordHash")) {
-                passwordHash = IdentityManager.getGlobalConfig().getOption("encryption",
-                        "passwordHash");
+            if (configManager.hasOptionString("encryption", "passwordHash")) {
+                passwordHash = configManager.getOption("encryption", "passwordHash");
             }
 
             while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    IdentityManager.getConfigIdentity().setOption("encryption",
-                            "passwordHash", passwordHash);
+                    IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                            .setOption("encryption", "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {
                     prompt = "<html>Password mis-match<br>Please re-enter "

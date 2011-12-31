@@ -25,11 +25,11 @@ package com.dmdirc.ui.core.util;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
-import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.util.CommandUtils;
 
 import java.awt.Desktop;
@@ -58,7 +58,7 @@ public class URLHandler {
      */
     public URLHandler(final UIController controller) {
         this.controller = controller;
-        this.config = IdentityManager.getGlobalConfig();
+        this.config = IdentityManager.getIdentityManager().getGlobalConfiguration();
         this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     }
 
@@ -137,12 +137,10 @@ public class URLHandler {
         final Date oldLaunch = lastLaunch;
         lastLaunch = new Date();
 
-        if (IdentityManager.getGlobalConfig().getOptionBool("browser",
-                "uselaunchdelay") && oldLaunch != null) {
+        if (config.getOptionBool("browser", "uselaunchdelay") && oldLaunch != null) {
             final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
 
-            if (diff < IdentityManager.getGlobalConfig().getOptionInt("browser",
-                    "launchdelay")) {
+            if (diff < config.getOptionInt("browser", "launchdelay")) {
                 return;
             }
         }
@@ -157,19 +155,19 @@ public class URLHandler {
         if ("DMDIRC".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Connecting to: " + uri.toString(),
-                    IdentityManager.getGlobalConfig()));
+                    config));
             ServerManager.getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Opening: " + uri.toString(),
-                    IdentityManager.getGlobalConfig()));
+                    config));
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Opening: " + uri.toString(),
-                    IdentityManager.getGlobalConfig()));
+                    config));
             execApp(substituteParams(uri, command));
         }
     }

@@ -72,9 +72,9 @@ public abstract class CommandParser implements Serializable {
     /** Creates a new instance of CommandParser. */
     protected CommandParser() {
         commands = new HashMap<String, CommandInfoPair>();
-        history = new RollingList<PreviousCommand>(
-                IdentityManager.getGlobalConfig().getOptionInt("general",
-                    "commandhistory"));
+        history = new RollingList<PreviousCommand>(IdentityManager
+                .getIdentityManager().getGlobalConfiguration()
+                .getOptionInt("general", "commandhistory"));
         loadCommands();
     }
 

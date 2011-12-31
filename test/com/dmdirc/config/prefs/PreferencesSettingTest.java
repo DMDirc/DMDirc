@@ -26,10 +26,13 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.StringLengthValidator;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -180,7 +183,8 @@ public class PreferencesSettingTest {
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 "unit-test", "ps", "title", "helptext",
-                IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity());
+                IdentityManager.getIdentityManager().getGlobalConfiguration(),
+                IdentityManager.getConfigIdentity());
 
         assertFalse(ps.save());
         ps.setValue(null);
@@ -195,7 +199,8 @@ public class PreferencesSettingTest {
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 "unit-test", "ps", "title", "helptext",
-                IdentityManager.getGlobalConfig(), IdentityManager.getConfigIdentity());
+                IdentityManager.getIdentityManager().getGlobalConfiguration(),
+                IdentityManager.getConfigIdentity());
 
         assertFalse(ps.save());
         ps.setValue("def");

@@ -89,7 +89,7 @@ public class ActionSubstitutor {
      * @return A list of global variable names that will be substituted
      */
     public Set<String> getConfigSubstitutions() {
-        return IdentityManager.getGlobalConfig().getOptions("actions").keySet();
+        return IdentityManager.getIdentityManager().getGlobalConfiguration().getOptions("actions").keySet();
     }
 
     /**
@@ -322,7 +322,7 @@ public class ActionSubstitutor {
             }
         }
 
-        return IdentityManager.getGlobalConfig();
+        return IdentityManager.getIdentityManager().getGlobalConfiguration();
     }
 
     /**

@@ -118,7 +118,7 @@ public final class UpdateChecker implements Runnable {
             return;
         }
 
-        final ConfigManager config = IdentityManager.getGlobalConfig();
+        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         if (!config.getOptionBool(DOMAIN, "enable")
                 || status == STATE.UPDATING) {
@@ -265,7 +265,8 @@ public final class UpdateChecker implements Runnable {
      * frequency specified in the config.
      */
     public static void init() {
-        for (String update : IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "updates")) {
+        for (String update : IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOptionList(DOMAIN, "updates")) {
             checkLine(update);
         }
 
@@ -282,9 +283,9 @@ public final class UpdateChecker implements Runnable {
      * @since 0.6.5
      */
     protected static void initTimer() {
-        final int last = IdentityManager.getGlobalConfig()
+        final int last = IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "lastcheck");
-        final int freq = IdentityManager.getGlobalConfig()
+        final int freq = IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "frequency");
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
@@ -480,8 +481,9 @@ public final class UpdateChecker implements Runnable {
      * @return true iif the update component is enabled
      */
     public static boolean isEnabled(final UpdateComponent component) {
-        return !IdentityManager.getGlobalConfig().hasOptionBool(DOMAIN,
-                "enable-" + component.getName()) || IdentityManager.getGlobalConfig()
+        return !IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .hasOptionBool(DOMAIN, "enable-" + component.getName())
+                || IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOptionBool(DOMAIN, "enable-" + component.getName());
     }
 
