@@ -27,8 +27,8 @@ is divided into following sections:
                 ======================
             -->
     <path id="all.libs">
-        <fileset dir="lib" includes="*.jar"/>
         <fileset dir="modules/plugins/lib" includes="*.jar"/>
+        <fileset dir="lib" includes="*.jar"/>
     </path>
 
     <property name="test_profile_dir" value="./test_profile"/>
@@ -154,7 +154,7 @@ is divided into following sections:
     </target>
     <target name="-init-macrodef-javac">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${util.src.dir}:${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
+            <attribute default="${util.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${includes}" name="includes"/>
@@ -175,7 +175,7 @@ is divided into following sections:
             </sequential>
         </macrodef>
         <macrodef name="depend" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${util.src.dir}:${plugins.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
+            <attribute default="${util.src.dir}:${parser.src.dir}:${main.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <sequential>
@@ -404,7 +404,6 @@ is divided into following sections:
         <copy todir="${build.classes.dir}">
             <fileset dir="${main.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${parser.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${plugins.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${util.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
@@ -452,14 +451,6 @@ is divided into following sections:
                 <j2seproject1:attribute name="Main-Class" value="${main.class}"/>
             </j2seproject1:manifest>
         </j2seproject1:jar>
-        <echo>To run this application from the command line without Ant, try:</echo>
-        <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
-        <property location="${dist.jar}" name="dist.jar.resolved"/>
-        <pathconvert property="run.classpath.with.dist.jar">
-            <path path="${run.classpath}"/>
-            <map from="${build.classes.dir.resolved}" to="${dist.jar.resolved}"/>
-        </pathconvert>
-        <echo>java -cp "${run.classpath.with.dist.jar}" ${main.class}</echo>
     </target>
     <target depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class+mkdist.available" name="-do-jar-with-libraries">
         <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
@@ -482,9 +473,6 @@ is divided into following sections:
                 <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
         </copylibs>
-        <echo>To run this application from the command line without Ant, try:</echo>
-        <property location="${dist.jar}" name="dist.jar.resolved"/>
-        <echo>java -jar "${dist.jar.resolved}"</echo>
     </target>
     <target name="-post-jar">
         <!-- Empty placeholder for easier customization. -->
