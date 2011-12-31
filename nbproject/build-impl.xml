@@ -26,10 +26,11 @@ is divided into following sections:
                 INITIALIZATION SECTION
                 ======================
             -->
-    <path id="plugins.libs">
+    <path id="all.libs">
+        <fileset dir="lib" includes="*.jar"/>
         <fileset dir="modules/plugins/lib" includes="*.jar"/>
     </path>
-    
+
     <property name="test_profile_dir" value="./test_profile"/>
     <target name="-pre-init">
         <!-- Empty placeholder for easier customization. -->
@@ -164,7 +165,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <javac debug="@{debug}" deprecation="${javac.deprecation}" destdir="@{destdir}" encoding="${source.encoding}" excludes="@{excludes}" includeantruntime="false" includes="@{includes}" source="${javac.source}" sourcepath="@{sourcepath}" srcdir="@{srcdir}" target="${javac.target}">
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -182,7 +183,7 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                 </depend>
             </sequential>
         </macrodef>
@@ -217,7 +218,7 @@ is divided into following sections:
                         <pathelement path="${clover.jar}"/>
                     </classpath>
                     <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                     <batchtest todir="${build.test.results.dir}">
                         <clover-optimized-testset>
                             <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
@@ -262,7 +263,7 @@ is divided into following sections:
             <sequential>
                 <delete dir="${test_profile_dir}"/>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                     <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
@@ -303,7 +304,7 @@ is divided into following sections:
                 <nbjpdastart addressproperty="jpda.address" name="@{name}" stopclassname="@{stopclassname}" transport="dt_socket">
                     <classpath>
                         <path path="@{classpath}"/>
-                        <path refid="plugins.libs"/>
+                        <path refid="all.libs"/>
                     </classpath>
                 </nbjpdastart>
             </sequential>
@@ -338,7 +339,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                     <jvmarg line="${debug-args-line}"/>
                     <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
                     <jvmarg line="${run.jvmargs}"/>
@@ -360,7 +361,7 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
-                    <classpath refid="plugins.libs"/>
+                    <classpath refid="all.libs"/>
                     <jvmarg line="${run.jvmargs}"/>
                     <classpath>
                         <path path="${run.classpath}"/>
@@ -553,7 +554,7 @@ is divided into following sections:
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
-            <classpath refid="plugins.libs"/>
+            <classpath refid="all.libs"/>
             <fileset dir="${main.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
@@ -585,7 +586,7 @@ is divided into following sections:
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
-            <classpath refid="plugins.libs"/>
+            <classpath refid="all.libs"/>
         </javadoc>
     </target>
 

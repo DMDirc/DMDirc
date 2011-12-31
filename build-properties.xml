@@ -25,7 +25,7 @@
     </target>
 
     <target name="-init-private-properties" depends="-create-private-properties,-check-private-classpath,-create-private-classpath">
-        <propertyregex property="private.classpath.value" input="${toString:plugins.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:plugins.libs}"/>
+        <propertyregex property="private.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:all.libs}"/>
         <replaceregexp file="nbproject/private/private.properties" match="^private.classpath=(.*)$" flags="im" replace="private.classpath=${private.classpath.value}"/>
     </target>
     
