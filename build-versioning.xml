@@ -2,8 +2,6 @@
 <project name="DMDirc-versioning" default="default" basedir=".">
     <description>Adds automatic versioning information to DMDirc</description>
 
-    <include file="build-gitversion.xml"/>
-
     <property name="version.config" value="build/classes/com/dmdirc/version.config"/>
     <property name="defaults.path" value="modules/defaults/.git/"/>
     <property name="defaults.output" value="build/classes/com/dmdirc/config/defaults/"/>
@@ -11,6 +9,7 @@
     <property name="modealiases.target" value="${defaults.output}modealiases/generic"/>
 
     <available file=".git" property="is.git"/>
+    <taskdef name="git-describe" classname="org.mdonoughe.JGitDescribeTask" classpathref="libclasspath"/>
 
     <target name="-write-version" depends="-write-version-header, -add-version, -write-updater, -write-identities, -write-disable-updates"/>
 
@@ -86,8 +85,8 @@ identity:
     <target name="-read-identities" depends="-read-identities-git"/>
 
     <target name="-read-identities-git" if="is.git">
-        <gitversion target="default" gitdir="${defaults.path}" outputproperty="defaults.version"/>
-        <gitversion target="modealiases" gitdir="${defaults.path}" outputproperty="modealiases.version"/>
+        <git-describe dir="${defaults.path}" property="defaults.version" subdir="default" />
+        <git-describe dir="${defaults.path}" property="modealiases.version" subdir="modealiases" />
     </target>
 
 </project>
