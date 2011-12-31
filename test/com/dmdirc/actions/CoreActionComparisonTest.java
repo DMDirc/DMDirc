@@ -22,6 +22,7 @@
 package com.dmdirc.actions;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CoreActionComparisonTest {
@@ -91,7 +92,7 @@ public class CoreActionComparisonTest {
         assertTrue(CoreActionComparison.STRING_NCONTAINS.test("hello", "h.{8}o"));
         assertTrue(CoreActionComparison.STRING_NCONTAINS.test("hello", "?!!?!{}"));
     }
-    
+
     @Test
     public void testBoolIs() {
         assertEquals(Boolean.class, CoreActionComparison.BOOL_IS.appliesTo());
@@ -101,6 +102,6 @@ public class CoreActionComparisonTest {
         assertTrue(CoreActionComparison.BOOL_IS.test(Boolean.FALSE, "false"));
         assertFalse(CoreActionComparison.BOOL_IS.test(Boolean.FALSE, "true"));
         assertFalse(CoreActionComparison.BOOL_IS.test(Boolean.TRUE, "false"));
-    }    
+    }
 
 }

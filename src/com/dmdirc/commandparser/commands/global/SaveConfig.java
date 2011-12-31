@@ -47,7 +47,7 @@ public final class SaveConfig extends Command implements IntelligentCommand {
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        IdentityManager.save();
+        IdentityManager.getIdentityManager().saveAll();
 
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
     }

@@ -21,13 +21,14 @@
  */
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.global.Echo;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.TestCommandParser;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CommandParserTest {

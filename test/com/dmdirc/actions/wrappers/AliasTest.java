@@ -23,7 +23,9 @@
 package com.dmdirc.actions.wrappers;
 
 import java.util.Arrays;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class AliasTest {
@@ -31,7 +33,7 @@ public class AliasTest {
     @Test
     public void testBasics() {
         final Alias alias = new Alias("testing");
-        
+
         assertEquals("testing", alias.getCommand());
         assertEquals("testing-Any", alias.getName());
         assertTrue(Arrays.equals(new String[]{""}, alias.getResponse()));

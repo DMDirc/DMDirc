@@ -22,13 +22,13 @@
 
 package com.dmdirc.ui.messages;
 
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -43,12 +43,12 @@ public class StyliserIndicesTest {
         this.end = end;
         this.output = output;
     }
-       
+
     @Test
     public void testStyle() {
         assertEquals(output, Styliser.getStyledText(input, start, end));
     }
-    
+
     @Parameterized.Parameters
     public static List<Object[]> data() {
         final Object[][] tests = {
@@ -70,6 +70,6 @@ public class StyliserIndicesTest {
         };
 
         return Arrays.asList(tests);
-    } 
+    }
 
 }

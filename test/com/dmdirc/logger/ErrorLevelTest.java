@@ -22,6 +22,7 @@
 package com.dmdirc.logger;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ErrorLevelTest {
@@ -74,7 +75,7 @@ public class ErrorLevelTest {
         assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.UNKNOWN));
         assertFalse(ErrorLevel.FATAL.moreImportant(null));
     }
-    
+
     @Test
     public void testMoreImportantUnknown() {
         assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.MEDIUM));
@@ -83,6 +84,6 @@ public class ErrorLevelTest {
         assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.UNKNOWN));
         assertFalse(ErrorLevel.UNKNOWN.moreImportant(null));
-    }    
+    }
 
 }

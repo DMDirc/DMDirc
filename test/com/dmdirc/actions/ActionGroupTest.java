@@ -23,7 +23,9 @@ package com.dmdirc.actions;
 
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.updater.Version;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -33,7 +35,7 @@ public class ActionGroupTest {
     public void testGetAuthor() {
         ActionGroup instance = new ActionGroup("moo");
         instance.setAuthor("foo");
-        
+
         String expResult = "foo";
         String result = instance.getAuthor();
         assertEquals(expResult, result);
@@ -43,7 +45,7 @@ public class ActionGroupTest {
     public void testGetDescription() {
         ActionGroup instance = new ActionGroup("bar");
         instance.setDescription("Tra-la-la-la-la");
-                
+
         String expResult = "Tra-la-la-la-la";
         String result = instance.getDescription();
         assertEquals(expResult, result);
@@ -52,7 +54,7 @@ public class ActionGroupTest {
     @Test
     public void testGetName() {
         ActionGroup instance = new ActionGroup("foobar");
-        
+
         String expResult = "foobar";
         String result = instance.getName();
         assertEquals(expResult, result);
@@ -61,9 +63,9 @@ public class ActionGroupTest {
     @Test
     public void testGetSettings() {
         ActionGroup instance = new ActionGroup("foo");
-        
+
         assertTrue(instance.getSettings().isEmpty());
-        
+
         instance.getSettings().put("", mock(PreferencesSetting.class));
         assertEquals(1, instance.getSettings().size());
     }
@@ -72,7 +74,7 @@ public class ActionGroupTest {
     public void testGetVersion() {
         ActionGroup instance = new ActionGroup("vtest");
         instance.setVersion(new Version(73));
-        
+
         Version expResult = new Version(73);
         Version result = instance.getVersion();
         assertEquals(expResult, result);
@@ -82,12 +84,12 @@ public class ActionGroupTest {
     public void testGetComponent() {
         ActionGroup instance = new ActionGroup("zzz");
         instance.setComponent(69);
-        
+
         int expResult = 69;
         int result = instance.getComponent();
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testClear() {
         ActionGroup instance = new ActionGroup("zzz");
@@ -96,7 +98,7 @@ public class ActionGroupTest {
         instance.clear();
         assertEquals(0, instance.size());
     }
-    
+
     @Test
     public void testRemove() {
         ActionGroup instance = new ActionGroup("zzz");
@@ -113,8 +115,8 @@ public class ActionGroupTest {
         assertTrue(instance.contains(null));
         instance.remove(null);
         assertFalse(instance.contains(null));
-    }    
-    
+    }
+
     @Test
     public void testIsDelible() {
         assertTrue(new ActionGroup("foo").isDelible());

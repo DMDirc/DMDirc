@@ -23,7 +23,9 @@
 package com.dmdirc.actions.validators;
 
 import com.dmdirc.util.validators.ValidationResponse;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ConditionRuleValidatorTest {

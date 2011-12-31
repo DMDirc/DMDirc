@@ -26,8 +26,8 @@ import java.util.Date;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class InviteTest {
@@ -35,7 +35,7 @@ public class InviteTest {
     private static Server server;
     private static Invite test;
     private static long ts;
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         server = mock(Server.class);

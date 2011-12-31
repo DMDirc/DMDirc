@@ -22,6 +22,7 @@
 package com.dmdirc.actions;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ActionTypeComparatorTest {
@@ -29,7 +30,7 @@ public class ActionTypeComparatorTest {
     @Test
     public void testCompare() {
         final ActionTypeComparator atc = new ActionTypeComparator();
-        
+
         assertTrue(atc.compare(CoreActionType.CHANNEL_ACTION, CoreActionType.QUERY_ACTION) < 0);
         assertTrue(atc.compare(CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_ACTION) == 0);
         assertTrue(atc.compare(CoreActionType.QUERY_ACTION, CoreActionType.CHANNEL_ACTION) > 0);

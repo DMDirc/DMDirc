@@ -36,8 +36,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
-
 import com.dmdirc.util.collections.ListenerList;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;

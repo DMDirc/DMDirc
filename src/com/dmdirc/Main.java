@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -38,7 +39,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
-import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.Version;
@@ -165,7 +165,7 @@ public final class Main {
                 ActionManager.getActionManager().triggerEvent(
                         CoreActionType.CLIENT_CLOSED, null);
                 ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
-                IdentityManager.save();
+                IdentityManager.getIdentityManager().saveAll();
             }
         }, "Shutdown thread"));
     }

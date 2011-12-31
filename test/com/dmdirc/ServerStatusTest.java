@@ -23,9 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ServerStatusTest {

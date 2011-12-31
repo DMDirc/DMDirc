@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.interfaces.ui.InputWindow;
+
 import java.util.Collections;
 
 public class TestWritableFrameContainer extends WritableFrameContainer {

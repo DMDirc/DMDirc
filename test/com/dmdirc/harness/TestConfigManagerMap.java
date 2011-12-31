@@ -24,6 +24,7 @@ package com.dmdirc.harness;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.util.validators.Validator;
+
 import java.util.HashMap;
 import java.util.Map;
 

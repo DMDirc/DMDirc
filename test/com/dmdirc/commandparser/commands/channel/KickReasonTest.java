@@ -34,6 +34,7 @@ import com.dmdirc.parser.irc.IRCChannelInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class KickReasonTest {

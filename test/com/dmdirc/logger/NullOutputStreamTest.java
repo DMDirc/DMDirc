@@ -22,8 +22,11 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.util.io.StreamUtils;
+
 import java.io.IOException;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class NullOutputStreamTest {
@@ -31,7 +34,7 @@ public class NullOutputStreamTest {
     @Test
     public void testWrite() {
         boolean exception = false;
-        
+
         final NullOutputStream os = new NullOutputStream();
 
         try {
@@ -41,7 +44,7 @@ public class NullOutputStreamTest {
         } finally {
             StreamUtils.close(os);
         }
-        
+
         assertFalse(exception);
     }
 

@@ -22,7 +22,9 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.actions.metatypes.PluginEvents;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CoreActionTypeTest {
@@ -31,7 +33,7 @@ public class CoreActionTypeTest {
     public void testGetName() {
         assertEquals("Plugin loaded", CoreActionType.PLUGIN_LOADED.getName());
     }
-    
+
     @Test
     public void testMetaType() {
         assertEquals(PluginEvents.PLUGIN_EVENT, CoreActionType.PLUGIN_LOADED.getType());

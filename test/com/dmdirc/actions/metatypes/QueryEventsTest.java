@@ -22,6 +22,7 @@
 package com.dmdirc.actions.metatypes;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class QueryEventsTest {

@@ -27,7 +27,7 @@ import com.dmdirc.config.IdentityManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class GlobalCommandParserTest {
 

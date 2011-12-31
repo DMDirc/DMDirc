@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.Connection;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -34,6 +33,7 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -1487,13 +1487,13 @@ public class Server extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public Identity getServerIdentity() {
-        return IdentityManager.getServerConfig(parser.getServerName());
+        return IdentityManager.getIdentityManager().createServerConfig(parser.getServerName());
     }
 
     /** {@inheritDoc} */
     @Override
     public Identity getNetworkIdentity() {
-        return IdentityManager.getNetworkConfig(getNetwork());
+        return IdentityManager.getIdentityManager().createNetworkConfig(getNetwork());
     }
 
     // </editor-fold>

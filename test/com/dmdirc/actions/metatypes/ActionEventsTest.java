@@ -22,7 +22,9 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.interfaces.actions.ActionMetaType;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ActionEventsTest {

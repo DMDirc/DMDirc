@@ -22,13 +22,15 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.harness.TestConfigManagerOptionToggle;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class FormatterTest {
-    
+
     private final TestConfigManagerOptionToggle mcm = new TestConfigManagerOptionToggle();
-    
+
     @Test
     public void testBasicFormats() {
         assertEquals("Hello!", Formatter.formatMessage(mcm, "1%1$s", "Hello!"));
@@ -40,14 +42,14 @@ public class FormatterTest {
         assertTrue(Formatter.formatMessage(mcm, "1%1$Z", "Hello!")
                 .toLowerCase().indexOf("invalid format string") > -1);
     }
-    
+
     @Test
     public void testCasting() {
         assertEquals("H", Formatter.formatMessage(mcm, "1%1$c", "Hello!"));
         assertEquals("10", Formatter.formatMessage(mcm, "1%1$d", "10"));
         assertEquals("111999", Formatter.formatMessage(mcm, "1%1$s", "111999"));
     }
-    
+
     @Test
     public void testCaching() {
         assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!"));
@@ -55,7 +57,7 @@ public class FormatterTest {
         assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!", 123, null));
         assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!"));
     }
-    
+
     @Test
     public void testFormatDuration() {
         assertEquals("1 minute, 1 second", Formatter.formatMessage(mcm, "1%1$u", "61"));

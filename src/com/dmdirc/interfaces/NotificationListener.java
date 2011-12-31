@@ -23,8 +23,8 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.FrameContainer;
-
 import com.dmdirc.ui.Colour;
+
 import java.util.EventListener;
 
 /**

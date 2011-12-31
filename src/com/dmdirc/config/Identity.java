@@ -26,9 +26,9 @@ import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.collections.WeakList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
-import com.dmdirc.util.collections.WeakList;
 import com.dmdirc.util.validators.Validator;
 
 import java.io.File;

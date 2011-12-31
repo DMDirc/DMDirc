@@ -23,86 +23,87 @@
 package com.dmdirc.actions;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ConditionTreeTest {
-        
+
     @Test
     public void testGetNumArgs() {
         final String target = "((0&1&2)|3)&(!4)";
         final ConditionTree tree = ConditionTree.parseString(target);
         assertNotNull(tree);
-        
+
         assertEquals(4, tree.getMaximumArgument());
-        
+
         final String target2 = "";
         assertEquals(0, ConditionTree.parseString(target2).getMaximumArgument());
     }
-    
+
     @Test
     public void testCreateConjunction() {
         final String expected = "(((0&1)&2)&3)";
         final ConditionTree tree = ConditionTree.createConjunction(4);
-        
+
         assertNotNull(tree);
         assertEquals(expected, tree.toString());
     }
-    
+
     @Test
     public void testCreateDisjunction() {
         final String expected = "(((0|1)|2)|3)";
         final ConditionTree tree = ConditionTree.createDisjunction(4);
-        
+
         assertNotNull(tree);
         assertEquals(expected, tree.toString());
     }
-    
+
     @Test
     public void testMismatchedBrackets() {
         final ConditionTree tree = ConditionTree.parseString("(0");
-        
+
         assertNull(tree);
     }
-    
+
     @Test
     public void testMismatchedBrackets2() {
         final ConditionTree tree = ConditionTree.parseString("0)");
-        
+
         assertNull(tree);
-    }    
-    
+    }
+
     @Test
     public void testMissingUnaryArg() {
         final ConditionTree tree = ConditionTree.parseString("!");
-        
+
         assertNull(tree);
     }
-    
+
     @Test
     public void testGarbageUnaryArg() {
         final ConditionTree tree = ConditionTree.parseString("!xy");
-        
+
         assertNull(tree);
-    }    
-    
+    }
+
     @Test
     public void testMissingBinaryArg() {
         final ConditionTree tree = ConditionTree.parseString("0|");
-        
+
         assertNull(tree);
     }
-    
+
     @Test
     public void testMissingBinaryArg2() {
         final ConditionTree tree = ConditionTree.parseString("0|!");
-        
+
         assertNull(tree);
-    }        
-    
+    }
+
     @Test
     public void testNonExistantOp() {
         final ConditionTree tree = ConditionTree.parseString("0/1");
-        
+
         assertNull(tree);
     }
 
@@ -112,18 +113,18 @@ public class ConditionTreeTest {
 
         assertNull(tree);
     }
-    
+
     @Test
     public void testNoopEvaluation() {
         final ConditionTree tree = ConditionTree.parseString("");
-        
+
         assertTrue(tree.evaluate(new boolean[]{true, false, true}));
-    }   
-    
+    }
+
     @Test
     public void testBracketedUnary() {
         final ConditionTree tree = ConditionTree.parseString("(+)");
-        
+
         assertNull(tree);
     }
 
@@ -145,5 +146,5 @@ public class ConditionTreeTest {
         assertFalse(tree1.equals(tree2));
         assertFalse(tree2.equals(tree1));
     }
-    
+
 }

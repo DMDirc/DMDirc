@@ -21,11 +21,12 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginMetaData;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 

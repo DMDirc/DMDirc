@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class TopicTest {
@@ -42,13 +43,13 @@ public class TopicTest {
     @Test
     public void testGetTopic() {
         final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("abc", test.getTopic());        
+        assertEquals("abc", test.getTopic());
     }
 
     @Test
     public void testToString() {
         final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("abc", test.toString());        
+        assertEquals("abc", test.toString());
     }
 
 }

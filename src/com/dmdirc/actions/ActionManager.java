@@ -22,19 +22,19 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
-import com.dmdirc.interfaces.actions.ActionComparison;
-import com.dmdirc.interfaces.actions.ActionComponent;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.actions.ActionComparison;
+import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ActionGroupComponent;

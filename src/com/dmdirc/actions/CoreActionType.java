@@ -22,8 +22,6 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.interfaces.actions.ActionMetaType;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.actions.metatypes.ActionEvents;
 import com.dmdirc.actions.metatypes.ChannelEvents;
 import com.dmdirc.actions.metatypes.ClientEvents;
@@ -31,6 +29,8 @@ import com.dmdirc.actions.metatypes.LinkEvents;
 import com.dmdirc.actions.metatypes.PluginEvents;
 import com.dmdirc.actions.metatypes.QueryEvents;
 import com.dmdirc.actions.metatypes.ServerEvents;
+import com.dmdirc.interfaces.actions.ActionMetaType;
+import com.dmdirc.interfaces.actions.ActionType;
 
 /**
  * An enumeration of actions that are raised by the core.

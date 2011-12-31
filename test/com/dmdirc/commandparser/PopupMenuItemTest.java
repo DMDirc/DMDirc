@@ -22,10 +22,11 @@
 
 package com.dmdirc.commandparser;
 
-
 import com.dmdirc.interfaces.CommandController;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 

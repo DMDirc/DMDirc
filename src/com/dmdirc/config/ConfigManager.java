@@ -413,7 +413,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
             }
         }
 
-        final List<Identity> newSources = IdentityManager.getSources(this);
+        final List<Identity> newSources = IdentityManager.getIdentityManager()
+                .getIdentitiesForManager(this);
         for (Identity identity : newSources) {
             LOGGER.fine("Testing new identity: " + identity);
             checkIdentity(identity);

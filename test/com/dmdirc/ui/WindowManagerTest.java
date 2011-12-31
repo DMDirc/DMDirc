@@ -32,6 +32,7 @@ import com.dmdirc.interfaces.ui.Window;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {

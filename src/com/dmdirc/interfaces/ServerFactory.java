@@ -24,6 +24,7 @@ package com.dmdirc.interfaces;
 
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
+
 import java.net.URI;
 
 /**

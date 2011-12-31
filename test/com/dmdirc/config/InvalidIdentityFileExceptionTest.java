@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class InvalidIdentityFileExceptionTest {
@@ -30,13 +31,13 @@ public class InvalidIdentityFileExceptionTest {
     @Test
     public void testMessage() {
         final InvalidIdentityFileException ex = new InvalidIdentityFileException("message here");
-        
+
         assertEquals("message here", ex.getMessage());
     }
-    
+
     @Test
     public void testEmpty() {
         assertTrue(new InvalidIdentityFileException() instanceof Exception);
     }
-    
+
 }

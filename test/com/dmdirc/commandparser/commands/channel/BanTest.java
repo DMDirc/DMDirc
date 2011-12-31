@@ -34,6 +34,7 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class BanTest {

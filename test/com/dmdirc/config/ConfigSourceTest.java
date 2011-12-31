@@ -22,24 +22,26 @@
 package com.dmdirc.config;
 
 import com.dmdirc.harness.TestConfigSource;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ConfigSourceTest {
-    
-    private final TestConfigSource s = new TestConfigSource(); 
-    
+
+    private final TestConfigSource s = new TestConfigSource();
+
     @Test
     public void testGetBoolean() {
         assertTrue(s.getOptionBool("true", "true"));
         assertFalse(s.getOptionBool("true", "false"));
     }
-    
+
     @Test
     public void testGetInt() {
         assertEquals(42, s.getOptionInt("true", "42").intValue());
     }
-    
+
     @Test
     public void testGetList() {
         assertTrue(s.getOptionList("false", "moo").isEmpty());

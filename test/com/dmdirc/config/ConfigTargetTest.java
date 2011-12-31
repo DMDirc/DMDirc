@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ConfigTargetTest {
@@ -174,7 +175,7 @@ public class ConfigTargetTest {
         assertFalse(t5.equals(t3));
         assertFalse(t5.equals(t4));
         assertTrue(t5.equals(t5));
-        
+
         assertEquals(t1.hashCode(), t5.hashCode());
     }
 

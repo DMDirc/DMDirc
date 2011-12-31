@@ -26,13 +26,13 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.ui.Window;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.interfaces.ui.Window;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.messages.Styliser;
 

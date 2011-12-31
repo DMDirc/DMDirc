@@ -24,14 +24,16 @@ package com.dmdirc.actions;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class StringComponentsTest {
-    
+
     private String string1, string2;
 
     public StringComponentsTest(final String string1, final String string2) {
@@ -44,30 +46,30 @@ public class StringComponentsTest {
         assertEquals(string1.equalsIgnoreCase(string2),
                 CoreActionComparison.STRING_EQUALS.test(string1, string2));
     }
-    
+
     @Test
     public void testNotEquals() {
         assertEquals(!string1.equalsIgnoreCase(string2),
                 CoreActionComparison.STRING_NEQUALS.test(string1, string2));
     }
-    
+
     @Test
     public void testStartsWith() {
         assertEquals(string1.startsWith(string2),
                 CoreActionComparison.STRING_STARTSWITH.test(string1, string2));
     }
-    
+
     @Test
     public void testContains() {
         assertEquals(string1.indexOf(string2) != -1,
                 CoreActionComparison.STRING_CONTAINS.test(string1, string2));
     }
-    
+
     @Test
     public void testNotContains() {
         assertEquals(string1.indexOf(string2) == -1,
                 CoreActionComparison.STRING_NCONTAINS.test(string1, string2));
-    }    
+    }
 
     @Parameterized.Parameters
     public static List<Object[]> data() {

@@ -22,6 +22,7 @@
 package com.dmdirc.ui.input.tabstyles;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class TabCompletionResultTest {
@@ -29,7 +30,7 @@ public class TabCompletionResultTest {
     @Test
     public void testConstructor() {
         final TabCompletionResult tcr = new TabCompletionResult("text", 1337);
-                
+
         assertEquals("text", tcr.getText());
         assertEquals(1337, tcr.getPosition());
     }

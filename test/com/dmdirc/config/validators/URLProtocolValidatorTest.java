@@ -24,7 +24,9 @@ package com.dmdirc.config.validators;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class URLProtocolValidatorTest {

@@ -25,9 +25,9 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

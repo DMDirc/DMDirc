@@ -27,10 +27,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class URLHandlerTest {
-    
+
     @Test
     public void testSubstituteParams() throws MalformedURLException, URISyntaxException {
         final Object[][] tests = new Object[][]{
