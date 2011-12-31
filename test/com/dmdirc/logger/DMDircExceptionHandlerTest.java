@@ -22,25 +22,27 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.config.IdentityManager;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class DMDircExceptionHandlerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test
     public void testUncaughtException() {
         final DMDircExceptionHandler eh = new DMDircExceptionHandler();
-        
+
         final int initial = ErrorManager.getErrorManager().getErrorCount();
-        
+
         eh.uncaughtException(null, new Exception());
-        
+
         assertEquals(initial + 1, ErrorManager.getErrorManager().getErrorCount());
     }
 

@@ -21,23 +21,26 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
-import com.dmdirc.config.InvalidIdentityFileException;
-import java.util.Map;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class CommandFlagHandlerTest {
-    
+
     private static final CommandFlag noArgsFlag1 = new CommandFlag("noargs1");
     private static final CommandFlag noArgsFlag2 = new CommandFlag("noargs2", false);
     private static final CommandFlag noArgsFlag3 = new CommandFlag("noargs3");
@@ -47,35 +50,35 @@ public class CommandFlagHandlerTest {
     private static final CommandFlag defArgsFlag1 = new CommandFlag("defargs1", true, 0, 1);
     private static final CommandFlag defArgsFlag2 = new CommandFlag("defargs2", true, 0, 2);
     private final CommandFlagHandler handler;
-    
+
     private final String input;
     private final CommandFlag[] flags;
     private final int[] offsets;
-    
+
     @BeforeClass
     public static void setupClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
-    
+
     public CommandFlagHandlerTest(String input, CommandFlag[] flags, int[] offsets) {
         noArgsFlag3.addEnabled(noArgsFlag4);
         noArgsFlag3.addDisabled(noArgsFlag1);
 
         handler = new CommandFlagHandler(noArgsFlag1, noArgsFlag2, noArgsFlag3,
                 noArgsFlag4, immArgsFlag1, immArgsFlag2, defArgsFlag1, defArgsFlag2);
-        
+
         this.input = input;
         this.flags = flags;
         this.offsets = offsets;
     }
-    
+
     @Test
     public void testParse() {
         final FrameContainer container = mock(FrameContainer.class);
-        
+
         final Map<CommandFlag, Integer> results
                 = handler.parse(container, new CommandArguments(input));
-        
+
         if (flags == null) {
             assertNull("Command should fail: " + input, results);
         } else {
@@ -137,6 +140,6 @@ public class CommandFlagHandlerTest {
         };
 
         return Arrays.asList(tests);
-    }    
+    }
 
 }

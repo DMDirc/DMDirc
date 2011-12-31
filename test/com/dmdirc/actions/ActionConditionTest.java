@@ -26,13 +26,14 @@ import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ActionConditionTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         ActionManager.getActionManager().initialise();
     }
 
@@ -91,7 +92,7 @@ public class ActionConditionTest {
         ac.setArg(0);
         assertEquals(0, ac.getArg());
     }
-    
+
     @Test
     public void testToString() {
         final ActionCondition ac1 = new ActionCondition("foobarbaz",
@@ -113,11 +114,11 @@ public class ActionConditionTest {
         assertFalse(ac1.equals(null));
         assertFalse(ac1.equals("foo"));
         assertEquals(ac1.hashCode(), ac2.hashCode());
-        
+
         ac2.setStarget("bar");
         assertFalse(ac2.equals(ac1));
         assertFalse(ac1.equals(ac2));
-        
+
         ac2.setStarget("foobarbaz");
         ac2.setComponent(CoreActionComponent.STRING_STRING);
         ac2.setArg(1);

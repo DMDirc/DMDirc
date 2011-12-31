@@ -23,24 +23,26 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.config.IdentityManager;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertSame;
 
 public class GlobalCommandParserTest {
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test
     public void testGetGlobalCommandParser() {
         final GlobalCommandParser p1 = GlobalCommandParser.getGlobalCommandParser();
-        
+
         final GlobalCommandParser p2 = GlobalCommandParser.getGlobalCommandParser();
-        
+
         assertSame(p1, p2);
     }
-    
+
 }

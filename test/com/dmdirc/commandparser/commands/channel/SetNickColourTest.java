@@ -26,10 +26,12 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.IdentityManager;
-import org.junit.Before;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class SetNickColourTest {
@@ -38,7 +40,7 @@ public class SetNickColourTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Before

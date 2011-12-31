@@ -23,21 +23,21 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.plugins.PluginManager;
 
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ServerManagerTest {
-        
+
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 
@@ -47,28 +47,28 @@ public class ServerManagerTest {
             ServerManager.getServerManager().unregisterServer(server);
         }
     }
-    
+
     @Test
     public void testGetServerManager() {
         final ServerManager resultA = ServerManager.getServerManager();
         final ServerManager resultB = ServerManager.getServerManager();
-        
+
         assertNotNull(resultA);
         assertTrue(resultA instanceof ServerManager);
         assertEquals(resultA, resultB);
     }
-    
+
     @Test
     public void testRegisterServer() {
         final Server server = mock(Server.class);
-        
+
         final ServerManager instance = ServerManager.getServerManager();
 
         instance.registerServer(server);
-        
+
         assertEquals(1, instance.numServers());
     }
-    
+
     @Test
     public void testUnregisterServer() {
         final Server server = mock(Server.class);
@@ -77,44 +77,44 @@ public class ServerManagerTest {
 
         instance.registerServer(server);
         instance.unregisterServer(server);
-        
+
         assertEquals(0, instance.numServers());
     }
-    
+
     @Test
     public void testNumServers() {
         final ServerManager instance = ServerManager.getServerManager();
-        
+
         assertEquals(instance.getServers().size(), instance.numServers());
-        
+
         final Server server = mock(Server.class);
 
         instance.registerServer(server);
-        
+
         assertEquals(instance.getServers().size(), instance.numServers());
-        
+
         instance.unregisterServer(server);
-        
+
         assertEquals(instance.getServers().size(), instance.numServers());
     }
-        
+
     @Test
     public void testGetServerByAddress() {
         final Server serverA = mock(Server.class);
         final Server serverB = mock(Server.class);
         when(serverA.getAddress()).thenReturn("255.255.255.255");
         when(serverB.getAddress()).thenReturn("255.255.255.254");
-        
+
         final ServerManager sm = ServerManager.getServerManager();
 
         sm.registerServer(serverA);
         sm.registerServer(serverB);
-        
+
         assertEquals(serverA, sm.getServersByAddress("255.255.255.255").get(0));
         assertEquals(serverB, sm.getServersByAddress("255.255.255.254").get(0));
         assertEquals(0, sm.getServersByAddress("255.255.255.253").size());
-    }    
-    
+    }
+
     @Test
     public void testGetServerByNetwork() throws InterruptedException {
         final Server serverA = mock(Server.class);
@@ -124,20 +124,20 @@ public class ServerManagerTest {
         when(serverA.isNetwork("Net1")).thenReturn(true);
         when(serverB.isNetwork("Net2")).thenReturn(true);
         when(serverC.isNetwork("Net2")).thenReturn(true);
-        
+
         final ServerManager sm = ServerManager.getServerManager();
 
         sm.registerServer(serverA);
         sm.registerServer(serverB);
         sm.registerServer(serverC);
-        
+
         assertEquals(1, sm.getServersByNetwork("Net1").size());
         assertEquals(serverA, sm.getServersByNetwork("Net1").get(0));
-        
+
         assertEquals(2, sm.getServersByNetwork("Net2").size());
         assertEquals(serverB, sm.getServersByNetwork("Net2").get(0));
         assertEquals(serverC, sm.getServersByNetwork("Net2").get(1));
-        
+
         assertEquals(0, sm.getServersByNetwork("Net3").size());
     }
 
@@ -210,5 +210,5 @@ public class ServerManagerTest {
 
         assertEquals(3, ServerManager.getServerManager().numServers());
     }
-    
+
 }

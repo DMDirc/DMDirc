@@ -25,18 +25,19 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
-import com.dmdirc.interfaces.ui.InputWindow;
 
 import java.util.Arrays;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class WritableFrameContainerTest {
 
     @BeforeClass
     public static void setupClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test

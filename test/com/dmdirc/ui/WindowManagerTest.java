@@ -22,22 +22,23 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.interfaces.ui.Window;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {
 
     @BeforeClass
     public static void setupClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test

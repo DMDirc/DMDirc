@@ -28,6 +28,8 @@ import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class AliasCommandTest {
@@ -36,7 +38,7 @@ public class AliasCommandTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test

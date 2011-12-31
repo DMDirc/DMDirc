@@ -21,11 +21,10 @@
  */
 package com.dmdirc.actions;
 
-import com.dmdirc.interfaces.actions.ActionType;
-
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
@@ -34,16 +33,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ActionTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         ActionManager.getActionManager().initialise();
     }
 

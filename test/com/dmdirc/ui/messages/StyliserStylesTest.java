@@ -27,17 +27,21 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.ui.core.util.Utils;
+
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.text.DefaultStyledDocument;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -53,14 +57,14 @@ public class StyliserStylesTest {
 
     @BeforeClass
     public static void setUp() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
-        
+
     @Test
     public void testStyle() {
         assertEquals(output, style(input));
     }
-    
+
     protected static String style(final String input) {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
@@ -74,36 +78,36 @@ public class StyliserStylesTest {
         final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
                 new String[]{input, }, "dialog", 12).
                 getAttributedString().getIterator();
-         
+
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
         char chr = aci.current();
-        
+
         while (aci.getIndex() < aci.getEndIndex()) {
-            if (!aci.getAttributes().equals(map)) {                
+            if (!aci.getAttributes().equals(map)) {
                 style(aci.getAttributes(), builder);
                 map = aci.getAttributes();
             }
-            
+
             builder.append(chr);
             chr = aci.next();
         }
-        
+
         return builder.toString();
     }
-    
+
     protected static void style(final Map<AttributedCharacterIterator.Attribute, Object> map,
-            final StringBuilder builder) {                    
+            final StringBuilder builder) {
         builder.append('<');
-        
+
         String[] entries = new String[9];
-        
+
         for (Map.Entry<AttributedCharacterIterator.Attribute, Object> entry : map.entrySet()) {
-        
+
             if (entry.getKey().equals(TextAttribute.FOREGROUND)) {
                 entries[0] = "color=" + toColour(entry.getValue());
             } else if (entry.getKey().equals(TextAttribute.BACKGROUND)) {
                 entries[1] = "background=" + toColour(entry.getValue());
-            } else if (entry.getKey().equals(TextAttribute.WEIGHT)) { 
+            } else if (entry.getKey().equals(TextAttribute.WEIGHT)) {
                 entries[2] = "bold";
             } else if (entry.getKey().equals(TextAttribute.FAMILY)
                     && entry.getValue().equals("monospaced")) {
@@ -120,7 +124,7 @@ public class StyliserStylesTest {
                 entries[8] = "nickname";
             }
         }
-        
+
         int count = 0;
         for (String entry : entries) {
             if (entry != null) {
@@ -129,20 +133,20 @@ public class StyliserStylesTest {
                 count++;
             }
         }
-        
+
         if (count > 0) {
             builder.deleteCharAt(builder.length() - 1);
         }
         builder.append('>');
     }
-    
+
     protected static String toColour(final Object object) {
         final Color colour = (Color) object;
-        
+
         return colour.getRed() + "," + colour.getGreen() + ","
                 + colour.getBlue();
     }
-    
+
     @Parameterized.Parameters
     public static List<String[]> data() {
         final String[][] tests = {
@@ -197,6 +201,6 @@ public class StyliserStylesTest {
         };
 
         return Arrays.asList(tests);
-    } 
+    }
 
 }

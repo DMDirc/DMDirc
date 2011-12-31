@@ -26,21 +26,24 @@ import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class IntelligentLinkingTest {
-    
+
     private final String input, expected;
     private final Styliser styliser;
-    
+
     public IntelligentLinkingTest(String input, String expected) {
         this.input = input;
         this.expected = expected;
@@ -51,15 +54,15 @@ public class IntelligentLinkingTest {
         when(server.getChannelPrefixes()).thenReturn("#&+");
         when(container.getServer()).thenReturn(server);
         when(container.getConfigManager()).thenReturn(manager);
-        
+
         styliser = new Styliser(container);
     }
-    
+
     @BeforeClass
     public static void setUp() throws InvalidIdentityFileException {
-        IdentityManager.load();
-    }    
-    
+        IdentityManager.getIdentityManager().initialise();
+    }
+
     @Test
     public void testLink() throws InterruptedException {
         assertEquals(expected, styliser.doLinks(input)
@@ -117,6 +120,6 @@ public class IntelligentLinkingTest {
         };
 
         return Arrays.asList(tests);
-    }    
+    }
 
 }

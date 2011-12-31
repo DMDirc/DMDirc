@@ -21,30 +21,27 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
-
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.interfaces.ui.UIController;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {
 
-    private static UIController controller;
-
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         Main.extractCorePlugins("ui_");
         PluginManager.getPluginManager();
-        controller = mock(UIController.class);
     }
 
     @Test
@@ -106,7 +103,7 @@ public class PreferencesManagerTest {
     public void testGetCategory() {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
-        
+
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
         assertNull(pm.getCategory("unittest123"));
     }

@@ -24,20 +24,22 @@ package com.dmdirc.updater;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.components.ClientComponent;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class UpdateTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
-    
+
     private static final String SUBJECT = "outofdate client channel date version url";
-    
+
     private Update update;
 
     @Before
@@ -60,5 +62,5 @@ public class UpdateTest {
     public void testGetUrl() {
         assertEquals("url", update.getUrl());
     }
-    
+
 }

@@ -39,14 +39,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class ActionSubstitutorTest {
 
     private static final Map<String, String> SETTINGS = new HashMap<String, String>();
-    
+
     private final String input, expected;
     private final Channel channel;
     private final ActionSubstitutor substitutor;
@@ -54,7 +55,7 @@ public class ActionSubstitutorTest {
 
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         ActionManager.getActionManager().initialise();
 
         SETTINGS.put("alpha", "A");
@@ -69,7 +70,7 @@ public class ActionSubstitutorTest {
         this.expected = expected;
 
         this.channel = mock(Channel.class);
-        
+
         final ConfigManager manager = mock(ConfigManager.class);
         final Server server = mock(Server.class);
 
@@ -122,7 +123,7 @@ public class ActionSubstitutorTest {
             // ---- Combinations -----------------------------------------------
             {"${1}${2.STRING_LENGTH}$alpha", "128A"},
             {"$alpha$4${SERVER_MYAWAYREASON}", "Afourth_word_herefoo"},
-            
+
             // -- New behaviour ------------------------------------------------
             // ---- Config subs ------------------------------------------------
             {"${alpha}", "A"},

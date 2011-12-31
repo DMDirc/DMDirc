@@ -33,8 +33,8 @@ import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class ModeTest {
@@ -44,11 +44,6 @@ public class ModeTest {
     private Channel channel;
     private Server server;
     private IRCParser parser;
-
-    @BeforeClass
-    public static void setUpClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
-    }
 
     @Before
     public void setUp() throws InvalidIdentityFileException {

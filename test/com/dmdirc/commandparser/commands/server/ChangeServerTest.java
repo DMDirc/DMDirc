@@ -30,9 +30,11 @@ import com.dmdirc.config.IdentityManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class ChangeServerTest {
@@ -44,7 +46,7 @@ public class ChangeServerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Before

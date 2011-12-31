@@ -40,7 +40,7 @@ public class PreferencesSettingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test(expected=IllegalArgumentException.class)

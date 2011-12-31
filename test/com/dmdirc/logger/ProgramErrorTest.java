@@ -23,17 +23,20 @@ package com.dmdirc.logger;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+
 import java.util.Arrays;
 import java.util.Date;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ProgramErrorTest {
-    
+
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test
@@ -169,7 +172,7 @@ public class ProgramErrorTest {
         pe.setReportStatus(ErrorReportStatus.ERROR);
         assertEquals(ErrorReportStatus.ERROR, pe.getReportStatus());
     }
-    
+
     @Test
     public void testFixedStatus() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
@@ -182,14 +185,14 @@ public class ProgramErrorTest {
         pe.setFixedStatus(ErrorFixedStatus.INVALID);
         assertEquals(ErrorFixedStatus.INVALID, pe.getFixedStatus());
     }
-    
+
     @Test
     public void testToString() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
                 new String[0], new Date());
         assertTrue(pe.toString().indexOf("moo") > -1);
     }
-    
+
     @Test
     public void testEquals() {
         final ProgramError pe1 = new ProgramError(10, ErrorLevel.LOW, "moo",
@@ -202,20 +205,20 @@ public class ProgramErrorTest {
                 new String[0], new Date());
         final ProgramError pe5 = new ProgramError(10, ErrorLevel.LOW, "moo",
                 new String[]{"Hello"}, new Date());
-        
+
         assertFalse(pe1.equals(null));
         assertFalse(pe1.equals("moo"));
-        
+
         assertTrue(pe1.equals(pe2));
         assertTrue(pe1.equals(pe1));
         assertTrue(pe2.equals(pe1));
-        
+
         assertFalse(pe1.equals(pe3));
         assertFalse(pe1.equals(pe4));
         assertFalse(pe1.equals(pe5));
         assertFalse(pe4.equals(pe5));
         assertFalse(pe4.equals(pe3));
-        
+
         assertEquals(pe1.hashCode(), pe2.hashCode());
         assertEquals(pe1.hashCode(), pe1.hashCode());
     }

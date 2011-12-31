@@ -21,26 +21,28 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Server;
-import com.dmdirc.config.Identity;
-import java.net.URI;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ServerFactory;
+
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class NewServerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     private FrameContainer container;

@@ -31,8 +31,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class PartTest {
@@ -42,14 +42,9 @@ public class PartTest {
     private FrameContainer origin;
     private ConfigManager manager;
 
-    @BeforeClass
-    public static void setUpClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
-    }
-
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
 
         channel = mock(Channel.class);
         origin = mock(FrameContainer.class);

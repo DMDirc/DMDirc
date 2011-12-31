@@ -25,8 +25,10 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 
 import java.net.URI;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ServerTest {
@@ -36,7 +38,7 @@ public class ServerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Main.extractCorePlugins("tabcompletion_");
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         server = new Server(new URI("irc-test://255.255.255.255"),
                 IdentityManager.getCustomIdentities("profile").get(0));
         server.connect();

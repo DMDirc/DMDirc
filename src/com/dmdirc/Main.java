@@ -108,12 +108,12 @@ public final class Main {
         // Enable finer debugging for specific components like so:
         //java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
 
-        IdentityManager.loadVersion();
+        IdentityManager.getIdentityManager().loadVersionIdentity();
 
         final CommandLineParser clp = new CommandLineParser(args);
 
         try {
-            IdentityManager.load();
+            IdentityManager.getIdentityManager().initialise();
         } catch (InvalidIdentityFileException iife) {
             handleInvalidConfigFile();
         }
@@ -231,7 +231,7 @@ public final class Main {
 
         if (configFile.renameTo(newConfigFile)) {
             try {
-                IdentityManager.load();
+                IdentityManager.getIdentityManager().initialise();
             } catch (InvalidIdentityFileException iife2) {
                 // This shouldn't happen!
                 Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);

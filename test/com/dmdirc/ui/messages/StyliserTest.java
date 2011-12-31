@@ -26,9 +26,12 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+
 import java.util.Enumeration;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -36,7 +39,7 @@ public class StyliserTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test

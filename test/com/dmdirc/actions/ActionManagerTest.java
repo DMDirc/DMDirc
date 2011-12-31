@@ -21,21 +21,23 @@
  */
 package com.dmdirc.actions;
 
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.config.IdentityManager;
-import java.io.File;
+import com.dmdirc.interfaces.actions.ActionType;
 
+import java.io.File;
 import java.util.ArrayList;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ActionManagerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
         ActionManager.getActionManager().initialise();
         ActionManager.getActionManager().loadUserActions();
 

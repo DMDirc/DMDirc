@@ -22,18 +22,19 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.ui.Colour;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.Colour;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class ColourManagerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     @Test

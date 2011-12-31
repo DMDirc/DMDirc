@@ -22,20 +22,21 @@
 
 package com.dmdirc.commandparser;
 
-import java.util.Arrays;
-
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
+import java.util.Arrays;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CommandArgumentsTest {
 
     @BeforeClass
     public static void beforeClass() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
     }
 
     /** Ensures the ctor which takes a collection builds the 'line' property. */
