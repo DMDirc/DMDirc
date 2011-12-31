@@ -113,12 +113,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         boolean returnCode = false;
         final boolean wasLoaded = plugin.isLoaded();
 
-        // Unload old version of plugin before we update the metadata.
-        if (wasLoaded && plugin.isUnloadable()) {
-            plugin.unloadPlugin();
-        }
-
-        if ((plugin.isUnloadable() || !plugin.isLoaded()) && target.exists()) {
+        if (!wasLoaded && target.exists()) {
             target.delete();
         }
 
@@ -139,9 +134,6 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         } else {
             plugin.pluginUpdated();
         }
-
-        // If the plugin was loaded before, load it again.
-        if (wasLoaded) { plugin.loadPlugin(); }
 
         return returnCode;
     }
