@@ -180,8 +180,8 @@ public final class ServerManager {
      * @since 0.6.3
      */
     public Server connectToAddress(final URI uri) {
-        return connectToAddress(uri, IdentityManager.getCustomIdentities(
-                "profile").get(0));
+        return connectToAddress(uri, IdentityManager.getIdentityManager()
+                .getIdentitiesByType("profile").get(0));
     }
 
     /**
@@ -242,7 +242,8 @@ public final class ServerManager {
         if (connectedServer == null) {
             try {
                 final Server server = new Server(new URI("irc://irc.quakenet.org/DMDirc"),
-                        IdentityManager.getCustomIdentities("profile").get(0));
+                        IdentityManager.getIdentityManager()
+                        .getIdentitiesByType("profile").get(0));
                 server.connect();
             } catch (URISyntaxException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);

@@ -95,9 +95,9 @@ public class DefaultsComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", IdentityManager.getDirectory());
+        ziprm.extractResources("", IdentityManager.getIdentityManager().getIdentityDirectory());
 
-        IdentityManager.loadUser();
+        IdentityManager.getIdentityManager().loadUserIdentities();
 
         new File(path).delete();
 

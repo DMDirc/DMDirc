@@ -351,7 +351,7 @@ public class CommandLineParser {
      */
     public void applySettings() {
         if (disablereporting) {
-            IdentityManager.getConfigIdentity().setOption("temp", "noerrorreporting", true);
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption("temp", "noerrorreporting", true);
         }
 
         if (!launcherVersion.isEmpty()) {

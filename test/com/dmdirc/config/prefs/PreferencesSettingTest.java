@@ -179,34 +179,38 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveUnset() {
-        IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("unit-test", "ps", "abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 "unit-test", "ps", "title", "helptext",
                 IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                IdentityManager.getConfigIdentity());
+                IdentityManager.getIdentityManager().getGlobalConfigIdentity());
 
         assertFalse(ps.save());
         ps.setValue(null);
         assertTrue(ps.save());
 
-        assertFalse(IdentityManager.getConfigIdentity().hasOptionString("unit-test", "ps"));
+        assertFalse(IdentityManager.getIdentityManager()
+                .getGlobalConfigIdentity().hasOptionString("unit-test", "ps"));
     }
 
     @Test
     public void testSaveNormal() {
-        IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("unit-test", "ps", "abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 "unit-test", "ps", "title", "helptext",
                 IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                IdentityManager.getConfigIdentity());
+                IdentityManager.getIdentityManager().getGlobalConfigIdentity());
 
         assertFalse(ps.save());
         ps.setValue("def");
         assertTrue(ps.save());
 
-        assertEquals("def", IdentityManager.getConfigIdentity().getOption("unit-test", "ps"));
+        assertEquals("def", IdentityManager.getIdentityManager()
+                .getGlobalConfigIdentity().getOption("unit-test", "ps"));
     }
 
 }

@@ -199,7 +199,8 @@ public final class Main {
             }
 
             // Allow the rebooted DMDirc to know that we have attempted restarting.
-            IdentityManager.getConfigIdentity().setOption("debug", "uiFixAttempted", "true");
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                    .setOption("debug", "uiFixAttempted", "true");
             // Tell the launcher to restart!
             System.exit(42);
         }
@@ -312,8 +313,10 @@ public final class Main {
             handleMissingUI();
         } else {
             // The fix worked!
-            if (IdentityManager.getIdentityManager().getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
-                IdentityManager.getConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            if (IdentityManager.getIdentityManager().getGlobalConfiguration()
+                    .hasOptionBool("debug", "uiFixAttempted")) {
+                IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                        .unsetOption("debug", "uiFixAttempted");
             }
         }
     }
@@ -323,7 +326,7 @@ public final class Main {
      */
     private static void doFirstRun() {
         if (IdentityManager.getIdentityManager().getGlobalConfiguration().getOptionBool("general", "firstRun")) {
-            IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption("general", "firstRun", "false");
             for (UIController controller : CONTROLLERS) {
                 controller.showFirstRunWizard();
             }

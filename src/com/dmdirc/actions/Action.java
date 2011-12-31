@@ -267,7 +267,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
                         PreferencesType.valueOf(data.get("type")), "actions",
                         data.get("setting"), data.get("title"), data.get("tooltip"),
                         IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                        IdentityManager.getConfigIdentity()));
+                        IdentityManager.getIdentityManager().getGlobalConfigIdentity()));
             }
         }
     }
@@ -592,11 +592,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public void setEnabled(final boolean enabled) {
         if (enabled) {
-            IdentityManager.getConfigIdentity().unsetOption("disable_action",
-                    (group + "/" + name).replace(' ', '.'));
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                    .unsetOption("disable_action", (group + "/" + name).replace(' ', '.'));
         } else {
-            IdentityManager.getConfigIdentity().setOption("disable_action",
-                    (group + "/" + name).replace(' ', '.'), true);
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                    .setOption("disable_action", (group + "/" + name).replace(' ', '.'), true);
         }
     }
 

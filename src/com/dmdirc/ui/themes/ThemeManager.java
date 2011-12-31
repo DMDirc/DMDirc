@@ -150,8 +150,8 @@ public final class ThemeManager {
      * @param theme Theme to update auto load
      */
     public static void updateAutoLoad(final Theme theme) {
-        final List<String> enabled = IdentityManager.getConfigIdentity()
-                .getOptionList("themes", "enabled", true);
+        final List<String> enabled = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration().getOptionList("themes", "enabled", true);
 
         if (theme.isEnabled()) {
             enabled.add(theme.getFileName());
@@ -159,8 +159,8 @@ public final class ThemeManager {
             enabled.remove(theme.getFileName());
         }
 
-        IdentityManager.getConfigIdentity().setOption("themes", "enabled",
-                enabled);
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("themes", "enabled", enabled);
     }
 
 }

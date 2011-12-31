@@ -47,7 +47,7 @@ public class ModeTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        IdentityManager.load();
+        IdentityManager.getIdentityManager().initialise();
 
         parser = mock(IRCParser.class);
         server = mock(Server.class);

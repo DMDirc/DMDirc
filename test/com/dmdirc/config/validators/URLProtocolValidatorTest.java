@@ -34,7 +34,8 @@ public class URLProtocolValidatorTest {
     @Test
     public void testValidate() throws InvalidIdentityFileException {
         IdentityManager.getIdentityManager().initialise();
-        IdentityManager.getConfigIdentity().setOption("protocol", "unit-test-1", "BROWSER");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("protocol", "unit-test-1", "BROWSER");
 
         final URLProtocolValidator validator = new URLProtocolValidator();
         assertTrue(validator.validate(null).isFailure());
@@ -42,7 +43,8 @@ public class URLProtocolValidatorTest {
         assertTrue(validator.validate("unit-test-1").isFailure());
         assertFalse(validator.validate("unit-test-2").isFailure());
 
-        IdentityManager.getConfigIdentity().unsetOption("protocol", "unit-test-1");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .unsetOption("protocol", "unit-test-1");
     }
 
 }

@@ -145,7 +145,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** Loads the default (built in) identities. */
     private void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
-        final String dir = getDirectory();
+        final String dir = getIdentityDirectory();
 
         for (String target : targets) {
             final File file = new File(dir + target);

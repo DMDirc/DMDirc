@@ -121,17 +121,21 @@ public class ColourManagerTest {
 
     @Test
     public void testCustomColours() {
-        IdentityManager.getConfigIdentity().setOption("colour", "4", "00ff00");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("colour", "4", "00ff00");
 
         assertEquals("00ff00", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
 
-        IdentityManager.getConfigIdentity().unsetOption("colour", "4");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .unsetOption("colour", "4");
     }
 
     @Test
     public void testCustomColours2() {
-        IdentityManager.getConfigIdentity().setOption("colour", "4", "000000");
-        IdentityManager.getConfigIdentity().unsetOption("colour", "4");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption("colour", "4", "000000");
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .unsetOption("colour", "4");
         assertEquals("ff0000", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
     }
 }

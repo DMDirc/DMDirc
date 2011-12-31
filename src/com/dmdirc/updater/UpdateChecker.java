@@ -122,7 +122,7 @@ public final class UpdateChecker implements Runnable {
 
         if (!config.getOptionBool(DOMAIN, "enable")
                 || status == STATE.UPDATING) {
-            IdentityManager.getConfigIdentity().setOption(DOMAIN,
+            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption(DOMAIN,
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
             MUTEX.release();
@@ -191,7 +191,7 @@ public final class UpdateChecker implements Runnable {
 
         MUTEX.release();
 
-        IdentityManager.getConfigIdentity().setOption(DOMAIN,
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption(DOMAIN,
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
         UpdateChecker.initTimer();
@@ -217,7 +217,8 @@ public final class UpdateChecker implements Runnable {
             }
         }
 
-        IdentityManager.getConfigIdentity().setOption(DOMAIN, "updates", stringCopies);
+        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                .setOption(DOMAIN, "updates", stringCopies);
     }
 
     /**

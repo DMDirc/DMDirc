@@ -40,7 +40,8 @@ public class ServerTest {
         Main.extractCorePlugins("tabcompletion_");
         IdentityManager.getIdentityManager().initialise();
         server = new Server(new URI("irc-test://255.255.255.255"),
-                IdentityManager.getCustomIdentities("profile").get(0));
+                IdentityManager.getIdentityManager()
+                .getIdentitiesByType("profile").get(0));
         server.connect();
     }
 

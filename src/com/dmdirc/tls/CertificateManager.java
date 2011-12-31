@@ -365,8 +365,8 @@ public class CertificateManager implements X509TrustManager {
                     final List<String> list = new ArrayList<String>(config
                             .getOptionList("ssl", "trusted"));
                     list.add(Base64.encodeToString(chain[0].getSignature(), false));
-                    IdentityManager.getConfigIdentity().setOption("ssl",
-                            "trusted", list);
+                    IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                            .setOption("ssl", "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:
                     // Do nothing, continue connecting

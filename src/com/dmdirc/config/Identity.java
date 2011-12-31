@@ -503,7 +503,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                 }
 
                 globalConfig.removeIdentity(this);
-                globalConfig.removeIdentity(IdentityManager.getVersionIdentity());
+                globalConfig.removeIdentity(IdentityManager.getIdentityManager().getGlobalVersionIdentity());
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     for (Identity source : globalConfig.getSources()) {
@@ -555,7 +555,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
             file.delete();
         }
 
-        IdentityManager.removeIdentity(this);
+        IdentityManager.getIdentityManager().unregisterIdentity(this);
     }
 
     /**
@@ -669,7 +669,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         configFile.write();
 
         final Identity identity = new Identity(file, false);
-        IdentityManager.addIdentity(identity);
+        IdentityManager.getIdentityManager().registerIdentity(identity);
 
         return identity;
     }
