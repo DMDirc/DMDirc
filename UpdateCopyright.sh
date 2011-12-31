@@ -2,9 +2,7 @@
 # Update Copyright headers in all files.
 
 THISYEAR=`date +%Y`
-OLD="2006-"$((${THISYEAR} - 1))
-NEW="2006-"${THISYEAR}
+THISYEAR=$((${THISYEAR} + 1))
 
-grep -iRI "${OLD}" ./* | grep -v /.git/ | grep -v UpdateCopyright.sh | grep -v update.sh | awk -F: '{print "echo \"Updating \\\""$1"\\\"\"\nsed -i \"s/'${OLD}'/'${NEW}'/g\" \""$1"\""}' > update.sh
-sh update.sh
-rm update.sh
+find . -regextype posix-egrep -iregex '.*\.(java|sh|php|xml)$' -exec sed -i 's/\(Copyright.*\)2006-20[0-9][0-9]/\12006-'${THISYEAR}'/' {} \;
+
