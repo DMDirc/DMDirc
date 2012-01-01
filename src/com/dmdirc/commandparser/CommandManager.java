@@ -72,6 +72,7 @@ import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.TabCompleter;
@@ -93,7 +94,8 @@ import lombok.Getter;
 public class CommandManager implements CommandController {
 
     /** A singleton instance of the command manager. */
-    private static final CommandManager INSTANCE = new CommandManager();
+    private static final CommandManager INSTANCE
+            = new CommandManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
 
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
@@ -115,10 +117,11 @@ public class CommandManager implements CommandController {
 
     /**
      * Creates a new instance of the Command Manager.
+     *
+     * @param configManager the configuration manager to use.
      */
-    public CommandManager() {
-        IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getBinder().bind(this, CommandManager.class);
+    public CommandManager(final ConfigManager configManager) {
+        configManager.getBinder().bind(this, CommandManager.class);
     }
 
     /** {@inheritDoc} */

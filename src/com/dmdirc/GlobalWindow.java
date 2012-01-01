@@ -25,7 +25,9 @@ package com.dmdirc;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
@@ -35,22 +37,30 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 import java.util.Arrays;
 
+import lombok.Getter;
+
 /**
  * A window which can be used to execute global commands.
  */
 public class GlobalWindow extends WritableFrameContainer {
 
     /** The global window that's in use, if any. */
+    @Getter
     private static GlobalWindow globalWindow;
 
     /** The tab completer we use. */
+    @Getter
     private final TabCompleter tabCompleter;
 
-    /** Creates a new instance of GlobalWindow. */
-    public GlobalWindow() {
+    /**
+     * Creates a new instance of GlobalWindow.
+     *
+     * @param config The ConfigManager to retrieve settings from.
+     * @param parser The command parser to use to parse input.
+     */
+    public GlobalWindow(final ConfigManager config, final CommandParser parser) {
         super("icon", "Global", "(Global)",
-                IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                GlobalCommandParser.getGlobalCommandParser(),
+                config, parser,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
 
@@ -97,12 +107,6 @@ public class GlobalWindow extends WritableFrameContainer {
         return -1;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
-    }
-
     /**
      * Initialises the global window if it's enabled in the config.
      */
@@ -125,11 +129,14 @@ public class GlobalWindow extends WritableFrameContainer {
      * general.showglobalwindow config setting.
      */
     protected static void updateWindowState() {
+        final ConfigManager configManager = IdentityManager.getIdentityManager()
+                .getGlobalConfiguration();
+
         synchronized (GlobalWindow.class) {
-            if (IdentityManager.getIdentityManager().getGlobalConfiguration()
-                    .getOptionBool("general", "showglobalwindow")) {
+            if (configManager.getOptionBool("general", "showglobalwindow")) {
                 if (globalWindow == null) {
-                    globalWindow = new GlobalWindow();
+                    globalWindow = new GlobalWindow(configManager,
+                            GlobalCommandParser.getGlobalCommandParser());
                 }
             } else {
                 if (globalWindow != null) {
@@ -138,15 +145,4 @@ public class GlobalWindow extends WritableFrameContainer {
             }
         }
     }
-
-    /**
-     * Retrieves the global window if it has been previously opened by
-     * {@link #init()}.
-     *
-     * @return A Global Window instance or null
-     */
-    public static GlobalWindow getGlobalWindow() {
-        return globalWindow;
-    }
-
 }

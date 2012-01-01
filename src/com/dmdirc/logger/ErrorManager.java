@@ -93,9 +93,7 @@ public final class ErrorManager implements ConfigChangeListener {
      * @return Instance of ErrorManager
      */
     public static ErrorManager getErrorManager() {
-        synchronized (ME) {
-            return ME;
-        }
+        return ME;
     }
 
     /**
