@@ -34,10 +34,9 @@ version:
     <target name="-add-version" depends="-add-git-version"/>
 
     <target name="-add-git-version" if="is.git">
-        <exec executable="git" output="${version.config}" append="true">
-            <arg value="describe"/>
-            <arg value="--tags"/>
-        </exec>
+        <git-describe dir=".git" property="git.version" />
+        <echo file="${version.config}" append="true">${git.version}
+</echo>
     </target>
 
     <target name="-init-channel" unless="channel">
