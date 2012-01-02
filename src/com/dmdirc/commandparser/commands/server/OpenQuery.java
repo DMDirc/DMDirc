@@ -29,7 +29,6 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -65,7 +64,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD
-                    + CommandManager.getCommandManager().getCommandChar()
+                    + getController().getCommandChar()
                     + (args.getArguments().length > 1 ? "msg" : "join") + " "
                     + args.getArgumentsAsString()
                     + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");

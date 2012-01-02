@@ -27,7 +27,6 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -111,11 +110,10 @@ public class Help extends Command implements IntelligentCommand {
             final String name) {
         Map.Entry<CommandInfo, Command> command = null;
 
-        if (name.length() > 0 && name.charAt(0)
-                == CommandManager.getCommandManager().getCommandChar()) {
-            command = CommandManager.getCommandManager().getCommand(name.substring(1));
+        if (name.length() > 0 && name.charAt(0) == getController().getCommandChar()) {
+            command = getController().getCommand(name.substring(1));
         } else {
-            command = CommandManager.getCommandManager().getCommand(name);
+            command = getController().getCommand(name);
         }
 
         if (command == null) {

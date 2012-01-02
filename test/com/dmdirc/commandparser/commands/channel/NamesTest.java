@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 
 public class NamesTest {
 
-    private final Names command = new Names();
+    private Names command;
     private IRCChannelInfo channelinfo;
     private Channel channel;
     private Server server;
@@ -57,6 +57,8 @@ public class NamesTest {
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getName()).thenReturn("#chan");
+
+        command = new Names();
     }
 
     @Test

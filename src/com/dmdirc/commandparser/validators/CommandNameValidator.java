@@ -36,14 +36,25 @@ import java.util.regex.Pattern;
 public class CommandNameValidator extends ValidatorChain<String> {
 
     /**
-     * Instantiates a new command name validator.
+     * Instantiates a new command name validator, using the command char
+     * provided by the default Command Manager.
+     */
+    public CommandNameValidator() {
+        this(CommandManager.getCommandManager().getCommandChar());
+    }
+
+    /**
+     * Instantiates a new command name validator using the given command char.
+     *
+     * @param commandChar the character commands start with (which is therefore
+     * disallowed at the start of a command name).
      */
     @SuppressWarnings("unchecked")
-    public CommandNameValidator() {
+    public CommandNameValidator(final char commandChar) {
         super(new RegexStringValidator("^[^\\s]*$", "Cannot contain spaces"),
                 new RegexStringValidator("^[^"
-                + Pattern.quote(String.valueOf(CommandManager.getCommandManager().getCommandChar()))
-                + "].*$", "Cannot start with a " + CommandManager.getCommandManager().getCommandChar()));
+                + Pattern.quote(String.valueOf(commandChar))
+                + "].*$", "Cannot start with a " + commandChar));
     }
 
 }

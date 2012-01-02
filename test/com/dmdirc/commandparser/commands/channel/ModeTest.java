@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 
 public class ModeTest {
 
-    private final Mode command = new Mode();
+    private Mode command;
     private IRCChannelInfo channelinfo;
     private Channel channel;
     private Server server;
@@ -59,6 +59,8 @@ public class ModeTest {
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");
         when(channelinfo.toString()).thenReturn("#chan");
+
+        command = new Mode();
     }
 
     @Test

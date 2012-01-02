@@ -30,7 +30,6 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -60,7 +59,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         if (args.getArguments()[0].equalsIgnoreCase("--remove")) {
             final String name
                     = args.getArguments()[1].charAt(0)
-                    == CommandManager.getCommandManager().getCommandChar()
+                    == getController().getCommandChar()
                     ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
             if (doRemove(name)) {
@@ -75,7 +74,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         }
 
         final String name = args.getArguments()[0].charAt(0)
-                == CommandManager.getCommandManager().getCommandChar()
+                == getController().getCommandChar()
                 ? args.getArguments()[0].substring(1) : args.getArguments()[0];
 
         for (Action alias : AliasWrapper.getAliasWrapper()) {

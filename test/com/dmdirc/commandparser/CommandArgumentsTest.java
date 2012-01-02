@@ -22,43 +22,47 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.CommandController;
 
 import java.util.Arrays;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CommandArgumentsTest {
 
-    @BeforeClass
-    public static void beforeClass() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+    private CommandController controller;
+
+    @Before
+    public void setUp() {
+        this.controller = mock(CommandController.class);
+        when(this.controller.getCommandChar()).thenReturn('/');
+        when(this.controller.getSilenceChar()).thenReturn('.');
     }
 
     /** Ensures the ctor which takes a collection builds the 'line' property. */
     @Test
     public void testCollectionCtorCreatesLine() {
-        final CommandArguments args = new CommandArguments(Arrays.asList(
-                "/command", "arg1", "arg2"));
+        final CommandArguments args = new CommandArguments(controller,
+                Arrays.asList("/command", "arg1", "arg2"));
         assertEquals("/command arg1 arg2", args.getLine());
     }
 
     /** Ensures the ctor works with an empty collection. */
     @Test
     public void testCollectionCtorWithEmpty() {
-        final CommandArguments args = new CommandArguments(Arrays.asList(
-                new String[0]));
+        final CommandArguments args = new CommandArguments(
+                controller, Arrays.asList(new String[0]));
         assertEquals("", args.getLine());
     }
 
     /** Ensures that getStrippedLine returns non-command lines as-is. */
     @Test
     public void testGetStrippedLineNormal() {
-        final CommandArguments args = new CommandArguments("blah blah");
+        final CommandArguments args = new CommandArguments(controller, "blah blah");
         assertEquals("blah blah", args.getStrippedLine());
     }
 
@@ -68,7 +72,7 @@ public class CommandArgumentsTest {
      */
     @Test
     public void testGetStrippedLineCommand() {
-        final CommandArguments args = new CommandArguments("/blah blah");
+        final CommandArguments args = new CommandArguments(controller, "/blah blah");
         assertEquals("blah blah", args.getStrippedLine());
     }
 
@@ -78,41 +82,41 @@ public class CommandArgumentsTest {
      */
     @Test
     public void testGetStrippedLineSilenced() {
-        final CommandArguments args = new CommandArguments("/.blah blah");
+        final CommandArguments args = new CommandArguments(controller, "/.blah blah");
         assertEquals("blah blah", args.getStrippedLine());
     }
 
     @Test
     public void testIsCommand() {
-        assertTrue(new CommandArguments(CommandManager.getCommandManager().getCommandChar() + "").isCommand());
-        assertTrue(new CommandArguments(CommandManager.getCommandManager().getCommandChar() + "foo bar").isCommand());
-        assertFalse(new CommandArguments(" " + CommandManager.getCommandManager().getCommandChar()).isCommand());
-        assertFalse(new CommandArguments("").isCommand());
-        assertFalse(new CommandArguments("foo").isCommand());
+        assertTrue(new CommandArguments(controller, "/").isCommand());
+        assertTrue(new CommandArguments(controller, "/foo bar").isCommand());
+        assertFalse(new CommandArguments(controller, " /").isCommand());
+        assertFalse(new CommandArguments(controller, "").isCommand());
+        assertFalse(new CommandArguments(controller, "foo").isCommand());
     }
 
     @Test
     public void testIsSilent() {
-        final char c = CommandManager.getCommandManager().getCommandChar();
-        final char s = CommandManager.getCommandManager().getSilenceChar();
+        final char c = '/';
+        final char s = '.';
 
-        assertTrue(new CommandArguments(c + "" + s).isSilent());
-        assertFalse(new CommandArguments("f" + s).isSilent());
-        assertTrue(new CommandArguments(c + "" + s + "foo").isSilent());
-        assertFalse(new CommandArguments("").isSilent());
-        assertFalse(new CommandArguments("foo").isSilent());
+        assertTrue(new CommandArguments(controller, c + "" + s).isSilent());
+        assertFalse(new CommandArguments(controller, "f" + s).isSilent());
+        assertTrue(new CommandArguments(controller, c + "" + s + "foo").isSilent());
+        assertFalse(new CommandArguments(controller, "").isSilent());
+        assertFalse(new CommandArguments(controller, "foo").isSilent());
     }
 
     @Test
     public void testGetLine() {
-        assertEquals("foo", new CommandArguments("foo").getLine());
-        assertEquals("foo  bar", new CommandArguments("foo  bar").getLine());
-        assertEquals("", new CommandArguments("").getLine());
+        assertEquals("foo", new CommandArguments(controller, "foo").getLine());
+        assertEquals("foo  bar", new CommandArguments(controller, "foo  bar").getLine());
+        assertEquals("", new CommandArguments(controller, "").getLine());
     }
 
     @Test
     public void testGetWords() {
-        final CommandArguments args = new CommandArguments("a\tb    c d e");
+        final CommandArguments args = new CommandArguments(controller, "a\tb    c d e");
 
         assertEquals(5, args.getWords().length);
         assertEquals("a", args.getWords()[0]);
@@ -124,7 +128,7 @@ public class CommandArgumentsTest {
 
     @Test
     public void testGetArguments() {
-        final CommandArguments args = new CommandArguments("a\tb    c d e");
+        final CommandArguments args = new CommandArguments(controller, "a\tb    c d e");
 
         assertEquals(4, args.getArguments().length);
         assertEquals("b", args.getArguments()[0]);
@@ -135,10 +139,10 @@ public class CommandArgumentsTest {
 
     @Test
     public void testGetArgumentsAsString() {
-        assertEquals("b\tc  d", new CommandArguments("a b\tc  d").getArgumentsAsString());
-        assertEquals("", new CommandArguments("a").getArgumentsAsString());
-        assertEquals("", new CommandArguments("a\t  \t   \t").getArgumentsAsString());
-        assertEquals("b", new CommandArguments("a\t  \t   \tb").getArgumentsAsString());
+        assertEquals("b\tc  d", new CommandArguments(controller, "a b\tc  d").getArgumentsAsString());
+        assertEquals("", new CommandArguments(controller, "a").getArgumentsAsString());
+        assertEquals("", new CommandArguments(controller, "a\t  \t   \t").getArgumentsAsString());
+        assertEquals("b", new CommandArguments(controller, "a\t  \t   \tb").getArgumentsAsString());
     }
 
 }

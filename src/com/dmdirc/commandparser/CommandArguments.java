@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.Logger;
 
 import java.util.Arrays;
@@ -46,22 +47,51 @@ public class CommandArguments {
     /** The line split into whitespace-delimited words. */
     private String[] words;
 
+    /** Command controller to consult for command chars, etc. */
+    private final CommandController controller;
+
     /**
      * Creates a new command arguments parser for the specified line.
      *
      * @param line The line to be parsed
      */
     public CommandArguments(final String line) {
-        this.line = line;
+        this(CommandManager.getCommandManager(), line);
     }
 
     /**
+     * Creates a new command arguments parser for the specified line.
+     *
+     * @param controller The command controller to consult for information
+     * about command characters, etc.
+     * @param line The line to be parsed
+     * @since 0.6.7
+     */
+    public CommandArguments(final CommandController controller, final String line) {
+        this.controller = controller;
+        this.line = line;
+    }
+
+   /**
      * Creates a new command arguments parser for the specified words.
      *
      * @param words The words which form the line ot be parsed
      * @since 0.6.3
      */
     public CommandArguments(final Collection<String> words) {
+        this(CommandManager.getCommandManager(), words);
+    }
+
+    /**
+     * Creates a new command arguments parser for the specified words.
+     *
+     * @param controller The command controller to consult for information
+     * about command characters, etc.
+     * @param words The words which form the line ot be parsed
+     * @since 0.6.7
+     */
+    public CommandArguments(final CommandController controller, final Collection<String> words) {
+        this.controller = controller;
         this.words = words.toArray(new String[words.size()]);
 
         final StringBuilder builder = new StringBuilder();
@@ -208,7 +238,7 @@ public class CommandArguments {
      * @return True if the input was a command, false otherwise
      */
     public boolean isCommand() {
-        return !line.isEmpty() && line.charAt(0) == CommandManager.getCommandManager().getCommandChar();
+        return !line.isEmpty() && line.charAt(0) == controller.getCommandChar();
     }
 
     /**
@@ -218,7 +248,7 @@ public class CommandArguments {
      */
     public boolean isSilent() {
         return isCommand() && line.length() >= 2
-                && line.charAt(1) == CommandManager.getCommandManager().getSilenceChar();
+                && line.charAt(1) == controller.getSilenceChar();
     }
 
     /**

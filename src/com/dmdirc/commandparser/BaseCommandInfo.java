@@ -22,51 +22,25 @@
 
 package com.dmdirc.commandparser;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * A basic {@link CommandInfo} implementation whose parameters can be
  * configured via the constructor.
  */
+@Getter
+@RequiredArgsConstructor
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class BaseCommandInfo implements CommandInfo {
 
     /** The name of the command. */
     private final String name;
 
     /** The help text for this command. */
-    private final String helpText;
+    private final String help;
 
     /** The type of the command. */
     private final CommandType type;
-
-    /**
-     * Creates a new BaseCommandInfo with the specified information.
-     *
-     * @param name The name of the command
-     * @param helpText The help text for this command
-     * @param type The type of the command
-     */
-    public BaseCommandInfo(final String name, final String helpText,
-            final CommandType type) {
-        this.name = name;
-        this.helpText = helpText;
-        this.type = type;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getHelp() {
-        return helpText;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return type;
-    }
 
 }

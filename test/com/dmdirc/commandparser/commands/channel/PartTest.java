@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 
 public class PartTest {
 
-    private final Part command = new Part();
+    private Part command;
     private Channel channel;
     private FrameContainer origin;
     private ConfigManager manager;
@@ -52,6 +52,8 @@ public class PartTest {
 
         when(origin.getConfigManager()).thenReturn(manager);
         when(manager.getOption("general", "partmessage")).thenReturn("config part message");
+
+        command = new Part();
     }
 
     @Test

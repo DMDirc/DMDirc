@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -163,7 +162,7 @@ public class Set extends Command implements IntelligentCommand {
         final StringBuffer output = new StringBuffer(67);
 
         output.append("Valid domains (use ");
-        output.append(CommandManager.getCommandManager().getCommandChar());
+        output.append(getController().getCommandChar());
         output.append("set <domain> to see options within a domain): ");
 
         for (String domain : manager.getDomains()) {

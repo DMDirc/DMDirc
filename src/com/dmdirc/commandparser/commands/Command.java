@@ -26,11 +26,17 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.messages.Styliser;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Represents a generic command.
  */
+@RequiredArgsConstructor
 public abstract class Command {
 
     /** The format name used for command output. */
@@ -38,6 +44,18 @@ public abstract class Command {
 
     /** The format name used for command errors. */
     protected static final String FORMAT_ERROR = "commandError";
+
+    /** The controller this command is associated with. */
+    @Getter(AccessLevel.PROTECTED)
+    private final CommandController controller;
+
+    /**
+     * Creates a new instance of Command using the default CommandManager
+     * provided by {@link CommandManager#getCommandManager()}.
+     */
+    public Command() {
+        this(CommandManager.getCommandManager());
+    }
 
     /**
      * Sends a line, if appropriate, to the specified target.
@@ -64,7 +82,7 @@ public abstract class Command {
     protected final void showUsage(final FrameContainer target,
             final boolean isSilent, final String name, final String args) {
         sendLine(target, isSilent, "commandUsage",
-                CommandManager.getCommandManager().getCommandChar(),
+                controller.getCommandChar(),
                 name, args);
     }
 

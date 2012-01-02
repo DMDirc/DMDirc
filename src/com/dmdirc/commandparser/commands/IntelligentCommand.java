@@ -27,6 +27,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Intelligent commands implement a method that provides a list of possible
  * options for them, for use (for example) by table completers.
@@ -49,6 +52,9 @@ public interface IntelligentCommand {
      *
      * @since 0.6.4
      */
+    @RequiredArgsConstructor
+    @Getter
+    @SuppressWarnings("PMD.UnusedPrivateField")
     class IntelligentCommandContext {
 
         /** The window the command is being entered in. */
@@ -60,45 +66,5 @@ public interface IntelligentCommand {
         /** The partially typed word, if any. */
         private final String partial;
 
-        /**
-         * Creates a new context with the specified arguments.
-         *
-         * @param window The window the command is being entered in
-         * @param previousArgs The previously supplied arguments, if any
-         * @param partial The partially-typed word being completed
-         */
-        public IntelligentCommandContext(final WritableFrameContainer window,
-                final List<String> previousArgs, final String partial) {
-            this.window = window;
-            this.previousArgs = previousArgs;
-            this.partial = partial;
-        }
-
-        /**
-         * Retrieves the window that the command was entered in.
-         *
-         * @return The command's input window
-         */
-        public WritableFrameContainer getWindow() {
-            return window;
-        }
-
-        /**
-         * Retrieves the previously supplied arguments.
-         *
-         * @return Any arguments supplied prior to the current one
-         */
-        public List<String> getPreviousArgs() {
-            return previousArgs;
-        }
-
-        /**
-         * Retrieves the partially typed word which is being completed.
-         *
-         * @return The partial word being completed
-         */
-        public String getPartial() {
-            return partial;
-        }
     }
 }
