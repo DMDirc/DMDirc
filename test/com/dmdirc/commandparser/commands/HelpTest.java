@@ -22,6 +22,7 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.IdentityManager;
@@ -62,7 +63,7 @@ public class HelpTest {
         final List<Object[]> res = new LinkedList<Object[]>();
 
         IdentityManager.getIdentityManager().initialise();
-        CommandManager.getCommandManager().initCommands();
+        new CommandLoader().loadCommands(CommandManager.getCommandManager());
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {

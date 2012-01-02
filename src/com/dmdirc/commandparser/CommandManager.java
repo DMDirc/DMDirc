@@ -22,54 +22,10 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.BasicServerFactory;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.channel.Ban;
-import com.dmdirc.commandparser.commands.channel.Cycle;
-import com.dmdirc.commandparser.commands.channel.Invite;
-import com.dmdirc.commandparser.commands.channel.KickReason;
-import com.dmdirc.commandparser.commands.channel.Mode;
-import com.dmdirc.commandparser.commands.channel.Names;
-import com.dmdirc.commandparser.commands.channel.Part;
-import com.dmdirc.commandparser.commands.channel.SetNickColour;
-import com.dmdirc.commandparser.commands.channel.ShowTopic;
-import com.dmdirc.commandparser.commands.chat.Me;
-import com.dmdirc.commandparser.commands.global.AliasCommand;
-import com.dmdirc.commandparser.commands.global.AllServers;
-import com.dmdirc.commandparser.commands.global.Clear;
-import com.dmdirc.commandparser.commands.global.Echo;
-import com.dmdirc.commandparser.commands.global.Exit;
-import com.dmdirc.commandparser.commands.global.Help;
-import com.dmdirc.commandparser.commands.global.Ifplugin;
-import com.dmdirc.commandparser.commands.global.LoadPlugin;
-import com.dmdirc.commandparser.commands.global.NewServer;
-import com.dmdirc.commandparser.commands.global.Notify;
-import com.dmdirc.commandparser.commands.global.OpenWindow;
-import com.dmdirc.commandparser.commands.global.ReloadActions;
-import com.dmdirc.commandparser.commands.global.ReloadIdentities;
-import com.dmdirc.commandparser.commands.global.ReloadPlugin;
-import com.dmdirc.commandparser.commands.global.SaveConfig;
-import com.dmdirc.commandparser.commands.global.Set;
-import com.dmdirc.commandparser.commands.global.UnloadPlugin;
-import com.dmdirc.commandparser.commands.server.AllChannels;
-import com.dmdirc.commandparser.commands.server.Away;
-import com.dmdirc.commandparser.commands.server.Back;
-import com.dmdirc.commandparser.commands.server.ChangeServer;
-import com.dmdirc.commandparser.commands.server.Ctcp;
-import com.dmdirc.commandparser.commands.server.Disconnect;
-import com.dmdirc.commandparser.commands.server.Ignore;
-import com.dmdirc.commandparser.commands.server.JoinChannelCommand;
-import com.dmdirc.commandparser.commands.server.Message;
-import com.dmdirc.commandparser.commands.server.Nick;
-import com.dmdirc.commandparser.commands.server.Notice;
-import com.dmdirc.commandparser.commands.server.OpenQuery;
-import com.dmdirc.commandparser.commands.server.Raw;
-import com.dmdirc.commandparser.commands.server.RawServerCommand;
-import com.dmdirc.commandparser.commands.server.Reconnect;
-import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.config.ConfigManager;
@@ -241,69 +197,6 @@ public class CommandManager implements CommandController {
         }  else {
             completer.removeEntry(TabCompletionType.COMMAND, name);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void initCommands() {
-        // Chat commands
-        registerCommand(new Me(), Me.INFO);
-
-        // Channel commands
-        registerCommand(new Ban(), Ban.INFO);
-        registerCommand(new Cycle(), Cycle.INFO);
-        registerCommand(new Invite(), Invite.INFO);
-        registerCommand(new KickReason(), KickReason.INFO);
-        registerCommand(new Mode(), Mode.INFO);
-        registerCommand(new Names(), Names.INFO);
-        registerCommand(new Part(), Part.INFO);
-        registerCommand(new SetNickColour(), SetNickColour.INFO);
-        registerCommand(new ShowTopic(), ShowTopic.INFO);
-
-        // Server commands
-        registerCommand(new AllChannels(), AllChannels.INFO);
-        registerCommand(new Away(), Away.INFO);
-        registerCommand(new Back(), Back.INFO);
-        registerCommand(new ChangeServer(), ChangeServer.INFO);
-        registerCommand(new Ctcp(), Ctcp.INFO);
-        registerCommand(new Disconnect(), Disconnect.INFO);
-        registerCommand(new Ignore(), Ignore.INFO);
-        registerCommand(new JoinChannelCommand(), JoinChannelCommand.INFO);
-        registerCommand(new Message(), Message.INFO);
-        registerCommand(new Nick(), Nick.INFO);
-        registerCommand(new Notice(), Notice.INFO);
-        registerCommand(new OpenQuery(), OpenQuery.INFO);
-        registerCommand(new Raw(), Raw.INFO);
-        registerCommand(new Reconnect(), Reconnect.INFO);
-        registerCommand(new Umode(), Umode.INFO);
-
-        registerCommand(new RawServerCommand("lusers"));
-        registerCommand(new RawServerCommand("map"));
-        registerCommand(new RawServerCommand("motd"));
-        registerCommand(new RawServerCommand("oper"));
-        registerCommand(new RawServerCommand("whois"));
-        registerCommand(new RawServerCommand("who"));
-
-        // Query commands
-
-        // Global commands
-        registerCommand(new AliasCommand(), AliasCommand.INFO);
-        registerCommand(new AllServers(), AllServers.INFO);
-        registerCommand(new Clear(), Clear.INFO);
-        registerCommand(new Echo(), Echo.INFO);
-        registerCommand(new Exit(), Exit.INFO);
-        registerCommand(new Help(), Help.INFO);
-        registerCommand(new Ifplugin(), Ifplugin.INFO);
-        registerCommand(new NewServer(new BasicServerFactory()), NewServer.INFO);
-        registerCommand(new Notify(), Notify.INFO);
-        registerCommand(new LoadPlugin(), LoadPlugin.INFO);
-        registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);
-        registerCommand(new OpenWindow(), OpenWindow.INFO);
-        registerCommand(new ReloadActions(), ReloadActions.INFO);
-        registerCommand(new ReloadIdentities(), ReloadIdentities.INFO);
-        registerCommand(new ReloadPlugin(), ReloadPlugin.INFO);
-        registerCommand(new SaveConfig(), SaveConfig.INFO);
-        registerCommand(new Set(), Set.INFO);
     }
 
     /** {@inheritDoc} */

@@ -86,11 +86,6 @@ public interface CommandController {
     char getSilenceChar();
 
     /**
-     * Instansiates the default commands.
-     */
-    void initCommands();
-
-    /**
      * Determines if the specified command is a valid channel command.
      *
      * @param command The name of the command to test

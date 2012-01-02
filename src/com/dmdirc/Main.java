@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -127,7 +128,7 @@ public final class Main {
 
         clp.applySettings();
 
-        CommandManager.getCommandManager().initCommands();
+        new CommandLoader().loadCommands(CommandManager.getCommandManager());
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pm, service);
