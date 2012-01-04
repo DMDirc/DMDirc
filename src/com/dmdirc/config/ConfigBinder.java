@@ -180,7 +180,7 @@ public class ConfigBinder {
         }
 
         if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
-            return manager.getOptionInt(binding.domain(), binding.key());
+            return manager.getOptionInt(binding.domain(), binding.key(), binding.fallbacks());
         }
 
         return null;
