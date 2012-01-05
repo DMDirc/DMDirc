@@ -44,17 +44,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
  */
+@Slf4j
 public class IdentityManager implements IdentityFactory, IdentityController {
-
-    /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(IdentityManager.class.getName());
 
     /** A singleton instance of IdentityManager. */
     private static final IdentityManager INSTANCE = new IdentityManager();
@@ -495,8 +493,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             identities.add(target, identity);
         }
 
-        LOGGER.log(Level.FINER, "Adding identity: {0} (group: {1})",
-                new Object[]{identity, target});
+        log.debug("Adding identity: {} (group: {})",
+                new Object[]{ identity, target });
 
         synchronized (listeners) {
             for (IdentityListener listener : listeners.safeGet(target)) {

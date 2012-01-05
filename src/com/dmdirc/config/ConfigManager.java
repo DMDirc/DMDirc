@@ -34,13 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The config manager manages the various config sources for each entity.
  */
+@Slf4j
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         IdentityListener {
@@ -50,10 +51,6 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
     /** Magical domain to redirect to the version identity. */
     private static final String VERSION_DOMAIN = "version";
-
-    /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(ConfigManager.class.getName());
 
     /** A list of sources for this config manager. */
     private final List<Identity> sources;
@@ -113,13 +110,11 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
         sources = IdentityManager.getIdentityManager().getIdentitiesForManager(this);
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Found " + sources.size() + " source(s) for: "
-                    + this.protocol + ", " + this.ircd + ", " + this.network
-                    + ", " + this.server + ", " + this.channel);
-        }
+        log.debug("Found {} source(s) for protocol: {}, ircd: {}, network: {}, server: {}, channel: {}",
+                new Object[] { sources.size(), protocol, ircd, network, server, chanName });
 
         for (Identity identity : sources) {
+            log.trace("Found {}", identity);
             identity.addListener(this);
         }
 
@@ -288,11 +283,8 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         final boolean result = comp != null
                 && identityTargetMatches(identity.getTarget().getData(), comp);
 
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("Comparison: " + comp + ", target: "
-                    + identity.getTarget().getData() + " (" + identity + "). Result: "
-                    + result);
-        }
+        log.trace("Checking if identity {} applies. Comparison: {}, target: {}, result: {}",
+                new Object[] { identity, comp, identity.getTarget().getData(), result });
 
         return result;
     }
@@ -393,12 +385,11 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      */
     public void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("Migrating from " + this.protocol + ", " + this.ircd
-                    + ", " + this.network + ", " + this.server + ", "
-                    + this.channel + " to " + protocol + ", " + ircd + ", "
-                    + network + ", " + server + ", " + channel);
-        }
+        log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
+                new Object[] {
+                    this.protocol, this.ircd, this.network, this.server, this.channel,
+                    protocol, ircd, network, server, channel,
+                });
 
         this.protocol = protocol;
         this.ircd = ircd;
@@ -408,7 +399,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
         for (Identity identity : new ArrayList<Identity>(sources)) {
             if (!identityApplies(identity)) {
-                LOGGER.fine("Removing identity that no longer applies: " + identity);
+                log.debug("Removing identity that no longer applies: {}", identity);
                 removeIdentity(identity);
             }
         }
@@ -416,13 +407,11 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         final List<Identity> newSources = IdentityManager.getIdentityManager()
                 .getIdentitiesForManager(this);
         for (Identity identity : newSources) {
-            LOGGER.fine("Testing new identity: " + identity);
+            log.trace("Testing new identity: {}", identity);
             checkIdentity(identity);
         }
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("New identities: " + sources);
-        }
+        log.debug("New identities: {}", sources);
     }
 
     /**

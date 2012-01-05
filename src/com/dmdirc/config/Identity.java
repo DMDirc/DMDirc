@@ -41,7 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -50,6 +51,7 @@ import java.util.logging.Level;
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
+@Slf4j
 public class Identity extends ConfigSource implements Comparable<Identity> {
 
     /** A regular expression that will match all characters illegal in file names. */
@@ -60,10 +62,6 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile".intern();
-
-    /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(Identity.class.getName());
 
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
@@ -353,7 +351,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
         synchronized (this) {
             oldValue = getOption(domain, option);
-            LOGGER.finest(getName() + ": setting " + domain + "." + option + " to " + value);
+            log.trace("{}: setting {}.{} to {} (was: {})",
+                    new Object[] { getName(), domain, option, value, oldValue });
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, don't set useless settings that are
@@ -478,11 +477,11 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * Saves this identity to disk if it has been updated.
      */
     public synchronized void save() {
-        LOGGER.log(Level.FINE, "{0}: save(); needsave = {1}", new Object[]{getName(), needSave});
+        log.info("{}: saving. Needsave = {}", new Object[]{ getName(), needSave });
 
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
-                LOGGER.log(Level.FINER, "{0}: I''m a global config", getName());
+                log.debug("{}: I'm a global config", getName());
 
                 // This branch is executed if this identity is global. In this
                 // case, we build a global config (removing ourself and the
@@ -505,10 +504,10 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                 globalConfig.removeIdentity(this);
                 globalConfig.removeIdentity(IdentityManager.getIdentityManager().getGlobalVersionIdentity());
 
-                if (LOGGER.isLoggable(Level.FINEST)) {
+                if (log.isTraceEnabled()) {
                     for (Identity source : globalConfig.getSources()) {
-                        LOGGER.log(Level.FINEST, "{0}: source: {1}",
-                                new Object[]{getName(), source.getName()});
+                        log.trace("{}: source: {}",
+                                new Object[]{ getName(), source.getName() });
                     }
                 }
 
@@ -523,9 +522,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
 
                         if (globalConfig.hasOptionString(domain, key)
                                 && globalConfig.getOption(domain, key).equals(value)) {
-                            LOGGER.log(Level.FINEST,
-                                    "{0}: found superfluous setting: {1}.{2} (= {3})",
-                                    new Object[]{getName(), domain, key, value});
+                            log.debug("{}: found superfluous setting: {}.{} (= {})",
+                                    new Object[]{ getName(), domain, key, value });
                             file.getKeyDomain(domain).remove(key);
                         }
                     }

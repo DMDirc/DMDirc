@@ -27,10 +27,10 @@ import com.dmdirc.Precondition;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
@@ -48,20 +48,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Manages all actions for the client.
  */
+@Slf4j
 public class ActionManager implements ActionController {
 
     /** A singleton instance of the ActionManager. */
     private static final ActionManager INSTANCE
             = new ActionManager(IdentityManager.getIdentityManager());
-
-    /** A logger for the action manager to use. */
-    private static final java.util.logging.Logger LOGGER
-            = java.util.logging.Logger.getLogger(ActionManager.class.getName());
 
     /** The identity manager to load configuration from. */
     private final IdentityController identityManager;
@@ -99,6 +97,7 @@ public class ActionManager implements ActionController {
             = new MapList<ActionType, ActionListener>();
 
     /** Indicates whether or not user actions should be killed (not processed). */
+    @ConfigBinding(domain="actions", key="killswitch")
     private boolean killSwitch;
 
     /**
@@ -108,7 +107,7 @@ public class ActionManager implements ActionController {
      */
     public ActionManager(final IdentityController identityManager) {
         this.identityManager = identityManager;
-        this.killSwitch = identityManager.getGlobalConfiguration().getOptionBool("actions", "killswitch");
+        this.identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
     }
 
     /**
@@ -123,6 +122,8 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void initialise() {
+        log.info("Initialising the actions manager");
+
         registerTypes(CoreActionType.values());
         registerComparisons(CoreActionComparison.values());
         registerComponents(CoreActionComponent.values());
@@ -141,17 +142,6 @@ public class ActionManager implements ActionController {
                 saveAllActions();
             }
         }, CoreActionType.CLIENT_CLOSED);
-
-        // Make sure we listen for the killswitch
-        identityManager.getGlobalConfiguration().addChangeListener("actions", "killswitch",
-                new ConfigChangeListener() {
-            /** {@inheritDoc} */
-            @Override
-            public void configChanged(final String domain, final String key) {
-                killSwitch = identityManager.getGlobalConfiguration()
-                        .getOptionBool("actions", "killswitch");
-            }
-        });
     }
 
     /** {@inheritDoc} */
@@ -167,6 +157,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void registerSetting(final String name, final String value) {
+        log.debug("Registering new action setting: {} = {}", name, value);
         identityManager.getGlobalAddonIdentity().setOption("actions", name, value);
     }
 
@@ -183,7 +174,7 @@ public class ActionManager implements ActionController {
             Logger.assertTrue(type != null);
 
             if (!types.contains(type)) {
-                LOGGER.log(Level.FINEST, "Registering action type: {0}", type);
+                log.debug("Registering action type: {}", type);
                 types.add(type);
                 typeGroups.add(type.getType().getGroup(), type);
             }
@@ -196,7 +187,7 @@ public class ActionManager implements ActionController {
         for (ActionComponent comp : comps) {
             Logger.assertTrue(comp != null);
 
-            LOGGER.log(Level.FINEST, "Registering action component: {0}", comp);
+            log.debug("Registering action component: {}", comp);
             components.add(comp);
         }
     }
@@ -207,7 +198,7 @@ public class ActionManager implements ActionController {
         for (ActionComparison comp : comps) {
             Logger.assertTrue(comp != null);
 
-            LOGGER.log(Level.FINEST, "Registering action comparison: {0}", comp);
+            log.debug("Registering action comparison: {}", comp);
             comparisons.add(comp);
         }
     }
@@ -277,7 +268,7 @@ public class ActionManager implements ActionController {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
 
-        LOGGER.log(Level.FINER, "Loading actions from directory: {0}", dir.getAbsolutePath());
+        log.debug("Loading actions from directory: {}", dir.getAbsolutePath());
 
         if (!groups.containsKey(dir.getName())) {
             groups.put(dir.getName(), new ActionGroup(dir.getName()));
@@ -293,12 +284,12 @@ public class ActionManager implements ActionController {
     public void addAction(final Action action) {
         Logger.assertTrue(action != null);
 
-        LOGGER.log(Level.FINE, "Registering action: {0}/{1} (status: {2})",
+        log.debug("Registering action: {}/{} (status: {})",
                 new Object[] { action.getGroup(), action.getName(), action.getStatus() });
 
         if (action.getStatus() != ActionStatus.FAILED) {
             for (ActionType trigger : action.getTriggers()) {
-                LOGGER.log(Level.FINER, "Action has trigger {0}", trigger);
+                log.trace("Action has trigger {}", trigger);
                 actions.add(trigger, action);
             }
         }
@@ -340,6 +331,8 @@ public class ActionManager implements ActionController {
         Logger.assertTrue(type.getType() != null);
         Logger.assertTrue(type.getType().getArity() == arguments.length);
 
+        log.debug("Calling listeners for event of type {}", type);
+
         boolean res = false;
 
         if (listeners.containsKey(type)) {
@@ -376,6 +369,8 @@ public class ActionManager implements ActionController {
         Logger.assertTrue(type != null);
 
         boolean res = false;
+
+        log.debug("Executing actions for event of type {}", type);
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {

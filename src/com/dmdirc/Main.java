@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 
 /**
  * Main class, handles initialisation.
@@ -101,13 +99,6 @@ public final class Main {
      */
     private static void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
-
-        for (Handler handler : java.util.logging.Logger.getLogger("").getHandlers()) {
-            handler.setLevel(Level.OFF); // Needs to be changed to enable debugging
-        }
-
-        // Enable finer debugging for specific components like so:
-        //java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
 

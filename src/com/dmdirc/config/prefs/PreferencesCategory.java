@@ -27,45 +27,59 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Represents one category of preferences. Categories can contain 0 or more
  * subcategories, and either 0 or more PreferencesSettings or exactly 1
  * PreferencesInterface object.
  */
+@Slf4j
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class PreferencesCategory {
 
-    /** A logger for this class. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(PreferencesCategory.class.getName());
-
     /** The title (name) of this category. */
+    @Getter
     private final String title;
 
     /** A description of this category. */
+    @Getter
     private final String description;
 
     /** The icon to use for this category. */
+    @Getter
     private final String icon;
 
     /** The warning displayed for this category, if any. */
+    @Getter
+    @Setter
     private String warning;
 
     /** Whether or not this category is inline. */
+    @Getter
     private boolean isInline;
 
     /** Whether or not to show inline categories before settings. */
+    @Getter
     private boolean inlineBefore = true;
 
     /** Our parent category, if known. */
+    @Getter
+    @Setter
     private PreferencesCategory parent;
 
     /** A list of settings in this category. */
+    @Getter
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
 
     /** A list of subcategories of this category. */
+    @Getter
     private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
 
     /** The replacement object to use for this category. */
+    @Getter
     private final PreferencesInterface object;
 
     /** A list of listeners who are interested in this category. */
@@ -145,25 +159,6 @@ public class PreferencesCategory {
     }
 
     /**
-     * Determines if this category is meant to be displayed inline or not.
-     *
-     * @return True if this category should be shown inline, false otherwise
-     */
-    public boolean isInline() {
-        return isInline;
-    }
-
-    /**
-     * Determines whether this category wants inline subcats to be displayed
-     * before the settings, or after.
-     *
-     * @return True if subcats should be displayed first, false otherwise.
-     */
-    public boolean isInlineBefore() {
-        return inlineBefore;
-    }
-
-    /**
      * Adds the specified setting to this category.
      *
      * @param setting The setting to be added
@@ -193,72 +188,6 @@ public class PreferencesCategory {
     }
 
     /**
-     * Retrieves the description of this category.
-     *
-     * @return This category's description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Retrieves the settings in this category.
-     *
-     * @return This category's settings
-     */
-    public List<PreferencesSetting> getSettings() {
-        return settings;
-    }
-
-    /**
-     * Retrieves the subcategories of this category.
-     *
-     * @return This category's subcategories
-     */
-    public List<PreferencesCategory> getSubcats() {
-        return subcats;
-    }
-
-    /**
-     * Retrieves the title of this category.
-     *
-     * @return This category's title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Retrieves the icon to use for this category.
-     *
-     * @return This category's icon
-     * @since 0.6.3m1
-     */
-    public String getIcon() {
-        return icon;
-    }
-
-    /**
-     * Retrieves the warning for this category, if any.
-     *
-     * @return This category's warning message, or null if one doesn't exist
-     * @since 0.6.3
-     */
-    public String getWarning() {
-        return warning;
-    }
-
-    /**
-     * Sets the warning that this preferences category will display.
-     *
-     * @param warning The new warning, or null to remove any previous warning
-     * @since 0.6.3
-     */
-    public void setWarning(final String warning) {
-        this.warning = warning;
-    }
-
-    /**
      * Determines if this category has a replacement object.
      *
      * @return True if the category has a replacement object, false otherwise
@@ -266,16 +195,6 @@ public class PreferencesCategory {
      */
     public boolean hasObject() {
         return object != null;
-    }
-
-    /**
-     * Retrieves this category's replacement object.
-     *
-     * @return This category's replacement object.
-     * @see #hasObject()
-     */
-    public PreferencesInterface getObject() {
-        return object;
     }
 
     /**
@@ -291,36 +210,16 @@ public class PreferencesCategory {
     }
 
     /**
-     * Sets this category's parent.
-     *
-     * @param parent The parent of this category
-     * @since 0.6.3m1
-     */
-    public void setParent(final PreferencesCategory parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * Retrieves the parent of this category.
-     *
-     * @return This category's parent, or null if it's an orphan
-     * @since 0.6.3m1
-     */
-    public PreferencesCategory getParent() {
-        return parent;
-    }
-
-    /**
      * Saves all the settings in this category.
      *
      * @return Is a restart needed after saving?
      */
     public boolean save() {
-        LOGGER.fine(getTitle() + ": save method called");
+        log.debug("{} save method called", getTitle());
 
         boolean restart = false;
         for (PreferencesSetting setting : settings) {
-            LOGGER.finest(getTitle() + ": saving setting '" + setting.getTitle() + "'");
+            log.trace("{}: saving setting '{}'", getTitle(), setting.getTitle());
             if (setting.save() && setting.isRestartNeeded()) {
                 restart = true;
             }
