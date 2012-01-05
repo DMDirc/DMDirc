@@ -331,7 +331,7 @@ public class ActionManager implements ActionController {
         Logger.assertTrue(type.getType() != null);
         Logger.assertTrue(type.getType().getArity() == arguments.length);
 
-        log.debug("Calling listeners for event of type {}", type);
+        log.trace("Calling listeners for event of type {}", type);
 
         boolean res = false;
 
@@ -370,7 +370,7 @@ public class ActionManager implements ActionController {
 
         boolean res = false;
 
-        log.debug("Executing actions for event of type {}", type);
+        log.trace("Executing actions for event of type {}", type);
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {

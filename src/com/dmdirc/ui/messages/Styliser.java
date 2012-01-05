@@ -24,8 +24,6 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -228,11 +226,6 @@ public class Styliser implements ConfigChangeListener {
                                 attribs, position == 0);
                     }
                 }
-
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.CLIENT_STRING_STYLED, null, styledDoc,
-                        ooffset, styledDoc.getLength() - ooffset);
-
             } catch (BadLocationException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
                         "Unable to insert styled string: " + ex.getMessage());
