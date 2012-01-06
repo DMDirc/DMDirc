@@ -19,6 +19,7 @@
             <url url="http://www.dmdirc.com/private/DMDirc.pvk"/>
             <url url="http://www.dmdirc.com/private/DMDirc.spc"/>
         </get>
+	<get dest="addons.api.key" username="${username}" password="${password}" src="http://www.dmdirc.com/private/addons.api.key"/>
     </target>
 
     <target name="-post-clean">

@@ -34,3 +34,4 @@ __history
 /lib/clover.license
 /.clover
 /test_profile
+/*.key
