@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.UIManager;
@@ -116,10 +117,23 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         }
     }
 
-    /**
-     * Adds the stylised string to the canvas.
+     /**
+     * Adds the stylised strings to the canvas.  Each part of the array is
+     * treated as a separate namespace for stylising but are all added on the
+     * same line.
      *
-     * @param text stylised string to add to the text
+     * @param text stylised string to add to the document
+     */
+    public void addText(final String[] text) {
+        addText(Arrays.asList(new String[][]{text, }));
+    }
+
+    /**
+     * Adds the stylised strings to the canvas.  Each part of the array is
+     * treated as a separate namespace for stylising but are all added on the
+     * same line.
+     *
+     * @param text stylised strings to add to the document
      */
     public void addText(final List<String[]> text) {
         final int start;
@@ -133,9 +147,11 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Adds the stylised string to the canvas.
+     * Adds the stylised string to the canvas.  Each part of the array is
+     * treated as a separate namespace for stylising but are all added on the
+     * same line.
      *
-     * @param text stylised string to add to the text
+     * @param text stylised string to add to the document
      * @param lineHeights line heights for the new lines
      */
     public void addText(final List<String[]> text,
