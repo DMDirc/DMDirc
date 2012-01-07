@@ -332,7 +332,7 @@ public class Server extends WritableFrameContainer
 
             parser.connect();
             if (parser instanceof ThreadedParser) {
-                ((ThreadedParser)parser).getControlThread().setName("Parser - " + connectAddress.toString());
+                ((ThreadedParser)parser).getControlThread().setName("Parser - " + connectAddress.getHost());
             }
         }
 
