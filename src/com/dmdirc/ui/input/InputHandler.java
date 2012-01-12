@@ -278,12 +278,19 @@ public abstract class InputHandler implements ConfigChangeListener {
 
     /** Resets the composition state to idle and notifies the parent if relevant. */
     private void cancelTypingNotification() {
+        if (compositionTimer != null) {
+            log.debug("Cancelling composition timer");
+            compositionTimer.cancel();
+        }
+
+        log.debug("Cancelling typing notification");
         setCompositionState(CompositionState.IDLE);
     }
 
     /** Updates the composition state to typing and starts/resets the idle timer. */
     private void updateTypingNotification() {
         if (compositionTimer != null) {
+            log.debug("Cancelling composition timer");
             compositionTimer.cancel();
         }
 
@@ -296,11 +303,13 @@ public abstract class InputHandler implements ConfigChangeListener {
             }
         }, TYPING_TIMEOUT);
 
+        log.debug("Setting composition state to typing. Timer scheduled for {}", TYPING_TIMEOUT);
         setCompositionState(CompositionState.TYPING);
     }
 
     /** Updates the composition state to "entered text". */
     private void timeoutTypingNotification() {
+        log.debug("Composition state timeout reached");
         setCompositionState(CompositionState.ENTERED_TEXT);
     }
 
