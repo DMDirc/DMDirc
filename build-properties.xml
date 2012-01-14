@@ -2,7 +2,7 @@
 <project name="DMDirc-properties" default="default" basedir=".">
     <description>Automatically initialises build properties</description>
 
-    <condition property="private.property.exists">
+    <condition property="private.properties.exists">
         <available file="nbproject/private/private.properties"/>
     </condition>
     
