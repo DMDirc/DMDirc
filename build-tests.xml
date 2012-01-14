@@ -5,7 +5,6 @@
     <property name="clover.jar" location="lib/clover.jar"/>
     <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
     <taskdef resource="cloverjunitlib.xml" classpath="${clover.jar}"/>
-    <available file="/usr/bin/xvfb-run" property="has.xvfb"/>
 
     <condition property="clover.installed">
      <and>
@@ -80,42 +79,6 @@
             </fileset>
             <report todir="${test.reports}" />
         </junitreport>
-    </target>
-
-    <target name="test" depends="check-use-xvfb, -test-xvfb, -test-no-xvfb"/>
-
-    <target name="check-use-xvfb">
-        <condition property="use.xvfb">
-            <and>
-                <not>
-                    <equals arg1="${xvfb.disable}" arg2="true" />
-                </not>
-                <equals arg1="${has.xvfb}" arg2="true" />
-            </and>
-        </condition>
-    </target>
-
-    <target name="-test-xvfb" if="use.xvfb">
-        <exec executable="/usr/bin/xvfb-run">
-            <arg value="-a"/>
-            <arg value="-s"/>
-            <arg value="-screen 0 1280x1024x24"/>
-            <arg value="-w"/>
-            <arg value="5"/>
-            <arg value="/usr/bin/ant"/>
-            <arg value="do-xvfb-tests"/>
-        </exec>
-    </target>
-
-    <target name="do-xvfb-tests" depends="with.clover,do-real-test,clover.xml,clover.snapshot"/>
-
-    <target name="-test-no-xvfb" unless="use.xvfb">
-        <antcall>
-            <target name="with.clover"/>
-            <target name="do-real-test"/>
-            <target name="clover.xml"/>
-            <target name="clover.snapshot"/>
-        </antcall>
     </target>
 
     <target name="test-html" depends="with.clover,compile-test,test,clover.html,clover.snapshot"
