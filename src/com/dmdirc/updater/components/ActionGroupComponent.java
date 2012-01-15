@@ -24,32 +24,21 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Update component for action groups.
  */
+@RequiredArgsConstructor
 public class ActionGroupComponent implements UpdateComponent {
 
     /** The group that this component represents. */
     private final ActionGroup group;
-
-    /**
-     * Creates a new ActionGroupComponent for the specified action group.
-     *
-     * @param group The action group this component is for
-     */
-    public ActionGroupComponent(final ActionGroup group) {
-        this.group = group;
-
-        if (group.getComponent() != -1 && group.getVersion() != null) {
-            UpdateChecker.getManager().addComponent(this);
-        }
-    }
 
     /** {@inheritDoc} */
     @Override

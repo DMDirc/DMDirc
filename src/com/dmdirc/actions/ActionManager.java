@@ -37,7 +37,9 @@ import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.components.ActionGroupComponent;
+import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
@@ -246,15 +248,19 @@ public class ActionManager implements ActionController {
             }
         }
 
-        registerComponents();
+        registerComponents(UpdateChecker.getManager());
     }
 
     /**
      * Creates new ActionGroupComponents for each action group.
+     *
+     * @param updateManager The update manager to register components with
      */
-    private void registerComponents() {
+    private void registerComponents(final UpdateManager updateManager) {
         for (ActionGroup group : groups.values()) {
-            new ActionGroupComponent(group);
+            if (group.getComponent() != -1 && group.getVersion() != null) {
+                updateManager.addComponent(new ActionGroupComponent(group));
+            }
         }
     }
 

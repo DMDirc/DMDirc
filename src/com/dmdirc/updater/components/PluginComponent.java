@@ -25,15 +25,17 @@ package com.dmdirc.updater.components;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
 import java.io.File;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * An update component for plugins.
  */
+@RequiredArgsConstructor
 public class PluginComponent implements UpdateComponent {
 
     /** The config to use. */
@@ -41,21 +43,6 @@ public class PluginComponent implements UpdateComponent {
 
     /** The plugin this component is for. */
     private final PluginInfo plugin;
-
-    /**
-     * Creates a new PluginComponent for the specified plugin, to enable it to
-     * be updated automatically.
-     *
-     * @param plugin The plugin to be added to the updater
-     */
-    public PluginComponent(final PluginInfo plugin) {
-        this.plugin = plugin;
-
-        if ((plugin.getMetaData().getUpdaterId() > 0 && plugin.getMetaData().getVersion().isValid())
-                || (CONFIG.hasOptionInt("plugin-addonid", plugin.getMetaData().getName()))) {
-            UpdateChecker.getManager().addComponent(this);
-        }
-    }
 
     /** {@inheritDoc} */
     @Override

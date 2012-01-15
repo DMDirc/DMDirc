@@ -31,6 +31,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.util.collections.MapList;
 
@@ -244,7 +245,12 @@ public class PluginManager implements ActionListener, ServiceManager {
                         + " is the same as " + existing.getFilename() + ")");
                 return false;
             }
-            new PluginComponent(pluginInfo);
+
+            if ((metadata.getUpdaterId() > 0 && metadata.getVersion().isValid())
+                    || (IdentityManager.getIdentityManager().getGlobalConfiguration()
+                    .hasOptionInt("plugin-addonid", metadata.getName()))) {
+                UpdateChecker.getManager().addComponent(new PluginComponent(pluginInfo));
+            }
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
