@@ -22,25 +22,21 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.Precondition;
+import com.dmdirc.Main;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.components.ClientComponent;
-import com.dmdirc.updater.components.DefaultsComponent;
-import com.dmdirc.updater.components.ModeAliasesComponent;
-import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.io.Downloader;
+import com.dmdirc.updater.manager.CachingUpdateManager;
+import com.dmdirc.updater.manager.DMDircUpdateManager;
+import com.dmdirc.updater.manager.UpdateStatus;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
+
+import lombok.Getter;
 
 /**
  * The update checker contacts the DMDirc website to check to see if there
@@ -48,66 +44,18 @@ import java.util.concurrent.Semaphore;
  */
 public final class UpdateChecker implements Runnable {
 
-    /** The possible states for the checker. */
-    public static enum STATE {
-        /** Nothing's happening. */
-        IDLE,
-        /** Currently checking for updates. */
-        CHECKING,
-        /** Currently updating. */
-        UPDATING,
-        /** New updates are available. */
-        UPDATES_AVAILABLE,
-        /** Updates installed but restart needed. */
-        RESTART_REQUIRED,
-    }
-
     /** The domain to use for updater settings. */
     private static final String DOMAIN = "updater";
 
     /** Semaphore used to prevent multiple invocations. */
     private static final Semaphore MUTEX = new Semaphore(1);
 
-    /** A list of components that we're to check. */
-    private static final List<UpdateComponent> COMPONENTS
-            = new ArrayList<UpdateComponent>();
-
     /** Our timer. */
     private static Timer timer = new Timer("Update Checker Timer");
 
-    /** The list of updates that are available. */
-    private static final List<Update> UPDATES = new ArrayList<Update>();
-
-    /** A list of our listeners. */
-    private static final ListenerList LISTENERS = new ListenerList();
-
-    /** Our current state. */
-    private static STATE status = STATE.IDLE;
-
-    /** A reference to the listener we use for update status changes. */
-    private static final UpdateListener LISTENER = new UpdateListener() {
-        @Override
-        public void updateStatusChange(final Update update, final UpdateStatus status) {
-            if (status == UpdateStatus.INSTALLED
-                || status == UpdateStatus.ERROR) {
-                removeUpdate(update);
-            } else if (status == UpdateStatus.RESTART_NEEDED && UpdateChecker.status
-                    == STATE.UPDATING) {
-                doNextUpdate();
-            }
-        }
-
-        @Override
-        public void updateProgressChange(final Update update, final float progress) {
-            // Don't care
-        }
-    };
-
-    static {
-        COMPONENTS.add(new ClientComponent());
-        COMPONENTS.add(new ModeAliasesComponent());
-        COMPONENTS.add(new DefaultsComponent());
-    }
+    /** The update manager to use. */
+    @Getter
+    private static CachingUpdateManager manager;
 
     /** {@inheritDoc} */
     @Override
@@ -120,8 +68,7 @@ public final class UpdateChecker implements Runnable {
 
         final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
-        if (!config.getOptionBool(DOMAIN, "enable")
-                || status == STATE.UPDATING) {
+        if (!config.getOptionBool(DOMAIN, "enable")) {
             IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption(DOMAIN,
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
@@ -130,64 +77,7 @@ public final class UpdateChecker implements Runnable {
             return;
         }
 
-        setStatus(STATE.CHECKING);
-
-        // Remove any existing update that isn't waiting for a restart.
-        for (Update update : new ArrayList<Update>(UPDATES)) {
-            if (update.getStatus() != UpdateStatus.RESTART_NEEDED) {
-                UPDATES.remove(update);
-            }
-        }
-
-        final StringBuilder data = new StringBuilder();
-        final String updateChannel = config.getOption(DOMAIN, "channel");
-
-        // Build the data string to send to the server
-        for (UpdateComponent component : COMPONENTS) {
-            if (isEnabled(component)) {
-                data.append(component.getName());
-                data.append(',');
-                data.append(updateChannel);
-                data.append(',');
-                data.append(component.getVersion());
-                data.append(';');
-            }
-        }
-
-        // If we actually have components to check
-        if (data.length() > 0) {
-            try {
-                final List<String> response
-                    = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
-
-                for (String line : response) {
-                    checkLine(line);
-                }
-            } catch (MalformedURLException ex) {
-                Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW,
-                        "I/O error when checking for updates: " + ex.getMessage());
-            }
-        }
-
-        if (UPDATES.isEmpty()) {
-            setStatus(STATE.IDLE);
-        } else {
-            boolean available = false;
-
-            // Check to see if the updates are outstanding or just waiting for
-            // a restart
-            for (Update update : UPDATES) {
-                if (update.getStatus() == UpdateStatus.PENDING) {
-                    available = true;
-                }
-            }
-
-            setStatus(available ? STATE.UPDATES_AVAILABLE : STATE.RESTART_REQUIRED);
-        }
-
-        updateCachedUpdates();
+        manager.checkForUpdates();
 
         MUTEX.release();
 
@@ -197,67 +87,17 @@ public final class UpdateChecker implements Runnable {
         UpdateChecker.initTimer();
 
         if (config.getOptionBool(DOMAIN, "autoupdate")) {
-            applyUpdates();
-        }
-    }
-
-    /**
-     * Updates the cache of pending updates in the configuration file.
-     *
-     * @since 0.6.5
-     */
-    private static void updateCachedUpdates() {
-       final List<String> stringCopies = new ArrayList<String>();
-
-        for (Update update : UPDATES) {
-            // Only include outstanding updates
-            if (update.getStatus() == UpdateStatus.PENDING
-                    || update.getStatus() == UpdateStatus.ERROR) {
-                stringCopies.add(update.getStringRepresentation());
-            }
-        }
-
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption(DOMAIN, "updates", stringCopies);
-    }
-
-    /**
-     * Checks the specified line to determine the message from the update server.
-     *
-     * @param line The line to be checked
-     */
-    private static void checkLine(final String line) {
-        if (line.startsWith("outofdate")) {
-            doUpdateAvailable(line);
-        } else if (line.startsWith("error")) {
-            String errorMessage = "Error when checking for updates: " + line.substring(6);
-            final String[] bits = line.split(" ");
-            if (bits.length > 2) {
-                final UpdateComponent thisComponent = findComponent(bits[2]);
-
-                if (thisComponent instanceof FileComponent) {
-                    errorMessage = errorMessage + " (" + ((FileComponent) thisComponent)
-                            .getFileName() + ")";
+            for (UpdateComponent component : manager.getComponents()) {
+                if (manager.getStatus(component) == UpdateStatus.UPDATE_PENDING) {
+                    manager.install(component);
                 }
             }
-            Logger.userError(ErrorLevel.LOW, errorMessage);
-        } else if (!line.startsWith("uptodate")) {
-            Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
-                    + line);
-        }
-    }
-
-    /**
-     * Informs the user that there's an update available.
-     *
-     * @param line The line that was received from the update server
-     */
-    private static void doUpdateAvailable(final String line) {
-        final Update update = new Update(line);
-
-        if (update.getUrl() != null) {
-            UPDATES.add(update);
-            update.addUpdateListener(LISTENER);
+        } else if (config.getOptionBool(DOMAIN, "autodownload")) {
+            for (UpdateComponent component : manager.getComponents()) {
+                if (manager.getStatus(component) == UpdateStatus.UPDATE_PENDING) {
+                    manager.retrieve(component);
+                }
+            }
         }
     }
 
@@ -266,14 +106,8 @@ public final class UpdateChecker implements Runnable {
      * frequency specified in the config.
      */
     public static void init() {
-        for (String update : IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOptionList(DOMAIN, "updates")) {
-            checkLine(update);
-        }
-
-        if (!UPDATES.isEmpty()) {
-            setStatus(STATE.UPDATES_AVAILABLE);
-        }
+        manager = new DMDircUpdateManager(IdentityManager.getIdentityManager()
+                .getGlobalConfiguration(), Main.getConfigDir(), 3);
 
         initTimer();
     }
@@ -318,174 +152,6 @@ public final class UpdateChecker implements Runnable {
      */
     public static void checkNow() {
         new Thread(new UpdateChecker(), "Update Checker thread").start();
-    }
-
-    /**
-     * Registers an update component.
-     *
-     * @param component The component to be registered
-     */
-    public static void registerComponent(final UpdateComponent component) {
-        COMPONENTS.add(component);
-    }
-
-    /**
-     * Unregisters an update component with the specified name.
-     *
-     * @param name The name of the component to be removed
-     */
-    public static void removeComponent(final String name) {
-        UpdateComponent target = null;
-
-        for (UpdateComponent component : COMPONENTS) {
-            if (name.equals(component.getName())) {
-                target = component;
-            }
-        }
-
-        if (target != null) {
-            COMPONENTS.remove(target);
-        }
-    }
-
-    /**
-     * Finds and returns the component with the specified name.
-     *
-     * @param name The name of the component that we're looking for
-     * @return The corresponding UpdateComponent, or null if it's not found
-     */
-    @Precondition("The specified name is not null")
-    public static UpdateComponent findComponent(final String name) {
-        assert name != null;
-
-        for (UpdateComponent component : COMPONENTS) {
-            if (name.equals(component.getName())) {
-                return component;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Removes the specified update from the list. This should be called when
-     * the update has finished, has encountered an error, or the user does not
-     * want the update to be performed.
-     *
-     * @param update The update to be removed
-     */
-    public static void removeUpdate(final Update update) {
-        update.removeUpdateListener(LISTENER);
-        UPDATES.remove(update);
-
-        if (UPDATES.isEmpty()) {
-            setStatus(STATE.IDLE);
-            updateCachedUpdates();
-        } else if (status == STATE.UPDATING) {
-            doNextUpdate();
-        }
-    }
-
-    /**
-     * Downloads and installs all known updates.
-     */
-    public static void applyUpdates() {
-        if (!UPDATES.isEmpty()) {
-            setStatus(STATE.UPDATING);
-            doNextUpdate();
-        }
-    }
-
-    /**
-     * Finds and applies the next pending update, or sets the state to idle
-     * / restart needed if appropriate.
-     */
-    private static void doNextUpdate() {
-        boolean restart = false;
-
-        for (Update update : UPDATES) {
-            if (update.getStatus() == UpdateStatus.PENDING) {
-                update.doUpdate();
-                return;
-            } else if (update.getStatus() == UpdateStatus.RESTART_NEEDED) {
-                restart = true;
-            }
-        }
-
-        setStatus(restart ? STATE.RESTART_REQUIRED : STATE.IDLE);
-        updateCachedUpdates();
-    }
-
-    /**
-     * Retrieves a list of components registered with the checker.
-     *
-     * @return A list of registered components
-     */
-    public static List<UpdateComponent> getComponents() {
-        return COMPONENTS;
-    }
-
-    /**
-     * Retrives a list of available updates from the checker.
-     *
-     * @return A list of available updates
-     */
-    public static List<Update> getAvailableUpdates() {
-        return UPDATES;
-    }
-
-
-    /**
-     * Adds a new status listener to the update checker.
-     *
-     * @param listener The listener to be added
-     */
-    public static void addListener(final UpdateCheckerListener listener) {
-        LISTENERS.add(UpdateCheckerListener.class, listener);
-    }
-
-    /**
-     * Removes a status listener from the update checker.
-     *
-     * @param listener The listener to be removed
-     */
-    public static void removeListener(final UpdateCheckerListener listener) {
-        LISTENERS.remove(UpdateCheckerListener.class, listener);
-    }
-
-    /**
-     * Retrieves the current status of the update checker.
-     *
-     * @return The update checker's current status
-     */
-    public static STATE getStatus() {
-        return status;
-    }
-
-    /**
-     * Sets the status of the update checker to the specified new status.
-     *
-     * @param newStatus The new status of this checker
-     */
-    private static void setStatus(final STATE newStatus) {
-        status = newStatus;
-
-        for (UpdateCheckerListener myListener : LISTENERS.get(UpdateCheckerListener.class)) {
-            myListener.statusChanged(newStatus);
-        }
-    }
-
-    /**
-     * Checks is a specified component is enabled.
-     *
-     * @param component Update component to check state
-     * @return true iif the update component is enabled
-     */
-    public static boolean isEnabled(final UpdateComponent component) {
-        return !IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .hasOptionBool(DOMAIN, "enable-" + component.getName())
-                || IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOptionBool(DOMAIN, "enable-" + component.getName());
     }
 
 }

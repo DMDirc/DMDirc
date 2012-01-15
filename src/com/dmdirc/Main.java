@@ -110,6 +110,8 @@ public final class Main {
             handleInvalidConfigFile();
         }
 
+        UpdateChecker.init();
+
         MessageSinkManager.getManager().loadDefaultSinks();
 
         final PluginManager pm = PluginManager.getPluginManager();
@@ -143,8 +145,6 @@ public final class Main {
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.CLIENT_OPENED, null);
-
-        UpdateChecker.init();
 
         clp.processArguments();
 

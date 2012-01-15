@@ -20,18 +20,29 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.checking;
+
+import com.dmdirc.updater.UpdateComponent;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
- * This interface is implemented by components that provide options for
- * upgrades.
+ *A {@link CheckResultConsolidator} defines a strategy for consolidating
+ * multiple sets of {@link UpdateCheckResult}s provided by different
+ * {@link UpdateCheckStrategy}s.
  */
-public interface OptionsComponent {
+public interface CheckResultConsolidator {
 
     /**
-     * Retrieves the options for this component.
+     * Consolidates the collection of results into a single mapping. The
+     * resulting map should contain one entry for each distinct component
+     * contained in any of the providing result sets, mapped to the best
+     * {@link UpdateCheckResult} according to this strategy.
      *
-     * @return Array containing the options for this component
+     * @param results The results to be consolidated
+     * @return A map of {@link UpdateComponent}s to their consolidated result
      */
-    String[] getOptions();
+    Map<UpdateComponent, UpdateCheckResult> consolidate(
+            Collection<Map<UpdateComponent, UpdateCheckResult>> results);
 }

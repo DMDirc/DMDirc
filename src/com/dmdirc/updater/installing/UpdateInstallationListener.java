@@ -20,27 +20,36 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.installing;
+
+import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Defines the method that must be implemented by update listeners.
+ * Interface for objects interested in the progress of an installation attempt
+ * performed by an {@link UpdateInstallationStrategy}.
  */
-public interface UpdateListener {
+public interface UpdateInstallationListener {
 
     /**
-     * Called when the state of the update has changed.
+     * Called when the progress of an install has changed.
      *
-     * @param update The update in question
-     * @param status The new status of the update
+     * @param component The component being installed
+     * @param progress The percentage progress completed (0-100)
      */
-    void updateStatusChange(Update update, UpdateStatus status);
+    void installProgressChanged(UpdateComponent component, double progress);
 
     /**
-     * Called when the progress of the current update state has changed.
+     * Called when an installation has failed.
      *
-     * @param update The update in question
-     * @param progress The progress (as a percentage) of the update
+     * @param component The component that failed to install
      */
-    void updateProgressChange(Update update, float progress);
+    void installFailed(UpdateComponent component);
+
+    /**
+     * Called when an installation has finished.
+     *
+     * @param component The component that was successfully installed
+     */
+    void installCompleted(UpdateComponent component);
 
 }

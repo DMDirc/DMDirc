@@ -25,7 +25,6 @@ package com.dmdirc.updater.components;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.updater.FileComponent;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
@@ -35,7 +34,7 @@ import java.io.File;
 /**
  * An update component for plugins.
  */
-public class PluginComponent implements UpdateComponent, FileComponent {
+public class PluginComponent implements UpdateComponent {
 
     /** The config to use. */
     private static final ConfigManager CONFIG = IdentityManager.getIdentityManager().getGlobalConfiguration();
@@ -54,8 +53,7 @@ public class PluginComponent implements UpdateComponent, FileComponent {
 
         if ((plugin.getMetaData().getUpdaterId() > 0 && plugin.getMetaData().getVersion().isValid())
                 || (CONFIG.hasOptionInt("plugin-addonid", plugin.getMetaData().getName()))) {
-            UpdateChecker.removeComponent(getName());
-            UpdateChecker.registerComponent(this);
+            UpdateChecker.getManager().addComponent(this);
         }
     }
 
@@ -136,11 +134,6 @@ public class PluginComponent implements UpdateComponent, FileComponent {
         }
 
         return returnCode;
-    }
-
-    @Override
-    public String getFileName() {
-        return plugin.getFilename();
     }
 
 }

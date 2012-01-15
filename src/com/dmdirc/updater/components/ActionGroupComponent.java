@@ -47,8 +47,7 @@ public class ActionGroupComponent implements UpdateComponent {
         this.group = group;
 
         if (group.getComponent() != -1 && group.getVersion() != null) {
-            UpdateChecker.removeComponent(getName());
-            UpdateChecker.registerComponent(this);
+            UpdateChecker.getManager().addComponent(this);
         }
     }
 

@@ -20,47 +20,25 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.manager;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.updater.components.ClientComponent;
+/**
+ * Enumerates the possible states of a {@link CachingUpdateManager}. The
+ * statuses are ordered according to priority, with the first being the
+ * highest priority.
+ */
+public enum UpdateManagerStatus {
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+    /** The manager is currently performing some task. */
+    WORKING,
 
-import static org.junit.Assert.*;
+    /** The manager is {@link #IDLE} but there are updates available. */
+    IDLE_UPDATE_AVAILABLE,
 
-public class UpdateTest {
+    /** The manager is {@link #IDLE} but a restart is needed. */
+    IDLE_RESTART_NEEDED,
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-    }
-
-    private static final String SUBJECT = "outofdate client channel date version url";
-
-    private Update update;
-
-    @Before
-    public void setUp() throws Exception {
-        UpdateChecker.init();
-        update = new Update(SUBJECT);
-    }
-
-    @Test
-    public void testGetComponent() {
-        assertTrue(update.getComponent() instanceof ClientComponent);
-    }
-
-    @Test
-    public void testGetRemoteVersion() {
-        assertEquals("version", update.getRemoteVersion());
-    }
-
-    @Test
-    public void testGetUrl() {
-        assertEquals("url", update.getUrl());
-    }
+    /** The manager is idle and not performing any activity. */
+    IDLE,
 
 }

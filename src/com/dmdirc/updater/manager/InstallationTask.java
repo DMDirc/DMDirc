@@ -20,41 +20,30 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.manager;
+
+import com.dmdirc.updater.installing.UpdateInstallationStrategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
+
+import lombok.RequiredArgsConstructor;
 
 /**
- * Represents the status of an update.
+ * Task which installs an update using a given
+ * {@link UpdateInstallationStrategy}.
  */
-public enum UpdateStatus {
+@RequiredArgsConstructor
+public class InstallationTask implements Runnable {
 
-    /** Update pending. */
-    PENDING("Pending"),
-    /** Update downloading. */
-    DOWNLOADING("Downloading"),
-    /** Update installing. */
-    INSTALLING("Installing"),
-    /** Update installed. */
-    INSTALLED("Installed"),
-    /** Error updating. */
-    ERROR("Error"),
-    /** Update requires restart. */
-    RESTART_NEEDED("Restart needed");
+    /** The strategy to use to install the update. */
+    private final UpdateInstallationStrategy strategy;
 
-    /** Friendly name. */
-    private final String friendlyName;
-
-    /**
-     * Instantiates a new update status.
-     *
-     * @param friendlyName Friendly name for the status
-     */
-    UpdateStatus(final String friendlyName) {
-        this.friendlyName = friendlyName;
-    }
+    /** The update which will be installed. */
+    private final UpdateRetrievalResult result;
 
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        return friendlyName;
+    public void run() {
+        strategy.install(result);
     }
+
 }

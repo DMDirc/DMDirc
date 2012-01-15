@@ -1,0 +1,193 @@
+/*
+ * Copyright (c) 2006-2012 DMDirc Developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.updater.checking;
+
+import com.dmdirc.updater.UpdateChannel;
+import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.Version;
+import com.dmdirc.util.io.Downloader;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * A strategy which sends a request to the DMDirc update service for
+ * information.
+ */
+@Slf4j
+@AllArgsConstructor
+public class DMDircCheckStrategy implements UpdateCheckStrategy {
+
+    /** The URL to request to check for updates. */
+    private static final String UPDATE_URL = "http://updates.dmdirc.com/";
+
+    /** The update channel to check for updates on. */
+    @Setter
+    private UpdateChannel channel;
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<UpdateComponent, UpdateCheckResult> checkForUpdates(final Collection<UpdateComponent> components) {
+        final Map<UpdateComponent, UpdateCheckResult> res
+                = new HashMap<UpdateComponent, UpdateCheckResult>();
+        final Map<String, UpdateComponent> names = getComponentsByName(components);
+
+        try {
+            final List<String> response = Downloader.getPage(UPDATE_URL, getPayload(components));
+            log.trace("Response from update server: {}", response);
+
+            for (String line : response) {
+                final UpdateComponent component = names.get(getComponent(line));
+
+                if (component == null) {
+                    log.warn("Unable to extract component from line: {}", line);
+                    continue;
+                }
+
+                final UpdateCheckResult result = parseResponse(component, line);
+
+                if (result != null) {
+                    res.put(component, result);
+                }
+            }
+        } catch (IOException ex) {
+            log.warn("I/O exception when checking for updates", ex);
+        }
+
+        return res;
+    }
+
+    /**
+     * Builds the data payload which will be sent to the update server.
+     * Specifically, iterates over each component and appends their name,
+     * the channel name, and the component's version number.
+     *
+     * @param components The components to be added to the payload
+     * @return A string which can be posted to the DMDirc update server
+     */
+    private String getPayload(final Collection<UpdateComponent> components) {
+        final StringBuilder data = new StringBuilder("data=");
+
+        for (UpdateComponent component : components) {
+            log.trace("Adding payload info for component {} (version {})",
+                    component.getName(), component.getVersion());
+
+            data.append(component.getName());
+            data.append(',');
+            data.append(channel.name());
+            data.append(',');
+            data.append(component.getVersion());
+            data.append(';');
+        }
+
+        log.debug("Constructed update payload: {}", data);
+
+        return data.toString();
+    }
+
+    /**
+     * Extracts the name of the component a given response line contains.
+     *
+     * @param line The line to be parsed
+     * @return The name of the component extracted from the given line
+     */
+    private String getComponent(final String line) {
+        final String[] parts = line.split(" ");
+
+        if ("outofdate".equals(parts[0])) {
+            return parts[1];
+        }
+
+        return parts[2];
+    }
+
+    /**
+     * Checks the specified line to determine the message from the update server.
+     *
+     * @param component The component the line refers to
+     * @param line The line to be checked
+     */
+    private UpdateCheckResult parseResponse(final UpdateComponent component,
+            final String line) {
+        final String[] parts = line.split(" ");
+
+        if ("outofdate".equals(parts[0])) {
+            return parseOutOfDateResponse(component, parts);
+        } else if ("uptodate".equals(parts[0])) {
+            return new BaseCheckResult(component);
+        } else if ("error".equals(parts[0])) {
+            log.warn("Error received from update server: {}", line);
+        } else {
+            log.error("Unknown update line received from server: {}", line);
+        }
+
+        return null;
+    }
+
+    /**
+     * Parses an "outofdate" response from the server. Extracts the URL,
+     * remote version and remote friendly version into a
+     * {@link BaseDownloadableResult}.
+     *
+     * @param parts The tokenised parts of the response line
+     * @return A corresponding {@link UpdateCheckResult} or null on failure
+     */
+    private UpdateCheckResult parseOutOfDateResponse(
+            final UpdateComponent component, final String[] parts) {
+        try {
+            return new BaseDownloadableResult(component, new URL(parts[5]),
+                    parts[4], new Version(parts[3]));
+        } catch (MalformedURLException ex) {
+            log.error("Unable to construct URL for update. Parts: {}", parts, ex);
+            return null;
+        }
+    }
+
+    /**
+     * Builds a mapping of components' names to their actual component
+     * objects.
+     *
+     * @param components A collection of components to be mapped
+     * @return A corresponding Map containing a single entry for each component,
+     * which the component's name as a key and the component itself as a value.
+     */
+    private Map<String, UpdateComponent> getComponentsByName(final Collection<UpdateComponent> components) {
+        final Map<String, UpdateComponent> res = new HashMap<String, UpdateComponent>();
+
+        for (UpdateComponent component : components) {
+            res.put(component.getName(), component);
+        }
+
+        return res;
+    }
+
+}

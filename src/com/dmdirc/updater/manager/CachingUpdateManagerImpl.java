@@ -1,0 +1,142 @@
+/*
+ * Copyright (c) 2006-2012 DMDirc Developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.updater.manager;
+
+import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.checking.CheckResultConsolidator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+
+import lombok.Getter;
+import lombok.ListenerSupport;
+
+/**
+ * An extension of {@link UpdateManagerImpl} which implements status caching
+ * functionality.
+ */
+@ListenerSupport(UpdateManagerListener.class)
+public class CachingUpdateManagerImpl extends UpdateManagerImpl implements CachingUpdateManager {
+
+    /** Map of component to their most recent status. */
+    private final Map<UpdateComponent, UpdateStatus> cachedStatuses
+            = new HashMap<UpdateComponent, UpdateStatus>();
+
+    /** Our current status. */
+    @Getter
+    private UpdateManagerStatus managerStatus = UpdateManagerStatus.IDLE;
+
+    /**
+     * Creates a new instance of {@link CachingUpdateManagerImpl}.
+     *
+     * @param executor The executor to use to schedule tasks
+     * @param consolidator The consolidator to use to merge check results
+     * @param policy The policy to apply to update components
+     */
+    public CachingUpdateManagerImpl(final Executor executor,
+            final CheckResultConsolidator consolidator,
+            final UpdateComponentPolicy policy) {
+        super(executor, consolidator, policy);
+
+        addUpdateStatusListener(new Listener());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public UpdateStatus getStatus(final UpdateComponent component) {
+        return cachedStatuses.get(component);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addComponent(final UpdateComponent component) {
+        super.addComponent(component);
+        cachedStatuses.put(component, getPolicy().canCheck(component)
+                ? UpdateStatus.IDLE : UpdateStatus.CHECKING_NOT_PERMITTED);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeComponent(final UpdateComponent component) {
+        super.removeComponent(component);
+        cachedStatuses.remove(component);
+    }
+
+    /**
+     * Determines the current status of this manager, using the
+     * cached status of each update component. If the status has changed,
+     * fires the {@link UpdateManagerListener#updateManagerStatusChanged(com.dmdirc.updater.manager.UpdateManager, com.dmdirc.updater.manager.UpdateManagerStatus)}
+     * method on registered listeners.
+     */
+    private void checkStatus() {
+        UpdateManagerStatus newStatus = UpdateManagerStatus.IDLE;
+        UpdateManagerStatus componentStatus;
+
+        for (UpdateStatus cachedStatus : cachedStatuses.values()) {
+            switch (cachedStatus) {
+                case CHECKING:
+                case INSTALLING:
+                case RETRIEVING:
+                    componentStatus = UpdateManagerStatus.WORKING;
+                    break;
+                case UPDATE_PENDING:
+                case INSTALL_PENDING:
+                    componentStatus = UpdateManagerStatus.IDLE_UPDATE_AVAILABLE;
+                    break;
+                case RESTART_PENDING:
+                    componentStatus = UpdateManagerStatus.IDLE_RESTART_NEEDED;
+                    break;
+                case UPDATED:
+                case IDLE:
+                default:
+                    componentStatus = UpdateManagerStatus.IDLE;
+            }
+
+            if (componentStatus.compareTo(newStatus) < 0) {
+                newStatus = componentStatus;
+            }
+        }
+
+        if (managerStatus != newStatus) {
+            managerStatus = newStatus;
+            fireUpdateManagerStatusChanged(this, managerStatus);
+        }
+    }
+
+    /**
+     * Status listener which updates the {@link #cachedStatuses} map.
+     */
+    private class Listener implements UpdateStatusListener {
+
+        /** {@inheritDoc} */
+        @Override
+        public void updateStatusChanged(final UpdateComponent component,
+                final UpdateStatus status, final double progress) {
+            cachedStatuses.put(component, status);
+            checkStatus();
+        }
+
+    }
+
+}

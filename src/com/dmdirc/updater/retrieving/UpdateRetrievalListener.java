@@ -20,19 +20,36 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.retrieving;
+
+import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Update Checker Listeners receive notifications when the status of the update
- * checker changes.
+ * Interface for objects interested in the progress of a retrieval attempt
+ * performed by an {@link UpdateRetrievalStategy}.
  */
-public interface UpdateCheckerListener {
+public interface UpdateRetrievalListener {
 
     /**
-     * Called when the status of the update checker changes.
+     * Called when the progress of a retrieval operation has changed.
      *
-     * @param newStatus The new status of the update checker
+     * @param component The component being retrieved
+     * @param progress The percentage progress completed (0-100)
      */
-    void statusChanged(UpdateChecker.STATE newStatus);
+    void retrievalProgressChanged(UpdateComponent component, double progress);
+
+    /**
+     * Called when a retrieval has failed.
+     *
+     * @param component The component that failed to install
+     */
+    void retrievalFailed(UpdateComponent component);
+
+    /**
+     * Called when a retrieval has finished.
+     *
+     * @param component The component that was successfully installed
+     */
+    void retrievalCompleted(UpdateComponent component);
 
 }

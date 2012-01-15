@@ -20,18 +20,28 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.updater.retrieving;
+
+import com.dmdirc.updater.checking.UpdateCheckResult;
 
 /**
- * This interface is implemented by components that are related to a specific
- * file.
+ * Describes the result of a retrieval operation by an
+ * {@link UpdateRetrievalStategy}.
  */
-public interface FileComponent {
+public interface UpdateRetrievalResult {
 
     /**
-     * Retrieves the file name of this component.
+     * Gets the check result which was used to perform the retrieval.
      *
-     * @return This component's file name
+     * @return The check result used to perform the retrieval
      */
-    String getFileName();
+    UpdateCheckResult getCheckResult();
+
+    /**
+     * Determines whether the retrieval was successful or not.
+     *
+     * @return True if the retrieval worked, false otherwise
+     */
+    boolean isSuccessful();
+
 }

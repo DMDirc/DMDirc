@@ -22,7 +22,6 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.updater.OptionsComponent;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
@@ -30,21 +29,17 @@ import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Component for updates of DMDirc's launcher.
  */
-public class LauncherComponent implements UpdateComponent, OptionsComponent {
+public class LauncherComponent implements UpdateComponent {
 
     /** The platform of our current launcher. */
     private static String platform = "";
 
     /** The version of our current launcher. */
     private static Version version = new Version();
-
-    /** The options of our current launcher. */
-    private static String[] options = new String[]{};
 
     /**
      * Parses the specified launcher information.
@@ -64,10 +59,9 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
             version = new Version(info.substring(hpos + 1));
         } else {
             version = new Version(info.substring(hpos + 1, cpos));
-            options = info.substring(cpos + 1).split(",");
         }
 
-        UpdateChecker.registerComponent(new LauncherComponent());
+        UpdateChecker.getManager().addComponent(new LauncherComponent());
     }
 
     /**
@@ -102,13 +96,6 @@ public class LauncherComponent implements UpdateComponent, OptionsComponent {
     public Version getVersion() {
         return version;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String[] getOptions() {
-        return Arrays.copyOf(options, options.length);
-    }
-
 
     /** {@inheritDoc} */
     @Override
