@@ -13,13 +13,24 @@
     <target name="init-private">
         <echo>Downloading private files, if this fails please pass username and</echo>
         <echo>password to ant using -Dusername=... -Dpassword=...</echo>
+
         <get src="http://www.dmdirc.com/private/clover.license" dest="lib/clover.license" username="${username}" password="${password}"/>
+
         <get dest="installer/signing/" username="${username}" password="${password}">
             <url url="http://www.dmdirc.com/private/DMDirc.cer"/>
             <url url="http://www.dmdirc.com/private/DMDirc.pvk"/>
             <url url="http://www.dmdirc.com/private/DMDirc.spc"/>
         </get>
+
 	<get dest="addons.api.key" username="${username}" password="${password}" src="http://www.dmdirc.com/private/addons.api.key"/>
+
+        <!-- Re-evaluate as the license is probably here now -->
+        <condition property="clover.installed">
+            <and>
+                <available classname="com.cenqua.clover.CloverInstr"/>
+                <available file="lib/clover.license"/>
+            </and>
+        </condition>
     </target>
 
     <target name="-post-clean">
