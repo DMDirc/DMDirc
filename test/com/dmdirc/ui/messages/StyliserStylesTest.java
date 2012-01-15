@@ -38,6 +38,7 @@ import java.util.Map;
 import javax.swing.text.DefaultStyledDocument;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -46,6 +47,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
+@Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
 public class StyliserStylesTest {
 
     protected String input, output;

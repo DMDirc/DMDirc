@@ -30,6 +30,7 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import java.util.Enumeration;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -85,6 +86,7 @@ public class StyliserTest {
     }
 
     @Test
+    @Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
     public void testNegation() {
         final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
         final String input2 = "abcdefghi";

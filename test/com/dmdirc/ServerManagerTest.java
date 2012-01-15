@@ -28,6 +28,7 @@ import com.dmdirc.plugins.PluginManager;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -194,6 +195,7 @@ public class ServerManagerTest {
     }
 
     @Test
+    @Ignore("Doesn't work in a headless environment (causes a new server to initialise an IRCDocument)")
     public void testDevChatNoServers() {
         final Server serverA = mock(Server.class);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
