@@ -249,10 +249,6 @@ public class UpdateManagerImpl implements UpdateManager {
     protected void setRetrievalResult(final UpdateRetrievalResult result) {
         log.debug("Received retrieval result {}", result);
         retrievalResults.put(result.getCheckResult().getComponent(), result);
-
-        if (result.isSuccessful()) {
-            checkResults.remove(result.getCheckResult().getComponent());
-        }
     }
 
     /**
