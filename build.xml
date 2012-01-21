@@ -11,7 +11,11 @@
     <import file="build-properties.xml"/>
     <import file="build-ivy.xml"/>
 
-    <target name="init-private">
+    <target name="-init-lib-directory">
+        <mkdir dir="lib"/>
+    </target>
+
+    <target name="init-private" depends="-init-lib-directory">
         <echo>Downloading private files, if this fails please pass username and</echo>
         <echo>password to ant using -Dusername=... -Dpassword=...</echo>
 
