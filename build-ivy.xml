@@ -20,7 +20,7 @@
              dest="lib/ivy-${ivy.install.version}.jar"/>
     </target>
 
-    <target name="-init-dependencies" depends="-download-ivy">
+    <target name="-init-dependencies" depends="-download-ivy" unless="ivy.done">
         <!-- Regenerate the classpath as we may have just downloaded Ivy -->
         <path id="ivy.classpath">
             <fileset dir="lib" includes="*.jar"/>
@@ -29,5 +29,6 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.classpath"/>
         <ivy:settings file="etc/ivy/ivysettings.xml"/>
         <ivy:retrieve symlink="true" pattern="lib/[artifact]-[revision].[ext]" />
+        <property name="ivy.done" value="true"/>
     </target>
 </project>
