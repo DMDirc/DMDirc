@@ -12,8 +12,32 @@
     <target name="-allreports" depends="findbugs, cpd, pmd, checkstyle" /> 
     <target name="-mostreports" depends="cpd, pmd, checkstyle" /> 
 
-    <target name="-init-checkstyle">
-        <taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.3-all.jar"/>
+    <target name="-init-checkstyle" depends="-init-dependencies">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+        <taskdef resource="checkstyletask.properties" classpathref="libclasspath"/>
+    </target>
+
+    <target name="-init-pmd" depends="-init-dependencies">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+        <taskdef name="pmd" classpathref="libclasspath" classname="net.sourceforge.pmd.ant.PMDTask" />
+    </target>
+
+    <target name="-init-cpd" depends="-init-dependencies">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+        <taskdef name="cpd" classpathref="libclasspath" classname="net.sourceforge.pmd.cpd.CPDTask" />
+    </target>
+
+    <target name="-init-findbugs" depends="-init-dependencies">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+        <taskdef name="findbugs" classpathref="libclasspath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
     </target>
     
     <target name="checkstyle-all" depends="-init-checkstyle">
@@ -32,11 +56,8 @@
         <copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
     </target>
     
-    <target name="pmd" description="Run PMD.">
-        <taskdef name="pmd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar"
-                         classname="net.sourceforge.pmd.ant.PMDTask" />
+    <target name="pmd" description="Run PMD." depends="-init-pmd">
         <pmd shortFilenames="true">
-            
             <ruleset>checkstyle/pmd_checks.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
             <fileset dir="src/" includes="com/dmdirc/**/*.java" />
@@ -47,11 +68,8 @@
         <xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
     </target>
 
-    <target name="pmd-minimal" description="Run PMD with minimal ruleset.">
-        <taskdef name="pmd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar"
-                         classname="net.sourceforge.pmd.ant.PMDTask" />
+    <target name="pmd-minimal" description="Run PMD with minimal ruleset." depends="-init-pmd">
         <pmd shortFilenames="true">
-
             <ruleset>checkstyle/pmd_minimal.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
             <fileset dir="src/" includes="com/dmdirc/**/*.java" />
@@ -62,9 +80,7 @@
         <xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
     </target>
     
-    <target name="cpd" description="Run CPD.">
-        <taskdef name="cpd" classpath="lib/pmd-4.2.5.jar:lib/jaxen-1.1.1.jar:lib/asm-3.1.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
-        
+    <target name="cpd" description="Run CPD." depends="-init-cpd">
         <cpd format="xml" minimumTokenCount="50" outputFile="reports/report-cpd.xml">
             <fileset dir="src/com/">
                 <include name="**/*.java"/>
@@ -73,9 +89,8 @@
         <xslt in="reports/report-cpd.xml" style="checkstyle/cpd.xslt" out="reports/report-cpd.html" />
     </target>
     
-    <target name="findbugs" depends="jar" description="Run Findbugs.">
+    <target name="findbugs" depends="-init-findbugs,jar" description="Run Findbugs.">
         <mkdir dir="reports/findbugs" />
-        <taskdef name="findbugs" classpath="lib/findbugs-ant.jar" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
         <findbugs home="/usr/share/java/findbugs/" effort="max"
                             jvmargs="-Xmx512M"
                             output="xml:withMessages"

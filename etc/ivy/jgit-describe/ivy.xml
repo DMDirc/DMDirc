@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="com.github.shanemcc" module="jgit-describe"/>
+    <dependencies>
+        <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="latest.integration" conf="default" />
+    </dependencies>
+</ivy-module>

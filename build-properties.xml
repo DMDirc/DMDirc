@@ -5,6 +5,15 @@
     <condition property="private.properties.exists">
         <available file="nbproject/private/private.properties"/>
     </condition>
+
+    <target name="-init-properties">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+
+        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+    </target>
     
     <target name="-create-private-properties" unless="private.properties.exists">
         <mkdir dir="nbproject/private"/>
@@ -24,7 +33,7 @@
         <echo append="true" file="nbproject/private/private.properties">${line.separator}private.classpath=${line.separator}</echo>
     </target>
 
-    <target name="-init-private-properties" depends="-create-private-properties,-check-private-classpath,-create-private-classpath">
+    <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath">
         <propertyregex property="private.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:all.libs}"/>
         <replaceregexp file="nbproject/private/private.properties" match="^private.classpath=(.*)$" flags="im" replace="private.classpath=${private.classpath.value}"/>
     </target>

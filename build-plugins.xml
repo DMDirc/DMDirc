@@ -8,12 +8,14 @@
 
     <import file="modules/plugins/build-pluginutils.xml"/>
 
-    <path id="libclasspath">
-        <fileset dir="lib" includes="*.jar"/>
-    </path>
+    <target name="-init-plugins">
+        <path id="libclasspath">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
 
-    <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
-    <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+    </target>
 
     <target name="build-plugins" description="Build all plugins">
         <subant buildpath="modules/plugins" target="jar">
@@ -21,7 +23,11 @@
         </subant>
     </target>
 
-    <target name="-update-bundled-plugins">
+    <target name="clean-plugins" description="Clean all plugins">
+        <subant buildpath="modules/plugins" target="clean"/>
+    </target>
+
+    <target name="-update-bundled-plugins" depends="-init-plugins">
         <bundleplugins jar="${dist.jar}">
             <fileset dir="modules/plugins/dist/">
                 <include name="tabcompletion_*.jar"/>
@@ -51,7 +57,7 @@
     </target>
 
     <target name="publish-all-plugins" description="Publishes all plugins to the addons site"
-            depends="-check-addons-key,-check-addon-channel">
+            depends="-init-plugins,-check-addons-key,-check-addon-channel">
       <foreach target="publish-plugin" param="addon.file" inheritall="true" parallel="true">
         <path>
           <fileset dir="plugins">
@@ -62,7 +68,7 @@
     </target>
 
     <target name="publish-plugin" description="Publish a plugin to the addons site"
-            depends="-check-addons-key,-check-addon-channel,-check-addon-file">
+            depends="-init-plugins,-check-addons-key,-check-addon-channel,-check-addon-file">
       <tempfile property="temp.dir" prefix="plugintmp"/>
       <mkdir dir="${temp.dir}"/>
       <unzip src="${addon.file}" dest="${temp.dir}">
@@ -85,7 +91,7 @@
     </target>
     
     <target name="publish-addon" description="Publish an addon to the addons site"
-            depends="-check-addons-key,-check-addon-id,-check-addon-channel,-check-addon-file">
+            depends="-init-plugins,-check-addons-key,-check-addon-id,-check-addon-channel,-check-addon-file">
        <httpmpost url="http://addons.dmdirc.com/editaddon/${addon.id}" logLevel="none">
            <postString name="apikey" value="${dmdirc.addons.apikey}"/>
            <postString name="channel" value="${addon.channel}"/>

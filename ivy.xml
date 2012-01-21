@@ -1,0 +1,31 @@
+<ivy-module version="2.0">
+    <info organisation="com.dmdirc" module="client"/>
+
+    <configurations>
+        <conf name="build" description="Everything needed to support the build process"/>
+        <conf name="compile" description="Everything needed to compile DMDirc separately"/>
+        <conf name="test" description="Everything needed to test DMDirc"/>
+        <conf name="default" extends="build,compile,test"/>
+    </configurations>
+
+    <dependencies>
+        <dependency org="ant-contrib" name="ant-contrib" rev="1.0b3" conf="build->default" />
+        <dependency org="org.sourceforce.ant-nsis" name="ant-nsis" rev="1.3" conf="build->default" />
+        <dependency org="com.github.shanemcc" name="jgit-describe" rev="0.1" conf="build->default" />
+        <dependency org="net.sourceforge.fikin-ant-tasks" name="ant-fikin" rev="1.7.3" conf="build->default" />
+
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.+" conf="compile->default" />
+        <dependency org="ch.qos.logback" name="logback-classic" rev="1.+" conf="test->default" />
+
+        <dependency org="com.github.peichhorn" name="lombok-pg" rev="0.10.6-DMDirc" conf="compile->default" />
+        
+        <dependency org="pmd" name="pmd" rev="4.+" conf="test->default" />
+        <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
+        <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
+        <dependency org="com.cenqua.clover" name="clover" rev="3.+" conf="test->default" />
+        <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="test->default" />
+        <dependency org="net.sourceforge.findbugs" name="findbugs-ant" rev="1.+" conf="test->default" />
+
+        <exclude org="ant" module="ant"/>
+    </dependencies>
+</ivy-module>

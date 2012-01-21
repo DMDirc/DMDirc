@@ -9,6 +9,7 @@
     <import file="build-tests.xml"/>
     <import file="build-versioning.xml"/>
     <import file="build-properties.xml"/>
+    <import file="build-ivy.xml"/>
 
     <target name="init-private">
         <echo>Downloading private files, if this fails please pass username and</echo>
@@ -48,7 +49,7 @@
         </jar>
     </target>
 
-    <target name="-pre-init" depends="-init-private-properties"/>
+    <target name="-pre-init" depends="-init-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
     <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j"/>
