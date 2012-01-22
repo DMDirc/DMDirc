@@ -2,18 +2,23 @@
 <project name="DMDirc-tests" default="default" basedir=".">
     <description>Test-related tasks for DMDirc.</description>
 
-    <property name="clover.jar" location="lib/clover.jar"/>
-    <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
-    <taskdef resource="cloverjunitlib.xml" classpath="${clover.jar}"/>
+    <target name="-init-clover" depends="-init-dependencies">
+        <path id="clover.classpath">
+            <fileset dir="lib" includes="*clover*.jar"/>
+        </path>
 
-    <condition property="clover.installed">
-     <and>
-      <available classname="com.cenqua.clover.CloverInstr"/>
-      <available file="lib/clover.license"/>
-     </and>
-    </condition>
+        <taskdef resource="cloverlib.xml" classpathref="clover.classpath"/>
+        <taskdef resource="cloverjunitlib.xml" classpathref="clover.classpath"/>
 
-    <target name="with.clover" depends="clean" if="clover.installed"
+        <condition property="clover.installed">
+            <and>
+                <available classname="com.cenqua.clover.CloverInstr"/>
+                <available file="lib/clover.license"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="with.clover" depends="-init-clover,clean" if="clover.installed"
             description="Set up Clover to instrument tests.">
         <clover-clean/>
         <clover-env/>
@@ -46,7 +51,7 @@
         <clover-snapshot/>
     </target>
 
-    <target name="clover.xml" if="clover.installed"
+    <target name="clover.xml" if="clover.installed" depends="-init-clover"
             description="Generate a Clover XML report.">
         <mkdir dir="reports/clover" />
         <clover-report>
@@ -56,7 +61,7 @@
         </clover-report>
     </target>
 
-    <target name="clover.html" if="clover.installed"
+    <target name="clover.html" if="clover.installed" depends="-init-clover"
             description="Generate a Clover HTML report.">
         <mkdir dir="reports/clover" />
         <mkdir dir="reports/clover/history" />
