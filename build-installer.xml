@@ -2,7 +2,7 @@
 <project name="DMDirc-installer" default="default" basedir=".">
     <description>Tasks to build the DMDirc installer.</description>
 
-    <target name="-init-installer">
+    <target name="-init-installer" depends="init">
         <taskdef name="nsis" classname="com.danielreese.nsisant.Task">
             <classpath>
                 <fileset dir="lib" includes="*nsis*.jar"/>
