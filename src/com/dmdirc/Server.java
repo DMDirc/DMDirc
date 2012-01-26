@@ -450,6 +450,8 @@ public class Server extends WritableFrameContainer
             reconnectTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    reconnectTimer.cancel();
+
                     synchronized (myStateLock) {
                         log.debug("Reconnect task executing, state: {}",
                                 myState.getState());
