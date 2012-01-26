@@ -147,6 +147,9 @@ public class Server extends WritableFrameContainer
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
 
+    /** The timer we're using to send WHO requests. */
+    private final Timer whoTimer;
+
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
 
@@ -207,7 +210,8 @@ public class Server extends WritableFrameContainer
 
         updateIcon();
 
-        new Timer("Server Who Timer").schedule(new TimerTask() {
+        whoTimer = new Timer("Server Who Timer");
+        whoTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 for (Channel channel : channels.values()) {
@@ -1018,6 +1022,8 @@ public class Server extends WritableFrameContainer
         synchronized (myStateLock) {
             // 2: Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
+            getConfigManager().removeListener(this);
+            whoTimer.cancel();
 
             // 3: Trigger any actions neccessary
             disconnect();
