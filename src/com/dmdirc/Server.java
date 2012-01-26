@@ -82,11 +82,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.TrustManager;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
  */
+@Slf4j
 public class Server extends WritableFrameContainer
         implements ConfigChangeListener, CertificateProblemListener, Connection {
 
@@ -273,8 +276,12 @@ public class Server extends WritableFrameContainer
         assert profile != null;
 
         synchronized (myStateLock) {
+            log.info("Connecting to {}, current state is {}", address,
+                    myState.getState());
+
             switch (myState.getState()) {
                 case RECONNECT_WAIT:
+                    log.debug("Cancelling reconnection timer");
                     reconnectTimer.cancel();
                     break;
                 case CLOSING:
@@ -374,6 +381,8 @@ public class Server extends WritableFrameContainer
     @Override
     public void disconnect(final String reason) {
         synchronized (myStateLock) {
+            log.info("Disconnecting. Current state: {}", myState.getState());
+
             switch (myState.getState()) {
             case CLOSING:
             case DISCONNECTING:
@@ -381,6 +390,7 @@ public class Server extends WritableFrameContainer
             case TRANSIENTLY_DISCONNECTED:
                 return;
             case RECONNECT_WAIT:
+                log.debug("Cancelling reconnection timer");
                 reconnectTimer.cancel();
                 break;
             default:
@@ -424,6 +434,8 @@ public class Server extends WritableFrameContainer
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
         synchronized (myStateLock) {
+            log.info("Performing delayed reconnect. State: {}", myState.getState());
+
             if (myState.getState() != ServerState.TRANSIENTLY_DISCONNECTED) {
                 throw new IllegalStateException("doDelayedReconnect when not "
                         + "transiently disconnected\n\nState: " + myState);
@@ -439,6 +451,8 @@ public class Server extends WritableFrameContainer
                 @Override
                 public void run() {
                     synchronized (myStateLock) {
+                        log.debug("Reconnect task executing, state: {}",
+                                myState.getState());
                         if (myState.getState() == ServerState.RECONNECT_WAIT) {
                             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
                             reconnect();
@@ -446,6 +460,8 @@ public class Server extends WritableFrameContainer
                     }
                 }
             }, delay);
+
+            log.info("Scheduling reconnect task for delay of {}", delay);
 
             myState.transition(ServerState.RECONNECT_WAIT);
             updateIcon();
@@ -1220,7 +1236,11 @@ public class Server extends WritableFrameContainer
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
+        log.info("Received socket closed event, state: {}", myState.getState());
+
         if (Thread.holdsLock(myStateLock)) {
+            log.info("State lock contended: rerunning on a new thread");
+
             new Thread(new Runnable() {
                 /** {@inheritDoc} */
                 @Override
@@ -1292,6 +1312,9 @@ public class Server extends WritableFrameContainer
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (myStateLock) {
+            log.info("Received connect error event, state: {}; error: {}",
+                    myState.getState(), errorInfo);
+
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTING) {
                 // Do nothing
@@ -1366,6 +1389,7 @@ public class Server extends WritableFrameContainer
 
         if (parser.getPingTime()
                  >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
+            log.warn("Server appears to be stoned, reconnecting");
             handleNotification("stonedServer", getAddress());
             reconnect();
         }
