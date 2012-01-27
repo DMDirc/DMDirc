@@ -22,14 +22,14 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-
 import java.lang.reflect.Method;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Object to allow interaction with Exported methods.
  */
+@Slf4j
 public class ExportedService {
 
     /** Method we will be executing today! */
@@ -85,12 +85,12 @@ public class ExportedService {
         try {
             return method.invoke(object, args);
         } catch (final LinkageError le) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Error with exported service: "
-                    + le + " -> " + le.getMessage(), le);
+            log.error("Error with exported service calling {}",
+                    method, le);
             return null;
         } catch (final Exception e) {
-            Logger.userError(ErrorLevel.UNKNOWN, "Exception in exported service: "
-                    + e + " -> " + e.getMessage(), e);
+            log.error("Error with exported service calling {}",
+                    method, e);
             return null;
         }
     }
