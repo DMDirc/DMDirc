@@ -555,6 +555,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         registerIdentityListener(null, listener);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void unregisterIdentityListener(final IdentityListener listener) {
+        listeners.removeFromAll(listener);
+    }
+
     /**
      * Adds a new identity listener which will be informed of all settings
      * identities which are added to this manager.

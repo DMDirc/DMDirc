@@ -138,6 +138,13 @@ public interface IdentityController {
     void registerIdentityListener(final String type, final IdentityListener listener);
 
     /**
+     * Unregisters the given identity listener.
+     *
+     * @param listener The listener to be removed
+     */
+    void unregisterIdentityListener(final IdentityListener listener);
+
+    /**
      * Saves all modified identity files to disk.
      */
     void saveAll();
