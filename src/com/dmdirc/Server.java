@@ -317,6 +317,9 @@ public class Server extends WritableFrameContainer
 
                 setConnectionDetails(address, profile);
 
+                updateTitle();
+                updateIcon();
+
                 parser = buildParser();
 
                 if (parser == null) {
@@ -328,9 +331,6 @@ public class Server extends WritableFrameContainer
             } finally {
                 parserLock.writeLock().unlock();
             }
-
-            updateTitle();
-            updateIcon();
 
             addLine("serverConnecting", connectAddress.getHost(), connectAddress.getPort());
 
