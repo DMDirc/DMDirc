@@ -54,7 +54,7 @@
     <target name="installer-unstable" depends="-init-installer"
             description="Build the installer for an unstable release.">
         <exec executable="bash" dir="modules/installer" resultproperty="installer.result">
-            <arg value="release.sh"/>
+            <arg value="makeAll.sh"/>
             <arg value="-c"/>
             <arg value="UNSTABLE"/>
         </exec>
