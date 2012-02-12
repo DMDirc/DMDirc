@@ -14,12 +14,12 @@
         <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
         <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
     </target>
-    
+
     <target name="-create-private-properties" unless="private.properties.exists">
         <mkdir dir="nbproject/private"/>
         <echo file="nbproject/private/private.properties"/>
     </target>
-    
+
     <target name="-check-private-classpath">
         <loadfile property="private.properties.old" srcFile="nbproject/private/private.properties"/>
         <condition property="private.properties.needsinsert">
@@ -28,14 +28,19 @@
             </not>
         </condition>
     </target>
-    
+
     <target name="-create-private-classpath" if="private.properties.needsinsert">
         <echo append="true" file="nbproject/private/private.properties">${line.separator}private.classpath=${line.separator}</echo>
     </target>
 
     <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath">
+        <path id="all.libs">
+            <fileset dir="modules" includes="*/lib/*.jar"/>
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+
         <propertyregex property="private.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:all.libs}"/>
         <replaceregexp file="nbproject/private/private.properties" match="^private.classpath=(.*)$" flags="im" replace="private.classpath=${private.classpath.value}"/>
     </target>
-    
+
 </project>
