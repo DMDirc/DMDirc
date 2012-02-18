@@ -26,24 +26,24 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.util.validators.NumericalValidator;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Manages preferences for the client.
  *
  * @since 0.6.5
  */
-public final class PreferencesManager {
+@RequiredArgsConstructor
+public class PreferencesManager {
 
     /** Singleton instance of the preferences manager. */
-    private static final PreferencesManager ME = new PreferencesManager();
+    private static PreferencesManager me;
 
-    /**
-     * Constructs a new PreferencesManager.
-     */
-    private PreferencesManager() {
-        // Do nothing
-    }
+    /** The action controller to fire events on. */
+    private final ActionController actionController;
 
     /**
      * Retrieves a category containing preferences settings which should be
@@ -124,9 +124,8 @@ public final class PreferencesManager {
                 "Reconnect message", "Default quit message to use when reconnecting",
                 manager, identity));
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_PREFS_REQUESTED, null, category,
-                Boolean.TRUE);
+        actionController.triggerEvent(CoreActionType.CLIENT_PREFS_REQUESTED,
+                null, category, Boolean.TRUE);
 
         return category;
     }
@@ -239,9 +238,8 @@ public final class PreferencesManager {
                 "Number of items of input history to keep",
                 manager, identity));
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_PREFS_REQUESTED, null, category,
-                Boolean.FALSE);
+        actionController.triggerEvent(CoreActionType.CLIENT_PREFS_REQUESTED,
+                null, category, Boolean.FALSE);
 
         return category;
     }
@@ -251,8 +249,12 @@ public final class PreferencesManager {
      *
      * @return The global PreferencesManager instance.
      */
-    public static PreferencesManager getPreferencesManager() {
-        return ME;
+    public static synchronized PreferencesManager getPreferencesManager() {
+        if (me == null) {
+            me = new PreferencesManager(ActionManager.getActionManager());
+        }
+
+        return me;
     }
 
 }

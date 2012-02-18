@@ -19,152 +19,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.Main;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.interfaces.ActionController;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        Main.extractCorePlugins("ui_");
-        PluginManager.getPluginManager();
+    private ActionController actionController;
+    private ConfigManager configManager;
+    private PreferencesManager manager;
+
+    @Before
+    public void setup() {
+        this.actionController = mock(ActionController.class);
+        this.configManager = mock(ConfigManager.class);
+        this.manager = new PreferencesManager(actionController);
     }
 
     @Test
-    public void testDefaults() {
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        assertNotNull(pm.getCategory("General"));
-        assertNotNull(pm.getCategory("Connection"));
-        assertNotNull(pm.getCategory("Messages"));
-        assertNotNull(pm.getCategory("Advanced"));
-        assertNotNull(pm.getCategory("GUI"));
-        assertNotNull(pm.getCategory("Plugins"));
-        assertNotNull(pm.getCategory("Updates"));
-        assertNotNull(pm.getCategory("URL Handlers"));
+    public void testGettingChannelPrefsRaisesAction() {
+        this.manager.getChannelSettings(this.configManager, null);
+
+        verify(this.actionController).triggerEvent(
+                eq(CoreActionType.CLIENT_PREFS_REQUESTED),
+                (StringBuffer) isNull(),
+                any(PreferencesCategory.class),
+                eq(Boolean.FALSE));
     }
 
     @Test
-    public void testDismiss() {
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-        final PreferencesCategory category = mock(PreferencesCategory.class);
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        pm.addCategory(category);
-        pm.dismiss();
+    public void testGettingServerPrefsRaisesAction() {
+        this.manager.getServerSettings(this.configManager, null);
 
-        verify(category).dismiss();
-    }
-
-    @Test
-    public void testSaveNoRestart() {
-        final PreferencesCategory category = mock(PreferencesCategory.class);
-        when(category.save()).thenReturn(false);
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        pm.addCategory(category);
-        assertFalse(pm.save());
-
-        verify(category).save();
-    }
-
-    @Test
-    public void testSaveRestart() {
-        final PreferencesCategory category = mock(PreferencesCategory.class);
-        when(category.save()).thenReturn(true);
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        pm.addCategory(category);
-        assertTrue(pm.save());
-
-        verify(category).save();
-    }
-
-    @Test
-    public void testGetCategory() {
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        assertNull(pm.getCategory("unittest123"));
-    }
-
-    @Test
-    public void testGetCategories() {
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        assertNotNull(pm.getCategories());
-        assertFalse(pm.getCategories().isEmpty());
-
-        for (PreferencesCategory cat : pm.getCategories()) {
-            assertNotNull(pm.getCategory(cat.getTitle()));
-        }
-    }
-
-    @Test
-    public void testSaveListener() {
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        final PreferencesInterface tpi = mock(PreferencesInterface.class);
-
-        pm.registerSaveListener(tpi);
-        pm.fireSaveListeners();
-        verify(tpi).save();
-    }
-
-    @Test
-    public void testOpenAction() {
-        final ActionListener tal = mock(ActionListener.class);
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        ActionManager.getActionManager().initialise();
-        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-
-        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
-                (StringBuffer) same(null), same(pm));
-    }
-
-    @Test
-    public void testCloseAction() {
-        final ActionListener tal = mock(ActionListener.class);
-        ConfigManager cm = mock(ConfigManager.class);
-        when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        ActionManager.getActionManager().initialise();
-        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-        pm.close();
-
-        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),
-                (StringBuffer) same(null));
+        verify(this.actionController).triggerEvent(
+                eq(CoreActionType.CLIENT_PREFS_REQUESTED),
+                (StringBuffer) isNull(),
+                any(PreferencesCategory.class),
+                eq(Boolean.TRUE));
     }
 
 }
