@@ -9,6 +9,7 @@
 
         <taskdef resource="cloverlib.xml" classpathref="clover.classpath"/>
         <taskdef resource="cloverjunitlib.xml" classpathref="clover.classpath"/>
+        <property name="clover.init.string" location=".clover/clover.db"/>
 
         <condition property="clover.installed">
             <and>
@@ -16,13 +17,15 @@
                 <available file="lib/clover.license"/>
             </and>
         </condition>
+
+        <property name="plugins.build.target" value="compile-for-tests"/>
     </target>
 
     <target name="with.clover" depends="-init-clover,clean" if="clover.installed"
             description="Set up Clover to instrument tests.">
         <clover-clean/>
         <clover-env/>
-        <clover-setup>
+        <clover-setup initstring="${clover.init.string}">
             <fileset dir="src/com/" includes="**/*.java" />
             <fileset dir="modules/parser/src/" includes="**/*.java" />
             <fileset dir="modules/util/src/" includes="**/*.java" />

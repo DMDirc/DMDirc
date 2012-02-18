@@ -17,9 +17,15 @@
         <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
     </target>
 
-    <target name="build-plugins" description="Build all plugins">
-        <subant buildpath="modules/plugins" target="jar">
+    <target name="-init-default-build-target" unless="plugins.build.target">
+        <property name="plugins.build.target" value="jar"/>
+    </target>
+
+    <target name="build-plugins" description="Build all plugins" depends="-init-default-build-target">
+        <subant buildpath="modules/plugins" target="${plugins.build.target}">
             <property name="plugins.dmdirc.build.dir" value="../../${build.classes.dir}"/>
+            <property name="clover.search.path" value="../../lib"/>
+            <property name="clover.init.string" location=".clover/clover.db"/>
         </subant>
     </target>
 
