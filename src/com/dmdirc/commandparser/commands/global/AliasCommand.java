@@ -78,8 +78,8 @@ public class AliasCommand extends Command implements IntelligentCommand {
                 ? args.getArguments()[0].substring(1) : args.getArguments()[0];
 
         for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
-                    name)) {
+            if (AliasWrapper.getAliasWrapper().getCommandName(alias)
+                    .substring(1).equalsIgnoreCase(name)) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
                         + "' already exists.");
                 return;
@@ -102,8 +102,8 @@ public class AliasCommand extends Command implements IntelligentCommand {
      */
     private static boolean doRemove(final String name) {
         for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
-                    name)) {
+            if (AliasWrapper.getAliasWrapper().getCommandName(alias)
+                    .substring(1).equalsIgnoreCase(name)) {
                 alias.delete();
                 ActionManager.getActionManager().removeAction(alias);
 
@@ -124,7 +124,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
             res.add("--remove");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             for (Action alias : AliasWrapper.getAliasWrapper()) {
-                res.add(AliasWrapper.getCommandName(alias));
+                res.add(AliasWrapper.getAliasWrapper().getCommandName(alias));
             }
         } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
             return TabCompleter.getIntelligentResults(arg, context, 1);

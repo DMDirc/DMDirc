@@ -24,7 +24,7 @@ package com.dmdirc;
 
 import java.util.Date;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -32,55 +32,55 @@ import static org.mockito.Mockito.*;
 
 public class InviteTest {
 
-    private static Server server;
-    private static Invite test;
-    private static long ts;
+    private Server server;
+    private Invite invite;
+    private long ts;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() {
         server = mock(Server.class);
 
         when(server.parseHostmask("nick!ident@host"))
                 .thenReturn(new String[] {"nick", "ident", "host"});
 
-        test = new Invite(server, "#channel", "nick!ident@host");
+        invite = new Invite(server, "#channel", "nick!ident@host");
         ts = new Date().getTime();
     }
 
     @Test
     public void testGetServer() {
-        assertSame(server, test.getServer());
+        assertSame(server, invite.getServer());
     }
 
     @Test
     public void testGetChannel() {
-        assertEquals("#channel", test.getChannel());
+        assertEquals("#channel", invite.getChannel());
     }
 
     @Test
     public void testGetTimestamp() {
-        assertTrue(test.getTimestamp() - ts < 10000);
-        assertTrue(test.getTimestamp() - ts > -10000);
+        assertTrue(invite.getTimestamp() - ts < 10000);
+        assertTrue(invite.getTimestamp() - ts > -10000);
     }
 
     @Test
     public void testGetSource() {
-        assertEquals(3, test.getSource().length);
-        assertEquals("nick", test.getSource()[0]);
-        assertEquals("ident", test.getSource()[1]);
-        assertEquals("host", test.getSource()[2]);
+        assertEquals(3, invite.getSource().length);
+        assertEquals("nick", invite.getSource()[0]);
+        assertEquals("ident", invite.getSource()[1]);
+        assertEquals("host", invite.getSource()[2]);
     }
 
     @Test
     public void testAccept() {
-        test.accept();
-        verify(server).acceptInvites(test);
+        invite.accept();
+        verify(server).acceptInvites(invite);
     }
 
     @Test
     public void testDecline() {
-        test.decline();
-        verify(server).removeInvite(test);
+        invite.decline();
+        verify(server).removeInvite(invite);
     }
 
 }

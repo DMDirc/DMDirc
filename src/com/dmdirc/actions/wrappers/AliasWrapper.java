@@ -30,6 +30,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -48,11 +49,18 @@ public final class AliasWrapper extends ActionGroup {
     /** A list of registered alias names. */
     private final List<String> aliases = new ArrayList<String>();
 
+    /** Command controller to get command info from. */
+    private final CommandController commandController;
+
     /**
      * Creates a new instance of AliasWrapper.
+     *
+     * @param commandController Command controller to get command info from.
      */
-    private AliasWrapper() {
+    public AliasWrapper(final CommandController commandController) {
         super("aliases");
+
+        this.commandController = commandController;
     }
 
     /**
@@ -62,7 +70,7 @@ public final class AliasWrapper extends ActionGroup {
      */
     public static synchronized AliasWrapper getAliasWrapper() {
         if (me == null) {
-            me = new AliasWrapper();
+            me = new AliasWrapper(CommandManager.getCommandManager());
         }
 
         return me;
@@ -129,10 +137,10 @@ public final class AliasWrapper extends ActionGroup {
      * @return The command name for the specified alias, or null if it has
      *         no appropriate conditions.
      */
-    public static String getCommandName(final Action action) {
+    public String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {
             if (condition.getArg() == 1) {
-                return CommandManager.getCommandManager().getCommandChar()
+                return commandController.getCommandChar()
                         + condition.getTarget();
             }
         }
