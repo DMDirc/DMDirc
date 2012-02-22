@@ -26,7 +26,6 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.ui.FrameListener;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -93,7 +92,7 @@ public class WindowManager {
      * @param child The new child window that was added
      *
      */
-    private static void fireAddWindow(final FrameListener listener,
+    private void fireAddWindow(final FrameListener listener,
             final FrameContainer parent, final FrameContainer child) {
         listener.addWindow(parent, child, true);
 
@@ -224,16 +223,7 @@ public class WindowManager {
         } else {
             final FrameContainer parent = window.getParent();
             fireDeleteWindow(parent, window);
-
-            if (parent == null) {
-                Logger.appError(ErrorLevel.MEDIUM, "Invalid window removed",
-                        new IllegalArgumentException("Tried to remove a"
-                        + " non-root window that has no known parent.\nWindow:"
-                        + " " + window.getName()));
-                return;
-            } else {
-                parent.removeChild(window);
-            }
+            parent.removeChild(window);
         }
 
         window.windowClosed();
