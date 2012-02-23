@@ -50,8 +50,7 @@ import lombok.Getter;
 public class CommandManager implements CommandController {
 
     /** A singleton instance of the command manager. */
-    private static final CommandManager INSTANCE
-            = new CommandManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
+    private static CommandManager instance;
 
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
@@ -282,8 +281,12 @@ public class CommandManager implements CommandController {
      *
      * @return A singleton instance of the CommandManager.
      */
-    public static CommandManager getCommandManager() {
-        return INSTANCE;
+    public static synchronized CommandManager getCommandManager() {
+        if (instance == null) {
+            instance = new CommandManager(IdentityManager.getIdentityManager()
+                    .getGlobalConfiguration());
+        }
+        return instance;
     }
 
 }

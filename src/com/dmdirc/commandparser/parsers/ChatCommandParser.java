@@ -56,6 +56,7 @@ public class ChatCommandParser extends ServerCommandParser {
      * @param server The server which owns this parser's container
      */
     public ChatCommandParser(final Server server) {
+        super(server.getConfigManager());
         super.setOwner(server);
     }
 

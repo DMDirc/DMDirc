@@ -24,7 +24,9 @@ package com.dmdirc.ui;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.ConfigBinder;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
@@ -33,7 +35,7 @@ import com.dmdirc.interfaces.ui.Window;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -41,16 +43,22 @@ import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {
 
-    @BeforeClass
-    public static void setupClass() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+    private ConfigManager cm;
+    private CommandManager commands;
+
+    @Before
+    public void setup() throws InvalidIdentityFileException {
+        cm = mock(ConfigManager.class);
+        final ConfigBinder binder = new ConfigBinder(cm);
+        when(cm.getBinder()).thenReturn(binder);
+        commands = new CommandManager(cm);
     }
 
     @Test
     public void testAddRoot() {
         final WindowManager manager = new WindowManager();
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512));
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
 
         manager.addListener(tfm);
 
@@ -67,8 +75,8 @@ public class WindowManagerTest {
     public void testAddChild() {
         final WindowManager manager = new WindowManager();
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512));
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512));
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
         manager.addWindow(parent.getContainer());
         manager.addListener(tfm);
 
@@ -82,7 +90,7 @@ public class WindowManagerTest {
     public void testRemoveRoot() {
         final WindowManager manager = new WindowManager();
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512));
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
         manager.addWindow(parent.getContainer());
         manager.addListener(tfm);
 
@@ -95,8 +103,8 @@ public class WindowManagerTest {
     public void testRemoveChild() {
         final WindowManager manager = new WindowManager();
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512));
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512));
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
         manager.addWindow(parent.getContainer());
         manager.addWindow(parent.getContainer(), child.getContainer());
         manager.addListener(tfm);
@@ -113,8 +121,8 @@ public class WindowManagerTest {
     public void testRemoveFrameManager() {
         final WindowManager manager = new WindowManager();
         final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512));
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512));
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512, cm, commands));
         manager.addWindow(parent.getContainer());
 
         manager.addListener(tfm);

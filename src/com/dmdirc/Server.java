@@ -194,7 +194,8 @@ public class Server extends WritableFrameContainer
     public Server(final URI uri, final Identity profile) {
         super("server-disconnected", getHost(uri), getHost(uri),
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
-                new ServerCommandParser(),
+                new ServerCommandParser(
+                new ConfigManager(uri.getScheme(), "", "", uri.getHost())),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier(),
                 WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));

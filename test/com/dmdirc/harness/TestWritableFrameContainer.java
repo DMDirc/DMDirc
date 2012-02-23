@@ -24,9 +24,9 @@ package com.dmdirc.harness;
 
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.Collections;
@@ -36,16 +36,12 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
-            final ConfigManager cm) {
+            final ConfigManager cm, final CommandManager commandManager) {
         super("raw", "Raw", "(Raw)", cm,
-                GlobalCommandParser.getGlobalCommandParser(),
+                new GlobalCommandParser(cm, commandManager),
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;
-    }
-
-    public TestWritableFrameContainer(final int lineLength) {
-        this(lineLength, IdentityManager.getIdentityManager().getGlobalConfiguration());
     }
 
     @Override
@@ -60,12 +56,12 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     @Override
     public void windowClosing() {
-        System.out.println("windowClosing");
+        // Do nothing
     }
 
     @Override
     public void windowClosed() {
-        // DO nothing
+        // Do nothing
     }
 
     @Override

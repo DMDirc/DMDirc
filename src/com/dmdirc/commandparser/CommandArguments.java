@@ -72,7 +72,7 @@ public class CommandArguments {
         this.line = line;
     }
 
-   /**
+    /**
      * Creates a new command arguments parser for the specified words.
      *
      * @param words The words which form the line ot be parsed

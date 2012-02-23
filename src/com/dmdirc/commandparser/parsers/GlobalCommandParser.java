@@ -25,9 +25,11 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -44,26 +46,20 @@ public class GlobalCommandParser extends CommandParser {
     private static final long serialVersionUID = 1;
 
     /**
-     * The singleton instance of this command parser.
+     * Creates a new command parser for global commands.
+     *
+     * @param configManager Config manager to read settings from
+     * @param commandManager Command manager to load commands from
      */
-    private static GlobalCommandParser me;
+    public GlobalCommandParser(final ConfigManager configManager,
+            final CommandManager commandManager) {
+        super(configManager, commandManager);
+    }
 
     /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         // Don't care
-    }
-
-    /**
-     * Retrieves a singleton instance of the global command parser.
-     * @return A GlobalCommandParser
-     */
-    public static synchronized GlobalCommandParser getGlobalCommandParser() {
-        if (me == null) {
-            me = new GlobalCommandParser();
-        }
-
-        return me;
     }
 
     /** Loads the relevant commands into the parser. */

@@ -35,12 +35,14 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.util.collections.RollingList;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Getter;
 
 /**
  * Represents a generic command parser. A command parser takes a line of input
@@ -67,14 +69,16 @@ public abstract class CommandParser implements Serializable {
     private final RollingList<PreviousCommand> history;
 
     /** Command manager to use. */
-    protected final CommandManager commandManager = CommandManager.getCommandManager();
+    @Getter
+    protected final CommandManager commandManager;
 
     /** Creates a new instance of CommandParser. */
-    protected CommandParser() {
+    protected CommandParser(final ConfigManager configManager,
+            final CommandManager commandManager) {
         commands = new HashMap<String, CommandInfoPair>();
-        history = new RollingList<PreviousCommand>(IdentityManager
-                .getIdentityManager().getGlobalConfiguration()
+        history = new RollingList<PreviousCommand>(configManager
                 .getOptionInt("general", "commandhistory"));
+        this.commandManager = commandManager;
         loadCommands();
     }
 
@@ -131,7 +135,7 @@ public abstract class CommandParser implements Serializable {
      */
     public final void parseCommand(final FrameContainer origin,
             final String line, final boolean parseChannel) {
-        final CommandArguments args = new CommandArguments(line);
+        final CommandArguments args = new CommandArguments(getCommandManager(), line);
 
         if (args.isCommand()) {
             if (handleChannelCommand(origin, args, parseChannel)) {

@@ -136,7 +136,8 @@ public class GlobalWindow extends WritableFrameContainer {
             if (configManager.getOptionBool("general", "showglobalwindow")) {
                 if (globalWindow == null) {
                     globalWindow = new GlobalWindow(configManager,
-                            GlobalCommandParser.getGlobalCommandParser());
+                            new GlobalCommandParser(configManager,
+                            CommandManager.getCommandManager()));
                 }
             } else {
                 if (globalWindow != null) {

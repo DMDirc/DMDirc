@@ -25,8 +25,10 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -141,7 +143,7 @@ public class ActionModel {
         }
 
         WritableFrameContainer container = null;
-        CommandParser cp = null;
+        CommandParser cp;
 
         if (arguments.length > 0
                 && arguments[0] instanceof WritableFrameContainer) {
@@ -151,7 +153,8 @@ public class ActionModel {
         }
 
         if (container == null) {
-            cp = GlobalCommandParser.getGlobalCommandParser();
+            cp = new GlobalCommandParser(IdentityManager.getIdentityManager()
+                    .getGlobalConfiguration(), CommandManager.getCommandManager());
         } else {
             cp = container.getCommandParser();
         }

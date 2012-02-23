@@ -27,9 +27,11 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.config.ConfigManager;
 
 /**
  * A command parser used in the context of a server.
@@ -42,6 +44,15 @@ public class ServerCommandParser extends GlobalCommandParser {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+
+    /**
+     * Creates a new command parser for server commands.
+     *
+     * @param configManager Config manager to read settings from
+     */
+    public ServerCommandParser(final ConfigManager configManager) {
+        super(configManager, CommandManager.getCommandManager());
+    }
 
     /**
      * The server instance that this parser is attached to.

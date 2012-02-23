@@ -23,25 +23,37 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.global.Echo;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.ConfigBinder;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestCommandParser;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CommandParserTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        CommandManager.getCommandManager().registerCommand(new Echo(), Echo.INFO);
+    private ConfigManager cm;
+    private CommandManager commands;
+
+    @Before
+    public void setup() throws InvalidIdentityFileException {
+        cm = mock(ConfigManager.class);
+        when(cm.getOptionChar("general", "silencechar")).thenReturn('.');
+        when(cm.getOptionInt("general", "commandhistory")).thenReturn(10);
+        when(cm.getOptionChar("general", "commandchar")).thenReturn('/');
+        final ConfigBinder binder = new ConfigBinder(cm);
+        when(cm.getBinder()).thenReturn(binder);
+        commands = new CommandManager(cm);
+        commands.registerCommand(new Echo(commands), Echo.INFO);
     }
 
     @Test
     public void testBasicCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/echo this is a test");
 
         assertNull(tcp.nonCommandLine);
@@ -53,7 +65,7 @@ public class CommandParserTest {
 
     @Test
     public void testBasicNoArgs() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/echo");
 
         assertNull(tcp.nonCommandLine);
@@ -65,7 +77,7 @@ public class CommandParserTest {
 
     @Test
     public void testSilentNoArgs() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/.echo");
 
         assertNull(tcp.nonCommandLine);
@@ -77,7 +89,7 @@ public class CommandParserTest {
 
     @Test
     public void testSilentCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/.echo this is a test");
 
         assertNull(tcp.nonCommandLine);
@@ -89,7 +101,7 @@ public class CommandParserTest {
 
     @Test
     public void testNonExistantCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/foobar moo bar");
 
         assertNull(tcp.nonCommandLine);
@@ -101,7 +113,7 @@ public class CommandParserTest {
 
     @Test
     public void testEmptyCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/ moo bar");
 
         assertNull(tcp.nonCommandLine);
@@ -113,7 +125,7 @@ public class CommandParserTest {
 
     @Test
     public void testEmptySilentCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/. moo bar");
 
         assertNull(tcp.nonCommandLine);
@@ -125,7 +137,7 @@ public class CommandParserTest {
 
     @Test
     public void testNonCommand() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "Foobar baz");
 
         assertNotNull(tcp.nonCommandLine);
@@ -137,7 +149,7 @@ public class CommandParserTest {
 
     @Test
     public void testCommandHistory() {
-        final TestCommandParser tcp = new TestCommandParser();
+        final TestCommandParser tcp = new TestCommandParser(cm, commands);
         tcp.parseCommand(null, "/echo this is a test");
 
         final long time1 = tcp.getCommandTime("echo this is a test");

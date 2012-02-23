@@ -53,7 +53,7 @@ public final class Raw extends WritableFrameContainer
      */
     public Raw(final Server newServer) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
-                new ServerCommandParser(),
+                new ServerCommandParser(newServer.getConfigManager()),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
 

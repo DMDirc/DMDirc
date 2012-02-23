@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -65,6 +66,17 @@ public class Echo extends Command implements IntelligentCommand {
      */
     public Echo() {
         super();
+
+        handler = new CommandFlagHandler(timeStampFlag, targetFlag);
+    }
+
+    /**
+     * Creates a new instance of Echo.
+     *
+     * @param controller Command controller
+     */
+    public Echo(final CommandController controller) {
+        super(controller);
 
         handler = new CommandFlagHandler(timeStampFlag, targetFlag);
     }
