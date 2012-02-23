@@ -64,6 +64,10 @@ public class PreferencesDialogModel {
     /** Identity to write settings to. */
     @Getter
     private final Identity identity;
+    /** Plugin manager. */
+    private final PluginManager pluginManager;
+    /** Action Manager. */
+    private final ActionManager actionManager;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -74,25 +78,30 @@ public class PreferencesDialogModel {
      * @param urlHandlerPanel UI specific URL panel
      * @param configManager Config manager to read settings from
      * @param identity Identity to write settings to
+     * @param actionManager Action manager to register and trigger actions with
+     * @param pluginManager Plugin manager to retrieve plugins from
      */
     public PreferencesDialogModel(final PreferencesInterface pluginPanel,
             final PreferencesInterface themePanel,
             final PreferencesInterface updatesPanel,
             final PreferencesInterface urlHandlerPanel,
             final ConfigManager configManager,
-            final Identity identity) {
+            final Identity identity,
+            final ActionManager actionManager,
+            final PluginManager pluginManager) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;
         this.urlHandlerPanel = urlHandlerPanel;
         this.configManager = configManager;
         this.identity = identity;
+        this.actionManager = actionManager;
+        this.pluginManager = pluginManager;
 
 
         addDefaultCategories();
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_PREFS_OPENED, null, this);
+        actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
     }
 
     /**
@@ -220,8 +229,7 @@ public class PreferencesDialogModel {
         final PreferencesCategory category = new PreferencesCategory("Tab Completion", "");
         final Map<String, String> taboptions = new HashMap<String, String>();
 
-        for (Service service : PluginManager.getPluginManager()
-                .getServicesByType("tabcompletion")) {
+        for (Service service : pluginManager.getServicesByType("tabcompletion")) {
             taboptions.put(service.getName(), service.getName());
         }
 
@@ -613,8 +621,7 @@ public class PreferencesDialogModel {
      * @since 0.6
      */
     public void close() {
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_PREFS_CLOSED, null);
+        actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);
     }
 
 }

@@ -26,10 +26,10 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ActionController;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {

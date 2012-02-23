@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.config.prefs;
 
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.List;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesCategoryTest {
@@ -193,4 +193,17 @@ public class PreferencesCategoryTest {
         verify(setting).save();
     }
 
+    @Test
+    public void testGetPathNoParent() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        assertEquals("unit", category.getPath());
+    }
+
+    @Test
+    public void testGetPathWithParent() {
+        final PreferencesCategory parent = new PreferencesCategory("unit1", "test1");
+        final PreferencesCategory child = new PreferencesCategory("unit2", "test2");
+        child.setParent(parent);
+        assertEquals("unit1 → unit2", child.getPath());
+    }
 }

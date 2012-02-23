@@ -22,7 +22,7 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.StringLengthValidator;
@@ -30,18 +30,12 @@ import com.dmdirc.util.validators.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesSettingTest {
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-    }
 
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice1() {
@@ -179,38 +173,99 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveUnset() {
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("unit-test", "ps", "abc");
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn("abc");
+        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext",
-                IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                IdentityManager.getIdentityManager().getGlobalConfigIdentity());
+                "unit-test", "ps", "title", "helptext", cm, identity);
 
         assertFalse(ps.save());
         ps.setValue(null);
         assertTrue(ps.save());
 
-        assertFalse(IdentityManager.getIdentityManager()
-                .getGlobalConfigIdentity().hasOptionString("unit-test", "ps"));
+        verify(identity).unsetOption("unit-test", "ps");
     }
 
     @Test
     public void testSaveNormal() {
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("unit-test", "ps", "abc");
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn("abc");
+        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext",
-                IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                IdentityManager.getIdentityManager().getGlobalConfigIdentity());
+                "unit-test", "ps", "title", "helptext", cm, identity);
 
         assertFalse(ps.save());
         ps.setValue("def");
         assertTrue(ps.save());
 
-        assertEquals("def", IdentityManager.getIdentityManager()
-                .getGlobalConfigIdentity().getOption("unit-test", "ps"));
+        verify(identity).setOption("unit-test", "ps", "def");
+    }
+
+    @Test
+    public void testIsSet() {
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn("abc");
+        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
+                "unit-test", "ps", "title", "helptext", cm, identity);
+
+        assertFalse(ps.isSet());
+    }
+
+    @Test
+    public void testIsNotSet() {
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn(null);
+        when(identity.getOption("unit-test", "ps")).thenReturn(null);
+
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
+                "unit-test", "ps", "title", "helptext", cm, identity);
+
+        assertFalse(ps.isSet());
+    }
+
+    @Test
+    public void testUnknownComboOption() {
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn("abc");
+        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+
+        final Map<String, String> options = new HashMap<String, String>();
+
+        final PreferencesSetting ps = new PreferencesSetting("unit-test",
+                "ps", "title", "helptext", options, cm, identity);
+
+        assertEquals("Current (abc)", ps.getComboOptions().get("abc"));
+    }
+
+    @Test
+    public void testKnownComboOption() {
+        ConfigManager cm = mock(ConfigManager.class);
+        Identity identity = mock(Identity.class);
+
+        when(cm.getOption("unit-test", "ps")).thenReturn("abc");
+        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+
+        final Map<String, String> options = new HashMap<String, String>();
+        options.put("abc", "123");
+
+        final PreferencesSetting ps = new PreferencesSetting("unit-test",
+                "ps", "title", "helptext", options, cm, identity);
+
+        assertEquals("123", ps.getComboOptions().get("abc"));
     }
 
 }

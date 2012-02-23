@@ -22,35 +22,46 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
 
-import org.junit.BeforeClass;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class PreferencesDialogModelTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        Main.extractCorePlugins("ui_");
-        PluginManager.getPluginManager();
+    private ActionManager actionManager;
+    private PluginManager pluginManager;
+
+    @Before
+    public void setup() {
+        actionManager = mock(ActionManager.class);
+        pluginManager = mock(PluginManager.class);
+
+        final List<Service> services = new ArrayList<Service>();
+        final Service tabcompleter = mock(Service.class);
+        when(tabcompleter.getName()).thenReturn("tabber");
+        services.add(tabcompleter);
+
+        when(pluginManager.getServicesByType("tabcompletion")).thenReturn(services);
     }
 
     @Test
     public void testDefaults() {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         assertNotNull(pm.getCategory("General"));
         assertNotNull(pm.getCategory("Connection"));
         assertNotNull(pm.getCategory("Messages"));
@@ -66,7 +77,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesCategory category = mock(PreferencesCategory.class);
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         pm.addCategory(category);
         pm.dismiss();
 
@@ -80,7 +92,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         pm.addCategory(category);
         assertFalse(pm.save());
 
@@ -94,7 +107,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         pm.addCategory(category);
         assertTrue(pm.save());
 
@@ -106,7 +120,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         assertNull(pm.getCategory("unittest123"));
     }
 
@@ -115,7 +130,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         assertNotNull(pm.getCategories());
         assertFalse(pm.getCategories().isEmpty());
 
@@ -129,7 +145,8 @@ public class PreferencesDialogModelTest {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
 
         pm.registerSaveListener(tpi);
@@ -139,17 +156,13 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testOpenAction() {
-        final ActionListener tal = mock(ActionListener.class);
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        ActionManager.getActionManager().initialise();
-        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
 
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
-
-        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
-                (StringBuffer) same(null), same(pm));
+        verify(actionManager).triggerEvent(CoreActionType.CLIENT_PREFS_OPENED, null, pm);
     }
 
     @Test
@@ -157,15 +170,28 @@ public class PreferencesDialogModelTest {
         final ActionListener tal = mock(ActionListener.class);
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
-
-        ActionManager.getActionManager().initialise();
-        ActionManager.getActionManager().registerListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
-
-        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null, null, null, cm, null);
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
         pm.close();
 
-        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),
-                (StringBuffer) same(null));
+        verify(actionManager).triggerEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);
+    }
+
+    @Test
+    public void testCategoryObjectSaveListeners() {
+        ConfigManager cm = mock(ConfigManager.class);
+        when(cm.getOption("domain", "option")).thenReturn("fallback");
+
+        final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
+                null, null, cm, null, actionManager, pluginManager);
+        final PreferencesCategory category = mock(PreferencesCategory.class);
+        final PreferencesInterface tpi = mock(PreferencesInterface.class);
+        when(category.hasObject()).thenReturn(true);
+        when(category.getObject()).thenReturn(tpi);
+
+        pm.addCategory(category);
+        pm.fireSaveListeners();
+        verify(tpi).save();
     }
 
 }
