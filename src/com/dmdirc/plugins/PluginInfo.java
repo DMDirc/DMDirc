@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
@@ -162,6 +163,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         injector.addParameter(PluginInfo.class, this);
         injector.addParameter(PluginMetaData.class, metaData);
         injector.addParameter(IdentityManager.class, IdentityManager.getIdentityManager());
+        injector.addParameter(ServerManager.class, ServerManager.getServerManager());
 
         return injector;
     }
