@@ -39,7 +39,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
  */
-public final class ServerManager {
+public class ServerManager {
 
     /** Singleton instance of ServerManager. */
     private static ServerManager me;
