@@ -413,7 +413,18 @@ public final class ErrorManager implements ConfigChangeListener {
             }
             restart = false;
         } else {
-            restart = FatalErrorDialog.displayBlocking(error);
+            final FatalErrorDialog fed = new FatalErrorDialog(error);
+            fed.setVisible(true);
+            try {
+                synchronized (fed) {
+                    while (fed.isWaiting()) {
+                        fed.wait();
+                    }
+                }
+            } catch (InterruptedException ex) {
+                //Oh well, carry on
+            }
+            restart = fed.getRestart();
         }
 
         try {

@@ -33,9 +33,6 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.concurrent.Semaphore;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -63,16 +60,10 @@ import javax.swing.text.StyledDocument;
 public final class FatalErrorDialog extends JDialog implements ActionListener,
         ErrorListener {
 
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
+    /** Serialisation version ID. */
     private static final long serialVersionUID = 3;
-
     /** Do we need to restart? Else we quit. */
     private static boolean restart = true;
-
     /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
     /** Restart client Button. */
@@ -89,13 +80,15 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private ImageIcon icon;
     /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
+    /** Are we waiting on user input? */
+    private boolean waiting = true;
 
     /**
      * Creates a new fatal error dialog.
      *
      * @param error Error
      */
-    private FatalErrorDialog(final ProgramError error) {
+    public FatalErrorDialog(final ProgramError error) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
@@ -235,58 +228,29 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             }.execute();
         } else if (actionEvent.getSource() == quitButton) {
             restart = false;
+            waiting = false;
             dispose();
         } else {
+            waiting = false;
             dispose();
         }
     }
 
     /**
-     * Static method to instantiate and display the dialog.
+     * Returns the restart response of this dialog.  This will default to true
+     * if the user is yet to make a choice.
      *
-     * @param error Program error
+     * @return Whether to restart after this error
      */
-    public static boolean display(final ProgramError error) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                final FatalErrorDialog me = new FatalErrorDialog(error);
-                me.setVisible(true);
-            }
-        });
+    public boolean getRestart() {
         return restart;
     }
 
     /**
-     * Static method to instantiate and display the dialog, blocking until it
-     * is closed.
+     * Updates the send button with the specified status.
      *
-     * @param error Program error
+     * @param status New error status
      */
-    public static boolean displayBlocking(final ProgramError error) {
-        final Semaphore semaphore = new Semaphore(0);
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                final FatalErrorDialog me = new FatalErrorDialog(error);
-                me.addWindowListener(new WindowAdapter() {
-
-                    @Override
-                    public void windowClosed(final WindowEvent e) {
-                        semaphore.release();
-                    }
-                });
-                me.setVisible(true);
-            }
-        });
-        semaphore.acquireUninterruptibly();
-        return restart;
-    }
-
     private void updateSendButtonText(final ErrorReportStatus status) {
         switch (status) {
             case WAITING:
@@ -337,8 +301,15 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public void errorStatusChanged(final ProgramError error) {
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
-            restartButton.setEnabled(status.isTerminal());
-            updateSendButtonText(status);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    restartButton.setEnabled(status.isTerminal());
+                    updateSendButtonText(status);
+                }
+            });
         }
     }
 
@@ -347,5 +318,15 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public boolean isReady() {
         //We're never ready
         return false;
+    }
+
+    /**
+     * Are we waiting for user input.  This will be true until the dialog has
+     * been disposed of.
+     *
+     * @return true if user has made no input
+     */
+    public boolean isWaiting() {
+        return waiting;
     }
 }
