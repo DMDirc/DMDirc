@@ -209,18 +209,20 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles the pressing of a key. Inserts control chars as appropriate.
      *
      * @param line Text in the target
+     * @param caretPosition Position of the caret after the key was pressed
      * @param keyCode Keycode for the pressed key
      * @param shiftPressed Was shift pressed
      * @param ctrlPressed Was ctrl key pressed
      */
-    protected void handleKeyPressed(final String line, final int keyCode,
-            final boolean shiftPressed, final boolean ctrlPressed) {
+    protected void handleKeyPressed(final String line, final int caretPosition,
+            final int keyCode, final boolean shiftPressed,
+            final boolean ctrlPressed) {
         target.hideColourPicker();
 
-        if (keyCode == KeyEvent.VK_COMMA) {
+        if (keyCode == KeyEvent.VK_COMMA && caretPosition > 1) {
             // Reshow the colour picker dialog if the user follows a colour
             // or control code with a comma (so they can pick a background)
-            final String partialLine = line.substring(0, target.getCaretPosition() - 1);
+            final String partialLine = line.substring(0, caretPosition - 1);
 
             if (partialLine.matches("^.*" + Styliser.CODE_COLOUR + "[0-9]{0,2}$")) {
                 target.showColourPicker(true, false);
