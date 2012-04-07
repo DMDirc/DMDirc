@@ -123,11 +123,11 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     private String getComponent(final String line) {
         final String[] parts = line.split(" ");
 
-        if ("outofdate".equals(parts[0])) {
+        if (parts.length >= 2 && "outofdate".equals(parts[0])) {
             return parts[1];
         }
 
-        return parts[2];
+        return parts.length >= 3 ? parts[2] : null;
     }
 
     /**
