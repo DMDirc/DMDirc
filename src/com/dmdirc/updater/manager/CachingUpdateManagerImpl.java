@@ -25,8 +25,8 @@ package com.dmdirc.updater.manager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
 
     /** Map of component to their most recent status. */
     private final Map<UpdateComponent, UpdateStatus> cachedStatuses
-            = new HashMap<UpdateComponent, UpdateStatus>();
+            = new ConcurrentSkipListMap<UpdateComponent, UpdateStatus>();
 
     /** Our current status. */
     @Getter
