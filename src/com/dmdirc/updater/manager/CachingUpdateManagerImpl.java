@@ -25,6 +25,7 @@ package com.dmdirc.updater.manager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
@@ -41,7 +42,7 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
 
     /** Map of component to their most recent status. */
     private final Map<UpdateComponent, UpdateStatus> cachedStatuses
-            = new ConcurrentSkipListMap<UpdateComponent, UpdateStatus>();
+            = new ConcurrentSkipListMap<UpdateComponent, UpdateStatus>(new UpdateComponentComparator());
 
     /** Our current status. */
     @Getter
@@ -135,6 +136,19 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
                 final UpdateStatus status, final double progress) {
             cachedStatuses.put(component, status);
             checkStatus();
+        }
+
+    }
+
+    /**
+     * Comparator which compares components based on their name.
+     */
+    private static class UpdateComponentComparator implements Comparator<UpdateComponent> {
+
+        /** {@inheritDoc} */
+        @Override
+        public int compare(final UpdateComponent o1, final UpdateComponent o2) {
+            return o1.getName().compareTo(o2.getName());
         }
 
     }
