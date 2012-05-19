@@ -5,8 +5,6 @@
 
         <ibiblio name="jgit" root="http://download.eclipse.org/jgit/maven" m2compatible="true"/>
 
-        <ibiblio name="sonatype" root="https://oss.sonatype.org/content/repositories/snapshots/" m2compatible="true"/>
-
         <url name="ant-nsis">
             <artifact pattern="http://cloud.github.com/downloads/dreese/nsis-ant/nsisant-[revision].jar"/>
         </url>
@@ -26,6 +24,5 @@
         <module organisation="com.github.shanemcc" name="jgit-describe" resolver="jgit-describe"/>
         <module organisation="net.sourceforge.fikin-ant-tasks" name="ant-fikin" resolver="packager"/>
         <module organisation="org.eclipse.jgit" name="*" resolver="jgit"/>
-        <module organisation="com.github.peichhorn" name="*" resolver="sonatype"/>
     </modules>
 </ivysettings>

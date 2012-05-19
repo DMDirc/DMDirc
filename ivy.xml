@@ -17,7 +17,7 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.6.+" conf="compile->default" />
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.+" conf="test->default" />
 
-        <dependency org="com.github.peichhorn" name="lombok-pg" rev="0.10.8-SNAPSHOT" conf="compile->default" />
+        <dependency org="com.github.peichhorn" name="lombok-pg" rev="latest.release" conf="compile->default" />
 
         <dependency org="pmd" name="pmd" rev="4.+" conf="test->default" />
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
