@@ -49,7 +49,7 @@
 
     <target name="-bundle-slf4j">
         <jar destfile="${dist.jar}" update="true">
-            <zipfileset src="lib/slf4j-api-1.6.4.jar" includes="org/slf4j/**/*"/>
+            <zipfileset src="lib/slf4j-api-1.6.6.jar" includes="org/slf4j/**/*"/>
         </jar>
     </target>
 
