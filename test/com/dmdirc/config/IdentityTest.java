@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.validators.PermissiveValidator;
 
@@ -33,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class IdentityTest {
@@ -43,6 +43,8 @@ public class IdentityTest {
 
     @Before
     public void setUp() throws Exception {
+        // Create a TestMain so that we get a config directory.
+        TestMain.getTestMain();
         target = new ConfigTarget();
         target.setChannel("#unittest@unittest");
 

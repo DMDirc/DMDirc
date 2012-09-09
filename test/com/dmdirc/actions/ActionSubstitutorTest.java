@@ -22,11 +22,11 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
@@ -41,7 +41,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
@@ -56,8 +55,7 @@ public class ActionSubstitutorTest {
 
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
-        ActionManager.getActionManager().initialise();
+        TestMain.getTestMain();
 
         SETTINGS.put("alpha", "A");
         SETTINGS.put("bravo", "$alpha");

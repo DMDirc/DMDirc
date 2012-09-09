@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.TestMain;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class IdentityManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

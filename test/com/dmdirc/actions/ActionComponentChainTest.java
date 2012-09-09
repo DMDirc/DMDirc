@@ -22,8 +22,8 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.Server;
-import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,8 +34,7 @@ public class ActionComponentChainTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        ActionManager.getActionManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

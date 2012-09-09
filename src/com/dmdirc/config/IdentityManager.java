@@ -57,6 +57,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** A singleton instance of IdentityManager. */
     private static final IdentityManager INSTANCE = new IdentityManager();
 
+    /** Config Directory. */
+    private String configDirectory;
+
     /**
      * The identities that have been loaded into this manager.
      *
@@ -93,7 +96,14 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public void initialise() throws InvalidIdentityFileException {
+    public String getConfigDir() {
+        return configDirectory;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void initialise(final String configDirectory) throws InvalidIdentityFileException {
+        this.configDirectory = configDirectory;
         identities.clear();
 
         loadVersionIdentity();
@@ -126,18 +136,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
                     + "could not be loaded");
         }
-    }
-
-    /**
-     * Loads all identity files.
-     *
-     * @throws InvalidIdentityFileException If there is an error with the config
-     *                                      file.
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static void load() throws InvalidIdentityFileException {
-        INSTANCE.initialise();
     }
 
     /** Loads the default (built in) identities. */
@@ -224,7 +222,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** {@inheritDoc} */
     @Override
     public String getIdentityDirectory() {
-        return Main.getConfigDir() + "identities" + System.getProperty("file.separator");
+        return configDirectory + "identities" + System.getProperty("file.separator");
     }
 
     /**
@@ -391,7 +389,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private void loadConfig() throws InvalidIdentityFileException {
         try {
-            final File file = new File(Main.getConfigDir() + "dmdirc.config");
+            final File file = new File(configDirectory + "dmdirc.config");
 
             if (!file.exists()) {
                 file.createNewFile();

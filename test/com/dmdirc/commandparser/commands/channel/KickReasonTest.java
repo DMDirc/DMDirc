@@ -22,26 +22,25 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class KickReasonTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     private final KickReason command = new KickReason();

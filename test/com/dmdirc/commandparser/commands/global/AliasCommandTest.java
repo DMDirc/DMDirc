@@ -21,15 +21,14 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.IdentityManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class AliasCommandTest {
@@ -38,7 +37,7 @@ public class AliasCommandTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

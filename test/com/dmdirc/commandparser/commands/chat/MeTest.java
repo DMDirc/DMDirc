@@ -21,17 +21,16 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
-import com.dmdirc.config.IdentityManager;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class MeTest {
@@ -41,7 +40,7 @@ public class MeTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Before

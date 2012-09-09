@@ -79,7 +79,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public Action(final String group, final String name) {
         super(group, name);
 
-        location = ActionManager.getDirectory() + group + File.separator + name;
+        location = ActionManager.getActionManager().getDirectory() + group + File.separator + name;
 
         try {
             config = new ConfigFile(location);
@@ -134,7 +134,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final ConditionTree conditionTree, final String newFormat) {
         super(group, name, triggers, response, conditions, conditionTree, newFormat);
 
-        final String dir = ActionManager.getDirectory() + group + File.separator;
+        final String dir = ActionManager.getActionManager().getDirectory() + group + File.separator;
         location = dir + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
         new File(dir).mkdirs();
@@ -522,7 +522,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super.setName(newName);
 
         new File(location).delete();
-        location = ActionManager.getDirectory() + group + File.separator + newName;
+        location = ActionManager.getActionManager().getDirectory() + group + File.separator + newName;
 
         save();
     }
@@ -534,7 +534,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         new File(location).delete();
 
-        final String dir = ActionManager.getDirectory() + group + File.separator;
+        final String dir = ActionManager.getActionManager().getDirectory() + group + File.separator;
         location = dir + name;
 
         new File(dir).mkdirs();

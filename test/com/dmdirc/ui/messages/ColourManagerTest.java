@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.Colour;
 
@@ -34,7 +35,7 @@ public class ColourManagerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

@@ -104,10 +104,12 @@ public final class UpdateChecker implements Runnable {
     /**
      * Initialises the update checker. Sets a timer to check based on the
      * frequency specified in the config.
+     *
+     * @param main Parent Main class
      */
-    public static void init() {
+    public static void init(final Main main) {
         manager = new DMDircUpdateManager(IdentityManager.getIdentityManager()
-                .getGlobalConfiguration(), Main.getConfigDir(), 3);
+                .getGlobalConfiguration(), IdentityManager.getIdentityManager().getConfigDir(), 3, main);
 
         initTimer();
     }

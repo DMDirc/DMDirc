@@ -21,7 +21,7 @@
  */
 package com.dmdirc.actions;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.TestMain;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -42,8 +42,7 @@ public class ActionTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        ActionManager.getActionManager().initialise();
+        TestMain.getTestMain();
     }
 
     private static Action action;
@@ -53,7 +52,7 @@ public class ActionTest {
         action = new Action("unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(), null);
         assertTrue("Action constructor must create new file",
-                new File(ActionManager.getDirectory() + "unit-test"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test"
                 + File.separator + "test1").isFile());
     }
 
@@ -62,10 +61,10 @@ public class ActionTest {
         action.setGroup("unit-test-two");
 
         assertFalse("setGroup must remove old file",
-                new File(ActionManager.getDirectory() + "unit-test"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test"
                 + File.separator + "test1").isFile());
         assertTrue("setGroup must create new file",
-                new File(ActionManager.getDirectory() + "unit-test-two"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test-two"
                 + File.separator + "test1").isFile());
     }
 
@@ -74,10 +73,10 @@ public class ActionTest {
         action.setName("test2");
 
         assertFalse("setName must remove old file",
-                new File(ActionManager.getDirectory() + "unit-test-two"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test-two"
                 + File.separator + "test1").isFile());
         assertTrue("setName must create new file",
-                new File(ActionManager.getDirectory() + "unit-test-two"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test-two"
                 + File.separator + "test2").isFile());
     }
 
@@ -86,13 +85,13 @@ public class ActionTest {
         action.delete();
 
         assertFalse("delete must remove file",
-                new File(ActionManager.getDirectory() + "unit-test-two"
+                new File(ActionManager.getActionManager().getDirectory() + "unit-test-two"
                 + File.separator + "test2").isFile());
     }
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        final Action action = new Action("unit-test", "doesn't_exist");
+        action = new Action("unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
         action.loadActionFromConfig();
@@ -109,7 +108,7 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        final Action action = new Action("unit-test", "doesn't_exist");
+        action = new Action("unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
         action.config.read();
         action.loadActionFromConfig();

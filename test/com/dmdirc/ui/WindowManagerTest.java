@@ -21,6 +21,7 @@
  */
 package com.dmdirc.ui;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
@@ -51,7 +52,7 @@ public class WindowManagerTest {
         cm = mock(ConfigManager.class);
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm);
+        commands = new CommandManager(cm, TestMain.getTestMain());
     }
 
     @Test

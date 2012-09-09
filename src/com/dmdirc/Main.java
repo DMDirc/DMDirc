@@ -60,22 +60,19 @@ import java.util.TimerTask;
 /**
  * Main class, handles initialisation.
  */
-public final class Main {
+public class Main {
 
     /** Feedback nag delay. */
-    private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
+    private final int FEEDBACK_DELAY = 30 * 60 * 1000;
 
     /** The UI to use for the client. */
-    private static final Collection<UIController> CONTROLLERS = new HashSet<UIController>();
+    private final Collection<UIController> CONTROLLERS = new HashSet<UIController>();
 
     /** The config dir to use for the client. */
-    private static String configdir;
+    private String configdir;
 
-    /**
-     * Prevents creation of main.
-     */
-    private Main() {
-    }
+    /** Instance of main, protected to allow subclasses direct access. */
+    protected static Main mainInstance;
 
     /**
      * Entry procedure.
@@ -85,7 +82,7 @@ public final class Main {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         try {
-            init(args);
+            new Main().init(args);
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
                     ex);
@@ -97,31 +94,31 @@ public final class Main {
      *
      * @param args The command line arguments
      */
-    private static void init(final String[] args) {
+    public void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
 
-        final CommandLineParser clp = new CommandLineParser(args);
+        final CommandLineParser clp = new CommandLineParser(this, args);
 
         try {
-            IdentityManager.getIdentityManager().initialise();
+            IdentityManager.getIdentityManager().initialise(getConfigDir());
         } catch (InvalidIdentityFileException iife) {
             handleInvalidConfigFile();
         }
 
-        UpdateChecker.init();
+        UpdateChecker.init(this);
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        final PluginManager pm = PluginManager.getPluginManager();
+        final PluginManager pm = PluginManager.initPluginManager(IdentityManager.getIdentityManager(), this);
         checkBundledPlugins(pm, IdentityManager.getIdentityManager().getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
         clp.applySettings();
 
-        new CommandLoader().loadCommands(CommandManager.getCommandManager());
+        new CommandLoader().loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pm, service);
@@ -168,7 +165,7 @@ public final class Main {
      * requests a restart. If this has already been attempted, it shows an error
      * and exits.
      */
-    private static void handleMissingUI() {
+    private void handleMissingUI() {
         // Check to see if we have already tried this
         if (IdentityManager.getIdentityManager().getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
             System.out.println("DMDirc is unable to load any compatible UI plugins.");
@@ -203,7 +200,7 @@ public final class Main {
      * method informs the user of the problem and installs a new default config
      * file, backing up the old one.
      */
-    private static void handleInvalidConfigFile() {
+    private void handleInvalidConfigFile() {
         final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
 
         final String message = "DMDirc has detected that your config file "
@@ -224,7 +221,7 @@ public final class Main {
 
         if (configFile.renameTo(newConfigFile)) {
             try {
-                IdentityManager.getIdentityManager().initialise();
+                IdentityManager.getIdentityManager().initialise(getConfigDir());
             } catch (InvalidIdentityFileException iife2) {
                 // This shouldn't happen!
                 Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
@@ -249,7 +246,7 @@ public final class Main {
      * @param pm The plugin manager to use to access services
      * @param serviceType The type of service that should exist
      */
-    public static void ensureExists(final PluginManager pm, final String serviceType) {
+    public void ensureExists(final PluginManager pm, final String serviceType) {
         if (pm.getServicesByType(serviceType).isEmpty()) {
             extractCorePlugins(serviceType + "_");
             pm.refreshPlugins();
@@ -264,7 +261,7 @@ public final class Main {
      * @param pm The plugin manager to use to check plugins
      * @param config The configuration source for bundled versions
      */
-    private static void checkBundledPlugins(final PluginManager pm, final ConfigManager config) {
+    private void checkBundledPlugins(final PluginManager pm, final ConfigManager config) {
         for (PluginInfo plugin : pm.getPluginInfos()) {
             if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
                 final Version bundled = new Version(config.getOption("bundledplugins_versions",
@@ -285,7 +282,7 @@ public final class Main {
      *
      * @param pm The plugin manager to use to load plugins
      */
-    protected static void loadUIs(final PluginManager pm) {
+    protected void loadUIs(final PluginManager pm) {
         final List<Service> uis = pm.getServicesByType("ui");
 
         // First try: go for our desired service type
@@ -316,7 +313,7 @@ public final class Main {
     /**
      * Executes the first run or migration wizards as required.
      */
-    private static void doFirstRun() {
+    private void doFirstRun() {
         if (IdentityManager.getIdentityManager().getGlobalConfiguration().getOptionBool("general", "firstRun")) {
             IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption("general", "firstRun", "false");
             for (UIController controller : CONTROLLERS) {
@@ -339,7 +336,7 @@ public final class Main {
     /**
      * Quits the client nicely, with the default closing message.
      */
-    public static void quit() {
+    public void quit() {
         quit(0);
     }
 
@@ -349,7 +346,7 @@ public final class Main {
      * @param exitCode This is the exit code that will be returned to the
      *                  operating system when the client exits
      */
-    public static void quit(final int exitCode) {
+    public void quit(final int exitCode) {
         quit(IdentityManager.getIdentityManager().getGlobalConfiguration().getOption("general",
                 "closemessage"), exitCode);
     }
@@ -359,7 +356,7 @@ public final class Main {
      *
      * @param reason The quit reason to send
      */
-    public static void quit(final String reason) {
+    public void quit(final String reason) {
         quit(reason, 0);
     }
 
@@ -370,7 +367,7 @@ public final class Main {
      * @param exitCode This is the exit code that will be returned to the
      *                  operating system when the client exits
      */
-    public static void quit(final String reason, final int exitCode) {
+    public void quit(final String reason, final int exitCode) {
         ServerManager.getServerManager().disconnectAll(reason);
 
         System.exit(exitCode);
@@ -383,7 +380,7 @@ public final class Main {
      * @deprecated Shouldn't be used. There may be multiple or no controllers.
      */
     @Deprecated
-    public static UIController getUI() {
+    public UIController getUI() {
         return CONTROLLERS.iterator().next();
     }
 
@@ -392,7 +389,7 @@ public final class Main {
      *
      * @return configuration directory
      */
-    public static String getConfigDir() {
+    protected String getConfigDir() {
         if (configdir == null) {
             initialiseConfigDir();
         }
@@ -403,7 +400,7 @@ public final class Main {
     /**
      * Initialises the location of the configuration directory.
      */
-    protected static void initialiseConfigDir() {
+    protected void initialiseConfigDir() {
         final String fs = System.getProperty("file.separator");
         final String osName = System.getProperty("os.name");
 
@@ -438,7 +435,7 @@ public final class Main {
      *
      * @param newdir The new configuration directory
      */
-    public static void setConfigDir(final String newdir) {
+    public void setConfigDir(final String newdir) {
         configdir = newdir;
     }
 
@@ -449,12 +446,12 @@ public final class Main {
      * @param prefix If non-null, only plugins whose file name starts with
      * this prefix will be extracted.
      */
-    public static void extractCorePlugins(final String prefix) {
+    public void extractCorePlugins(final String prefix) {
         final Map<String, byte[]> resources = ResourceManager.getResourceManager()
                 .getResourcesStartingWithAsBytes("plugins");
         for (Map.Entry<String, byte[]> resource : resources.entrySet()) {
             try {
-                final String resourceName = Main.getConfigDir() + "plugins"
+                final String resourceName = getConfigDir() + "plugins"
                         + resource.getKey().substring(7);
 
                 if (prefix != null && !resource.getKey().substring(8).startsWith(prefix)) {

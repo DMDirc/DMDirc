@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -412,8 +411,8 @@ public class ActionManager implements ActionController {
      *
      * @return The directory that should be used to store actions
      */
-    public static String getDirectory() {
-        return Main.getConfigDir() + "actions" + System.getProperty("file.separator");
+    public String getDirectory() {
+        return this.identityManager.getConfigDir() + "actions" + System.getProperty("file.separator");
     }
 
     /** {@inheritDoc} */
@@ -600,7 +599,7 @@ public class ActionManager implements ActionController {
     public static void installActionPack(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", getDirectory());
+        ziprm.extractResources("", getActionManager().getDirectory());
 
         getActionManager().loadUserActions();
 

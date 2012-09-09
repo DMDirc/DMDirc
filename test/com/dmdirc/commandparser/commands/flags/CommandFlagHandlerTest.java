@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.Arrays;
@@ -57,7 +57,7 @@ public class CommandFlagHandlerTest {
 
     @BeforeClass
     public static void setupClass() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     public CommandFlagHandlerTest(String input, CommandFlag[] flags, int[] offsets) {

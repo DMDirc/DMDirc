@@ -94,10 +94,18 @@ public interface IdentityController {
     /**
      * Loads all identity files.
      *
+     * @param configDirectory Config Directory.
      * @throws InvalidIdentityFileException If there is an error with the config
      * file.
      */
-    void initialise() throws InvalidIdentityFileException;
+    void initialise(final String configDirectory) throws InvalidIdentityFileException;
+
+    /**
+     * Get the config directory used by this identity controller.
+     *
+     * @return The config directory.
+     */
+    String getConfigDir();
 
     /**
      * Loads user-defined identity files.

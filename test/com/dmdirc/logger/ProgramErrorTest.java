@@ -21,7 +21,7 @@
  */
 package com.dmdirc.logger;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.TestMain;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.Arrays;
@@ -36,7 +36,7 @@ public class ProgramErrorTest {
 
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

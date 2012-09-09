@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.harness.TestCipherUtils;
 
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class CipherUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

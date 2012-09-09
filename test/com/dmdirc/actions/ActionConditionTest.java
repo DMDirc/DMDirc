@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.TestMain;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,8 +33,7 @@ public class ActionConditionTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        ActionManager.getActionManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

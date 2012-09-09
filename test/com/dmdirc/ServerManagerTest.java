@@ -22,9 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
-import com.dmdirc.plugins.PluginManager;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -38,8 +36,7 @@ public class ServerManagerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-        Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
+        TestMain.getTestMain();
     }
 
     @After

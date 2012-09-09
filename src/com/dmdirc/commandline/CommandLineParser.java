@@ -48,7 +48,7 @@ public class CommandLineParser {
      * following order: short option, long option, description, whether or not
      * the option takes an argument.
      */
-    private static final Object[][] ARGUMENTS = new Object[][]{
+    private final Object[][] ARGUMENTS = new Object[][]{
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'e', "existing", "Try to use an existing instance of DMDirc (use with -c)", Boolean.FALSE},
@@ -72,12 +72,16 @@ public class CommandLineParser {
     /** The RMI server we're using. */
     private RemoteInterface server;
 
+    /** Our parent Main. */
+    private Main main;
+
     /**
      * Creates a new instance of CommandLineParser.
      *
      * @param arguments The arguments to be parsed
      */
-    public CommandLineParser(final String ... arguments) {
+    public CommandLineParser(final Main main, final String ... arguments) {
+        this.main = main;
         boolean inArg = false;
         char previousArg = '.';
 
@@ -230,7 +234,7 @@ public class CommandLineParser {
      *
      * @param message The message about the unknown argument to be displayed
      */
-    private static void doUnknownArg(final String message) {
+    private void doUnknownArg(final String message) {
         System.out.println(message);
         System.out.println();
         doHelp();
@@ -239,7 +243,7 @@ public class CommandLineParser {
     /**
      * Exits DMDirc.
      */
-    private static void exit() {
+    private void exit() {
         System.exit(0);
     }
 
@@ -273,7 +277,7 @@ public class CommandLineParser {
     /**
      * Handles the --check argument.
      */
-    private static void doExistingCheck() {
+    private void doExistingCheck() {
         if (RemoteServer.getServer() == null) {
             System.out.println("Existing instance not found.");
             System.exit(1);
@@ -288,18 +292,18 @@ public class CommandLineParser {
      *
      * @param dir The new config directory
      */
-    private static void doDirectory(final String dir) {
+    private void doDirectory(final String dir) {
         if (dir.endsWith(File.separator)) {
-            Main.setConfigDir(dir);
+            main.setConfigDir(dir);
         } else {
-            Main.setConfigDir(dir + File.separator);
+            main.setConfigDir(dir + File.separator);
         }
     }
 
     /**
      * Prints out the client version and exits.
      */
-    private static void doVersion() {
+    private void doVersion() {
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
         System.out.println("        Version: " + IdentityManager.getIdentityManager()
@@ -312,7 +316,7 @@ public class CommandLineParser {
     /**
      * Prints out client help and exits.
      */
-    private static void doHelp() {
+    private void doHelp() {
         System.out.println("Usage: java -jar DMDirc.jar [options]");
         System.out.println();
         System.out.println("Valid options:");

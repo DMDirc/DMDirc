@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 public class WritableFrameContainerTest {
 
     private ConfigManager cm;
+    private Main main;
     private CommandManager commands;
 
     @Before
@@ -48,7 +49,8 @@ public class WritableFrameContainerTest {
         when(cm.getOption("general", "commandchar")).thenReturn("/");
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm);
+        main = mock(Main.class);
+        commands = new CommandManager(cm, main);
     }
 
     @Test

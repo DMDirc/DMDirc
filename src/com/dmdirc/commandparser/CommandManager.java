@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
@@ -52,6 +53,9 @@ public class CommandManager implements CommandController {
     /** A singleton instance of the command manager. */
     private static CommandManager instance;
 
+    /** The main instance that owns us. */
+    private Main main;
+
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
             = new HashMap<CommandInfo, Command>();
@@ -74,9 +78,17 @@ public class CommandManager implements CommandController {
      * Creates a new instance of the Command Manager.
      *
      * @param configManager the configuration manager to use.
+     * @param Main the Main class that owns this CommandManager.
      */
-    public CommandManager(final ConfigManager configManager) {
+    public CommandManager(final ConfigManager configManager, final Main main) {
         configManager.getBinder().bind(this, CommandManager.class);
+        this.main = main;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Main getMain() {
+        return main;
     }
 
     /** {@inheritDoc} */
@@ -277,15 +289,22 @@ public class CommandManager implements CommandController {
     }
 
     /**
+     * Initialise the singleton instance of the CommandManager.
+     *
+     * @return The singleton instance of the CommandManager.
+     */
+    public static synchronized CommandManager initCommandManager(
+            final IdentityManager identityManager, final Main main) {
+        instance = new CommandManager(identityManager.getGlobalConfiguration(), main);
+        return instance;
+    }
+
+    /**
      * Retrieves a singleton instance of the CommandManager.
      *
      * @return A singleton instance of the CommandManager.
      */
     public static synchronized CommandManager getCommandManager() {
-        if (instance == null) {
-            instance = new CommandManager(IdentityManager.getIdentityManager()
-                    .getGlobalConfiguration());
-        }
         return instance;
     }
 

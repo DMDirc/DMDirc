@@ -21,7 +21,8 @@
  */
 package com.dmdirc.logger;
 
-import com.dmdirc.config.IdentityManager;
+
+import com.dmdirc.TestMain;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class DMDircExceptionHandlerTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
     }
 
     @Test

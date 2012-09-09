@@ -68,15 +68,28 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
 
+    /** Parent. */
+    private final Main main;
+
     /**
      * Creates a new instance of PluginManager.
      */
-    private PluginManager() {
+    private PluginManager(final IdentityManager identityManager, final Main main) {
         final String fs = System.getProperty("file.separator");
-        myDir = Main.getConfigDir() + "plugins" + fs;
+        myDir = identityManager.getConfigDir() + "plugins" + fs;
+        this.main = main;
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
                 CoreActionType.CLIENT_PREFS_CLOSED);
+    }
+
+    /**
+     * Get the instance of Main that owns this.
+     *
+     * @return
+     */
+    public Main getMain() {
+        return main;
     }
 
     /** {@inheritDoc} */
@@ -200,12 +213,18 @@ public class PluginManager implements ActionListener, ServiceManager {
      *
      * @return A singleton instance of PluginManager.
      */
-    public static synchronized PluginManager getPluginManager() {
-        if (me == null) {
-            me = new PluginManager();
-            me.refreshPlugins();
-        }
+    public static synchronized PluginManager initPluginManager(final IdentityManager identityManager, final Main main) {
+        me = new PluginManager(identityManager, main);
+        me.refreshPlugins();
+        return me;
+    }
 
+    /**
+     * Retrieves the singleton instance of the plugin manager.
+     *
+     * @return A singleton instance of PluginManager.
+     */
+    public static synchronized PluginManager getPluginManager() {
         return me;
     }
 

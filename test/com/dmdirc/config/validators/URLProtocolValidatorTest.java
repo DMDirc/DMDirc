@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.validators;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
@@ -33,7 +34,7 @@ public class URLProtocolValidatorTest {
 
     @Test
     public void testValidate() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
         IdentityManager.getIdentityManager().getGlobalConfigIdentity()
                 .setOption("protocol", "unit-test-1", "BROWSER");
 

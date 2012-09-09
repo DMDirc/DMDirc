@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -648,7 +647,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         }
 
         final String fs = System.getProperty("file.separator");
-        final String location = Main.getConfigDir() + "identities" + fs;
+        final String location = IdentityManager.getIdentityManager().getConfigDir() + "identities" + fs;
         final String name = settings.get(DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
 
         File file = new File(location + name);

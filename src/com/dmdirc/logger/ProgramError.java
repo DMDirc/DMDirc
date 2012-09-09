@@ -22,7 +22,6 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.io.Downloader;
 
@@ -272,7 +271,7 @@ public final class ProgramError implements Serializable {
         WRITING_SEM.acquireUninterruptibly();
 
         if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(Main.getConfigDir() + "errors");
+            errorDir = new File(IdentityManager.getIdentityManager().getConfigDir() + "errors");
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
             }

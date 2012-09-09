@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -39,7 +38,7 @@ import java.util.Map;
 public final class ThemeManager {
 
     /** The directory to look for themes in. */
-    private static final String THEME_DIR = Main.getConfigDir() + "themes/";
+    private static final String THEME_DIR = IdentityManager.getIdentityManager().getConfigDir() + "themes/";
     /** Available themes. */
     private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
 

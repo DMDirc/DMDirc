@@ -22,6 +22,7 @@
 
 package com.dmdirc.updater.manager;
 
+import com.dmdirc.Main;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.updater.UpdateChannel;
@@ -55,15 +56,17 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
      * @param configManager The config manager to use to retrieve channel info
      * @param tempFolder Temporary folder to use for downloading updates
      * @param threads The number of threads to use for updating
+     * @param main Instance of main for ClientComponent
      */
     public DMDircUpdateManager(final ConfigManager configManager,
-            final String tempFolder, final int threads) {
+            final String tempFolder, final int threads, final Main main) {
         super(new ThreadPoolExecutor(threads, threads, 1, TimeUnit.MINUTES,
                 new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory()),
                 new NaiveConsolidator(),
                 new ConfigComponentPolicy(configManager));
 
-        addComponent(new ClientComponent());
+        // @deprecated See ClientComponent
+        addComponent(new ClientComponent(main));
         addComponent(new ModeAliasesComponent());
         addComponent(new DefaultsComponent());
 

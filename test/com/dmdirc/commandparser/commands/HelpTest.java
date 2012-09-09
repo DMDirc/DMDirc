@@ -21,17 +21,16 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,11 +39,6 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class HelpTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.getIdentityManager().initialise();
-    }
 
     private CommandInfo info;
 
@@ -62,7 +56,7 @@ public class HelpTest {
     public static List<Object[]> data() throws InvalidIdentityFileException {
         final List<Object[]> res = new LinkedList<Object[]>();
 
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
         new CommandLoader().loadCommands(CommandManager.getCommandManager());
 
         for (CommandType type : CommandType.values()) {

@@ -25,9 +25,9 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
@@ -47,7 +47,7 @@ public class ModeTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
 
         parser = mock(IRCParser.class);
         server = mock(Server.class);

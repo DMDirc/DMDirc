@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class PartTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        IdentityManager.getIdentityManager().initialise();
+        TestMain.getTestMain();
 
         channel = mock(Channel.class);
         origin = mock(FrameContainer.class);
