@@ -22,9 +22,9 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
 
 import java.net.MalformedURLException;
@@ -109,9 +109,17 @@ public final class URLBuilder {
      * @return An URL corresponding to the specified resource, or null on failure
      */
     public static URL buildPluginURL(final String plugin, final String path) {
+        // TODO: Un hack this.
+        // Using the ActionManager to getMain() so that we can get the plugin
+        // manager is a horribe horrible hack.
+        // But making this method require an instance of Main means that
+        // BuildURL also need one, which breaks other things. Specifically
+        // IconManager, which currently is created new each time it is needed
+        // rather than being created once and passed around.
         return buildJarURL(
-                PluginManager.getPluginManager().getPluginInfoByName(plugin)
-                .getMetaData().getPluginUrl().getPath(), path);
+                ActionManager.getActionManager().getMain().getPluginManager()
+                .getPluginInfoByName(plugin).getMetaData().getPluginUrl()
+                .getPath(), path);
     }
 
     /**

@@ -21,6 +21,7 @@
  */
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.global.Echo;
@@ -48,7 +49,7 @@ public class CommandParserTest {
         when(cm.getOptionChar("general", "commandchar")).thenReturn('/');
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm, (Main)mock(Main.class));
+        commands = new CommandManager(cm, TestMain.getTestMain());
         commands.registerCommand(new Echo(commands), Echo.INFO);
     }
 

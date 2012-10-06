@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ui.UIController;
@@ -156,7 +155,7 @@ public class URLHandler {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Connecting to: " + uri.toString(),
                     config));
-            ServerManager.getServerManager().connectToAddress(uri);
+            controller.getMain().getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Opening: " + uri.toString(),

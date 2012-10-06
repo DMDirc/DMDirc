@@ -127,7 +127,7 @@ public class ActionModel {
         "This action has at least one trigger",
         "This action's primary trigger is non-null"
     })
-    public boolean trigger(final StringBuffer format,
+    public boolean trigger(final ServerManager serverManager, final StringBuffer format,
             final Object... arguments) {
         assert triggers.length > 0;
         assert triggers[0] != null;
@@ -148,8 +148,8 @@ public class ActionModel {
         if (arguments.length > 0
                 && arguments[0] instanceof WritableFrameContainer) {
             container = (WritableFrameContainer) arguments[0];
-        } else if (ServerManager.getServerManager().numServers() > 0) {
-            container = ServerManager.getServerManager().getServers().get(0);
+        } else if (serverManager.numServers() > 0) {
+            container = serverManager.getServers().get(0);
         }
 
         if (container == null) {

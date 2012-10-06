@@ -56,8 +56,7 @@ public class BaseFileDependantPlugin extends BasePlugin {
     private File initFilesDir() {
         if (filesDir == null) {
             final String fs = System.getProperty("file.separator");
-            final String dir = PluginManager.getPluginManager()
-                    .getFilesDirectory();
+            final String dir = metaData.getManager().getFilesDirectory();
             filesDir = new File(dir + metaData.getName() + fs);
             if (!filesDir.exists()) {
                 filesDir.mkdirs();

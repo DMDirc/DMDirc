@@ -34,17 +34,20 @@ import java.util.Map;
  */
 public final class GlobalClassLoader extends ClassLoader {
 
-    /** Singleton instance of the GlobalClassLoader. */
-    private static GlobalClassLoader me;
-
     /** HashMap containing sources of Global class files. */
     private final Map<String, String> resourcesList = new HashMap<String, String>();
 
+    /** Plugin Manager that owns this GlobalClassLoader. */
+    private final PluginManager manager;
+
     /**
      * Create a new GlobalClassLoader.
+     *
+     * @param manager Plugin Manager that this GCL is used by.
      */
-    private GlobalClassLoader() {
+    public GlobalClassLoader(final PluginManager manager) {
         super();
+        this.manager = manager;
     }
 
     /**
@@ -55,19 +58,6 @@ public final class GlobalClassLoader extends ClassLoader {
      */
     public boolean isClassLoaded(final String name) {
         return findLoadedClass(name) != null;
-    }
-
-    /**
-     * Retrieves the singleton instance of the GlobalClassLoader.
-     *
-     * @return A singleton instance of GlobalClassLoader.
-     */
-    public static synchronized GlobalClassLoader getGlobalClassLoader() {
-        if (me == null) {
-            me = new GlobalClassLoader();
-        }
-
-        return me;
     }
 
     /**
@@ -100,7 +90,7 @@ public final class GlobalClassLoader extends ClassLoader {
         }
 
         // Check the other plugins.
-        for (PluginInfo pi : PluginManager.getPluginManager().getPluginInfos()) {
+        for (PluginInfo pi : manager.getPluginInfos()) {
             final List<String> classList = pi.getClassList();
             if (classList.contains(name) && pi.getPluginClassLoader() != null) {
                 return pi.getPluginClassLoader().loadClass(name, false);

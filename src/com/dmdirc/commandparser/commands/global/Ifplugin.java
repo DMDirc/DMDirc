@@ -34,7 +34,6 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -63,7 +62,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
         final String pname = args.getArguments()[0].substring(negative ? 1 : 0);
 
-        final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName(pname);
+        final PluginInfo pluginInfo = getController().getMain().getPluginManager().getPluginInfoByName(pname);
 
         boolean result = true;
 
@@ -93,7 +92,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
             res = new AdditionalTabTargets().excludeAll();
 
             for (PluginInfo possPlugin
-                    : PluginManager.getPluginManager().getPluginInfos()) {
+                    : getController().getMain().getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getMetaData().getName());
                 res.add("!" + possPlugin.getMetaData().getName());
             }

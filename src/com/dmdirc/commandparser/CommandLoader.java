@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.BasicServerFactory;
 import com.dmdirc.commandparser.commands.channel.Ban;
 import com.dmdirc.commandparser.commands.channel.Cycle;
 import com.dmdirc.commandparser.commands.channel.Invite;
@@ -127,7 +126,7 @@ public class CommandLoader {
         manager.registerCommand(new Exit(), Exit.INFO);
         manager.registerCommand(new Help(), Help.INFO);
         manager.registerCommand(new Ifplugin(), Ifplugin.INFO);
-        manager.registerCommand(new NewServer(new BasicServerFactory()), NewServer.INFO);
+        manager.registerCommand(new NewServer(manager.getMain().getServerManager()), NewServer.INFO);
         manager.registerCommand(new Notify(), Notify.INFO);
         manager.registerCommand(new LoadPlugin(), LoadPlugin.INFO);
         manager.registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);

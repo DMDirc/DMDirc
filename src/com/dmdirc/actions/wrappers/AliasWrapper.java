@@ -28,6 +28,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.interfaces.CommandController;
@@ -52,15 +53,19 @@ public final class AliasWrapper extends ActionGroup {
     /** Command controller to get command info from. */
     private final CommandController commandController;
 
+    /** Server Manager. */
+    private final ServerManager serverManager;
+
     /**
      * Creates a new instance of AliasWrapper.
      *
      * @param commandController Command controller to get command info from.
      */
-    public AliasWrapper(final CommandController commandController) {
+    public AliasWrapper(final CommandController commandController, final ServerManager serverManager) {
         super("aliases");
 
         this.commandController = commandController;
+        this.serverManager = serverManager;
     }
 
     /**
@@ -70,7 +75,7 @@ public final class AliasWrapper extends ActionGroup {
      */
     public static synchronized AliasWrapper getAliasWrapper() {
         if (me == null) {
-            me = new AliasWrapper(CommandManager.getCommandManager());
+            me = new AliasWrapper(CommandManager.getCommandManager(), ActionManager.getActionManager().getServerManager());
         }
 
         return me;
@@ -101,7 +106,7 @@ public final class AliasWrapper extends ActionGroup {
                             .addEntry(TabCompletionType.COMMAND, commandName);
                 }
 
-                for (Server server : ServerManager.getServerManager().getServers()) {
+                for (Server server : serverManager.getServers()) {
                     server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
                 }
             } else {
@@ -124,7 +129,7 @@ public final class AliasWrapper extends ActionGroup {
 
             aliases.remove(commandName);
 
-            for (Server server : ServerManager.getServerManager().getServers()) {
+            for (Server server : serverManager.getServers()) {
                 server.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
             }
         }

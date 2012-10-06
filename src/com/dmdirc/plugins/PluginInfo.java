@@ -147,7 +147,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         final Plugin[] plugins = new Plugin[parents.length];
 
         for (int i = 0; i < metaData.getParents().length; i++) {
-            final PluginInfo parent = PluginManager.getPluginManager()
+            final PluginInfo parent = metaData.getManager()
                     .getPluginInfoByName(metaData.getParents()[i]);
             parents[i] = parent.getInjector();
             plugins[i] = parent.getPlugin();
@@ -159,13 +159,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             injector.addParameter(parentPlugin);
         }
 
-        injector.addParameter(PluginManager.class, PluginManager.getPluginManager());
+        injector.addParameter(PluginManager.class, metaData.getManager());
         injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
-        injector.addParameter(Main.class, PluginManager.getPluginManager().getMain());
+        injector.addParameter(Main.class, metaData.getManager().getMain());
         injector.addParameter(PluginMetaData.class, metaData);
         injector.addParameter(IdentityManager.class, IdentityManager.getIdentityManager());
-        injector.addParameter(ServerManager.class, ServerManager.getServerManager());
+        injector.addParameter(ServerManager.class, metaData.getManager().getMain().getServerManager());
 
         return injector;
     }
@@ -288,7 +288,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String type = bits.length > 1 ? bits[1] : "misc";
 
                 if (!name.equalsIgnoreCase("any") && !type.equalsIgnoreCase("export")) {
-                    final Service service = PluginManager.getPluginManager().getService(type, name, true);
+                    final Service service = metaData.getManager().getService(type, name, true);
                     synchronized (provides) {
                         service.addProvider(this);
                         provides.add(service);
@@ -442,7 +442,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True iff all required services were found and satisfied
      */
     protected boolean loadRequiredServices() {
-        final ServiceManager manager = PluginManager.getPluginManager();
+        final ServiceManager manager = metaData.getManager();
 
         for (String serviceInfo : metaData.getRequiredServices()) {
             final String[] parts = serviceInfo.split(" ", 2);
@@ -513,7 +513,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         log.info("Loading required plugin '{}' for plugin {}",
                 new Object[] { name, metaData.getName() });
 
-        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(name);
+        final PluginInfo pi = metaData.getManager().getPluginInfoByName(name);
 
         if (pi == null) {
             return false;
@@ -628,7 +628,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             for (int i = 0; i < metaData.getParents().length; i++) {
                 final String parentName = metaData.getParents()[i];
-                final PluginInfo parent = PluginManager.getPluginManager()
+                final PluginInfo parent = metaData.getManager()
                         .getPluginInfoByName(parentName);
                 parent.addChild(this);
                 loaders[i] = parent.getPluginClassLoader();
@@ -646,7 +646,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 }
             }
 
-            pluginClassLoader = new PluginClassLoader(this, loaders);
+            pluginClassLoader = new PluginClassLoader(this, metaData.getManager().getGlobalClassLoader(), loaders);
         }
     }
 
@@ -774,7 +774,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 // Delete ourself as a child of our parent.
                 if (!parentUnloading) {
                     for (String parent : metaData.getParents()) {
-                        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parent);
+                        final PluginInfo pi = metaData.getManager().getPluginInfoByName(parent);
                         if (pi != null) {
                             pi.delChild(this);
                         }
@@ -892,7 +892,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String serviceName = bits.length > 4 ? bits[4] : bits[0];
 
                 // Add a provides for this
-                final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
+                final Service service = metaData.getManager().getService("export", serviceName, true);
                 synchronized (provides) {
                     service.addProvider(this);
                     provides.add(service);

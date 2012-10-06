@@ -36,6 +36,9 @@ public class PluginClassLoader extends ClassLoader {
     /** The plugin Info object for the plugin we are loading. */
     private final PluginInfo pluginInfo;
 
+    /** Global Class Loader */
+    private final GlobalClassLoader globalLoader;
+
     /** The parent class loaders. */
     private final PluginClassLoader[] parents;
 
@@ -43,11 +46,13 @@ public class PluginClassLoader extends ClassLoader {
      * Create a new PluginClassLoader.
      *
      * @param info PluginInfo this classloader will be for
+     * @param globalLoader Global class loader to use where needed.
      * @param parents Parent ClassLoaders
      */
-    public PluginClassLoader(final PluginInfo info, final PluginClassLoader ... parents) {
+    public PluginClassLoader(final PluginInfo info, final GlobalClassLoader globalLoader, final PluginClassLoader ... parents) {
         this.pluginInfo = info;
         this.parents = parents;
+        this.globalLoader = globalLoader;
     }
 
     /**
@@ -57,7 +62,7 @@ public class PluginClassLoader extends ClassLoader {
      * @return A classloader configured with this one as its parent
      */
     public PluginClassLoader getSubClassLoader(final PluginInfo info) {
-        return new PluginClassLoader(info, this);
+        return new PluginClassLoader(info, globalLoader, this);
     }
 
     /**
@@ -81,7 +86,7 @@ public class PluginClassLoader extends ClassLoader {
      */
     public boolean isClassLoaded(final String name, final boolean checkGlobal) {
         return findLoadedClass(name) != null || (checkGlobal
-                && GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name));
+                && globalLoader.isClassLoaded(name));
     }
 
     /**
@@ -117,12 +122,12 @@ public class PluginClassLoader extends ClassLoader {
         try {
             if (pluginInfo.isPersistent(name) || !res.resourceExists(fileName)) {
                 if (!pluginInfo.isPersistent(name) && askGlobal) {
-                    return GlobalClassLoader.getGlobalClassLoader().loadClass(name);
+                    return globalLoader.loadClass(name);
                 } else {
                     // Try to load class from previous load.
                     try {
                         if (askGlobal) {
-                            return GlobalClassLoader.getGlobalClassLoader().loadClass(name, pluginInfo);
+                            return globalLoader.loadClass(name, pluginInfo);
                         }
                     } catch (ClassNotFoundException e) {
                         /* Class doesn't exist, we load it ourself below */
@@ -150,7 +155,7 @@ public class PluginClassLoader extends ClassLoader {
 
         try {
             if (pluginInfo.isPersistent(name)) {
-                GlobalClassLoader.getGlobalClassLoader().defineClass(name, data);
+                globalLoader.defineClass(name, data);
             } else {
                 loadedClass = defineClass(name, data, 0, data.length);
             }

@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionComponentArgument;
 
 /**
  * An action condition represents one condition within an action.
@@ -95,7 +96,7 @@ public class ActionCondition {
             final String thisStarget = sub.doSubstitution(starget, args);
             return getComparison().test(thisStarget, thisTarget);
         } else {
-            return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
+            return getComparison().test(getComponent().get(new ActionComponentArgument(ActionManager.getActionManager().getMain(), args[getArg()])), thisTarget);
         }
     }
 

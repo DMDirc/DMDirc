@@ -74,6 +74,12 @@ public class Main {
     /** Instance of main, protected to allow subclasses direct access. */
     protected static Main mainInstance;
 
+    /** Instance of pluginmanager used by this Main. */
+    protected PluginManager pluginManager;
+
+    /** Our ServerManager. */
+    protected ServerManager serverManager;
+
     /**
      * Entry procedure.
      *
@@ -98,6 +104,8 @@ public class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
+        serverManager = new ServerManager(this);
+        ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);
 
@@ -111,8 +119,8 @@ public class Main {
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        final PluginManager pm = PluginManager.initPluginManager(IdentityManager.getIdentityManager(), this);
-        checkBundledPlugins(pm, IdentityManager.getIdentityManager().getGlobalConfiguration());
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
@@ -121,22 +129,22 @@ public class Main {
         new CommandLoader().loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
-            ensureExists(pm, service);
+            ensureExists(pluginManager, service);
         }
 
         // The user may have an existing parser plugin (e.g. twitter) which
         // will satisfy the service existance check above, but will render the
         // client pretty useless, so we'll force IRC extraction for now.
         extractCorePlugins("parser_irc");
-        pm.refreshPlugins();
+        pluginManager.refreshPlugins();
 
-        loadUIs(pm);
+        loadUIs(pluginManager);
 
         doFirstRun();
 
         ActionManager.getActionManager().initialise();
 
-        pm.doAutoLoad();
+        pluginManager.doAutoLoad();
 
         ActionManager.getActionManager().loadUserActions();
 
@@ -153,10 +161,32 @@ public class Main {
             public void run() {
                 ActionManager.getActionManager().triggerEvent(
                         CoreActionType.CLIENT_CLOSED, null);
-                ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
+                serverManager.disconnectAll("Unexpected shutdown");
                 IdentityManager.getIdentityManager().saveAll();
             }
         }, "Shutdown thread"));
+    }
+
+    /**
+     * Get the plugin manager for this instance of main.
+     *
+     * @return PluginManager in use.
+     * @Deprecated Global state is bad.
+     */
+    @Deprecated
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    /**
+     * Get our ServerManager
+     *
+     * @return ServerManager controlled by this Main.
+     * @Deprecated Global state is bad.
+     */
+    @Deprecated
+    public ServerManager getServerManager() {
+        return serverManager;
     }
 
     /**
@@ -270,7 +300,7 @@ public class Main {
 
                 if (installed.compareTo(bundled) < 0) {
                     extractCorePlugins(plugin.getMetaData().getName());
-                    PluginManager.getPluginManager().reloadPlugin(plugin.getFilename());
+                    pm.reloadPlugin(plugin.getFilename());
                 }
             }
         }
@@ -368,7 +398,7 @@ public class Main {
      *                  operating system when the client exits
      */
     public void quit(final String reason, final int exitCode) {
-        ServerManager.getServerManager().disconnectAll(reason);
+        serverManager.disconnectAll(reason);
 
         System.exit(exitCode);
     }
@@ -470,13 +500,11 @@ public class Main {
                         resourceName.length()));
 
                 if (!newFile.isDirectory()) {
-                    final PluginManager pm = PluginManager.getPluginManager();
-
                     ResourceManager.getResourceManager().
                             resourceToFile(resource.getValue(), newFile);
 
-                    final PluginInfo plugin = pm.getPluginInfo(newFile
-                            .getAbsolutePath().substring(pm.getDirectory().length()));
+                    final PluginInfo plugin = pluginManager.getPluginInfo(newFile
+                            .getAbsolutePath().substring(pluginManager.getDirectory().length()));
 
                     if (plugin != null) {
                         plugin.pluginUpdated();

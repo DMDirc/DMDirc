@@ -25,7 +25,6 @@ package com.dmdirc.commandparser;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
@@ -168,7 +167,7 @@ public class CommandManager implements CommandController {
         final String commandName = getCommandChar() + command.getName();
 
         // TODO: This logic is probably in two places. Abstract it.
-        for (Server server : ServerManager.getServerManager().getServers()) {
+        for (Server server : main.getServerManager().getServers()) {
             if (command.getType() == CommandType.TYPE_SERVER
                     || command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getTabCompleter(), commandName, register);

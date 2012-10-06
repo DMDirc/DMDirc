@@ -22,13 +22,13 @@
 
 package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class AliasWrapperTest {
         action = mock(Action.class);
         condition = mock(ActionCondition.class);
         conditions = new ArrayList<ActionCondition>();
-        aliasWrapper = new AliasWrapper(controller);
+        aliasWrapper = new AliasWrapper(controller, TestMain.getTestMain().getServerManager());
 
         when(condition.getArg()).thenReturn(1);
         when(condition.getComparison()).thenReturn(CoreActionComparison.STRING_EQUALS);

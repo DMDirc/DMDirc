@@ -28,6 +28,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.actions.ActionComponentArgument;
 import com.dmdirc.interfaces.ui.Window;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -52,7 +53,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getAddress(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getAddress(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -69,7 +70,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         @ComponentOptions(requireConnected = true)
-        public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getNetwork(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -89,7 +90,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_PROTOCOL {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getProtocol(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getProtocol(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -105,7 +106,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_MYAWAYREASON {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getAwayMessage(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getAwayMessage(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -122,7 +123,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         @ComponentOptions(requireConnected = true)
-        public Object get(final Object argument) { return ((Server) argument).getParser().getChannelUserModes(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -139,8 +140,8 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         @ComponentOptions(requireConnected = true)
-        public Object get(final Object argument) {
-            final Server server = (Server) argument;
+        public Object get(final ActionComponentArgument arg) {
+            final Server server = (Server) arg.getObject();
 
             if (server == null || server.getParser() == null) {
                 Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
@@ -170,7 +171,7 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_PROFILE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Server) argument).getProfile(); }
+        public Object get(final ActionComponentArgument arg) { return ((Server) arg.getObject()).getProfile(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Server.class; }
@@ -186,7 +187,7 @@ public enum CoreActionComponent implements ActionComponent {
     CHANNEL_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
+        public Object get(final ActionComponentArgument arg) { return ((Channel) arg.getObject()).getChannelInfo().getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Channel.class; }
@@ -202,7 +203,7 @@ public enum CoreActionComponent implements ActionComponent {
     CHANNEL_COLOUR {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
+        public Object get(final ActionComponentArgument arg) { return ((Channel) arg.getObject()).getNotification(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Channel.class; }
@@ -218,7 +219,7 @@ public enum CoreActionComponent implements ActionComponent {
     CLIENT_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ClientInfo) argument).getNickname(); }
+        public Object get(final ActionComponentArgument arg) { return ((ClientInfo) arg.getObject()).getNickname(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ClientInfo.class; }
@@ -234,7 +235,7 @@ public enum CoreActionComponent implements ActionComponent {
     CLIENT_HOST {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ClientInfo) argument).getHostname(); }
+        public Object get(final ActionComponentArgument arg) { return ((ClientInfo) arg.getObject()).getHostname(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ClientInfo.class; }
@@ -250,7 +251,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getNickname(); }
+        public Object get(final ActionComponentArgument arg) { return ((ChannelClientInfo) arg.getObject()).getClient().getNickname(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ChannelClientInfo.class; }
@@ -266,7 +267,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_MODES {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getAllModes(); }
+        public Object get(final ActionComponentArgument arg) { return ((ChannelClientInfo) arg.getObject()).getAllModes(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ChannelClientInfo.class; }
@@ -282,7 +283,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_HOST {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHostname(); }
+        public Object get(final ActionComponentArgument arg) { return ((ChannelClientInfo) arg.getObject()).getClient().getHostname(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ChannelClientInfo.class; }
@@ -298,7 +299,7 @@ public enum CoreActionComponent implements ActionComponent {
     USER_COMCHANS {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().getChannelCount()); }
+        public Object get(final ActionComponentArgument arg) { return Integer.valueOf(((ChannelClientInfo) arg.getObject()).getClient().getChannelCount()); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return ChannelClientInfo.class; }
@@ -314,7 +315,7 @@ public enum CoreActionComponent implements ActionComponent {
     STRING_STRING {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return argument; }
+        public Object get(final ActionComponentArgument arg) { return arg.getObject(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return String.class; }
@@ -330,7 +331,7 @@ public enum CoreActionComponent implements ActionComponent {
     STRING_STRIPPED {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return Styliser.stipControlCodes((String) argument); }
+        public Object get(final ActionComponentArgument arg) { return Styliser.stipControlCodes((String) arg.getObject()); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return String.class; }
@@ -346,7 +347,7 @@ public enum CoreActionComponent implements ActionComponent {
     STRING_LENGTH {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((String) argument).length(); }
+        public Object get(final ActionComponentArgument arg) { return ((String) arg.getObject()).length(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return String.class; }
@@ -362,7 +363,7 @@ public enum CoreActionComponent implements ActionComponent {
     STRINGARRAY_LENGTH {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
+        public Object get(final ActionComponentArgument arg) { return Integer.valueOf(((String[]) arg.getObject()).length); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return String[].class; }
@@ -378,7 +379,7 @@ public enum CoreActionComponent implements ActionComponent {
     CALENDAR_FULLSTRING {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
+        public Object get(final ActionComponentArgument arg) { return ((GregorianCalendar) arg.getObject()).getTime().toString(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Calendar.class; }
@@ -394,7 +395,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_KEYNAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return KeyEvent.getKeyText(((KeyStroke) argument).getKeyCode()); }
+        public Object get(final ActionComponentArgument arg) { return KeyEvent.getKeyText(((KeyStroke) arg.getObject()).getKeyCode()); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return KeyStroke.class; }
@@ -410,8 +411,8 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_CTRLSTATE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0);
+        public Object get(final ActionComponentArgument arg) {
+            return Boolean.valueOf((((KeyStroke) arg.getObject()).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
         @Override
@@ -428,8 +429,8 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_SHIFTSTATE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0);
+        public Object get(final ActionComponentArgument arg) {
+            return Boolean.valueOf((((KeyStroke) arg.getObject()).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
         @Override
@@ -446,8 +447,8 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_ALTSTATE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
+        public Object get(final ActionComponentArgument arg) {
+            return Boolean.valueOf((((KeyStroke) arg.getObject()).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
         @Override
@@ -464,7 +465,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_HOST {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Query) argument).getHost(); }
+        public Object get(final ActionComponentArgument arg) { return ((Query) arg.getObject()).getHost(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Query.class; }
@@ -480,7 +481,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_NICK {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Query) argument).getName(); }
+        public Object get(final ActionComponentArgument arg) { return ((Query) arg.getObject()).getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Query.class; }
@@ -496,7 +497,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_COLOUR {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Query) argument).getNotification(); }
+        public Object get(final ActionComponentArgument arg) { return ((Query) arg.getObject()).getNotification(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Query.class; }
@@ -512,7 +513,7 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((FrameContainer) argument).getName(); }
+        public Object get(final ActionComponentArgument arg) { return ((FrameContainer) arg.getObject()).getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return FrameContainer.class; }
@@ -528,7 +529,7 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_COLOUR {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((FrameContainer) argument).getNotification(); }
+        public Object get(final ActionComponentArgument arg) { return ((FrameContainer) arg.getObject()).getNotification(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return FrameContainer.class; }
@@ -548,7 +549,7 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_SERVER {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Window) argument)
+        public Object get(final ActionComponentArgument arg) { return ((Window) arg.getObject())
                 .getContainer().getServer(); }
         /** {@inheritDoc} */
         @Override
@@ -565,7 +566,7 @@ public enum CoreActionComponent implements ActionComponent {
     IDENTITY_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return ((Identity) argument).getName(); }
+        public Object get(final ActionComponentArgument arg) { return ((Identity) arg.getObject()).getName(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Identity.class; }
@@ -581,7 +582,7 @@ public enum CoreActionComponent implements ActionComponent {
     INTEGER_VALUE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object argument) { return (Integer) argument; }
+        public Object get(final ActionComponentArgument arg) { return (Integer) arg.getObject(); }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Integer.class; }

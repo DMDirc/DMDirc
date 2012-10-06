@@ -40,7 +40,7 @@ public class ServerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         TestMain.getTestMain();
-        server = new Server(new URI("irc-test://255.255.255.255"),
+        server = new Server(TestMain.getTestMain().getServerManager(), new URI("irc-test://255.255.255.255"),
                 IdentityManager.getIdentityManager()
                 .getIdentitiesByType("profile").get(0));
     }

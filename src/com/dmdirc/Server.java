@@ -177,6 +177,12 @@ public class Server extends WritableFrameContainer
     /** The certificate manager in use, if any. */
     private CertificateManager certificateManager;
 
+    /** ParserFactory we use for creating parsers. */
+    private final ParserFactory parserFactory;
+
+    /** ServerManager that created us. */
+    private final ServerManager manager;
+
     // </editor-fold>
 
     // </editor-fold>
@@ -188,10 +194,11 @@ public class Server extends WritableFrameContainer
      * the specified profile.
      *
      * @since 0.6.3
+     * @param manager The servermanager that owns this server.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
-    public Server(final URI uri, final Identity profile) {
+    public Server(final ServerManager manager, final URI uri, final Identity profile) {
         super("server-disconnected", getHost(uri), getHost(uri),
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser(
@@ -200,9 +207,11 @@ public class Server extends WritableFrameContainer
                 WindowComponent.INPUTFIELD.getIdentifier(),
                 WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
+        this.manager = manager;
+        parserFactory = new ParserFactory(manager.getMain().getPluginManager());
         setConnectionDetails(uri, profile);
 
-        ServerManager.getServerManager().registerServer(this);
+        manager.registerServer(this);
         WindowManager.getWindowManager().addWindow(this);
 
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -246,7 +255,7 @@ public class Server extends WritableFrameContainer
      */
     private void setConnectionDetails(final URI uri, final Identity profile) {
         this.address = uri;
-        this.protocolDescription = new ParserFactory().getDescription(uri);
+        this.protocolDescription = parserFactory.getDescription(uri);
         this.profile = profile;
 
         if (uri.getPort() == -1 && protocolDescription != null) {
@@ -676,7 +685,7 @@ public class Server extends WritableFrameContainer
      */
     private Parser buildParser() {
         final MyInfo myInfo = buildMyInfo();
-        final Parser myParser = new ParserFactory().getParser(myInfo, address);
+        final Parser myParser = parserFactory.getParser(myInfo, address);
 
         if (myParser instanceof SecureParser) {
             certificateManager = new CertificateManager(address.getHost(), getConfigManager());
@@ -1060,7 +1069,7 @@ public class Server extends WritableFrameContainer
 
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
-        ServerManager.getServerManager().unregisterServer(this);
+        manager.unregisterServer(this);
     }
 
     /** {@inheritDoc} */

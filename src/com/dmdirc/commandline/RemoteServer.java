@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.ServerManager;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -44,13 +44,22 @@ public class RemoteServer implements RemoteInterface {
     /** The maximum port to use for RMI binding. */
     private static final int MAXPORT = MINPORT + 5;
     /** The interface we're exposing. */
-    private static final RemoteServer SERVER = new RemoteServer();
+    private final Main main;
+
+    /**
+     * Crate a new RemoteServer.
+     *
+     * @param main Main instance to use to do things.
+     */
+    public RemoteServer(final Main main) {
+        this.main = main;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void connect(final List<URI> addresses) throws RemoteException {
         for (URI address : addresses) {
-            ServerManager.getServerManager().connectToAddress(address);
+            main.getServerManager().connectToAddress(address);
         }
     }
 
@@ -58,11 +67,11 @@ public class RemoteServer implements RemoteInterface {
      * Binds to the RMI registry so that other clients may find this remote
      * server.
      */
-    public static void bind() {
+    public void bind() {
         RemoteInterface stub;
 
         try {
-            stub = (RemoteInterface) UnicastRemoteObject.exportObject(SERVER, 0);
+            stub = (RemoteInterface) UnicastRemoteObject.exportObject(this, 0);
         } catch (RemoteException ex) {
             Logger.appError(ErrorLevel.MEDIUM, "Unable to export remote interface", ex);
             return;

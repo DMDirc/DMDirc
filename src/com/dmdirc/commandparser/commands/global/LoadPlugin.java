@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -55,9 +54,9 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         }
 
         // Add previously unknown plugin to plugin manager
-        PluginManager.getPluginManager().addPlugin(
+        getController().getMain().getPluginManager().addPlugin(
                 args.getArgumentsAsString());
-        final PluginInfo plugin = PluginManager.getPluginManager()
+        final PluginInfo plugin = getController().getMain().getPluginManager()
                 .getPluginInfo(args.getArgumentsAsString());
 
         if (plugin == null) {
@@ -71,7 +70,7 @@ public class LoadPlugin extends Command implements IntelligentCommand {
             if (plugin.isLoaded()) {
                 sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
                         "Plugin loaded.");
-                PluginManager.getPluginManager().updateAutoLoad(plugin);
+                getController().getMain().getPluginManager().updateAutoLoad(plugin);
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
                         "Loading plugin failed. ("
@@ -90,7 +89,7 @@ public class LoadPlugin extends Command implements IntelligentCommand {
 
         if (arg == 0) {
             for (PluginMetaData possPlugin
-                    : PluginManager.getPluginManager().getAllPlugins()) {
+                    : getController().getMain().getPluginManager().getAllPlugins()) {
                 res.add(possPlugin.getRelativeFilename());
             }
         }

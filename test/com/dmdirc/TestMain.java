@@ -28,7 +28,10 @@ public class TestMain extends Main {
             // DON'T do anything to the user's configuration... (so no calls
             // to handleInvalidConfigFile(); here)
         }
-        PluginManager.initPluginManager(IdentityManager.getIdentityManager(), this);
+        serverManager = new ServerManager(this);
+        ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
 
         ActionManager.getActionManager().initialise();

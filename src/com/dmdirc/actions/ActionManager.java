@@ -22,12 +22,13 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Main;
 import com.dmdirc.Precondition;
+import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.IdentityController;
@@ -58,12 +59,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ActionManager implements ActionController {
 
-    /** A singleton instance of the ActionManager. */
-    private static final ActionManager INSTANCE
-            = new ActionManager(IdentityManager.getIdentityManager());
-
     /** The identity manager to load configuration from. */
     private final IdentityController identityManager;
+
+    /** The ActionManager Instance. */
+    private static ActionManager me;
+
+    /** The instance of main that owns this Action Manager. */
+    private final Main main;
+
+    /** The ServerManager currently in use. */
+    private final ServerManager serverManager;
 
     /** A list of registered action types. */
     private final List<ActionType> types
@@ -104,11 +110,47 @@ public class ActionManager implements ActionController {
     /**
      * Creates a new instance of ActionManager.
      *
+     * @param main Main that created this action manager.
+     * @param serverManager The ServerManager in use.
      * @param identityManager The IdentityManager to load configuration from.
      */
-    public ActionManager(final IdentityController identityManager) {
+    private ActionManager(final Main main, final ServerManager serverManager, final IdentityController identityManager) {
+        // TODO: We shouldn't need a main.
+        this.main = main;
+        this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
+    }
+
+    /**
+     * Get the instance of Main that owns this.
+     *
+     * @return Instance of main.
+     * @Deprecated Global state is bad.
+     */
+    @Deprecated
+    public Main getMain() {
+        return main;
+    }
+
+    /**
+     * Get the server manager.
+     *
+     * @return ServerManager
+     */
+    public ServerManager getServerManager() {
+        return serverManager;
+    }
+
+    /**
+     * Create the singleton instance of the Action Manager.
+     *
+     * @return The singleton ActionManager instance
+     */
+    @Deprecated
+    public static ActionManager initActionManager(final Main main, final ServerManager serverManager, final IdentityController identityManager) {
+        me = new ActionManager(main, serverManager, identityManager);
+        return me;
     }
 
     /**
@@ -117,7 +159,7 @@ public class ActionManager implements ActionController {
      * @return A singleton ActionManager instance
      */
     public static ActionManager getActionManager() {
-        return INSTANCE;
+        return me;
     }
 
     /** {@inheritDoc} */
@@ -381,7 +423,7 @@ public class ActionManager implements ActionController {
             for (Action action : new ArrayList<Action>(actions.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
-                        res |= action.trigger(format, arguments);
+                        res |= action.trigger(getServerManager(), format, arguments);
                     } else {
                         synchronized (locks) {
                             if (!locks.containsKey(action.getConcurrencyGroup())) {
@@ -390,7 +432,7 @@ public class ActionManager implements ActionController {
                         }
 
                         synchronized (locks.get(action.getConcurrencyGroup())) {
-                            res |= action.trigger(format, arguments);
+                            res |= action.trigger(getServerManager(), format, arguments);
                         }
                     }
                 } catch (LinkageError e) {

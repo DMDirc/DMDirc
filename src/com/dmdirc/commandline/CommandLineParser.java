@@ -23,7 +23,6 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.Main;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -116,7 +115,7 @@ public class CommandLineParser {
             }
         }
 
-        RemoteServer.bind();
+        new RemoteServer(main).bind();
     }
 
     /**
@@ -369,7 +368,7 @@ public class CommandLineParser {
      */
     public void processArguments() {
         for (URI address : addresses)  {
-            ServerManager.getServerManager().connectToAddress(address);
+            main.getServerManager().connectToAddress(address);
         }
     }
 

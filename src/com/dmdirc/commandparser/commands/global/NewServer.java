@@ -35,7 +35,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -239,7 +238,7 @@ public class NewServer extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 
         if (arg == 0) {
-            for (Service parserType : PluginManager.getPluginManager().getServicesByType("parser")) {
+            for (Service parserType : getController().getMain().getPluginManager().getServicesByType("parser")) {
                 res.add(parserType.getName()+"://");
             }
         }

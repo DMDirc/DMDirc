@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions;
 
+import org.junit.BeforeClass;
+import com.dmdirc.TestMain;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -33,6 +35,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ActionModelTest {
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        TestMain.getTestMain();
+    }
 
     @Test
     public void testConditions() {

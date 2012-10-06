@@ -25,6 +25,7 @@ package com.dmdirc.actions;
 import com.dmdirc.TestMain;
 import com.dmdirc.Server;
 
+import com.dmdirc.interfaces.actions.ActionComponentArgument;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class ActionComponentChainTest {
     @Test
     public void testSingle() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "STRING_STRING");
-        assertEquals(chain.get("foo bar baz"), "foo bar baz");
+        assertEquals(chain.get(new ActionComponentArgument(TestMain.getTestMain(), "foo bar baz")), "foo bar baz");
         assertEquals("STRING_STRING", chain.toString());
     }
 
@@ -48,7 +49,7 @@ public class ActionComponentChainTest {
     public void testDouble() {
         final ActionComponentChain chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING");
-        assertEquals(chain.get("foo bar baz"), "foo bar baz");
+        assertEquals(chain.get(new ActionComponentArgument(TestMain.getTestMain(), "foo bar baz")), "foo bar baz");
         assertEquals("STRING_STRING.STRING_STRING", chain.toString());
     }
 

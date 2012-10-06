@@ -135,13 +135,17 @@ public class PluginMetaData {
     /** The URL to load the metadata from. */
     private final URL url;
 
+    /** The parent plugin manager. */
+    private PluginManager manager;
+
     /**
      * Creates a new meta data reader for a config file at the specified URL.
      *
      * @param url The URL to load the config file from
      * @param pluginUrl The URL to the plugin that this data corresponds to
      */
-    public PluginMetaData(final URL url, final URL pluginUrl) {
+    public PluginMetaData(final PluginManager manager, final URL url, final URL pluginUrl) {
+        this.manager = manager;
         this.pluginUrl = pluginUrl;
         this.url = url;
     }
@@ -399,7 +403,7 @@ public class PluginMetaData {
     public String getRelativeFilename() {
         // Yuck...
         final String filename = getPluginUrl().getPath();
-        final String dir = new File(PluginManager.getPluginManager().getDirectory())
+        final String dir = new File(manager.getDirectory())
                 .getAbsolutePath() + File.separator;
         final String file = new File(filename).getAbsolutePath();
 
@@ -407,6 +411,15 @@ public class PluginMetaData {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
+
+    /**
+     * What plugin manager owns this metadata?
+     *
+     * @return The pluginmanager that created this metadata.
+     */
+    public PluginManager getManager() {
+        return manager;
+    }
 
     /**
      * Retrieves the URL to the plugin that this metadata corresponds to.

@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -53,13 +52,13 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
             return;
         }
 
-        final PluginInfo plugin = PluginManager.getPluginManager()
+        final PluginInfo plugin = getController().getMain().getPluginManager()
                 .getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin unloading failed - Plugin not loaded");
-        } else if (PluginManager.getPluginManager().delPlugin(plugin.getMetaData().getRelativeFilename())) {
+        } else if (getController().getMain().getPluginManager().delPlugin(plugin.getMetaData().getRelativeFilename())) {
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin Unloaded.");
-            PluginManager.getPluginManager().updateAutoLoad(plugin);
+            getController().getMain().getPluginManager().updateAutoLoad(plugin);
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Unloading failed");
         }
@@ -72,7 +71,7 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
 
         if (arg == 0) {
-            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
+            for (PluginInfo possPlugin : getController().getMain().getPluginManager().getPluginInfos()) {
                 if (possPlugin.isLoaded()) {
                     res.add(possPlugin.getMetaData().getName());
                 }

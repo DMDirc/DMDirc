@@ -24,6 +24,7 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 
 import java.net.URI;
@@ -33,6 +34,15 @@ import java.net.URI;
  * handle the various aspects of a UI implementation.
  */
 public interface UIController {
+
+    /**
+     * Get the instance of Main that created this UIController.
+     *
+     * @return Instance of Main that created this UIController.
+     * @Deprecated Global state is bad.
+     */
+    @Deprecated
+    Main getMain();
 
     /**
      * Requests that the specified window be bought to focus in this UI.

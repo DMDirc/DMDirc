@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -39,10 +40,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
  */
-public class ServerManager {
+public class ServerManager implements ServerFactory {
 
-    /** Singleton instance of ServerManager. */
-    private static ServerManager me;
+    /** Main that owns this ServerManager. */
+    private final Main main;
 
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<Server>();
@@ -50,19 +51,25 @@ public class ServerManager {
     /**
      * Creates a new instance of ServerManager.
      */
-    private ServerManager() {
+    public ServerManager(final Main main) {
+        this.main = main;
     }
 
     /**
-     * Returns the singleton instance of ServerManager.
+     * Get the Main that owns this ServerManager.
      *
-     * @return Instance of ServerManager
+     * @return The Main that owns this ServerManager.
+     * @Deprecated Global state is bad.
      */
-    public static synchronized ServerManager getServerManager() {
-        if (me == null) {
-            me = new ServerManager();
-        }
-        return me;
+    @Deprecated
+    public Main getMain() {
+        return main;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Server createServer(final URI uri, final Identity profile) {
+        return new Server(this, uri, profile);
     }
 
     /**
@@ -205,7 +212,7 @@ public class ServerManager {
         }
 
         if (server == null) {
-            server = new Server(uri, profile);
+            server = new Server(this, uri, profile);
             server.connect();
             return server;
         }
@@ -241,7 +248,7 @@ public class ServerManager {
 
         if (connectedServer == null) {
             try {
-                final Server server = new Server(new URI("irc://irc.quakenet.org/DMDirc"),
+                final Server server = new Server(this, new URI("irc://irc.quakenet.org/DMDirc"),
                         IdentityManager.getIdentityManager()
                         .getIdentitiesByType("profile").get(0));
                 server.connect();

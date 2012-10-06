@@ -35,8 +35,8 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
+import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.parser.common.CompositionState;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.messages.Styliser;
@@ -110,6 +110,8 @@ public abstract class InputHandler implements ConfigChangeListener {
     private CompositionState state = CompositionState.IDLE;
     /** Timer used to manage timeouts of composition state. */
     private Timer compositionTimer;
+    /** UIController that owns this InputHandler. */
+    private final UIController controller;
 
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
@@ -119,10 +121,11 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param thisCommandParser The command parser to use for this text field.
      * @param thisParentWindow The window that owns this input handler
      */
-    public InputHandler(final InputField thisTarget,
+    public InputHandler(final UIController controller, final InputField thisTarget,
             final CommandParser thisCommandParser,
             final WritableFrameContainer thisParentWindow) {
 
+        this.controller = controller;
         buffer = new RollingList<String>(thisParentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
 
@@ -188,7 +191,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Sets this inputhandler's tab completion style.
      */
     private void setStyle() {
-        style = (TabCompletionStyle) PluginManager.getPluginManager()
+        style = (TabCompletionStyle) controller.getMain().getPluginManager()
                 .getServiceProvider("tabcompletion", parentWindow
                 .getConfigManager().getOption("tabcompletion", "style"))
                 .getExportedService("getCompletionStyle").execute(tabCompleter,

@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.Main;
 import com.dmdirc.plugins.Service;
 
 import java.awt.BorderLayout;
@@ -56,10 +56,13 @@ public class UIAttachDialog extends JDialog implements ActionListener,
     private static final int GAP = 5;
     /** Services list. */
     private final JList list;
+    /** Main instance. */
+    private final Main main;
 
     /** Creates a new dialog allowing the user to select and load a UI. */
-    public UIAttachDialog() {
+    public UIAttachDialog(final Main main) {
         super();
+        this.main = main;
         list = initList();
         setLayout(new BorderLayout());
         add(list, BorderLayout.CENTER);
@@ -72,7 +75,7 @@ public class UIAttachDialog extends JDialog implements ActionListener,
         final JList newList = new JList(model);
         newList.setCellRenderer(new ServiceRenderer());
         newList.addListSelectionListener(this);
-        final List<Service> services = PluginManager.getPluginManager()
+        final List<Service> services = main.getPluginManager()
                 .getServicesByType("ui");
         for (Service service : services) {
             model.addElement(service);

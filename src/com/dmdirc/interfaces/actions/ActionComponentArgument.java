@@ -19,23 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.interfaces.actions;
 
-package com.dmdirc;
-
-import com.dmdirc.config.Identity;
-import com.dmdirc.interfaces.ServerFactory;
-
-import java.net.URI;
+import com.dmdirc.Main;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * A basic factory for servers.
+ * Represents an argument for an ActionComponent
  */
-public class BasicServerFactory implements ServerFactory {
+@RequiredArgsConstructor
+@SuppressWarnings("PMD.UnusedPrivateField")
+public class ActionComponentArgument {
+    /** Instance of main that ActionComponents may wish to use. */
+    @Getter
+    private final Main main;
 
-    /** {@inheritDoc} */
-    @Override
-    public Server createServer(final URI uri, final Identity profile) {
-        return new Server(uri, profile);
-    }
-
+    /** The object this argument wraps. */
+    @Getter
+    private final Object object;
 }

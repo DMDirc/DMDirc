@@ -41,15 +41,15 @@ public class ServerManagerTest {
 
     @After
     public void tearDown() {
-        for (Server server : ServerManager.getServerManager().getServers()) {
-            ServerManager.getServerManager().unregisterServer(server);
+        for (Server server : TestMain.getTestMain().getServerManager().getServers()) {
+            TestMain.getTestMain().getServerManager().unregisterServer(server);
         }
     }
 
     @Test
     public void testGetServerManager() {
-        final ServerManager resultA = ServerManager.getServerManager();
-        final ServerManager resultB = ServerManager.getServerManager();
+        final ServerManager resultA = TestMain.getTestMain().getServerManager();
+        final ServerManager resultB = TestMain.getTestMain().getServerManager();
 
         assertNotNull(resultA);
         assertTrue(resultA instanceof ServerManager);
@@ -60,7 +60,7 @@ public class ServerManagerTest {
     public void testRegisterServer() {
         final Server server = mock(Server.class);
 
-        final ServerManager instance = ServerManager.getServerManager();
+        final ServerManager instance = TestMain.getTestMain().getServerManager();
 
         instance.registerServer(server);
 
@@ -71,7 +71,7 @@ public class ServerManagerTest {
     public void testUnregisterServer() {
         final Server server = mock(Server.class);
 
-        final ServerManager instance = ServerManager.getServerManager();
+        final ServerManager instance = TestMain.getTestMain().getServerManager();
 
         instance.registerServer(server);
         instance.unregisterServer(server);
@@ -81,7 +81,7 @@ public class ServerManagerTest {
 
     @Test
     public void testNumServers() {
-        final ServerManager instance = ServerManager.getServerManager();
+        final ServerManager instance = TestMain.getTestMain().getServerManager();
 
         assertEquals(instance.getServers().size(), instance.numServers());
 
@@ -103,7 +103,7 @@ public class ServerManagerTest {
         when(serverA.getAddress()).thenReturn("255.255.255.255");
         when(serverB.getAddress()).thenReturn("255.255.255.254");
 
-        final ServerManager sm = ServerManager.getServerManager();
+        final ServerManager sm = TestMain.getTestMain().getServerManager();
 
         sm.registerServer(serverA);
         sm.registerServer(serverB);
@@ -123,7 +123,7 @@ public class ServerManagerTest {
         when(serverB.isNetwork("Net2")).thenReturn(true);
         when(serverC.isNetwork("Net2")).thenReturn(true);
 
-        final ServerManager sm = ServerManager.getServerManager();
+        final ServerManager sm = TestMain.getTestMain().getServerManager();
 
         sm.registerServer(serverA);
         sm.registerServer(serverB);
@@ -142,8 +142,8 @@ public class ServerManagerTest {
     @Test
     public void testCloseAll() {
         final Server serverA = mock(Server.class);
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().closeAll();
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().closeAll();
         verify(serverA).disconnect();
         verify(serverA).close();
     }
@@ -151,8 +151,8 @@ public class ServerManagerTest {
     @Test
     public void testCloseAllWithMessage() {
         final Server serverA = mock(Server.class);
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().closeAll("message here");
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().closeAll("message here");
         verify(serverA).disconnect("message here");
         verify(serverA).close();
     }
@@ -160,8 +160,8 @@ public class ServerManagerTest {
     @Test
     public void testDisconnectAll() {
         final Server serverA = mock(Server.class);
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().disconnectAll("message here");
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().disconnectAll("message here");
         verify(serverA).disconnect("message here");
     }
 
@@ -172,8 +172,8 @@ public class ServerManagerTest {
         when(serverA.hasChannel("#DMDirc")).thenReturn(true);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().joinDevChat();
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().joinDevChat();
 
         verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
@@ -185,8 +185,8 @@ public class ServerManagerTest {
         when(serverA.hasChannel("#DMDirc")).thenReturn(false);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().joinDevChat();
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().joinDevChat();
 
         verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
@@ -202,12 +202,12 @@ public class ServerManagerTest {
         when(serverB.getNetwork()).thenReturn("Foonet");
         when(serverB.getState()).thenReturn(ServerState.CONNECTED);
 
-        ServerManager.getServerManager().registerServer(serverA);
-        ServerManager.getServerManager().registerServer(serverB);
+        TestMain.getTestMain().getServerManager().registerServer(serverA);
+        TestMain.getTestMain().getServerManager().registerServer(serverB);
 
-        ServerManager.getServerManager().joinDevChat();
+        TestMain.getTestMain().getServerManager().joinDevChat();
 
-        assertEquals(3, ServerManager.getServerManager().numServers());
+        assertEquals(3, TestMain.getTestMain().getServerManager().numServers());
     }
 
 }

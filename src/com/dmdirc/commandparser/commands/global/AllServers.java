@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -51,7 +50,7 @@ public class AllServers extends Command implements IntelligentCommand {
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
 
-        for (Server target : ServerManager.getServerManager().getServers()) {
+        for (Server target : getController().getMain().getServerManager().getServers()) {
             target.getCommandParser().parseCommand(target, command);
         }
     }

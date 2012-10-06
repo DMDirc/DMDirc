@@ -33,13 +33,18 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 
 import java.net.URI;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Provides a method to retrieve a parser.
  *
  * @since 0.6
  */
+@RequiredArgsConstructor
 public class ParserFactory {
+
+    /** PluginManager used by this ParserFactory */
+    private final PluginManager pluginManager;
 
     /**
      * Retrieves a parser instance.
@@ -102,7 +107,7 @@ public class ParserFactory {
         final String scheme = address.getScheme() == null ? "irc" : address.getScheme();
 
         try {
-            final Service service = PluginManager.getPluginManager().getService("parser", scheme);
+            final Service service = pluginManager.getService("parser", scheme);
 
             if (service != null && !service.getProviders().isEmpty()) {
                 final ServiceProvider provider = service.getProviders().get(0);

@@ -53,9 +53,6 @@ import java.util.Map;
  */
 public class PluginManager implements ActionListener, ServiceManager {
 
-    /** Singleton instance of the plugin manager. */
-    private static PluginManager me;
-
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<String, PluginInfo>();
 
@@ -71,23 +68,39 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** Parent. */
     private final Main main;
 
+    /** Global ClassLoader used by plugins from this manager. */
+    private final GlobalClassLoader globalClassLoader;
+
     /**
      * Creates a new instance of PluginManager.
      */
-    private PluginManager(final IdentityManager identityManager, final Main main) {
+    public PluginManager(final IdentityManager identityManager, final Main main) {
         final String fs = System.getProperty("file.separator");
         myDir = identityManager.getConfigDir() + "plugins" + fs;
         this.main = main;
+        this.globalClassLoader = new GlobalClassLoader(this);
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
                 CoreActionType.CLIENT_PREFS_CLOSED);
+        refreshPlugins();
+    }
+
+    /**
+     * Get the global class loader in use for this plugin manager.
+     *
+     * @return Global Class Loader
+     */
+    public GlobalClassLoader getGlobalClassLoader() {
+        return globalClassLoader;
     }
 
     /**
      * Get the instance of Main that owns this.
      *
-     * @return
+     * @return main that owns this.
+     * @Deprecated Global state is bad.
      */
+    @Deprecated
     public Main getMain() {
         return main;
     }
@@ -209,26 +222,6 @@ public class PluginManager implements ActionListener, ServiceManager {
     }
 
     /**
-     * Retrieves the singleton instance of the plugin manager.
-     *
-     * @return A singleton instance of PluginManager.
-     */
-    public static synchronized PluginManager initPluginManager(final IdentityManager identityManager, final Main main) {
-        me = new PluginManager(identityManager, main);
-        me.refreshPlugins();
-        return me;
-    }
-
-    /**
-     * Retrieves the singleton instance of the plugin manager.
-     *
-     * @return A singleton instance of PluginManager.
-     */
-    public static synchronized PluginManager getPluginManager() {
-        return me;
-    }
-
-    /**
      * Tests and adds the specified plugin to the known plugins list. Plugins
      * will only be added if: <ul><li>The file exists,<li>No other plugin with
      * the same name is known,<li>All requirements are met for the plugin,
@@ -251,7 +244,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         }
 
         try {
-            final PluginMetaData metadata = new PluginMetaData(
+            final PluginMetaData metadata = new PluginMetaData(this,
                     new URL("jar:file:" + getDirectory() + filename
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
@@ -485,7 +478,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         // Initialise all of our metadata objects
         for (String target : pluginPaths) {
             try {
-                final PluginMetaData targetMetaData = new PluginMetaData(
+                final PluginMetaData targetMetaData = new PluginMetaData(this,
                         new URL("jar:file:" + getDirectory() + target
                         + "!/META-INF/plugin.config"),
                         new URL("file:" + getDirectory() + target));
