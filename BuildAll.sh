@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # cron doesn't seem to like doing this iself...
 . /etc/profile
