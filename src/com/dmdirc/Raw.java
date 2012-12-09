@@ -120,9 +120,7 @@ public final class Raw extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        if (!line.isEmpty()) {
-            sendLine(line);
-        }
+        server.sendLine(line);
     }
 
     /** {@inheritDoc} */
