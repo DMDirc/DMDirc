@@ -122,6 +122,12 @@ else
 	handleNightly "${PACKAGENAME}" "${FILEDATA}" "deb"
 	handleNightly "${PACKAGENAME}" "${FILEDATA}" "rpm"
 
+	## Add to apt repo.
+	REPREPRO=`which reprepro`
+	if [ "" != "${REPREPRO}" -a -e "/home/dmdirc/www/apt/" ]; then
+		${REPREPRO} -V -C dmdirc-nightly -b /home/dmdirc/www/apt/ includedeb all ${WWWDIR}/nightly/${PACKAGENAME}-${FILEDATA}.deb
+	fi;
+
 	# Jars get a different name for some reason.
 	mv -v "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar"
 	if [ -e "${WWWDIR}/nightly/DMDirc_${FILEDATA}.jar" ]; then
