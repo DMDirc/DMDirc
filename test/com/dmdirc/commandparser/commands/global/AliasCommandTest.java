@@ -21,30 +21,33 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
 public class AliasCommandTest {
 
-    private final AliasCommand command = new AliasCommand();
+    private CommandController controller;
+    private AliasCommand command;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
+    @Before
+    public void setUp() throws Exception {
+        controller = mock(CommandController.class);
+        when(controller.getCommandChar()).thenReturn('/');
+        command = new AliasCommand(controller);
     }
 
     @Test
     public void testUsageNoArgs() {
         final FrameContainer tiw = mock(FrameContainer.class);
 
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, AliasCommand.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -54,7 +57,7 @@ public class AliasCommandTest {
     public void testUsageOneArg() {
         final FrameContainer tiw = mock(FrameContainer.class);
 
-        command.execute(tiw, new CommandArguments("/foo --remove"),
+        command.execute(tiw, new CommandArguments(controller, "/foo --remove"),
                 new CommandContext(null, AliasCommand.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

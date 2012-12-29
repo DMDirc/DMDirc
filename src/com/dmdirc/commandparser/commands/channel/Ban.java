@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -45,6 +46,15 @@ public class Ban extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("ban",
             "ban <user|host> - bans the specified user or host from the channel",
             CommandType.TYPE_CHANNEL);
+
+    /**
+     * Creates a new instance of the Ban command
+     *
+     * @param controller Command controller for the command
+     */
+    public Ban(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

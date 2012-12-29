@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.ServerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class HelpTest {
@@ -57,7 +59,7 @@ public class HelpTest {
         final List<Object[]> res = new LinkedList<Object[]>();
 
         TestMain.getTestMain();
-        new CommandLoader().loadCommands(CommandManager.getCommandManager());
+        new CommandLoader(mock(ServerFactory.class)).loadCommands(CommandManager.getCommandManager());
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {

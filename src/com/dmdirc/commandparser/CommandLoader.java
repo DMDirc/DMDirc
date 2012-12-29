@@ -66,11 +66,26 @@ import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.ServerFactory;
 
 /**
  * Facilitates loading of core commands into a {@link CommandManager}.
  */
 public class CommandLoader {
+
+    /**
+     * Server factory to pass to commands.
+     */
+    private ServerFactory serverFactory;
+
+    /**
+     * Creates a new command loader.
+     *
+     * @param serverFactory Server factory to pass to commands
+     */
+    public CommandLoader(final ServerFactory serverFactory) {
+        this.serverFactory = serverFactory;
+    }
 
     /**
      * Loads all known core commands into the given manager.
@@ -79,63 +94,63 @@ public class CommandLoader {
      */
     public void loadCommands(final CommandController manager) {
         // Chat commands
-        manager.registerCommand(new Me(), Me.INFO);
+        manager.registerCommand(new Me(manager), Me.INFO);
 
         // Channel commands
-        manager.registerCommand(new Ban(), Ban.INFO);
-        manager.registerCommand(new Cycle(), Cycle.INFO);
-        manager.registerCommand(new Invite(), Invite.INFO);
-        manager.registerCommand(new KickReason(), KickReason.INFO);
-        manager.registerCommand(new Mode(), Mode.INFO);
-        manager.registerCommand(new Names(), Names.INFO);
-        manager.registerCommand(new Part(), Part.INFO);
-        manager.registerCommand(new SetNickColour(), SetNickColour.INFO);
-        manager.registerCommand(new ShowTopic(), ShowTopic.INFO);
+        manager.registerCommand(new Ban(manager), Ban.INFO);
+        manager.registerCommand(new Cycle(manager), Cycle.INFO);
+        manager.registerCommand(new Invite(manager), Invite.INFO);
+        manager.registerCommand(new KickReason(manager), KickReason.INFO);
+        manager.registerCommand(new Mode(manager), Mode.INFO);
+        manager.registerCommand(new Names(manager), Names.INFO);
+        manager.registerCommand(new Part(manager), Part.INFO);
+        manager.registerCommand(new SetNickColour(manager), SetNickColour.INFO);
+        manager.registerCommand(new ShowTopic(manager), ShowTopic.INFO);
 
         // Server commands
-        manager.registerCommand(new AllChannels(), AllChannels.INFO);
-        manager.registerCommand(new Away(), Away.INFO);
-        manager.registerCommand(new Back(), Back.INFO);
-        manager.registerCommand(new ChangeServer(), ChangeServer.INFO);
-        manager.registerCommand(new Ctcp(), Ctcp.INFO);
-        manager.registerCommand(new Disconnect(), Disconnect.INFO);
-        manager.registerCommand(new Ignore(), Ignore.INFO);
-        manager.registerCommand(new JoinChannelCommand(), JoinChannelCommand.INFO);
-        manager.registerCommand(new Message(), Message.INFO);
-        manager.registerCommand(new Nick(), Nick.INFO);
-        manager.registerCommand(new Notice(), Notice.INFO);
-        manager.registerCommand(new OpenQuery(), OpenQuery.INFO);
-        manager.registerCommand(new Raw(), Raw.INFO);
-        manager.registerCommand(new Reconnect(), Reconnect.INFO);
-        manager.registerCommand(new Umode(), Umode.INFO);
+        manager.registerCommand(new AllChannels(manager), AllChannels.INFO);
+        manager.registerCommand(new Away(manager), Away.INFO);
+        manager.registerCommand(new Back(manager), Back.INFO);
+        manager.registerCommand(new ChangeServer(manager), ChangeServer.INFO);
+        manager.registerCommand(new Ctcp(manager), Ctcp.INFO);
+        manager.registerCommand(new Disconnect(manager), Disconnect.INFO);
+        manager.registerCommand(new Ignore(manager), Ignore.INFO);
+        manager.registerCommand(new JoinChannelCommand(manager), JoinChannelCommand.INFO);
+        manager.registerCommand(new Message(manager), Message.INFO);
+        manager.registerCommand(new Nick(manager), Nick.INFO);
+        manager.registerCommand(new Notice(manager), Notice.INFO);
+        manager.registerCommand(new OpenQuery(manager), OpenQuery.INFO);
+        manager.registerCommand(new Raw(manager), Raw.INFO);
+        manager.registerCommand(new Reconnect(manager), Reconnect.INFO);
+        manager.registerCommand(new Umode(manager), Umode.INFO);
 
-        manager.registerCommand(new RawServerCommand("lusers"));
-        manager.registerCommand(new RawServerCommand("map"));
-        manager.registerCommand(new RawServerCommand("motd"));
-        manager.registerCommand(new RawServerCommand("oper"));
-        manager.registerCommand(new RawServerCommand("whois"));
-        manager.registerCommand(new RawServerCommand("who"));
+        manager.registerCommand(new RawServerCommand(manager, "lusers"));
+        manager.registerCommand(new RawServerCommand(manager, "map"));
+        manager.registerCommand(new RawServerCommand(manager, "motd"));
+        manager.registerCommand(new RawServerCommand(manager, "oper"));
+        manager.registerCommand(new RawServerCommand(manager, "whois"));
+        manager.registerCommand(new RawServerCommand(manager, "who"));
 
         // Query commands
 
         // Global commands
-        manager.registerCommand(new AliasCommand(), AliasCommand.INFO);
-        manager.registerCommand(new AllServers(), AllServers.INFO);
-        manager.registerCommand(new Clear(), Clear.INFO);
-        manager.registerCommand(new Echo(), Echo.INFO);
-        manager.registerCommand(new Exit(), Exit.INFO);
-        manager.registerCommand(new Help(), Help.INFO);
-        manager.registerCommand(new Ifplugin(), Ifplugin.INFO);
-        manager.registerCommand(new NewServer(manager.getMain().getServerManager()), NewServer.INFO);
-        manager.registerCommand(new Notify(), Notify.INFO);
-        manager.registerCommand(new LoadPlugin(), LoadPlugin.INFO);
-        manager.registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);
-        manager.registerCommand(new OpenWindow(), OpenWindow.INFO);
-        manager.registerCommand(new ReloadActions(), ReloadActions.INFO);
-        manager.registerCommand(new ReloadIdentities(), ReloadIdentities.INFO);
-        manager.registerCommand(new ReloadPlugin(), ReloadPlugin.INFO);
-        manager.registerCommand(new SaveConfig(), SaveConfig.INFO);
-        manager.registerCommand(new Set(), Set.INFO);
+        manager.registerCommand(new AliasCommand(manager), AliasCommand.INFO);
+        manager.registerCommand(new AllServers(manager), AllServers.INFO);
+        manager.registerCommand(new Clear(manager), Clear.INFO);
+        manager.registerCommand(new Echo(manager), Echo.INFO);
+        manager.registerCommand(new Exit(manager), Exit.INFO);
+        manager.registerCommand(new Help(manager), Help.INFO);
+        manager.registerCommand(new Ifplugin(manager), Ifplugin.INFO);
+        manager.registerCommand(new NewServer(manager, serverFactory), NewServer.INFO);
+        manager.registerCommand(new Notify(manager), Notify.INFO);
+        manager.registerCommand(new LoadPlugin(manager), LoadPlugin.INFO);
+        manager.registerCommand(new UnloadPlugin(manager), UnloadPlugin.INFO);
+        manager.registerCommand(new OpenWindow(manager), OpenWindow.INFO);
+        manager.registerCommand(new ReloadActions(manager), ReloadActions.INFO);
+        manager.registerCommand(new ReloadIdentities(manager), ReloadIdentities.INFO);
+        manager.registerCommand(new ReloadPlugin(manager), ReloadPlugin.INFO);
+        manager.registerCommand(new SaveConfig(manager), SaveConfig.INFO);
+        manager.registerCommand(new Set(manager), Set.INFO);
     }
 
 }

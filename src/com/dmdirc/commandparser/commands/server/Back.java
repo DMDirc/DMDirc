@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -44,6 +45,15 @@ public class Back extends Command implements IntelligentCommand {
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("back",
            "back - unsets your away status", CommandType.TYPE_SERVER);
+
+    /**
+     * Creates a new instance of the Back command
+     *
+     * @param controller Command controller for the command
+     */
+    public Back(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -42,6 +43,15 @@ public final class SaveConfig extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("saveconfig",
             "saveconfig - force the client to save its configuration to disk",
             CommandType.TYPE_GLOBAL);
+
+    /**
+     * Creates a new instance of the SaveConfig command
+     *
+     * @param controller Command controller for the command
+     */
+    public SaveConfig(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

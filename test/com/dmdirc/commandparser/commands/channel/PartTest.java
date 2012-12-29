@@ -22,13 +22,13 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.CommandController;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 
 public class PartTest {
 
+    private CommandController controller;
     private Part command;
     private Channel channel;
     private FrameContainer origin;
@@ -44,21 +45,21 @@ public class PartTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-
+        controller = mock(CommandController.class);
         channel = mock(Channel.class);
         origin = mock(FrameContainer.class);
         manager = mock(ConfigManager.class);
 
+        when(controller.getCommandChar()).thenReturn('/');
         when(origin.getConfigManager()).thenReturn(manager);
         when(manager.getOption("general", "partmessage")).thenReturn("config part message");
 
-        command = new Part();
+        command = new Part(controller);
     }
 
     @Test
     public void testWithoutArgs() {
-        command.execute(origin, new CommandArguments("/part"),
+        command.execute(origin, new CommandArguments(controller, "/part"),
                 new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("config part message");
@@ -67,7 +68,7 @@ public class PartTest {
 
     @Test
     public void testWithArgs() {
-        command.execute(origin, new CommandArguments("/part custom part"),
+        command.execute(origin, new CommandArguments(controller, "/part custom part"),
                 new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("custom part");

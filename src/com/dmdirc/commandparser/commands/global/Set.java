@@ -38,6 +38,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
@@ -67,9 +68,11 @@ public class Set extends Command implements IntelligentCommand {
 
     /**
      * Creates a new instance of Set.
+     *
+     * @param controller Command controller for this command
      */
-    public Set() {
-        super();
+    public Set(final CommandController controller) {
+        super(controller);
 
         unsetFlag.addDisabled(appendFlag);
         appendFlag.addDisabled(unsetFlag);

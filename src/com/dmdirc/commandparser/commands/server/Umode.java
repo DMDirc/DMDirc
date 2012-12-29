@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * Allows the user to change user modes.
@@ -44,6 +45,15 @@ public class Umode extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("umode",
             "umode [modes] - sets or displays your user modes",
             CommandType.TYPE_SERVER);
+
+    /**
+     * Creates a new instance of the Umode command
+     *
+     * @param controller Command controller for the command
+     */
+    public Umode(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

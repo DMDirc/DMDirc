@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -42,6 +43,15 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("unloadplugin",
             "unloadplugin <plugin> - Unloads the specified plugin",
             CommandType.TYPE_GLOBAL);
+
+    /**
+     * Creates a new instance of the UnloadPlugin command
+     *
+     * @param controller Command controller for the command
+     */
+    public UnloadPlugin(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

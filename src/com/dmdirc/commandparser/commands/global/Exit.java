@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
@@ -41,6 +42,15 @@ public class Exit extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("exit",
             "exit [reason] - exits the client",
             CommandType.TYPE_GLOBAL);
+
+    /**
+     * Creates a new instance of the Exit command
+     *
+     * @param controller Command controller for the command
+     */
+    public Exit(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

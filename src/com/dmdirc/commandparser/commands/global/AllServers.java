@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -43,6 +44,15 @@ public class AllServers extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("allservers",
             "allservers <command> - executes the command as though it had"
             + " been entered on all servers", CommandType.TYPE_GLOBAL);
+
+    /**
+     * Creates a new instance of the AllServers command
+     *
+     * @param controller Command controller for the command
+     */
+    public AllServers(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

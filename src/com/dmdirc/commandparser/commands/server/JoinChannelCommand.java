@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -63,9 +64,11 @@ public class JoinChannelCommand extends Command implements
 
     /**
      * Creates a new instance of the join channel command.
+     *
+     * @param controller Command controller for the command
      */
-    public JoinChannelCommand() {
-        super();
+    public JoinChannelCommand(final CommandController controller) {
+        super(controller);
 
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_LINE_ADDED);

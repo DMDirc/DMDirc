@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 /**
@@ -48,6 +49,15 @@ public class Invite extends Command implements ExternalCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("invite",
             "invite <user> - invites user to a channel",
             CommandType.TYPE_CHANNEL);
+
+    /**
+     * Creates a new instance of the Invite command
+     *
+     * @param controller Command controller for the command
+     */
+    public Invite(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

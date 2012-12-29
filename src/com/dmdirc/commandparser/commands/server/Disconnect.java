@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * The disconnect command disconnects from the current server.
@@ -41,6 +42,15 @@ public class Disconnect extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("disconnect",
             "disconnect [reason] - disconnect from this server",
             CommandType.TYPE_SERVER);
+
+    /**
+     * Creates a new instance of the Disconnect command
+     *
+     * @param controller Command controller for the command
+     */
+    public Disconnect(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

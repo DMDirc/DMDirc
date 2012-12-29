@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * The cycle command allows users to rapidly part and rejoin a channel.
@@ -43,6 +44,15 @@ public class Cycle extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("cycle",
             "cycle [message] - parts and rejoins the channel",
             CommandType.TYPE_CHANNEL);
+
+    /**
+     * Creates a new instance of the Cycle command
+     *
+     * @param controller Command controller for the command
+     */
+    public Cycle(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -46,6 +47,15 @@ public class AliasCommand extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("alias",
             "alias [--remove] <name> [command] - creates or removes the specified alias",
             CommandType.TYPE_GLOBAL);
+
+    /**
+     * Creates a new instance of the AliasCommand command
+     *
+     * @param controller Command controller for the command
+     */
+    public AliasCommand(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

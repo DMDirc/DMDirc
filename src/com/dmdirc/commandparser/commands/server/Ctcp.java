@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -46,6 +47,15 @@ public class Ctcp extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("ctcp",
             "ctcp <target> <type> [arguments] - sends a CTCP message",
             CommandType.TYPE_SERVER);
+
+    /**
+     * Creates a new instance of the Ctcp command
+     *
+     * @param controller Command controller for the command
+     */
+    public Ctcp(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

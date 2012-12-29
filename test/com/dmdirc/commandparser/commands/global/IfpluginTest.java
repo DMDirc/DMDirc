@@ -21,29 +21,32 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
 public class IfpluginTest {
 
-    private final Ifplugin command = new Ifplugin();
+    private CommandController controller;
+    private Ifplugin command;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
+    @Before
+    public void setUpClass() throws Exception {
+        controller = mock(CommandController.class);
+        when(controller.getCommandChar()).thenReturn('/');
+        command = new Ifplugin(controller);
     }
 
     @Test
     public void testUsageNoArgs() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -52,7 +55,7 @@ public class IfpluginTest {
     @Test
     public void testUsageOneArg() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo bar"),
+        command.execute(tiw, new CommandArguments(controller, "/foo bar"),
                 new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
