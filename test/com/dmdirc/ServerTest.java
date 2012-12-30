@@ -22,16 +22,15 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 
-import com.dmdirc.plugins.PluginManager;
 import java.net.URI;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ServerTest {
 
@@ -40,7 +39,9 @@ public class ServerTest {
     @BeforeClass
     public static void setUp() throws Exception {
         TestMain.getTestMain();
-        server = new Server(TestMain.getTestMain().getServerManager(), new URI("irc-test://255.255.255.255"),
+        server = new Server(mock(ParserFactory.class),
+                mock(ServerManager.class),
+                new URI("irc-test://255.255.255.255"),
                 IdentityManager.getIdentityManager()
                 .getIdentitiesByType("profile").get(0));
     }

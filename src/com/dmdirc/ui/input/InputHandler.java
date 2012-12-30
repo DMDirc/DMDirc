@@ -35,8 +35,8 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
-import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.parser.common.CompositionState;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.messages.Styliser;
@@ -110,8 +110,8 @@ public abstract class InputHandler implements ConfigChangeListener {
     private CompositionState state = CompositionState.IDLE;
     /** Timer used to manage timeouts of composition state. */
     private Timer compositionTimer;
-    /** UIController that owns this InputHandler. */
-    private final UIController controller;
+    /** Plugin managed used to retrieve tab completers. */
+    private final PluginManager pluginManager;
 
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
@@ -120,12 +120,14 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param thisTarget The text field this input handler is dealing with.
      * @param thisCommandParser The command parser to use for this text field.
      * @param thisParentWindow The window that owns this input handler
+     * @param pluginManager pluginManager used to retrieve tab completers
      */
-    public InputHandler(final UIController controller, final InputField thisTarget,
+    public InputHandler(final InputField thisTarget,
             final CommandParser thisCommandParser,
-            final WritableFrameContainer thisParentWindow) {
+            final WritableFrameContainer thisParentWindow,
+            final PluginManager pluginManager) {
 
-        this.controller = controller;
+        this.pluginManager = pluginManager;
         buffer = new RollingList<String>(thisParentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
 
@@ -191,7 +193,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Sets this inputhandler's tab completion style.
      */
     private void setStyle() {
-        style = (TabCompletionStyle) controller.getMain().getPluginManager()
+        style = (TabCompletionStyle) pluginManager
                 .getServiceProvider("tabcompletion", parentWindow
                 .getConfigManager().getOption("tabcompletion", "style"))
                 .getExportedService("getCompletionStyle").execute(tabCompleter,

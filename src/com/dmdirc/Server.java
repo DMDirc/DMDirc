@@ -194,11 +194,14 @@ public class Server extends WritableFrameContainer
      * the specified profile.
      *
      * @since 0.6.3
+     *
+     * @param parserFactory Parser factory used to create parsers.
      * @param manager The servermanager that owns this server.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
-    public Server(final ServerManager manager, final URI uri, final Identity profile) {
+    public Server(final ParserFactory parserFactory,
+            final ServerManager manager, final URI uri, final Identity profile) {
         super("server-disconnected", getHost(uri), getHost(uri),
                 new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
                 new ServerCommandParser(
@@ -208,7 +211,7 @@ public class Server extends WritableFrameContainer
                 WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         this.manager = manager;
-        parserFactory = new ParserFactory(manager.getMain().getPluginManager());
+        this.parserFactory = parserFactory;
         setConnectionDetails(uri, profile);
 
         manager.registerServer(this);

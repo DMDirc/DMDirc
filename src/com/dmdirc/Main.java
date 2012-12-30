@@ -104,7 +104,6 @@ public class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
-        serverManager = new ServerManager(this);
         ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);
@@ -124,6 +123,7 @@ public class Main {
                 serverManager, ActionManager.getActionManager(),
                 IdentityManager.getIdentityManager(), this);
         checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
+        serverManager = new ServerManager(new ParserFactory(pluginManager));
 
         ThemeManager.loadThemes();
 
