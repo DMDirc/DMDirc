@@ -119,14 +119,17 @@ public class Main {
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
+        pluginManager = new PluginManager(CommandManager.getCommandManager(),
+                serverManager, ActionManager.getActionManager(),
+                IdentityManager.getIdentityManager(), this);
         checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
         clp.applySettings();
 
-        new CommandLoader(serverManager).loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
+        new CommandLoader(serverManager).loadCommands(CommandManager.getCommandManager());
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);

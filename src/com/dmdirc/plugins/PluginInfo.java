@@ -29,6 +29,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.SimpleInjector;
@@ -88,17 +89,38 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
     /** List of identities. */
     private final List<Identity> identities = new ArrayList<Identity>();
+    /** Server manager. */
+    private final ServerManager serverManager;
+    /** Command controller. */
+    private final CommandController commandController;
+    /** Action manager. */
+    private final ActionManager actionManager;
+    /** Identity Manager. */
+    private final IdentityManager identityManager;
 
     /**
      * Create a new PluginInfo.
      *
      * @param metadata The plugin's metadata information
+     * @param commandManager Command manager for dependency injection of plugins
+     * @param serverManager Server manager for dependency injection of plugins
+     * @param actionManager Action manager for dependency injection of plugins
+     * @param identityManager Identity manager for dependency injection of plugins
+     *
      * @throws PluginException if there is an error loading the Plugin
      * @since 0.6.6
      */
-    public PluginInfo(final PluginMetaData metadata) throws PluginException {
+    public PluginInfo(final PluginMetaData metadata,
+            final CommandController commandController,
+            final ServerManager serverManager,
+            final ActionManager actionManager,
+            final IdentityManager identityManager) throws PluginException {
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
+        this.commandController = commandController;
+        this.serverManager = serverManager;
+        this.actionManager = actionManager;
+        this.identityManager = identityManager;
 
         ResourceManager res;
 
@@ -160,12 +182,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         injector.addParameter(PluginManager.class, metaData.getManager());
-        injector.addParameter(ActionManager.getActionManager());
+        injector.addParameter(ActionManager.class, actionManager);
         injector.addParameter(PluginInfo.class, this);
         injector.addParameter(Main.class, metaData.getManager().getMain());
         injector.addParameter(PluginMetaData.class, metaData);
-        injector.addParameter(IdentityManager.class, IdentityManager.getIdentityManager());
-        injector.addParameter(ServerManager.class, metaData.getManager().getMain().getServerManager());
+        injector.addParameter(IdentityManager.class, identityManager);
+        injector.addParameter(ServerManager.class, serverManager);
+        injector.addParameter(CommandController.class, commandController);
 
         return injector;
     }

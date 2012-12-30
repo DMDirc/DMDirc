@@ -23,11 +23,13 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -70,14 +72,35 @@ public class PluginManager implements ActionListener, ServiceManager {
 
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
+    /** Server manager. */
+    private final ServerManager serverManager;
+    /** Command controller. */
+    private final CommandController commandController;
+    /** Action manager. */
+    private final ActionManager actionManager;
+    /** Identity Manager. */
+    private final IdentityManager identityManager;
 
     /**
      * Creates a new instance of PluginManager.
+     *
+     * @param commandManager Command manager
+     * @param serverManager Server manager
+     * @param actionManager Action manager
+     * @param identityManager Identity manager
+     * @param main Pseudo-singleton manager
      */
-    public PluginManager(final IdentityManager identityManager, final Main main) {
+    public PluginManager(final CommandController commandController,
+            final ServerManager serverManager,
+            final ActionManager actionManager,
+            final IdentityManager identityManager, final Main main) {
+        this.commandController = commandController;
+        this.serverManager = serverManager;
+        this.actionManager = actionManager;
+        this.identityManager = identityManager;
+        this.main = main;
         final String fs = System.getProperty("file.separator");
         myDir = identityManager.getConfigDir() + "plugins" + fs;
-        this.main = main;
         this.globalClassLoader = new GlobalClassLoader(this);
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
@@ -249,7 +272,9 @@ public class PluginManager implements ActionListener, ServiceManager {
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata);
+            final PluginInfo pluginInfo = new PluginInfo(metadata,
+                    commandController, serverManager, actionManager,
+                    identityManager);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM,

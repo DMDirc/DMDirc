@@ -30,7 +30,10 @@ public class TestMain extends Main {
         }
         serverManager = new ServerManager(this);
         ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
+        pluginManager = new PluginManager(CommandManager.getCommandManager(),
+                serverManager, ActionManager.getActionManager(),
+                IdentityManager.getIdentityManager(), this);
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
 
