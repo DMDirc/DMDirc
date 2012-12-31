@@ -104,6 +104,7 @@ public class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
+        serverManager = new ServerManager(this);
         ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);
@@ -120,13 +121,12 @@ public class Main {
 
         pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
         checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
-        serverManager = new ServerManager(new ParserFactory(pluginManager));
 
         ThemeManager.loadThemes();
 
         clp.applySettings();
 
-        new CommandLoader(serverManager).loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
+        new CommandLoader().loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);

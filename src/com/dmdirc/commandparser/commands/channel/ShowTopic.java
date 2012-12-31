@@ -34,7 +34,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 /**
@@ -47,15 +46,6 @@ public class ShowTopic extends Command implements ExternalCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("topic",
             "topic - displays the current topic\ntopic <newtopic> - sets the channel topic",
             CommandType.TYPE_CHANNEL);
-
-    /**
-     * Creates a new instance of the ShowTopic command
-     *
-     * @param controller Command controller for the command
-     */
-    public ShowTopic(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

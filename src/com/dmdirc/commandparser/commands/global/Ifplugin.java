@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
@@ -49,15 +48,6 @@ public class Ifplugin extends Command implements IntelligentCommand {
             "ifplugin <[!]plugin> <command> - executes a command if the "
             + "specified plugin is/isn't loaded",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the Ifplugin command
-     *
-     * @param controller Command controller for the command
-     */
-    public Ifplugin(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

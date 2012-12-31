@@ -35,7 +35,6 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -49,15 +48,6 @@ public class Names extends Command implements IntelligentCommand,
     public static final CommandInfo INFO = new BaseCommandInfo("names",
             "names - Requests a list of users that are in the channel",
             CommandType.TYPE_CHANNEL);
-
-    /**
-     * Creates a new instance of the Names command
-     *
-     * @param controller Command controller for the command
-     */
-    public Names(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

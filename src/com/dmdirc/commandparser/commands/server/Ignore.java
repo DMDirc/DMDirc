@@ -32,7 +32,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -50,15 +49,6 @@ public class Ignore extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("ignore",
             "ignore [--remove|--regex] [host] - manages the network's ignore list",
             CommandType.TYPE_SERVER);
-
-    /**
-     * Creates a new instance of the Ignore command
-     *
-     * @param controller Command controller for the command
-     */
-    public Ignore(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

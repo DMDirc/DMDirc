@@ -32,7 +32,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -61,11 +60,9 @@ public class NewServer extends Command implements IntelligentCommand {
      * Creates a new newserver command which will use the specified factory
      * to construct servers.
      *
-     * @param controller Command controller for this command
      * @param serverFactory The factory to use to construct servers
      */
-    public NewServer(final CommandController controller, final ServerFactory serverFactory) {
-        super(controller);
+    public NewServer(final ServerFactory serverFactory) {
         this.serverFactory = serverFactory;
     }
 

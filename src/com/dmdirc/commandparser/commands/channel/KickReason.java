@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -49,15 +48,6 @@ public class KickReason extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("kick",
             "kick <user> [reason] - kicks the specified user from the channel",
             CommandType.TYPE_CHANNEL);
-
-    /**
-     * Creates a new instance of the KickReason command
-     *
-     * @param controller Command controller for the command
-     */
-    public KickReason(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

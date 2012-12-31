@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -50,15 +49,6 @@ public class SetNickColour extends Command implements IntelligentCommand {
             "setnickcolour [--nicklist|--text] <nick> [colour] - "
             + "set the specified person's display colour",
             CommandType.TYPE_CHANNEL);
-
-    /**
-     * Creates a new instance of the SetNickColour command
-     *
-     * @param controller Command controller for the command
-     */
-    public SetNickColour(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

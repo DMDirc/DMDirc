@@ -24,10 +24,10 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
 
@@ -38,7 +38,6 @@ import static org.mockito.Mockito.*;
 
 public class NamesTest {
 
-    private CommandController controller;
     private Names command;
     private IRCChannelInfo channelinfo;
     private Channel channel;
@@ -47,24 +46,24 @@ public class NamesTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        controller = mock(CommandController.class);
+        TestMain.getTestMain();
+
         parser = mock(IRCParser.class);
         server = mock(Server.class);
         channel = mock(Channel.class);
         channelinfo = mock(IRCChannelInfo.class);
 
-        when(controller.getCommandChar()).thenReturn('/');
         when(channel.getServer()).thenReturn(server);
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getName()).thenReturn("#chan");
 
-        command = new Names(controller);
+        command = new Names();
     }
 
     @Test
     public void testNormal() {
-        command.execute(null, new CommandArguments(controller, "/names"),
+        command.execute(null, new CommandArguments("/names"),
                 new ChannelCommandContext(null, Names.INFO, channel));
 
         verify(parser).sendRawMessage("NAMES #chan");
@@ -72,7 +71,7 @@ public class NamesTest {
 
     @Test
     public void testExternal() {
-        command.execute(null, server, "#chan", false, new CommandArguments(controller, "/names #chan"));
+        command.execute(null, server, "#chan", false, new CommandArguments("/names #chan"));
 
         verify(parser).sendRawMessage("NAMES #chan");
     }

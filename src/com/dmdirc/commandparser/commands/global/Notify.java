@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
@@ -45,15 +44,6 @@ public class Notify extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("notify",
             "notify <colour> - sets the notification colour for this window",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the Notify command
-     *
-     * @param controller Command controller for the command
-     */
-    public Notify(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

@@ -36,25 +36,40 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
  */
-@RequiredArgsConstructor
 public class ServerManager implements ServerFactory {
 
-    /** Parser factory. */
-    private final ParserFactory parserFactory;
+    /** Main that owns this ServerManager. */
+    private final Main main;
 
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<Server>();
 
+    /**
+     * Creates a new instance of ServerManager.
+     */
+    public ServerManager(final Main main) {
+        this.main = main;
+    }
+
+    /**
+     * Get the Main that owns this ServerManager.
+     *
+     * @return The Main that owns this ServerManager.
+     * @Deprecated Global state is bad.
+     */
+    @Deprecated
+    public Main getMain() {
+        return main;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Server createServer(final URI uri, final Identity profile) {
-        return new Server(parserFactory, this, uri, profile);
+        return new Server(this, uri, profile);
     }
 
     /**
@@ -197,7 +212,7 @@ public class ServerManager implements ServerFactory {
         }
 
         if (server == null) {
-            server = new Server(parserFactory, this, uri, profile);
+            server = new Server(this, uri, profile);
             server.connect();
             return server;
         }
@@ -233,7 +248,7 @@ public class ServerManager implements ServerFactory {
 
         if (connectedServer == null) {
             try {
-                final Server server = new Server(parserFactory, this, new URI("irc://irc.quakenet.org/DMDirc"),
+                final Server server = new Server(this, new URI("irc://irc.quakenet.org/DMDirc"),
                         IdentityManager.getIdentityManager()
                         .getIdentitiesByType("profile").get(0));
                 server.connect();

@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -42,15 +41,6 @@ public class Clear extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("clear",
             "clear - clears the current window's text area",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the Clear command
-     *
-     * @param controller Command controller for the command
-     */
-    public Clear(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

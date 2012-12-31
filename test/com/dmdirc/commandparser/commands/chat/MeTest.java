@@ -21,35 +21,37 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
-import com.dmdirc.interfaces.CommandController;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
 public class MeTest {
 
-    private CommandController controller;
-    private Me command;
+    private final Me command = new Me();
     private MessageTarget mtt;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        TestMain.getTestMain();
+    }
 
     @Before
     public void setUp() {
-        controller = mock(CommandController.class);
-        when(controller.getCommandChar()).thenReturn('/');
         mtt = mock(MessageTarget.class);
-        command = new Me(controller);
     }
 
     @Test
     public void testUsage() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments(controller, "/foo"),
+        command.execute(tiw, new CommandArguments("/foo"),
                 new ChatCommandContext(null, Me.INFO, mtt));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -57,7 +59,7 @@ public class MeTest {
 
     @Test
     public void testSend() {
-        command.execute(null, new CommandArguments(controller, "/foo hello meep moop"),
+        command.execute(null, new CommandArguments("/foo hello meep moop"),
                 new ChatCommandContext(null, Me.INFO, mtt));
 
         verify(mtt).sendAction("hello meep moop");

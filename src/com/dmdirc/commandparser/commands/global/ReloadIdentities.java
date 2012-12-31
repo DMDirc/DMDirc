@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -43,15 +42,6 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("reloadidentities",
             "reloadidentities - reloads user identities (configuration files)",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the ReloadIdentities command
-     *
-     * @param controller Command controller for the command
-     */
-    public ReloadIdentities(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

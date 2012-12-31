@@ -21,43 +21,45 @@
  */
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.Identity;
-import com.dmdirc.interfaces.CommandController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
 public class ChangeServerTest {
 
-    private CommandController controller;
-    private ChangeServer command;
+    private final ChangeServer command = new ChangeServer();
     private FrameContainer tiw;
     private Identity profile;
     private Server server;
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        TestMain.getTestMain();
+    }
+
     @Before
     public void setUp() {
-        controller = mock(CommandController.class);
         tiw = mock(FrameContainer.class);
         profile = mock(Identity.class);
         server = mock(Server.class);
-        when(controller.getCommandChar()).thenReturn('/');
         when(server.getProfile()).thenReturn(profile);
-        command = new ChangeServer(controller);
     }
 
     @Test
     public void testUsageNoArgs() {
-        command.execute(tiw, new CommandArguments(controller, "/server"),
+        command.execute(tiw, new CommandArguments("/server"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -65,7 +67,7 @@ public class ChangeServerTest {
 
     @Test
     public void testInvalidPort() {
-        command.execute(tiw, new CommandArguments(controller, "/server foo:abc"),
+        command.execute(tiw, new CommandArguments("/server foo:abc"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -73,7 +75,7 @@ public class ChangeServerTest {
 
     @Test
     public void testOutOfRangePort1() {
-        command.execute(tiw, new CommandArguments(controller, "/server foo:0"),
+        command.execute(tiw, new CommandArguments("/server foo:0"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -81,7 +83,7 @@ public class ChangeServerTest {
 
     @Test
     public void testOutOfRangePort2() {
-        command.execute(tiw, new CommandArguments(controller, "/server foo:65537"),
+        command.execute(tiw, new CommandArguments("/server foo:65537"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(tiw).addLine(eq("commandError"), anyString());
@@ -89,7 +91,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteBasic() throws URISyntaxException {
-        command.execute(tiw, new CommandArguments(controller, "/server foo:1234"),
+        command.execute(tiw, new CommandArguments("/server foo:1234"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("irc://foo:1234")), same(profile));
@@ -97,7 +99,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteNoPort() throws URISyntaxException {
-        command.execute(tiw, new CommandArguments(controller, "/server foo"),
+        command.execute(tiw, new CommandArguments("/server foo"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
@@ -105,7 +107,7 @@ public class ChangeServerTest {
 
     @Test
     public void testDeprecatedSSL() throws URISyntaxException {
-        command.execute(tiw, new CommandArguments(controller, "/server --ssl foo"),
+        command.execute(tiw, new CommandArguments("/server --ssl foo"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("ircs://foo:6667")), same(profile));
@@ -113,7 +115,7 @@ public class ChangeServerTest {
 
     @Test
     public void testExecuteComplex() throws URISyntaxException {
-        command.execute(tiw, new CommandArguments(controller, "/server foo:+1234 password"),
+        command.execute(tiw, new CommandArguments("/server foo:+1234 password"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("ircs://password@foo:1234")), same(profile));

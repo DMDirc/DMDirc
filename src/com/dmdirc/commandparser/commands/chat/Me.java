@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.util.validators.ValidationResponse;
 
 /**
@@ -45,15 +44,6 @@ public class Me extends Command implements ValidatingCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("me",
             "me <action> - sends the specified action",
             CommandType.TYPE_CHAT);
-
-    /**
-     * Creates a new instance of the Me command
-     *
-     * @param controller Command controller for the command
-     */
-    public Me(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

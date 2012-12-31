@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -47,15 +46,6 @@ public class Notice extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("notice",
             "notice <target> <message> - sends a notice",
             CommandType.TYPE_SERVER);
-
-    /**
-     * Creates a new instance of the Notice command
-     *
-     * @param controller Command controller for the command
-     */
-    public Notice(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

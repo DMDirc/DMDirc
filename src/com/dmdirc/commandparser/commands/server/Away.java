@@ -32,7 +32,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.interfaces.CommandController;
 
 /**
  * The away command allows the user to set their away message.
@@ -43,15 +42,6 @@ public class Away extends Command {
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("away",
            "away <reason> - marks you as away", CommandType.TYPE_SERVER);
-
-    /**
-     * Creates a new instance of the Away command
-     *
-     * @param controller Command controller for the command
-     */
-    public Away(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

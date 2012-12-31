@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ui.UIController;
@@ -46,8 +45,6 @@ public class URLHandler {
     private static Date lastLaunch;
     /** The UI Controller that owns this handler. */
     private final UIController controller;
-    /** Server manager used to create servers. */
-    private final ServerManager serverManager;
     /** Config manager. */
     private final ConfigManager config;
     /** Desktop handler. */
@@ -57,11 +54,9 @@ public class URLHandler {
      * Instantiates a new URL Handler.
      *
      * @param controller The UI controller to show dialogs etc on
-     * @param serverManager Server manager used to create servers
      */
-    public URLHandler(final UIController controller, final ServerManager serverManager) {
+    public URLHandler(final UIController controller) {
         this.controller = controller;
-        this.serverManager = serverManager;
         this.config = IdentityManager.getIdentityManager().getGlobalConfiguration();
         this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     }
@@ -160,7 +155,7 @@ public class URLHandler {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Connecting to: " + uri.toString(),
                     config));
-            serverManager.connectToAddress(uri);
+            controller.getMain().getServerManager().connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
             StatusBarManager.getStatusBarManager().setMessage(
                     new StatusMessage("Opening: " + uri.toString(),

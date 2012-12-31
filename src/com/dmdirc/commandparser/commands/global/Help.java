@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -52,15 +51,6 @@ public class Help extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("help",
             "help [command] - shows client command help",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the Help command
-     *
-     * @param controller Command controller for the command
-     */
-    public Help(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

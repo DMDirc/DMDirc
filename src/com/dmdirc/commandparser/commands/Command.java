@@ -52,10 +52,7 @@ public abstract class Command {
     /**
      * Creates a new instance of Command using the default CommandManager
      * provided by {@link CommandManager#getCommandManager()}.
-     *
-     * @deprecated use {@link Command#Command(com.dmdirc.interfaces.CommandController)}
      */
-    @Deprecated
     public Command() {
         this(CommandManager.getCommandManager());
     }

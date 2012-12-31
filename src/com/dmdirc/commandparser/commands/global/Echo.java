@@ -63,6 +63,15 @@ public class Echo extends Command implements IntelligentCommand {
 
     /**
      * Creates a new instance of Echo.
+     */
+    public Echo() {
+        super();
+
+        handler = new CommandFlagHandler(timeStampFlag, targetFlag);
+    }
+
+    /**
+     * Creates a new instance of Echo.
      *
      * @param controller Command controller
      */

@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -44,15 +43,6 @@ public class LoadPlugin extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("loadplugin",
             "loadplugin <plugin> - loads the specified class as a plugin",
             CommandType.TYPE_GLOBAL);
-
-    /**
-     * Creates a new instance of the LoadPlugin command
-     *
-     * @param controller Command controller for the command
-     */
-    public LoadPlugin(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override

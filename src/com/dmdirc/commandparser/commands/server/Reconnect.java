@@ -31,7 +31,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.interfaces.CommandController;
 
 /**
  * The reconnect command reconnects to the current server.
@@ -42,15 +41,6 @@ public class Reconnect extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("reconnect",
             "reconnect [reason] - reconnect to this server",
             CommandType.TYPE_SERVER);
-
-    /**
-     * Creates a new instance of the Reconnect command
-     *
-     * @param controller Command controller for the command
-     */
-    public Reconnect(final CommandController controller) {
-        super(controller);
-    }
 
     /** {@inheritDoc} */
     @Override
