@@ -118,10 +118,7 @@ public class Main {
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
-        pluginManager = new PluginManager(CommandManager.getCommandManager(),
-                serverManager, ActionManager.getActionManager(),
-                IdentityManager.getIdentityManager(), this);
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
         checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
         serverManager = new ServerManager(new ParserFactory(pluginManager));
 
@@ -129,7 +126,7 @@ public class Main {
 
         clp.applySettings();
 
-        new CommandLoader(serverManager).loadCommands(CommandManager.getCommandManager());
+        new CommandLoader(serverManager).loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);
