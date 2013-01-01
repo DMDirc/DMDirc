@@ -29,6 +29,9 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -106,7 +109,11 @@ public class PluginComponent implements UpdateComponent {
         // If it doesn't work then keep the plugin in a .update file untill
         // the next restart.
         // If it does, update the metadata.
-        if (requiresRestart() || !new File(path).renameTo(target)) {
+        final File newPlugin = new File(path);
+        if (!isValid(newPlugin)) {
+            return false;
+        }
+        if (requiresRestart() || !newPlugin.renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getMetaData().getPluginUrl().getPath() + ".update");
 
@@ -123,4 +130,30 @@ public class PluginComponent implements UpdateComponent {
         return returnCode;
     }
 
+    /**
+     * Test is a file is a valid zip file.
+     *
+     * @param file Zip file
+     *
+     * @return true if the file is valid
+     */
+    private boolean isValid(final File file) {
+        ZipFile zipfile = null;
+        try {
+            zipfile = new ZipFile(file);
+            return true;
+        } catch (ZipException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                if (zipfile != null) {
+                    zipfile.close();
+                    zipfile = null;
+                }
+            } catch (IOException e) {
+            }
+        }
+    }
 }
