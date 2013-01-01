@@ -26,11 +26,16 @@ import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -164,8 +169,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         injector.addParameter(PluginInfo.class, this);
         injector.addParameter(Main.class, metaData.getManager().getMain());
         injector.addParameter(PluginMetaData.class, metaData);
-        injector.addParameter(IdentityManager.class, IdentityManager.getIdentityManager());
+        injector.addParameter(IdentityManager.getIdentityManager());
         injector.addParameter(ServerManager.class, metaData.getManager().getMain().getServerManager());
+        injector.addParameter(CommandManager.getCommandManager());
+        injector.addParameter(MessageSinkManager.class, MessageSinkManager.getManager());
+        injector.addParameter(WindowManager.class, WindowManager.getWindowManager());
+        injector.addParameter(StatusBarManager.getStatusBarManager());
+        injector.addParameter(PreferencesManager.class, PreferencesManager.getPreferencesManager());
 
         return injector;
     }

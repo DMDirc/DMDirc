@@ -20,27 +20,31 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins;
+package com.dmdirc.plugins.implementations;
+
+import com.dmdirc.plugins.PluginMetaData;
 
 import java.io.File;
 
+import lombok.Getter;
+
 /**
- * Base implementation of the Plugin interface that also require local file in
- * in order to run.
+ * Helper file to manage plugins that need extracted files on disk.
  */
-public class BaseFileDependantPlugin extends BasePlugin {
+public class PluginFilesHelper {
 
     /** This plugins meta data object. */
     private final PluginMetaData metaData;
     /** This plugins files directory. */
+    @Getter
     private File filesDir;
 
     /**
-     * Creates a new instance of this plugin
+     * Creates a new instance of this helper
      *
      * @param metaData This plugin's meta data
      */
-    public BaseFileDependantPlugin(final PluginMetaData metaData) {
+    public PluginFilesHelper(final PluginMetaData metaData) {
         super();
         this.metaData = metaData;
         filesDir = initFilesDir();
@@ -66,22 +70,12 @@ public class BaseFileDependantPlugin extends BasePlugin {
     }
 
     /**
-     * Returns the directory this plugin should use for files it requires
-     * extracted.
-     *
-     * @return File directory for this plugin
-     */
-    protected File getFilesDir() {
-        return filesDir;
-    }
-
-    /**
      * Returns the path of the directory this plugin should use for files it
      * requires extracted.
      *
      * @return File directory as a string
      */
-    protected String getFilesDirString() {
+    public String getFilesDirString() {
         return getFilesDir().getAbsolutePath()
                 + System.getProperty("file.separator");
     }
