@@ -26,6 +26,7 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.io.StreamUtils;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -158,7 +159,7 @@ public class PluginMetaData {
         InputStream stream = null;
 
         try {
-            stream = url.openStream();
+            stream = getStream();
             final ConfigFile configFile = new ConfigFile(stream);
             configFile.read();
             readMetaData(configFile.getKeyDomain("metadata"));
@@ -179,6 +180,32 @@ public class PluginMetaData {
             errors.add("Unable to read config file: " + ex.getMessage());
             StreamUtils.close(stream);
         }
+    }
+
+    /**
+     * Get the InputStream for this PluginMetaData
+     *
+     * @return The InputStream for this PluginMetaData
+     */
+    private InputStream getStream() throws IOException {
+        // Sometimes url.openStream sucks, and this breaks reloading, so try
+        // not to use it if we have a jar file.
+
+        if (url.toString().startsWith("jar:file:")) {
+            final String[] bits = url.toString().replaceFirst("^jar:file:", "jar://").split("!", 2);
+
+            if (bits.length > 1) {
+                final String file = bits[1].replaceFirst("^/", "");
+                final ResourceManager rm = ResourceManager.getResourceManager(bits[0]);
+                final InputStream s = rm.getResourceInputStream(file);
+                if (s == null) {
+                    throw new IOException("Unable to find " + file + " in " + bits[0]);
+                }
+                return s;
+            }
+        }
+
+        return url.openStream();
     }
 
     /** {@inheritDoc} */
