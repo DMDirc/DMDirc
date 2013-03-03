@@ -264,6 +264,7 @@ public class ActionGroup implements Iterable<Action> {
         Logger.assertTrue(actions.contains(action));
 
         ActionManager.getActionManager().removeAction(action);
+        action.delete();
     }
 
     /**
