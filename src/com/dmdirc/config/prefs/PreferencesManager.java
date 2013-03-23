@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.util.validators.NumericalValidator;
+import com.dmdirc.util.validators.OptionalValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -221,9 +222,9 @@ public class PreferencesManager {
                 "Sort nicknames in a case-sensitive manner?",
                 manager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALINTEGER,
-                new NumericalValidator(10, -1), "ui", "frameBufferSize",
-                "Window buffer size", "The maximum number of lines in a window"
-                + " buffer",
+                new OptionalValidator(new NumericalValidator(10, -1)),
+                "ui", "frameBufferSize", "Window buffer size",
+                "The maximum number of lines in a window buffer",
                 manager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.FONT,
                 "ui", "textPaneFontName", "Textpane font",
