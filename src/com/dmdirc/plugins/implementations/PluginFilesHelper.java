@@ -22,9 +22,11 @@
 
 package com.dmdirc.plugins.implementations;
 
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginMetaData;
 
 import java.io.File;
+import java.io.IOException;
 
 import lombok.Getter;
 
@@ -35,6 +37,8 @@ public class PluginFilesHelper {
 
     /** This plugins meta data object. */
     private final PluginMetaData metaData;
+    /** This plugins information object. */
+    private final PluginInfo pluginInfo;
     /** This plugins files directory. */
     @Getter
     private File filesDir;
@@ -42,11 +46,12 @@ public class PluginFilesHelper {
     /**
      * Creates a new instance of this helper
      *
-     * @param metaData This plugin's meta data
+     * @param pluginInfo This plugin's information object
      */
-    public PluginFilesHelper(final PluginMetaData metaData) {
+    public PluginFilesHelper(final PluginInfo pluginInfo) {
         super();
-        this.metaData = metaData;
+        this.pluginInfo = pluginInfo;
+        this.metaData = pluginInfo.getMetaData();
         filesDir = initFilesDir();
     }
 
@@ -78,5 +83,38 @@ public class PluginFilesHelper {
     public String getFilesDirString() {
         return getFilesDir().getAbsolutePath()
                 + System.getProperty("file.separator");
+    }
+
+    /**
+     * Extracts the specified resource to the specified directory.
+     *
+     * @param resourceName The name of the resource to extract
+     *
+     * @throws IOException if the write operation fails
+     */
+    public void extractResource(final String resourceName) throws IOException {
+        pluginInfo.getResourceManager().extractResource(resourceName, filesDir.toString(), true);
+    }
+
+    /**
+     * Extracts files starting with the given prefix to the files directory.
+     *
+     * @param prefix Prefix to extract
+     *
+     * @throws IOException if the resources failed to extract
+     */
+    public void extractResoucesStartingWith(final String prefix) throws IOException {
+        pluginInfo.getResourceManager().extractResources(prefix, filesDir.toString(), true);
+    }
+
+    /**
+     * Extracts files ending with the given suffix to the files directory.
+     *
+     * @param suffix Suffix to extract
+     *
+     * @throws IOException if the resources failed to extract
+     */
+    public void extractResoucesEndingWith(final String suffix) throws IOException {
+        pluginInfo.getResourceManager().extractResoucesEndingWith(filesDir, suffix);
     }
 }
