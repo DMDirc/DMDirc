@@ -53,9 +53,16 @@
         </jar>
     </target>
 
+    <target name="-bundle-dagger">
+        <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="lib/dagger-1.1.0.jar" includes="dagger/**"/>
+            <zipfileset src="lib/javax.inject-1.jar" includes="javax/inject/*"/>
+        </jar>
+    </target>
+
     <target name="-pre-init" depends="-init-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j"/>
+    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger"/>
 
 </project>

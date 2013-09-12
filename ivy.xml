@@ -19,6 +19,9 @@
 
         <dependency org="com.github.peichhorn" name="lombok-pg" rev="latest.release" conf="compile->default" />
 
+        <dependency org="com.squareup.dagger" name="dagger" rev="1.1.+" conf="compile->default" />
+        <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.1.+" conf="compile->default" />
+
         <dependency org="pmd" name="pmd" rev="4.+" conf="test->default" />
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
