@@ -40,7 +40,6 @@
 <rule ref="rulesets/braces.xml/IfElseStmtsMustUseBraces"><priority>1</priority></rule>
 <rule ref="rulesets/braces.xml/ForLoopsMustUseBraces"><priority>1</priority></rule>
 
-<rule ref="rulesets/controversial.xml/UnnecessaryConstructor"><priority>1</priority></rule>
 <rule ref="rulesets/controversial.xml/UnusedModifier"><priority>1</priority></rule>
 <rule ref="rulesets/controversial.xml/DontImportSun"><priority>1</priority></rule>
 <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"><priority>1</priority></rule>
@@ -63,7 +62,6 @@
 <rule ref="rulesets/design.xml/SimplifyConditional"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/UnnecessaryLocalBeforeReturn"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/NonThreadSafeSingleton"><priority>1</priority></rule>
-<rule ref="rulesets/design.xml/UncommentedEmptyConstructor"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/AvoidConstantsInterface"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/UnsynchronizedStaticDateFormatter"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/PreserveStackTrace"><priority>1</priority></rule>
