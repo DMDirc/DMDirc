@@ -72,7 +72,8 @@ public class Main {
     private String configdir;
 
     /** Instance of main, protected to allow subclasses direct access. */
-    protected static Main mainInstance;
+    @Deprecated
+    public static Main mainInstance;
 
     /** Instance of pluginmanager used by this Main. */
     protected PluginManager pluginManager;

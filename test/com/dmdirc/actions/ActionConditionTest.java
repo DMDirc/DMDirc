@@ -31,11 +31,6 @@ import static org.junit.Assert.*;
 
 public class ActionConditionTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        TestMain.getTestMain();
-    }
-
     @Test
     public void testConstructor1() {
         final ActionCondition ac = new ActionCondition(1, CoreActionComponent.STRING_STRING,

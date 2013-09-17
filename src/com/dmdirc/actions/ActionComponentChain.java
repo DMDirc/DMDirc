@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.actions.ActionComponent;
-import com.dmdirc.interfaces.actions.ActionComponentArgument;
 import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
@@ -82,15 +81,15 @@ public class ActionComponentChain implements ActionComponent {
 
     /** {@inheritDoc} */
     @Override
-    public Object get(final ActionComponentArgument arg) {
-        Object res = arg.getObject();
+    public Object get(final Object arg) {
+        Object res = arg;
 
         for (ActionComponent component : components) {
             if (res == null) {
                 return null;
             }
 
-            res = component.get(new ActionComponentArgument(arg.getMain(), res));
+            res = component.get(res);
         }
 
         return res;
@@ -165,7 +164,7 @@ public class ActionComponentChain implements ActionComponent {
         for (ActionComponent component : components) {
             try {
                 final ComponentOptions options = component.getClass()
-                        .getMethod("get", ActionComponentArgument.class).getAnnotation(ComponentOptions.class);
+                        .getMethod("get", Object.class).getAnnotation(ComponentOptions.class);
                 if (options != null) {
                     res |= options.requireConnected();
                 }

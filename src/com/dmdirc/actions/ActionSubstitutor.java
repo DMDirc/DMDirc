@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.actions.ActionComponent;
-import com.dmdirc.interfaces.actions.ActionComponentArgument;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.ui.Window;
 
@@ -297,7 +296,7 @@ public class ActionSubstitutor {
         if ((chain.requiresConnection() && args[0] instanceof FrameContainer
                     && ((FrameContainer) args[0]).getServer().getState()
                     == ServerState.CONNECTED) || !chain.requiresConnection()) {
-            final Object res = chain.get(new ActionComponentArgument(ActionManager.getActionManager().getMain(), argument));
+            final Object res = chain.get(argument);
             return res == null ? ERR_NULL_CHAIN : res.toString();
         }
 

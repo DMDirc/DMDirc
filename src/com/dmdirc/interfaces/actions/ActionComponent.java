@@ -57,7 +57,7 @@ public interface ActionComponent {
      * @param arg The object to retrieve the component from
      * @return The relevant component of the object
      */
-    Object get(ActionComponentArgument arg);
+    Object get(Object arg);
 
     /**
      * Retrieves the type of class that this component applies to.
