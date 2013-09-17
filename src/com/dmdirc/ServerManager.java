@@ -22,12 +22,17 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.ui.WindowManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,34 +47,30 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class ServerManager implements ServerFactory {
 
-    /** Main that owns this ServerManager. */
-    private final Main main;
-
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<Server>();
 
     /**
      * Creates a new instance of ServerManager.
      */
-    public ServerManager(final Main main) {
-        this.main = main;
-    }
-
-    /**
-     * Get the Main that owns this ServerManager.
-     *
-     * @return The Main that owns this ServerManager.
-     * @Deprecated Global state is bad.
-     */
-    @Deprecated
-    public Main getMain() {
-        return main;
+    public ServerManager() {
     }
 
     /** {@inheritDoc} */
     @Override
     public Server createServer(final URI uri, final Identity profile) {
-        return new Server(this, uri, profile);
+        final ConfigManager configManager = new ConfigManager(uri.getScheme(), "", "", uri.getHost());
+
+        return new Server(
+                this,
+                configManager,
+                new ServerCommandParser(configManager),
+                new ParserFactory(Main.mainInstance.getPluginManager()),
+                WindowManager.getWindowManager(),
+                AliasWrapper.getAliasWrapper(),
+                CommandManager.getCommandManager(),
+                uri,
+                profile);
     }
 
     /**
@@ -212,7 +213,7 @@ public class ServerManager implements ServerFactory {
         }
 
         if (server == null) {
-            server = new Server(this, uri, profile);
+            server = createServer(uri, profile);
             server.connect();
             return server;
         }
@@ -248,10 +249,8 @@ public class ServerManager implements ServerFactory {
 
         if (connectedServer == null) {
             try {
-                final Server server = new Server(this, new URI("irc://irc.quakenet.org/DMDirc"),
-                        IdentityManager.getIdentityManager()
-                        .getIdentitiesByType("profile").get(0));
-                server.connect();
+                connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"),
+                        IdentityManager.getIdentityManager().getIdentitiesByType("profile").get(0));
             } catch (URISyntaxException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
             }

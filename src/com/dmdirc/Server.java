@@ -25,13 +25,13 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
@@ -194,35 +194,53 @@ public class Server extends WritableFrameContainer
      * the specified profile.
      *
      * @since 0.6.3
-     * @param manager The servermanager that owns this server.
+     * @param manager The server manager that owns this server.
+     * @param configManager THe configuration manager to read config settings from.
+     * @param commandParser The parser to use for commands in this server's window.
+     * @param parserFactory The factory to use to generate parsers.
+     * @param windowManager The window manager to register this server with.
+     * @param aliasWrapper The actions wrapper to retrieve aliases from.
+     * @param commandController The controller to use to retrieve commands.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
-    public Server(final ServerManager manager, final URI uri, final Identity profile) {
-        super("server-disconnected", getHost(uri), getHost(uri),
-                new ConfigManager(uri.getScheme(), "", "", uri.getHost()),
-                new ServerCommandParser(
-                new ConfigManager(uri.getScheme(), "", "", uri.getHost())),
+    public Server(
+            final ServerManager manager,
+            final ConfigManager configManager,
+            final CommandParser commandParser,
+            final ParserFactory parserFactory,
+            final WindowManager windowManager,
+            final AliasWrapper aliasWrapper,
+            final CommandController commandController,
+            final URI uri,
+            final Identity profile) {
+        super("server-disconnected",
+                getHost(uri),
+                getHost(uri),
+                configManager,
+                commandParser,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier(),
                 WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         this.manager = manager;
-        parserFactory = new ParserFactory(manager.getMain().getPluginManager());
+        this.parserFactory = parserFactory;
         setConnectionDetails(uri, profile);
 
         manager.registerServer(this);
-        WindowManager.getWindowManager().addWindow(this);
+        windowManager.addWindow(this);
 
+        // TODO: Server shouldn't have to know about the alias wrapper.
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                AliasWrapper.getAliasWrapper().getAliases());
+                aliasWrapper.getAliases());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_SERVER));
+                commandController.getCommandNames(CommandType.TYPE_SERVER));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_GLOBAL));
+                commandController.getCommandNames(CommandType.TYPE_GLOBAL));
 
         updateIcon();
 
+        // TODO: Don't start timers in the constructor!
         whoTimer = new Timer("Server Who Timer");
         whoTimer.schedule(new TimerTask() {
             @Override

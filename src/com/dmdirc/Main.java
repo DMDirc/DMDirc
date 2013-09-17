@@ -89,7 +89,8 @@ public class Main {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         try {
-            new Main().init(args);
+            mainInstance = new Main();
+            mainInstance.init(args);
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
                     ex);
@@ -105,7 +106,7 @@ public class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
-        serverManager = new ServerManager(this);
+        serverManager = new ServerManager();
         ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);

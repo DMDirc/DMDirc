@@ -25,7 +25,7 @@ package com.dmdirc;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 
 import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,66 +34,43 @@ import static org.mockito.Mockito.*;
 
 public class ServerManagerTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        TestMain.getTestMain();
+    private ServerManager serverManager;
+
+    @Before
+    public void setUp() throws Exception {
+        serverManager = new ServerManager();
     }
 
     @After
     public void tearDown() {
-        for (Server server : TestMain.getTestMain().getServerManager().getServers()) {
-            TestMain.getTestMain().getServerManager().unregisterServer(server);
+        for (Server server : serverManager.getServers()) {
+            serverManager.unregisterServer(server);
         }
-    }
-
-    @Test
-    public void testGetServerManager() {
-        final ServerManager resultA = TestMain.getTestMain().getServerManager();
-        final ServerManager resultB = TestMain.getTestMain().getServerManager();
-
-        assertNotNull(resultA);
-        assertTrue(resultA instanceof ServerManager);
-        assertEquals(resultA, resultB);
     }
 
     @Test
     public void testRegisterServer() {
         final Server server = mock(Server.class);
-
-        final ServerManager instance = TestMain.getTestMain().getServerManager();
-
-        instance.registerServer(server);
-
-        assertEquals(1, instance.numServers());
+        serverManager.registerServer(server);
+        assertEquals(1, serverManager.numServers());
     }
 
     @Test
     public void testUnregisterServer() {
         final Server server = mock(Server.class);
-
-        final ServerManager instance = TestMain.getTestMain().getServerManager();
-
-        instance.registerServer(server);
-        instance.unregisterServer(server);
-
-        assertEquals(0, instance.numServers());
+        serverManager.registerServer(server);
+        serverManager.unregisterServer(server);
+        assertEquals(0, serverManager.numServers());
     }
 
     @Test
     public void testNumServers() {
-        final ServerManager instance = TestMain.getTestMain().getServerManager();
-
-        assertEquals(instance.getServers().size(), instance.numServers());
-
+        assertEquals(serverManager.getServers().size(), serverManager.numServers());
         final Server server = mock(Server.class);
-
-        instance.registerServer(server);
-
-        assertEquals(instance.getServers().size(), instance.numServers());
-
-        instance.unregisterServer(server);
-
-        assertEquals(instance.getServers().size(), instance.numServers());
+        serverManager.registerServer(server);
+        assertEquals(serverManager.getServers().size(), serverManager.numServers());
+        serverManager.unregisterServer(server);
+        assertEquals(serverManager.getServers().size(), serverManager.numServers());
     }
 
     @Test
@@ -103,14 +80,12 @@ public class ServerManagerTest {
         when(serverA.getAddress()).thenReturn("255.255.255.255");
         when(serverB.getAddress()).thenReturn("255.255.255.254");
 
-        final ServerManager sm = TestMain.getTestMain().getServerManager();
+        serverManager.registerServer(serverA);
+        serverManager.registerServer(serverB);
 
-        sm.registerServer(serverA);
-        sm.registerServer(serverB);
-
-        assertEquals(serverA, sm.getServersByAddress("255.255.255.255").get(0));
-        assertEquals(serverB, sm.getServersByAddress("255.255.255.254").get(0));
-        assertEquals(0, sm.getServersByAddress("255.255.255.253").size());
+        assertEquals(serverA, serverManager.getServersByAddress("255.255.255.255").get(0));
+        assertEquals(serverB, serverManager.getServersByAddress("255.255.255.254").get(0));
+        assertEquals(0, serverManager.getServersByAddress("255.255.255.253").size());
     }
 
     @Test
@@ -123,27 +98,25 @@ public class ServerManagerTest {
         when(serverB.isNetwork("Net2")).thenReturn(true);
         when(serverC.isNetwork("Net2")).thenReturn(true);
 
-        final ServerManager sm = TestMain.getTestMain().getServerManager();
+        serverManager.registerServer(serverA);
+        serverManager.registerServer(serverB);
+        serverManager.registerServer(serverC);
 
-        sm.registerServer(serverA);
-        sm.registerServer(serverB);
-        sm.registerServer(serverC);
+        assertEquals(1, serverManager.getServersByNetwork("Net1").size());
+        assertEquals(serverA, serverManager.getServersByNetwork("Net1").get(0));
 
-        assertEquals(1, sm.getServersByNetwork("Net1").size());
-        assertEquals(serverA, sm.getServersByNetwork("Net1").get(0));
+        assertEquals(2, serverManager.getServersByNetwork("Net2").size());
+        assertEquals(serverB, serverManager.getServersByNetwork("Net2").get(0));
+        assertEquals(serverC, serverManager.getServersByNetwork("Net2").get(1));
 
-        assertEquals(2, sm.getServersByNetwork("Net2").size());
-        assertEquals(serverB, sm.getServersByNetwork("Net2").get(0));
-        assertEquals(serverC, sm.getServersByNetwork("Net2").get(1));
-
-        assertEquals(0, sm.getServersByNetwork("Net3").size());
+        assertEquals(0, serverManager.getServersByNetwork("Net3").size());
     }
 
     @Test
     public void testCloseAll() {
         final Server serverA = mock(Server.class);
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().closeAll();
+        serverManager.registerServer(serverA);
+        serverManager.closeAll();
         verify(serverA).disconnect();
         verify(serverA).close();
     }
@@ -151,8 +124,8 @@ public class ServerManagerTest {
     @Test
     public void testCloseAllWithMessage() {
         final Server serverA = mock(Server.class);
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().closeAll("message here");
+        serverManager.registerServer(serverA);
+        serverManager.closeAll("message here");
         verify(serverA).disconnect("message here");
         verify(serverA).close();
     }
@@ -160,8 +133,8 @@ public class ServerManagerTest {
     @Test
     public void testDisconnectAll() {
         final Server serverA = mock(Server.class);
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().disconnectAll("message here");
+        serverManager.registerServer(serverA);
+        serverManager.disconnectAll("message here");
         verify(serverA).disconnect("message here");
     }
 
@@ -172,8 +145,8 @@ public class ServerManagerTest {
         when(serverA.hasChannel("#DMDirc")).thenReturn(true);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().joinDevChat();
+        serverManager.registerServer(serverA);
+        serverManager.joinDevChat();
 
         verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
@@ -185,8 +158,8 @@ public class ServerManagerTest {
         when(serverA.hasChannel("#DMDirc")).thenReturn(false);
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().joinDevChat();
+        serverManager.registerServer(serverA);
+        serverManager.joinDevChat();
 
         verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
     }
@@ -202,12 +175,12 @@ public class ServerManagerTest {
         when(serverB.getNetwork()).thenReturn("Foonet");
         when(serverB.getState()).thenReturn(ServerState.CONNECTED);
 
-        TestMain.getTestMain().getServerManager().registerServer(serverA);
-        TestMain.getTestMain().getServerManager().registerServer(serverB);
+        serverManager.registerServer(serverA);
+        serverManager.registerServer(serverB);
 
-        TestMain.getTestMain().getServerManager().joinDevChat();
+        serverManager.joinDevChat();
 
-        assertEquals(3, TestMain.getTestMain().getServerManager().numServers());
+        assertEquals(3, serverManager.numServers());
     }
 
 }

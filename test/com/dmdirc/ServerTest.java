@@ -22,27 +22,53 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.ui.WindowManager;
 
-import com.dmdirc.plugins.PluginManager;
 import java.net.URI;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 public class ServerTest {
 
-    private static Server server;
+    @Mock private ServerManager serverManager;
+    @Mock private Identity profile;
+    @Mock private ConfigManager configManager;
+    @Mock private CommandParser commandParser;
+    @Mock private ParserFactory parserFactory;
+    @Mock private WindowManager windowManager;
+    @Mock private AliasWrapper aliasWrapper;
+    @Mock private CommandController commandController;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        TestMain.getTestMain();
-        server = new Server(TestMain.getTestMain().getServerManager(), new URI("irc-test://255.255.255.255"),
-                IdentityManager.getIdentityManager()
-                .getIdentitiesByType("profile").get(0));
+    private Server server;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        when(configManager.getOptionInt(anyString(), anyString()))
+                .thenReturn(Integer.MAX_VALUE);
+
+        server = new Server(
+                serverManager,
+                configManager,
+                commandParser,
+                parserFactory,
+                windowManager,
+                aliasWrapper,
+                commandController,
+                new URI("irc-test://255.255.255.255"),
+                profile);
     }
 
     @Test
@@ -64,19 +90,14 @@ public class ServerTest {
 
     @Test
     public void testDuplicateInviteRemoval() {
-        server.disconnect();
-
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
         server.addInvite(new Invite(server, "#chan1", "d!e@f"));
 
         assertEquals(1, server.getInvites().size());
-        server.removeInvites("#chan1");
     }
 
     @Test
     public void testRemoveInvites() {
-        server.disconnect();
-
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
         server.addInvite(new Invite(server, "#chan2", "d!e@f"));
 

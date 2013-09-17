@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Encapsulates alias actions.
  */
-public final class AliasWrapper extends ActionGroup {
+public class AliasWrapper extends ActionGroup {
 
     /** Singleton instance of the alias wrapper. */
     private static AliasWrapper me;
