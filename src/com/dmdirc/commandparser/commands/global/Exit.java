@@ -23,7 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
+import com.dmdirc.LifecycleController;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -43,11 +43,23 @@ public class Exit extends Command {
             "exit [reason] - exits the client",
             CommandType.TYPE_GLOBAL);
 
+    /** The controller to use to quit the app. */
+    private final LifecycleController controller;
+
+    /**
+     * Creates a new instance of the {@link Exit} command.
+     *
+     * @param controller The controller to use to quit the app.
+     */
+    public Exit(final LifecycleController controller) {
+        this.controller = controller;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        Main.mainInstance.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
+        controller.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));
     }
 

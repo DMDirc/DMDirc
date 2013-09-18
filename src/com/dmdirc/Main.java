@@ -60,7 +60,7 @@ import java.util.TimerTask;
 /**
  * Main class, handles initialisation.
  */
-public class Main {
+public class Main implements LifecycleController {
 
     /** Feedback nag delay. */
     private final int FEEDBACK_DELAY = 30 * 60 * 1000;
@@ -128,7 +128,7 @@ public class Main {
 
         clp.applySettings();
 
-        new CommandLoader(serverManager, pluginManager)
+        new CommandLoader(this, serverManager, pluginManager)
                 .loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
@@ -366,40 +366,27 @@ public class Main {
         }
     }
 
-    /**
-     * Quits the client nicely, with the default closing message.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void quit() {
         quit(0);
     }
 
-    /**
-     * Quits the client nicely, with the default closing message.
-     *
-     * @param exitCode This is the exit code that will be returned to the
-     *                  operating system when the client exits
-     */
+    /** {@inheritDoc} */
+    @Override
     public void quit(final int exitCode) {
         quit(IdentityManager.getIdentityManager().getGlobalConfiguration().getOption("general",
                 "closemessage"), exitCode);
     }
 
-    /**
-     * Quits the client nicely.
-     *
-     * @param reason The quit reason to send
-     */
+    /** {@inheritDoc} */
+    @Override
     public void quit(final String reason) {
         quit(reason, 0);
     }
 
-    /**
-     * Quits the client nicely.
-     *
-     * @param reason The quit reason to send
-     * @param exitCode This is the exit code that will be returned to the
-     *                  operating system when the client exits
-     */
+    /** {@inheritDoc} */
+    @Override
     public void quit(final String reason, final int exitCode) {
         serverManager.disconnectAll(reason);
 

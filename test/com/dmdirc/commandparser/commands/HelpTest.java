@@ -21,6 +21,7 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.LifecycleController;
 import com.dmdirc.ServerManager;
 import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandInfo;
@@ -61,6 +62,7 @@ public class HelpTest {
 
         TestMain.getTestMain();
         new CommandLoader(
+                mock(LifecycleController.class),
                 mock(ServerManager.class),
                 mock(PluginManager.class)).loadCommands(CommandManager.getCommandManager());
 

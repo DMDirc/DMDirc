@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.LifecycleController;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.channel.Ban;
 import com.dmdirc.commandparser.commands.channel.Cycle;
@@ -74,6 +75,9 @@ import com.dmdirc.plugins.PluginManager;
  */
 public class CommandLoader {
 
+    /** Controller to give to commands that want to start/stop the app. */
+    private final LifecycleController lifecycleController;
+
     /** Server manager to give to server-related commands. */
     private final ServerManager serverManager;
 
@@ -83,12 +87,15 @@ public class CommandLoader {
     /**
      * Creates a new instance of {@link CommandLoader}.
      *
+     * @param lifecycleController Controller to give to commands that want to start/stop the app.
      * @param serverManager The server manager to pass to server-related commands.
      * @param pluginManager The plugin manager to pass to plugin-dependent commands.
      */
     public CommandLoader(
+            final LifecycleController lifecycleController,
             final ServerManager serverManager,
             final PluginManager pluginManager) {
+        this.lifecycleController = lifecycleController;
         this.serverManager = serverManager;
         this.pluginManager = pluginManager;
     }
@@ -144,7 +151,7 @@ public class CommandLoader {
         manager.registerCommand(new AllServers(serverManager), AllServers.INFO);
         manager.registerCommand(new Clear(), Clear.INFO);
         manager.registerCommand(new Echo(), Echo.INFO);
-        manager.registerCommand(new Exit(), Exit.INFO);
+        manager.registerCommand(new Exit(lifecycleController), Exit.INFO);
         manager.registerCommand(new Help(), Help.INFO);
         manager.registerCommand(new Ifplugin(pluginManager), Ifplugin.INFO);
         manager.registerCommand(new NewServer(serverManager, pluginManager), NewServer.INFO);
