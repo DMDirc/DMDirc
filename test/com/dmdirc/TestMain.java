@@ -29,7 +29,7 @@ public class TestMain extends Main {
             // to handleInvalidConfigFile(); here)
         }
         serverManager = new ServerManager();
-        ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
+        ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
         pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);

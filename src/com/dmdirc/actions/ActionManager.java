@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
@@ -64,9 +63,6 @@ public class ActionManager implements ActionController {
 
     /** The ActionManager Instance. */
     private static ActionManager me;
-
-    /** The instance of main that owns this Action Manager. */
-    private final Main main;
 
     /** The ServerManager currently in use. */
     private final ServerManager serverManager;
@@ -110,27 +106,13 @@ public class ActionManager implements ActionController {
     /**
      * Creates a new instance of ActionManager.
      *
-     * @param main Main that created this action manager.
      * @param serverManager The ServerManager in use.
      * @param identityManager The IdentityManager to load configuration from.
      */
-    private ActionManager(final Main main, final ServerManager serverManager, final IdentityController identityManager) {
-        // TODO: We shouldn't need a main.
-        this.main = main;
+    private ActionManager(final ServerManager serverManager, final IdentityController identityManager) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
-    }
-
-    /**
-     * Get the instance of Main that owns this.
-     *
-     * @return Instance of main.
-     * @Deprecated Global state is bad.
-     */
-    @Deprecated
-    public Main getMain() {
-        return main;
     }
 
     /**
@@ -148,8 +130,8 @@ public class ActionManager implements ActionController {
      * @return The singleton ActionManager instance
      */
     @Deprecated
-    public static ActionManager initActionManager(final Main main, final ServerManager serverManager, final IdentityController identityManager) {
-        me = new ActionManager(main, serverManager, identityManager);
+    public static ActionManager initActionManager(final ServerManager serverManager, final IdentityController identityManager) {
+        me = new ActionManager(serverManager, identityManager);
         return me;
     }
 

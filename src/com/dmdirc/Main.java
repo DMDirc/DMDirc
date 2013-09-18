@@ -107,7 +107,7 @@ public class Main {
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
         serverManager = new ServerManager();
-        ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
+        ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);
 

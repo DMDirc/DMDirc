@@ -22,7 +22,7 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.actions.ActionManager;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.themes.ThemeManager;
@@ -117,7 +117,7 @@ public final class URLBuilder {
         // IconManager, which currently is created new each time it is needed
         // rather than being created once and passed around.
         return buildJarURL(
-                ActionManager.getActionManager().getMain().getPluginManager()
+                Main.mainInstance.getPluginManager()
                 .getPluginInfoByName(plugin).getMetaData().getPluginUrl()
                 .getPath(), path);
     }
