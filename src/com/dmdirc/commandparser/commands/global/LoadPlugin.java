@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -44,6 +45,18 @@ public class LoadPlugin extends Command implements IntelligentCommand {
             "loadplugin <plugin> - loads the specified class as a plugin",
             CommandType.TYPE_GLOBAL);
 
+    /** The plugin manager to use to load plugins. */
+    private final PluginManager pluginManager;
+
+    /**
+     * Creates a new instance of the {@link LoadPlugin} command.
+     *
+     * @param pluginManager The plugin manager to load plugins with.
+     */
+    public LoadPlugin(final PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -54,10 +67,8 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         }
 
         // Add previously unknown plugin to plugin manager
-        getController().getMain().getPluginManager().addPlugin(
-                args.getArgumentsAsString());
-        final PluginInfo plugin = getController().getMain().getPluginManager()
-                .getPluginInfo(args.getArgumentsAsString());
+        pluginManager.addPlugin(args.getArgumentsAsString());
+        final PluginInfo plugin = pluginManager.getPluginInfo(args.getArgumentsAsString());
 
         if (plugin == null) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
@@ -70,7 +81,7 @@ public class LoadPlugin extends Command implements IntelligentCommand {
             if (plugin.isLoaded()) {
                 sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
                         "Plugin loaded.");
-                getController().getMain().getPluginManager().updateAutoLoad(plugin);
+                pluginManager.updateAutoLoad(plugin);
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
                         "Loading plugin failed. ("
@@ -88,8 +99,7 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         res.excludeAll();
 
         if (arg == 0) {
-            for (PluginMetaData possPlugin
-                    : getController().getMain().getPluginManager().getAllPlugins()) {
+            for (PluginMetaData possPlugin : pluginManager.getAllPlugins()) {
                 res.add(possPlugin.getRelativeFilename());
             }
         }

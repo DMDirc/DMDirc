@@ -21,12 +21,14 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.plugins.PluginManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -57,7 +60,9 @@ public class HelpTest {
         final List<Object[]> res = new LinkedList<Object[]>();
 
         TestMain.getTestMain();
-        new CommandLoader().loadCommands(CommandManager.getCommandManager());
+        new CommandLoader(
+                mock(ServerManager.class),
+                mock(PluginManager.class)).loadCommands(CommandManager.getCommandManager());
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {

@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
@@ -52,9 +52,6 @@ public class CommandManager implements CommandController {
     /** A singleton instance of the command manager. */
     private static CommandManager instance;
 
-    /** The main instance that owns us. */
-    private Main main;
-
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
             = new HashMap<CommandInfo, Command>();
@@ -62,6 +59,9 @@ public class CommandManager implements CommandController {
     /** A list of command parsers that have been instantiated. */
     private final MapList<CommandType, CommandParser> parsers
             = new MapList<CommandType, CommandParser>();
+
+    /** The manager to use to iterate servers. */
+    private final ServerManager serverManager;
 
     /** The command char we're using. */
     @ConfigBinding(domain="general", key="commandchar")
@@ -77,17 +77,11 @@ public class CommandManager implements CommandController {
      * Creates a new instance of the Command Manager.
      *
      * @param configManager the configuration manager to use.
-     * @param Main the Main class that owns this CommandManager.
+     * @param serverManager the manager to use to iterate servers.
      */
-    public CommandManager(final ConfigManager configManager, final Main main) {
+    public CommandManager(final ConfigManager configManager, final ServerManager serverManager) {
+        this.serverManager = serverManager;
         configManager.getBinder().bind(this, CommandManager.class);
-        this.main = main;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Main getMain() {
-        return main;
     }
 
     /** {@inheritDoc} */
@@ -167,7 +161,7 @@ public class CommandManager implements CommandController {
         final String commandName = getCommandChar() + command.getName();
 
         // TODO: This logic is probably in two places. Abstract it.
-        for (Server server : main.getServerManager().getServers()) {
+        for (Server server : serverManager.getServers()) {
             if (command.getType() == CommandType.TYPE_SERVER
                     || command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
@@ -290,11 +284,13 @@ public class CommandManager implements CommandController {
     /**
      * Initialise the singleton instance of the CommandManager.
      *
+     * @param identityManager The identity manager to use for command settings.
+     * @param serverManager The server manager to use to iterate servers.
      * @return The singleton instance of the CommandManager.
      */
     public static synchronized CommandManager initCommandManager(
-            final IdentityManager identityManager, final Main main) {
-        instance = new CommandManager(identityManager.getGlobalConfiguration(), main);
+            final IdentityManager identityManager, final ServerManager serverManager) {
+        instance = new CommandManager(identityManager.getGlobalConfiguration(), serverManager);
         return instance;
     }
 

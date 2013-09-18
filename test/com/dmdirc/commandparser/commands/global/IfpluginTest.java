@@ -21,23 +21,29 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.plugins.PluginManager;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
 
 public class IfpluginTest {
 
-    private final Ifplugin command = new Ifplugin();
+    @Mock private PluginManager pluginManager;
+    private Ifplugin command;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
         TestMain.getTestMain();
+        command = new Ifplugin(pluginManager);
     }
 
     @Test

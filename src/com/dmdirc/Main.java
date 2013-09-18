@@ -128,7 +128,8 @@ public class Main {
 
         clp.applySettings();
 
-        new CommandLoader().loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this));
+        new CommandLoader(serverManager, pluginManager)
+                .loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);

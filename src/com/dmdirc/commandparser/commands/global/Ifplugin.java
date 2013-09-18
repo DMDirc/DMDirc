@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -49,6 +50,18 @@ public class Ifplugin extends Command implements IntelligentCommand {
             + "specified plugin is/isn't loaded",
             CommandType.TYPE_GLOBAL);
 
+    /** The plugin manager to use to query plugins. */
+    private final PluginManager pluginManager;
+
+    /**
+     * Creates a new instance of the {@link Ifplugin} command.
+     *
+     * @param pluginManager The plugin manager to use to query plugins.
+     */
+    public Ifplugin(final PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -62,7 +75,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
         final String pname = args.getArguments()[0].substring(negative ? 1 : 0);
 
-        final PluginInfo pluginInfo = getController().getMain().getPluginManager().getPluginInfoByName(pname);
+        final PluginInfo pluginInfo = pluginManager.getPluginInfoByName(pname);
 
         boolean result = true;
 
@@ -91,8 +104,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
         if (arg == 0) {
             res = new AdditionalTabTargets().excludeAll();
 
-            for (PluginInfo possPlugin
-                    : getController().getMain().getPluginManager().getPluginInfos()) {
+            for (PluginInfo possPlugin : pluginManager.getPluginInfos()) {
                 res.add(possPlugin.getMetaData().getName());
                 res.add("!" + possPlugin.getMetaData().getName());
             }

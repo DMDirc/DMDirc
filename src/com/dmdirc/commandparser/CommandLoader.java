@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.channel.Ban;
 import com.dmdirc.commandparser.commands.channel.Cycle;
 import com.dmdirc.commandparser.commands.channel.Invite;
@@ -66,11 +67,31 @@ import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.plugins.PluginManager;
 
 /**
  * Facilitates loading of core commands into a {@link CommandManager}.
  */
 public class CommandLoader {
+
+    /** Server manager to give to server-related commands. */
+    private final ServerManager serverManager;
+
+    /** Plugin manager to give to plugin-dependent commands. */
+    private final PluginManager pluginManager;
+
+    /**
+     * Creates a new instance of {@link CommandLoader}.
+     *
+     * @param serverManager The server manager to pass to server-related commands.
+     * @param pluginManager The plugin manager to pass to plugin-dependent commands.
+     */
+    public CommandLoader(
+            final ServerManager serverManager,
+            final PluginManager pluginManager) {
+        this.serverManager = serverManager;
+        this.pluginManager = pluginManager;
+    }
 
     /**
      * Loads all known core commands into the given manager.
@@ -120,20 +141,20 @@ public class CommandLoader {
 
         // Global commands
         manager.registerCommand(new AliasCommand(), AliasCommand.INFO);
-        manager.registerCommand(new AllServers(), AllServers.INFO);
+        manager.registerCommand(new AllServers(serverManager), AllServers.INFO);
         manager.registerCommand(new Clear(), Clear.INFO);
         manager.registerCommand(new Echo(), Echo.INFO);
         manager.registerCommand(new Exit(), Exit.INFO);
         manager.registerCommand(new Help(), Help.INFO);
-        manager.registerCommand(new Ifplugin(), Ifplugin.INFO);
-        manager.registerCommand(new NewServer(manager.getMain().getServerManager()), NewServer.INFO);
+        manager.registerCommand(new Ifplugin(pluginManager), Ifplugin.INFO);
+        manager.registerCommand(new NewServer(serverManager, pluginManager), NewServer.INFO);
         manager.registerCommand(new Notify(), Notify.INFO);
-        manager.registerCommand(new LoadPlugin(), LoadPlugin.INFO);
-        manager.registerCommand(new UnloadPlugin(), UnloadPlugin.INFO);
+        manager.registerCommand(new LoadPlugin(pluginManager), LoadPlugin.INFO);
+        manager.registerCommand(new UnloadPlugin(pluginManager), UnloadPlugin.INFO);
         manager.registerCommand(new OpenWindow(), OpenWindow.INFO);
         manager.registerCommand(new ReloadActions(), ReloadActions.INFO);
         manager.registerCommand(new ReloadIdentities(), ReloadIdentities.INFO);
-        manager.registerCommand(new ReloadPlugin(), ReloadPlugin.INFO);
+        manager.registerCommand(new ReloadPlugin(pluginManager), ReloadPlugin.INFO);
         manager.registerCommand(new SaveConfig(), SaveConfig.INFO);
         manager.registerCommand(new Set(), Set.INFO);
     }

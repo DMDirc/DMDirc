@@ -23,6 +23,7 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.TestMain;
 import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.global.Echo;
 import com.dmdirc.config.ConfigBinder;
@@ -32,24 +33,27 @@ import com.dmdirc.harness.TestCommandParser;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class CommandParserTest {
 
-    private ConfigManager cm;
+    @Mock private ServerManager serverManager;
+    @Mock private ConfigManager cm;
     private CommandManager commands;
 
     @Before
     public void setup() throws InvalidIdentityFileException {
-        cm = mock(ConfigManager.class);
+        MockitoAnnotations.initMocks(this);
         when(cm.getOptionChar("general", "silencechar")).thenReturn('.');
         when(cm.getOptionInt("general", "commandhistory")).thenReturn(10);
         when(cm.getOptionChar("general", "commandchar")).thenReturn('/');
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm, TestMain.getTestMain());
+        commands = new CommandManager(cm, serverManager);
         commands.registerCommand(new Echo(commands), Echo.INFO);
     }
 

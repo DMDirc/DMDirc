@@ -25,6 +25,7 @@ import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.TestMain;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.ServerManager;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigBinder;
@@ -39,21 +40,24 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {
 
-    private ConfigManager cm;
+    @Mock private ConfigManager cm;
+    @Mock private ServerManager serverManager;
     private CommandManager commands;
 
     @Before
     public void setup() throws InvalidIdentityFileException {
-        cm = mock(ConfigManager.class);
+        MockitoAnnotations.initMocks(this);
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm, TestMain.getTestMain());
+        commands = new CommandManager(cm, serverManager);
     }
 
     @Test

@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
@@ -35,11 +34,6 @@ import java.util.Map;
  * Manages a list of known commands, and facilitates loading default commands.
  */
 public interface CommandController {
-
-    /**
-     * Get the main instance which ultimately owns this controller.
-     */
-    Main getMain();
 
     /**
      * Retrieves the command identified by the specified name, regardless of

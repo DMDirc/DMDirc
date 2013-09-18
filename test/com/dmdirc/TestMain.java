@@ -32,7 +32,7 @@ public class TestMain extends Main {
         ActionManager.initActionManager(this, serverManager, IdentityManager.getIdentityManager());
         pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
         pluginManager.refreshPlugins();
-        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), this);
+        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
 
         ActionManager.getActionManager().initialise();
     }

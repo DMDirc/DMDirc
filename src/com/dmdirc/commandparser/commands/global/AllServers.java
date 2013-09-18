@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -44,13 +45,25 @@ public class AllServers extends Command implements IntelligentCommand {
             "allservers <command> - executes the command as though it had"
             + " been entered on all servers", CommandType.TYPE_GLOBAL);
 
+    /** Server manager to use to iterate servers. */
+    private final ServerManager serverManager;
+
+    /**
+     * Creates a new instance of the {@link AllServers} command.
+     *
+     * @param serverManager The server manager to use to iterate servers.
+     */
+    public AllServers(final ServerManager serverManager) {
+        this.serverManager = serverManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
 
-        for (Server target : getController().getMain().getServerManager().getServers()) {
+        for (Server target : serverManager.getServers()) {
             target.getCommandParser().parseCommand(target, command);
         }
     }

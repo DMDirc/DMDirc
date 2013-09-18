@@ -21,44 +21,39 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.plugins.PluginManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
 
 public class NewServerTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
-    }
-
-    private FrameContainer container;
-    private ServerFactory factory;
-    private Server server;
+    @Mock private FrameContainer container;
+    @Mock private PluginManager pluginManager;
+    @Mock private ServerFactory factory;
+    @Mock private Server server;
     private NewServer command;
 
     @Before
     public void setup() {
-        container = mock(FrameContainer.class);
-        factory = mock(ServerFactory.class);
-        server = mock(Server.class);
-
+        TestMain.getTestMain();
+        MockitoAnnotations.initMocks(this);
         when(factory.createServer(any(URI.class), any(Identity.class))).thenReturn(server);
-
-        command = new NewServer(factory);
+        command = new NewServer(factory, pluginManager);
     }
 
     @Test

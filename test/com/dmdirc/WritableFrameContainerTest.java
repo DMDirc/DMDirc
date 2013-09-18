@@ -32,25 +32,26 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class WritableFrameContainerTest {
 
-    private ConfigManager cm;
-    private Main main;
+    @Mock private ConfigManager cm;
+    @Mock private ServerManager serverManager;
     private CommandManager commands;
 
     @Before
-    public void setup() throws InvalidIdentityFileException {
-        cm = mock(ConfigManager.class);
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
         when(cm.getOption("general", "silencechar")).thenReturn(".");
         when(cm.getOption("general", "commandchar")).thenReturn("/");
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        main = mock(Main.class);
-        commands = new CommandManager(cm, main);
+        commands = new CommandManager(cm, serverManager);
     }
 
     @Test

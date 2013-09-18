@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -43,6 +44,18 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
             "reloadplugin <plugin> - Reloads the specified plugin",
             CommandType.TYPE_GLOBAL);
 
+    /** The plugin manager to use to reload plugins. */
+    private final PluginManager pluginManager;
+
+    /**
+     * Creates a new instance of the {@link ReloadPlugin} command.
+     *
+     * @param pluginManager The plugin manager to reload plugins with.
+     */
+    public ReloadPlugin(final PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -52,12 +65,11 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
             return;
         }
 
-        final PluginInfo plugin = getController().getMain().getPluginManager()
-                .getPluginInfoByName(args.getArguments()[0]);
+        final PluginInfo plugin = pluginManager.getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
                     "Plugin Reloading failed - Plugin not loaded");
-        } else if (getController().getMain().getPluginManager().reloadPlugin(plugin.getMetaData().getRelativeFilename())) {
+        } else if (pluginManager.reloadPlugin(plugin.getMetaData().getRelativeFilename())) {
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin Reloaded.");
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Reloading failed");
@@ -71,7 +83,7 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
 
         if (arg == 0) {
-            for (PluginInfo possPlugin : getController().getMain().getPluginManager().getPluginInfos()) {
+            for (PluginInfo possPlugin : pluginManager.getPluginInfos()) {
                 res.add(possPlugin.getMetaData().getName());
             }
         }

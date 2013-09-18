@@ -35,6 +35,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -56,14 +57,21 @@ public class NewServer extends Command implements IntelligentCommand {
     /** The factory to use to construct servers. */
     private final ServerFactory serverFactory;
 
+    /** Plugin manager to query for available services. */
+    private final PluginManager pluginManager;
+
     /**
      * Creates a new newserver command which will use the specified factory
      * to construct servers.
      *
      * @param serverFactory The factory to use to construct servers
+     * @param pluginManager The plugin manager to use to query available services.
      */
-    public NewServer(final ServerFactory serverFactory) {
+    public NewServer(
+            final ServerFactory serverFactory,
+            final PluginManager pluginManager) {
         this.serverFactory = serverFactory;
+        this.pluginManager = pluginManager;
     }
 
     /** {@inheritDoc} */
@@ -238,7 +246,7 @@ public class NewServer extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 
         if (arg == 0) {
-            for (Service parserType : getController().getMain().getPluginManager().getServicesByType("parser")) {
+            for (Service parserType : pluginManager.getServicesByType("parser")) {
                 res.add(parserType.getName()+"://");
             }
         }
