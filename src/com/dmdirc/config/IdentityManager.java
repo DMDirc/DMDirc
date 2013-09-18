@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.IdentityFactory;
@@ -362,7 +361,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new Identity(Main.class.getResourceAsStream("version.config"), false);
+            versionConfig = new Identity(IdentityManager.class.getResourceAsStream("../version.config"), false);
             registerIdentity(versionConfig);
         } catch (IOException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
