@@ -25,6 +25,7 @@ package com.dmdirc.messages;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +38,7 @@ import java.util.regex.Matcher;
 public class MessageSinkManager {
 
     /** A singleton instance of the manager. */
-    private static final MessageSinkManager INSTANCE = new MessageSinkManager();
+    private static MessageSinkManager instance;
 
     /** The configuration domain to use for looking up default sinks. */
     public static final String CONFIG_DOMAIN = "notifications";
@@ -46,7 +47,7 @@ public class MessageSinkManager {
     public static final String DEFAULT_SINK = "self";
 
     /** A list of known sinks. */
-    private final List<MessageSink> sinks = new ArrayList<MessageSink>();
+    private final List<MessageSink> sinks = new ArrayList<>();
 
     /**
      * Adds a new sink to the list of known sinks.
@@ -125,8 +126,10 @@ public class MessageSinkManager {
 
     /**
      * Loads the default message sinks into this manager.
+     *
+     * @param statusBarManager The status bar manager to give to status-bar related sinks.
      */
-    public void loadDefaultSinks() {
+    public void loadDefaultSinks(final StatusBarManager statusBarManager) {
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
         addSink(new CommonChanelsMessageSink());
@@ -138,7 +141,7 @@ public class MessageSinkManager {
         addSink(new NullMessageSink());
         addSink(new SelfMessageSink());
         addSink(new ServerMessageSink());
-        addSink(new StatusBarMessageSink());
+        addSink(new StatusBarMessageSink(statusBarManager));
     }
 
     /**
@@ -147,7 +150,16 @@ public class MessageSinkManager {
      * @return A singleton manager instance
      */
     public static MessageSinkManager getManager() {
-        return INSTANCE;
+        return instance;
+    }
+
+    /**
+     * Sets the singleton instance of the sink manager.
+     *
+     * @param manager The new singleton manager instance.
+     */
+    public static void setManager(final MessageSinkManager manager) {
+        instance = manager;
     }
 
 }

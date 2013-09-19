@@ -33,7 +33,7 @@ public class TestMain extends Main {
             final CommandManager commandManager,
             final String configDir) {
         super(identityManager, serverManager, actionManager, commandLineParser,
-                pluginManager, commandManager, null, configDir);
+                pluginManager, commandManager, null, null, configDir);
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;

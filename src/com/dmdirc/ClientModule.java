@@ -33,8 +33,10 @@ import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WarningDialog;
+import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -131,6 +133,34 @@ public class ClientModule {
     @Provides
     public LifecycleController getLifecycleController(final SystemLifecycleController controller) {
         return controller;
+    }
+
+    /**
+     * Provides a status bar manager.
+     *
+     * @return The status bar manager the client should use.
+     */
+    @Provides
+    @Singleton
+    public StatusBarManager getStatusBarManager() {
+        final StatusBarManager manager = new StatusBarManager();
+        StatusBarManager.setStatusBarManager(manager);
+        return manager;
+    }
+
+    /**
+     * Gets the message sink manager for the client.
+     *
+     * @param statusBarManager The status bar manager to use for status bar sinks.
+     * @return The message sink manager the client should use.
+     */
+    @Provides
+    @Singleton
+    public MessageSinkManager getMessageSinkManager(final StatusBarManager statusBarManager) {
+        final MessageSinkManager messageSinkManager = new MessageSinkManager();
+        MessageSinkManager.setManager(messageSinkManager);
+        messageSinkManager.loadDefaultSinks(statusBarManager);
+        return messageSinkManager;
     }
 
     /**

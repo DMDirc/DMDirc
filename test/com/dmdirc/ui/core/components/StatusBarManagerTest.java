@@ -34,7 +34,7 @@ public class StatusBarManagerTest {
     @Test
     public void testRegisterStatusBar() {
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.clearMessage();
         verify(sb).clearMessage();
@@ -43,7 +43,7 @@ public class StatusBarManagerTest {
     @Test
     public void testUnregisterStatusBar() {
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.unregisterStatusBar(sb);
         instance.clearMessage();
@@ -54,7 +54,7 @@ public class StatusBarManagerTest {
     public void testSetMessage() {
         final StatusMessage message = mock(StatusMessage.class);
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.setMessage(message);
         verify(sb).setMessage(message);
@@ -63,7 +63,7 @@ public class StatusBarManagerTest {
     @Test
     public void testClearMessage() {
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.clearMessage();
         verify(sb).clearMessage();
@@ -73,7 +73,7 @@ public class StatusBarManagerTest {
     public void testAddComponent() {
         final StatusBarComponent comp = mock(StatusBarComponent.class);
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.addComponent(comp);
         verify(sb).addComponent(comp);
@@ -83,7 +83,7 @@ public class StatusBarManagerTest {
     public void testRemoveComponent() {
         final StatusBarComponent comp = mock(StatusBarComponent.class);
         final StatusBar sb = mock(StatusBar.class);
-        StatusBarManager instance = StatusBarManager.getStatusBarManager();
+        StatusBarManager instance = new StatusBarManager();
         instance.registerStatusBar(sb);
         instance.removeComponent(comp);
         verify(sb).removeComponent(comp);

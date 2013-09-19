@@ -34,6 +34,7 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,6 +51,7 @@ public class WindowManagerTest {
 
     @Mock private ConfigManager cm;
     @Mock private ServerManager serverManager;
+    @Mock private StatusBarManager statusBarManager;
     private CommandManager commands;
 
     @Before
@@ -59,6 +61,7 @@ public class WindowManagerTest {
         when(cm.getBinder()).thenReturn(binder);
         commands = new CommandManager(serverManager);
         commands.initialise(cm);
+        StatusBarManager.setStatusBarManager(statusBarManager);
     }
 
     @Test

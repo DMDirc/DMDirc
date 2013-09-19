@@ -111,6 +111,7 @@ public class Main implements LifecycleController {
      * @param pluginManager The plugin manager the client will use.
      * @param commandManager The command manager the client will use.
      * @param commandLoader The command loader to use to initialise the command manager.
+     * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param configDir The base configuration directory to use.
      */
     @Inject
@@ -122,6 +123,7 @@ public class Main implements LifecycleController {
             final PluginManager pluginManager,
             final CommandManager commandManager,
             final CommandLoader commandLoader,
+            final MessageSinkManager messageSinkManager,
             @Directory(DirectoryType.BASE) final String configDir) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -161,8 +163,6 @@ public class Main implements LifecycleController {
      */
     public void init() {
         UpdateChecker.init(this);
-
-        MessageSinkManager.getManager().loadDefaultSinks();
 
         pluginManager.refreshPlugins();
         checkBundledPlugins(pluginManager, identityManager.getGlobalConfiguration());

@@ -37,10 +37,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class StatusBarManager implements StatusBar {
 
     /** A singleton instance of the manager. */
-    private static final StatusBarManager INSTANCE = new StatusBarManager();
+    private static StatusBarManager instance;
 
     /** A collection of known status bars. */
-    private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<StatusBar>();
+    private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<>();
 
     /**
      * Registers a new status bar with the manager. All requests to
@@ -100,7 +100,16 @@ public class StatusBarManager implements StatusBar {
      * @return A singleton instance of the status bar manager.
      */
     public static StatusBarManager getStatusBarManager() {
-        return INSTANCE;
+        return instance;
+    }
+
+    /**
+     * Sets the singleton instance of the status bar manager.
+     *
+     * @param manager The manager to use as a singleton instance.
+     */
+    public static void setStatusBarManager(final StatusBarManager manager) {
+        instance = manager;
     }
 
 }

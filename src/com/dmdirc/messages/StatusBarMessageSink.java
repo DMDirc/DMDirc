@@ -38,6 +38,18 @@ public class StatusBarMessageSink implements MessageSink {
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("statusbar");
 
+    /** The status bar manager to add messages to. */
+    private final StatusBarManager statusBarManager;
+
+    /**
+     * Creates a new instance of {@link StatusBarMessageSink}.
+     *
+     * @param statusBarManager The status bar manager to add messages to.
+     */
+    public StatusBarMessageSink(final StatusBarManager statusBarManager) {
+        this.statusBarManager = statusBarManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
@@ -52,8 +64,7 @@ public class StatusBarMessageSink implements MessageSink {
             final String messageType, final Object... args) {
         final String message = Formatter.formatMessage(source.getConfigManager(),
                 messageType, args);
-        StatusBarManager.getStatusBarManager().setMessage(
-                new StatusMessage(message, source.getConfigManager()));
+        statusBarManager.setMessage(new StatusMessage(message, source.getConfigManager()));
     }
 
 }
