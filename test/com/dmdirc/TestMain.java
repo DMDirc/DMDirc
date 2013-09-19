@@ -46,7 +46,7 @@ public class TestMain extends Main {
     @Override
     public void init() {
         try {
-            IdentityManager.getIdentityManager().initialise(configdir);
+            identityManager.initialise();
         } catch (InvalidIdentityFileException ex) {
             // If a bad config dir exists, try to continue anyway, maybe the
             // test doesn't need it.
@@ -73,17 +73,6 @@ public class TestMain extends Main {
      */
     public static Main getTestMain() {
         if (instance == null) {
-            // TODO: Tests probably shouldn't rely on a config dir... Who knows
-            //       what the user has done with their config.
-            final IdentityManager identityManager = new IdentityManager();
-            IdentityManager.setIdentityManager(identityManager);
-            IdentityManager.getIdentityManager().loadVersionIdentity();
-
-            final ServerManager serverManager = mock(ServerManager.class);
-
-            final ActionManager actionManager = new ActionManager(serverManager, identityManager);
-            ActionManager.setActionManager(actionManager);
-
             try {
                 File tempFile = File.createTempFile("dmdirc", "test");
                 tempFile.delete();
@@ -92,6 +81,18 @@ public class TestMain extends Main {
 
                 final String configDirectory = tempFile.getAbsolutePath() + File.separator;
                 final String pluginDirectory = configDirectory + "plugins" + File.separator;
+
+                // TODO: Tests probably shouldn't rely on a config dir... Who knows
+                //       what the user has done with their config.
+                final IdentityManager identityManager = new IdentityManager(configDirectory);
+                IdentityManager.setIdentityManager(identityManager);
+                IdentityManager.getIdentityManager().loadVersionIdentity();
+
+                final ServerManager serverManager = mock(ServerManager.class);
+
+                final ActionManager actionManager = new ActionManager(serverManager, identityManager);
+                ActionManager.setActionManager(actionManager);
+
                 final PluginManager pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
 
                 instance = new TestMain(identityManager, serverManager,

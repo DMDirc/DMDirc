@@ -87,8 +87,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** The config manager used for global settings. */
     private ConfigManager globalconfig;
 
-    /** Creates a new instance of IdentityManager. */
-    public IdentityManager() {
+    /**
+     * Creates a new instance of IdentityManager.
+     *
+     * @param directory The BASE config directory.
+     */
+    public IdentityManager(final String directory) {
+        this.configDirectory = directory;
     }
 
     /** {@inheritDoc} */
@@ -99,8 +104,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public void initialise(final String configDirectory) throws InvalidIdentityFileException {
-        this.configDirectory = configDirectory;
+    public void initialise() throws InvalidIdentityFileException {
         identities.clear();
 
         loadVersionIdentity();

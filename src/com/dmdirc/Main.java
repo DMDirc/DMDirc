@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
@@ -52,9 +51,7 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +140,8 @@ public class Main implements LifecycleController {
      */
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
+
         try {
             ObjectGraph graph = ObjectGraph.create(
                     new ClientModule(),
@@ -161,14 +160,6 @@ public class Main implements LifecycleController {
      * @param args The command line arguments
      */
     public void init() {
-        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
-
-        try {
-            identityManager.initialise(configdir);
-        } catch (InvalidIdentityFileException iife) {
-            handleInvalidConfigFile();
-        }
-
         UpdateChecker.init(this);
 
         MessageSinkManager.getManager().loadDefaultSinks();
@@ -273,48 +264,6 @@ public class Main implements LifecycleController {
                     .setOption("debug", "uiFixAttempted", "true");
             // Tell the launcher to restart!
             System.exit(42);
-        }
-    }
-
-    /**
-     * Called when the global config cannot be loaded due to an error. This
-     * method informs the user of the problem and installs a new default config
-     * file, backing up the old one.
-     */
-    private void handleInvalidConfigFile() {
-        final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
-
-        final String message = "DMDirc has detected that your config file "
-                + "has become corrupted.<br><br>DMDirc will now backup "
-                + "your current config and try restarting with a default "
-                + "config.<br><br>Your old config will be saved as:<br>"
-                + "dmdirc.config." + date;
-
-        if (!GraphicsEnvironment.isHeadless()) {
-            new WarningDialog("Invalid Config File", message).displayBlocking();
-        }
-
-        // Let command-line users know what is happening.
-        System.out.println(message.replace("<br>", "\n"));
-
-        final File configFile = new File(configdir + "dmdirc.config");
-        final File newConfigFile = new File(configdir + "dmdirc.config." + date);
-
-        if (configFile.renameTo(newConfigFile)) {
-            try {
-                identityManager.initialise(configdir);
-            } catch (InvalidIdentityFileException iife2) {
-                // This shouldn't happen!
-                Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
-            }
-        } else {
-            final String newMessage = "DMDirc was unable to rename the "
-                    + "global config file and is unable to fix this issue.";
-            if (!GraphicsEnvironment.isHeadless()) {
-                new WarningDialog("Invalid Config File", newMessage).displayBlocking();
-            }
-            System.out.println(newMessage.replace("<br>", "\n"));
-            System.exit(1);
         }
     }
 

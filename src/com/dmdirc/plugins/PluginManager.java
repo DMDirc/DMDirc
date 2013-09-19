@@ -50,10 +50,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Searches for and manages plugins and services.
  */
+@Singleton
 public class PluginManager implements ActionListener, ServiceManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
