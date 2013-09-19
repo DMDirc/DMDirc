@@ -23,7 +23,9 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.global.NewServer;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -60,7 +62,7 @@ public class CommandLineParser {
     };
 
     /** A list of addresses to autoconnect to. */
-    private final List<URI> addresses = new ArrayList<URI>();
+    private final List<URI> addresses = new ArrayList<>();
 
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
@@ -68,19 +70,18 @@ public class CommandLineParser {
     /** The version string passed for the launcher. */
     private String launcherVersion = "";
 
+    /** The configuration directory. */
+    private String configDirectory;
+
     /** The RMI server we're using. */
     private RemoteInterface server;
-
-    /** Our parent Main. */
-    private Main main;
 
     /**
      * Creates a new instance of CommandLineParser.
      *
      * @param arguments The arguments to be parsed
      */
-    public CommandLineParser(final Main main, final String ... arguments) {
-        this.main = main;
+    public CommandLineParser(final String ... arguments) {
         boolean inArg = false;
         char previousArg = '.';
 
@@ -115,7 +116,7 @@ public class CommandLineParser {
             }
         }
 
-        new RemoteServer(main).bind();
+        new RemoteServer(Main.mainInstance).bind();
     }
 
     /**
@@ -252,11 +253,8 @@ public class CommandLineParser {
      * @param address The address the user told us to connect to
      */
     private void doConnect(final String address) {
-        URI myAddress = null;
-
         try {
-            myAddress = NewServer.getURI(address);
-            addresses.add(myAddress);
+            addresses.add(NewServer.getURI(address));
         } catch (URISyntaxException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
         }
@@ -293,9 +291,9 @@ public class CommandLineParser {
      */
     private void doDirectory(final String dir) {
         if (dir.endsWith(File.separator)) {
-            main.setConfigDir(dir);
+            configDirectory = dir;
         } else {
-            main.setConfigDir(dir + File.separator);
+            configDirectory = dir + File.separator;
         }
     }
 
@@ -350,11 +348,21 @@ public class CommandLineParser {
     }
 
     /**
+     * Returns the user-supplied configuration directory.
+     *
+     * @return The user-supplied config directory, or {@code null} if none
+     * was supplied.
+     */
+    public String getConfigDirectory() {
+        return configDirectory;
+    }
+
+    /**
      * Applies any applicable settings to the config identity.
      */
-    public void applySettings() {
+    public void applySettings(final Identity globalIdentity) {
         if (disablereporting) {
-            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption("temp", "noerrorreporting", true);
+            globalIdentity.setOption("temp", "noerrorreporting", true);
         }
 
         if (!launcherVersion.isEmpty()) {
@@ -365,10 +373,12 @@ public class CommandLineParser {
     /**
      * Processes arguments once the client has been loaded properly.
      * This allows us to auto-connect to servers, etc.
+     *
+     * @param serverManager The server manager to use to connect servers.
      */
-    public void processArguments() {
+    public void processArguments(final ServerManager serverManager) {
         for (URI address : addresses)  {
-            main.getServerManager().connectToAddress(address);
+            serverManager.connectToAddress(address);
         }
     }
 

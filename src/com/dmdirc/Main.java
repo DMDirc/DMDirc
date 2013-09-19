@@ -133,7 +133,10 @@ public class Main implements LifecycleController {
     public void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
-        final CommandLineParser clp = new CommandLineParser(this, args);
+        final CommandLineParser clp = new CommandLineParser(args);
+        if (clp.getConfigDirectory() != null) {
+            configdir = clp.getConfigDirectory();
+        }
 
         try {
             identityManager.initialise(getConfigDir());
@@ -152,7 +155,7 @@ public class Main implements LifecycleController {
 
         ThemeManager.loadThemes();
 
-        clp.applySettings();
+        clp.applySettings(identityManager.getGlobalConfigIdentity());
 
         new CommandLoader(this, serverManager, pluginManager, identityManager)
                 .loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
@@ -176,7 +179,7 @@ public class Main implements LifecycleController {
         actionManager.loadUserActions();
         actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
 
-        clp.processArguments();
+        clp.processArguments(serverManager);
 
         GlobalWindow.init();
 
