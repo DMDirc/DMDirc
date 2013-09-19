@@ -23,6 +23,8 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
@@ -46,6 +48,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Searches for and manages plugins and services.
@@ -80,10 +84,11 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param actionController The action controller to use for events.
      * @param directory The directory to load plugins from.
      */
+    @Inject
     public PluginManager(
             final IdentityController identityController,
             final ActionController actionController,
-            final String directory) {
+            @Directory(DirectoryType.PLUGINS) final String directory) {
         this.identityController = identityController;
         this.actionController = actionController;
         this.directory = directory;

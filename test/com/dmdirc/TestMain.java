@@ -21,17 +21,20 @@ public class TestMain extends Main {
     private final IdentityManager identityManager;
     private final ServerManager serverManager;
     private final ActionManager actionManager;
+    private final PluginManager pluginManager;
     private final String configdir;
 
     public TestMain(final IdentityManager identityManager,
             final ServerManager serverManager,
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
+            final PluginManager pluginManager,
             final String configDir) {
-        super(identityManager, serverManager, actionManager, commandLineParser, configDir);
+        super(identityManager, serverManager, actionManager, commandLineParser, pluginManager, configDir);
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
+        this.pluginManager = pluginManager;
         this.configdir = configDir;
     }
 
@@ -47,9 +50,6 @@ public class TestMain extends Main {
             // to handleInvalidConfigFile(); here)
         }
 
-        final String fs = System.getProperty("file.separator");
-        final String pluginDirectory = configdir + "plugins" + fs;
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), actionManager, pluginDirectory);
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
 
@@ -84,7 +84,12 @@ public class TestMain extends Main {
                 tempFile.delete();
                 tempFile.mkdir();
                 tempFile.deleteOnExit();
-                instance = new TestMain(identityManager, serverManager, actionManager, null, tempFile.getAbsolutePath() + File.separator);
+
+                final String configDirectory = tempFile.getAbsolutePath() + File.separator;
+                final String pluginDirectory = configDirectory + "plugins" + File.separator;
+                final PluginManager pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
+
+                instance = new TestMain(identityManager, serverManager, actionManager, null, pluginManager, configDirectory);
                 instance.init();
             } catch (IOException ex) {
                 // Blargh.

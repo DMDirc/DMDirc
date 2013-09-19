@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.IdentityController;
 
 import javax.inject.Singleton;
@@ -85,6 +86,17 @@ public class ClientModule {
     public ActionManager getActionManager(final ServerManager serverManager, final IdentityController identityController) {
         final ActionManager actionManager = new ActionManager(serverManager, identityController);
         ActionManager.setActionManager(actionManager);
+        return actionManager;
+    }
+
+    /**
+     * Provides an action controller.
+     *
+     * @param actionManager The action manager to use as a controller.
+     * @return An action controller to use.
+     */
+    @Provides
+    public ActionController getActionController(final ActionManager actionManager) {
         return actionManager;
     }
 

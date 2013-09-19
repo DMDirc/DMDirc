@@ -87,15 +87,15 @@ public class Main implements LifecycleController {
     /** The command-line parser used for this instance. */
     private final CommandLineParser commandLineParser;
 
+    /** The plugin manager the client will use. */
+    private final PluginManager pluginManager;
+
     /** The config dir to use for the client. */
     private final String configdir;
 
     /** Instance of main, protected to allow subclasses direct access. */
     @Deprecated
     public static Main mainInstance;
-
-    /** Instance of pluginmanager used by this Main. */
-    protected PluginManager pluginManager;
 
     /**
      * Creates a new instance of {@link Main}.
@@ -104,6 +104,7 @@ public class Main implements LifecycleController {
      * @param serverManager The server manager the client will use.
      * @param actionManager The action manager the client will use.
      * @param commandLineParser The command-line parser used for this instance.
+     * @param pluginManager The plugin manager the client will use.
      * @param configDir The base configuration directory to use.
      */
     @Inject
@@ -112,11 +113,13 @@ public class Main implements LifecycleController {
             final ServerManager serverManager,
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
+            final PluginManager pluginManager,
             @Directory(DirectoryType.BASE) final String configDir) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
+        this.pluginManager = pluginManager;
         this.configdir = configDir;
     }
 
@@ -157,9 +160,6 @@ public class Main implements LifecycleController {
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        final String fs = System.getProperty("file.separator");
-        final String pluginDirectory = configdir + "plugins" + fs;
-        pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
         pluginManager.refreshPlugins();
         checkBundledPlugins(pluginManager, identityManager.getGlobalConfiguration());
 

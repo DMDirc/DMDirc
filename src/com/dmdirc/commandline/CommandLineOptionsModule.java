@@ -41,7 +41,9 @@ public class CommandLineOptionsModule {
         /** The base directory, where everything else lives. */
         BASE,
         /** The directory that identities are stored in. */
-        IDENTITIES;
+        IDENTITIES,
+        /** The directory that plugins are stored in. */
+        PLUGINS;
     }
 
     /**
@@ -65,11 +67,21 @@ public class CommandLineOptionsModule {
         this.parser = parser;
     }
 
+    /**
+     * Provides the command-line parser used for this instance.
+     *
+     * @return The command-line parser.
+     */
     @Provides
     public CommandLineParser getParser() {
         return parser;
     }
 
+    /**
+     * Provides the base directory that all DMDirc user data is stored in.
+     *
+     * @return The base directory.
+     */
     @Provides
     @Singleton
     @Directory(DirectoryType.BASE)
@@ -79,6 +91,19 @@ public class CommandLineOptionsModule {
         } else {
             return parser.getConfigDirectory();
         }
+    }
+
+    /**
+     * Provides the path to the plugins directory.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     * @return The plugin directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.PLUGINS)
+    public String getPluginsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+        return baseDirectory + "plugins" + File.separator;
     }
 
     /**
