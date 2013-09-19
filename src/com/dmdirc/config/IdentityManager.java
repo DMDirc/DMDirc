@@ -65,8 +65,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Standard identities are inserted with a <code>null</code> key, custom
      * identities use their custom type as the key.
      */
-    private final MapList<String, Identity> identities
-            = new MapList<String, Identity>();
+    private final MapList<String, Identity> identities = new MapList<>();
 
     /**
      * The {@link IdentityListener}s that have registered with this manager.
@@ -74,8 +73,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Listeners for standard identities are inserted with a <code>null</code>
      * key, listeners for a specific custom type use their type as the key.
      */
-    private final MapList<String, IdentityListener> listeners
-            = new WeakMapList<String, IdentityListener>();
+    private final MapList<String, IdentityListener> listeners = new WeakMapList<>();
 
     /** The identity file used for the global config. */
     private Identity config;
@@ -124,7 +122,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         target.setOrder(500000);
 
         final ConfigFile addonConfigFile = new ConfigFile((File) null);
-        final Map<String, String> addonSettings = new HashMap<String, String>();
+        final Map<String, String> addonSettings = new HashMap<>();
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
 
@@ -224,17 +222,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return configDirectory + "identities" + System.getProperty("file.separator");
     }
 
-    /**
-     * Retrieves the directory used to store identities in.
-     *
-     * @return The identity directory path
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static String getDirectory() {
-        return INSTANCE.getIdentityDirectory();
-    }
-
     /** {@inheritDoc} */
     @Override
     public void loadUserIdentities() {
@@ -250,15 +237,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         loadUser(dir);
-    }
-
-    /**
-     * Loads user-defined identity files.
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static void loadUser() {
-        INSTANCE.loadUserIdentities();
     }
 
     /**
@@ -334,7 +312,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @since 0.6.4
      */
     private Set<Identity> getAllIdentities() {
-        final Set<Identity> res = new LinkedHashSet<Identity>();
+        final Set<Identity> res = new LinkedHashSet<>();
 
         for (Map.Entry<String, List<Identity>> entry : identities.entrySet()) {
             res.addAll(entry.getValue());
@@ -363,21 +341,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             versionConfig = new Identity(IdentityManager.class.getResourceAsStream("../version.config"), false);
             registerIdentity(versionConfig);
-        } catch (IOException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
-        } catch (InvalidIdentityFileException ex) {
+        } catch (IOException | InvalidIdentityFileException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         }
-    }
-
-    /**
-     * Loads the version information.
-     *
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static void loadVersion() {
-        INSTANCE.loadVersionIdentity();
     }
 
     /**
@@ -409,51 +375,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return config;
     }
 
-    /**
-     * Retrieves the identity used for the global config.
-     *
-     * @return The global config identity
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static Identity getConfigIdentity() {
-        return INSTANCE.getGlobalConfigIdentity();
-    }
-
     /** {@inheritDoc} */
     @Override
     public Identity getGlobalAddonIdentity() {
         return addonConfig;
     }
 
-    /**
-     * Retrieves the identity used for addons defaults.
-     *
-     * @return The addons defaults identity
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static Identity getAddonIdentity() {
-        return INSTANCE.getGlobalAddonIdentity();
-    }
-
     /** {@inheritDoc} */
     @Override
     public Identity getGlobalVersionIdentity() {
         return versionConfig;
-    }
-
-    /**
-     * Retrieves the identity bundled with the DMDirc client containing
-     * version information.
-     *
-     * @return The version identity
-     * @since 0.6.3m2
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static Identity getVersionIdentity() {
-        return INSTANCE.getGlobalVersionIdentity();
     }
 
     /** {@inheritDoc} */
@@ -464,15 +395,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 identity.save();
             }
         }
-    }
-
-    /**
-     * Saves all modified identity files to disk.
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static void save() {
-        INSTANCE.saveAll();
     }
 
     /** {@inheritDoc} */
@@ -500,18 +422,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /**
-     * Adds the specific identity to this manager.
-     *
-     * @param identity The identity to be added
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition("The specified Identity is not null")
-    public static void addIdentity(final Identity identity) {
-        INSTANCE.registerIdentity(identity);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void unregisterIdentity(final Identity identity) {
@@ -532,20 +442,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /**
-     * Removes an identity from this manager.
-     * @param identity The identity to be removed
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition({
-        "The specified Identity is not null",
-        "The specified Identity has previously been added and not removed"
-    })
-    public static void removeIdentity(final Identity identity) {
-        INSTANCE.unregisterIdentity(identity);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void registerIdentityListener(final IdentityListener listener) {
@@ -558,20 +454,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         listeners.removeFromAll(listener);
     }
 
-    /**
-     * Adds a new identity listener which will be informed of all settings
-     * identities which are added to this manager.
-     *
-     * @param listener The listener to be added
-     * @since 0.6.4
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition("The specified listener is not null")
-    public static void addIdentityListener(final IdentityListener listener) {
-        INSTANCE.registerIdentityListener(listener);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void registerIdentityListener(final String type, final IdentityListener listener) {
@@ -582,38 +464,10 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /**
-     * Adds a new identity listener which will be informed of all identities
-     * of the specified custom type which are added to this manager.
-     *
-     * @param type The type of identities to listen for
-     * @param listener The listener to be added
-     * @since 0.6.4
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition("The specified listener is not null")
-    public static void addIdentityListener(final String type, final IdentityListener listener) {
-        INSTANCE.registerIdentityListener(type, listener);
-    }
-
     /** {@inheritDoc} */
     @Override
     public List<Identity> getIdentitiesByType(final String type) {
         return Collections.unmodifiableList(identities.safeGet(type));
-    }
-
-    /**
-     * Retrieves a list of identities that belong to the specified custom type.
-     *
-     * @param type The type of identity to search for
-     * @return A list of matching identities
-     * @since 0.6.4
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static List<Identity> getCustomIdentities(final String type) {
-        return INSTANCE.getIdentitiesByType(type);
     }
 
     /** {@inheritDoc} */
@@ -634,19 +488,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return sources;
     }
 
-    /**
-     * Retrieves a list of all config sources that should be applied to the
-     * specified config manager.
-     *
-     * @param manager The manager requesting sources
-     * @return A list of all matching config sources
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static List<Identity> getSources(final ConfigManager manager) {
-        return INSTANCE.getIdentitiesForManager(manager);
-    }
-
     /** {@inheritDoc} */
     @Override
     public synchronized ConfigManager getGlobalConfiguration() {
@@ -655,17 +496,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         return globalconfig;
-    }
-
-    /**
-     * Retrieves the global config manager.
-     *
-     * @return The global config manager
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    public static ConfigManager getGlobalConfig() {
-        return INSTANCE.getGlobalConfiguration();
     }
 
     /** {@inheritDoc} */
@@ -704,24 +534,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /**
-     * Retrieves the config for the specified channel@network. The config is
-     * created if it doesn't exist.
-     *
-     * @param network The name of the network
-     * @param channel The name of the channel
-     * @return A config source for the channel
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition({
-        "The specified network is non-null and not empty",
-        "The specified channel is non-null and not empty"
-    })
-    public static Identity getChannelConfig(final String network, final String channel) {
-        return INSTANCE.createChannelConfig(network, channel);
-    }
-
     /** {@inheritDoc} */
     @Override
     public Identity createNetworkConfig(final String network) {
@@ -753,20 +565,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /**
-     * Retrieves the config for the specified network. The config is
-     * created if it doesn't exist.
-     *
-     * @param network The name of the network
-     * @return A config source for the network
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition("The specified network is non-null and not empty")
-    public static Identity getNetworkConfig(final String network) {
-        return INSTANCE.createNetworkConfig(network);
-    }
-
     /** {@inheritDoc} */
     @Override
     public Identity createServerConfig(final String server) {
@@ -796,20 +594,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
             return null;
         }
-    }
-
-    /**
-     * Retrieves the config for the specified server. The config is
-     * created if it doesn't exist.
-     *
-     * @param server The name of the server
-     * @return A config source for the server
-     * @deprecated Use non-static methods instead
-     */
-    @Deprecated
-    @Precondition("The specified server is non-null and not empty")
-    public static Identity getServerConfig(final String server) {
-        return INSTANCE.createServerConfig(server);
     }
 
     /**
