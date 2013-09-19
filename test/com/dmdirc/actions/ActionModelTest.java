@@ -22,8 +22,6 @@
 
 package com.dmdirc.actions;
 
-import org.junit.BeforeClass;
-import com.dmdirc.TestMain;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -36,11 +34,6 @@ import static org.junit.Assert.*;
 
 public class ActionModelTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        TestMain.getTestMain();
-    }
-
     @Test
     public void testConditions() {
         final ActionModel model = new ActionModel("group", "name");
@@ -48,7 +41,7 @@ public class ActionModelTest {
         assertTrue("ActionModel must start with no conditions",
                 model.getConditions().isEmpty());
 
-        final List<ActionCondition> conds = new ArrayList<ActionCondition>();
+        final List<ActionCondition> conds = new ArrayList<>();
 
         model.setConditions(conds);
 

@@ -29,6 +29,7 @@ import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.ui.Window;
@@ -70,16 +71,31 @@ public class ActionSubstitutor {
     /** Pattern to determine if a substitution is a server component type. */
     private static final Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
 
+    /** The action controller to use to find components. */
+    private final ActionController actionController;
     /** The action type this substitutor is for. */
     private final ActionType type;
 
     /**
      * Creates a new substitutor for the specified action type.
      *
+     * @param actionController The action controller to use to find components.
      * @param type The action type this substitutor is for
      */
-    public ActionSubstitutor(final ActionType type) {
+    public ActionSubstitutor(final ActionController actionController, final ActionType type) {
+        this.actionController = actionController;
         this.type = type;
+    }
+
+    /**
+     * Creates a new substitutor for the specified action type.
+     *
+     * @param type The action type this substitutor is for
+     * @deprecated Should use {@link #ActionSubstitutor(ActionController, ActionType)}.
+     */
+    @Deprecated
+    public ActionSubstitutor(final ActionType type) {
+        this(ActionManager.getActionManager(), type);
     }
 
     /**
@@ -100,12 +116,11 @@ public class ActionSubstitutor {
      * @return A map of component substitution names and their descriptions
      */
     public Map<String, String> getComponentSubstitutions() {
-        final Map<String, String> res = new HashMap<String, String>();
+        final Map<String, String> res = new HashMap<>();
 
         int i = 0;
         for (Class<?> myClass : type.getType().getArgTypes()) {
-            for (ActionComponent comp : ActionManager.getActionManager()
-                    .findCompatibleComponents(myClass)) {
+            for (ActionComponent comp : actionController.findCompatibleComponents(myClass)) {
                 final String key = "{" + i + "." + comp.toString() + "}";
                 final String desc = type.getType().getArgNames()[i] + "'s " + comp.getName();
 
@@ -126,11 +141,10 @@ public class ActionSubstitutor {
      * @return A map of server substitution names and their descriptions.
      */
     public Map<String, String> getServerSubstitutions() {
-        final Map<String, String> res = new HashMap<String, String>();
+        final Map<String, String> res = new HashMap<>();
 
         if (hasFrameContainer()) {
-            for (ActionComponent comp : ActionManager.getActionManager()
-                    .findCompatibleComponents(Server.class)) {
+            for (ActionComponent comp : actionController.findCompatibleComponents(Server.class)) {
                 final String key = "{" + comp.toString() + "}";
                 final String desc = "The connection's " + comp.getName();
 
@@ -248,7 +262,8 @@ public class ActionSubstitutor {
 
             try {
                 final ActionComponentChain chain = new ActionComponentChain(
-                        type.getType().getArgTypes()[argument], compMatcher.group(2));
+                        type.getType().getArgTypes()[argument], compMatcher.group(2),
+                        actionController);
                 return escape(checkConnection(chain, args, args[argument]));
             } catch (IllegalArgumentException ex) {
                 return ERR_ILLEGAL_COMPONENT;
@@ -267,7 +282,7 @@ public class ActionSubstitutor {
             if (server != null) {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
-                        Server.class, substitution);
+                        Server.class, substitution, actionController);
                     return escape(checkConnection(chain, args, server));
                 } catch (IllegalArgumentException ex) {
                     return ERR_ILLEGAL_COMPONENT;

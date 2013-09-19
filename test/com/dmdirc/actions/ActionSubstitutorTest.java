@@ -22,12 +22,12 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.*;
 @RunWith(Parameterized.class)
 public class ActionSubstitutorTest {
 
-    private static final Map<String, String> SETTINGS = new HashMap<String, String>();
+    private static final Map<String, String> SETTINGS = new HashMap<>();
 
     private final String input, expected;
     private final Channel channel;
@@ -55,8 +55,6 @@ public class ActionSubstitutorTest {
 
     @BeforeClass
     public static void setup() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-
         SETTINGS.put("alpha", "A");
         SETTINGS.put("bravo", "$alpha");
         SETTINGS.put("charlie", "${bravo}");
@@ -87,7 +85,14 @@ public class ActionSubstitutorTest {
             when(manager.getOption("actions", entry.getKey())).thenReturn(entry.getValue());
         }
 
-        substitutor = new ActionSubstitutor(CoreActionType.CHANNEL_MESSAGE);
+        final ActionController controller = mock(ActionController.class);
+        when(controller.getComponent("STRING_STRING")).thenReturn(CoreActionComponent.STRING_STRING);
+        when(controller.getComponent("STRING_LENGTH")).thenReturn(CoreActionComponent.STRING_LENGTH);
+        when(controller.getComponent("SERVER_NETWORK")).thenReturn(CoreActionComponent.SERVER_NETWORK);
+        when(controller.getComponent("SERVER_PROTOCOL")).thenReturn(CoreActionComponent.SERVER_PROTOCOL);
+        when(controller.getComponent("SERVER_MYAWAYREASON")).thenReturn(CoreActionComponent.SERVER_MYAWAYREASON);
+
+        substitutor = new ActionSubstitutor(controller, CoreActionType.CHANNEL_MESSAGE);
 
         args = new Object[]{
             channel,
