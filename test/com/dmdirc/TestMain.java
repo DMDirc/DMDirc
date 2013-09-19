@@ -40,7 +40,10 @@ public class TestMain extends Main {
                 parserFactoryProvider,
                 IdentityManager.getIdentityManager());
         ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager());
+
+        final String fs = System.getProperty("file.separator");
+        final String pluginDirectory = getConfigDir() + "plugins" + fs;
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), pluginDirectory);
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
 

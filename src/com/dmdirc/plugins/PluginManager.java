@@ -24,9 +24,9 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -59,7 +59,10 @@ public class PluginManager implements ActionListener, ServiceManager {
     private final Collection<PluginMetaData> plugins = new HashSet<>();
 
     /** Directory where plugins are stored. */
-    private final String myDir;
+    private final String directory;
+
+    /** The identity controller to use to find configuration options. */
+    private final IdentityController identityController;
 
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<>();
@@ -70,11 +73,12 @@ public class PluginManager implements ActionListener, ServiceManager {
     /**
      * Creates a new instance of PluginManager.
      *
-     * @param identityManager The identity manager to use for configuration options.
+     * @param identityController The identity controller to use for configuration options.
+     * @param directory The directory to load plugins from.
      */
-    public PluginManager(final IdentityManager identityManager) {
-        final String fs = System.getProperty("file.separator");
-        myDir = identityManager.getConfigDir() + "plugins" + fs;
+    public PluginManager(final IdentityController identityController, final String directory) {
+        this.identityController = identityController;
+        this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
@@ -198,8 +202,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Autoloads plugins.
      */
     public void doAutoLoad() {
-        for (String plugin : IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOptionList("plugins", "autoload")) {
+        for (String plugin : identityController.getGlobalConfiguration().getOptionList("plugins", "autoload")) {
             plugin = plugin.trim();
             if (!plugin.isEmpty() && plugin.charAt(0) != '#' && getPluginInfo(plugin) != null) {
                 getPluginInfo(plugin).loadPlugin();
@@ -245,7 +248,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             }
 
             if ((metadata.getUpdaterId() > 0 && metadata.getVersion().isValid())
-                    || (IdentityManager.getIdentityManager().getGlobalConfiguration()
+                    || (identityController.getGlobalConfiguration()
                     .hasOptionInt("plugin-addonid", metadata.getName()))) {
                 UpdateChecker.getManager().addComponent(new PluginComponent(pluginInfo));
             }
@@ -357,7 +360,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @return Directory where plugins are stored.
      */
     public String getDirectory() {
-        return myDir;
+        return directory;
     }
 
     /**
@@ -367,11 +370,10 @@ public class PluginManager implements ActionListener, ServiceManager {
      */
     public String getFilesDirectory() {
         final String fs = System.getProperty("file.separator");
-        String filesDir = myDir + "files" + fs;
-        if (IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .hasOptionString("plugins", "filesdir")) {
-            final String fdopt = IdentityManager.getIdentityManager()
-                    .getGlobalConfiguration().getOptionString("plugins", "filesdir");
+        String filesDir = directory + "files" + fs;
+        if (identityController.getGlobalConfiguration().hasOptionString("plugins", "filesdir")) {
+            final String fdopt = identityController.getGlobalConfiguration()
+                    .getOptionString("plugins", "filesdir");
 
             if (fdopt != null && !fdopt.isEmpty() && new File(fdopt).exists()) {
                 filesDir = fdopt;
@@ -416,7 +418,7 @@ public class PluginManager implements ActionListener, ServiceManager {
     public void applyUpdates() {
         final Deque<File> dirs = new LinkedList<>();
 
-        dirs.add(new File(myDir));
+        dirs.add(new File(directory));
 
         while (!dirs.isEmpty()) {
             final File dir = dirs.pop();
@@ -445,14 +447,14 @@ public class PluginManager implements ActionListener, ServiceManager {
         final Deque<File> dirs = new LinkedList<>();
         final Collection<String> pluginPaths = new LinkedList<>();
 
-        dirs.add(new File(myDir));
+        dirs.add(new File(directory));
 
         while (!dirs.isEmpty()) {
             final File dir = dirs.pop();
             if (dir.isDirectory()) {
                 dirs.addAll(Arrays.asList(dir.listFiles()));
             } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
-                pluginPaths.add(dir.getPath().substring(myDir.length()));
+                pluginPaths.add(dir.getPath().substring(directory.length()));
             }
         }
 
@@ -519,8 +521,8 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param plugin to add/remove (Decided automatically based on isLoaded())
      */
     public void updateAutoLoad(final PluginInfo plugin) {
-        final List<String> list = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOptionList("plugins", "autoload");
+        final List<String> list = identityController.getGlobalConfiguration()
+                .getOptionList("plugins", "autoload");
         final String path = plugin.getMetaData().getRelativeFilename();
 
         if (plugin.isLoaded() && !list.contains(path)) {
@@ -529,8 +531,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             list.remove(path);
         }
 
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("plugins", "autoload", list);
+        identityController.getGlobalConfigIdentity().setOption("plugins", "autoload", list);
     }
 
     /**
