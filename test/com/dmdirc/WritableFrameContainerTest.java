@@ -51,7 +51,8 @@ public class WritableFrameContainerTest {
         when(cm.getOption("general", "commandchar")).thenReturn("/");
         final ConfigBinder binder = new ConfigBinder(cm);
         when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(cm, serverManager);
+        commands = new CommandManager(serverManager);
+        commands.initialise(cm);
     }
 
     @Test

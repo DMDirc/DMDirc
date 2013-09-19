@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -40,12 +39,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import lombok.Getter;
 
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
+@Singleton
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandManager implements CommandController {
 
@@ -54,11 +57,11 @@ public class CommandManager implements CommandController {
 
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
-            = new HashMap<CommandInfo, Command>();
+            = new HashMap<>();
 
     /** A list of command parsers that have been instantiated. */
     private final MapList<CommandType, CommandParser> parsers
-            = new MapList<CommandType, CommandParser>();
+            = new MapList<>();
 
     /** The manager to use to iterate servers. */
     private final ServerManager serverManager;
@@ -76,11 +79,19 @@ public class CommandManager implements CommandController {
     /**
      * Creates a new instance of the Command Manager.
      *
-     * @param configManager the configuration manager to use.
      * @param serverManager the manager to use to iterate servers.
      */
-    public CommandManager(final ConfigManager configManager, final ServerManager serverManager) {
+    @Inject
+    public CommandManager(final ServerManager serverManager) {
         this.serverManager = serverManager;
+    }
+
+    /**
+     * Initialises the command manager.
+     *
+     * @param configManager The configuration manager to read settings from.
+     */
+    public void initialise(final ConfigManager configManager) {
         configManager.getBinder().bind(this, CommandManager.class);
     }
 
@@ -243,7 +254,7 @@ public class CommandManager implements CommandController {
     /** {@inheritDoc} */
     @Override
     public List<String> getCommandNames(final CommandType type) {
-        final List<String> res = new ArrayList<String>();
+        final List<String> res = new ArrayList<>();
 
         for (CommandInfo command : getCommands(type).keySet()) {
             res.add(getCommandChar() + command.getName());
@@ -269,7 +280,7 @@ public class CommandManager implements CommandController {
      */
     private Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {
-        final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
+        final Map<CommandInfo, Command> res = new HashMap<>();
 
         for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
@@ -284,14 +295,10 @@ public class CommandManager implements CommandController {
     /**
      * Initialise the singleton instance of the CommandManager.
      *
-     * @param identityManager The identity manager to use for command settings.
-     * @param serverManager The server manager to use to iterate servers.
-     * @return The singleton instance of the CommandManager.
+     * @param commandManager The new singleton command manager instance.
      */
-    public static synchronized CommandManager initCommandManager(
-            final IdentityManager identityManager, final ServerManager serverManager) {
-        instance = new CommandManager(identityManager.getGlobalConfiguration(), serverManager);
-        return instance;
+    public static void setCommandManager(final CommandManager commandManager) {
+        instance = commandManager;
     }
 
     /**

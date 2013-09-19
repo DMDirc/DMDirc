@@ -22,6 +22,7 @@ public class TestMain extends Main {
     private final ServerManager serverManager;
     private final ActionManager actionManager;
     private final PluginManager pluginManager;
+    private final CommandManager commandManager;
     private final String configdir;
 
     public TestMain(final IdentityManager identityManager,
@@ -29,13 +30,15 @@ public class TestMain extends Main {
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
+            final CommandManager commandManager,
             final String configDir) {
         super(identityManager, serverManager, actionManager, commandLineParser,
-                pluginManager, null, configDir);
+                pluginManager, commandManager, null, configDir);
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
         this.pluginManager = pluginManager;
+        this.commandManager = commandManager;
         this.configdir = configDir;
     }
 
@@ -52,7 +55,8 @@ public class TestMain extends Main {
         }
 
         pluginManager.refreshPlugins();
-        CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
+        commandManager.initialise(identityManager.getGlobalConfiguration());
+        CommandManager.setCommandManager(commandManager);
 
         ActionManager.getActionManager().initialise();
     }
@@ -90,7 +94,9 @@ public class TestMain extends Main {
                 final String pluginDirectory = configDirectory + "plugins" + File.separator;
                 final PluginManager pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
 
-                instance = new TestMain(identityManager, serverManager, actionManager, null, pluginManager, configDirectory);
+                instance = new TestMain(identityManager, serverManager,
+                        actionManager, null, pluginManager,
+                        new CommandManager(serverManager), configDirectory);
                 instance.init();
             } catch (IOException ex) {
                 // Blargh.

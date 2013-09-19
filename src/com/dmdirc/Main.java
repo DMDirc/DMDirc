@@ -91,6 +91,9 @@ public class Main implements LifecycleController {
     /** The plugin manager the client will use. */
     private final PluginManager pluginManager;
 
+    /** The command manager the client will use. */
+    private final CommandManager commandManager;
+
     /** The command loader to use to initialise the command manager. */
     private final CommandLoader commandLoader;
 
@@ -109,6 +112,7 @@ public class Main implements LifecycleController {
      * @param actionManager The action manager the client will use.
      * @param commandLineParser The command-line parser used for this instance.
      * @param pluginManager The plugin manager the client will use.
+     * @param commandManager The command manager the client will use.
      * @param commandLoader The command loader to use to initialise the command manager.
      * @param configDir The base configuration directory to use.
      */
@@ -119,6 +123,7 @@ public class Main implements LifecycleController {
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
+            final CommandManager commandManager,
             final CommandLoader commandLoader,
             @Directory(DirectoryType.BASE) final String configDir) {
         this.identityManager = identityManager;
@@ -126,6 +131,7 @@ public class Main implements LifecycleController {
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
+        this.commandManager = commandManager;
         this.commandLoader = commandLoader;
         this.configdir = configDir;
     }
@@ -174,7 +180,9 @@ public class Main implements LifecycleController {
 
         commandLineParser.applySettings(identityManager.getGlobalConfigIdentity());
 
-        commandLoader.loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
+        commandManager.initialise(identityManager.getGlobalConfiguration());
+        CommandManager.setCommandManager(commandManager);
+        commandLoader.loadCommands(commandManager);
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);
