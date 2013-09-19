@@ -27,9 +27,6 @@ package com.dmdirc.logger;
  */
 public final class Logger {
 
-    /** The MANAGER to use to report errors. */
-    protected static final ErrorManager MANAGER = ErrorManager.getErrorManager();
-
     /** Prevent instantiation of a new instance of Logger. */
     private Logger() {
         //Ignore
@@ -42,7 +39,7 @@ public final class Logger {
      * @param message Brief error description
      */
     public static void userError(final ErrorLevel level, final String message) {
-        MANAGER.addError(level, message);
+        getErrorManager().addError(level, message);
     }
 
     /**
@@ -54,7 +51,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level, final String message,
             final String details) {
-        MANAGER.addError(level, message, new String[]{details}, false);
+        getErrorManager().addError(level, message, new String[]{details}, false);
     }
 
     /**
@@ -66,7 +63,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        MANAGER.addError(level, message, exception, false);
+        getErrorManager().addError(level, message, exception, false);
     }
 
     /**
@@ -79,7 +76,7 @@ public final class Logger {
      */
     public static void appError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        MANAGER.addError(level, message, exception, true);
+        getErrorManager().addError(level, message, exception, true);
     }
 
     /**
@@ -92,6 +89,15 @@ public final class Logger {
         if (!value) {
             throw new AssertionError();
         }
+    }
+
+    /**
+     * Gets the manager that should be used to report errors.
+     *
+     * @return The error manager to be used.
+     */
+    private static ErrorManager getErrorManager() {
+        return ErrorManager.getErrorManager();
     }
 
 }

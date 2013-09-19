@@ -75,9 +75,8 @@ public abstract class CommandParser implements Serializable {
     /** Creates a new instance of CommandParser. */
     protected CommandParser(final ConfigManager configManager,
             final CommandManager commandManager) {
-        commands = new HashMap<String, CommandInfoPair>();
-        history = new RollingList<PreviousCommand>(configManager
-                .getOptionInt("general", "commandhistory"));
+        commands = new HashMap<>();
+        history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));
         this.commandManager = commandManager;
         loadCommands();
     }
@@ -121,7 +120,7 @@ public abstract class CommandParser implements Serializable {
      * @return A map of commands known to this parser
      */
     public Map<String, CommandInfoPair> getCommands() {
-        return new HashMap<String, CommandInfoPair>(commands);
+        return new HashMap<>(commands);
     }
 
     /**
@@ -257,8 +256,7 @@ public abstract class CommandParser implements Serializable {
      * @param line The line to be parsed
      * @since 0.6.4
      */
-    public final void parseCommand(final FrameContainer origin,
-            final String line) {
+    public void parseCommand(final FrameContainer origin, final String line) {
         parseCommand(origin, line, true);
     }
 
@@ -268,7 +266,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommandCtrl(final FrameContainer origin, final String line) {
+    public void parseCommandCtrl(final FrameContainer origin, final String line) {
         handleNonCommand(origin, line);
     }
 
