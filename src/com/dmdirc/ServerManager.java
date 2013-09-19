@@ -27,7 +27,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.inject.Provider;
+
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
@@ -48,12 +50,25 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ServerManager implements ServerFactory {
 
     /** All servers that currently exist. */
-    private final Set<Server> servers = new CopyOnWriteArraySet<Server>();
+    private final Set<Server> servers = new CopyOnWriteArraySet<>();
+
+    /** Provider of {@link ParserFactory}s for servers. */
+    private final Provider<ParserFactory> parserFactoryProvider;
+
+    /** The identity controller to use to find profiles. */
+    private final IdentityController identityController;
 
     /**
      * Creates a new instance of ServerManager.
+     *
+     * @param parserFactoryProvider The provider of {@link ParserFactory}s to give to servers.
+     * @param identityController The identity controller to use to find profiles.
      */
-    public ServerManager() {
+    public ServerManager(
+            final Provider<ParserFactory> parserFactoryProvider,
+            final IdentityController identityController) {
+        this.parserFactoryProvider = parserFactoryProvider;
+        this.identityController = identityController;
     }
 
     /** {@inheritDoc} */
@@ -65,7 +80,7 @@ public class ServerManager implements ServerFactory {
                 this,
                 configManager,
                 new ServerCommandParser(configManager),
-                new ParserFactory(Main.mainInstance.getPluginManager()),
+                parserFactoryProvider.get(),
                 WindowManager.getWindowManager(),
                 AliasWrapper.getAliasWrapper(),
                 CommandManager.getCommandManager(),
@@ -98,7 +113,7 @@ public class ServerManager implements ServerFactory {
      * @return A list of all servers
      */
     public List<Server> getServers() {
-        return new ArrayList<Server>(servers);
+        return new ArrayList<>(servers);
     }
 
     /**
@@ -150,7 +165,7 @@ public class ServerManager implements ServerFactory {
      * @return A list of servers connected to the network
      */
     public List<Server> getServersByNetwork(final String network) {
-        final List<Server> res = new ArrayList<Server>();
+        final List<Server> res = new ArrayList<>();
 
         for (Server server : servers) {
             if (server.isNetwork(network)) {
@@ -168,7 +183,7 @@ public class ServerManager implements ServerFactory {
      * @return A list of servers connected to the network
      */
     public List<Server> getServersByAddress(final String address) {
-        final List<Server> res = new ArrayList<Server>();
+        final List<Server> res = new ArrayList<>();
 
         for (Server server : servers) {
             if (server.getAddress().equalsIgnoreCase(address)) {
@@ -188,8 +203,8 @@ public class ServerManager implements ServerFactory {
      * @since 0.6.3
      */
     public Server connectToAddress(final URI uri) {
-        return connectToAddress(uri, IdentityManager.getIdentityManager()
-                .getIdentitiesByType("profile").get(0));
+        return connectToAddress(uri,
+                identityController.getIdentitiesByType("profile").get(0));
     }
 
     /**
@@ -249,8 +264,7 @@ public class ServerManager implements ServerFactory {
 
         if (connectedServer == null) {
             try {
-                connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"),
-                        IdentityManager.getIdentityManager().getIdentitiesByType("profile").get(0));
+                connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"));
             } catch (URISyntaxException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
             }

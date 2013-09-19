@@ -22,23 +22,32 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+
+import javax.inject.Provider;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ServerManagerTest {
 
+    @Mock private IdentityController identityController;
+    @Mock private Provider<ParserFactory> parserFactoryProvider;
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
-        serverManager = new ServerManager();
+        serverManager = new ServerManager(parserFactoryProvider, identityController);
     }
 
     @After

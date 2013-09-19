@@ -6,17 +6,25 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
 
+import javax.inject.Provider;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 /**
  * Main subclass to init things needed for testing.
  */
 public class TestMain extends Main {
     private static Main instance;
 
+    @Mock private Provider<ParserFactory> parserFactoryProvider;
+
     public TestMain() { }
 
     /** {@inheritDoc} */
     @Override
     public void init(final String[] args) {
+        MockitoAnnotations.initMocks(this);
+
         // TODO: Tests probably shouldn't rely on a config dir... Who knows
         //       what the user has done with their config.
         IdentityManager.getIdentityManager().loadVersionIdentity();
@@ -28,7 +36,9 @@ public class TestMain extends Main {
             // DON'T do anything to the user's configuration... (so no calls
             // to handleInvalidConfigFile(); here)
         }
-        serverManager = new ServerManager();
+        serverManager = new ServerManager(
+                parserFactoryProvider,
+                IdentityManager.getIdentityManager());
         ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
         pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
         pluginManager.refreshPlugins();

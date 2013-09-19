@@ -57,6 +57,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Provider;
+
 /**
  * Main class, handles initialisation.
  */
@@ -66,7 +68,7 @@ public class Main implements LifecycleController {
     private final int FEEDBACK_DELAY = 30 * 60 * 1000;
 
     /** The UI to use for the client. */
-    private final Collection<UIController> CONTROLLERS = new HashSet<UIController>();
+    private final Collection<UIController> CONTROLLERS = new HashSet<>();
 
     /** The config dir to use for the client. */
     private String configdir;
@@ -106,7 +108,9 @@ public class Main implements LifecycleController {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         IdentityManager.getIdentityManager().loadVersionIdentity();
-        serverManager = new ServerManager();
+        serverManager = new ServerManager(
+                new ParserFactoryProvider(),
+                IdentityManager.getIdentityManager());
         ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
 
         final CommandLineParser clp = new CommandLineParser(this, args);
@@ -503,6 +507,18 @@ public class Main implements LifecycleController {
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
             }
+        }
+    }
+
+    /**
+     * Temporary class to lazily provide {@link ParserFactory}s.
+     */
+    private class ParserFactoryProvider implements Provider<ParserFactory> {
+
+        /** {@inheritDoc} */
+        @Override
+        public ParserFactory get() {
+            return new ParserFactory(pluginManager);
         }
     }
 
