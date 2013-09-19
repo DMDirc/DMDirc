@@ -67,6 +67,7 @@ import com.dmdirc.commandparser.commands.server.Raw;
 import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
@@ -84,20 +85,26 @@ public class CommandLoader {
     /** Plugin manager to give to plugin-dependent commands. */
     private final PluginManager pluginManager;
 
+    /** The identity manager to pass to config-related commands. */
+    private final IdentityManager identityManager;
+
     /**
      * Creates a new instance of {@link CommandLoader}.
      *
      * @param lifecycleController Controller to give to commands that want to start/stop the app.
      * @param serverManager The server manager to pass to server-related commands.
      * @param pluginManager The plugin manager to pass to plugin-dependent commands.
+     * @param identityManager The identity manager to pass to config-related commands.
      */
     public CommandLoader(
             final LifecycleController lifecycleController,
             final ServerManager serverManager,
-            final PluginManager pluginManager) {
+            final PluginManager pluginManager,
+            final IdentityManager identityManager) {
         this.lifecycleController = lifecycleController;
         this.serverManager = serverManager;
         this.pluginManager = pluginManager;
+        this.identityManager = identityManager;
     }
 
     /**
@@ -154,16 +161,16 @@ public class CommandLoader {
         manager.registerCommand(new Exit(lifecycleController), Exit.INFO);
         manager.registerCommand(new Help(), Help.INFO);
         manager.registerCommand(new Ifplugin(pluginManager), Ifplugin.INFO);
-        manager.registerCommand(new NewServer(serverManager, pluginManager), NewServer.INFO);
+        manager.registerCommand(new NewServer(serverManager, pluginManager, identityManager), NewServer.INFO);
         manager.registerCommand(new Notify(), Notify.INFO);
         manager.registerCommand(new LoadPlugin(pluginManager), LoadPlugin.INFO);
         manager.registerCommand(new UnloadPlugin(pluginManager), UnloadPlugin.INFO);
         manager.registerCommand(new OpenWindow(), OpenWindow.INFO);
         manager.registerCommand(new ReloadActions(), ReloadActions.INFO);
-        manager.registerCommand(new ReloadIdentities(), ReloadIdentities.INFO);
+        manager.registerCommand(new ReloadIdentities(identityManager), ReloadIdentities.INFO);
         manager.registerCommand(new ReloadPlugin(pluginManager), ReloadPlugin.INFO);
-        manager.registerCommand(new SaveConfig(), SaveConfig.INFO);
-        manager.registerCommand(new Set(), Set.INFO);
+        manager.registerCommand(new SaveConfig(identityManager), SaveConfig.INFO);
+        manager.registerCommand(new Set(identityManager, identityManager), Set.INFO);
     }
 
 }

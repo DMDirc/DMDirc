@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
 
@@ -58,13 +59,14 @@ public class HelpTest {
 
     @Parameterized.Parameters
     public static List<Object[]> data() throws InvalidIdentityFileException {
-        final List<Object[]> res = new LinkedList<Object[]>();
+        final List<Object[]> res = new LinkedList<>();
 
         TestMain.getTestMain();
         new CommandLoader(
                 mock(LifecycleController.class),
                 mock(ServerManager.class),
-                mock(PluginManager.class)).loadCommands(CommandManager.getCommandManager());
+                mock(PluginManager.class),
+                mock(IdentityManager.class)).loadCommands(CommandManager.getCommandManager());
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {

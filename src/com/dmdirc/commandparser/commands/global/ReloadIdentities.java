@@ -30,7 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 /**
@@ -43,11 +43,23 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
             "reloadidentities - reloads user identities (configuration files)",
             CommandType.TYPE_GLOBAL);
 
+    /** Identity controller cause to reload identities. */
+    private final IdentityController identityController;
+
+    /**
+     * Creates a new instance of the {@link ReloadIdentities} command.
+     *
+     * @param identityController The controller to reload identities on.
+     */
+    public ReloadIdentities(final IdentityController identityController) {
+        this.identityController = identityController;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        IdentityManager.getIdentityManager().loadUserIdentities();
+        identityController.loadUserIdentities();
 
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Identities reloaded.");
     }

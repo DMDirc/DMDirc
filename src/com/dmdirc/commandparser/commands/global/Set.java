@@ -37,7 +37,8 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
@@ -65,11 +66,24 @@ public class Set extends Command implements IntelligentCommand {
     /** The command flag handler for this command. */
     private final CommandFlagHandler handler;
 
+    /** The controller to use to set settings. */
+    private final IdentityController identityController;
+    /** The factory to use to create new identities. */
+    private final IdentityFactory identityFactory;
+
     /**
      * Creates a new instance of Set.
+     *
+     * @param identityController The controller to use to set settings.
+     * @param identityFactory The factory to use to create new identities.
      */
-    public Set() {
+    public Set(
+            final IdentityController identityController,
+            final IdentityFactory identityFactory) {
         super();
+
+        this.identityController = identityController;
+        this.identityFactory = identityFactory;
 
         unsetFlag.addDisabled(appendFlag);
         appendFlag.addDisabled(unsetFlag);
@@ -90,8 +104,8 @@ public class Set extends Command implements IntelligentCommand {
             return;
         }
 
-        Identity identity = IdentityManager.getIdentityManager().getGlobalConfigIdentity();
-        ConfigManager manager = IdentityManager.getIdentityManager().getGlobalConfiguration();
+        Identity identity = identityController.getGlobalConfigIdentity();
+        ConfigManager manager = identityController.getGlobalConfiguration();
 
         if (res.hasFlag(serverFlag)) {
             if (origin.getServer() == null) {
@@ -112,7 +126,7 @@ public class Set extends Command implements IntelligentCommand {
             }
 
             final Channel channel = ((ChannelCommandContext) context).getChannel();
-            identity = IdentityManager.getIdentityManager().createChannelConfig(
+            identity = identityFactory.createChannelConfig(
                     origin.getServer().getNetwork(), channel.getName());
             manager = channel.getConfigManager();
         }

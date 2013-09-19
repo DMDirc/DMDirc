@@ -27,6 +27,7 @@ import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.plugins.PluginManager;
 
@@ -35,13 +36,18 @@ import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import clover.retrotranslator.edu.emory.mathcs.backport.java.util.Arrays;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NewServerTest {
 
+    @Mock private IdentityController identityController;
+    @Mock private Identity identity;
     @Mock private FrameContainer container;
     @Mock private PluginManager pluginManager;
     @Mock private ServerFactory factory;
@@ -51,9 +57,9 @@ public class NewServerTest {
     @Before
     public void setup() {
         TestMain.getTestMain();
-        MockitoAnnotations.initMocks(this);
         when(factory.createServer(any(URI.class), any(Identity.class))).thenReturn(server);
-        command = new NewServer(factory, pluginManager);
+        when(identityController.getIdentitiesByType("profile")).thenReturn(Arrays.asList(new Identity[] { identity }));
+        command = new NewServer(factory, pluginManager, identityController);
     }
 
     @Test

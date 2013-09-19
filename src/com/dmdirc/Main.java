@@ -134,7 +134,7 @@ public class Main implements LifecycleController {
 
         clp.applySettings();
 
-        new CommandLoader(this, serverManager, pluginManager)
+        new CommandLoader(this, serverManager, pluginManager, IdentityManager.getIdentityManager())
                 .loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {

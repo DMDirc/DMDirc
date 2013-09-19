@@ -31,7 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -60,18 +60,24 @@ public class NewServer extends Command implements IntelligentCommand {
     /** Plugin manager to query for available services. */
     private final PluginManager pluginManager;
 
+    /** Identity controller to use to find profiles. */
+    private final IdentityController identityController;
+
     /**
      * Creates a new newserver command which will use the specified factory
      * to construct servers.
      *
      * @param serverFactory The factory to use to construct servers
      * @param pluginManager The plugin manager to use to query available services.
+     * @param identityController Identity controller to use to find profiles.
      */
     public NewServer(
             final ServerFactory serverFactory,
-            final PluginManager pluginManager) {
+            final PluginManager pluginManager,
+            final IdentityController identityController) {
         this.serverFactory = serverFactory;
         this.pluginManager = pluginManager;
+        this.identityController = identityController;
     }
 
     /** {@inheritDoc} */
@@ -102,8 +108,7 @@ public class NewServer extends Command implements IntelligentCommand {
         }
 
         final Server server = serverFactory.createServer(address,
-                IdentityManager.getIdentityManager()
-                .getIdentitiesByType("profile").get(0));
+                identityController.getIdentitiesByType("profile").get(0));
         server.connect();
     }
 
@@ -159,7 +164,7 @@ public class NewServer extends Command implements IntelligentCommand {
             final CommandArguments args) {
 
         boolean ssl = false;
-        String host = "";
+        String host;
         String pass = null;
         int port = 6667;
         int offset = 0;
