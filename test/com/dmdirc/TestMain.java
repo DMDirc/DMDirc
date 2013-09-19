@@ -1,11 +1,14 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
 
+import java.io.File;
+import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 /**
@@ -18,21 +21,25 @@ public class TestMain extends Main {
     private final IdentityManager identityManager;
     private final ServerManager serverManager;
     private final ActionManager actionManager;
+    private final String configdir;
 
     public TestMain(final IdentityManager identityManager,
             final ServerManager serverManager,
-            final ActionManager actionManager) {
-        super(identityManager, serverManager, actionManager);
+            final ActionManager actionManager,
+            final CommandLineParser commandLineParser,
+            final String configDir) {
+        super(identityManager, serverManager, actionManager, commandLineParser, configDir);
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
+        this.configdir = configDir;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void init(final String[] args) {
+    public void init() {
         try {
-            IdentityManager.getIdentityManager().initialise(getConfigDir());
+            IdentityManager.getIdentityManager().initialise(configdir);
         } catch (InvalidIdentityFileException ex) {
             // If a bad config dir exists, try to continue anyway, maybe the
             // test doesn't need it.
@@ -41,8 +48,8 @@ public class TestMain extends Main {
         }
 
         final String fs = System.getProperty("file.separator");
-        final String pluginDirectory = getConfigDir() + "plugins" + fs;
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), pluginDirectory);
+        final String pluginDirectory = configdir + "plugins" + fs;
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), actionManager, pluginDirectory);
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
 
@@ -72,8 +79,16 @@ public class TestMain extends Main {
             final ActionManager actionManager = new ActionManager(serverManager, identityManager);
             ActionManager.setActionManager(actionManager);
 
-            instance = new TestMain(identityManager, serverManager, actionManager);
-            instance.init(new String[0]);
+            try {
+                File tempFile = File.createTempFile("dmdirc", "test");
+                tempFile.delete();
+                tempFile.mkdir();
+                tempFile.deleteOnExit();
+                instance = new TestMain(identityManager, serverManager, actionManager, null, tempFile.getAbsolutePath() + File.separator);
+                instance.init();
+            } catch (IOException ex) {
+                // Blargh.
+            }
         }
         return instance;
     }

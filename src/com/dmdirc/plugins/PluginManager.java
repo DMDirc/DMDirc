@@ -22,9 +22,9 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -64,6 +64,9 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** The identity controller to use to find configuration options. */
     private final IdentityController identityController;
 
+    /** The action controller to use for events. */
+    private final ActionController actionController;
+
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<>();
 
@@ -74,16 +77,21 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Creates a new instance of PluginManager.
      *
      * @param identityController The identity controller to use for configuration options.
+     * @param actionController The action controller to use for events.
      * @param directory The directory to load plugins from.
      */
-    public PluginManager(final IdentityController identityController, final String directory) {
+    public PluginManager(
+            final IdentityController identityController,
+            final ActionController actionController,
+            final String directory) {
         this.identityController = identityController;
+        this.actionController = actionController;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
-        ActionManager.getActionManager().registerListener(this,
+
+        actionController.registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
                 CoreActionType.CLIENT_PREFS_CLOSED);
-        refreshPlugins();
     }
 
     /**
@@ -255,8 +263,7 @@ public class PluginManager implements ActionListener, ServiceManager {
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.PLUGIN_REFRESH, null, this);
+            actionController.triggerEvent(CoreActionType.PLUGIN_REFRESH, null, this);
             return true;
         } catch (MalformedURLException mue) {
             Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin "
@@ -407,8 +414,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             plugins.addAll(newPlugins);
         }
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.PLUGIN_REFRESH, null, this);
+        actionController.triggerEvent(CoreActionType.PLUGIN_REFRESH, null, this);
     }
 
     /**

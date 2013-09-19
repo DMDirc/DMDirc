@@ -24,6 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandline.CommandLineOptionsModule;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
@@ -81,8 +84,11 @@ public class Main implements LifecycleController {
     /** The action manager the client will use. */
     private final ActionManager actionManager;
 
+    /** The command-line parser used for this instance. */
+    private final CommandLineParser commandLineParser;
+
     /** The config dir to use for the client. */
-    private String configdir;
+    private final String configdir;
 
     /** Instance of main, protected to allow subclasses direct access. */
     @Deprecated
@@ -97,15 +103,21 @@ public class Main implements LifecycleController {
      * @param identityManager The identity manager the client will use.
      * @param serverManager The server manager the client will use.
      * @param actionManager The action manager the client will use.
+     * @param commandLineParser The command-line parser used for this instance.
+     * @param configDir The base configuration directory to use.
      */
     @Inject
     public Main(
             final IdentityManager identityManager,
             final ServerManager serverManager,
-            final ActionManager actionManager) {
+            final ActionManager actionManager,
+            final CommandLineParser commandLineParser,
+            @Directory(DirectoryType.BASE) final String configDir) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
+        this.commandLineParser = commandLineParser;
+        this.configdir = configDir;
     }
 
     /**
@@ -116,9 +128,11 @@ public class Main implements LifecycleController {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         try {
-            ObjectGraph graph = ObjectGraph.create(new ClientModule());
+            ObjectGraph graph = ObjectGraph.create(
+                    new ClientModule(),
+                    new CommandLineOptionsModule(new CommandLineParser(args)));
             mainInstance = graph.get(Main.class);
-            mainInstance.init(args);
+            mainInstance.init();
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
                     ex);
@@ -130,16 +144,11 @@ public class Main implements LifecycleController {
      *
      * @param args The command line arguments
      */
-    public void init(final String[] args) {
+    public void init() {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
-        final CommandLineParser clp = new CommandLineParser(args);
-        if (clp.getConfigDirectory() != null) {
-            configdir = clp.getConfigDirectory();
-        }
-
         try {
-            identityManager.initialise(getConfigDir());
+            identityManager.initialise(configdir);
         } catch (InvalidIdentityFileException iife) {
             handleInvalidConfigFile();
         }
@@ -149,13 +158,14 @@ public class Main implements LifecycleController {
         MessageSinkManager.getManager().loadDefaultSinks();
 
         final String fs = System.getProperty("file.separator");
-        final String pluginDirectory = getConfigDir() + "plugins" + fs;
-        pluginManager = new PluginManager(identityManager, pluginDirectory);
+        final String pluginDirectory = configdir + "plugins" + fs;
+        pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
+        pluginManager.refreshPlugins();
         checkBundledPlugins(pluginManager, identityManager.getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
-        clp.applySettings(identityManager.getGlobalConfigIdentity());
+        commandLineParser.applySettings(identityManager.getGlobalConfigIdentity());
 
         new CommandLoader(this, serverManager, pluginManager, identityManager)
                 .loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
@@ -179,7 +189,7 @@ public class Main implements LifecycleController {
         actionManager.loadUserActions();
         actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
 
-        clp.processArguments(serverManager);
+        commandLineParser.processArguments(serverManager);
 
         GlobalWindow.init();
 
@@ -273,12 +283,12 @@ public class Main implements LifecycleController {
         // Let command-line users know what is happening.
         System.out.println(message.replace("<br>", "\n"));
 
-        final File configFile = new File(getConfigDir() + "dmdirc.config");
-        final File newConfigFile = new File(getConfigDir() + "dmdirc.config." + date);
+        final File configFile = new File(configdir + "dmdirc.config");
+        final File newConfigFile = new File(configdir + "dmdirc.config." + date);
 
         if (configFile.renameTo(newConfigFile)) {
             try {
-                IdentityManager.getIdentityManager().initialise(getConfigDir());
+                identityManager.initialise(configdir);
             } catch (InvalidIdentityFileException iife2) {
                 // This shouldn't happen!
                 Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife2);
@@ -429,61 +439,6 @@ public class Main implements LifecycleController {
     }
 
     /**
-     * Returns the application's config directory.
-     *
-     * @return configuration directory
-     */
-    protected String getConfigDir() {
-        if (configdir == null) {
-            initialiseConfigDir();
-        }
-
-        return configdir;
-    }
-
-    /**
-     * Initialises the location of the configuration directory.
-     */
-    protected void initialiseConfigDir() {
-        final String fs = System.getProperty("file.separator");
-        final String osName = System.getProperty("os.name");
-
-        if (System.getenv("DMDIRC_HOME") != null) {
-            configdir = System.getenv("DMDIRC_HOME");
-        } else if (osName.startsWith("Mac OS")) {
-            configdir = System.getProperty("user.home") + fs + "Library"
-                    + fs + "Preferences" + fs + "DMDirc" + fs;
-        } else if (osName.startsWith("Windows")) {
-            if (System.getenv("APPDATA") == null) {
-                configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
-            } else {
-                configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-            }
-        } else {
-            configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
-            final File testFile = new File(configdir);
-            if (!testFile.exists()) {
-                final String configHome = System.getenv("XDG_CONFIG_HOME");
-                configdir = (configHome == null || configHome.isEmpty())
-                        ? System.getProperty("user.home") + fs + ".config" + fs
-                        : configHome;
-                configdir += fs + "DMDirc" + fs;
-            }
-        }
-
-        configdir = new File(configdir).getAbsolutePath() + fs;
-    }
-
-    /**
-     * Sets the config directory for this client.
-     *
-     * @param newdir The new configuration directory
-     */
-    public void setConfigDir(final String newdir) {
-        configdir = newdir;
-    }
-
-    /**
      * Extracts plugins bundled with DMDirc to the user's profile's plugin
      * directory.
      *
@@ -495,7 +450,7 @@ public class Main implements LifecycleController {
                 .getResourcesStartingWithAsBytes("plugins");
         for (Map.Entry<String, byte[]> resource : resources.entrySet()) {
             try {
-                final String resourceName = getConfigDir() + "plugins"
+                final String resourceName = configdir + "plugins"
                         + resource.getKey().substring(7);
 
                 if (prefix != null && !resource.getKey().substring(8).startsWith(prefix)) {

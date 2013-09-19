@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.IdentityController;
 
@@ -34,7 +35,7 @@ import dagger.Provides;
 /**
  * Provides dependencies for the client.
  */
-@Module(injects = Main.class)
+@Module(injects = Main.class, includes = CommandLineOptionsModule.class)
 public class ClientModule {
 
     /**
