@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.LifecycleController;
+import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.channel.Ban;
 import com.dmdirc.commandparser.commands.channel.Cycle;
@@ -71,6 +71,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
+import javax.inject.Inject;
+
 /**
  * Facilitates loading of core commands into a {@link CommandManager}.
  */
@@ -96,6 +98,7 @@ public class CommandLoader {
      * @param pluginManager The plugin manager to pass to plugin-dependent commands.
      * @param identityManager The identity manager to pass to config-related commands.
      */
+    @Inject
     public CommandLoader(
             final LifecycleController lifecycleController,
             final ServerManager serverManager,

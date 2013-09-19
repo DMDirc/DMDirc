@@ -30,7 +30,8 @@ public class TestMain extends Main {
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
             final String configDir) {
-        super(identityManager, serverManager, actionManager, commandLineParser, pluginManager, configDir);
+        super(identityManager, serverManager, actionManager, commandLineParser,
+                pluginManager, null, configDir);
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;

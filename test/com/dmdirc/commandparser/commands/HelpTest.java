@@ -21,7 +21,7 @@
  */
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.LifecycleController;
+import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.ServerManager;
 import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandInfo;

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineOptionsModule;
@@ -90,6 +91,9 @@ public class Main implements LifecycleController {
     /** The plugin manager the client will use. */
     private final PluginManager pluginManager;
 
+    /** The command loader to use to initialise the command manager. */
+    private final CommandLoader commandLoader;
+
     /** The config dir to use for the client. */
     private final String configdir;
 
@@ -105,6 +109,7 @@ public class Main implements LifecycleController {
      * @param actionManager The action manager the client will use.
      * @param commandLineParser The command-line parser used for this instance.
      * @param pluginManager The plugin manager the client will use.
+     * @param commandLoader The command loader to use to initialise the command manager.
      * @param configDir The base configuration directory to use.
      */
     @Inject
@@ -114,12 +119,14 @@ public class Main implements LifecycleController {
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
+            final CommandLoader commandLoader,
             @Directory(DirectoryType.BASE) final String configDir) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
+        this.commandLoader = commandLoader;
         this.configdir = configDir;
     }
 
@@ -167,8 +174,7 @@ public class Main implements LifecycleController {
 
         commandLineParser.applySettings(identityManager.getGlobalConfigIdentity());
 
-        new CommandLoader(this, serverManager, pluginManager, identityManager)
-                .loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
+        commandLoader.loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);
@@ -400,27 +406,47 @@ public class Main implements LifecycleController {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use a proper {@link LifecycleController}.
+     */
     @Override
+    @Deprecated
     public void quit() {
         quit(0);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use a proper {@link LifecycleController}.
+     */
     @Override
+    @Deprecated
     public void quit(final int exitCode) {
-        quit(IdentityManager.getIdentityManager().getGlobalConfiguration().getOption("general",
+        quit(identityManager.getGlobalConfiguration().getOption("general",
                 "closemessage"), exitCode);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use a proper {@link LifecycleController}.
+     */
     @Override
+    @Deprecated
     public void quit(final String reason) {
         quit(reason, 0);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use a proper {@link LifecycleController}.
+     */
     @Override
+    @Deprecated
     public void quit(final String reason, final int exitCode) {
         serverManager.disconnectAll(reason);
 

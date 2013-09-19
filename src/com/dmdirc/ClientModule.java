@@ -27,6 +27,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.LifecycleController;
 
 import javax.inject.Singleton;
 
@@ -98,6 +99,17 @@ public class ClientModule {
     @Provides
     public ActionController getActionController(final ActionManager actionManager) {
         return actionManager;
+    }
+
+    /**
+     * Provides a lifecycle controller.
+     *
+     * @param controller The concrete implementation to use.
+     * @return The lifecycle controller the app should use.
+     */
+    @Provides
+    public LifecycleController getLifecycleController(final SystemLifecycleController controller) {
+        return controller;
     }
 
 }

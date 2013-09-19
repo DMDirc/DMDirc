@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.interfaces;
 
 /**
  * Provides methods that control the lifecycle of the application.
