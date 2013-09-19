@@ -107,17 +107,19 @@ public class Main implements LifecycleController {
     public void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
-        IdentityManager.setIdentityManager(new IdentityManager());
-        IdentityManager.getIdentityManager().loadVersionIdentity();
-        serverManager = new ServerManager(
-                new ParserFactoryProvider(),
-                IdentityManager.getIdentityManager());
-        ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
+        final IdentityManager identityManager = new IdentityManager();
+        IdentityManager.setIdentityManager(identityManager);
+        identityManager.loadVersionIdentity();
+
+        serverManager = new ServerManager(new ParserFactoryProvider(), identityManager);
+
+        final ActionManager actionManager = new ActionManager(serverManager, identityManager);
+        ActionManager.setActionManager(actionManager);
 
         final CommandLineParser clp = new CommandLineParser(this, args);
 
         try {
-            IdentityManager.getIdentityManager().initialise(getConfigDir());
+            identityManager.initialise(getConfigDir());
         } catch (InvalidIdentityFileException iife) {
             handleInvalidConfigFile();
         }
@@ -128,15 +130,15 @@ public class Main implements LifecycleController {
 
         final String fs = System.getProperty("file.separator");
         final String pluginDirectory = getConfigDir() + "plugins" + fs;
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), pluginDirectory);
-        checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
+        pluginManager = new PluginManager(identityManager, pluginDirectory);
+        checkBundledPlugins(pluginManager, identityManager.getGlobalConfiguration());
 
         ThemeManager.loadThemes();
 
         clp.applySettings();
 
-        new CommandLoader(this, serverManager, pluginManager, IdentityManager.getIdentityManager())
-                .loadCommands(CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager));
+        new CommandLoader(this, serverManager, pluginManager, identityManager)
+                .loadCommands(CommandManager.initCommandManager(identityManager, serverManager));
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
             ensureExists(pluginManager, service);
@@ -152,14 +154,10 @@ public class Main implements LifecycleController {
 
         doFirstRun();
 
-        ActionManager.getActionManager().initialise();
-
+        actionManager.initialise();
         pluginManager.doAutoLoad();
-
-        ActionManager.getActionManager().loadUserActions();
-
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_OPENED, null);
+        actionManager.loadUserActions();
+        actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
 
         clp.processArguments();
 
@@ -169,10 +167,9 @@ public class Main implements LifecycleController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.CLIENT_CLOSED, null);
+                actionManager.triggerEvent(CoreActionType.CLIENT_CLOSED, null);
                 serverManager.disconnectAll("Unexpected shutdown");
-                IdentityManager.getIdentityManager().saveAll();
+                identityManager.saveAll();
             }
         }, "Shutdown thread"));
     }

@@ -58,46 +58,38 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ActionManager implements ActionController {
 
-    /** The identity manager to load configuration from. */
-    private final IdentityController identityManager;
-
     /** The ActionManager Instance. */
     private static ActionManager me;
+
+    /** The identity manager to load configuration from. */
+    private final IdentityController identityManager;
 
     /** The ServerManager currently in use. */
     private final ServerManager serverManager;
 
     /** A list of registered action types. */
-    private final List<ActionType> types
-            = new ArrayList<ActionType>();
+    private final List<ActionType> types = new ArrayList<>();
 
     /** A list of registered action components. */
-    private final List<ActionComponent> components
-            = new ArrayList<ActionComponent>();
+    private final List<ActionComponent> components = new ArrayList<>();
 
     /** A list of registered action comparisons. */
-    private final List<ActionComparison> comparisons
-            = new ArrayList<ActionComparison>();
+    private final List<ActionComparison> comparisons = new ArrayList<>();
 
     /** A map linking types and a list of actions that're registered for them. */
-    private final MapList<ActionType, Action> actions
-            = new MapList<ActionType, Action>();
+    private final MapList<ActionType, Action> actions = new MapList<>();
 
     /** A map linking groups and a list of actions that're in them. */
-    private final Map<String, ActionGroup> groups
-            = new HashMap<String, ActionGroup>();
+    private final Map<String, ActionGroup> groups = new HashMap<>();
 
     /** A map of objects to synchronise on for concurrency groups. */
-    private final Map<String, Object> locks
-            = new HashMap<String, Object>();
+    private final Map<String, Object> locks = new HashMap<>();
 
     /** A map of the action type groups to the action types within. */
-    private final MapList<String, ActionType> typeGroups
-            = new MapList<String, ActionType>();
+    private final MapList<String, ActionType> typeGroups = new MapList<>();
 
     /** The listeners that we have registered. */
-    private final MapList<ActionType, ActionListener> listeners
-            = new MapList<ActionType, ActionListener>();
+    private final MapList<ActionType, ActionListener> listeners = new MapList<>();
 
     /** Indicates whether or not user actions should be killed (not processed). */
     @ConfigBinding(domain="actions", key="killswitch")
@@ -109,7 +101,7 @@ public class ActionManager implements ActionController {
      * @param serverManager The ServerManager in use.
      * @param identityManager The IdentityManager to load configuration from.
      */
-    private ActionManager(final ServerManager serverManager, final IdentityController identityManager) {
+    public ActionManager(final ServerManager serverManager, final IdentityController identityManager) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
@@ -127,12 +119,11 @@ public class ActionManager implements ActionController {
     /**
      * Create the singleton instance of the Action Manager.
      *
-     * @return The singleton ActionManager instance
+     * @param actionManager The manager to return for calls to {@link #getActionManager()}.
      */
     @Deprecated
-    public static ActionManager initActionManager(final ServerManager serverManager, final IdentityController identityManager) {
-        me = new ActionManager(serverManager, identityManager);
-        return me;
+    public static void setActionManager(final ActionManager actionManager) {
+        me = actionManager;
     }
 
     /**
@@ -237,7 +228,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public MapList<String, ActionType> getGroupedTypes() {
-        return new MapList<String, ActionType>(typeGroups);
+        return new MapList<>(typeGroups);
     }
 
     /** {@inheritDoc} */
@@ -365,8 +356,7 @@ public class ActionManager implements ActionController {
         boolean res = false;
 
         if (listeners.containsKey(type)) {
-            for (ActionListener listener
-                    : new ArrayList<ActionListener>(listeners.get(type))) {
+            for (ActionListener listener : new ArrayList<>(listeners.get(type))) {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
@@ -402,7 +392,7 @@ public class ActionManager implements ActionController {
         log.trace("Executing actions for event of type {}", type);
 
         if (actions.containsKey(type)) {
-            for (Action action : new ArrayList<Action>(actions.get(type))) {
+            for (Action action : new ArrayList<>(actions.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
                         res |= action.trigger(getServerManager(), format, arguments);
@@ -417,10 +407,7 @@ public class ActionManager implements ActionController {
                             res |= action.trigger(getServerManager(), format, arguments);
                         }
                     }
-                } catch (LinkageError e) {
-                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
-                            + e.getMessage(), e);
-                } catch (Exception e) {
+                } catch (LinkageError | Exception e) {
                     Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
                             + e.getMessage(), e);
                 }
@@ -532,7 +519,7 @@ public class ActionManager implements ActionController {
     public List<ActionType> findCompatibleTypes(final ActionType type) {
         Logger.assertTrue(type != null);
 
-        final List<ActionType> res = new ArrayList<ActionType>();
+        final List<ActionType> res = new ArrayList<>();
         for (ActionType target : types) {
             if (!target.equals(type) && target.getType().equals(type.getType())) {
                 res.add(target);
@@ -547,7 +534,7 @@ public class ActionManager implements ActionController {
     public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
         Logger.assertTrue(target != null);
 
-        final List<ActionComponent> res = new ArrayList<ActionComponent>();
+        final List<ActionComponent> res = new ArrayList<>();
         for (ActionComponent subject : components) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
@@ -562,7 +549,7 @@ public class ActionManager implements ActionController {
     public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
         Logger.assertTrue(target != null);
 
-        final List<ActionComparison> res = new ArrayList<ActionComparison>();
+        final List<ActionComparison> res = new ArrayList<>();
         for (ActionComparison subject : comparisons) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
