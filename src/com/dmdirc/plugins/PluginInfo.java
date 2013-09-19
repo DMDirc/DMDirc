@@ -79,20 +79,20 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** Is this plugin only loaded temporarily? */
     private boolean tempLoaded;
     /** List of classes this plugin has. */
-    private final List<String> myClasses = new ArrayList<String>();
+    private final List<String> myClasses = new ArrayList<>();
     /** Last Error Message. */
     @Getter
     private String lastError = "No Error";
     /** Are we trying to load? */
     private boolean isLoading;
     /** List of services we provide. */
-    private final List<Service> provides = new ArrayList<Service>();
+    private final List<Service> provides = new ArrayList<>();
     /** List of children of this plugin. */
-    private final List<PluginInfo> children = new ArrayList<PluginInfo>();
+    private final List<PluginInfo> children = new ArrayList<>();
     /** Map of exports. */
-    private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
+    private final Map<String, ExportInfo> exports = new HashMap<>();
     /** List of identities. */
-    private final List<Identity> identities = new ArrayList<Identity>();
+    private final List<Identity> identities = new ArrayList<>();
 
     /**
      * Create a new PluginInfo.
@@ -164,13 +164,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             injector.addParameter(parentPlugin);
         }
 
+        // TODO: This should be switched to using a full DI framework.
         injector.addParameter(PluginManager.class, metaData.getManager());
         injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
-        injector.addParameter(Main.class, metaData.getManager().getMain());
+        injector.addParameter(Main.class, Main.mainInstance);
         injector.addParameter(PluginMetaData.class, metaData);
         injector.addParameter(IdentityManager.getIdentityManager());
-        injector.addParameter(ServerManager.class, metaData.getManager().getMain().getServerManager());
+        injector.addParameter(ServerManager.class, Main.mainInstance.getServerManager());
         injector.addParameter(CommandManager.getCommandManager());
         injector.addParameter(MessageSinkManager.class, MessageSinkManager.getManager());
         injector.addParameter(WindowManager.class, WindowManager.getWindowManager());
@@ -188,8 +189,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws IOException if there is an error with the ResourceManager.
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
-        final TreeMap<String, InputStream> licences =
-                new TreeMap<String, InputStream>(String.CASE_INSENSITIVE_ORDER);
+        final TreeMap<String, InputStream> licences = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         licences.putAll(getResourceManager().getResourcesStartingWithAsInputStreams(
                 "META-INF/licences/"));
         return licences;
@@ -400,7 +400,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     @Override
     public List<Service> getServices() {
         synchronized (provides) {
-            return new ArrayList<Service>(provides);
+            return new ArrayList<>(provides);
         }
     }
 
@@ -560,12 +560,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             try {
                 plugin.onLoad();
-            } catch (LinkageError e) {
-                lastError = "Error in onLoad for " + metaData.getName() + ":"
-                        + e.getMessage();
-                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
-                unloadPlugin();
-            } catch (Exception e) {
+            } catch (LinkageError | Exception e) {
                 lastError = "Error in onLoad for " + metaData.getName() + ":"
                         + e.getMessage();
                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
@@ -706,12 +701,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         if (!tempLoaded) {
                             try {
                                 plugin.onLoad();
-                            } catch (LinkageError e) {
-                                lastError = "Error in onLoad for "
-                                        + metaData.getName() + ":" + e.getMessage();
-                                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
-                                unloadPlugin();
-                            } catch (Exception e) {
+                            } catch (LinkageError | Exception e) {
                                 lastError = "Error in onLoad for "
                                         + metaData.getName() + ":" + e.getMessage();
                                 Logger.userError(ErrorLevel.MEDIUM, lastError, e);
@@ -794,11 +784,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 // Now unload ourself
                 try {
                     plugin.onUnload();
-                } catch (Exception e) {
-                    lastError = "Error in onUnload for " + metaData.getName()
-                            + ":" + e + " - " + e.getMessage();
-                    Logger.userError(ErrorLevel.MEDIUM, lastError, e);
-                } catch (LinkageError e) {
+                } catch (Exception | LinkageError e) {
                     lastError = "Error in onUnload for " + metaData.getName()
                             + ":" + e + " - " + e.getMessage();
                     Logger.userError(ErrorLevel.MEDIUM, lastError, e);

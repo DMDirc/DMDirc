@@ -22,7 +22,6 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
@@ -54,30 +53,28 @@ import java.util.Map;
 public class PluginManager implements ActionListener, ServiceManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
-    private final Map<String, PluginInfo> knownPlugins = new HashMap<String, PluginInfo>();
+    private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
 
     /** Set of known plugins' metadata. */
-    private final Collection<PluginMetaData> plugins = new HashSet<PluginMetaData>();
+    private final Collection<PluginMetaData> plugins = new HashSet<>();
 
     /** Directory where plugins are stored. */
     private final String myDir;
 
     /** Map of services. */
-    private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
-
-    /** Parent. */
-    private final Main main;
+    private final Map<String, Map<String, Service>> services = new HashMap<>();
 
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
 
     /**
      * Creates a new instance of PluginManager.
+     *
+     * @param identityManager The identity manager to use for configuration options.
      */
-    public PluginManager(final IdentityManager identityManager, final Main main) {
+    public PluginManager(final IdentityManager identityManager) {
         final String fs = System.getProperty("file.separator");
         myDir = identityManager.getConfigDir() + "plugins" + fs;
-        this.main = main;
         this.globalClassLoader = new GlobalClassLoader(this);
         ActionManager.getActionManager().registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
@@ -92,17 +89,6 @@ public class PluginManager implements ActionListener, ServiceManager {
      */
     public GlobalClassLoader getGlobalClassLoader() {
         return globalClassLoader;
-    }
-
-    /**
-     * Get the instance of Main that owns this.
-     *
-     * @return main that owns this.
-     * @Deprecated Global state is bad.
-     */
-    @Deprecated
-    public Main getMain() {
-        return main;
     }
 
     /** {@inheritDoc} */
@@ -126,7 +112,7 @@ public class PluginManager implements ActionListener, ServiceManager {
                 return service;
             }
         } else if (create) {
-            final Map<String, Service> map = new HashMap<String, Service>();
+            final Map<String, Service> map = new HashMap<>();
             final Service service = new Service(type, name);
             map.put(name, service);
             services.put(type, map);
@@ -190,17 +176,17 @@ public class PluginManager implements ActionListener, ServiceManager {
         // Find the type first
         if (services.containsKey(type)) {
             final Map<String, Service> map = services.get(type);
-            return new ArrayList<Service>(map.values());
+            return new ArrayList<>(map.values());
         }
 
-        return new ArrayList<Service>();
+        return new ArrayList<>();
     }
 
     /** {@inheritDoc} */
     @Override
     public List<Service> getAllServices() {
         // Find the type first
-        final List<Service> allServices = new ArrayList<Service>();
+        final List<Service> allServices = new ArrayList<>();
         for (Map<String, Service> map : services.values()) {
             allServices.addAll(map.values());
         }
@@ -411,7 +397,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         synchronized (plugins) {
             plugins.removeAll(newPlugins);
 
-            for (PluginMetaData oldPlugin : new HashSet<PluginMetaData>(plugins)) {
+            for (PluginMetaData oldPlugin : new HashSet<>(plugins)) {
                 delPlugin(oldPlugin.getRelativeFilename());
             }
 
@@ -428,7 +414,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * available updates.
      */
     public void applyUpdates() {
-        final Deque<File> dirs = new LinkedList<File>();
+        final Deque<File> dirs = new LinkedList<>();
 
         dirs.add(new File(myDir));
 
@@ -454,11 +440,10 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @return A list of all installed or known plugins
      */
     public Collection<PluginMetaData> getAllPlugins() {
-        final Collection<PluginMetaData> res
-                = new HashSet<PluginMetaData>(plugins.size());
+        final Collection<PluginMetaData> res = new HashSet<>(plugins.size());
 
-        final Deque<File> dirs = new LinkedList<File>();
-        final Collection<String> pluginPaths = new LinkedList<String>();
+        final Deque<File> dirs = new LinkedList<>();
+        final Collection<String> pluginPaths = new LinkedList<>();
 
         dirs.add(new File(myDir));
 
@@ -471,9 +456,9 @@ public class PluginManager implements ActionListener, ServiceManager {
             }
         }
 
-        final MapList<String, String> newServices = new MapList<String, String>();
-        final Map<String, PluginMetaData> newPluginsByName = new HashMap<String, PluginMetaData>();
-        final Map<String, PluginMetaData> newPluginsByPath = new HashMap<String, PluginMetaData>();
+        final MapList<String, String> newServices = new MapList<>();
+        final Map<String, PluginMetaData> newPluginsByName = new HashMap<>();
+        final Map<String, PluginMetaData> newPluginsByPath = new HashMap<>();
 
         // Initialise all of our metadata objects
         for (String target : pluginPaths) {
@@ -554,7 +539,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @return Collection<PluginInfo> of known plugins.
      */
     public Collection<PluginInfo> getPluginInfos() {
-        return new ArrayList<PluginInfo>(knownPlugins.values());
+        return new ArrayList<>(knownPlugins.values());
     }
 
     /** {@inheritDoc} */
@@ -568,10 +553,10 @@ public class PluginManager implements ActionListener, ServiceManager {
                 if (pi.isLoaded() || pi.isTempLoaded()) {
                     try {
                         pi.getPlugin().showConfig((PreferencesDialogModel) arguments[0]);
-                    } catch (LinkageError le) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getMetaData().getFriendlyName() + "), unable to show config (" + le + ")", le);
-                    } catch (Exception ex) {
-                        Logger.userError(ErrorLevel.MEDIUM, "Error with plugin (" + pi.getMetaData().getFriendlyName() + "), unable to show config (" + ex + ")", ex);
+                    } catch (LinkageError | Exception le) {
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "Error with plugin (" + pi.getMetaData().getFriendlyName()
+                                + "), unable to show config (" + le + ")", le);
                     }
                 }
             }

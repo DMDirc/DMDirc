@@ -125,7 +125,7 @@ public class Main implements LifecycleController {
 
         MessageSinkManager.getManager().loadDefaultSinks();
 
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager());
         checkBundledPlugins(pluginManager, IdentityManager.getIdentityManager().getGlobalConfiguration());
 
         ThemeManager.loadThemes();

@@ -40,7 +40,7 @@ public class TestMain extends Main {
                 parserFactoryProvider,
                 IdentityManager.getIdentityManager());
         ActionManager.initActionManager(serverManager, IdentityManager.getIdentityManager());
-        pluginManager = new PluginManager(IdentityManager.getIdentityManager(), this);
+        pluginManager = new PluginManager(IdentityManager.getIdentityManager());
         pluginManager.refreshPlugins();
         CommandManager.initCommandManager(IdentityManager.getIdentityManager(), serverManager);
 
