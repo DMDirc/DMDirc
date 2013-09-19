@@ -41,12 +41,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
  */
+@Singleton
 public class ServerManager implements ServerFactory {
 
     /** All servers that currently exist. */
@@ -64,6 +67,7 @@ public class ServerManager implements ServerFactory {
      * @param parserFactoryProvider The provider of {@link ParserFactory}s to give to servers.
      * @param identityController The identity controller to use to find profiles.
      */
+    @Inject
     public ServerManager(
             final Provider<ParserFactory> parserFactoryProvider,
             final IdentityController identityController) {

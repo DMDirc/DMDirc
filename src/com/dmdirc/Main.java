@@ -57,7 +57,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Provider;
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
 
 /**
  * Main class, handles initialisation.
@@ -70,6 +72,15 @@ public class Main implements LifecycleController {
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
 
+    /** The identity manager the client will use. */
+    private final IdentityManager identityManager;
+
+    /** The server manager the client will use. */
+    private final ServerManager serverManager;
+
+    /** The action manager the client will use. */
+    private final ActionManager actionManager;
+
     /** The config dir to use for the client. */
     private String configdir;
 
@@ -80,8 +91,22 @@ public class Main implements LifecycleController {
     /** Instance of pluginmanager used by this Main. */
     protected PluginManager pluginManager;
 
-    /** Our ServerManager. */
-    protected ServerManager serverManager;
+    /**
+     * Creates a new instance of {@link Main}.
+     *
+     * @param identityManager The identity manager the client will use.
+     * @param serverManager The server manager the client will use.
+     * @param actionManager The action manager the client will use.
+     */
+    @Inject
+    public Main(
+            final IdentityManager identityManager,
+            final ServerManager serverManager,
+            final ActionManager actionManager) {
+        this.identityManager = identityManager;
+        this.serverManager = serverManager;
+        this.actionManager = actionManager;
+    }
 
     /**
      * Entry procedure.
@@ -91,7 +116,8 @@ public class Main implements LifecycleController {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         try {
-            mainInstance = new Main();
+            ObjectGraph graph = ObjectGraph.create(new ClientModule());
+            mainInstance = graph.get(Main.class);
             mainInstance.init(args);
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
@@ -106,15 +132,6 @@ public class Main implements LifecycleController {
      */
     public void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
-
-        final IdentityManager identityManager = new IdentityManager();
-        IdentityManager.setIdentityManager(identityManager);
-        identityManager.loadVersionIdentity();
-
-        serverManager = new ServerManager(new ParserFactoryProvider(), identityManager);
-
-        final ActionManager actionManager = new ActionManager(serverManager, identityManager);
-        ActionManager.setActionManager(actionManager);
 
         final CommandLineParser clp = new CommandLineParser(this, args);
 
@@ -507,18 +524,6 @@ public class Main implements LifecycleController {
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
             }
-        }
-    }
-
-    /**
-     * Temporary class to lazily provide {@link ParserFactory}s.
-     */
-    private class ParserFactoryProvider implements Provider<ParserFactory> {
-
-        /** {@inheritDoc} */
-        @Override
-        public ParserFactory get() {
-            return new ParserFactory(pluginManager);
         }
     }
 

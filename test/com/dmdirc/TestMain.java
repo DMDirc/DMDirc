@@ -6,29 +6,31 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
 
-import javax.inject.Provider;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
 
 /**
  * Main subclass to init things needed for testing.
  */
 public class TestMain extends Main {
+
     private static Main instance;
 
-    @Mock private Provider<ParserFactory> parserFactoryProvider;
+    private final IdentityManager identityManager;
+    private final ServerManager serverManager;
+    private final ActionManager actionManager;
 
-    public TestMain() { }
+    public TestMain(final IdentityManager identityManager,
+            final ServerManager serverManager,
+            final ActionManager actionManager) {
+        super(identityManager, serverManager, actionManager);
+        this.identityManager = identityManager;
+        this.serverManager = serverManager;
+        this.actionManager = actionManager;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void init(final String[] args) {
-        MockitoAnnotations.initMocks(this);
-
-        // TODO: Tests probably shouldn't rely on a config dir... Who knows
-        //       what the user has done with their config.
-        IdentityManager.setIdentityManager(new IdentityManager());
-        IdentityManager.getIdentityManager().loadVersionIdentity();
         try {
             IdentityManager.getIdentityManager().initialise(getConfigDir());
         } catch (InvalidIdentityFileException ex) {
@@ -37,10 +39,6 @@ public class TestMain extends Main {
             // DON'T do anything to the user's configuration... (so no calls
             // to handleInvalidConfigFile(); here)
         }
-        serverManager = new ServerManager(
-                parserFactoryProvider,
-                IdentityManager.getIdentityManager());
-        ActionManager.setActionManager(new ActionManager(serverManager, IdentityManager.getIdentityManager()));
 
         final String fs = System.getProperty("file.separator");
         final String pluginDirectory = getConfigDir() + "plugins" + fs;
@@ -63,7 +61,18 @@ public class TestMain extends Main {
      */
     public static Main getTestMain() {
         if (instance == null) {
-            instance = new TestMain();
+            // TODO: Tests probably shouldn't rely on a config dir... Who knows
+            //       what the user has done with their config.
+            final IdentityManager identityManager = new IdentityManager();
+            IdentityManager.setIdentityManager(identityManager);
+            IdentityManager.getIdentityManager().loadVersionIdentity();
+
+            final ServerManager serverManager = mock(ServerManager.class);
+
+            final ActionManager actionManager = new ActionManager(serverManager, identityManager);
+            ActionManager.setActionManager(actionManager);
+
+            instance = new TestMain(identityManager, serverManager, actionManager);
             instance.init(new String[0]);
         }
         return instance;
