@@ -21,15 +21,38 @@
  */
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestConfigManagerOptionToggle;
 
+import java.util.Collections;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FormatterTest {
 
-    private final TestConfigManagerOptionToggle mcm = new TestConfigManagerOptionToggle();
+    private TestConfigManagerOptionToggle mcm;
+
+    @Mock private IdentityManager identityManager;
+
+    @Before
+    public void setup() {
+        IdentityManager.setIdentityManager(identityManager);
+        when(identityManager.getIdentitiesForManager(any(ConfigManager.class)))
+                .thenReturn(Collections.<Identity>emptyList());
+
+        mcm = new TestConfigManagerOptionToggle();
+    }
 
     @Test
     public void testBasicFormats() {

@@ -27,6 +27,7 @@ public class TestMain extends Main {
 
         // TODO: Tests probably shouldn't rely on a config dir... Who knows
         //       what the user has done with their config.
+        IdentityManager.setIdentityManager(new IdentityManager());
         IdentityManager.getIdentityManager().loadVersionIdentity();
         try {
             IdentityManager.getIdentityManager().initialise(getConfigDir());

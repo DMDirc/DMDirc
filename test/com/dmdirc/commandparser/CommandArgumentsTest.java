@@ -22,23 +22,33 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CommandArgumentsTest {
 
-    private CommandController controller;
+    @Mock private CommandController controller;
+    @Mock private IdentityManager identityManager;
+    @Mock private ConfigManager configManager;
 
     @Before
     public void setUp() {
-        this.controller = mock(CommandController.class);
+        when(identityManager.getGlobalConfiguration()).thenReturn(configManager);
+        IdentityManager.setIdentityManager(identityManager);
+
         when(this.controller.getCommandChar()).thenReturn('/');
         when(this.controller.getSilenceChar()).thenReturn('.');
     }

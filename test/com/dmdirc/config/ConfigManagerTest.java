@@ -24,13 +24,27 @@ package com.dmdirc.config;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.validators.PermissiveValidator;
 
+import java.util.Collections;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ConfigManagerTest {
+
+    @Mock private IdentityManager identityManager;
+
+    @Before
+    public void setup() {
+        IdentityManager.setIdentityManager(identityManager);
+        when(identityManager.getIdentitiesForManager(any(ConfigManager.class)))
+                .thenReturn(Collections.<Identity>emptyList());
+    }
 
     @Test
     public void testNonExistantOption() {

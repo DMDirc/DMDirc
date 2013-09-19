@@ -54,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** A singleton instance of IdentityManager. */
-    private static final IdentityManager INSTANCE = new IdentityManager();
+    private static IdentityManager instance;
 
     /** Config Directory. */
     private String configDirectory;
@@ -88,7 +88,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     private ConfigManager globalconfig;
 
     /** Creates a new instance of IdentityManager. */
-    private IdentityManager() {
+    public IdentityManager() {
     }
 
     /** {@inheritDoc} */
@@ -473,7 +473,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** {@inheritDoc} */
     @Override
     public List<Identity> getIdentitiesForManager(final ConfigManager manager) {
-        final List<Identity> sources = new ArrayList<Identity>();
+        final List<Identity> sources = new ArrayList<>();
 
         synchronized (identities) {
             for (Identity identity : identities.safeGet(null)) {
@@ -602,7 +602,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @return A singleton instance of the IdentityManager.
      */
     public static IdentityManager getIdentityManager() {
-        return INSTANCE;
+        return instance;
+    }
+
+    /**
+     * Sets the singleton instance of the Identity Manager.
+     *
+     * @param identityManager The identity manager to use.
+     */
+    public static void setIdentityManager(IdentityManager identityManager) {
+        instance = identityManager;
     }
 
 }

@@ -23,22 +23,29 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Server;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActionComponentChainTest {
 
     @Mock private ActionManager actionManager;
+    @Mock private IdentityManager identityManager;
+    @Mock private ConfigManager configManager;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        IdentityManager.setIdentityManager(identityManager);
+        when(identityManager.getGlobalConfiguration()).thenReturn(configManager);
 
         when(actionManager.getComponent("SERVER_NAME"))
                 .thenReturn(CoreActionComponent.SERVER_NAME);

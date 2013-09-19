@@ -55,7 +55,7 @@ public class AliasWrapperTest {
 
         action = mock(Action.class);
         condition = mock(ActionCondition.class);
-        conditions = new ArrayList<ActionCondition>();
+        conditions = new ArrayList<>();
         aliasWrapper = new AliasWrapper(controller, TestMain.getTestMain().getServerManager());
 
         when(condition.getArg()).thenReturn(1);

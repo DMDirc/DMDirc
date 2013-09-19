@@ -107,6 +107,7 @@ public class Main implements LifecycleController {
     public void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
+        IdentityManager.setIdentityManager(new IdentityManager());
         IdentityManager.getIdentityManager().loadVersionIdentity();
         serverManager = new ServerManager(
                 new ParserFactoryProvider(),
