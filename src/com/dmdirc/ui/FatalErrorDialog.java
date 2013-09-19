@@ -217,11 +217,11 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             sendButton.setText("Sending...");
             restartButton.setEnabled(false);
             sendButton.setEnabled(false);
-            new SwingWorker() {
+            new SwingWorker<Void, Void>() {
 
                 /** {@inheritDoc} */
                 @Override
-                protected Object doInBackground() {
+                protected Void doInBackground() {
                     ErrorManager.getErrorManager().sendError(error);
                     return null;
                 }

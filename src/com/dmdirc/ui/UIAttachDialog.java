@@ -55,7 +55,7 @@ public class UIAttachDialog extends JDialog implements ActionListener,
     /** Sensible component gap. */
     private static final int GAP = 5;
     /** Services list. */
-    private final JList list;
+    private final JList<Service> list;
     /** Main instance. */
     private final Main main;
 
@@ -70,9 +70,9 @@ public class UIAttachDialog extends JDialog implements ActionListener,
     }
 
     /** Initialises the model with a list of UIs. */
-    private JList initList() {
-        final DefaultListModel model = new DefaultListModel();
-        final JList newList = new JList(model);
+    private JList<Service> initList() {
+        final DefaultListModel<Service> model = new DefaultListModel<Service>();
+        final JList<Service> newList = new JList<Service>(model);
         newList.setCellRenderer(new ServiceRenderer());
         newList.addListSelectionListener(this);
         final List<Service> services = main.getPluginManager()
@@ -149,7 +149,7 @@ public class UIAttachDialog extends JDialog implements ActionListener,
 
         /** {@inheritDoc} */
         @Override
-        public Component getListCellRendererComponent(final JList list,
+        public Component getListCellRendererComponent(final JList<?> list,
                 final Object value, final int index, final boolean isSelected,
                 final boolean cellHasFocus) {
             final Component label = super.getListCellRendererComponent(list,
