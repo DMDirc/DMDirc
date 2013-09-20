@@ -28,9 +28,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -48,7 +46,7 @@ public class AliasWrapper extends ActionGroup {
     private static AliasWrapper me;
 
     /** A list of registered alias names. */
-    private final List<String> aliases = new ArrayList<String>();
+    private final List<String> aliases = new ArrayList<>();
 
     /** Command controller to get command info from. */
     private final CommandController commandController;
@@ -73,12 +71,19 @@ public class AliasWrapper extends ActionGroup {
      *
      * @return A singleton instance of AliasWrapper
      */
-    public static synchronized AliasWrapper getAliasWrapper() {
-        if (me == null) {
-            me = new AliasWrapper(CommandManager.getCommandManager(), ActionManager.getActionManager().getServerManager());
-        }
-
+    @Deprecated
+    public static AliasWrapper getAliasWrapper() {
         return me;
+    }
+
+    /**
+     * Sets the alias wrapper that will be used as a singleton instance.
+     *
+     * @param wrapper The wrapper to use as a singleton.
+     */
+    @Deprecated
+    public static void setAliasWrapper(final AliasWrapper wrapper) {
+        me = wrapper;
     }
 
     /**
@@ -87,7 +92,7 @@ public class AliasWrapper extends ActionGroup {
      * @return A list of alias names
      */
     public List<String> getAliases() {
-        return new ArrayList<String>(aliases);
+        return new ArrayList<>(aliases);
     }
 
     /** {@inheritDoc} */

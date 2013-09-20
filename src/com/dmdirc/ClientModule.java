@@ -22,7 +22,10 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
@@ -53,6 +56,9 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -121,12 +127,18 @@ public class ClientModule {
      *
      * @param serverManager The server manager to use to iterate servers.
      * @param identityController The identity controller to use to look up settings.
+     * @param aliasWrapperProvider Provider for {@link AliasWrapper}s.
+     * @param performWrapperProvider Provider for {@link PerformWrapper}s.
      * @return An unitialised action manager.
      */
     @Provides
     @Singleton
-    public ActionManager getActionManager(final ServerManager serverManager, final IdentityController identityController) {
-        final ActionManager actionManager = new ActionManager(serverManager, identityController);
+    public ActionManager getActionManager(
+            final ServerManager serverManager,
+            final IdentityController identityController,
+            final Provider<Set<ActionGroup>> actionWrappersProvider) {
+        final ActionManager actionManager = new ActionManager(serverManager,
+                identityController, actionWrappersProvider);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
@@ -294,6 +306,36 @@ public class ClientModule {
         ThemeManager.setThemeManager(manager);
         manager.refreshAndLoadThemes();
         return manager;
+    }
+
+    /**
+     * Gets the alias actions wrapper.
+     *
+     * @param commandController The controller to register commands with
+     * @param serverManager The manager to use to iterate servers.
+     * @return An alias wrapper to use in the client.
+     */
+    @Provides(type = Provides.Type.SET)
+    @Singleton
+    public ActionGroup getAliasWrapper(
+            final CommandController commandController,
+            final ServerManager serverManager) {
+        final AliasWrapper wrapper = new AliasWrapper(commandController, serverManager);
+        AliasWrapper.setAliasWrapper(wrapper);
+        return wrapper;
+    }
+
+    /**
+     * Gets the performs actions wrapper.
+     *
+     * @return An performs wrapper to use in the client.
+     */
+    @Provides(type = Provides.Type.SET)
+    @Singleton
+    public ActionGroup getPerformWrapper() {
+        final PerformWrapper wrapper = new PerformWrapper();
+        PerformWrapper.setPerformWrapper(wrapper);
+        return wrapper;
     }
 
     /**

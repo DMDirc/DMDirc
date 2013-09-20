@@ -44,7 +44,7 @@ import java.util.List;
 public class PerformWrapper extends ActionGroup {
 
     /** A singleton instance of the Perform Wrapper. */
-    private static final PerformWrapper ME = new PerformWrapper();
+    private static PerformWrapper me;
 
     /** The component name for per-profile perform conditions. */
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
@@ -52,7 +52,7 @@ public class PerformWrapper extends ActionGroup {
     /**
      * Creates a new instance of PerformWrapper.
      */
-    private PerformWrapper() {
+    public PerformWrapper() {
         super("performs");
     }
 
@@ -61,8 +61,19 @@ public class PerformWrapper extends ActionGroup {
      *
      * @return A singleton instance of PerformWrapper
      */
+    @Deprecated
     public static PerformWrapper getPerformWrapper() {
-        return ME;
+        return me;
+    }
+
+    /**
+     * Sets the singleton instance of the perform wrapper.
+     *
+     * @param wrapper The new singleton instance.
+     */
+    @Deprecated
+    public static void setPerformWrapper(final PerformWrapper wrapper) {
+        me = wrapper;
     }
 
     /** {@inheritDoc} */
@@ -217,7 +228,7 @@ public class PerformWrapper extends ActionGroup {
      */
     private Action createAction(final String server, final String network,
             final String profile) {
-        final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+        final List<ActionCondition> conditions = new ArrayList<>();
         final CoreActionComponent component =
                 server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
                 : CoreActionComponent.SERVER_NAME;

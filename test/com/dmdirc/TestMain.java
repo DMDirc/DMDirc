@@ -1,5 +1,6 @@
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
@@ -10,11 +11,17 @@ import com.dmdirc.updater.manager.UpdateManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+
+import javax.inject.Provider;
 import static org.mockito.Mockito.*;
 
 /**
  * Main subclass to init things needed for testing.
+ *
+ * @deprecated Tests shouldn't need the entire universe created.
  */
+@Deprecated
 public class TestMain extends Main {
 
     private static Main instance;
@@ -84,8 +91,11 @@ public class TestMain extends Main {
                 IdentityManager.getIdentityManager().loadVersionIdentity();
 
                 final ServerManager serverManager = mock(ServerManager.class);
+                final CommandManager commandManager = new CommandManager(serverManager);
 
-                final ActionManager actionManager = new ActionManager(serverManager, identityManager);
+                final ActionManager actionManager = new ActionManager(
+                        serverManager, identityManager,
+                        new DummyProvider<>(Collections.<ActionGroup>emptySet()));
                 ActionManager.setActionManager(actionManager);
 
                 final PluginManager pluginManager = new PluginManager(
@@ -95,13 +105,27 @@ public class TestMain extends Main {
                         new CorePluginExtractor(pluginManager, pluginDirectory);
 
                 instance = new TestMain(identityManager, serverManager,
-                        actionManager, null, pluginManager,
-                        new CommandManager(serverManager), corePluginExtractor);
+                        actionManager, null, pluginManager, commandManager,
+                        corePluginExtractor);
                 instance.init();
             } catch (IOException ex) {
                 // Blargh.
             }
         }
         return instance;
+    }
+
+    private static class DummyProvider<T> implements Provider<T> {
+
+        private final T value;
+
+        public DummyProvider(T value) {
+            this.value = value;
+        }
+
+        @Override
+        public T get() {
+            return value;
+        }
     }
 }

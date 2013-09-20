@@ -25,8 +25,6 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
-import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
@@ -49,6 +47,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Provider;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +67,9 @@ public class ActionManager implements ActionController {
 
     /** The ServerManager currently in use. */
     private final ServerManager serverManager;
+
+    /** Provider for action wrappers. */
+    private final Provider<Set<ActionGroup>> actionWrappersProvider;
 
     /** A list of registered action types. */
     private final List<ActionType> types = new ArrayList<>();
@@ -100,11 +104,15 @@ public class ActionManager implements ActionController {
      *
      * @param serverManager The ServerManager in use.
      * @param identityManager The IdentityManager to load configuration from.
+     * @param actionWrappersProvider Provider of action wrappers.
      */
-    public ActionManager(final ServerManager serverManager, final IdentityController identityManager) {
+    public ActionManager(
+            final ServerManager serverManager,
+            final IdentityController identityManager,
+            final Provider<Set<ActionGroup>> actionWrappersProvider) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
-        this.identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
+        this.actionWrappersProvider = actionWrappersProvider;
     }
 
     /**
@@ -135,17 +143,24 @@ public class ActionManager implements ActionController {
         return me;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Initialiases the actions manager.
+     *
+     * @param aliasWrapper The wrapper to use for aliases.
+     * @param performWrapper The wrapper to use for performs.
+     */
     public void initialise() {
         log.info("Initialising the actions manager");
+
+        identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
 
         registerTypes(CoreActionType.values());
         registerComparisons(CoreActionComparison.values());
         registerComponents(CoreActionComponent.values());
 
-        addGroup(AliasWrapper.getAliasWrapper());
-        addGroup(PerformWrapper.getPerformWrapper());
+        for (ActionGroup wrapper : actionWrappersProvider.get()) {
+            addGroup(wrapper);
+        }
 
         new WhoisNumericFormatter(identityManager.getGlobalAddonIdentity()).register();
 

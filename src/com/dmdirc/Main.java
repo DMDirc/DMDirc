@@ -95,6 +95,7 @@ public class Main implements LifecycleController {
      * @param commandManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
+     * @param aliasWrapper Alias wrapper to provide to the actions manager.
      * @param corePluginExtractor Extractor to use for core plugins.
      */
     @Inject

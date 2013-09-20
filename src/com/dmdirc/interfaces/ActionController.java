@@ -190,11 +190,6 @@ public interface ActionController {
     ActionType getType(final String type);
 
     /**
-     * Initialises the action manager.
-     */
-    void initialise();
-
-    /**
      * Loads actions from the user's directory.
      */
     void loadUserActions();
