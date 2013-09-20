@@ -213,7 +213,7 @@ is divided into following sections:
             <attribute default="**" name="testincludes"/>
             <sequential>
                 <delete dir="${test_profile_dir}"/>
-                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
+                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="yes" forkmode="once" showoutput="true" timeout="120000">
                     <classpath>
                         <pathelement path="${clover.jar}"/>
                     </classpath>
@@ -262,7 +262,7 @@ is divided into following sections:
             <attribute default="**" name="testincludes"/>
             <sequential>
                 <delete dir="${test_profile_dir}"/>
-                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
+                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="yes" forkmode="once" showoutput="true" timeout="120000">
                     <classpath refid="all.libs"/>
                     <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <batchtest todir="${build.test.results.dir}">
