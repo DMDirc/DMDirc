@@ -25,21 +25,52 @@ package com.dmdirc.util;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.inject.Provider;
 
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
 public final class URLBuilder {
 
+    /** Singleton instance. */
+    @Deprecated
+    private static URLBuilder instance;
+
+    /** Provider to retrieve a plugin manager instance when needed. */
+    private final Provider<PluginManager> pluginManagerProvider;
+
+    /** Provider to retrieve a theme manager instance when needed. */
+    private final Provider<ThemeManager> themeManagerProvider;
+
     /**
      * Creates a new instance of URLBuilder.
+     *
+     * @param pluginManagerProvider Provider to retrieve a plugin manager instance when needed.
+     * @param themeManagerProvider Provider to retrieve a theme manager instance when needed.
      */
-    private URLBuilder() {
-        // Shouldn't be constructed
+    public URLBuilder(
+            final Provider<PluginManager> pluginManagerProvider,
+            final Provider<ThemeManager> themeManagerProvider) {
+        this.pluginManagerProvider = pluginManagerProvider;
+        this.themeManagerProvider = themeManagerProvider;
+    }
+
+    /**
+     * Constructs an URL pointing to the specified resource on the file system.
+     *
+     * @param path The path that the URL is for
+     * @return An URL corresponding to the specified path, or null on failure
+     * @deprecated Use non-static methods
+     */
+    @Deprecated
+    public static URL buildFileURL(final String path) {
+        return getInstance().getUrlForFile(path);
     }
 
     /**
@@ -48,7 +79,7 @@ public final class URLBuilder {
      * @param path The path that the URL is for
      * @return An URL corresponding to the specified path, or null on failure
      */
-    public static URL buildFileURL(final String path) {
+    public URL getUrlForFile(final String path) {
         final String prefix = path.startsWith("file://") ? "" : "file://";
 
         try {
@@ -65,8 +96,21 @@ public final class URLBuilder {
      * @param jarFile Path to the jar file (including scheme)
      * @param path Path to the resource within the jar file
      * @return An URL corresponding to the specified resource, or null on failure
+     * @deprecated Use non-static methods.
      */
+    @Deprecated
     public static URL buildJarURL(final String jarFile, final String path) {
+        return getInstance().getUrlForJarFile(jarFile, path);
+    }
+
+    /**
+     * Constructs an URL pointing to the specified resource within a jar file.
+     *
+     * @param jarFile Path to the jar file (including scheme)
+     * @param path Path to the resource within the jar file
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public URL getUrlForJarFile(final String jarFile, final String path) {
         try {
             String url = "jar:" + buildURL(jarFile) + "!/" + path;
             if (url.startsWith("jar:file://")) {
@@ -85,8 +129,21 @@ public final class URLBuilder {
      *
      * @param resource The path to the resource
      * @return An URL corresponding to the specified resource
+     * @deprecated Use non-static methods
      */
+    @Deprecated
     public static URL buildDMDircURL(final String resource) {
+        return getInstance().getUrlForDMDircResource(resource);
+    }
+
+    /**
+     * Constructs an URL pointing to the specified resource within the DMDirc
+     * project.
+     *
+     * @param resource The path to the resource
+     * @return An URL corresponding to the specified resource
+     */
+    public URL getUrlForDMDircResource(final String resource) {
         return Thread.currentThread().getContextClassLoader().getResource(resource);
     }
 
@@ -96,9 +153,36 @@ public final class URLBuilder {
      * @param theme The theme which the resource is located in
      * @param path The path within the theme of the resource
      * @return An URL corresponding to the specified resource, or null on failure
+     * @deprecated Use non-static methods
      */
+    @Deprecated
     public static URL buildThemeURL(final String theme, final String path) {
-        return buildJarURL(ThemeManager.getThemeDirectory() + theme + ".zip", path);
+        return getInstance().getUrlForThemeResource(theme, path);
+    }
+
+    /**
+     * Builds an URL pointing to a resource within a DMDirc theme.
+     *
+     * @param theme The theme which the resource is located in
+     * @param path The path within the theme of the resource
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public URL getUrlForThemeResource(final String theme, final String path) {
+        return getUrlForJarFile(themeManagerProvider.get().getDirectory()
+                + theme + ".zip", path);
+    }
+
+    /**
+     * Builds an URL pointing to a resource within a DMDirc plugin.
+     *
+     * @param plugin The plugin which the resource is located in
+     * @param path The path within the theme of the resource
+     * @return An URL corresponding to the specified resource, or null on failure
+     * @deprecated Use non-static methods
+     */
+    @Deprecated
+    public static URL buildPluginURL(final String plugin, final String path) {
+        return getInstance().getUrlForPluginResource(plugin, path);
     }
 
     /**
@@ -108,18 +192,31 @@ public final class URLBuilder {
      * @param path The path within the theme of the resource
      * @return An URL corresponding to the specified resource, or null on failure
      */
-    public static URL buildPluginURL(final String plugin, final String path) {
-        // TODO: Un hack this.
-        // Using the ActionManager to getMain() so that we can get the plugin
-        // manager is a horribe horrible hack.
-        // But making this method require an instance of Main means that
-        // BuildURL also need one, which breaks other things. Specifically
-        // IconManager, which currently is created new each time it is needed
-        // rather than being created once and passed around.
-        return buildJarURL(
-                Main.mainInstance.getPluginManager()
-                .getPluginInfoByName(plugin).getMetaData().getPluginUrl()
-                .getPath(), path);
+    public URL getUrlForPluginResource(final String plugin, final String path) {
+        return getUrlForJarFile(
+                pluginManagerProvider.get().getPluginInfoByName(plugin)
+                .getMetaData().getPluginUrl().getPath(), path);
+    }
+
+    /**
+     * Constructs an URL corresponding to the described resource.
+     *
+     * @param spec The resource location. May take the form of: <ul>
+     * <li>dmdirc://com/dmdirc/etc/
+     * <li>jar://path/to/jarfile:path/inside/jarfile
+     * <li>zip://path/to/zipfile:path/inside/zipfile
+     * <li>theme://theme_name:file/inside/theme
+     * <li>plugin://plugin_name:file/inside/plugin
+     * <li>http://server/path
+     * <li>https://server/path
+     * <li>[file://]/path/on/filesystem</ul>
+     *
+     * @return An URL corresponding to the specified resource, or null on failure
+     * @deprecated Use non-static methods
+     */
+    @Deprecated
+    public static URL buildURL(final String spec) {
+        return getInstance().getUrl(spec);
     }
 
     /**
@@ -137,9 +234,9 @@ public final class URLBuilder {
      *
      * @return An URL corresponding to the specified resource, or null on failure
      */
-    public static URL buildURL(final String spec) {
+    public URL getUrl(final String spec) {
         if (spec.startsWith("dmdirc://")) {
-            return buildDMDircURL(spec.substring(9));
+            return getUrlForDMDircResource(spec.substring(9));
         } else if (spec.startsWith("jar://") || spec.startsWith("zip://")) {
             final int offset = spec.indexOf(':', 6);
 
@@ -147,7 +244,7 @@ public final class URLBuilder {
                 Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
                 return null;
             } else {
-                return buildJarURL(spec.substring(6, offset), spec.substring(offset + 1));
+                return getUrlForJarFile(spec.substring(6, offset), spec.substring(offset + 1));
             }
         } else if (spec.startsWith("plugin://")) {
             final int offset = spec.indexOf(':', 8);
@@ -156,7 +253,7 @@ public final class URLBuilder {
                 Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
                 return null;
             } else {
-                return buildPluginURL(spec.substring(9, offset), spec.substring(offset + 1));
+                return getUrlForPluginResource(spec.substring(9, offset), spec.substring(offset + 1));
             }
         } else if (spec.startsWith("theme://")) {
             final int offset = spec.indexOf(':', 8);
@@ -165,7 +262,7 @@ public final class URLBuilder {
                 Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
                 return null;
             } else {
-                return buildThemeURL(spec.substring(8, offset), spec.substring(offset + 1));
+                return getUrlForThemeResource(spec.substring(8, offset), spec.substring(offset + 1));
             }
         } else if (spec.startsWith("http://") || spec.startsWith("https://")) {
             try {
@@ -175,7 +272,28 @@ public final class URLBuilder {
                 return null;
             }
         } else {
-            return buildFileURL(spec);
+            return getUrlForFile(spec);
         }
+    }
+
+    /**
+     * Gets a singleton static instance for use by deprecated static methods.
+     *
+     * @return A singleton instance of this class.
+     * @deprecated Can be deleted when static methods are gone.
+     */
+    @Deprecated
+    private static synchronized URLBuilder getInstance() {
+        if (instance == null) {
+            instance = new URLBuilder(new Provider<PluginManager>() {
+
+                @Override
+                public PluginManager get() {
+                    return Main.mainInstance.getPluginManager();
+                }
+            }, ThemeManager.getThemeManagerProvider());
+        }
+
+        return instance;
     }
 }

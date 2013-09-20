@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 /**
  * Manages available themes.
  */
@@ -220,6 +222,23 @@ public final class ThemeManager {
      */
     public static void setThemeManager(final ThemeManager manager) {
         instance = manager;
+    }
+
+    /**
+     * Gets a provider of a theme manager for use in the future.
+     *
+     * @return A theme manager provider
+     * @deprecated Should be injected instead
+     */
+    @Deprecated
+    public static Provider<ThemeManager> getThemeManagerProvider() {
+        return new Provider<ThemeManager>() {
+            /** {@inheritDoc} */
+            @Override
+            public ThemeManager get() {
+                return instance;
+            }
+        };
     }
 
 }
