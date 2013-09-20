@@ -32,19 +32,32 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import lombok.NoArgsConstructor;
+
 /**
  * The kick command bans a specified user or host from the channel.
  */
+@NoArgsConstructor
 public class Ban extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("ban",
             "ban <user|host> - bans the specified user or host from the channel",
             CommandType.TYPE_CHANNEL);
+
+    /**
+     * Creates a new instance of {@link Ban} using the given command controller.
+     *
+     * @param controller The controller to use for command information.
+     */
+    public Ban(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

@@ -33,14 +33,18 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
+
+import lombok.NoArgsConstructor;
 
 /**
  * The kick command kicks a specified user from the channel.
  * This version allows the user to specify a reason.
  */
+@NoArgsConstructor
 @CommandOptions(allowOffline = false)
 public class KickReason extends Command implements IntelligentCommand {
 
@@ -48,6 +52,15 @@ public class KickReason extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("kick",
             "kick <user> [reason] - kicks the specified user from the channel",
             CommandType.TYPE_CHANNEL);
+
+    /**
+     * Creates a new instance of {@link KickReason} using the given command controller.
+     *
+     * @param controller The controller to use for command information.
+     */
+    public KickReason(final CommandController controller) {
+        super(controller);
+    }
 
     /** {@inheritDoc} */
     @Override

@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -58,17 +58,17 @@ public class JoinChannelCommand extends Command implements
             CommandType.TYPE_SERVER);
 
     /** A map of channel name mentions. */
-    private final MapList<FrameContainer, String> mentions
-            = new MapList<FrameContainer, String>();
+    private final MapList<FrameContainer, String> mentions = new MapList<>();
 
     /**
      * Creates a new instance of the join channel command.
+     *
+     * @param controller The action controller to register listeners with.
      */
-    public JoinChannelCommand() {
+    public JoinChannelCommand(final ActionController controller) {
         super();
 
-        ActionManager.getActionManager().registerListener(this,
-                CoreActionType.CLIENT_LINE_ADDED);
+        controller.registerListener(this, CoreActionType.CLIENT_LINE_ADDED);
     }
 
     /** {@inheritDoc} */
@@ -81,7 +81,7 @@ public class JoinChannelCommand extends Command implements
             return;
         }
 
-        final List<ChannelJoinRequest> channels = new ArrayList<ChannelJoinRequest>();
+        final List<ChannelJoinRequest> channels = new ArrayList<>();
 
         for (String pair : args.getArgumentsAsString().split(",")) {
             final int index = pair.trim().indexOf(' ');
@@ -107,8 +107,7 @@ public class JoinChannelCommand extends Command implements
         final String[] parts = source.getStyliser().doLinks(message)
                 .split(Character.toString(Styliser.CODE_CHANNEL));
 
-        int i = 1;
-        for (i = 1; i < parts.length; i += 2) {
+        for (int i = 1; i < parts.length; i += 2) {
             // All of the odd parts of the array are channel names
             mentions.add(source, parts[i]);
         }
@@ -166,7 +165,7 @@ public class JoinChannelCommand extends Command implements
      */
     protected List<String> checkSource(final FrameContainer source,
             final boolean checkParents, final boolean checkChildren) {
-        final List<String> results = new ArrayList<String>();
+        final List<String> results = new ArrayList<>();
 
         // Check the window itself
         if (mentions.containsKey(source)) {

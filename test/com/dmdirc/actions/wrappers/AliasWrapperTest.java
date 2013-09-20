@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.TestMain;
+import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
@@ -30,33 +30,45 @@ import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AliasWrapperTest {
 
-    private Action action;
-    private ActionCondition condition;
+    @Mock private Action action;
+    @Mock private ActionCondition condition;
+    @Mock private ServerManager serverManager;
+    @Mock private CommandController commandController;
     private List<ActionCondition> conditions;
 
     private AliasWrapper aliasWrapper;
 
+    @BeforeClass
+    public static void overrideLogger() {
+        // We expect errors to be generated, so mock out the error manager.
+        Logger.setErrorManager(mock(ErrorManager.class));
+    }
+
     @Before
     public void setup() {
-        final CommandController controller = mock(CommandController.class);
-        when(controller.getCommandChar()).thenReturn('!');
+        when(commandController.getCommandChar()).thenReturn('!');
 
-        action = mock(Action.class);
-        condition = mock(ActionCondition.class);
         conditions = new ArrayList<>();
-        aliasWrapper = new AliasWrapper(controller, TestMain.getTestMain().getServerManager());
+        aliasWrapper = new AliasWrapper(commandController, serverManager);
 
         when(condition.getArg()).thenReturn(1);
         when(condition.getComparison()).thenReturn(CoreActionComparison.STRING_EQUALS);

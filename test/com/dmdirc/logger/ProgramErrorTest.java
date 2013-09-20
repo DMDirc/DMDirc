@@ -21,113 +21,61 @@
  */
 package com.dmdirc.logger;
 
-import com.dmdirc.TestMain;
-import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProgramErrorTest {
 
-    @BeforeClass
-    public static void setup() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
+    @Mock private ErrorManager errorManager;
+
+    @Before
+    public void setup() {
+        ErrorManager.setErrorManager(errorManager);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNegativeID() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(-1, ErrorLevel.HIGH, "moo", new String[0], new Date());
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(-1, ErrorLevel.HIGH, "moo", new String[0], new Date());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullErrorLevel() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, null, "moo", new String[0], new Date());
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(1, null, "moo", new String[0], new Date());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullMessage() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, ErrorLevel.HIGH, null, new String[0], new Date());
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(1, ErrorLevel.HIGH, null, new String[0], new Date());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyMessage() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, ErrorLevel.HIGH, "", new String[0], new Date());
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(1, ErrorLevel.HIGH, "", new String[0], new Date());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullTrace() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, ErrorLevel.HIGH, "moo", null, new Date());
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(1, ErrorLevel.HIGH, "moo", null, new Date());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullDate() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], null);
-        } catch (Exception ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+        new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], null);
     }
 
     @Test
     public void testConstructorGood() {
-        boolean exception = false;
-
-        try {
-            new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], new Date());
-        } catch (IllegalArgumentException ex) {
-            exception = true;
-        }
-
-        assertFalse(exception);
+        new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], new Date());
     }
 
     @Test

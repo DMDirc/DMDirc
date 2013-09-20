@@ -22,29 +22,38 @@
 package com.dmdirc.logger;
 
 
-import com.dmdirc.TestMain;
-
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DMDircExceptionHandlerTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
+    @Mock private ErrorManager errorManager;
+    private DMDircExceptionHandler eh;
+
+    @Before
+    public void setup() {
+        Logger.setErrorManager(errorManager);
+        eh = new DMDircExceptionHandler();
     }
 
     @Test
     public void testUncaughtException() {
-        final DMDircExceptionHandler eh = new DMDircExceptionHandler();
+        final Exception exception = new Exception();
+        eh.uncaughtException(null, exception);
+        verify(errorManager).addError(eq(ErrorLevel.HIGH), anyString(), same(exception), eq(true));
+    }
 
-        final int initial = ErrorManager.getErrorManager().getErrorCount();
-
-        eh.uncaughtException(null, new Exception());
-
-        assertEquals(initial + 1, ErrorManager.getErrorManager().getErrorCount());
+    @Test
+    public void testUncaughtError() {
+        final Error error = new Error();
+        eh.uncaughtException(null, error);
+        verify(errorManager).addError(eq(ErrorLevel.FATAL), anyString(), same(error), eq(true));
     }
 
 }

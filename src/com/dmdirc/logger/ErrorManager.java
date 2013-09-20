@@ -25,6 +25,7 @@ package com.dmdirc.logger;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -39,10 +40,10 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Error manager.
  */
-public final class ErrorManager implements ConfigChangeListener {
+public class ErrorManager implements ConfigChangeListener {
 
     /** Previously instantiated instance of ErrorManager. */
-    private static final ErrorManager ME = new ErrorManager();
+    private static ErrorManager me;
 
     /** A list of exceptions which we don't consider bugs and thus don't report. */
     private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
@@ -59,7 +60,7 @@ public final class ErrorManager implements ConfigChangeListener {
     private boolean logReports;
 
     /** Queue of errors to be reported. */
-    private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<ProgramError>();
+    private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<>();
 
     /** Thread used for sending errors. */
     private volatile Thread reportThread;
@@ -74,11 +75,18 @@ public final class ErrorManager implements ConfigChangeListener {
     private final AtomicLong nextErrorID;
 
     /** Creates a new instance of ErrorListDialog. */
-    private ErrorManager() {
-        errors = new LinkedList<ProgramError>();
+    public ErrorManager() {
+        errors = new LinkedList<>();
         nextErrorID = new AtomicLong();
+    }
 
-        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
+    /**
+     * Initialiases the error manager.
+     *
+     * @param controller The controller to use to read/write settings.
+     */
+    public void initialise(final IdentityController controller) {
+        final ConfigManager config = controller.getGlobalConfiguration();
 
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
@@ -92,8 +100,21 @@ public final class ErrorManager implements ConfigChangeListener {
      *
      * @return Instance of ErrorManager
      */
-    public static ErrorManager getErrorManager() {
-        return ME;
+    public static synchronized ErrorManager getErrorManager() {
+        if (me == null) {
+            me = new ErrorManager();
+            me.initialise(IdentityManager.getIdentityManager());
+        }
+        return me;
+    }
+
+    /**
+     * Sets the singleton instance of the error manager.
+     *
+     * @param errorManager The error manager to use.
+     */
+    public static void setErrorManager(final ErrorManager errorManager) {
+        me = errorManager;
     }
 
     /**
@@ -348,7 +369,7 @@ public final class ErrorManager implements ConfigChangeListener {
      */
     public List<ProgramError> getErrors() {
         synchronized (errors) {
-            return new LinkedList<ProgramError>(errors);
+            return new LinkedList<>(errors);
         }
     }
 

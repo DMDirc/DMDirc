@@ -21,16 +21,14 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.CommandController;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,11 +53,6 @@ public class CommandFlagHandlerTest {
     private final CommandFlag[] flags;
     private final int[] offsets;
 
-    @BeforeClass
-    public static void setupClass() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-    }
-
     public CommandFlagHandlerTest(String input, CommandFlag[] flags, int[] offsets) {
         noArgsFlag3.addEnabled(noArgsFlag4);
         noArgsFlag3.addDisabled(noArgsFlag1);
@@ -75,9 +68,12 @@ public class CommandFlagHandlerTest {
     @Test
     public void testParse() {
         final FrameContainer container = mock(FrameContainer.class);
+        final CommandController controller = mock(CommandController.class);
+        when(controller.getCommandChar()).thenReturn('/');
+        when(controller.getSilenceChar()).thenReturn('.');
 
-        final Map<CommandFlag, Integer> results
-                = handler.parse(container, new CommandArguments(input));
+        final Map<CommandFlag, Integer> results = handler.parse(container,
+                new CommandArguments(controller, input));
 
         if (flags == null) {
             assertNull("Command should fail: " + input, results);

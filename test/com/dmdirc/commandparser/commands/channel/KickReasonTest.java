@@ -22,34 +22,41 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class KickReasonTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
-    }
+    private KickReason command;
+    @Mock private CommandController controller;
 
-    private final KickReason command = new KickReason();
+    @Before
+    public void setup() {
+        when(controller.getCommandChar()).thenReturn('/');
+        when(controller.getSilenceChar()).thenReturn('.');
+        command = new KickReason(controller);
+    }
 
     @Test
     public void testUsage() {
         final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
-        command.execute(tiw, new CommandArguments("/kick"),
+        command.execute(tiw, new CommandArguments(controller, "/kick"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -64,7 +71,7 @@ public class KickReasonTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient(anyString())).thenReturn(null);
 
-        command.execute(tiw, new CommandArguments("/kick user1"),
+        command.execute(tiw, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(tiw).addLine(eq("commandError"), matches(".*user1"));
@@ -80,7 +87,7 @@ public class KickReasonTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
 
-        command.execute(tiw, new CommandArguments("/kick user1 reason here"),
+        command.execute(tiw, new CommandArguments(controller, "/kick user1 reason here"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(cci).kick("reason here");
@@ -99,7 +106,7 @@ public class KickReasonTest {
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
 
-        command.execute(tiw, new CommandArguments("/kick user1"),
+        command.execute(tiw, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
         verify(cci).kick("reason here");

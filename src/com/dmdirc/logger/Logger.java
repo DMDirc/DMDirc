@@ -27,6 +27,9 @@ package com.dmdirc.logger;
  */
 public final class Logger {
 
+    /** The error manager to report errors to. */
+    private static ErrorManager errorManager;
+
     /** Prevent instantiation of a new instance of Logger. */
     private Logger() {
         //Ignore
@@ -96,8 +99,21 @@ public final class Logger {
      *
      * @return The error manager to be used.
      */
-    private static ErrorManager getErrorManager() {
-        return ErrorManager.getErrorManager();
+    private static synchronized ErrorManager getErrorManager() {
+        if (errorManager == null) {
+            errorManager = ErrorManager.getErrorManager();
+        }
+
+        return errorManager;
+    }
+
+    /**
+     * Sets the error manager that this logger will use.
+     *
+     * @param errorManager The error manager to use.
+     */
+    public static void setErrorManager(final ErrorManager errorManager) {
+        Logger.errorManager = errorManager;
     }
 
 }

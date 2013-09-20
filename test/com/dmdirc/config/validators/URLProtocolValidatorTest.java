@@ -22,30 +22,31 @@
 
 package com.dmdirc.config.validators;
 
-import com.dmdirc.TestMain;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class URLProtocolValidatorTest {
+
+    @Mock private ConfigManager configManager;
 
     @Test
     public void testValidate() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("protocol", "unit-test-1", "BROWSER");
+        when(configManager.hasOptionString("protocol", "unit-test-1")).thenReturn(true);
 
-        final URLProtocolValidator validator = new URLProtocolValidator();
+        final URLProtocolValidator validator = new URLProtocolValidator(configManager);
         assertTrue(validator.validate(null).isFailure());
         assertTrue(validator.validate("").isFailure());
         assertTrue(validator.validate("unit-test-1").isFailure());
         assertFalse(validator.validate("unit-test-2").isFailure());
-
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .unsetOption("protocol", "unit-test-1");
     }
 
 }

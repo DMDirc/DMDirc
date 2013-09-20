@@ -23,13 +23,13 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.ServerManager;
-import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.plugins.PluginManager;
 
 import java.util.LinkedList;
@@ -61,15 +61,17 @@ public class HelpTest {
     public static List<Object[]> data() throws InvalidIdentityFileException {
         final List<Object[]> res = new LinkedList<>();
 
-        TestMain.getTestMain();
+        final ServerManager serverManager = mock(ServerManager.class);
+        final CommandManager commandManager = new CommandManager(serverManager);
         new CommandLoader(
                 mock(LifecycleController.class),
-                mock(ServerManager.class),
+                serverManager,
                 mock(PluginManager.class),
-                mock(IdentityManager.class)).loadCommands(CommandManager.getCommandManager());
+                mock(IdentityManager.class),
+                mock(ActionController.class)).loadCommands(commandManager);
 
         for (CommandType type : CommandType.values()) {
-            for (CommandInfo command : CommandManager.getCommandManager().getCommands(type).keySet()) {
+            for (CommandInfo command : commandManager.getCommands(type).keySet()) {
                 res.add(new Object[]{command});
             }
         }

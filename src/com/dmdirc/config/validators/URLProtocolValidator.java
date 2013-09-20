@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.validators;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
@@ -31,13 +32,35 @@ import com.dmdirc.util.validators.Validator;
  */
 public class URLProtocolValidator implements Validator<String> {
 
+    /** The global configuration to read settings from. */
+    private final ConfigManager globalConfig;
+
+    /**
+     * Creates a {@link URLProtocolValidator} that will read from the given
+     * config.
+     *
+     * @param globalConfig The config manager to read protocol info from.
+     */
+    public URLProtocolValidator(final ConfigManager globalConfig) {
+        this.globalConfig = globalConfig;
+    }
+
+    /**
+     * Creates a {@link URLProtocolValidator} with the default global config.
+     *
+     * @deprecated Specify a global config
+     */
+    @Deprecated
+    public URLProtocolValidator() {
+        this(IdentityManager.getIdentityManager().getGlobalConfiguration());
+    }
+
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
         if (object == null || object.isEmpty()) {
             return new ValidationResponse("Cannot be empty");
-        } else if (IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .hasOptionString("protocol", object)) {
+        } else if (globalConfig.hasOptionString("protocol", object)) {
             return new ValidationResponse("Cannot already exist");
         } else {
             return new ValidationResponse();

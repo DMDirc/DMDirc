@@ -68,6 +68,7 @@ import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
@@ -90,6 +91,9 @@ public class CommandLoader {
     /** The identity manager to pass to config-related commands. */
     private final IdentityManager identityManager;
 
+    /** The action controller to pass to action-aware commands. */
+    private final ActionController actionController;
+
     /**
      * Creates a new instance of {@link CommandLoader}.
      *
@@ -103,11 +107,13 @@ public class CommandLoader {
             final LifecycleController lifecycleController,
             final ServerManager serverManager,
             final PluginManager pluginManager,
-            final IdentityManager identityManager) {
+            final IdentityManager identityManager,
+            final ActionController actionController) {
         this.lifecycleController = lifecycleController;
         this.serverManager = serverManager;
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
+        this.actionController = actionController;
     }
 
     /**
@@ -138,7 +144,7 @@ public class CommandLoader {
         manager.registerCommand(new Ctcp(), Ctcp.INFO);
         manager.registerCommand(new Disconnect(), Disconnect.INFO);
         manager.registerCommand(new Ignore(), Ignore.INFO);
-        manager.registerCommand(new JoinChannelCommand(), JoinChannelCommand.INFO);
+        manager.registerCommand(new JoinChannelCommand(actionController), JoinChannelCommand.INFO);
         manager.registerCommand(new Message(), Message.INFO);
         manager.registerCommand(new Nick(), Nick.INFO);
         manager.registerCommand(new Notice(), Notice.INFO);
