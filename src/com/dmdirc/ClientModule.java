@@ -43,6 +43,7 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.Version;
 import com.dmdirc.updater.components.LauncherComponent;
@@ -274,6 +275,24 @@ public class ClientModule {
             LauncherComponent.setLauncherInfo(manager, commandLineParser.getLauncherVersion());
         }
 
+        return manager;
+    }
+
+    /**
+     * Gets a theme manager for the client.
+     *
+     * @param controller The identity controller to use to access settings.
+     * @param directory The directory to load themes from.
+     * @return An initialised theme manager instance.
+     */
+    @Provides
+    @Singleton
+    public ThemeManager getThemeManager(
+            final IdentityController controller,
+            @Directory(DirectoryType.THEMES) final String directory) {
+        final ThemeManager manager = new ThemeManager(controller, directory);
+        ThemeManager.setThemeManager(manager);
+        manager.refreshAndLoadThemes();
         return manager;
     }
 

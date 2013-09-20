@@ -94,6 +94,7 @@ public class Main implements LifecycleController {
      * @param pluginManager The plugin manager the client will use.
      * @param commandManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
+     * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param corePluginExtractor Extractor to use for core plugins.
      */
     @Inject
@@ -105,6 +106,7 @@ public class Main implements LifecycleController {
             final PluginManager pluginManager,
             final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
+            final ThemeManager themeManager,
             final CorePluginExtractor corePluginExtractor) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -141,8 +143,6 @@ public class Main implements LifecycleController {
      * @param args The command line arguments
      */
     public void init() {
-        ThemeManager.loadThemes();
-
         loadUIs(pluginManager);
 
         doFirstRun();

@@ -43,7 +43,9 @@ public class CommandLineOptionsModule {
         /** The directory that identities are stored in. */
         IDENTITIES,
         /** The directory that plugins are stored in. */
-        PLUGINS;
+        PLUGINS,
+        /** The directory that themes are stored in. */
+        THEMES;
     }
 
     /**
@@ -104,6 +106,19 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.PLUGINS)
     public String getPluginsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
         return baseDirectory + "plugins" + File.separator;
+    }
+
+    /**
+     * Provides the path to the themes directory.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     * @return The themes directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.THEMES)
+    public String getThemesDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+        return baseDirectory + "themes" + File.separator;
     }
 
     /**

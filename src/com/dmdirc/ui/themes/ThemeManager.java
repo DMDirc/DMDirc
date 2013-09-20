@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -37,13 +37,28 @@ import java.util.Map;
  */
 public final class ThemeManager {
 
-    /** The directory to look for themes in. */
-    private static final String THEME_DIR = IdentityManager.getIdentityManager().getConfigDir() + "themes/";
-    /** Available themes. */
-    private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
+    /** Singleton instance of the Theme Manager. */
+    private static ThemeManager instance;
 
-    static {
-        IdentityManager.getIdentityManager().getGlobalConfiguration()
+    /** The identity controller to read settings from. */
+    private final IdentityController identityController;
+    /** The directory to look for themes in. */
+    private final String themeDirectory;
+    /** Available themes. */
+    private final Map<String, Theme> themes = new HashMap<>();
+
+    /**
+     * Creates a new instance of the {@link ThemeManager}.
+     *
+     * @param identityController The identity controller to read settings from.
+     * @param themesDirectory The directory to load themes from.
+     */
+    public ThemeManager(
+            final IdentityController identityController,
+            final String themesDirectory) {
+        this.identityController = identityController;
+        this.themeDirectory = themesDirectory;
+        identityController.getGlobalConfiguration()
                 .addChangeListener("themes", "enabled",
                 new ConfigChangeListener() {
             /** {@inheritDoc} */
@@ -55,17 +70,20 @@ public final class ThemeManager {
     }
 
     /**
-     * Creates a new instance of theme manager.
+     * Scans for available themes and loads any themes that the user has enabled.
+     *
+     * @deprecated Use non-static methods.
      */
-    private ThemeManager() {
-        // Do nothing
+    @Deprecated
+    public static void loadThemes() {
+        instance.refreshAndLoadThemes();
     }
 
     /**
      * Scans for available themes and loads any themes that the user has enabled.
      */
-    public static void loadThemes() {
-        final File dir = new File(THEME_DIR);
+    public void refreshAndLoadThemes() {
+        final File dir = new File(themeDirectory);
 
         if (!dir.exists() && !dir.mkdirs()) {
             Logger.userError(ErrorLevel.HIGH, "Could not create themes directory");
@@ -76,10 +94,10 @@ public final class ThemeManager {
             return;
         }
 
-        final List<String> enabled = IdentityManager.getIdentityManager().getGlobalConfiguration()
+        final List<String> enabled = identityController.getGlobalConfiguration()
                 .getOptionList("themes", "enabled");
 
-        synchronized (THEMES) {
+        synchronized (themes) {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
                     continue;
@@ -99,16 +117,16 @@ public final class ThemeManager {
      * @param file The file pointing to the theme to be loaded
      * @param enabled Whether this theme is enabled or not
      */
-    private static void loadTheme(final File file, final boolean enabled) {
+    private void loadTheme(final File file, final boolean enabled) {
         Theme theme;
 
-        if (THEMES.containsKey(file.getName())) {
-            theme = THEMES.get(file.getName());
+        if (themes.containsKey(file.getName())) {
+            theme = themes.get(file.getName());
         } else {
             theme = new Theme(file);
 
             if (theme.isValidTheme()) {
-                THEMES.put(file.getName(), theme);
+                themes.put(file.getName(), theme);
             } else {
                 return;
             }
@@ -124,13 +142,24 @@ public final class ThemeManager {
     /**
      * Retrieves a list of available themes.
      *
+     * @deprecated Use non-static methods.
      * @return A list of available themes
      */
+    @Deprecated
     public static Map<String, Theme> getAvailableThemes() {
-        loadThemes();
+        return instance.getAllThemes();
+    }
 
-        synchronized (THEMES) {
-            return new HashMap<String, Theme>(THEMES);
+    /**
+     * Retrieves a list of available themes.
+     *
+     * @return A list of available themes
+     */
+    public Map<String, Theme> getAllThemes() {
+        refreshAndLoadThemes();
+
+        synchronized (themes) {
+            return new HashMap<>(themes);
         }
     }
 
@@ -138,9 +167,31 @@ public final class ThemeManager {
      * Retrieves the directory used for storing themes.
      *
      * @return The directory used for storing themes
+     * @deprecated Use non-static methods.
      */
+    @Deprecated
     public static String getThemeDirectory() {
-        return THEME_DIR;
+        return instance.getDirectory();
+    }
+
+    /**
+     * Retrieves the directory used for storing themes.
+     *
+     * @return The directory used for storing themes
+     */
+    public String getDirectory() {
+        return themeDirectory;
+    }
+
+    /**
+     * Updates the theme auto load list with the state of the specified theme.
+     *
+     * @param theme Theme to update auto load
+     * @deprecated Use non-static method.
+     */
+    @Deprecated
+    public static void updateAutoLoad(final Theme theme) {
+        instance.synchroniseAutoLoad(theme);
     }
 
     /**
@@ -148,9 +199,9 @@ public final class ThemeManager {
      *
      * @param theme Theme to update auto load
      */
-    public static void updateAutoLoad(final Theme theme) {
-        final List<String> enabled = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOptionList("themes", "enabled", true);
+    public void synchroniseAutoLoad(final Theme theme) {
+        final List<String> enabled = identityController.getGlobalConfiguration()
+                .getOptionList("themes", "enabled", true);
 
         if (theme.isEnabled()) {
             enabled.add(theme.getFileName());
@@ -158,8 +209,17 @@ public final class ThemeManager {
             enabled.remove(theme.getFileName());
         }
 
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+        identityController.getGlobalConfigIdentity()
                 .setOption("themes", "enabled", enabled);
+    }
+
+    /**
+     * Sets the singleton ThemeManager instance.
+     *
+     * @param manager The manager to use as a faux-singleton.
+     */
+    public static void setThemeManager(final ThemeManager manager) {
+        instance = manager;
     }
 
 }

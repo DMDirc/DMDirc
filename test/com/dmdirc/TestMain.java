@@ -31,7 +31,7 @@ public class TestMain extends Main {
             final CommandManager commandManager,
             final CorePluginExtractor corePluginExtractor) {
         super(identityManager, serverManager, actionManager, commandLineParser,
-                pluginManager, commandManager, null, corePluginExtractor);
+                pluginManager, commandManager, null, null, corePluginExtractor);
         this.identityManager = identityManager;
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
