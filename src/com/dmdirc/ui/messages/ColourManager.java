@@ -32,11 +32,13 @@ import com.dmdirc.ui.Colour;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows
  * other components to use IRC colour codes instead of absolute colours.
  */
-public final class ColourManager {
+public class ColourManager {
 
     /** Default colours used for the standard 16 IRC colours. */
     private static final Colour[] DEFAULT_COLOURS = {
@@ -161,7 +163,7 @@ public final class ColourManager {
      */
     @Deprecated
     public static Colour parseColour(final String spec) {
-        return parseColour(spec, Colour.WHITE);
+        return instance.getColourFromString(spec, Colour.WHITE);
     }
 
     /**
@@ -268,12 +270,40 @@ public final class ColourManager {
      *
      * @return An instance of the colour manager.
      */
+    @Deprecated
     public static synchronized ColourManager getColourManager() {
         if (instance == null) {
             instance = new ColourManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
         }
 
         return instance;
+    }
+
+    /**
+     * Gets a provider of a colour manager for use in the future.
+     *
+     * @return A colour manager provider
+     * @deprecated Should be injected instead.
+     */
+    @Deprecated
+    public static Provider<ColourManager> getColourManagerProvider() {
+        return new Provider<ColourManager>() {
+            /** {@inheritDoc} */
+            @Override
+            public ColourManager get() {
+                return instance;
+            }
+        };
+    }
+
+    /**
+     * Sets the singleton instance of the colour manager to use.
+     *
+     * @param colourManager The colour manager to use.
+     */
+    @Deprecated
+    public static void setColourManager(final ColourManager colourManager) {
+        instance = colourManager;
     }
 
 }

@@ -46,6 +46,7 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.Version;
@@ -336,6 +337,20 @@ public class ClientModule {
         final PerformWrapper wrapper = new PerformWrapper();
         PerformWrapper.setPerformWrapper(wrapper);
         return wrapper;
+    }
+
+    /**
+     * Gets the colour manager.
+     *
+     * @param controller The identity controller to read settings from.
+     * @return A colour manager for the client.
+     */
+    @Provides
+    @Singleton
+    public ColourManager getColourManager(final IdentityController controller) {
+        final ColourManager manager = new ColourManager(controller.getGlobalConfiguration());
+        ColourManager.setColourManager(manager);
+        return manager;
     }
 
     /**

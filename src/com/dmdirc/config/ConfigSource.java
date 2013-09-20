@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Provider;
+
 /**
  * Defines methods to get options from a config source in various forms.
  * <p>
@@ -56,7 +58,7 @@ public abstract class ConfigSource {
 
     /** A permissive validator to use when callers don't specify one. */
     private static final Validator<String> PERMISSIVE_VALIDATOR
-            = new PermissiveValidator<String>();
+            = new PermissiveValidator<>();
 
     /** A validator for integer settings. */
     private static final Validator<String> INT_VALIDATOR
@@ -65,6 +67,29 @@ public abstract class ConfigSource {
     /** A validator for colour settings. */
     private static final Validator<String> COLOUR_VALIDATOR
             = new OptionalValidator(new ColourValidator());
+
+    /** Manager to use to convert colours. */
+    private final Provider<ColourManager> colourManager;
+
+    /**
+     * Creates a new instance of {@link ConfigSource}.
+     *
+     * @param colourManager The colour manager to use to convert colours.
+     */
+    public ConfigSource(final Provider<ColourManager> colourManager) {
+        this.colourManager = colourManager;
+    }
+
+    /**
+     * Creates a new instance of {@link ConfigSource} using the singleton
+     * colour manager.
+     *
+     * @deprecated Should pass in a {@link ColourManager}.
+     */
+    @Deprecated
+    public ConfigSource() {
+        this(ColourManager.getColourManagerProvider());
+    }
 
     /**
      * Retrieves the specified option from this config source.
@@ -226,7 +251,7 @@ public abstract class ConfigSource {
 
         @SuppressWarnings("unchecked")
         final Validator<String> newValidator = required && fallbacks.length == 0
-                ? new ValidatorChain<String>(new DisabledOptionValidator(), validator)
+                ? new ValidatorChain<>(new DisabledOptionValidator(), validator)
                 : validator;
 
         if (!hasOption(domain, option, newValidator)
@@ -282,7 +307,7 @@ public abstract class ConfigSource {
             final String ... fallbacks) {
         final String value = getOptionString(domain, option, true, COLOUR_VALIDATOR, fallbacks);
 
-        return value == null ? null : ColourManager.parseColour(value, null);
+        return value == null ? null : colourManager.get().getColourFromString(value, null);
     }
 
     /**
@@ -306,7 +331,7 @@ public abstract class ConfigSource {
      */
     public List<String> getOptionList(final String domain, final String option,
             final boolean trimEmpty) {
-        final List<String> res = new ArrayList<String>();
+        final List<String> res = new ArrayList<>();
 
         if (hasOption(domain, option, PERMISSIVE_VALIDATOR)) {
             for (String line : getOption(domain, option).split("\n")) {

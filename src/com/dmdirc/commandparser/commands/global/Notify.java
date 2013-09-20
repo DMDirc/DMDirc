@@ -45,6 +45,18 @@ public class Notify extends Command implements IntelligentCommand {
             "notify <colour> - sets the notification colour for this window",
             CommandType.TYPE_GLOBAL);
 
+    /** Manager to use to convert colours. */
+    private final ColourManager colourManager;
+
+    /**
+     * Creates a new instance of the {@link Notify} command.
+     *
+     * @param colourManager The colour manager to use to convert colours.
+     */
+    public Notify(final ColourManager colourManager) {
+        this.colourManager = colourManager;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
@@ -54,7 +66,7 @@ public class Notify extends Command implements IntelligentCommand {
             return;
         }
 
-        final Colour colour = ColourManager.parseColour(args.getArguments()[0], null);
+        final Colour colour = colourManager.getColourFromString(args.getArguments()[0], null);
 
         if (colour == null) {
             showUsage(origin, args.isSilent(), "notify",

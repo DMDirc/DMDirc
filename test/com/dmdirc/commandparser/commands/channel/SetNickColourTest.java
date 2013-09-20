@@ -26,33 +26,36 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.ui.messages.ColourManager;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SetNickColourTest {
 
-    private Channel channel;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
-    }
+    @Mock private Channel channel;
+    @Mock private ColourManager colourManager;
+    @Mock private CommandController controller;
+    private SetNickColour command;
 
     @Before
     public void setUp() {
-        channel = mock(Channel.class);
+        command = new SetNickColour(controller, colourManager);
+        when(controller.getCommandChar()).thenReturn('/');
+        when(controller.getSilenceChar()).thenReturn('.');
     }
-
-    private final SetNickColour command = new SetNickColour();
 
     @Test
     public void testUsageNoArgs() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -61,7 +64,7 @@ public class SetNickColourTest {
     @Test
     public void testUsageNicklist() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo --nicklist"),
+        command.execute(tiw, new CommandArguments(controller, "/foo --nicklist"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -70,7 +73,7 @@ public class SetNickColourTest {
     @Test
     public void testUsageText() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo --text"),
+        command.execute(tiw, new CommandArguments(controller, "/foo --text"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

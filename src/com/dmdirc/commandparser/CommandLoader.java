@@ -71,6 +71,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.messages.ColourManager;
 
 import javax.inject.Inject;
 
@@ -94,6 +95,9 @@ public class CommandLoader {
     /** The action controller to pass to action-aware commands. */
     private final ActionController actionController;
 
+    /** The colour manager to pass to colourful commands. */
+    private final ColourManager colourManager;
+
     /**
      * Creates a new instance of {@link CommandLoader}.
      *
@@ -101,6 +105,7 @@ public class CommandLoader {
      * @param serverManager The server manager to pass to server-related commands.
      * @param pluginManager The plugin manager to pass to plugin-dependent commands.
      * @param identityManager The identity manager to pass to config-related commands.
+     * @param colourManager The colour manager to give to colourful commands.
      */
     @Inject
     public CommandLoader(
@@ -108,12 +113,14 @@ public class CommandLoader {
             final ServerManager serverManager,
             final PluginManager pluginManager,
             final IdentityManager identityManager,
-            final ActionController actionController) {
+            final ActionController actionController,
+            final ColourManager colourManager) {
         this.lifecycleController = lifecycleController;
         this.serverManager = serverManager;
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
         this.actionController = actionController;
+        this.colourManager = colourManager;
     }
 
     /**
@@ -133,7 +140,7 @@ public class CommandLoader {
         manager.registerCommand(new Mode(), Mode.INFO);
         manager.registerCommand(new Names(), Names.INFO);
         manager.registerCommand(new Part(), Part.INFO);
-        manager.registerCommand(new SetNickColour(), SetNickColour.INFO);
+        manager.registerCommand(new SetNickColour(colourManager), SetNickColour.INFO);
         manager.registerCommand(new ShowTopic(), ShowTopic.INFO);
 
         // Server commands
@@ -171,7 +178,7 @@ public class CommandLoader {
         manager.registerCommand(new Help(), Help.INFO);
         manager.registerCommand(new Ifplugin(pluginManager), Ifplugin.INFO);
         manager.registerCommand(new NewServer(serverManager, pluginManager, identityManager), NewServer.INFO);
-        manager.registerCommand(new Notify(), Notify.INFO);
+        manager.registerCommand(new Notify(colourManager), Notify.INFO);
         manager.registerCommand(new LoadPlugin(pluginManager), LoadPlugin.INFO);
         manager.registerCommand(new UnloadPlugin(pluginManager), UnloadPlugin.INFO);
         manager.registerCommand(new OpenWindow(), OpenWindow.INFO);

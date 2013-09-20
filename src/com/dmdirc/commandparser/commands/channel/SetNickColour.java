@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -49,6 +50,29 @@ public class SetNickColour extends Command implements IntelligentCommand {
             "setnickcolour [--nicklist|--text] <nick> [colour] - "
             + "set the specified person's display colour",
             CommandType.TYPE_CHANNEL);
+
+    /** Manager to use to convert colours. */
+    private final ColourManager colourManager;
+
+    /**
+     * Creates a new instance of the {@link SetNickColour} command.
+     *
+     * @param colourManager The colour manager to use to convert colours.
+     */
+    public SetNickColour(final ColourManager colourManager) {
+        this.colourManager = colourManager;
+    }
+
+    /**
+     * Creates a new instance of the {@link SetNickColour} command.
+     *
+     * @param controller The command controller that owns this command.
+     * @param colourManager The colour manager to use to convert colours.
+     */
+    public SetNickColour(final CommandController controller, final ColourManager colourManager) {
+        super(controller);
+        this.colourManager = colourManager;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -94,7 +118,7 @@ public class SetNickColour extends Command implements IntelligentCommand {
             channel.refreshClients();
         } else {
             // We're setting the colour
-            final Colour newColour = ColourManager.parseColour(args.getArguments()[offset], null);
+            final Colour newColour = colourManager.getColourFromString(args.getArguments()[offset], null);
             if (newColour == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
                 return;

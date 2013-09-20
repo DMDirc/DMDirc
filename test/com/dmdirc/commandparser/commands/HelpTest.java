@@ -31,6 +31,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.messages.ColourManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +69,8 @@ public class HelpTest {
                 serverManager,
                 mock(PluginManager.class),
                 mock(IdentityManager.class),
-                mock(ActionController.class)).loadCommands(commandManager);
+                mock(ActionController.class),
+                mock(ColourManager.class)).loadCommands(commandManager);
 
         for (CommandType type : CommandType.values()) {
             for (CommandInfo command : commandManager.getCommands(type).keySet()) {
