@@ -39,16 +39,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import lombok.Getter;
 
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
-@Singleton
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandManager implements CommandController {
 
@@ -81,7 +77,6 @@ public class CommandManager implements CommandController {
      *
      * @param serverManager the manager to use to iterate servers.
      */
-    @Inject
     public CommandManager(final ServerManager serverManager) {
         this.serverManager = serverManager;
     }

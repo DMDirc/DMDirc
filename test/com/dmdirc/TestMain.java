@@ -6,6 +6,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.updater.manager.UpdateManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +20,8 @@ public class TestMain extends Main {
     private static Main instance;
 
     private final IdentityManager identityManager;
-    private final ServerManager serverManager;
-    private final ActionManager actionManager;
     private final PluginManager pluginManager;
     private final CommandManager commandManager;
-    private final String configdir;
 
     public TestMain(final IdentityManager identityManager,
             final ServerManager serverManager,
@@ -31,15 +29,12 @@ public class TestMain extends Main {
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
             final CommandManager commandManager,
-            final String configDir) {
+            final CorePluginExtractor corePluginExtractor) {
         super(identityManager, serverManager, actionManager, commandLineParser,
-                pluginManager, commandManager, null, null, configDir);
+                pluginManager, commandManager, null, corePluginExtractor);
         this.identityManager = identityManager;
-        this.serverManager = serverManager;
-        this.actionManager = actionManager;
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
-        this.configdir = configDir;
     }
 
     /** {@inheritDoc} */
@@ -93,11 +88,15 @@ public class TestMain extends Main {
                 final ActionManager actionManager = new ActionManager(serverManager, identityManager);
                 ActionManager.setActionManager(actionManager);
 
-                final PluginManager pluginManager = new PluginManager(identityManager, actionManager, pluginDirectory);
+                final PluginManager pluginManager = new PluginManager(
+                        identityManager, actionManager,
+                        mock(UpdateManager.class), pluginDirectory);
+                final CorePluginExtractor corePluginExtractor =
+                        new CorePluginExtractor(pluginManager, pluginDirectory);
 
                 instance = new TestMain(identityManager, serverManager,
                         actionManager, null, pluginManager,
-                        new CommandManager(serverManager), configDirectory);
+                        new CommandManager(serverManager), corePluginExtractor);
                 instance.init();
             } catch (IOException ex) {
                 // Blargh.

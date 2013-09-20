@@ -26,35 +26,24 @@ import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
-import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
-import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.themes.ThemeManager;
-import com.dmdirc.updater.UpdateChecker;
-import com.dmdirc.updater.Version;
-import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,14 +77,8 @@ public class Main implements LifecycleController {
     /** The plugin manager the client will use. */
     private final PluginManager pluginManager;
 
-    /** The command manager the client will use. */
-    private final CommandManager commandManager;
-
-    /** The command loader to use to initialise the command manager. */
-    private final CommandLoader commandLoader;
-
-    /** The config dir to use for the client. */
-    private final String configdir;
+    /** The extractor to use for core plugins. */
+    private final CorePluginExtractor corePluginExtractor;
 
     /** Instance of main, protected to allow subclasses direct access. */
     @Deprecated
@@ -109,10 +92,9 @@ public class Main implements LifecycleController {
      * @param actionManager The action manager the client will use.
      * @param commandLineParser The command-line parser used for this instance.
      * @param pluginManager The plugin manager the client will use.
-     * @param commandManager The command manager the client will use.
-     * @param commandLoader The command loader to use to initialise the command manager.
+     * @param commandManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
-     * @param configDir The base configuration directory to use.
+     * @param corePluginExtractor Extractor to use for core plugins.
      */
     @Inject
     public Main(
@@ -122,17 +104,14 @@ public class Main implements LifecycleController {
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
             final CommandManager commandManager,
-            final CommandLoader commandLoader,
             final MessageSinkManager messageSinkManager,
-            @Directory(DirectoryType.BASE) final String configDir) {
+            final CorePluginExtractor corePluginExtractor) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
-        this.commandManager = commandManager;
-        this.commandLoader = commandLoader;
-        this.configdir = configDir;
+        this.corePluginExtractor = corePluginExtractor;
     }
 
     /**
@@ -162,28 +141,7 @@ public class Main implements LifecycleController {
      * @param args The command line arguments
      */
     public void init() {
-        UpdateChecker.init(this);
-
-        pluginManager.refreshPlugins();
-        checkBundledPlugins(pluginManager, identityManager.getGlobalConfiguration());
-
         ThemeManager.loadThemes();
-
-        commandLineParser.applySettings(identityManager.getGlobalConfigIdentity());
-
-        commandManager.initialise(identityManager.getGlobalConfiguration());
-        CommandManager.setCommandManager(commandManager);
-        commandLoader.loadCommands(commandManager);
-
-        for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
-            ensureExists(pluginManager, service);
-        }
-
-        // The user may have an existing parser plugin (e.g. twitter) which
-        // will satisfy the service existance check above, but will render the
-        // client pretty useless, so we'll force IRC extraction for now.
-        extractCorePlugins("parser_irc");
-        pluginManager.refreshPlugins();
 
         loadUIs(pluginManager);
 
@@ -239,18 +197,18 @@ public class Main implements LifecycleController {
      */
     private void handleMissingUI() {
         // Check to see if we have already tried this
-        if (IdentityManager.getIdentityManager().getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
+        if (identityManager.getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
             System.out.println("DMDirc is unable to load any compatible UI plugins.");
             if (!GraphicsEnvironment.isHeadless()) {
                 new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
                         WarningDialog.NO_RECOV_UIS).displayBlocking();
             }
-            IdentityManager.getIdentityManager().getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            identityManager.getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
             System.exit(1);
         } else {
             // Try to extract the UIs again incase they changed between versions
             // and the user didn't update the UI plugin.
-            extractCorePlugins("ui_");
+            corePluginExtractor.extractCorePlugins("ui_");
 
             System.out.println("DMDirc has updated the UI plugins and needs to restart.");
 
@@ -260,49 +218,9 @@ public class Main implements LifecycleController {
             }
 
             // Allow the rebooted DMDirc to know that we have attempted restarting.
-            IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                    .setOption("debug", "uiFixAttempted", "true");
+            identityManager.getGlobalConfigIdentity().setOption("debug", "uiFixAttempted", "true");
             // Tell the launcher to restart!
             System.exit(42);
-        }
-    }
-
-    /**
-     * Ensures that there is at least one provider of the specified
-     * service type by extracting matching core plugins. Plugins must be named
-     * so that their file name starts with the service type, and then an
-     * underscore.
-     *
-     * @param pm The plugin manager to use to access services
-     * @param serviceType The type of service that should exist
-     */
-    public void ensureExists(final PluginManager pm, final String serviceType) {
-        if (pm.getServicesByType(serviceType).isEmpty()) {
-            extractCorePlugins(serviceType + "_");
-            pm.refreshPlugins();
-        }
-    }
-
-    /**
-     * Checks whether the plugins bundled with this release of DMDirc are newer
-     * than the plugins known by the specified {@link PluginManager}. If the
-     * bundled plugins are newer, they are automatically extracted.
-     *
-     * @param pm The plugin manager to use to check plugins
-     * @param config The configuration source for bundled versions
-     */
-    private void checkBundledPlugins(final PluginManager pm, final ConfigManager config) {
-        for (PluginInfo plugin : pm.getPluginInfos()) {
-            if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
-                final Version bundled = new Version(config.getOption("bundledplugins_versions",
-                        plugin.getMetaData().getName()));
-                final Version installed = plugin.getMetaData().getVersion();
-
-                if (installed.compareTo(bundled) < 0) {
-                    extractCorePlugins(plugin.getMetaData().getName());
-                    pm.reloadPlugin(plugin.getFilename());
-                }
-            }
         }
     }
 
@@ -332,10 +250,8 @@ public class Main implements LifecycleController {
             handleMissingUI();
         } else {
             // The fix worked!
-            if (IdentityManager.getIdentityManager().getGlobalConfiguration()
-                    .hasOptionBool("debug", "uiFixAttempted")) {
-                IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                        .unsetOption("debug", "uiFixAttempted");
+            if (identityManager.getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
+                identityManager.getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
             }
         }
     }
@@ -344,8 +260,8 @@ public class Main implements LifecycleController {
      * Executes the first run or migration wizards as required.
      */
     private void doFirstRun() {
-        if (IdentityManager.getIdentityManager().getGlobalConfiguration().getOptionBool("general", "firstRun")) {
-            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption("general", "firstRun", "false");
+        if (identityManager.getGlobalConfiguration().getOptionBool("general", "firstRun")) {
+            identityManager.getGlobalConfigIdentity().setOption("general", "firstRun", "false");
             for (UIController controller : CONTROLLERS) {
                 controller.showFirstRunWizard();
             }
@@ -427,45 +343,11 @@ public class Main implements LifecycleController {
      *
      * @param prefix If non-null, only plugins whose file name starts with
      * this prefix will be extracted.
+     * @deprecated Go via a {@link CorePluginExtractor}.
      */
+    @Deprecated
     public void extractCorePlugins(final String prefix) {
-        final Map<String, byte[]> resources = ResourceManager.getResourceManager()
-                .getResourcesStartingWithAsBytes("plugins");
-        for (Map.Entry<String, byte[]> resource : resources.entrySet()) {
-            try {
-                final String resourceName = configdir + "plugins"
-                        + resource.getKey().substring(7);
-
-                if (prefix != null && !resource.getKey().substring(8).startsWith(prefix)) {
-                    continue;
-                }
-
-                final File newDir = new File(resourceName.substring(0,
-                        resourceName.lastIndexOf('/')) + "/");
-
-                if (!newDir.exists()) {
-                    newDir.mkdirs();
-                }
-
-                final File newFile = new File(newDir,
-                        resourceName.substring(resourceName.lastIndexOf('/') + 1,
-                        resourceName.length()));
-
-                if (!newFile.isDirectory()) {
-                    ResourceManager.getResourceManager().
-                            resourceToFile(resource.getValue(), newFile);
-
-                    final PluginInfo plugin = pluginManager.getPluginInfo(newFile
-                            .getAbsolutePath().substring(pluginManager.getDirectory().length()));
-
-                    if (plugin != null) {
-                        plugin.pluginUpdated();
-                    }
-                }
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
-            }
-        }
+        corePluginExtractor.extractCorePlugins(prefix);
     }
 
 }

@@ -23,10 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -61,18 +61,24 @@ public class ServerManager implements ServerFactory {
     /** The identity controller to use to find profiles. */
     private final IdentityController identityController;
 
+    /** A provider of {@link CommandController}s to pass to servers. */
+    private final Provider<CommandController> commandController;
+
     /**
      * Creates a new instance of ServerManager.
      *
      * @param parserFactoryProvider The provider of {@link ParserFactory}s to give to servers.
      * @param identityController The identity controller to use to find profiles.
+     * @param commandController A provider of {@link CommandController}s to pass to servers.
      */
     @Inject
     public ServerManager(
             final Provider<ParserFactory> parserFactoryProvider,
-            final IdentityController identityController) {
+            final IdentityController identityController,
+            final Provider<CommandController> commandController) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
+        this.commandController = commandController;
     }
 
     /** {@inheritDoc} */
@@ -87,7 +93,7 @@ public class ServerManager implements ServerFactory {
                 parserFactoryProvider.get(),
                 WindowManager.getWindowManager(),
                 AliasWrapper.getAliasWrapper(),
-                CommandManager.getCommandManager(),
+                commandController.get(),
                 uri,
                 profile);
     }

@@ -22,7 +22,6 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -107,9 +106,9 @@ public final class UpdateChecker implements Runnable {
      *
      * @param main Parent Main class
      */
-    public static void init(final Main main) {
+    public static void init() {
         manager = new DMDircUpdateManager(IdentityManager.getIdentityManager()
-                .getGlobalConfiguration(), IdentityManager.getIdentityManager().getConfigDir(), 3, main);
+                .getGlobalConfiguration(), IdentityManager.getIdentityManager().getConfigDir(), 3);
 
         initTimer();
     }

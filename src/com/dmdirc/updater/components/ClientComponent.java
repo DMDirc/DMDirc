@@ -35,15 +35,6 @@ import java.io.File;
  */
 public class ClientComponent implements UpdateComponent {
 
-    // @deprecated This is only needed because we need to show a UI for
-    // manual installs. This should be removed at some point.
-    /** Reference to parent Main. */
-    final Main main;
-
-    public ClientComponent(final Main main) {
-        this.main = main;
-    }
-
     /** {@inheritDoc} */
     @Override
     public String getName() {
@@ -128,7 +119,7 @@ public class ClientComponent implements UpdateComponent {
             // @deprecated Should be removed when updater UI changes are
             // implemented.
             final String message = this.getManualInstructions(path);
-            main.getUI().showMessageDialog("Client update downloaded", message);
+            Main.mainInstance.getUI().showMessageDialog("Client update downloaded", message);
         }
 
         return true;

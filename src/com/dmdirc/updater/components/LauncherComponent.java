@@ -22,9 +22,9 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
+import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
@@ -44,9 +44,10 @@ public class LauncherComponent implements UpdateComponent {
     /**
      * Parses the specified launcher information.
      *
+     * @param manager THe manager to update with the launcher component.
      * @param info The platform and version of the launcher, separated by '-'.
      */
-    public static void setLauncherInfo(final String info) {
+    public static void setLauncherInfo(final UpdateManager manager, final String info) {
         final int hpos = info.indexOf('-');
         final int cpos = info.indexOf(',');
 
@@ -61,7 +62,7 @@ public class LauncherComponent implements UpdateComponent {
             version = new Version(info.substring(hpos + 1, cpos));
         }
 
-        UpdateChecker.getManager().addComponent(new LauncherComponent());
+        manager.addComponent(new LauncherComponent());
     }
 
     /**

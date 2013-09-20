@@ -23,8 +23,6 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
@@ -32,8 +30,8 @@ import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.components.PluginComponent;
+import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
 
 import java.io.File;
@@ -49,13 +47,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * Searches for and manages plugins and services.
  */
-@Singleton
 public class PluginManager implements ActionListener, ServiceManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
@@ -73,6 +67,9 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** The action controller to use for events. */
     private final ActionController actionController;
 
+    /** The update manager to inform about plugins. */
+    private final UpdateManager updateManager;
+
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<>();
 
@@ -84,15 +81,17 @@ public class PluginManager implements ActionListener, ServiceManager {
      *
      * @param identityController The identity controller to use for configuration options.
      * @param actionController The action controller to use for events.
+     * @param updateManager The update manager to inform about plugins.
      * @param directory The directory to load plugins from.
      */
-    @Inject
     public PluginManager(
             final IdentityController identityController,
             final ActionController actionController,
-            @Directory(DirectoryType.PLUGINS) final String directory) {
+            final UpdateManager updateManager,
+            final String directory) {
         this.identityController = identityController;
         this.actionController = actionController;
+        this.updateManager = updateManager;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
 
@@ -265,7 +264,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             if ((metadata.getUpdaterId() > 0 && metadata.getVersion().isValid())
                     || (identityController.getGlobalConfiguration()
                     .hasOptionInt("plugin-addonid", metadata.getName()))) {
-                UpdateChecker.getManager().addComponent(new PluginComponent(pluginInfo));
+                updateManager.addComponent(new PluginComponent(pluginInfo));
             }
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);

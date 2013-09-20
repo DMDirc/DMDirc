@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 
@@ -43,11 +44,13 @@ public class ServerManagerTest {
 
     @Mock private IdentityController identityController;
     @Mock private Provider<ParserFactory> parserFactoryProvider;
+    @Mock private Provider<CommandController> commandControllerProvider;
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
-        serverManager = new ServerManager(parserFactoryProvider, identityController);
+        serverManager = new ServerManager(parserFactoryProvider,
+                identityController, commandControllerProvider);
     }
 
     @After

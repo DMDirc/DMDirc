@@ -25,11 +25,9 @@ package com.dmdirc.commandline;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.global.NewServer;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.components.LauncherComponent;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
@@ -68,7 +66,7 @@ public class CommandLineParser {
     private boolean disablereporting;
 
     /** The version string passed for the launcher. */
-    private String launcherVersion = "";
+    private String launcherVersion;
 
     /** The configuration directory. */
     private String configDirectory;
@@ -358,16 +356,22 @@ public class CommandLineParser {
     }
 
     /**
-     * Applies any applicable settings to the config identity.
+     * Indicates whether the user has requested error reporting be disabled.
+     *
+     * @return True if the user has disabled reporting, false otherwise.
      */
-    public void applySettings(final Identity globalIdentity) {
-        if (disablereporting) {
-            globalIdentity.setOption("temp", "noerrorreporting", true);
-        }
+    public boolean getDisableReporting() {
+        return disablereporting;
+    }
 
-        if (!launcherVersion.isEmpty()) {
-            LauncherComponent.setLauncherInfo(launcherVersion);
-        }
+    /**
+     * Returns the provided launcher version, if any.
+     *
+     * @return The version supplied by the launcher, or {@code null} if no
+     * launcher is identified.
+     */
+    public String getLauncherVersion() {
+        return launcherVersion;
     }
 
     /**

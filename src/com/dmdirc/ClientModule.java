@@ -26,17 +26,27 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.commandparser.CommandLoader;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.updater.UpdateChecker;
+import com.dmdirc.updater.Version;
+import com.dmdirc.updater.components.LauncherComponent;
+import com.dmdirc.updater.manager.UpdateManager;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -57,12 +67,14 @@ public class ClientModule {
      * Provides an identity manager for the client.
      *
      * @param directory The directory to load settings from.
+     * @param commandLineParser The CLI parser to read command line settings from.
      * @return An initialised {@link IdentityManager}.
      */
     @Provides
     @Singleton
     public IdentityManager getIdentityManager(
-            @Directory(DirectoryType.BASE) final String directory) {
+            @Directory(DirectoryType.BASE) final String directory,
+            final CommandLineParser commandLineParser) {
         final IdentityManager identityManager = new IdentityManager(directory);
         IdentityManager.setIdentityManager(identityManager);
         identityManager.loadVersionIdentity();
@@ -71,6 +83,11 @@ public class ClientModule {
             identityManager.initialise();
         } catch (InvalidIdentityFileException ex) {
             handleInvalidConfigFile(identityManager, directory);
+        }
+
+        if (commandLineParser.getDisableReporting()) {
+            identityManager.getGlobalConfigIdentity()
+                    .setOption("temp", "noerrorreporting", true);
         }
 
         return identityManager;
@@ -164,6 +181,103 @@ public class ClientModule {
     }
 
     /**
+     * Gets the command manager the client should use.
+     *
+     * @param serverManager The manager to use to iterate servers.
+     * @param identityController The controller to use to read settings.
+     * @param commandLoader The loader to use to populate default commands.
+     * @return The command manager the client should use.
+     */
+    @Provides
+    @Singleton
+    public CommandManager getCommandManager(
+            final ServerManager serverManager,
+            final IdentityController identityController,
+            final CommandLoader commandLoader) {
+        final CommandManager manager = new CommandManager(serverManager);
+        manager.initialise(identityController.getGlobalConfiguration());
+        CommandManager.setCommandManager(manager);
+        commandLoader.loadCommands(manager);
+        return manager;
+    }
+
+    /**
+     * Gets a command controller for use in the client.
+     *
+     * @param commandManager The manager to use as a controller.
+     * @return The command controller the client should use.
+     */
+    @Provides
+    public CommandController getCommandController(final CommandManager commandManager) {
+        return commandManager;
+    }
+
+    /**
+     * Gets an initialised plugin manager for the client.
+     *
+     * @param identityController The controller to read settings from.
+     * @param actionController The action controller to use for events.
+     * @param updateManager The update manager to inform about plugins.
+     * @param directory The directory to load and save plugins in.
+     * @return An initialised plugin manager for the client.
+     */
+    @Provides
+    @Singleton
+    public PluginManager getPluginManager(
+            final IdentityController identityController,
+            final ActionController actionController,
+            final UpdateManager updateManager,
+            @Directory(DirectoryType.PLUGINS) final String directory) {
+        final PluginManager manager = new PluginManager(identityController, actionController, updateManager, directory);
+        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
+        checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
+
+        for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
+            ensureExists(extractor, manager, service);
+        }
+
+        // The user may have an existing parser plugin (e.g. twitter) which
+        // will satisfy the service existance check above, but will render the
+        // client pretty useless, so we'll force IRC extraction for now.
+        extractor.extractCorePlugins("parser_irc");
+        manager.refreshPlugins();
+        return manager;
+    }
+
+    /**
+     * Gets a core plugin extractor.
+     *
+     * @param pluginManager The plugin manager to notify about updates.
+     * @param directory The directory to extract plugins to.
+     * @return A plugin extractor for the client to use.
+     */
+    @Provides
+    public CorePluginExtractor getCorePluginExtractor(
+            final PluginManager pluginManager,
+            @Directory(DirectoryType.PLUGINS) final String directory) {
+        return new CorePluginExtractor(pluginManager, directory);
+    }
+
+    /**
+     * Gets an update manager for the client.
+     *
+     * @param commandLineParser CLI parser to use to find launcher version.
+     * @return The update manager to use.
+     */
+    @Provides
+    @Singleton
+    public UpdateManager getUpdateManager(final CommandLineParser commandLineParser) {
+        UpdateChecker.init();
+        final UpdateManager manager = UpdateChecker.getManager();
+
+        if (commandLineParser.getLauncherVersion() != null) {
+            LauncherComponent.setLauncherInfo(manager, commandLineParser.getLauncherVersion());
+        }
+
+        return manager;
+    }
+
+    /**
      * Called when the global config cannot be loaded due to an error. This
      * method informs the user of the problem and installs a new default config
      * file, backing up the old one.
@@ -205,6 +319,53 @@ public class ClientModule {
             }
             System.out.println(newMessage.replace("<br>", "\n"));
             System.exit(1);
+        }
+    }
+
+    /**
+     * Ensures that there is at least one provider of the specified
+     * service type by extracting matching core plugins. Plugins must be named
+     * so that their file name starts with the service type, and then an
+     * underscore.
+     *
+     * @param corePluginExtractor Extractor to use if the service doesn't exist
+     * @param pm The plugin manager to use to access services
+     * @param serviceType The type of service that should exist
+     */
+    public void ensureExists(
+            final CorePluginExtractor corePluginExtractor,
+            final PluginManager pm,
+            final String serviceType) {
+        if (pm.getServicesByType(serviceType).isEmpty()) {
+            corePluginExtractor.extractCorePlugins(serviceType + "_");
+            pm.refreshPlugins();
+        }
+    }
+
+    /**
+     * Checks whether the plugins bundled with this release of DMDirc are newer
+     * than the plugins known by the specified {@link PluginManager}. If the
+     * bundled plugins are newer, they are automatically extracted.
+     *
+     * @param corePluginExtractor Extractor to use if plugins need updating.
+     * @param pm The plugin manager to use to check plugins
+     * @param config The configuration source for bundled versions
+     */
+    private void checkBundledPlugins(
+            final CorePluginExtractor corePluginExtractor,
+            final PluginManager pm,
+            final ConfigManager config) {
+        for (PluginInfo plugin : pm.getPluginInfos()) {
+            if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
+                final Version bundled = new Version(config.getOption("bundledplugins_versions",
+                        plugin.getMetaData().getName()));
+                final Version installed = plugin.getMetaData().getVersion();
+
+                if (installed.compareTo(bundled) < 0) {
+                    corePluginExtractor.extractCorePlugins(plugin.getMetaData().getName());
+                    pm.reloadPlugin(plugin.getFilename());
+                }
+            }
         }
     }
 
