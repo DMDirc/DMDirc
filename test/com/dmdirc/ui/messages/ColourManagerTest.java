@@ -22,20 +22,37 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.TestMain;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.Colour;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ColourManagerTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        TestMain.getTestMain();
+    @Mock private ErrorManager errorManager;
+    @Mock private ConfigManager configManager;
+    @Captor private ArgumentCaptor<ConfigChangeListener> configListener;
+    private ColourManager manager;
+
+    @Before
+    public void setup() {
+        Logger.setErrorManager(errorManager);
+
+        manager = new ColourManager(configManager);
+        verify(configManager).addChangeListener(anyString(), configListener.capture());
     }
 
     @Test
@@ -43,14 +60,13 @@ public class ColourManagerTest {
         int spec = 4;
 
         Colour expResult = Colour.RED;
-        Colour result = ColourManager.getColour(spec);
+        Colour result = manager.getColourFromIrcCode(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetColourOOB() {
-        Colour result = ColourManager.getColour(20);
-
+        Colour result = manager.getColourFromIrcCode(20);
         assertEquals(Colour.WHITE, result);
     }
 
@@ -58,7 +74,7 @@ public class ColourManagerTest {
     public void testGetColourHexInvalid() {
         String spec = "FFZZFF";
 
-        Colour result = ColourManager.getColour(spec);
+        Colour result = manager.getColourFromHex(spec);
         assertEquals(Colour.WHITE, result);
     }
 
@@ -67,14 +83,14 @@ public class ColourManagerTest {
         String spec = "FFFFFF";
 
         Colour expResult = Colour.WHITE;
-        Colour result = ColourManager.getColour(spec);
+        Colour result = manager.getColourFromHex(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testParseColourNull() {
         Colour fallback = Colour.RED;
-        Colour result = ColourManager.parseColour(null, fallback);
+        Colour result = manager.getColourFromString(null, fallback);
 
         assertEquals(fallback, result);
     }
@@ -82,7 +98,7 @@ public class ColourManagerTest {
     @Test
     public void testParseColourInvalidNumber() {
         Colour fallback = Colour.RED;
-        Colour result = ColourManager.parseColour("zz", fallback);
+        Colour result = manager.getColourFromString("zz", fallback);
 
         assertEquals(fallback, result);
     }
@@ -90,7 +106,7 @@ public class ColourManagerTest {
     @Test
     public void testParseColourOOBNumber() {
         Colour fallback = Colour.RED;
-        Colour result = ColourManager.parseColour("20", fallback);
+        Colour result = manager.getColourFromString("20", fallback);
 
         assertEquals(fallback, result);
     }
@@ -98,16 +114,16 @@ public class ColourManagerTest {
     @Test
     public void testParseColourShortNumber() {
         Colour fallback = Colour.RED;
-        Colour result = ColourManager.parseColour("1234", fallback);
+        Colour result = manager.getColourFromString("1234", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testColourCache() {
-        Colour result1 = ColourManager.parseColour("ff0f0f");
-        Colour result2 = ColourManager.parseColour("ff0f0f");
-        Colour result3 = ColourManager.getColour("ff0f0f");
+        Colour result1 = manager.getColourFromString("ff0f0f", Colour.WHITE);
+        Colour result2 = manager.getColourFromString("ff0f0f", Colour.WHITE);
+        Colour result3 = manager.getColourFromHex("ff0f0f");
 
         assertSame(result1, result2);
         assertSame(result2, result3);
@@ -115,28 +131,27 @@ public class ColourManagerTest {
 
     @Test
     public void testColourToHex() {
-        Colour c1 = ColourManager.parseColour("ab3400");
+        Colour c1 = manager.getColourFromHex("ab3400");
 
         assertEquals("ab3400", ColourManager.getHex(c1).toLowerCase());
     }
 
     @Test
     public void testCustomColours() {
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("colour", "4", "00ff00");
-
-        assertEquals("00ff00", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
-
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .unsetOption("colour", "4");
+        when(configManager.hasOptionColour("colour", "4")).thenReturn(true);
+        when(configManager.getOptionColour("colour", "4")).thenReturn(Colour.GREEN);
+        configListener.getValue().configChanged("colour", "4");
+        assertEquals("00ff00", ColourManager.getHex(manager.getColourFromIrcCode(4)).toLowerCase());
     }
 
     @Test
     public void testCustomColours2() {
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .setOption("colour", "4", "000000");
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity()
-                .unsetOption("colour", "4");
-        assertEquals("ff0000", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
+        when(configManager.hasOptionColour("colour", "4")).thenReturn(true);
+        when(configManager.getOptionColour("colour", "4")).thenReturn(Colour.GREEN);
+        configListener.getValue().configChanged("colour", "4");
+
+        when(configManager.hasOptionColour("colour", "4")).thenReturn(false);
+        configListener.getValue().configChanged("colour", "4");
+        assertEquals("ff0000", ColourManager.getHex(manager.getColourFromIrcCode(4)).toLowerCase());
     }
 }

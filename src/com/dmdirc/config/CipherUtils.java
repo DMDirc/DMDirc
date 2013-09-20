@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -64,6 +65,9 @@ public abstract class CipherUtils {
     /** Number of auth attemps before failing the attempt. */
     private static final int AUTH_TRIES = 4;
 
+    /** The identity controller to use for reading/writing settings. */
+    private final IdentityController identityController;
+
     /** Encryption cipher. */
     private Cipher ecipher;
 
@@ -72,6 +76,15 @@ public abstract class CipherUtils {
 
     /** User password. */
     private String password;
+
+    /**
+     * Creates a new instance of {@link CipherUtils}.
+     *
+     * @param identityController The controller to use to read/write settings.
+     */
+    public CipherUtils(final IdentityController identityController) {
+        this.identityController = identityController;
+    }
 
     /**
      * Encrypts a string using the stored settings. Will return null if the
@@ -89,11 +102,7 @@ public abstract class CipherUtils {
         }
         try {
             return Base64.encodeToString(ecipher.doFinal(str.getBytes("UTF8")), false);
-        } catch (BadPaddingException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (IllegalBlockSizeException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (UnsupportedEncodingException e) {
+        } catch (BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         }
 
@@ -116,9 +125,7 @@ public abstract class CipherUtils {
         }
         try {
             return new String(dcipher.doFinal(Base64.decode(str)));
-        } catch (BadPaddingException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (IllegalBlockSizeException e) {
+        } catch (BadPaddingException | IllegalBlockSizeException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         }
         return null;
@@ -133,9 +140,7 @@ public abstract class CipherUtils {
         try {
             return new String(MessageDigest.getInstance("SHA-512")
             .digest(data.getBytes("UTF8")), Charset.forName("UTF-8"));
-        } catch (NoSuchAlgorithmException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to hash string");
-        } catch (IOException e) {
+        } catch (NoSuchAlgorithmException | IOException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to hash string");
         }
         return null;
@@ -165,23 +170,8 @@ public abstract class CipherUtils {
                     new PBEParameterSpec(SALT, ITERATIONS);
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-        } catch (InvalidAlgorithmParameterException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to create ciphers");
-            ecipher = null;
-            dcipher = null;
-        } catch (InvalidKeySpecException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to create ciphers");
-            ecipher = null;
-            dcipher = null;
-        } catch (NoSuchPaddingException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to create ciphers");
-            ecipher = null;
-            dcipher = null;
-        } catch (NoSuchAlgorithmException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to create ciphers");
-            ecipher = null;
-            dcipher = null;
-        } catch (InvalidKeyException e) {
+        } catch (InvalidAlgorithmParameterException | InvalidKeySpecException |
+                NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to create ciphers");
             ecipher = null;
             dcipher = null;
@@ -194,8 +184,7 @@ public abstract class CipherUtils {
      * @return true if auth was successful, false otherwise.
      */
     public boolean auth() {
-        final ConfigManager configManager = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration();
+        final ConfigManager configManager = identityController.getGlobalConfiguration();
 
         String passwordHash = null;
         String prompt = "Please enter your password";
@@ -211,7 +200,7 @@ public abstract class CipherUtils {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                    identityController.getGlobalConfigIdentity()
                             .setOption("encryption", "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {

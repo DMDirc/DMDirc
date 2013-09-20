@@ -38,9 +38,6 @@ import java.util.Map;
  */
 public final class ColourManager {
 
-    /** Colour cache. */
-    private static final Map<String, Colour> COLOUR_CACHE = new HashMap<String, Colour>();
-
     /** Default colours used for the standard 16 IRC colours. */
     private static final Colour[] DEFAULT_COLOURS = {
         Colour.WHITE, Colour.BLACK, new Colour(0, 0, 127), new Colour(0, 141, 0),
@@ -49,27 +46,48 @@ public final class ColourManager {
         Colour.BLUE, new Colour(255, 0, 255), Colour.GRAY, Colour.LIGHT_GRAY,
     };
 
-    /** Actual colours we're using for the 16 IRC colours. */
-    private static Colour[] ircColours = DEFAULT_COLOURS.clone();
+    /** Singleton instance of the manager. */
+    private static ColourManager instance;
 
-    /** Creates a new instance of ColourManager. */
-    private ColourManager() {
+    /** Colour cache. */
+    private final Map<String, Colour> colourCache = new HashMap<>();
+
+    /** Config manager to read settings from. */
+    private final ConfigManager configManager;
+
+    /** Actual colours we're using for the 16 IRC colours. */
+    private Colour[] ircColours = DEFAULT_COLOURS.clone();
+
+    /**
+     * Creates a new instance of {@link ColourManager}.
+     *
+     * @param configManager The manager to read config settings from.
+     */
+    public ColourManager(final ConfigManager configManager) {
+        this.configManager = configManager;
+
+        configManager.addChangeListener("colour", new ConfigChangeListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void configChanged(final String domain, final String key) {
+                initColours();
+            }
+        });
+
+        initColours();
     }
 
     /**
      * Initialises the IRC_COLOURS array.
      */
-    private static void initColours() {
-        final ConfigManager configManager = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration();
-
+    private void initColours() {
         for (int i = 0; i < 16; i++) {
             if (configManager.hasOptionColour("colour", String.valueOf(i))) {
                 ircColours[i] = configManager.getOptionColour("colour", String.valueOf(i));
-                COLOUR_CACHE.remove(String.valueOf(i));
+                colourCache.remove(String.valueOf(i));
             } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
                 ircColours[i] = DEFAULT_COLOURS[i];
-                COLOUR_CACHE.remove(String.valueOf(i));
+                colourCache.remove(String.valueOf(i));
             }
         }
     }
@@ -78,13 +96,28 @@ public final class ColourManager {
      * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
      * target string, and returns the corresponding colour. Returns the
      * specified fallback colour if the spec can't be parsed.
+     *
+     * @param spec The string to parse
+     * @param fallback The colour to use if the spec isn't valid
+     * @return A colour representation of the specified string
+     * @deprecated Use non-static methods
+     */
+    public static Colour parseColour(final String spec, final Colour fallback) {
+        return getColourManager().getColourFromString(spec, fallback);
+    }
+
+    /**
+     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
+     * target string, and returns the corresponding colour. Returns the
+     * specified fallback colour if the spec can't be parsed.
+     *
      * @param spec The string to parse
      * @param fallback The colour to use if the spec isn't valid
      * @return A colour representation of the specified string
      */
-    public static Colour parseColour(final String spec, final Colour fallback) {
-        if (COLOUR_CACHE.containsKey(spec)) {
-            return COLOUR_CACHE.get(spec);
+    public Colour getColourFromString(final String spec, final Colour fallback) {
+        if (colourCache.containsKey(spec)) {
+            return colourCache.get(spec);
         }
 
         Colour res = null;
@@ -100,10 +133,10 @@ public final class ColourManager {
                 }
 
                 if (num >= 0 && num <= 15) {
-                    res = getColour(num);
+                    res = getColourFromIrcCode(num);
                 }
             } else if (spec.length() == 6) {
-                res = getColour(spec);
+                res = getColourFromHex(spec);
             }
         }
 
@@ -111,7 +144,7 @@ public final class ColourManager {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
             res = fallback;
         } else {
-            COLOUR_CACHE.put(spec, res);
+            colourCache.put(spec, res);
         }
 
         return res;
@@ -121,9 +154,12 @@ public final class ColourManager {
      * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
      * target string, and returns the corresponding colour. Returns white if the
      * spec can't be parsed.
+     *
      * @param spec The string to parse
      * @return A colour representation of the specified string
+     * @deprecated Use non-static methods
      */
+    @Deprecated
     public static Colour parseColour(final String spec) {
         return parseColour(spec, Colour.WHITE);
     }
@@ -131,12 +167,26 @@ public final class ColourManager {
     /**
      * Returns a Colour object that corresponds to the specified 6-digit hex
      * string. If the string is invalid, logs a warning and returns white.
+     *
+     * @param hex The hex string to convert into a Colour
+     * @return A Colour object corresponding to the hex input
+     * @deprecated Use non-static methods
+     */
+    @Deprecated
+    public static Colour getColour(final String hex) {
+        return getColourManager().getColourFromHex(hex);
+    }
+
+    /**
+     * Returns a Colour object that corresponds to the specified 6-digit hex
+     * string. If the string is invalid, logs a warning and returns white.
+     *
      * @param hex The hex string to convert into a Colour
      * @return A Colour object corresponding to the hex input
      */
-    public static Colour getColour(final String hex) {
-        if (COLOUR_CACHE.containsKey(hex)) {
-            return COLOUR_CACHE.get(hex);
+    public Colour getColourFromHex(final String hex) {
+        if (colourCache.containsKey(hex)) {
+            return colourCache.get(hex);
         }
 
         if (hex.length() < 6) {
@@ -144,8 +194,7 @@ public final class ColourManager {
             return Colour.WHITE;
         }
 
-        Colour colour = null;
-
+        Colour colour;
         try {
             colour = new Colour(
                     Integer.parseInt(hex.substring(0, 2), 16),
@@ -156,7 +205,7 @@ public final class ColourManager {
             return Colour.WHITE;
         }
 
-        COLOUR_CACHE.put(hex, colour);
+        colourCache.put(hex, colour);
         return colour;
     }
 
@@ -164,10 +213,25 @@ public final class ColourManager {
      * Returns a Colour object that represents the colour associated with the
      * specified IRC colour code. If the code is not found, a warning is logged
      * with the client's Logger class, and white is returned.
+     *
+     * @param number The IRC colour code to look up
+     * @return The corresponding Colour object
+     * @deprecated Use non-static methods.
+     */
+    @Deprecated
+    public static Colour getColour(final int number) {
+        return getColourManager().getColourFromIrcCode(number);
+    }
+
+    /**
+     * Returns a Colour object that represents the colour associated with the
+     * specified IRC colour code. If the code is not found, a warning is logged
+     * with the client's Logger class, and white is returned.
+     *
      * @param number The IRC colour code to look up
      * @return The corresponding Colour object
      */
-    public static Colour getColour(final int number) {
+    public Colour getColourFromIrcCode(final int number) {
         if (number >= 0 && number <= 15) {
             return ircColours[number];
         } else {
@@ -199,17 +263,17 @@ public final class ColourManager {
         return (hex.length() < 2 ? "0" : "") + hex;
     }
 
-    static {
-        IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .addChangeListener("colour", new ConfigChangeListener() {
-            /** {@inheritDoc} */
-            @Override
-            public void configChanged(final String domain, final String key) {
-                initColours();
-            }
-        });
+    /**
+     * Gets a singleton instance of the colour manager.
+     *
+     * @return An instance of the colour manager.
+     */
+    public static synchronized ColourManager getColourManager() {
+        if (instance == null) {
+            instance = new ColourManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
+        }
 
-        initColours();
+        return instance;
     }
 
 }

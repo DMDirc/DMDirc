@@ -24,23 +24,34 @@ package com.dmdirc.config;
 
 import com.dmdirc.TestMain;
 import com.dmdirc.harness.TestCipherUtils;
+import com.dmdirc.interfaces.IdentityController;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CipherUtilsTest {
 
+    @Mock private IdentityController identityController;
+    @Mock private ConfigManager configManager;
+    @Mock private Identity identity;
+
     @Before
-    public void setUp() throws Exception {
-        TestMain.getTestMain();
+    public void setup() {
+        when(identityController.getGlobalConfiguration()).thenReturn(configManager);
+        when(identityController.getGlobalConfigIdentity()).thenReturn(identity);
     }
 
     @Test
     public void testEncryptDecrypt() {
         final String source = "DMDirc unit test {}!";
-        final CipherUtils utils = new TestCipherUtils();
+        final CipherUtils utils = new TestCipherUtils(identityController);
 
         final String encrypted = utils.encrypt(source);
         assertNotNull(encrypted);

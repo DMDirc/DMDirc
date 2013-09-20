@@ -23,8 +23,13 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.config.CipherUtils;
+import com.dmdirc.interfaces.IdentityController;
 
 public class TestCipherUtils extends CipherUtils {
+
+    public TestCipherUtils(final IdentityController identityController) {
+        super(identityController);
+    }
 
     /** {@inheritDoc} */
     @Override
