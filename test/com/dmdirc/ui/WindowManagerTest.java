@@ -21,242 +21,176 @@
  */
 package com.dmdirc.ui;
 
-import com.dmdirc.addons.ui_dummy.DummyController;
-import com.dmdirc.TestMain;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ServerManager;
-import com.dmdirc.addons.ui_dummy.DummyInputWindow;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
-import com.dmdirc.interfaces.ui.Window;
-import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class WindowManagerTest {
 
-    @Mock private ConfigManager cm;
-    @Mock private ServerManager serverManager;
-    @Mock private StatusBarManager statusBarManager;
-    private CommandManager commands;
+    @Mock private FrameListener frameListener;
+    @Mock private FrameContainer container;
+    @Mock private FrameContainer child;
+    @Mock private FrameContainer grandchild;
+    private WindowManager manager;
 
     @Before
-    public void setup() throws InvalidIdentityFileException {
-        MockitoAnnotations.initMocks(this);
-        final ConfigBinder binder = new ConfigBinder(cm);
-        when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(serverManager);
-        commands.initialise(cm);
-        StatusBarManager.setStatusBarManager(statusBarManager);
+    public void setup() {
+        manager = new WindowManager();
     }
 
     @Test
     public void testAddRoot() {
-        final WindowManager manager = new WindowManager();
-        final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
+        manager.addListener(frameListener);
 
-        manager.addListener(tfm);
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), eq(true));
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), eq(true));
+        manager.addWindow(container);
 
-        manager.addWindow(parent.getContainer());
-
-        verify(tfm).addWindow(same(parent.getContainer()), eq(true));
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), eq(true));
+        verify(frameListener).addWindow(same(container), eq(true));
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
     }
 
     @Test
     public void testAddChild() {
-        final WindowManager manager = new WindowManager();
-        final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        final Window child = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        manager.addWindow(parent.getContainer());
-        manager.addListener(tfm);
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.addWindow(container, child);
 
-        manager.addWindow(parent.getContainer(), child.getContainer());
-
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), eq(true));
-        verify(tfm).addWindow(same(parent.getContainer()), same(child.getContainer()), eq(true));
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener).addWindow(same(container), same(child), eq(true));
     }
 
     @Test
     public void testRemoveRoot() {
-        final WindowManager manager = new WindowManager();
-        final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        manager.addWindow(parent.getContainer());
-        manager.addListener(tfm);
+        manager.addWindow(container);
+        manager.addListener(frameListener);
 
-        manager.removeWindow(parent.getContainer());
+        manager.removeWindow(container);
 
-        verify(tfm).delWindow(same(parent.getContainer()));
+        verify(frameListener).delWindow(same(container));
     }
 
     @Test
     public void testRemoveChild() {
-        final WindowManager manager = new WindowManager();
-        final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        final Window child = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        manager.addWindow(parent.getContainer());
-        manager.addWindow(parent.getContainer(), child.getContainer());
-        manager.addListener(tfm);
+        manager.addWindow(container);
+        manager.addWindow(container, child);
+        manager.addListener(frameListener);
 
-        manager.removeWindow(child.getContainer());
+        when(child.getParent()).thenReturn(container);
 
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), eq(true));
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), eq(true));
-        verify(tfm, never()).delWindow((FrameContainer) anyObject());
-        verify(tfm).delWindow(same(parent.getContainer()), same(child.getContainer()));
+        manager.removeWindow(child);
+
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).delWindow((FrameContainer) anyObject());
+        verify(frameListener).delWindow(same(container), same(child));
     }
 
     @Test
     public void testRemoveFrameManager() {
-        final WindowManager manager = new WindowManager();
-        final FrameListener tfm = mock(FrameListener.class);
-        final Window parent = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        final Window child = new DummyInputWindow(new DummyController(TestMain.getTestMain()), new TestWritableFrameContainer(512, cm, commands));
-        manager.addWindow(parent.getContainer());
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.removeListener(frameListener);
+        manager.addWindow(container, child);
 
-        manager.addListener(tfm);
-
-        manager.removeListener(tfm);
-        manager.addWindow(parent.getContainer(), child.getContainer());
-
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), eq(true));
-        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), eq(true));
-        verify(tfm, never()).delWindow((FrameContainer) anyObject());
-        verify(tfm, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).delWindow((FrameContainer) anyObject());
+        verify(frameListener, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
     }
 
     @Test
     public void testAddListener() {
-        final FrameContainer parent = mock(FrameContainer.class);
-        final FrameListener fl = mock(FrameListener.class);
-        final WindowManager wm = new WindowManager();
-
-        wm.addListener(fl);
-        wm.addWindow(parent);
-
-        verify(fl).addWindow(parent, true);
+        manager.addListener(frameListener);
+        manager.addWindow(container);
+        verify(frameListener).addWindow(container, true);
     }
 
     @Test
     public void testAddListenerAndSync() {
-        final FrameContainer parent = mock(FrameContainer.class);
-        final FrameContainer child = mock(FrameContainer.class);
-        final FrameContainer grandChild = mock(FrameContainer.class);
-        final FrameListener fl = mock(FrameListener.class);
-        final WindowManager wm = new WindowManager();
-
-        when(parent.getChildren()).thenReturn(Arrays.asList(
+        when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
         when(child.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{grandChild, }));
+                new FrameContainer[]{grandchild, }));
 
-        wm.addWindow(parent);
-        wm.addListenerAndSync(fl);
+        manager.addWindow(container);
+        manager.addListenerAndSync(frameListener);
 
-        verify(fl).addWindow(parent, true);
-        verify(fl).addWindow(parent, child, true);
-        verify(fl).addWindow(child, grandChild, true);
+        verify(frameListener).addWindow(container, true);
+        verify(frameListener).addWindow(container, child, true);
+        verify(frameListener).addWindow(child, grandchild, true);
     }
 
     @Test
     public void testRemoveWindowRootWindowNoChildren() {
-        final FrameListener fl = mock(FrameListener.class);
-        final FrameContainer parent = mock(FrameContainer.class);
-        final WindowManager wm = new WindowManager();
+        manager.addListener(frameListener);
+        manager.addWindow(container);
+        manager.removeWindow(container);
 
-        wm.addListener(fl);
-        wm.addWindow(parent);
-        wm.removeWindow(parent);
-
-        verify(fl).delWindow(parent);
-        verify(parent).windowClosed();
+        verify(frameListener).delWindow(container);
+        verify(container).windowClosed();
     }
 
     @Test
     public void testRemoveWindowRootWindowWithChildren() {
-        final FrameListener fl = mock(FrameListener.class);
-        final FrameContainer parent = mock(FrameContainer.class);
-        final FrameContainer child = mock(FrameContainer.class);
-        final WindowManager wm = new WindowManager();
-
-        when(parent.getChildren()).thenReturn(Arrays.asList(
+        when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
-        when(child.getParent()).thenReturn(parent);
+        when(child.getParent()).thenReturn(container);
 
-        wm.addListener(fl);
-        wm.addWindow(parent);
-        wm.removeWindow(parent);
+        manager.addListener(frameListener);
+        manager.addWindow(container);
+        manager.removeWindow(container);
 
-        verify(fl).delWindow(parent);
+        verify(frameListener).delWindow(container);
         verify(child).close();
-        verify(parent).windowClosed();
+        verify(container).windowClosed();
     }
 
     @Test
     public void testRemoveChildWindowNoChildren() {
-        final FrameListener fl = mock(FrameListener.class);
-        final FrameContainer parent = mock(FrameContainer.class);
-        final FrameContainer child = mock(FrameContainer.class);
-        final WindowManager wm = new WindowManager();
-
-        when(parent.getChildren()).thenReturn(Arrays.asList(
+        when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
-        when(child.getParent()).thenReturn(parent);
+        when(child.getParent()).thenReturn(container);
 
-        wm.addListener(fl);
-        wm.addWindow(parent);
-        wm.removeWindow(child);
+        manager.addListener(frameListener);
+        manager.addWindow(container);
+        manager.removeWindow(child);
 
-        verify(fl).delWindow(parent, child);
+        verify(frameListener).delWindow(container, child);
         verify(child).windowClosed();
-        verify(parent).removeChild(child);
+        verify(container).removeChild(child);
     }
-
-
 
     @Test
     public void testRemoveChildWindowWithChildren() {
-        final FrameListener fl = mock(FrameListener.class);
-        final FrameContainer parent = mock(FrameContainer.class);
-        final FrameContainer child = mock(FrameContainer.class);
-        final FrameContainer grandChild = mock(FrameContainer.class);
-        final WindowManager wm = new WindowManager();
-
-        when(parent.getChildren()).thenReturn(Arrays.asList(
+        when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
         when(child.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{grandChild, }));
-        when(child.getParent()).thenReturn(parent);
+                new FrameContainer[]{grandchild, }));
+        when(child.getParent()).thenReturn(container);
 
-        wm.addListener(fl);
-        wm.addWindow(parent);
-        wm.removeWindow(child);
+        manager.addListener(frameListener);
+        manager.addWindow(container);
+        manager.removeWindow(child);
 
-        verify(fl).delWindow(parent, child);
-        verify(grandChild).close();
+        verify(frameListener).delWindow(container, child);
+        verify(grandchild).close();
         verify(child).windowClosed();
-        verify(parent).removeChild(child);
+        verify(container).removeChild(child);
     }
 
     @Test
@@ -265,68 +199,64 @@ public class WindowManagerTest {
         final FrameContainer root2 = mock(FrameContainer.class);
         final Collection<FrameContainer> rootWindows
                 = Arrays.asList(new FrameContainer[]{root1, root2, });
-        final WindowManager wm = new WindowManager();
-        wm.addWindow(root1);
-        wm.addWindow(root2);
+        
+        manager.addWindow(root1);
+        manager.addWindow(root2);
 
-        assertTrue(wm.getRootWindows().containsAll(rootWindows));
+        assertTrue(manager.getRootWindows().containsAll(rootWindows));
     }
 
     @Test
     public void testFindCustomWindow() {
-        final WindowManager wm = new WindowManager();
         final CustomWindow custom = mock(CustomWindow.class);
 
         when(custom.getName()).thenReturn("test");
 
-        wm.addWindow(custom);
+        manager.addWindow(custom);
 
-        assertEquals(custom, wm.findCustomWindow("test"));
+        assertEquals(custom, manager.findCustomWindow("test"));
     }
 
     @Test
     public void testFindCustomWindowNotFound() {
-        final WindowManager wm = new WindowManager();
         final CustomWindow custom = mock(CustomWindow.class);
 
         when(custom.getName()).thenReturn("test");
 
-        wm.addWindow(custom);
+        manager.addWindow(custom);
 
-        assertNull(wm.findCustomWindow("test1"));
+        assertNull(manager.findCustomWindow("test1"));
     }
 
     @Test
     public void testFindCustomWindowWithParent() {
-        final WindowManager wm = new WindowManager();
-        final CustomWindow parent = mock(CustomWindow.class);
-        final CustomWindow child = mock(CustomWindow.class);
+        final CustomWindow customContainer = mock(CustomWindow.class);
+        final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(parent.getName()).thenReturn("test");
-        when(child.getName()).thenReturn("test1");
-        when(parent.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
+        when(customContainer.getName()).thenReturn("test");
+        when(customChild.getName()).thenReturn("test1");
+        when(customContainer.getChildren()).thenReturn(Arrays.asList(
+                new FrameContainer[]{customChild, }));
 
-        wm.addWindow(parent);
-        wm.addWindow(parent, child);
+        manager.addWindow(customContainer);
+        manager.addWindow(customContainer, customChild);
 
-        assertEquals(child, wm.findCustomWindow(parent, "test1"));
+        assertEquals(customChild, manager.findCustomWindow(customContainer, "test1"));
     }
 
     @Test
     public void testFindCustomWindowWithParentNotFound() {
-        final WindowManager wm = new WindowManager();
-        final CustomWindow parent = mock(CustomWindow.class);
-        final CustomWindow child = mock(CustomWindow.class);
+        final CustomWindow customContainer = mock(CustomWindow.class);
+        final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(parent.getName()).thenReturn("test");
-        when(child.getName()).thenReturn("test1");
-        when(parent.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
+        when(customContainer.getName()).thenReturn("test");
+        when(customChild.getName()).thenReturn("test1");
+        when(customContainer.getChildren()).thenReturn(Arrays.asList(
+                new FrameContainer[]{customChild, }));
 
-        wm.addWindow(parent);
-        wm.addWindow(parent, child);
+        manager.addWindow(customContainer);
+        manager.addWindow(customContainer, customChild);
 
-        assertNull(wm.findCustomWindow(parent, "test"));
+        assertNull(manager.findCustomWindow(customContainer, "test"));
     }
 }
