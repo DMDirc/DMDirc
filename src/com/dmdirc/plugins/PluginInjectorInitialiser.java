@@ -29,6 +29,7 @@ import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -54,6 +55,7 @@ public class PluginInjectorInitialiser {
     private final StatusBarManager statusBarManager;
     private final PreferencesManager preferencesManager;
     private final PerformWrapper performWrapper;
+    private final LifecycleController lifecycleController;
 
     /**
      * Creates a new {@link PluginInjectorInitialiser} which will inject all
@@ -70,7 +72,8 @@ public class PluginInjectorInitialiser {
             final WindowManager windowManager,
             final StatusBarManager statusBarManager,
             final PreferencesManager preferencesManager,
-            final PerformWrapper performWrapper) {
+            final PerformWrapper performWrapper,
+            final LifecycleController lifecycleController) {
         this.actionManager = actionManager;
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
@@ -81,6 +84,7 @@ public class PluginInjectorInitialiser {
         this.statusBarManager = statusBarManager;
         this.preferencesManager = preferencesManager;
         this.performWrapper = performWrapper;
+        this.lifecycleController = lifecycleController;
     }
 
     /**
@@ -100,5 +104,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(statusBarManager);
         injector.addParameter(PreferencesManager.class, preferencesManager);
         injector.addParameter(PerformWrapper.class, performWrapper);
+        injector.addParameter(LifecycleController.class, lifecycleController);
     }
 }
