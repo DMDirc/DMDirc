@@ -204,9 +204,7 @@ is divided into following sections:
         </macrodef>
     </target>
 
-    <target name="-init-macrodef-junit" depends="-init-macrodef-junit-clover,-init-macrodef-junit-noclover"/>
-
-    <target name="-init-macrodef-junit-clover" if="clover.installed">
+    <target name="-init-macrodef-junit">
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
@@ -214,57 +212,8 @@ is divided into following sections:
             <sequential>
                 <delete dir="${test_profile_dir}"/>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="yes" forkmode="once" showoutput="true" timeout="120000">
-                    <classpath>
-                        <pathelement path="${clover.jar}"/>
-                    </classpath>
                     <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <classpath refid="all.libs"/>
-                    <batchtest todir="${build.test.results.dir}">
-                        <clover-optimized-testset>
-                            <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                                <filename name="@{testincludes}"/>
-                            </fileset>
-                            <fileset dir="${parser.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                                <filename name="@{testincludes}"/>
-                            </fileset>
-                            <fileset dir="${plugins.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                                <filename name="@{testincludes}"/>
-                            </fileset>
-                            <fileset dir="${util.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                                <filename name="@{testincludes}"/>
-                            </fileset>
-                        </clover-optimized-testset>
-
-                        <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
-                            <filename name="**/DummyTest*"/>
-                        </fileset>
-                    </batchtest>
-                    <classpath>
-                        <path path="${run.test.classpath}"/>
-                    </classpath>
-                    <syspropertyset>
-                        <propertyref prefix="test-sys-prop."/>
-                        <mapper from="test-sys-prop.*" to="*" type="glob"/>
-                    </syspropertyset>
-                    <formatter type="brief" usefile="false"/>
-                    <formatter type="xml"/>
-                    <jvmarg line="${run.jvmargs}"/>
-                </junit>
-                <delete dir="${test_profile_dir}"/>
-            </sequential>
-        </macrodef>
-    </target>
-
-    <target name="-init-macrodef-junit-noclover" unless="clover.installed">
-        <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${includes}" name="includes"/>
-            <attribute default="${excludes}" name="excludes"/>
-            <attribute default="**" name="testincludes"/>
-            <sequential>
-                <delete dir="${test_profile_dir}"/>
-                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="yes" forkmode="once" showoutput="true" timeout="120000">
-                    <classpath refid="all.libs"/>
-                    <env key="DMDIRC_HOME" value="${test_profile_dir}"/>
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${main.test.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="@{testincludes}"/>
