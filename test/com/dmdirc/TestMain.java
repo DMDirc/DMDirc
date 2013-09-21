@@ -103,7 +103,9 @@ public class TestMain extends Main {
 
                 final PluginManager pluginManager = new PluginManager(
                         identityManager, actionManager,
-                        mock(UpdateManager.class), pluginDirectory);
+                        mock(UpdateManager.class),
+                        mock(Provider.class),
+                        pluginDirectory);
                 final CorePluginExtractor corePluginExtractor =
                         new CorePluginExtractor(pluginManager, pluginDirectory);
 

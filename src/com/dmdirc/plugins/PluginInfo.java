@@ -22,21 +22,13 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.Main;
-import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.actions.wrappers.PerformWrapper;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.messages.MessageSinkManager;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -54,6 +46,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import javax.inject.Provider;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +59,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** The metadata for this plugin. */
     @Getter
     private final PluginMetaData metaData;
+    /** The initialiser to use for the injector. */
+    private final Provider<PluginInjectorInitialiser> injectorInitialiser;
     /** Filename for this plugin (taken from URL). */
     @Getter
     private final String filename;
@@ -99,10 +94,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Create a new PluginInfo.
      *
      * @param metadata The plugin's metadata information
+     * @param injectorInitialiser The initialiser to use for the plugin's injector.
      * @throws PluginException if there is an error loading the Plugin
      * @since 0.6.6
      */
-    public PluginInfo(final PluginMetaData metadata) throws PluginException {
+    public PluginInfo(
+            final PluginMetaData metadata,
+            final Provider<PluginInjectorInitialiser> injectorInitialiser) throws PluginException {
+        this.injectorInitialiser = injectorInitialiser;
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
 
@@ -166,19 +165,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         // TODO: This should be switched to using a full DI framework.
-        injector.addParameter(PluginManager.class, metaData.getManager());
-        injector.addParameter(ActionManager.getActionManager());
         injector.addParameter(PluginInfo.class, this);
-        injector.addParameter(Main.class, Main.mainInstance);
         injector.addParameter(PluginMetaData.class, metaData);
-        injector.addParameter(IdentityManager.getIdentityManager());
-        injector.addParameter(ServerManager.class, Main.mainInstance.getServerManager());
-        injector.addParameter(CommandManager.getCommandManager());
-        injector.addParameter(MessageSinkManager.class, MessageSinkManager.getManager());
-        injector.addParameter(WindowManager.class, WindowManager.getWindowManager());
-        injector.addParameter(StatusBarManager.getStatusBarManager());
-        injector.addParameter(PreferencesManager.class, PreferencesManager.getPreferencesManager());
-        injector.addParameter(PerformWrapper.class, PerformWrapper.getPerformWrapper());
+        injectorInitialiser.get().initialise(injector);
 
         return injector;
     }

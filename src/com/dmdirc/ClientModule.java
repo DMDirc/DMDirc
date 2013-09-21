@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
@@ -42,8 +43,10 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WarningDialog;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
@@ -237,8 +240,10 @@ public class ClientModule {
             final IdentityController identityController,
             final ActionController actionController,
             final UpdateManager updateManager,
+            final Provider<PluginInjectorInitialiser> initialiserProvider,
             @Directory(DirectoryType.PLUGINS) final String directory) {
-        final PluginManager manager = new PluginManager(identityController, actionController, updateManager, directory);
+        final PluginManager manager = new PluginManager(identityController,
+                actionController, updateManager, initialiserProvider, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
         checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
 
@@ -335,14 +340,23 @@ public class ClientModule {
 
     /**
      * Gets the performs actions wrapper.
+     */
+    @Provides
+    @Singleton
+    public PerformWrapper getPerformWrapper() {
+        final PerformWrapper wrapper = new PerformWrapper();
+        PerformWrapper.setPerformWrapper(wrapper);
+        return wrapper;
+    }
+
+    /**
+     * Gets the performs actions wrapper.
      *
      * @return An performs wrapper to use in the client.
      */
     @Provides(type = Provides.Type.SET)
     @Singleton
-    public ActionGroup getPerformWrapper() {
-        final PerformWrapper wrapper = new PerformWrapper();
-        PerformWrapper.setPerformWrapper(wrapper);
+    public ActionGroup getPerformWrapper(final PerformWrapper wrapper) {
         return wrapper;
     }
 
@@ -358,6 +372,26 @@ public class ClientModule {
         final ColourManager manager = new ColourManager(controller.getGlobalConfiguration());
         ColourManager.setColourManager(manager);
         return manager;
+    }
+
+    /**
+     * Gets a window manager.
+     *
+     * @return A singleton window manager.
+     */
+    @Provides
+    public WindowManager getWindowManager() {
+        return WindowManager.getWindowManager();
+    }
+
+    /**
+     * Gets a preferences manager.
+     *
+     * @return A singleton preferences manager.
+     */
+    @Provides
+    public PreferencesManager getPreferencesManager() {
+        return PreferencesManager.getPreferencesManager();
     }
 
     /**

@@ -184,17 +184,6 @@ public class Main implements LifecycleController {
     }
 
     /**
-     * Get our ServerManager
-     *
-     * @return ServerManager controlled by this Main.
-     * @Deprecated Global state is bad.
-     */
-    @Deprecated
-    public ServerManager getServerManager() {
-        return serverManager;
-    }
-
-    /**
      * Called when the UI has failed to initialise correctly. This method
      * attempts to extract any and all UI plugins bundled with the client, and
      * requests a restart. If this has already been attempted, it shows an error

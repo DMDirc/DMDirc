@@ -47,6 +47,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 /**
  * Searches for and manages plugins and services.
  */
@@ -70,6 +72,9 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** The update manager to inform about plugins. */
     private final UpdateManager updateManager;
 
+    /** A provider of initialisers for plugin injectors. */
+    private final Provider<PluginInjectorInitialiser> initialiserProvider;
+
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<>();
 
@@ -82,16 +87,19 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param identityController The identity controller to use for configuration options.
      * @param actionController The action controller to use for events.
      * @param updateManager The update manager to inform about plugins.
+     * @param initialiserProvider A provider of initialisers for plugin injectors.
      * @param directory The directory to load plugins from.
      */
     public PluginManager(
             final IdentityController identityController,
             final ActionController actionController,
             final UpdateManager updateManager,
+            final Provider<PluginInjectorInitialiser> initialiserProvider,
             final String directory) {
         this.identityController = identityController;
         this.actionController = actionController;
         this.updateManager = updateManager;
+        this.initialiserProvider = initialiserProvider;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
 
@@ -252,7 +260,7 @@ public class PluginManager implements ActionListener, ServiceManager {
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata);
+            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM,
