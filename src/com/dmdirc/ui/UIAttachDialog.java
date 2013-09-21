@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.Main;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceManager;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -56,13 +56,16 @@ public class UIAttachDialog extends JDialog implements ActionListener,
     private static final int GAP = 5;
     /** Services list. */
     private final JList<Service> list;
-    /** Main instance. */
-    private final Main main;
+    /** Service manager to use to find UI services. */
+    private final ServiceManager serviceManager;
 
-    /** Creates a new dialog allowing the user to select and load a UI. */
-    public UIAttachDialog(final Main main) {
-        super();
-        this.main = main;
+    /**
+     * Creates a new dialog allowing the user to select and load a UI.
+     *
+     * @param serviceManager Service manager to use to find UI services.
+     */
+    public UIAttachDialog(final ServiceManager serviceManager) {
+        this.serviceManager = serviceManager;
         list = initList();
         setLayout(new BorderLayout());
         add(list, BorderLayout.CENTER);
@@ -71,12 +74,11 @@ public class UIAttachDialog extends JDialog implements ActionListener,
 
     /** Initialises the model with a list of UIs. */
     private JList<Service> initList() {
-        final DefaultListModel<Service> model = new DefaultListModel<Service>();
-        final JList<Service> newList = new JList<Service>(model);
+        final DefaultListModel<Service> model = new DefaultListModel<>();
+        final JList<Service> newList = new JList<>(model);
         newList.setCellRenderer(new ServiceRenderer());
         newList.addListSelectionListener(this);
-        final List<Service> services = main.getPluginManager()
-                .getServicesByType("ui");
+        final List<Service> services = serviceManager.getServicesByType("ui");
         for (Service service : services) {
             model.addElement(service);
         }
