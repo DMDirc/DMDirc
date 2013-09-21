@@ -22,7 +22,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.Main;
+import com.dmdirc.CorePluginExtractor;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.PerformWrapper;
@@ -56,6 +56,7 @@ public class PluginInjectorInitialiser {
     private final PreferencesManager preferencesManager;
     private final PerformWrapper performWrapper;
     private final LifecycleController lifecycleController;
+    private final CorePluginExtractor corePluginExtractor;
 
     /**
      * Creates a new {@link PluginInjectorInitialiser} which will inject all
@@ -73,7 +74,8 @@ public class PluginInjectorInitialiser {
             final StatusBarManager statusBarManager,
             final PreferencesManager preferencesManager,
             final PerformWrapper performWrapper,
-            final LifecycleController lifecycleController) {
+            final LifecycleController lifecycleController,
+            final CorePluginExtractor corePluginExtractor) {
         this.actionManager = actionManager;
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
@@ -85,6 +87,7 @@ public class PluginInjectorInitialiser {
         this.preferencesManager = preferencesManager;
         this.performWrapper = performWrapper;
         this.lifecycleController = lifecycleController;
+        this.corePluginExtractor = corePluginExtractor;
     }
 
     /**
@@ -93,7 +96,6 @@ public class PluginInjectorInitialiser {
      * @param injector The injector to be initialised
      */
     public void initialise(final SimpleInjector injector) {
-        injector.addParameter(Main.class, Main.mainInstance);
         injector.addParameter(actionManager);
         injector.addParameter(PluginManager.class, pluginManager);
         injector.addParameter(identityManager);
@@ -105,5 +107,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(PreferencesManager.class, preferencesManager);
         injector.addParameter(PerformWrapper.class, performWrapper);
         injector.addParameter(LifecycleController.class, lifecycleController);
+        injector.addParameter(corePluginExtractor);
     }
 }
