@@ -4,6 +4,7 @@
 
     <import file="nbproject/build-impl.xml"/>
     <import file="build-installer.xml"/>
+    <import file="build-paths.xml"/>
     <import file="build-plugins.xml"/>
     <import file="build-reports.xml"/>
     <import file="build-tests.xml"/>
@@ -19,7 +20,7 @@
         <echo>Downloading private files, if this fails please pass username and</echo>
         <echo>password to ant using -Dusername=... -Dpassword=...</echo>
 
-        <get src="http://www.dmdirc.com/private/clover.license" dest="lib/clover.license" username="${username}" password="${password}"/>
+        <get src="http://www.dmdirc.com/private/clover.license" dest="etc/clover.license" username="${username}" password="${password}"/>
 
         <get dest="installer/signing/" username="${username}" password="${password}">
             <url url="http://www.dmdirc.com/private/DMDirc.cer"/>
@@ -33,7 +34,7 @@
         <condition property="clover.installed">
             <and>
                 <available classname="com.cenqua.clover.CloverInstr"/>
-                <available file="lib/clover.license"/>
+                <available file="etc/clover.license"/>
             </and>
         </condition>
     </target>
@@ -49,14 +50,14 @@
 
     <target name="-bundle-slf4j">
         <jar destfile="${dist.jar}" update="true">
-            <zipfileset src="lib/slf4j-api-1.6.6.jar" includes="org/slf4j/**/*"/>
+            <zipfileset src="lib/main/slf4j-api.jar" includes="org/slf4j/**/*"/>
         </jar>
     </target>
 
     <target name="-bundle-dagger">
         <jar destfile="${dist.jar}" update="true">
-            <zipfileset src="lib/dagger-1.1.0.jar" includes="dagger/**"/>
-            <zipfileset src="lib/javax.inject-1.jar" includes="javax/inject/*"/>
+            <zipfileset src="lib/main/dagger.jar" includes="dagger/**"/>
+            <zipfileset src="lib/main/javax.inject.jar" includes="javax/inject/*"/>
         </jar>
     </target>
 

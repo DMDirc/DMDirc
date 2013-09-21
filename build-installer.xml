@@ -5,13 +5,13 @@
     <target name="-init-installer" depends="init">
         <taskdef name="nsis" classname="com.danielreese.nsisant.Task">
             <classpath>
-                <fileset dir="lib" includes="*nsis*.jar"/>
+                <fileset dir="lib/build" includes="*nsis*.jar"/>
             </classpath>
         </taskdef>
 
         <taskdef name="git-describe" classname="org.mdonoughe.JGitDescribeTask">
             <classpath>
-                <fileset dir="lib" includes="*jgit*.jar"/>
+                <fileset dir="lib/build" includes="*jgit*.jar"/>
            </classpath>
         </taskdef>
     </target>

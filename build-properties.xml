@@ -7,12 +7,8 @@
     </condition>
 
     <target name="-init-properties">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-
-        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
-        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="build-classpath"/>
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="build-classpath"/>
     </target>
 
     <target name="-create-private-properties" unless="private.properties.exists">
@@ -22,25 +18,41 @@
 
     <target name="-check-private-classpath">
         <loadfile property="private.properties.old" srcFile="nbproject/private/private.properties"/>
-        <condition property="private.properties.needsinsert">
+        <condition property="private.properties.needs.javac">
             <not>
-                <matches string="${private.properties.old}" pattern="^private.classpath=(.*)$" multiline="true" casesensitive="true"/>
+                <matches string="${private.properties.old}" pattern="^javac.classpath=(.*)$" multiline="true" casesensitive="true"/>
+            </not>
+        </condition>
+        <condition property="private.properties.needs.javac.test">
+            <not>
+                <matches string="${private.properties.old}" pattern="^javac.test.classpath=(.*)$" multiline="true" casesensitive="true"/>
             </not>
         </condition>
     </target>
 
-    <target name="-create-private-classpath" if="private.properties.needsinsert">
-        <echo append="true" file="nbproject/private/private.properties">${line.separator}private.classpath=${line.separator}</echo>
+    <target name="-create-private-classpath" if="private.properties.needs.javac">
+        <echo append="true" file="nbproject/private/private.properties">${line.separator}javac.classpath=${line.separator}</echo>
     </target>
 
-    <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath">
-        <path id="all.libs">
+    <target name="-create-private-test-classpath" if="private.properties.needs.javac.test">
+        <echo append="true" file="nbproject/private/private.properties">${line.separator}javac.test.classpath=${line.separator}</echo>
+    </target>
+
+    <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath,-create-private-test-classpath">
+        <path id="main-libs">
             <fileset dir="modules" includes="*/lib/*.jar"/>
-            <fileset dir="lib" includes="*.jar"/>
+            <fileset dir="lib/main" includes="*.jar"/>
         </path>
 
-        <propertyregex property="private.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:all.libs}"/>
-        <replaceregexp file="nbproject/private/private.properties" match="^private.classpath=(.*)$" flags="im" replace="private.classpath=${private.classpath.value}"/>
+        <path id="test-libs">
+            <fileset dir="lib/test" includes="*.jar"/>
+        </path>
+
+        <propertyregex property="javac.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:main-libs}"/>
+        <propertyregex property="javac.test.classpath.value" input="${toString:test.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:test-libs}"/>
+
+        <replaceregexp file="nbproject/private/private.properties" match="^javac.classpath=(.*)$" flags="im" replace="javac.classpath=${javac.classpath.value}"/>
+        <replaceregexp file="nbproject/private/private.properties" match="^javac.test.classpath=(.*)$" flags="im" replace="javac.test.classpath=${javac.test.classpath.value}:$${javac.classpath}:build/classes:modules/plugins/build/classes"/>
     </target>
 
 </project>

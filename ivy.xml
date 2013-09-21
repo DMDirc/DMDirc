@@ -3,9 +3,9 @@
 
     <configurations>
         <conf name="build" description="Everything needed to support the build process"/>
-        <conf name="compile" description="Everything needed to compile DMDirc separately"/>
+        <conf name="main" description="Everything needed to compile DMDirc separately"/>
         <conf name="test" description="Everything needed to test DMDirc"/>
-        <conf name="default" extends="build,compile,test"/>
+        <conf name="analyse" description="Everything needed to run analysis on DMDirc"/>
     </configurations>
 
     <dependencies>
@@ -14,20 +14,21 @@
         <dependency org="com.github.shanemcc" name="jgit-describe" rev="0.3" conf="build->default" />
         <dependency org="net.sourceforge.fikin-ant-tasks" name="ant-fikin" rev="1.7.3" conf="build->default" />
 
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.6" conf="compile->default" />
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.+" conf="main->default" />
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.+" conf="test->default" />
 
-        <dependency org="com.github.peichhorn" name="lombok-pg" rev="latest.release" conf="compile->default" />
+        <dependency org="com.github.peichhorn" name="lombok-pg" rev="latest.release" conf="main->default" />
 
-        <dependency org="com.squareup.dagger" name="dagger" rev="1.1.+" conf="compile->default" />
-        <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.1.+" conf="compile->default" />
+        <dependency org="com.squareup.dagger" name="dagger" rev="1.1.+" conf="main->default" />
+        <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.1.+" conf="main->default" />
 
-        <dependency org="pmd" name="pmd" rev="4.+" conf="test->default" />
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
         <dependency org="com.cenqua.clover" name="clover" rev="3.+" conf="test->default" />
-        <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="test->default" />
-        <dependency org="net.sourceforge.findbugs" name="findbugs-ant" rev="1.+" conf="test->default" />
+
+        <dependency org="pmd" name="pmd" rev="4.+" conf="analyse->default" />
+        <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="analyse->default" />
+        <dependency org="net.sourceforge.findbugs" name="findbugs-ant" rev="1.+" conf="analyse->default" />
 
         <exclude org="ant" module="ant"/>
     </dependencies>

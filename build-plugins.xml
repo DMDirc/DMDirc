@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DMDirc-plugins" default="default" basedir=".">
 
-    <!-- Netbeans property files -->
-    <property file="nbproject/project.properties"/>
-    <property file="nbproject/private/private.properties"/>
-    <property file="${user.properties.file}"/>
-
     <import file="modules/plugins/build-pluginutils.xml"/>
 
     <target name="-init-plugins">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-
-        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="libclasspath"/>
-        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="libclasspath"/>
+        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="build-classpath"/>
+        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="build-classpath"/>
     </target>
 
     <target name="-init-default-build-target" unless="plugins.build.target">

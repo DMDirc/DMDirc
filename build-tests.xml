@@ -3,18 +3,15 @@
     <description>Test-related tasks for DMDirc.</description>
 
     <target name="-init-clover" depends="-init-dependencies">
-        <path id="clover.classpath">
-            <fileset dir="lib" includes="*clover*.jar"/>
-        </path>
-
-        <taskdef resource="cloverlib.xml" classpathref="clover.classpath"/>
-        <taskdef resource="cloverjunitlib.xml" classpathref="clover.classpath"/>
+        <taskdef resource="cloverlib.xml" classpathref="test-classpath"/>
+        <taskdef resource="cloverjunitlib.xml" classpathref="test-classpath"/>
+        <property name="clover.license.path" location="etc/clover.license"/>
         <property name="clover.init.string" location=".clover/clover.db"/>
 
         <condition property="clover.installed">
             <and>
                 <available classname="com.cenqua.clover.CloverInstr"/>
-                <available file="lib/clover.license"/>
+                <available file="etc/clover.license"/>
             </and>
         </condition>
 

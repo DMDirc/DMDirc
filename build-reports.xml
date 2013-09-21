@@ -13,31 +13,19 @@
     <target name="-mostreports" depends="cpd, pmd, checkstyle" /> 
 
     <target name="-init-checkstyle" depends="-init-dependencies">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-        <taskdef resource="checkstyletask.properties" classpathref="libclasspath"/>
+        <taskdef resource="checkstyletask.properties" classpathref="analyse-classpath"/>
     </target>
 
     <target name="-init-pmd" depends="-init-dependencies">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-        <taskdef name="pmd" classpathref="libclasspath" classname="net.sourceforge.pmd.ant.PMDTask" />
+        <taskdef name="pmd" classpathref="analyse-classpath" classname="net.sourceforge.pmd.ant.PMDTask" />
     </target>
 
     <target name="-init-cpd" depends="-init-dependencies">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-        <taskdef name="cpd" classpathref="libclasspath" classname="net.sourceforge.pmd.cpd.CPDTask" />
+        <taskdef name="cpd" classpathref="analyse-classpath" classname="net.sourceforge.pmd.cpd.CPDTask" />
     </target>
 
     <target name="-init-findbugs" depends="-init-dependencies">
-        <path id="libclasspath">
-            <fileset dir="lib" includes="*.jar"/>
-        </path>
-        <taskdef name="findbugs" classpathref="libclasspath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
+        <taskdef name="findbugs" classpathref="analyse-classpath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
     </target>
     
     <target name="checkstyle-all" depends="-init-checkstyle">

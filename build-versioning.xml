@@ -11,7 +11,7 @@
     <available file=".git" property="is.git"/>
 
     <target name="-init-version">
-        <taskdef name="git-describe" classname="org.mdonoughe.JGitDescribeTask" classpathref="libclasspath"/>
+        <taskdef name="git-describe" classname="org.mdonoughe.JGitDescribeTask" classpathref="build-classpath"/>
     </target>
 
     <target name="-write-version" depends="-init-version, -write-version-header, -add-version, -write-updater, -write-identities, -write-disable-updates"/>
