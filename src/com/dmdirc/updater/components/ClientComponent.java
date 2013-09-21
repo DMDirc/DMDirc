@@ -22,8 +22,9 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.StatusMessage;
+import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
@@ -119,7 +120,8 @@ public class ClientComponent implements UpdateComponent {
             // @deprecated Should be removed when updater UI changes are
             // implemented.
             final String message = this.getManualInstructions(path);
-            Main.mainInstance.getUI().showMessageDialog("Client update downloaded", message);
+            StatusBarManager.getStatusBarManager().setMessage(
+                    new StatusMessage(message, IdentityManager.getIdentityManager().getGlobalConfiguration()));
         }
 
         return true;

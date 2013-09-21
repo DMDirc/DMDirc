@@ -86,10 +86,6 @@ public class Main {
     /** The command loader to use. */
     private final CommandLoader commandLoader;
 
-    /** Instance of main, protected to allow subclasses direct access. */
-    @Deprecated
-    public static Main mainInstance;
-
     /**
      * Creates a new instance of {@link Main}.
      *
@@ -142,8 +138,7 @@ public class Main {
             final ObjectGraph graph = ObjectGraph.create(new ClientModule());
             final CommandLineParser parser = graph.get(CommandLineParser.class);
             parser.parse(args);
-            mainInstance = graph.get(Main.class);
-            mainInstance.init();
+            graph.get(Main.class).init();
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
                     ex);
@@ -270,30 +265,6 @@ public class Main {
                 }
             }, FEEDBACK_DELAY);
         }
-    }
-
-    /**
-     * Retrieves the UI controller that's being used by the client.
-     *
-     * @return The client's UI controller
-     * @deprecated Shouldn't be used. There may be multiple or no controllers.
-     */
-    @Deprecated
-    public UIController getUI() {
-        return CONTROLLERS.iterator().next();
-    }
-
-    /**
-     * Extracts plugins bundled with DMDirc to the user's profile's plugin
-     * directory.
-     *
-     * @param prefix If non-null, only plugins whose file name starts with
-     * this prefix will be extracted.
-     * @deprecated Go via a {@link CorePluginExtractor}.
-     */
-    @Deprecated
-    public void extractCorePlugins(final String prefix) {
-        corePluginExtractor.extractCorePlugins(prefix);
     }
 
 }
