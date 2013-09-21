@@ -310,15 +310,26 @@ public class ClientModule {
     }
 
     /**
+     * Gets the alias actions wrapper entry for the actions wrapper set.
+     *
+     * @param aliasWrapper The wrapper to use in the set.
+     * @return An alias wrapper to use in the client.
+     */
+    @Provides(type = Provides.Type.SET)
+    public ActionGroup getAliasWrapper(final AliasWrapper aliasWrapper) {
+        return aliasWrapper;
+    }
+
+    /**
      * Gets the alias actions wrapper.
      *
      * @param commandController The controller to register commands with
      * @param serverManager The manager to use to iterate servers.
      * @return An alias wrapper to use in the client.
      */
-    @Provides(type = Provides.Type.SET)
+    @Provides
     @Singleton
-    public ActionGroup getAliasWrapper(
+    public AliasWrapper getAliasWrapper(
             final CommandController commandController,
             final ServerManager serverManager) {
         final AliasWrapper wrapper = new AliasWrapper(commandController, serverManager);

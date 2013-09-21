@@ -24,6 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.ServerManager;
+import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.commands.channel.Ban;
 import com.dmdirc.commandparser.commands.channel.Cycle;
 import com.dmdirc.commandparser.commands.channel.Invite;
@@ -75,28 +76,33 @@ import com.dmdirc.ui.messages.ColourManager;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
+
 /**
  * Facilitates loading of core commands into a {@link CommandManager}.
  */
 public class CommandLoader {
 
     /** Controller to give to commands that want to start/stop the app. */
-    private final LifecycleController lifecycleController;
+    private final Lazy<LifecycleController> lifecycleController;
 
     /** Server manager to give to server-related commands. */
-    private final ServerManager serverManager;
+    private final Lazy<ServerManager> serverManager;
 
     /** Plugin manager to give to plugin-dependent commands. */
-    private final PluginManager pluginManager;
+    private final Lazy<PluginManager> pluginManager;
 
     /** The identity manager to pass to config-related commands. */
-    private final IdentityManager identityManager;
+    private final Lazy<IdentityManager> identityManager;
 
     /** The action controller to pass to action-aware commands. */
-    private final ActionController actionController;
+    private final Lazy<ActionController> actionController;
 
     /** The colour manager to pass to colourful commands. */
-    private final ColourManager colourManager;
+    private final Lazy<ColourManager> colourManager;
+
+    /** The alias wrapper to pass to alias commands. */
+    private final Lazy<AliasWrapper> aliasWrapper;
 
     /**
      * Creates a new instance of {@link CommandLoader}.
@@ -106,21 +112,24 @@ public class CommandLoader {
      * @param pluginManager The plugin manager to pass to plugin-dependent commands.
      * @param identityManager The identity manager to pass to config-related commands.
      * @param colourManager The colour manager to give to colourful commands.
+     * @param aliasWrapper The alias wrapper to pass to alias commands.
      */
     @Inject
     public CommandLoader(
-            final LifecycleController lifecycleController,
-            final ServerManager serverManager,
-            final PluginManager pluginManager,
-            final IdentityManager identityManager,
-            final ActionController actionController,
-            final ColourManager colourManager) {
+            final Lazy<LifecycleController> lifecycleController,
+            final Lazy<ServerManager> serverManager,
+            final Lazy<PluginManager> pluginManager,
+            final Lazy<IdentityManager> identityManager,
+            final Lazy<ActionController> actionController,
+            final Lazy<ColourManager> colourManager,
+            final Lazy<AliasWrapper> aliasWrapper) {
         this.lifecycleController = lifecycleController;
         this.serverManager = serverManager;
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
         this.actionController = actionController;
         this.colourManager = colourManager;
+        this.aliasWrapper = aliasWrapper;
     }
 
     /**
@@ -140,7 +149,7 @@ public class CommandLoader {
         manager.registerCommand(new Mode(), Mode.INFO);
         manager.registerCommand(new Names(), Names.INFO);
         manager.registerCommand(new Part(), Part.INFO);
-        manager.registerCommand(new SetNickColour(colourManager), SetNickColour.INFO);
+        manager.registerCommand(new SetNickColour(colourManager.get()), SetNickColour.INFO);
         manager.registerCommand(new ShowTopic(), ShowTopic.INFO);
 
         // Server commands
@@ -151,7 +160,7 @@ public class CommandLoader {
         manager.registerCommand(new Ctcp(), Ctcp.INFO);
         manager.registerCommand(new Disconnect(), Disconnect.INFO);
         manager.registerCommand(new Ignore(), Ignore.INFO);
-        manager.registerCommand(new JoinChannelCommand(actionController), JoinChannelCommand.INFO);
+        manager.registerCommand(new JoinChannelCommand(actionController.get()), JoinChannelCommand.INFO);
         manager.registerCommand(new Message(), Message.INFO);
         manager.registerCommand(new Nick(), Nick.INFO);
         manager.registerCommand(new Notice(), Notice.INFO);
@@ -170,23 +179,23 @@ public class CommandLoader {
         // Query commands
 
         // Global commands
-        manager.registerCommand(new AliasCommand(), AliasCommand.INFO);
-        manager.registerCommand(new AllServers(serverManager), AllServers.INFO);
+        manager.registerCommand(new AliasCommand(aliasWrapper.get()), AliasCommand.INFO);
+        manager.registerCommand(new AllServers(serverManager.get()), AllServers.INFO);
         manager.registerCommand(new Clear(), Clear.INFO);
         manager.registerCommand(new Echo(), Echo.INFO);
-        manager.registerCommand(new Exit(lifecycleController), Exit.INFO);
+        manager.registerCommand(new Exit(lifecycleController.get()), Exit.INFO);
         manager.registerCommand(new Help(), Help.INFO);
-        manager.registerCommand(new Ifplugin(pluginManager), Ifplugin.INFO);
-        manager.registerCommand(new NewServer(serverManager, pluginManager, identityManager), NewServer.INFO);
-        manager.registerCommand(new Notify(colourManager), Notify.INFO);
-        manager.registerCommand(new LoadPlugin(pluginManager), LoadPlugin.INFO);
-        manager.registerCommand(new UnloadPlugin(pluginManager), UnloadPlugin.INFO);
+        manager.registerCommand(new Ifplugin(pluginManager.get()), Ifplugin.INFO);
+        manager.registerCommand(new NewServer(serverManager.get(), pluginManager.get(), identityManager.get()), NewServer.INFO);
+        manager.registerCommand(new Notify(colourManager.get()), Notify.INFO);
+        manager.registerCommand(new LoadPlugin(pluginManager.get()), LoadPlugin.INFO);
+        manager.registerCommand(new UnloadPlugin(pluginManager.get()), UnloadPlugin.INFO);
         manager.registerCommand(new OpenWindow(), OpenWindow.INFO);
         manager.registerCommand(new ReloadActions(), ReloadActions.INFO);
-        manager.registerCommand(new ReloadIdentities(identityManager), ReloadIdentities.INFO);
-        manager.registerCommand(new ReloadPlugin(pluginManager), ReloadPlugin.INFO);
-        manager.registerCommand(new SaveConfig(identityManager), SaveConfig.INFO);
-        manager.registerCommand(new Set(identityManager, identityManager), Set.INFO);
+        manager.registerCommand(new ReloadIdentities(identityManager.get()), ReloadIdentities.INFO);
+        manager.registerCommand(new ReloadPlugin(pluginManager.get()), ReloadPlugin.INFO);
+        manager.registerCommand(new SaveConfig(identityManager.get()), SaveConfig.INFO);
+        manager.registerCommand(new Set(identityManager.get(), identityManager.get()), Set.INFO);
     }
 
 }

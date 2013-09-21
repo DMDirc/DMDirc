@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -46,6 +47,29 @@ public class AliasCommand extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("alias",
             "alias [--remove] <name> [command] - creates or removes the specified alias",
             CommandType.TYPE_GLOBAL);
+
+    /** Wrapper to use to modify aliases. */
+    private final AliasWrapper aliasWrapper;
+
+    /**
+     * Creates a new instance of {@link AliasCommand}.
+     *
+     * @param aliasWrapper The wrapper to use to modify aliases.
+     */
+    public AliasCommand(final AliasWrapper aliasWrapper) {
+        this.aliasWrapper = aliasWrapper;
+    }
+
+    /**
+     * Creates a new instance of {@link AliasCommand}.
+     *
+     * @param controller The controller that owns this command.
+     * @param aliasWrapper The wrapper to use to modify aliases.
+     */
+    public AliasCommand(final CommandController controller, final AliasWrapper aliasWrapper) {
+        super(controller);
+        this.aliasWrapper = aliasWrapper;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -77,9 +101,8 @@ public class AliasCommand extends Command implements IntelligentCommand {
                 == getController().getCommandChar()
                 ? args.getArguments()[0].substring(1) : args.getArguments()[0];
 
-        for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getAliasWrapper().getCommandName(alias)
-                    .substring(1).equalsIgnoreCase(name)) {
+        for (Action alias : aliasWrapper) {
+            if (aliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
                         + "' already exists.");
                 return;
@@ -100,10 +123,9 @@ public class AliasCommand extends Command implements IntelligentCommand {
      * @param name The name of the alias to remove
      * @return True if the alias was deleted, false otherwise
      */
-    private static boolean doRemove(final String name) {
-        for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getAliasWrapper().getCommandName(alias)
-                    .substring(1).equalsIgnoreCase(name)) {
+    private boolean doRemove(final String name) {
+        for (Action alias : aliasWrapper) {
+            if (aliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
                 alias.delete();
                 ActionManager.getActionManager().removeAction(alias);
 
@@ -123,8 +145,8 @@ public class AliasCommand extends Command implements IntelligentCommand {
         if (arg == 0) {
             res.add("--remove");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
-            for (Action alias : AliasWrapper.getAliasWrapper()) {
-                res.add(AliasWrapper.getAliasWrapper().getCommandName(alias));
+            for (Action alias : aliasWrapper) {
+                res.add(aliasWrapper.getCommandName(alias));
             }
         } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
             return TabCompleter.getIntelligentResults(arg, context, 1);
