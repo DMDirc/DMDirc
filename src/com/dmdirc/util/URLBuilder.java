@@ -22,7 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -31,12 +30,13 @@ import com.dmdirc.ui.themes.ThemeManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
-public final class URLBuilder {
+public class URLBuilder {
 
     /** Singleton instance. */
     @Deprecated
@@ -54,6 +54,7 @@ public final class URLBuilder {
      * @param pluginManagerProvider Provider to retrieve a plugin manager instance when needed.
      * @param themeManagerProvider Provider to retrieve a theme manager instance when needed.
      */
+    @Inject
     public URLBuilder(
             final Provider<PluginManager> pluginManagerProvider,
             final Provider<ThemeManager> themeManagerProvider) {
@@ -70,7 +71,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildFileURL(final String path) {
-        return getInstance().getUrlForFile(path);
+        return instance.getUrlForFile(path);
     }
 
     /**
@@ -100,7 +101,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildJarURL(final String jarFile, final String path) {
-        return getInstance().getUrlForJarFile(jarFile, path);
+        return instance.getUrlForJarFile(jarFile, path);
     }
 
     /**
@@ -133,7 +134,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildDMDircURL(final String resource) {
-        return getInstance().getUrlForDMDircResource(resource);
+        return instance.getUrlForDMDircResource(resource);
     }
 
     /**
@@ -157,7 +158,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildThemeURL(final String theme, final String path) {
-        return getInstance().getUrlForThemeResource(theme, path);
+        return instance.getUrlForThemeResource(theme, path);
     }
 
     /**
@@ -182,7 +183,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildPluginURL(final String plugin, final String path) {
-        return getInstance().getUrlForPluginResource(plugin, path);
+        return instance.getUrlForPluginResource(plugin, path);
     }
 
     /**
@@ -216,7 +217,7 @@ public final class URLBuilder {
      */
     @Deprecated
     public static URL buildURL(final String spec) {
-        return getInstance().getUrl(spec);
+        return instance.getUrl(spec);
     }
 
     /**
@@ -277,23 +278,12 @@ public final class URLBuilder {
     }
 
     /**
-     * Gets a singleton static instance for use by deprecated static methods.
+     * Sets the singleton instance to use.
      *
-     * @return A singleton instance of this class.
-     * @deprecated Can be deleted when static methods are gone.
+     * @param urlBuilder The instance to use.
      */
     @Deprecated
-    private static synchronized URLBuilder getInstance() {
-        if (instance == null) {
-            instance = new URLBuilder(new Provider<PluginManager>() {
-
-                @Override
-                public PluginManager get() {
-                    return Main.mainInstance.getPluginManager();
-                }
-            }, ThemeManager.getThemeManagerProvider());
-        }
-
-        return instance;
+    public static void setInstance(final URLBuilder urlBuilder) {
+        instance = urlBuilder;
     }
 }

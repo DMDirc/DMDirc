@@ -30,7 +30,6 @@ import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
-import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -199,19 +198,16 @@ public class ClientModule {
      *
      * @param serverManager The manager to use to iterate servers.
      * @param identityController The controller to use to read settings.
-     * @param commandLoader The loader to use to populate default commands.
      * @return The command manager the client should use.
      */
     @Provides
     @Singleton
     public CommandManager getCommandManager(
             final ServerManager serverManager,
-            final IdentityController identityController,
-            final CommandLoader commandLoader) {
+            final IdentityController identityController) {
         final CommandManager manager = new CommandManager(serverManager);
         manager.initialise(identityController.getGlobalConfiguration());
         CommandManager.setCommandManager(manager);
-        commandLoader.loadCommands(manager);
         return manager;
     }
 

@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ui.UIController;
@@ -38,6 +39,7 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.themes.ThemeManager;
+import com.dmdirc.util.URLBuilder;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Collection;
@@ -79,6 +81,12 @@ public class Main implements LifecycleController {
     /** The extractor to use for core plugins. */
     private final CorePluginExtractor corePluginExtractor;
 
+    /** The command manager to use. */
+    private final CommandManager commandManager;
+
+    /** The command loader to use. */
+    private final CommandLoader commandLoader;
+
     /** Instance of main, protected to allow subclasses direct access. */
     @Deprecated
     public static Main mainInstance;
@@ -91,11 +99,12 @@ public class Main implements LifecycleController {
      * @param actionManager The action manager the client will use.
      * @param commandLineParser The command-line parser used for this instance.
      * @param pluginManager The plugin manager the client will use.
-     * @param commandManager Unused for now - TODO: remove me when it's injected somewhere sensible.
+     * @param commandManager The command manager the client will use.
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param aliasWrapper Alias wrapper to provide to the actions manager.
      * @param corePluginExtractor Extractor to use for core plugins.
+     * @param urlBuilder URL builder to use as a singleton.
      */
     @Inject
     public Main(
@@ -107,13 +116,18 @@ public class Main implements LifecycleController {
             final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
             final ThemeManager themeManager,
-            final CorePluginExtractor corePluginExtractor) {
+            final CorePluginExtractor corePluginExtractor,
+            final URLBuilder urlBuilder,
+            final CommandLoader commandLoader) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
         this.corePluginExtractor = corePluginExtractor;
+        this.commandManager = commandManager;
+        this.commandLoader = commandLoader;
+        URLBuilder.setInstance(urlBuilder);
     }
 
     /**
@@ -143,6 +157,8 @@ public class Main implements LifecycleController {
      * @param args The command line arguments
      */
     public void init() {
+        commandLoader.loadCommands(commandManager);
+
         loadUIs(pluginManager);
 
         doFirstRun();
@@ -165,17 +181,6 @@ public class Main implements LifecycleController {
                 identityManager.saveAll();
             }
         }, "Shutdown thread"));
-    }
-
-    /**
-     * Get the plugin manager for this instance of main.
-     *
-     * @return PluginManager in use.
-     * @Deprecated Global state is bad.
-     */
-    @Deprecated
-    public PluginManager getPluginManager() {
-        return pluginManager;
     }
 
     /**

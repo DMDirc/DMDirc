@@ -3,11 +3,13 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.updater.manager.UpdateManager;
+import com.dmdirc.util.URLBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +40,8 @@ public class TestMain extends Main {
             final CommandManager commandManager,
             final CorePluginExtractor corePluginExtractor) {
         super(identityManager, serverManager, actionManager, commandLineParser,
-                pluginManager, commandManager, null, null, corePluginExtractor);
+                pluginManager, commandManager, null, null, corePluginExtractor,
+                mock(URLBuilder.class), mock(CommandLoader.class));
         this.identityManager = identityManager;
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
