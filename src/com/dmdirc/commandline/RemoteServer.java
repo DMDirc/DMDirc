@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -34,6 +34,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
+import javax.inject.Provider;
+
 /**
  * An RMI server that allows other clients to interact with DMDirc.
  */
@@ -43,23 +45,23 @@ public class RemoteServer implements RemoteInterface {
     private static final int MINPORT = 3634;
     /** The maximum port to use for RMI binding. */
     private static final int MAXPORT = MINPORT + 5;
-    /** The interface we're exposing. */
-    private final Main main;
+    /** Provider for the server manager to use to connect. */
+    private final Provider<ServerManager> serverManager;
 
     /**
      * Crate a new RemoteServer.
      *
-     * @param main Main instance to use to do things.
+     * @param serverManager Provider of a server manager to use to connect.
      */
-    public RemoteServer(final Main main) {
-        this.main = main;
+    public RemoteServer(final Provider<ServerManager> serverManager) {
+        this.serverManager = serverManager;
     }
 
     /** {@inheritDoc} */
     @Override
     public void connect(final List<URI> addresses) throws RemoteException {
         for (URI address : addresses) {
-            main.getServerManager().connectToAddress(address);
+            serverManager.get().connectToAddress(address);
         }
     }
 
@@ -106,9 +108,7 @@ public class RemoteServer implements RemoteInterface {
                 } else {
                     return iface;
                 }
-            } catch (RemoteException ex) {
-                continue;
-            } catch (NotBoundException ex) {
+            } catch (RemoteException | NotBoundException ex) {
                 continue;
             }
         }

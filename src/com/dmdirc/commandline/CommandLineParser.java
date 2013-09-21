@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.config.IdentityManager;
@@ -37,9 +36,14 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
 /**
  * Parses command line arguments for the client.
  */
+@Singleton
 public class CommandLineParser {
 
     /**
@@ -62,6 +66,9 @@ public class CommandLineParser {
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<>();
 
+    /** Provider to use to get server managers. */
+    private final Provider<ServerManager> serverManagerProvider;
+
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
 
@@ -76,10 +83,18 @@ public class CommandLineParser {
 
     /**
      * Creates a new instance of CommandLineParser.
+     */
+    @Inject
+    public CommandLineParser(final Provider<ServerManager> serverManagerProvider) {
+        this.serverManagerProvider = serverManagerProvider;
+    }
+
+    /**
+     * Parses the given arguments.
      *
      * @param arguments The arguments to be parsed
      */
-    public CommandLineParser(final String ... arguments) {
+    public void parse(final String ... arguments) {
         boolean inArg = false;
         char previousArg = '.';
 
@@ -114,7 +129,7 @@ public class CommandLineParser {
             }
         }
 
-        new RemoteServer(Main.mainInstance).bind();
+        new RemoteServer(serverManagerProvider).bind();
     }
 
     /**

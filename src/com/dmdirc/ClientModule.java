@@ -68,7 +68,7 @@ import dagger.Provides;
 /**
  * Provides dependencies for the client.
  */
-@Module(injects = Main.class, includes = CommandLineOptionsModule.class)
+@Module(injects = {Main.class, CommandLineParser.class}, includes = CommandLineOptionsModule.class)
 public class ClientModule {
 
     /**

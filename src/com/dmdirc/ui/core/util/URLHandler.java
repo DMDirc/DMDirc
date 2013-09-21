@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.util;
 
+import com.dmdirc.ServerManager;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -47,6 +47,10 @@ public class URLHandler {
     private final UIController controller;
     /** Config manager. */
     private final ConfigManager config;
+    /** Server manager to use to connect to servers. */
+    private final ServerManager serverManager;
+    /** Status bar manager to use to show messages. */
+    private final StatusBarManager statusBarManager;
     /** Desktop handler. */
     private final Desktop desktop;
 
@@ -55,9 +59,15 @@ public class URLHandler {
      *
      * @param controller The UI controller to show dialogs etc on
      */
-    public URLHandler(final UIController controller) {
+    public URLHandler(
+            final UIController controller,
+            final ConfigManager globalConfig,
+            final ServerManager serverManager,
+            final StatusBarManager statusBarManager) {
         this.controller = controller;
-        this.config = IdentityManager.getIdentityManager().getGlobalConfiguration();
+        this.config = globalConfig;
+        this.serverManager = serverManager;
+        this.statusBarManager = statusBarManager;
         this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     }
 
@@ -152,19 +162,19 @@ public class URLHandler {
         final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
 
         if ("DMDIRC".equals(command)) {
-            StatusBarManager.getStatusBarManager().setMessage(
+            statusBarManager.setMessage(
                     new StatusMessage("Connecting to: " + uri.toString(),
                     config));
-            controller.getMain().getServerManager().connectToAddress(uri);
+            serverManager.connectToAddress(uri);
         } else if ("BROWSER".equals(command)) {
-            StatusBarManager.getStatusBarManager().setMessage(
+            statusBarManager.setMessage(
                     new StatusMessage("Opening: " + uri.toString(),
                     config));
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
-            StatusBarManager.getStatusBarManager().setMessage(
+            statusBarManager.setMessage(
                     new StatusMessage("Opening: " + uri.toString(),
                     config));
             execApp(substituteParams(uri, command));

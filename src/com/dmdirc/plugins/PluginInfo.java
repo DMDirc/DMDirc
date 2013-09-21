@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -177,6 +178,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         injector.addParameter(WindowManager.class, WindowManager.getWindowManager());
         injector.addParameter(StatusBarManager.getStatusBarManager());
         injector.addParameter(PreferencesManager.class, PreferencesManager.getPreferencesManager());
+        injector.addParameter(PerformWrapper.class, PerformWrapper.getPerformWrapper());
 
         return injector;
     }

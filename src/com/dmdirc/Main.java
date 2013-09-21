@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
@@ -127,9 +126,9 @@ public class Main implements LifecycleController {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         try {
-            ObjectGraph graph = ObjectGraph.create(
-                    new ClientModule(),
-                    new CommandLineOptionsModule(new CommandLineParser(args)));
+            final ObjectGraph graph = ObjectGraph.create(new ClientModule());
+            final CommandLineParser parser = graph.get(CommandLineParser.class);
+            parser.parse(args);
             mainInstance = graph.get(Main.class);
             mainInstance.init();
         } catch (Throwable ex) {

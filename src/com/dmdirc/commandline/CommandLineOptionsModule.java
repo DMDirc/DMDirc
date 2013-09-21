@@ -31,7 +31,7 @@ import dagger.Provides;
 /**
  * Provides options based on the command line.
  */
-@Module(library = true)
+@Module(library = true, complete = false)
 public class CommandLineOptionsModule {
 
     /**
@@ -57,37 +57,16 @@ public class CommandLineOptionsModule {
         DirectoryType value();
     }
 
-    /** The parser to use for command-line information. */
-    private final CommandLineParser parser;
-
-    /**
-     * Creates a new {@link CommandLineOptionsModule}.
-     *
-     * @param parser The parser to use for command-line information.
-     */
-    public CommandLineOptionsModule(final CommandLineParser parser) {
-        this.parser = parser;
-    }
-
-    /**
-     * Provides the command-line parser used for this instance.
-     *
-     * @return The command-line parser.
-     */
-    @Provides
-    public CommandLineParser getParser() {
-        return parser;
-    }
-
     /**
      * Provides the base directory that all DMDirc user data is stored in.
      *
+     * @param parser The parser to get the user-supplied directory from.
      * @return The base directory.
      */
     @Provides
     @Singleton
     @Directory(DirectoryType.BASE)
-    public String getBaseDirectory() {
+    public String getBaseDirectory(final CommandLineParser parser) {
         if (parser.getConfigDirectory() == null) {
             return getDefaultBaseDirectory();
         } else {
