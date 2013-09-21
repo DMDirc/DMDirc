@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
@@ -55,7 +54,7 @@ import dagger.ObjectGraph;
 /**
  * Main class, handles initialisation.
  */
-public class Main implements LifecycleController {
+public class Main {
 
     /** Feedback nag delay. */
     private final int FEEDBACK_DELAY = 30 * 60 * 1000;
@@ -271,53 +270,6 @@ public class Main implements LifecycleController {
                 }
             }, FEEDBACK_DELAY);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use a proper {@link LifecycleController}.
-     */
-    @Override
-    @Deprecated
-    public void quit() {
-        quit(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use a proper {@link LifecycleController}.
-     */
-    @Override
-    @Deprecated
-    public void quit(final int exitCode) {
-        quit(identityManager.getGlobalConfiguration().getOption("general",
-                "closemessage"), exitCode);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use a proper {@link LifecycleController}.
-     */
-    @Override
-    @Deprecated
-    public void quit(final String reason) {
-        quit(reason, 0);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Use a proper {@link LifecycleController}.
-     */
-    @Override
-    @Deprecated
-    public void quit(final String reason, final int exitCode) {
-        serverManager.disconnectAll(reason);
-
-        System.exit(exitCode);
     }
 
     /**
