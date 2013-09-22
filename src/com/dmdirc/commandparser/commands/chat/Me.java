@@ -35,6 +35,8 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.util.validators.ValidationResponse;
 
+import javax.inject.Inject;
+
 /**
  * The me command sends a CTCP action to the current channel.
  */
@@ -44,6 +46,11 @@ public class Me extends Command implements ValidatingCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("me",
             "me <action> - sends the specified action",
             CommandType.TYPE_CHAT);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Me() {
+    }
 
     /** {@inheritDoc} */
     @Override

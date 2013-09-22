@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
+import javax.inject.Inject;
+
 /**
  * The away command allows the user to set their away message.
  */
@@ -42,6 +44,11 @@ public class Away extends Command {
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("away",
            "away <reason> - marks you as away", CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Away() {
+    }
 
     /** {@inheritDoc} */
     @Override

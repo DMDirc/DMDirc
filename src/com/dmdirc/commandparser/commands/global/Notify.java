@@ -34,6 +34,8 @@ import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
 
+import javax.inject.Inject;
+
 /**
  * The notify command allows the user to set the notification colour for a
  * window.
@@ -53,6 +55,7 @@ public class Notify extends Command implements IntelligentCommand {
      *
      * @param colourManager The colour manager to use to convert colours.
      */
+    @Inject
     public Notify(final ColourManager colourManager) {
         this.colourManager = colourManager;
     }

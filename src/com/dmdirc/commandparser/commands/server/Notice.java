@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to send notices.
  */
@@ -46,6 +48,11 @@ public class Notice extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("notice",
             "notice <target> <message> - sends a notice",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Notice() {
+    }
 
     /** {@inheritDoc} */
     @Override

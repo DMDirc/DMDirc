@@ -38,6 +38,8 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
+import javax.inject.Inject;
+
 /**
  * The if plugin command allows the user to execute commands based on whether
  * or not a plugin is loaded.
@@ -58,6 +60,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
      *
      * @param pluginManager The plugin manager to use to query plugins.
      */
+    @Inject
     public Ifplugin(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }

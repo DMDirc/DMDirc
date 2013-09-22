@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.global.NewServer;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.inject.Inject;
+
 /**
  * The /server command allows the user to connect to a new server.
  */
@@ -45,6 +47,11 @@ public class ChangeServer extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("server",
             "server <host[:[+]port]> [password] - connect to a different server",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public ChangeServer() {
+    }
 
     /** {@inheritDoc} */
     @Override

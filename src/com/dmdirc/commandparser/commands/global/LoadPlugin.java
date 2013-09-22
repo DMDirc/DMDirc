@@ -35,6 +35,8 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to load a plugin.
  */
@@ -53,6 +55,7 @@ public class LoadPlugin extends Command implements IntelligentCommand {
      *
      * @param pluginManager The plugin manager to load plugins with.
      */
+    @Inject
     public LoadPlugin(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }

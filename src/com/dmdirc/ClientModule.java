@@ -31,6 +31,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
@@ -38,7 +39,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -70,7 +73,10 @@ import dagger.Provides;
 /**
  * Provides dependencies for the client.
  */
-@Module(injects = {Main.class, CommandLineParser.class}, includes = CommandLineOptionsModule.class)
+@Module(
+    injects = {Main.class, CommandLineParser.class},
+    includes = {CommandLineOptionsModule.class, CommandModule.class}
+)
 public class ClientModule {
 
     /**
@@ -392,6 +398,28 @@ public class ClientModule {
     @Provides
     public PreferencesManager getPreferencesManager() {
         return PreferencesManager.getPreferencesManager();
+    }
+
+    /**
+     * Gets a server factory.
+     *
+     * @param serverManager The manager to use as a factory.
+     * @return A server factory.
+     */
+    @Provides
+    public ServerFactory getServerFactory(final ServerManager serverManager) {
+        return serverManager;
+    }
+
+    /**
+     * Gets an identity factory.
+     *
+     * @param identityManager  The manager to use as a factory.
+     * @return An identity factory.
+     */
+    @Provides
+    public IdentityFactory getIdentityFactory(final IdentityManager identityManager) {
+        return identityManager;
     }
 
     /**

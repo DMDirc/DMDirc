@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
+import javax.inject.Inject;
+
 /**
  * The invite command allows the user to invite others to a channel.
  *
@@ -48,6 +50,11 @@ public class Invite extends Command implements ExternalCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("invite",
             "invite <user> - invites user to a channel",
             CommandType.TYPE_CHANNEL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Invite() {
+    }
 
     /** {@inheritDoc} */
     @Override

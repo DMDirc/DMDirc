@@ -40,6 +40,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * The help command shows the user a list of available commands, along with
  * their arguments, and a description. It is context-aware, so channel commands
@@ -51,6 +53,11 @@ public class Help extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("help",
             "help [command] - shows client command help",
             CommandType.TYPE_GLOBAL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Help() {
+    }
 
     /** {@inheritDoc} */
     @Override

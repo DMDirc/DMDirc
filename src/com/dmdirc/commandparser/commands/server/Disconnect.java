@@ -32,6 +32,8 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
+import javax.inject.Inject;
+
 /**
  * The disconnect command disconnects from the current server.
  */
@@ -41,6 +43,11 @@ public class Disconnect extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("disconnect",
             "disconnect [reason] - disconnect from this server",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Disconnect() {
+    }
 
     /** {@inheritDoc} */
     @Override

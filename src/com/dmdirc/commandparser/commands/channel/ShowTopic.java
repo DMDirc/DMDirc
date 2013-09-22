@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
+import javax.inject.Inject;
+
 /**
  * The show topic command shows the user the current topic.
  */
@@ -46,6 +48,11 @@ public class ShowTopic extends Command implements ExternalCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("topic",
             "topic - displays the current topic\ntopic <newtopic> - sets the channel topic",
             CommandType.TYPE_CHANNEL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public ShowTopic() {
+    }
 
     /** {@inheritDoc} */
     @Override

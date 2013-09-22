@@ -34,6 +34,8 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to change user modes.
  */
@@ -44,6 +46,11 @@ public class Umode extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("umode",
             "umode [modes] - sets or displays your user modes",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Umode() {
+    }
 
     /** {@inheritDoc} */
     @Override

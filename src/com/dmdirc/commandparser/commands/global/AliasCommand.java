@@ -38,6 +38,8 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
+import javax.inject.Inject;
+
 /**
  * The alias command allows users to create aliases on-the-fly.
  */
@@ -66,6 +68,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
      * @param controller The controller that owns this command.
      * @param aliasWrapper The wrapper to use to modify aliases.
      */
+    @Inject
     public AliasCommand(final CommandController controller, final AliasWrapper aliasWrapper) {
         super(controller);
         this.aliasWrapper = aliasWrapper;

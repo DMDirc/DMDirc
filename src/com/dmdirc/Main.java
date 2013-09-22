@@ -25,9 +25,9 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
-import com.dmdirc.commandparser.CommandLoader;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
@@ -44,6 +44,7 @@ import java.awt.GraphicsEnvironment;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -83,8 +84,8 @@ public class Main {
     /** The command manager to use. */
     private final CommandManager commandManager;
 
-    /** The command loader to use. */
-    private final CommandLoader commandLoader;
+    /** The commands to load into the command manager. */
+    private final Set<CommandDetails> commands;
 
     /**
      * Creates a new instance of {@link Main}.
@@ -100,6 +101,7 @@ public class Main {
      * @param aliasWrapper Alias wrapper to provide to the actions manager.
      * @param corePluginExtractor Extractor to use for core plugins.
      * @param urlBuilder URL builder to use as a singleton.
+     * @param commands The commands to be loaded into the command manager.
      */
     @Inject
     public Main(
@@ -113,7 +115,7 @@ public class Main {
             final ThemeManager themeManager,
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
-            final CommandLoader commandLoader) {
+            final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
         this.actionManager = actionManager;
@@ -121,7 +123,7 @@ public class Main {
         this.pluginManager = pluginManager;
         this.corePluginExtractor = corePluginExtractor;
         this.commandManager = commandManager;
-        this.commandLoader = commandLoader;
+        this.commands = commands;
         URLBuilder.setInstance(urlBuilder);
     }
 
@@ -151,7 +153,9 @@ public class Main {
      * @param args The command line arguments
      */
     public void init() {
-        commandLoader.loadCommands(commandManager);
+        for (CommandDetails command : commands) {
+            commandManager.registerCommand(command.getCommand(), command.getInfo());
+        }
 
         loadUIs(pluginManager);
 

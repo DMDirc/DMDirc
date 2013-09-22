@@ -39,6 +39,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to open a query dialog with another user.
  */
@@ -49,6 +51,11 @@ public class OpenQuery extends Command implements IntelligentCommand,
     public static final CommandInfo INFO = new BaseCommandInfo("query",
             "query <user> [message] - opens a query with the specified user",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public OpenQuery() {
+    }
 
     /** {@inheritDoc} */
     @Override

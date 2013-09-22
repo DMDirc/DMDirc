@@ -34,6 +34,8 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to unload a plugin.
  */
@@ -52,6 +54,7 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
      *
      * @param pluginManager The plugin manager to unload plugins with.
      */
+    @Inject
     public UnloadPlugin(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }

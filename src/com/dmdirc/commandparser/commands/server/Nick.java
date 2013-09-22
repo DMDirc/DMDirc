@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to change nickname.
  */
@@ -46,6 +48,11 @@ public class Nick extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("nick",
             "nick <new nickname> - attempts to change your nickname to the one specified",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Nick() {
+    }
 
     /** {@inheritDoc} */
     @Override

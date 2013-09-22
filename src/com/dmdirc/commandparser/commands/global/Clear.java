@@ -32,6 +32,8 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * The clear command clears the main text area of the current window.
  */
@@ -41,6 +43,11 @@ public class Clear extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("clear",
             "clear - clears the current window's text area",
             CommandType.TYPE_GLOBAL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Clear() {
+    }
 
     /** {@inheritDoc} */
     @Override

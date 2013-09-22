@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 
+import javax.inject.Inject;
+
 /**
  * The raw command allows the user to send a raw line of text directly to the
  * irc server.
@@ -44,6 +46,11 @@ public class Raw extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("raw",
             "raw <text> - sends the specified text directly to the server",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Raw() {
+    }
 
     /** {@inheritDoc} */
     @Override

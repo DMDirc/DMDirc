@@ -44,6 +44,8 @@ import com.dmdirc.util.collections.MapList;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to join channels.
  *
@@ -65,6 +67,7 @@ public class JoinChannelCommand extends Command implements
      *
      * @param controller The action controller to register listeners with.
      */
+    @Inject
     public JoinChannelCommand(final ActionController controller) {
         super();
 

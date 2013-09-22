@@ -31,6 +31,8 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 
+import javax.inject.Inject;
+
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
  * When the client quits, it disconnects all servers (with the quit message
@@ -51,6 +53,7 @@ public class Exit extends Command {
      *
      * @param controller The controller to use to quit the app.
      */
+    @Inject
     public Exit(final LifecycleController controller) {
         this.controller = controller;
     }

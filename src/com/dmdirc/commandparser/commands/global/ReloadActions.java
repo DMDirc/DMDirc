@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to reload actions.
  */
@@ -42,6 +44,11 @@ public final class ReloadActions extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("reloadactions",
             "reloadactions - reloads actions from disk",
             CommandType.TYPE_GLOBAL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public ReloadActions() {
+    }
 
     /** {@inheritDoc} */
     @Override

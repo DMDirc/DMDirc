@@ -34,6 +34,8 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to reload a plugin.
  */
@@ -52,6 +54,7 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
      *
      * @param pluginManager The plugin manager to reload plugins with.
      */
+    @Inject
     public ReloadPlugin(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }

@@ -39,6 +39,8 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
+
 /**
  * The mode command allows the user to inspect and change channel modes.
  */
@@ -50,6 +52,11 @@ public class Mode extends Command implements IntelligentCommand,
     public static final CommandInfo INFO = new BaseCommandInfo("mode",
             "mode [changes] - displays or changes the current channel modes",
             CommandType.TYPE_CHANNEL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Mode() {
+    }
 
     /** {@inheritDoc} */
     @Override

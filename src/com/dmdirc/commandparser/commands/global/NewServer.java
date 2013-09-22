@@ -44,6 +44,8 @@ import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * The new server command allows users to open a new server window.
  */
@@ -71,6 +73,7 @@ public class NewServer extends Command implements IntelligentCommand {
      * @param pluginManager The plugin manager to use to query available services.
      * @param identityController Identity controller to use to find profiles.
      */
+    @Inject
     public NewServer(
             final ServerFactory serverFactory,
             final PluginManager pluginManager,

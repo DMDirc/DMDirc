@@ -43,10 +43,12 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * The set command allows the user to inspect and change global config settings.
  */
-public class Set extends Command implements IntelligentCommand {
+public class SetCommand extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("set",
@@ -77,7 +79,8 @@ public class Set extends Command implements IntelligentCommand {
      * @param identityController The controller to use to set settings.
      * @param identityFactory The factory to use to create new identities.
      */
-    public Set(
+    @Inject
+    public SetCommand(
             final IdentityController identityController,
             final IdentityFactory identityFactory) {
         super();

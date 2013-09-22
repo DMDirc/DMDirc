@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to add/view/delete ignores.
  */
@@ -49,6 +51,11 @@ public class Ignore extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("ignore",
             "ignore [--remove|--regex] [host] - manages the network's ignore list",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Ignore() {
+    }
 
     /** {@inheritDoc} */
     @Override

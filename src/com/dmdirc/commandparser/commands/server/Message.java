@@ -39,6 +39,8 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to send privmsgs.
  */
@@ -50,6 +52,11 @@ public class Message extends Command implements IntelligentCommand,
     public static final CommandInfo INFO = new BaseCommandInfo("msg",
             "msg <target> <message> - sends a private message",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Message() {
+    }
 
     /** {@inheritDoc} */
     @Override

@@ -37,6 +37,8 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Sends a names request.
  */
@@ -48,6 +50,11 @@ public class Names extends Command implements IntelligentCommand,
     public static final CommandInfo INFO = new BaseCommandInfo("names",
             "names - Requests a list of users that are in the channel",
             CommandType.TYPE_CHANNEL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Names() {
+    }
 
     /** {@inheritDoc} */
     @Override

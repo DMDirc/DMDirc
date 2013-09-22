@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to reload identities.
  */
@@ -51,6 +53,7 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
      *
      * @param identityController The controller to reload identities on.
      */
+    @Inject
     public ReloadIdentities(final IdentityController identityController) {
         this.identityController = identityController;
     }

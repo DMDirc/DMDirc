@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to save the config file.
  */
@@ -51,6 +53,7 @@ public final class SaveConfig extends Command implements IntelligentCommand {
      *
      * @param identityController The controller to save identities on.
      */
+    @Inject
     public SaveConfig(final IdentityController identityController) {
         this.identityController = identityController;
     }

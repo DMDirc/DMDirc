@@ -34,6 +34,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import javax.inject.Inject;
+
 /**
  * Opens a new window.
  */
@@ -44,6 +46,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
             "openwindow [--server|--child] <name> [title] "
             + "- opens a window with the specified name and title",
             CommandType.TYPE_GLOBAL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public OpenWindow() {
+    }
 
     /** {@inheritDoc} */
     @Override

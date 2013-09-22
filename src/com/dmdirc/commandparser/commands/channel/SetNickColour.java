@@ -40,6 +40,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
  */
@@ -69,6 +71,7 @@ public class SetNickColour extends Command implements IntelligentCommand {
      * @param controller The command controller that owns this command.
      * @param colourManager The colour manager to use to convert colours.
      */
+    @Inject
     public SetNickColour(final CommandController controller, final ColourManager colourManager) {
         super(controller);
         this.colourManager = colourManager;

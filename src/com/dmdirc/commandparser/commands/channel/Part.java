@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 
+import javax.inject.Inject;
+
 /**
  * The part command parts the current channel with a specified part message.
  */
@@ -43,6 +45,11 @@ public class Part extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("part",
             "part [reason] - parts the channel",
             CommandType.TYPE_CHANNEL);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Part() {
+    }
 
     /** {@inheritDoc} */
     @Override

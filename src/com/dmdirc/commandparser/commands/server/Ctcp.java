@@ -36,6 +36,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
+
 /**
  * Allows the user to send CTCP messages.
  */
@@ -46,6 +48,11 @@ public class Ctcp extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("ctcp",
             "ctcp <target> <type> [arguments] - sends a CTCP message",
             CommandType.TYPE_SERVER);
+
+    /** Creates a new instance of this command. */
+    @Inject
+    public Ctcp() {
+    }
 
     /** {@inheritDoc} */
     @Override

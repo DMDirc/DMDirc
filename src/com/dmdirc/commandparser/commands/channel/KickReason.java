@@ -38,6 +38,7 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.inject.Inject;
 import lombok.NoArgsConstructor;
 
 /**
@@ -58,6 +59,7 @@ public class KickReason extends Command implements IntelligentCommand {
      *
      * @param controller The controller to use for command information.
      */
+    @Inject
     public KickReason(final CommandController controller) {
         super(controller);
     }

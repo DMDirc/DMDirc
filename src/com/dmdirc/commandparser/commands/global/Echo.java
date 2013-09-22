@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * The echo commands simply echos text to the current window.
  */
@@ -75,6 +77,7 @@ public class Echo extends Command implements IntelligentCommand {
      *
      * @param controller Command controller
      */
+    @Inject
     public Echo(final CommandController controller) {
         super(controller);
 

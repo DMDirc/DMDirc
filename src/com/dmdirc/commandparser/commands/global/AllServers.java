@@ -35,6 +35,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
+import javax.inject.Inject;
+
 /**
  * The AllServers command allows users to issue commands to all servers.
  */
@@ -53,6 +55,7 @@ public class AllServers extends Command implements IntelligentCommand {
      *
      * @param serverManager The server manager to use to iterate servers.
      */
+    @Inject
     public AllServers(final ServerManager serverManager) {
         this.serverManager = serverManager;
     }
