@@ -27,7 +27,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.manager.CachingUpdateManager;
-import com.dmdirc.updater.manager.DMDircUpdateManager;
 import com.dmdirc.updater.manager.UpdateStatus;
 
 import java.util.Date;
@@ -106,10 +105,8 @@ public final class UpdateChecker implements Runnable {
      *
      * @param main Parent Main class
      */
-    public static void init() {
-        manager = new DMDircUpdateManager(IdentityManager.getIdentityManager()
-                .getGlobalConfiguration(), IdentityManager.getIdentityManager().getConfigDir(), 3);
-
+    public static void init(final CachingUpdateManager manager) {
+        UpdateChecker.manager = manager;
         initTimer();
     }
 

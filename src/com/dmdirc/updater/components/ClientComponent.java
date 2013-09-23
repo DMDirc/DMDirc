@@ -22,7 +22,7 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.updater.UpdateComponent;
@@ -31,10 +31,32 @@ import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 /**
  * Represents the client component, which covers the core client resources.
  */
 public class ClientComponent implements UpdateComponent {
+
+    /** The controller to read settings from. */
+    private final IdentityController identityController;
+
+    /** The manager to add status bar messages to. */
+    private final StatusBarManager statusBarManager;
+
+    /**
+     * Creates a new instance of {@link ClientComponent}.
+     *
+     * @param identityController The controller to read settings from.
+     * @param statusBarManager The manager to add status bar messages to.
+     */
+    @Inject
+    public ClientComponent(
+            final IdentityController identityController,
+            final StatusBarManager statusBarManager) {
+        this.identityController = identityController;
+        this.statusBarManager = statusBarManager;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -99,8 +121,7 @@ public class ClientComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
-        return IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOption("version", "version");
+        return identityController.getGlobalConfiguration().getOption("version", "version");
     }
 
     /** {@inheritDoc} */
@@ -120,8 +141,8 @@ public class ClientComponent implements UpdateComponent {
             // @deprecated Should be removed when updater UI changes are
             // implemented.
             final String message = this.getManualInstructions(path);
-            StatusBarManager.getStatusBarManager().setMessage(
-                    new StatusMessage(message, IdentityManager.getIdentityManager().getGlobalConfiguration()));
+            statusBarManager.setMessage(new StatusMessage(message,
+                    identityController.getGlobalConfiguration()));
         }
 
         return true;

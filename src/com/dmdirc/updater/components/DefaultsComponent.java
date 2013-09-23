@@ -23,7 +23,7 @@
 package com.dmdirc.updater.components;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
@@ -31,10 +31,25 @@ import com.dmdirc.util.resourcemanager.ZipResourceManager;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 /**
  * Represents the default identities.
  */
 public class DefaultsComponent implements UpdateComponent {
+
+    /** The controller to read settings from. */
+    private final IdentityController identityController;
+
+    /**
+     * Creates a new instance of {@link DefaultsComponent}.
+     *
+     * @param identityController The controller to read settings from.
+     */
+    @Inject
+    public DefaultsComponent(final IdentityController identityController) {
+        this.identityController = identityController;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -57,8 +72,7 @@ public class DefaultsComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public Version getVersion() {
-        final ConfigManager globalConfig = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration();
+        final ConfigManager globalConfig = identityController.getGlobalConfiguration();
 
         if (globalConfig.hasOptionString("identity", "defaultsversion")) {
             return new Version(globalConfig.getOption("identity",
@@ -95,9 +109,9 @@ public class DefaultsComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", IdentityManager.getIdentityManager().getIdentityDirectory());
+        ziprm.extractResources("", identityController.getIdentityDirectory());
 
-        IdentityManager.getIdentityManager().loadUserIdentities();
+        identityController.loadUserIdentities();
 
         new File(path).delete();
 

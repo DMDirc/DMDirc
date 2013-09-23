@@ -23,20 +23,21 @@
 package com.dmdirc.updater.manager;
 
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.updater.UpdateChannel;
+import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.DMDircCheckStrategy;
 import com.dmdirc.updater.checking.NaiveConsolidator;
-import com.dmdirc.updater.components.ClientComponent;
-import com.dmdirc.updater.components.DefaultsComponent;
-import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.updater.installing.LegacyInstallationStrategy;
 import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
 
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,35 +47,35 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DMDircUpdateManager extends CachingUpdateManagerImpl {
 
+    /** Number of threads to use. */
+    private static final int THREAD_COUNT = 3;
+
     /** The default check strategy we use. */
     private final DMDircCheckStrategy checkStrategy;
 
     /**
      * Creates a new instance of the update manager.
      *
-     * @param configManager The config manager to use to retrieve channel info
-     * @param tempFolder Temporary folder to use for downloading updates
-     * @param threads The number of threads to use for updating
+     * @param identityController The controller to use for config information.
+     * @param components The default components to add to the manager.
      */
-    public DMDircUpdateManager(final ConfigManager configManager,
-            final String tempFolder, final int threads) {
-        super(new ThreadPoolExecutor(threads, threads, 1, TimeUnit.MINUTES,
+    @Inject
+    public DMDircUpdateManager(
+            final IdentityController identityController,
+            final Set<UpdateComponent> components) {
+        super(new ThreadPoolExecutor(THREAD_COUNT, THREAD_COUNT, 1, TimeUnit.MINUTES,
                 new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory()),
                 new NaiveConsolidator(),
-                new ConfigComponentPolicy(configManager));
-
-        // @deprecated See ClientComponent
-        addComponent(new ClientComponent());
-        addComponent(new ModeAliasesComponent());
-        addComponent(new DefaultsComponent());
-
+                new ConfigComponentPolicy(identityController.getGlobalConfiguration()));
         checkStrategy = new DMDircCheckStrategy(UpdateChannel.STABLE);
-
-        configManager.getBinder().bind(this, DMDircUpdateManager.class);
-
+        identityController.getGlobalConfiguration().getBinder().bind(this, DMDircUpdateManager.class);
         addCheckStrategy(checkStrategy);
-        addRetrievalStrategy(new DownloadRetrievalStrategy(tempFolder));
+        addRetrievalStrategy(new DownloadRetrievalStrategy(identityController.getConfigDir()));
         addInstallationStrategy(new LegacyInstallationStrategy());
+
+        for (UpdateComponent component : components) {
+            addComponent(component);
+        }
     }
 
     /**
