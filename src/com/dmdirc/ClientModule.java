@@ -346,17 +346,6 @@ public class ClientModule {
 
     /**
      * Gets the performs actions wrapper.
-     */
-    @Provides
-    @Singleton
-    public PerformWrapper getPerformWrapper() {
-        final PerformWrapper wrapper = new PerformWrapper();
-        PerformWrapper.setPerformWrapper(wrapper);
-        return wrapper;
-    }
-
-    /**
-     * Gets the performs actions wrapper.
      *
      * @return An performs wrapper to use in the client.
      */

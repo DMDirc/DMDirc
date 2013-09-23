@@ -26,6 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
@@ -38,42 +39,31 @@ import com.dmdirc.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * An action wrapper for performs.
  */
+@Singleton
 public class PerformWrapper extends ActionGroup {
-
-    /** A singleton instance of the Perform Wrapper. */
-    private static PerformWrapper me;
 
     /** The component name for per-profile perform conditions. */
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
 
+    /** Factory to use for actions. */
+    private final ActionFactory actionFactory;
+
     /**
      * Creates a new instance of PerformWrapper.
+     *
+     * @param actionFactory Factory to use to create actions.
      */
-    public PerformWrapper() {
+    @Inject
+    public PerformWrapper(final ActionFactory actionFactory) {
         super("performs");
-    }
 
-    /**
-     * Retrieves a singleton instance of this perform wrapper.
-     *
-     * @return A singleton instance of PerformWrapper
-     */
-    @Deprecated
-    public static PerformWrapper getPerformWrapper() {
-        return me;
-    }
-
-    /**
-     * Sets the singleton instance of the perform wrapper.
-     *
-     * @param wrapper The new singleton instance.
-     */
-    @Deprecated
-    public static void setPerformWrapper(final PerformWrapper wrapper) {
-        me = wrapper;
+        this.actionFactory = actionFactory;
     }
 
     /** {@inheritDoc} */
@@ -242,7 +232,7 @@ public class PerformWrapper extends ActionGroup {
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 
-        return new Action(getName(), server + network
+        return actionFactory.create(getName(), server + network
                 + (profile == null ? "" : " - " + profile),
                 new ActionType[]{CoreActionType.SERVER_CONNECTED},
                 new String[0], conditions, null);
