@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
@@ -46,9 +47,14 @@ public class Cycle extends Command {
             "cycle [message] - parts and rejoins the channel",
             CommandType.TYPE_CHANNEL);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Cycle() {
+    public Cycle(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
@@ -44,9 +45,14 @@ public class Disconnect extends Command {
             "disconnect [reason] - disconnect from this server",
             CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Disconnect() {
+    public Disconnect(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

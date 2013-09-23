@@ -23,16 +23,17 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.plugins.PluginManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,12 +41,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import clover.retrotranslator.edu.emory.mathcs.backport.java.util.Arrays;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewServerTest {
 
+    @Mock private CommandController controller;
     @Mock private IdentityController identityController;
     @Mock private Identity identity;
     @Mock private FrameContainer container;
@@ -56,15 +57,14 @@ public class NewServerTest {
 
     @Before
     public void setup() {
-        TestMain.getTestMain();
         when(factory.createServer(any(URI.class), any(Identity.class))).thenReturn(server);
         when(identityController.getIdentitiesByType("profile")).thenReturn(Arrays.asList(new Identity[] { identity }));
-        command = new NewServer(factory, pluginManager, identityController);
+        command = new NewServer(controller, factory, pluginManager, identityController);
     }
 
     @Test
     public void testBasicUsage() throws URISyntaxException {
-        command.execute(container, new CommandArguments("/foo irc.foo.com"),
+        command.execute(container, new CommandArguments(controller, "/foo irc.foo.com"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("irc://irc.foo.com:6667")), any(Identity.class));
@@ -73,7 +73,7 @@ public class NewServerTest {
 
     @Test
     public void testPortUsage() throws URISyntaxException {
-        command.execute(container, new CommandArguments("/foo irc.foo.com:1234"),
+        command.execute(container, new CommandArguments(controller, "/foo irc.foo.com:1234"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(Identity.class));
@@ -82,7 +82,7 @@ public class NewServerTest {
 
     @Test
     public void testUriUsage() throws URISyntaxException {
-        command.execute(container, new CommandArguments("/foo otheruri://foo.com:123/blah"),
+        command.execute(container, new CommandArguments(controller, "/foo otheruri://foo.com:123/blah"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(Identity.class));
@@ -91,7 +91,7 @@ public class NewServerTest {
 
     @Test
     public void testUsageNoArgs() {
-        command.execute(container, new CommandArguments("/foo"),
+        command.execute(container, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -99,7 +99,7 @@ public class NewServerTest {
 
     @Test
     public void testInvalidPort() {
-        command.execute(container, new CommandArguments("/foo foo:abc"),
+        command.execute(container, new CommandArguments(controller, "/foo foo:abc"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(container).addLine(eq("commandError"), anyString());
@@ -107,7 +107,7 @@ public class NewServerTest {
 
     @Test
     public void testOutOfRangePort1() {
-        command.execute(container, new CommandArguments("/foo foo:0"),
+        command.execute(container, new CommandArguments(controller, "/foo foo:0"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(container).addLine(eq("commandError"), anyString());
@@ -115,7 +115,7 @@ public class NewServerTest {
 
     @Test
     public void testOutOfRangePort2() {
-        command.execute(container, new CommandArguments("/foo foo:65537"),
+        command.execute(container, new CommandArguments(controller, "/foo foo:65537"),
                 new CommandContext(null, NewServer.INFO));
 
         verify(container).addLine(eq("commandError"), anyString());

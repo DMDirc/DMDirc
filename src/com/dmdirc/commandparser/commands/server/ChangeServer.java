@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.commandparser.commands.global.NewServer;
+import com.dmdirc.interfaces.CommandController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,9 +49,14 @@ public class ChangeServer extends Command {
             "server <host[:[+]port]> [password] - connect to a different server",
             CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public ChangeServer() {
+    public ChangeServer(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

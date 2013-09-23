@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -54,9 +55,14 @@ public class Help extends Command implements IntelligentCommand {
             "help [command] - shows client command help",
             CommandType.TYPE_GLOBAL);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Help() {
+    public Help(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */
@@ -77,7 +83,7 @@ public class Help extends Command implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
-        final List<String> commands = new ArrayList<String>(((WritableFrameContainer) origin)
+        final List<String> commands = new ArrayList<>(((WritableFrameContainer) origin)
                 .getCommandParser().getCommands().keySet());
 
         Collections.sort(commands);
@@ -115,7 +121,7 @@ public class Help extends Command implements IntelligentCommand {
      */
     private void showCommand(final FrameContainer origin, final boolean isSilent,
             final String name) {
-        Map.Entry<CommandInfo, Command> command = null;
+        Map.Entry<CommandInfo, Command> command;
 
         if (name.length() > 0 && name.charAt(0) == getController().getCommandChar()) {
             command = getController().getCommand(name.substring(1));

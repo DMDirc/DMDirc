@@ -59,15 +59,6 @@ public class SetNickColour extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link SetNickColour} command.
      *
-     * @param colourManager The colour manager to use to convert colours.
-     */
-    public SetNickColour(final ColourManager colourManager) {
-        this.colourManager = colourManager;
-    }
-
-    /**
-     * Creates a new instance of the {@link SetNickColour} command.
-     *
      * @param controller The command controller that owns this command.
      * @param colourManager The colour manager to use to convert colours.
      */

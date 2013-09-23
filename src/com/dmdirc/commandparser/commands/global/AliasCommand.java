@@ -56,15 +56,6 @@ public class AliasCommand extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of {@link AliasCommand}.
      *
-     * @param aliasWrapper The wrapper to use to modify aliases.
-     */
-    public AliasCommand(final AliasWrapper aliasWrapper) {
-        this.aliasWrapper = aliasWrapper;
-    }
-
-    /**
-     * Creates a new instance of {@link AliasCommand}.
-     *
      * @param controller The controller that owns this command.
      * @param aliasWrapper The wrapper to use to modify aliases.
      */

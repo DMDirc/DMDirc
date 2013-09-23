@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -51,10 +52,12 @@ public final class SaveConfig extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link SaveConfig} command.
      *
+     * @param controller The controller to use for command information.
      * @param identityController The controller to save identities on.
      */
     @Inject
-    public SaveConfig(final IdentityController identityController) {
+    public SaveConfig(final CommandController controller, final IdentityController identityController) {
+        super(controller);
         this.identityController = identityController;
     }
 

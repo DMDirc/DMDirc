@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
@@ -51,11 +52,13 @@ public class Exit extends Command {
     /**
      * Creates a new instance of the {@link Exit} command.
      *
-     * @param controller The controller to use to quit the app.
+     * @param controller Command controller
+     * @param lifecycleController The controller to use to quit the app.
      */
     @Inject
-    public Exit(final LifecycleController controller) {
-        this.controller = controller;
+    public Exit(final CommandController controller, final LifecycleController lifecycleController) {
+        super(controller);
+        this.controller = lifecycleController;
     }
 
     /** {@inheritDoc} */

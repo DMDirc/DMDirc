@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -52,10 +53,12 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link ReloadPlugin} command.
      *
+     * @param controller The controller to use for command information.
      * @param pluginManager The plugin manager to reload plugins with.
      */
     @Inject
-    public ReloadPlugin(final PluginManager pluginManager) {
+    public ReloadPlugin(final CommandController controller, final PluginManager pluginManager) {
+        super(controller);
         this.pluginManager = pluginManager;
     }
 

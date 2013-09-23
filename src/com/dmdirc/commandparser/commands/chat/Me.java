@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import javax.inject.Inject;
@@ -47,9 +48,14 @@ public class Me extends Command implements ValidatingCommand {
             "me <action> - sends the specified action",
             CommandType.TYPE_CHAT);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of {@link Ban} using the given command controller.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Me() {
+    public Me(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -69,15 +70,18 @@ public class NewServer extends Command implements IntelligentCommand {
      * Creates a new newserver command which will use the specified factory
      * to construct servers.
      *
-     * @param serverFactory The factory to use to construct servers
+     * @param controller The controller to use for command information.
+     * @param serverFactory The factory to use to construct servers.
      * @param pluginManager The plugin manager to use to query available services.
      * @param identityController Identity controller to use to find profiles.
      */
     @Inject
     public NewServer(
+            final CommandController controller,
             final ServerFactory serverFactory,
             final PluginManager pluginManager,
             final IdentityController identityController) {
+        super(controller);
         this.serverFactory = serverFactory;
         this.pluginManager = pluginManager;
         this.identityController = identityController;

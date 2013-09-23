@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
@@ -53,10 +54,12 @@ public class LoadPlugin extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link LoadPlugin} command.
      *
+     * @param controller The controller to use for command information.
      * @param pluginManager The plugin manager to load plugins with.
      */
     @Inject
-    public LoadPlugin(final PluginManager pluginManager) {
+    public LoadPlugin(final CommandController controller, final PluginManager pluginManager) {
+        super(controller);
         this.pluginManager = pluginManager;
     }
 

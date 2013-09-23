@@ -22,34 +22,35 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IfpluginTest {
 
+    @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
+    @Mock private FrameContainer tiw;
     private Ifplugin command;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        TestMain.getTestMain();
-        command = new Ifplugin(pluginManager);
+        command = new Ifplugin(controller, pluginManager);
     }
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
@@ -57,8 +58,7 @@ public class IfpluginTest {
 
     @Test
     public void testUsageOneArg() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo bar"),
+        command.execute(tiw, new CommandArguments(controller, "/foo bar"),
                 new CommandContext(null, Ifplugin.INFO));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());

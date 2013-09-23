@@ -21,45 +21,42 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.TestMain;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MeTest {
 
-    private final Me command = new Me();
-    private MessageTarget mtt;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        TestMain.getTestMain();
-    }
+    @Mock private MessageTarget mtt;
+    @Mock private CommandController controller;
+    private Me command;
 
     @Before
     public void setUp() {
-        mtt = mock(MessageTarget.class);
+        command = new Me(controller);
     }
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments("/foo"),
+        command.execute(mtt, new CommandArguments(controller, "/foo"),
                 new ChatCommandContext(null, Me.INFO, mtt));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(mtt).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
     @Test
     public void testSend() {
-        command.execute(null, new CommandArguments("/foo hello meep moop"),
+        command.execute(null, new CommandArguments(controller, "/foo hello meep moop"),
                 new ChatCommandContext(null, Me.INFO, mtt));
 
         verify(mtt).sendAction("hello meep moop");

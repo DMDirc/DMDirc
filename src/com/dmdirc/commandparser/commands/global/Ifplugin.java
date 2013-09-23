@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -58,10 +59,12 @@ public class Ifplugin extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link Ifplugin} command.
      *
+     * @param controller The controller to use for command information.
      * @param pluginManager The plugin manager to use to query plugins.
      */
     @Inject
-    public Ifplugin(final PluginManager pluginManager) {
+    public Ifplugin(final CommandController controller, final PluginManager pluginManager) {
+        super(controller);
         this.pluginManager = pluginManager;
     }
 

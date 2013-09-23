@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -51,10 +52,12 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link ReloadIdentities} command.
      *
+     * @param controller The controller to use for command information.
      * @param identityController The controller to reload identities on.
      */
     @Inject
-    public ReloadIdentities(final IdentityController identityController) {
+    public ReloadIdentities(final CommandController controller, final IdentityController identityController) {
+        super(controller);
         this.identityController = identityController;
     }
 

@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
@@ -45,9 +46,14 @@ public class Away extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("away",
            "away <reason> - marks you as away", CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Away() {
+    public Away(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -53,9 +54,14 @@ public class Mode extends Command implements IntelligentCommand,
             "mode [changes] - displays or changes the current channel modes",
             CommandType.TYPE_CHANNEL);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Mode() {
+    public Mode(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

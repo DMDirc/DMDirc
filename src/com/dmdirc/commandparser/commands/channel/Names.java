@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import javax.inject.Inject;
@@ -51,9 +52,14 @@ public class Names extends Command implements IntelligentCommand,
             "names - Requests a list of users that are in the channel",
             CommandType.TYPE_CHANNEL);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Names() {
+    public Names(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

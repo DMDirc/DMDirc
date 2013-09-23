@@ -66,6 +66,7 @@ import com.dmdirc.commandparser.commands.server.Raw;
 import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 
 import java.util.HashSet;
@@ -361,13 +362,14 @@ public class CommandModule {
     /**
      * Provides a set of raw commands.
      *
+     * @param controller The controller to use for command info.
      * @return A set of the commands' details.
      */
     @Provides(type = Provides.Type.SET_VALUES)
-    public Set<CommandDetails> getRawCommands() {
+    public Set<CommandDetails> getRawCommands(final CommandController controller) {
         final Set<CommandDetails> results = new HashSet<>();
         for (String name : new String[] { "lusers", "map", "motd", "oper", "whois", "who" }) {
-            final RawServerCommand rawCommand = new RawServerCommand(name);
+            final RawServerCommand rawCommand = new RawServerCommand(controller, name);
             results.add(new SimpleCommandDetails(rawCommand, rawCommand));
         }
         return results;

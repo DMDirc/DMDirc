@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
@@ -47,9 +48,14 @@ public class Raw extends Command {
             "raw <text> - sends the specified text directly to the server",
             CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public Raw() {
+    public Raw(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

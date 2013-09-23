@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -48,9 +49,14 @@ public class AllChannels extends Command implements IntelligentCommand {
            "allchannels <command> - executes the command as though it had"
             + " been entered on all channels", CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public AllChannels() {
+    public AllChannels(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

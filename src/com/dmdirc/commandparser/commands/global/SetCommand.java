@@ -37,6 +37,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -76,14 +77,16 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of Set.
      *
+     * @param controller The controller to use for command information.
      * @param identityController The controller to use to set settings.
      * @param identityFactory The factory to use to create new identities.
      */
     @Inject
     public SetCommand(
+            final CommandController controller,
             final IdentityController identityController,
             final IdentityFactory identityFactory) {
-        super();
+        super(controller);
 
         this.identityController = identityController;
         this.identityFactory = identityFactory;

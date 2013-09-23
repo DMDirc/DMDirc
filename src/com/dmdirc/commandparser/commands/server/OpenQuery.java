@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -52,9 +53,14 @@ public class OpenQuery extends Command implements IntelligentCommand,
             "query <user> [message] - opens a query with the specified user",
             CommandType.TYPE_SERVER);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public OpenQuery() {
+    public OpenQuery(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
@@ -53,10 +54,12 @@ public class Notify extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of the {@link Notify} command.
      *
+     * @param controller The controller to use for command information.
      * @param colourManager The colour manager to use to convert colours.
      */
     @Inject
-    public Notify(final ColourManager colourManager) {
+    public Notify(final CommandController controller, final ColourManager colourManager) {
+        super(controller);
         this.colourManager = colourManager;
     }
 

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -47,9 +48,14 @@ public class OpenWindow extends Command implements IntelligentCommand {
             + "- opens a window with the specified name and title",
             CommandType.TYPE_GLOBAL);
 
-    /** Creates a new instance of this command. */
+    /**
+     * Creates a new instance of this command.
+     *
+     * @param controller The controller to use for command information.
+     */
     @Inject
-    public OpenWindow() {
+    public OpenWindow(final CommandController controller) {
+        super(controller);
     }
 
     /** {@inheritDoc} */

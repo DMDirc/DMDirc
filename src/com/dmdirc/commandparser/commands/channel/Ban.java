@@ -38,12 +38,10 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
 import javax.inject.Inject;
-import lombok.NoArgsConstructor;
 
 /**
  * The kick command bans a specified user or host from the channel.
  */
-@NoArgsConstructor
 public class Ban extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */

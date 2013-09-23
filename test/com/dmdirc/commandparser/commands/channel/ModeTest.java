@@ -25,49 +25,46 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.TestMain;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.parser.irc.IRCChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.Parser;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ModeTest {
 
+    @Mock private FrameContainer origin;
+    @Mock private CommandController controller;
+    @Mock private ChannelInfo channelinfo;
+    @Mock private Channel channel;
+    @Mock private Server server;
+    @Mock private Parser parser;
     private Mode command;
-    private IRCChannelInfo channelinfo;
-    private Channel channel;
-    private Server server;
-    private IRCParser parser;
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-
-        parser = mock(IRCParser.class);
-        server = mock(Server.class);
-        channel = mock(Channel.class);
-        channelinfo = mock(IRCChannelInfo.class);
-
         when(channel.getServer()).thenReturn(server);
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");
         when(channelinfo.toString()).thenReturn("#chan");
 
-        command = new Mode();
+        command = new Mode(controller);
     }
 
     @Test
     public void testWithoutArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
-
-        command.execute(origin, new CommandArguments("/mode"),
+        command.execute(origin, new CommandArguments(controller, "/mode"),
                 new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(origin).addLine("channelModeDiscovered", "my mode string!", channelinfo);
@@ -75,9 +72,7 @@ public class ModeTest {
 
     @Test
     public void testWithArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
-
-        command.execute(origin, new CommandArguments("/mode +hello -bye"),
+        command.execute(origin, new CommandArguments(controller, "/mode +hello -bye"),
                 new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
@@ -85,9 +80,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
-
-        command.execute(origin, new CommandArguments("/mode +hello -bye"),
+        command.execute(origin, new CommandArguments(controller, "/mode +hello -bye"),
                 new ChannelCommandContext(null, Mode.INFO, channel));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
@@ -95,10 +88,8 @@ public class ModeTest {
 
     @Test
     public void testExternalWithoutArgs() {
-        final FrameContainer origin = mock(FrameContainer.class);
-
         command.execute(origin, server, "#chan", false,
-                new CommandArguments("/mode"));
+                new CommandArguments(controller,"/mode"));
 
         verify(parser).sendRawMessage("MODE #chan");
     }
