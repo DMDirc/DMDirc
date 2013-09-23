@@ -29,11 +29,11 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -109,10 +109,10 @@ public class Server extends WritableFrameContainer
     // <editor-fold defaultstate="collapsed" desc="Instance">
 
     /** Open channels that currently exist on the server. */
-    private final Map<String, Channel> channels = new ConcurrentSkipListMap<String, Channel>();
+    private final Map<String, Channel> channels = new ConcurrentSkipListMap<>();
 
     /** Open query windows on the server. */
-    private final Map<String, Query> queries = new ConcurrentSkipListMap<String, Query>();
+    private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
 
     /** The Parser instance handling this server. */
     private Parser parser;
@@ -163,10 +163,10 @@ public class Server extends WritableFrameContainer
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
 
     /** A list of outstanding invites. */
-    private final List<Invite> invites = new ArrayList<Invite>();
+    private final List<Invite> invites = new ArrayList<>();
 
     /** A set of channels we want to join without focusing. */
-    private final Set<String> backgroundChannels = new HashSet<String>();
+    private final Set<String> backgroundChannels = new HashSet<>();
 
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
@@ -182,6 +182,9 @@ public class Server extends WritableFrameContainer
 
     /** ServerManager that created us. */
     private final ServerManager manager;
+
+    /** Factory to use to create new identities. */
+    private final IdentityFactory identityFactory;
 
     // </editor-fold>
 
@@ -201,6 +204,7 @@ public class Server extends WritableFrameContainer
      * @param windowManager The window manager to register this server with.
      * @param aliasWrapper The actions wrapper to retrieve aliases from.
      * @param commandController The controller to use to retrieve commands.
+     * @param identityFactory The factory to use to create identities.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -212,6 +216,7 @@ public class Server extends WritableFrameContainer
             final WindowManager windowManager,
             final AliasWrapper aliasWrapper,
             final CommandController commandController,
+            final IdentityFactory identityFactory,
             final URI uri,
             final Identity profile) {
         super("server-disconnected",
@@ -225,6 +230,7 @@ public class Server extends WritableFrameContainer
 
         this.manager = manager;
         this.parserFactory = parserFactory;
+        this.identityFactory = identityFactory;
         setConnectionDetails(uri, profile);
 
         manager.registerServer(this);
@@ -517,7 +523,7 @@ public class Server extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public List<String> getChannels() {
-        return new ArrayList<String>(channels.keySet());
+        return new ArrayList<>(channels.keySet());
     }
 
     /** {@inheritDoc} */
@@ -651,7 +657,7 @@ public class Server extends WritableFrameContainer
      * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
-        for (Channel channel : new ArrayList<Channel>(channels.values())) {
+        for (Channel channel : new ArrayList<>(channels.values())) {
             channel.close();
         }
     }
@@ -669,7 +675,7 @@ public class Server extends WritableFrameContainer
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        for (Query query : new ArrayList<Query>(queries.values())) {
+        for (Query query : new ArrayList<>(queries.values())) {
             query.close();
         }
     }
@@ -858,7 +864,7 @@ public class Server extends WritableFrameContainer
     public void join(final boolean focus, final ChannelJoinRequest ... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
-                final List<ChannelJoinRequest> pending = new ArrayList<ChannelJoinRequest>();
+                final List<ChannelJoinRequest> pending = new ArrayList<>();
 
                 for (ChannelJoinRequest request : requests) {
                     removeInvites(request.getName());
@@ -1453,7 +1459,7 @@ public class Server extends WritableFrameContainer
 
             converter = parser.getStringConverter();
 
-            final List<ChannelJoinRequest> requests = new ArrayList<ChannelJoinRequest>();
+            final List<ChannelJoinRequest> requests = new ArrayList<>();
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {
                     requests.add(new ChannelJoinRequest(chan.getName()));
@@ -1547,13 +1553,13 @@ public class Server extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public Identity getServerIdentity() {
-        return IdentityManager.getIdentityManager().createServerConfig(parser.getServerName());
+        return identityFactory.createServerConfig(parser.getServerName());
     }
 
     /** {@inheritDoc} */
     @Override
     public Identity getNetworkIdentity() {
-        return IdentityManager.getIdentityManager().createNetworkConfig(getNetwork());
+        return identityFactory.createNetworkConfig(getNetwork());
     }
 
     // </editor-fold>
@@ -1580,7 +1586,7 @@ public class Server extends WritableFrameContainer
     @Override
     public void addInvite(final Invite invite) {
         synchronized (invites) {
-            for (Invite oldInvite : new ArrayList<Invite>(invites)) {
+            for (Invite oldInvite : new ArrayList<>(invites)) {
                 if (oldInvite.getChannel().equals(invite.getChannel())) {
                     removeInvite(oldInvite);
                 }
@@ -1619,7 +1625,7 @@ public class Server extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public void removeInvites(final String channel) {
-        for (Invite invite : new ArrayList<Invite>(invites)) {
+        for (Invite invite : new ArrayList<>(invites)) {
             if (invite.getChannel().equals(channel)) {
                 removeInvite(invite);
             }
@@ -1629,7 +1635,7 @@ public class Server extends WritableFrameContainer
     /** {@inheritDoc} */
     @Override
     public void removeInvites() {
-        for (Invite invite : new ArrayList<Invite>(invites)) {
+        for (Invite invite : new ArrayList<>(invites)) {
             removeInvite(invite);
         }
     }

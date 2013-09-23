@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 
 import javax.inject.Provider;
@@ -43,6 +44,7 @@ import static org.mockito.Mockito.*;
 public class ServerManagerTest {
 
     @Mock private IdentityController identityController;
+    @Mock private IdentityFactory identityFactory;
     @Mock private Provider<ParserFactory> parserFactoryProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
     private ServerManager serverManager;
@@ -50,7 +52,7 @@ public class ServerManagerTest {
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(parserFactoryProvider,
-                identityController, commandControllerProvider);
+                identityController, identityFactory, commandControllerProvider);
     }
 
     @After

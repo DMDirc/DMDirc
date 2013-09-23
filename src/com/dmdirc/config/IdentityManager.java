@@ -605,6 +605,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @return A singleton instance of the IdentityManager.
      */
+    @Deprecated
     public static IdentityManager getIdentityManager() {
         return instance;
     }
@@ -614,7 +615,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @param identityManager The identity manager to use.
      */
-    public static void setIdentityManager(IdentityManager identityManager) {
+    @Deprecated
+    public static void setIdentityManager(final IdentityManager identityManager) {
         instance = identityManager;
     }
 

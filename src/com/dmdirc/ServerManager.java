@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -64,6 +65,9 @@ public class ServerManager implements ServerFactory {
     /** A provider of {@link CommandController}s to pass to servers. */
     private final Provider<CommandController> commandController;
 
+    /** The identity factory to give to servers. */
+    private final IdentityFactory identityFactory;
+
     /**
      * Creates a new instance of ServerManager.
      *
@@ -75,9 +79,11 @@ public class ServerManager implements ServerFactory {
     public ServerManager(
             final Provider<ParserFactory> parserFactoryProvider,
             final IdentityController identityController,
+            final IdentityFactory identityFactory,
             final Provider<CommandController> commandController) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
+        this.identityFactory = identityFactory;
         this.commandController = commandController;
     }
 
@@ -94,6 +100,7 @@ public class ServerManager implements ServerFactory {
                 WindowManager.getWindowManager(),
                 AliasWrapper.getAliasWrapper(),
                 commandController.get(),
+                identityFactory,
                 uri,
                 profile);
     }

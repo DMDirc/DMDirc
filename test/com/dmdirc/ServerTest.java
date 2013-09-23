@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.IdentityFactory;
 import com.dmdirc.ui.WindowManager;
 
 import java.net.URI;
@@ -34,7 +35,6 @@ import java.net.URI;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
@@ -47,6 +47,7 @@ public class ServerTest {
     @Mock private ConfigManager configManager;
     @Mock private CommandParser commandParser;
     @Mock private ParserFactory parserFactory;
+    @Mock private IdentityFactory identityFactory;
     @Mock private WindowManager windowManager;
     @Mock private AliasWrapper aliasWrapper;
     @Mock private CommandController commandController;
@@ -67,6 +68,7 @@ public class ServerTest {
                 windowManager,
                 aliasWrapper,
                 commandController,
+                identityFactory,
                 new URI("irc-test://255.255.255.255"),
                 profile);
     }
