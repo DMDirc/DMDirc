@@ -27,7 +27,7 @@ is divided into following sections:
                 ======================
             -->
     <path id="all.libs">
-        <fileset dir="modules/plugins/lib" includes="*.jar"/>
+        <fileset dir="modules/plugins/lib/main" includes="*.jar"/>
         <fileset dir="lib" includes="*.jar"/>
     </path>
 

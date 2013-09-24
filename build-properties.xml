@@ -41,6 +41,7 @@
     <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath,-create-private-test-classpath">
         <path id="main-libs">
             <fileset dir="modules" includes="*/lib/*.jar"/>
+            <fileset dir="modules" includes="*/lib/main/*.jar"/>
             <fileset dir="lib/main" includes="*.jar"/>
         </path>
 
