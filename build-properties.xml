@@ -44,16 +44,24 @@
             <fileset dir="modules" includes="*/lib/main/*.jar"/>
             <fileset dir="lib/main" includes="*.jar"/>
         </path>
+        <pathconvert property="main-libs" refid="main-libs">
+            <map from="${basedir}/" to=""/>
+        </pathconvert>
 
         <path id="test-libs">
+            <fileset dir="lib/main" includes="*.jar"/>
             <fileset dir="lib/test" includes="*.jar"/>
+            <pathelement location="${basedir}/build/classes"/>
+            <pathelement location="${basedir}/modules/plugins/build/classes"/>
         </path>
+        <pathconvert property="test-libs" refid="test-libs">
+            <map from="${basedir}/" to=""/>
+        </pathconvert>
 
-        <propertyregex property="javac.classpath.value" input="${toString:all.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:main-libs}"/>
-        <propertyregex property="javac.test.classpath.value" input="${toString:test.libs}" regexp="\\" replace="/" global="true" defaultValue="${toString:test-libs}"/>
-
-        <replaceregexp file="nbproject/private/private.properties" match="^javac.classpath=(.*)$" flags="im" replace="javac.classpath=${javac.classpath.value}"/>
-        <replaceregexp file="nbproject/private/private.properties" match="^javac.test.classpath=(.*)$" flags="im" replace="javac.test.classpath=${javac.test.classpath.value}:$${javac.classpath}:build/classes:modules/plugins/build/classes"/>
+        <propertyfile file="nbproject/private/private.properties">
+            <entry key="javac.classpath" value="${main-libs}" />
+            <entry key="javac.test.classpath" value="${test-libs}" />
+        </propertyfile>
     </target>
 
 </project>
