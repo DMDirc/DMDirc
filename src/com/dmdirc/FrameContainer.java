@@ -70,7 +70,7 @@ public abstract class FrameContainer {
 
     /** The children of this frame. */
     private final Collection<FrameContainer> children
-            = new CopyOnWriteArrayList<FrameContainer>();
+            = new CopyOnWriteArrayList<>();
 
     /** The parent of this frame. */
     @Getter
@@ -127,7 +127,7 @@ public abstract class FrameContainer {
         this.configManager = config;
         this.name = name;
         this.title = title;
-        this.components = new HashSet<String>(components);
+        this.components = new HashSet<>(components);
 
         iconManager = new IconManager(config);
 
@@ -481,7 +481,7 @@ public abstract class FrameContainer {
      * @since 0.6.4
      */
     public void addLine(final String line, final Date timestamp) {
-        final List<String[]> lines = new LinkedList<String[]>();
+        final List<String[]> lines = new LinkedList<>();
         for (final String myLine : line.split("\n")) {
             if (timestamp != null) {
                 lines.add(new String[]{

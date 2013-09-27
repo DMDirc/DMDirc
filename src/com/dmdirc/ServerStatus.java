@@ -46,10 +46,10 @@ public class ServerStatus {
     protected ServerState state = ServerState.DISCONNECTED;
 
     /** A history of transactions for debugging purposes. */
-    protected RollingList<String> history = new RollingList<String>(10);
+    protected RollingList<String> history = new RollingList<>(10);
 
     /** A list of known parser hashcodes. */
-    protected final List<Integer> parsers = new ArrayList<Integer>();
+    protected final List<Integer> parsers = new ArrayList<>();
 
     /**
      * Creates a new ServerStatus instance for the specified server.

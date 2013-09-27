@@ -110,7 +110,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @return An ordered list of chunks of the desired length
      */
     protected List<String> splitLine(final String line) {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         if (line.indexOf('\n') > -1) {
             for (String part : line.split("\n")) {
@@ -183,8 +183,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
      */
     public boolean doNotification(final Date date, final String messageType,
             final ActionType actionType, final Object... args) {
-        final List<Object> messageArgs = new ArrayList<Object>();
-        final List<Object> actionArgs = new ArrayList<Object>();
+        final List<Object> messageArgs = new ArrayList<>();
+        final List<Object> actionArgs = new ArrayList<>();
         final StringBuffer buffer = new StringBuffer(messageType);
 
         actionArgs.add(this);

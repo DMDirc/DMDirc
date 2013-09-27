@@ -117,7 +117,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         getConfigManager().addChangeListener("channel", this);
         getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
 
-        topics = new RollingList<Topic>(getConfigManager().getOptionInt("channel",
+        topics = new RollingList<>(getConfigManager().getOptionInt("channel",
                 "topichistorysize"));
 
         sendWho = getConfigManager().getOptionBool("channel", "sendwho");
@@ -550,7 +550,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     public List<Topic> getTopics() {
         synchronized (topics) {
-            return new ArrayList<Topic>(topics.getList());
+            return new ArrayList<>(topics.getList());
         }
     }
 
