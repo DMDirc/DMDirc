@@ -34,6 +34,7 @@ import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 
 import javax.inject.Inject;
@@ -51,6 +52,7 @@ public class PluginInjectorInitialiser {
     private final PluginManager pluginManager;
     private final IdentityManager identityManager;
     private final ServerManager serverManager;
+    private final ThemeManager themeManager;
     private final CommandManager commandManager;
     private final MessageSinkManager messageSinkManager;
     private final WindowManager windowManager;
@@ -71,6 +73,7 @@ public class PluginInjectorInitialiser {
             final PluginManager pluginManager,
             final IdentityManager identityManager,
             final ServerManager serverManager,
+            final ThemeManager themeManager,
             final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager,
@@ -84,6 +87,7 @@ public class PluginInjectorInitialiser {
         this.pluginManager = pluginManager;
         this.identityManager = identityManager;
         this.serverManager = serverManager;
+        this.themeManager = themeManager;
         this.commandManager = commandManager;
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
@@ -113,5 +117,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(LifecycleController.class, lifecycleController);
         injector.addParameter(corePluginExtractor);
         injector.addParameter(actionFactory);
+        injector.addParameter(themeManager);
     }
 }

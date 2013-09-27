@@ -32,15 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Provider;
-
 /**
  * Manages available themes.
  */
 public final class ThemeManager {
-
-    /** Singleton instance of the Theme Manager. */
-    private static ThemeManager instance;
 
     /** The identity controller to read settings from. */
     private final IdentityController identityController;
@@ -66,19 +61,9 @@ public final class ThemeManager {
             /** {@inheritDoc} */
             @Override
             public void configChanged(final String domain, final String key) {
-                loadThemes();
+                refreshAndLoadThemes();
             }
         });
-    }
-
-    /**
-     * Scans for available themes and loads any themes that the user has enabled.
-     *
-     * @deprecated Use non-static methods.
-     */
-    @Deprecated
-    public static void loadThemes() {
-        instance.refreshAndLoadThemes();
     }
 
     /**
@@ -144,17 +129,6 @@ public final class ThemeManager {
     /**
      * Retrieves a list of available themes.
      *
-     * @deprecated Use non-static methods.
-     * @return A list of available themes
-     */
-    @Deprecated
-    public static Map<String, Theme> getAvailableThemes() {
-        return instance.getAllThemes();
-    }
-
-    /**
-     * Retrieves a list of available themes.
-     *
      * @return A list of available themes
      */
     public Map<String, Theme> getAllThemes() {
@@ -169,31 +143,9 @@ public final class ThemeManager {
      * Retrieves the directory used for storing themes.
      *
      * @return The directory used for storing themes
-     * @deprecated Use non-static methods.
-     */
-    @Deprecated
-    public static String getThemeDirectory() {
-        return instance.getDirectory();
-    }
-
-    /**
-     * Retrieves the directory used for storing themes.
-     *
-     * @return The directory used for storing themes
      */
     public String getDirectory() {
         return themeDirectory;
-    }
-
-    /**
-     * Updates the theme auto load list with the state of the specified theme.
-     *
-     * @param theme Theme to update auto load
-     * @deprecated Use non-static method.
-     */
-    @Deprecated
-    public static void updateAutoLoad(final Theme theme) {
-        instance.synchroniseAutoLoad(theme);
     }
 
     /**
@@ -213,32 +165,6 @@ public final class ThemeManager {
 
         identityController.getGlobalConfigIdentity()
                 .setOption("themes", "enabled", enabled);
-    }
-
-    /**
-     * Sets the singleton ThemeManager instance.
-     *
-     * @param manager The manager to use as a faux-singleton.
-     */
-    public static void setThemeManager(final ThemeManager manager) {
-        instance = manager;
-    }
-
-    /**
-     * Gets a provider of a theme manager for use in the future.
-     *
-     * @return A theme manager provider
-     * @deprecated Should be injected instead
-     */
-    @Deprecated
-    public static Provider<ThemeManager> getThemeManagerProvider() {
-        return new Provider<ThemeManager>() {
-            /** {@inheritDoc} */
-            @Override
-            public ThemeManager get() {
-                return instance;
-            }
-        };
     }
 
 }

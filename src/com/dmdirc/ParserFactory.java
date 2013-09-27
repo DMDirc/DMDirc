@@ -33,18 +33,28 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 
 import java.net.URI;
-import lombok.RequiredArgsConstructor;
+
+import javax.inject.Inject;
 
 /**
  * Provides a method to retrieve a parser.
  *
  * @since 0.6
  */
-@RequiredArgsConstructor
 public class ParserFactory {
 
     /** PluginManager used by this ParserFactory */
     private final PluginManager pluginManager;
+
+    /**
+     * Creates a new instance of {@link ParserFactory}.
+     *
+     * @param pluginManager The plugin manager used by this factory.
+     */
+    @Inject
+    public ParserFactory(final PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
 
     /**
      * Retrieves a parser instance.

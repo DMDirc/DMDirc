@@ -126,17 +126,6 @@ public class ClientModule {
     }
 
     /**
-     * Provides a parser factory.
-     *
-     * @param pluginManager The plugin manager to use to find parsers.
-     * @return A parser factory for use in the client.
-     */
-    @Provides
-    public ParserFactory getParserFactory(final PluginManager pluginManager) {
-        return new ParserFactory(pluginManager);
-    }
-
-    /**
      * Provides an action manager.
      *
      * @param serverManager The server manager to use to iterate servers.
@@ -319,7 +308,6 @@ public class ClientModule {
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
         final ThemeManager manager = new ThemeManager(controller, directory);
-        ThemeManager.setThemeManager(manager);
         manager.refreshAndLoadThemes();
         return manager;
     }
