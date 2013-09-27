@@ -343,7 +343,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new Identity(IdentityManager.class.getResourceAsStream("../version.config"), false);
+            versionConfig = new Identity(IdentityManager.class.getResourceAsStream("/com/dmdirc/version.config"), false);
             registerIdentity(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
