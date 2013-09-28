@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.util.collections.ListenerList;
@@ -46,8 +46,7 @@ import lombok.Getter;
 public class PreferencesDialogModel {
 
     /** A list of categories. */
-    private final List<PreferencesCategory> categories
-            = new ArrayList<PreferencesCategory>();
+    private final List<PreferencesCategory> categories = new ArrayList<>();
     /** A list of listeners. */
     private final ListenerList listeners = new ListenerList();
     /** UI specific plugin panel. */
@@ -63,7 +62,7 @@ public class PreferencesDialogModel {
     private final ConfigManager configManager;
     /** Identity to write settings to. */
     @Getter
-    private final Identity identity;
+    private final ConfigProvider identity;
     /** Plugin manager. */
     private final PluginManager pluginManager;
     /** Action Manager. */
@@ -86,7 +85,7 @@ public class PreferencesDialogModel {
             final PreferencesInterface updatesPanel,
             final PreferencesInterface urlHandlerPanel,
             final ConfigManager configManager,
-            final Identity identity,
+            final ConfigProvider identity,
             final ActionManager actionManager,
             final PluginManager pluginManager) {
         this.pluginPanel = pluginPanel;
@@ -227,7 +226,7 @@ public class PreferencesDialogModel {
      */
     private void addTabCompletionCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Tab Completion", "");
-        final Map<String, String> taboptions = new HashMap<String, String>();
+        final Map<String, String> taboptions = new HashMap<>();
 
         for (Service service : pluginManager.getServicesByType("tabcompletion")) {
             taboptions.put(service.getName(), service.getName());
@@ -371,11 +370,11 @@ public class PreferencesDialogModel {
         final PreferencesCategory category = new PreferencesCategory("Notifications",
                 "", "input-error");
 
-        final Map<String, String> options = new HashMap<String, String>();
-        final Map<String, String> commonOptions = new HashMap<String, String>();
-        final Map<String, String> whoisOptions = new HashMap<String, String>();
-        final Map<String, String> ctcprOptions = new HashMap<String, String>();
-        final Map<String, String> mapOptions = new HashMap<String, String>();
+        final Map<String, String> options = new HashMap<>();
+        final Map<String, String> commonOptions = new HashMap<>();
+        final Map<String, String> whoisOptions = new HashMap<>();
+        final Map<String, String> ctcprOptions = new HashMap<>();
+        final Map<String, String> mapOptions = new HashMap<>();
 
         options.put("all", "All windows");
         options.put("active", "Active window");
