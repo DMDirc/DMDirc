@@ -25,8 +25,8 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 
@@ -55,7 +55,7 @@ public class PreferencesManager {
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getServerSettings(final ConfigManager manager,
-            final Identity identity) {
+            final ConfigProvider identity) {
         final PreferencesCategory category
                 = new PreferencesCategory("Server settings",
                 "These settings are specific to this server on this network,"
@@ -140,7 +140,7 @@ public class PreferencesManager {
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getChannelSettings(final ConfigManager manager,
-            final Identity identity) {
+            final ConfigProvider identity) {
         final PreferencesCategory category
                 = new PreferencesCategory("Channel settings",
                 "These settings are specific to this channel on this network,"

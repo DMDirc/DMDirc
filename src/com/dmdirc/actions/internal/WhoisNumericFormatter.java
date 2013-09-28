@@ -25,9 +25,9 @@ package com.dmdirc.actions.internal;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +40,10 @@ import java.util.Map;
 public class WhoisNumericFormatter implements ActionListener {
 
     /** The name of the target of any current whois requests. */
-    private final Map<Server, String> targets = new HashMap<Server, String>();
+    private final Map<Server, String> targets = new HashMap<>();
 
     /** The identity to add formatters to. */
-    private final Identity identity;
+    private final ConfigProvider identity;
 
     /**
      * Creates a new whois numeric formatter that will add automatic formats
@@ -53,7 +53,7 @@ public class WhoisNumericFormatter implements ActionListener {
      *
      * @param identity The identity to write formatters to
      */
-    public WhoisNumericFormatter(final Identity identity) {
+    public WhoisNumericFormatter(final ConfigProvider identity) {
         this.identity = identity;
     }
 

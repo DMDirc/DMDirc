@@ -23,7 +23,7 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.Server;
-import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.net.URI;
 
@@ -40,6 +40,6 @@ public interface ServerFactory {
      * @param profile The profile to use
      * @return A new {@link Server} instance with the appropriate configuration
      */
-    Server createServer(final URI uri, final Identity profile);
+    Server createServer(final URI uri, final ConfigProvider profile);
 
 }

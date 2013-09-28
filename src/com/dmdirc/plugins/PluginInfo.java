@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.SimpleInjector;
@@ -47,6 +48,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import javax.inject.Provider;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -128,6 +130,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Updates the list of known classes within this plugin from the specified
      * resource manager.
+     *
+     * @param res Resource manager to use to read the plugin contents.
      */
     private void updateClassList(final ResourceManager res) {
         myClasses.clear();
@@ -190,7 +194,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the defaults, formatters and icons for this plugin.
      */
     private void getDefaults() {
-        final Identity defaults = IdentityManager.getIdentityManager().getGlobalAddonIdentity();
+        final ConfigProvider defaults = IdentityManager.getIdentityManager().getGlobalAddonIdentity();
         final String domain = "plugin-" + metaData.getName();
 
         log.trace("{}: Using domain '{}'",

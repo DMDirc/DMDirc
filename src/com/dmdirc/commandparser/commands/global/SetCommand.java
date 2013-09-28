@@ -36,8 +36,8 @@ import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -110,7 +110,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             return;
         }
 
-        Identity identity = identityController.getGlobalConfigIdentity();
+        ConfigProvider identity = identityController.getGlobalConfigIdentity();
         ConfigManager manager = identityController.getGlobalConfiguration();
 
         if (res.hasFlag(serverFlag)) {
@@ -256,7 +256,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param newvalue The value the option should be set to
      */
     private void doSetOption(final FrameContainer origin,
-            final boolean isSilent, final Identity identity,
+            final boolean isSilent, final ConfigProvider identity,
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
 
@@ -276,7 +276,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param data The data to be appended
      */
     private void doAppendOption(final FrameContainer origin,
-            final boolean isSilent, final Identity identity, final ConfigManager manager,
+            final boolean isSilent, final ConfigProvider identity, final ConfigManager manager,
             final String domain, final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
                 (manager.hasOptionString(domain, option)
@@ -293,7 +293,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param option The name of the option
      */
     private void doUnsetOption(final FrameContainer origin,
-            final boolean isSilent, final Identity identity, final String domain,
+            final boolean isSilent, final ConfigProvider identity, final String domain,
             final String option) {
         identity.unsetOption(domain, option);
 

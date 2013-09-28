@@ -24,6 +24,7 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
@@ -67,9 +68,9 @@ public class PreferencesSetting {
     private String original;
     /** A list of change listeners. */
     private final List<SettingChangeListener> listeners
-            = new ArrayList<SettingChangeListener>();
+            = new ArrayList<>();
     /** Identity to save settings to. */
-    private final Identity identity;
+    private final ConfigProvider identity;
 
     /**
      * Creates a new preferences setting for any type except multi-choice.
@@ -86,7 +87,7 @@ public class PreferencesSetting {
     public PreferencesSetting(final PreferencesType type,
             final Validator<String> validator, final String domain,
             final String option, final String title, final String helptext,
-            final ConfigManager configManager, final Identity identity) {
+            final ConfigManager configManager, final ConfigProvider identity) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
@@ -119,7 +120,7 @@ public class PreferencesSetting {
      */
     public PreferencesSetting(final PreferencesType type, final String domain,
             final String option, final String title, final String helptext,
-            final ConfigManager configManager, final Identity identity) {
+            final ConfigManager configManager, final ConfigProvider identity) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
@@ -127,7 +128,7 @@ public class PreferencesSetting {
 
         this.type = type;
         this.comboOptions = null;
-        this.validator = new PermissiveValidator<String>();
+        this.validator = new PermissiveValidator<>();
         this.domain = domain;
         this.option = option;
         this.title = title;
@@ -152,10 +153,10 @@ public class PreferencesSetting {
     public PreferencesSetting(final String domain, final String option,
             final String title, final String helptext,
             final Map<String, String> options,
-            final ConfigManager configManager, final Identity identity) {
+            final ConfigManager configManager, final ConfigProvider identity) {
         this.type = PreferencesType.MULTICHOICE;
-        this.comboOptions = new HashMap<String, String>(options);
-        this.validator = new PermissiveValidator<String>();
+        this.comboOptions = new HashMap<>(options);
+        this.validator = new PermissiveValidator<>();
         this.domain = domain;
         this.option = option;
         this.title = title;

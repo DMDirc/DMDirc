@@ -25,11 +25,11 @@ package com.dmdirc;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -73,6 +73,7 @@ public class ServerManager implements ServerFactory {
      *
      * @param parserFactoryProvider The provider of {@link ParserFactory}s to give to servers.
      * @param identityController The identity controller to use to find profiles.
+     * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
      */
     @Inject
@@ -89,7 +90,7 @@ public class ServerManager implements ServerFactory {
 
     /** {@inheritDoc} */
     @Override
-    public Server createServer(final URI uri, final Identity profile) {
+    public Server createServer(final URI uri, final ConfigProvider profile) {
         final ConfigManager configManager = new ConfigManager(uri.getScheme(), "", "", uri.getHost());
 
         return new Server(
@@ -233,7 +234,7 @@ public class ServerManager implements ServerFactory {
      * @return The server which will be connecting
      * @since 0.6.3
      */
-    public Server connectToAddress(final URI uri, final Identity profile) {
+    public Server connectToAddress(final URI uri, final ConfigProvider profile) {
         Logger.assertTrue(profile.isProfile());
         Server server = null;
 

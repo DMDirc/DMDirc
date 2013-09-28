@@ -28,7 +28,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
-import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -148,7 +148,7 @@ public interface Connection {
      * @param profile The profile to use
      * @since 0.6.3
      */
-    void connect(final URI address, final Identity profile);
+    void connect(final URI address, final ConfigProvider profile);
 
     /**
      * Removes a specific channel and window from this server.
@@ -260,7 +260,7 @@ public interface Connection {
      *
      * @return This server's network identity
      */
-    Identity getNetworkIdentity();
+    ConfigProvider getNetworkIdentity();
 
     /**
      * Retrieves the parser used for this connection.
@@ -274,7 +274,7 @@ public interface Connection {
      *
      * @return The profile in use by this server
      */
-    Identity getProfile();
+    ConfigProvider getProfile();
 
     /**
      * Retrieves the protocol used by this server.
@@ -322,7 +322,7 @@ public interface Connection {
      *
      * @return This server's identity
      */
-    Identity getServerIdentity();
+    ConfigProvider getServerIdentity();
 
     /**
      * Retrieves the current state for this server.

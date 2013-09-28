@@ -28,13 +28,13 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.InviteListener;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -139,7 +139,7 @@ public class Server extends WritableFrameContainer
     private URI address;
 
     /** The profile we're using. */
-    private Identity profile;
+    private ConfigProvider profile;
 
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
@@ -218,7 +218,7 @@ public class Server extends WritableFrameContainer
             final CommandController commandController,
             final IdentityFactory identityFactory,
             final URI uri,
-            final Identity profile) {
+            final ConfigProvider profile) {
         super("server-disconnected",
                 getHost(uri),
                 getHost(uri),
@@ -278,7 +278,7 @@ public class Server extends WritableFrameContainer
      * @param uri The new URI that this server should connect to
      * @param profile The profile that this server should use
      */
-    private void setConnectionDetails(final URI uri, final Identity profile) {
+    private void setConnectionDetails(final URI uri, final ConfigProvider profile) {
         this.address = uri;
         this.protocolDescription = parserFactory.getDescription(uri);
         this.profile = profile;
@@ -307,7 +307,7 @@ public class Server extends WritableFrameContainer
         "The specified profile is not null"
     })
     @SuppressWarnings("fallthrough")
-    public void connect(final URI address, final Identity profile) {
+    public void connect(final URI address, final ConfigProvider profile) {
         assert profile != null;
 
         synchronized (myStateLock) {
@@ -928,7 +928,7 @@ public class Server extends WritableFrameContainer
 
     /** {@inheritDoc} */
     @Override
-    public Identity getProfile() {
+    public ConfigProvider getProfile() {
         return profile;
     }
 
@@ -1553,13 +1553,13 @@ public class Server extends WritableFrameContainer
 
     /** {@inheritDoc} */
     @Override
-    public Identity getServerIdentity() {
+    public ConfigProvider getServerIdentity() {
         return identityFactory.createServerConfig(parser.getServerName());
     }
 
     /** {@inheritDoc} */
     @Override
-    public Identity getNetworkIdentity() {
+    public ConfigProvider getNetworkIdentity() {
         return identityFactory.createNetworkConfig(getNetwork());
     }
 
