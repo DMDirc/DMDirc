@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -73,7 +74,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Listeners for standard identities are inserted with a <code>null</code>
      * key, listeners for a specific custom type use their type as the key.
      */
-    private final MapList<String, IdentityListener> listeners = new WeakMapList<>();
+    private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
 
     /** The identity file used for the global config. */
     private Identity config;
@@ -420,8 +421,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 new Object[]{ identity, target });
 
         synchronized (listeners) {
-            for (IdentityListener listener : listeners.safeGet(target)) {
-                listener.identityAdded(identity);
+            for (ConfigProviderListener listener : listeners.safeGet(target)) {
+                listener.configProviderAdded(identity);
             }
         }
     }
@@ -440,27 +441,27 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         synchronized (listeners) {
-            for (IdentityListener listener : listeners.safeGet(group)) {
-                listener.identityRemoved(identity);
+            for (ConfigProviderListener listener : listeners.safeGet(group)) {
+                listener.configProviderRemoved(identity);
             }
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void registerIdentityListener(final IdentityListener listener) {
+    public void registerIdentityListener(final ConfigProviderListener listener) {
         registerIdentityListener(null, listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void unregisterIdentityListener(final IdentityListener listener) {
+    public void unregisterIdentityListener(final ConfigProviderListener listener) {
         listeners.removeFromAll(listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void registerIdentityListener(final String type, final IdentityListener listener) {
+    public void registerIdentityListener(final String type, final ConfigProviderListener listener) {
         Logger.assertTrue(listener != null);
 
         synchronized (listeners) {

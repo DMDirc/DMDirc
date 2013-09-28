@@ -20,30 +20,32 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config;
+package com.dmdirc.interfaces.config;
 
 /**
- * An interface of objects which are interested in identities being added
- * and removed from the {@link IdentityManager}.
+ * An interface of objects which are interested in config providers being added
+ * and removed from the {@link IdentityController}.
  *
  * @since 0.6.4
  */
-public interface IdentityListener {
+public interface ConfigProviderListener {
 
     /**
-     * Called whenever a relevant new identity is added to the
-     * {@link IdentityManager}.
+     * Called whenever a relevant new config provider is added to the associated
+     * {@link IdentityController}.
      *
-     * @param identity The identity which has been added
+     * @param configProvider The configProvider which has been added
      */
-    void identityAdded(final Identity identity);
+
+    void configProviderAdded(final ConfigProvider configProvider);
 
     /**
-     * Called whenever a relevant identity is removed from the
-     * {@link IdentityManager}.
+     * Called whenever a relevant config provider is removed from the associated
+     * {@link IdentityController}.
      *
-     * @param identity The identity which has been removed
+     * @param configProvider The configProvider which has been removed
      */
-    void identityRemoved(final Identity identity);
+
+    void configProviderRemoved(final ConfigProvider configProvider);
 
 }

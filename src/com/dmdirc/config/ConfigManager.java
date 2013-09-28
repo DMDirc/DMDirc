@@ -22,8 +22,10 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
@@ -45,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class ConfigManager extends ConfigSource implements ConfigChangeListener,
-        IdentityListener, AggregateConfigProvider {
+        ConfigProviderListener, AggregateConfigProvider {
 
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> STATS = new TreeMap<>();
@@ -466,14 +468,14 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    public void identityAdded(final Identity identity) {
-        checkIdentity(identity);
+    public void configProviderAdded(final ConfigProvider configProvider) {
+        checkIdentity((Identity) configProvider);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void identityRemoved(final Identity identity) {
-        removeIdentity(identity);
+    public void configProviderRemoved(final ConfigProvider configProvider) {
+        removeIdentity((Identity) configProvider);
     }
 
 }

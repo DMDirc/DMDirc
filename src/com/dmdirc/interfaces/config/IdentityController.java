@@ -25,7 +25,6 @@ package com.dmdirc.interfaces.config;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityListener;
 import com.dmdirc.config.InvalidIdentityFileException;
 
 import java.util.List;
@@ -131,7 +130,7 @@ public interface IdentityController {
      * @since 0.6.4
      */
     @Precondition(value = "The specified listener is not null")
-    void registerIdentityListener(final IdentityListener listener);
+    void registerIdentityListener(final ConfigProviderListener listener);
 
     /**
      * Adds a new identity listener which will be informed of all identities
@@ -142,14 +141,14 @@ public interface IdentityController {
      * @since 0.6.4
      */
     @Precondition(value = "The specified listener is not null")
-    void registerIdentityListener(final String type, final IdentityListener listener);
+    void registerIdentityListener(final String type, final ConfigProviderListener listener);
 
     /**
      * Unregisters the given identity listener.
      *
      * @param listener The listener to be removed
      */
-    void unregisterIdentityListener(final IdentityListener listener);
+    void unregisterIdentityListener(final ConfigProviderListener listener);
 
     /**
      * Saves all modified identity files to disk.
