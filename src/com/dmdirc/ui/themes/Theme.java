@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
@@ -34,10 +34,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Represents one theme file.
  */
+@RequiredArgsConstructor
 public class Theme implements Comparable<Theme> {
+
+    /** The controller to add theme identities to. */
+    private final IdentityController identityController;
 
     /** The file to load the theme from. */
     private final File file;
@@ -53,15 +59,6 @@ public class Theme implements Comparable<Theme> {
 
     /** The Identity we've registered. */
     private ThemeIdentity identity;
-
-    /**
-     * Creates a new instance of Theme.
-     *
-     * @param file The file to load the theme from
-     */
-    public Theme(final File file) {
-        this.file = file;
-    }
 
     /**
      * Determines if this theme is valid or not (i.e., it is a valid zip file,
@@ -85,9 +82,7 @@ public class Theme implements Comparable<Theme> {
 
                 try {
                     metadata.read();
-                } catch (IOException ex) {
-                    metadata = null;
-                } catch (InvalidConfigFileException ex) {
+                } catch (IOException | InvalidConfigFileException ex) {
                     metadata = null;
                 }
             }
@@ -111,11 +106,8 @@ public class Theme implements Comparable<Theme> {
         if (stream != null) {
             try {
                 identity = new ThemeIdentity(stream, this);
-                IdentityManager.getIdentityManager().registerIdentity(identity);
-            } catch (InvalidIdentityFileException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
-                        + ex.getMessage());
-            } catch (IOException ex) {
+                identityController.registerIdentity(identity);
+            } catch (InvalidIdentityFileException | IOException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
                         + ex.getMessage());
             }
@@ -131,8 +123,7 @@ public class Theme implements Comparable<Theme> {
         }
 
         enabled = false;
-
-        IdentityManager.getIdentityManager().unregisterIdentity(identity);
+        identityController.unregisterIdentity(identity);
     }
 
     /**

@@ -110,7 +110,7 @@ public final class ThemeManager {
         if (themes.containsKey(file.getName())) {
             theme = themes.get(file.getName());
         } else {
-            theme = new Theme(file);
+            theme = new Theme(identityController, file);
 
             if (theme.isValidTheme()) {
                 themes.put(file.getName(), theme);
