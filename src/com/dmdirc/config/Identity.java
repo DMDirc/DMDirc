@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.WeakList;
@@ -51,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
 @Slf4j
-public class Identity extends ConfigSource implements Comparable<Identity> {
+public class Identity extends ConfigSource implements Comparable<Identity>, ConfigProvider {
 
     /** A regular expression that will match all characters illegal in file names. */
     protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
@@ -72,8 +73,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
     protected ConfigManager globalConfig;
 
     /** The config change listeners for this source. */
-    protected final List<ConfigChangeListener> listeners
-            = new WeakList<ConfigChangeListener>();
+    protected final List<ConfigChangeListener> listeners = new WeakList<>();
 
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
@@ -187,7 +187,6 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      *
      * @since 0.6.3
      * @param forceDefault Whether to force this to be a default identity
-     * @param file The file to load this identity from (or null)
      * @throws InvalidIdentityFileException if the identity file is invalid
      * @throws IOException On I/O exception when reading the identity
      */
@@ -204,22 +203,14 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         }
     }
 
-    /**
-     * Attempts to reload this identity from disk. If this identity has been
-     * modified (i.e., {@code needSave} is true), then this method silently
-     * returns straight away. All relevant ConfigChangeListeners are fired for
-     * new, altered and deleted properties. The target of the identity will not
-     * be changed by this method, even if it has changed on disk.
-     *
-     * @throws java.io.IOException On I/O exception when reading the identity
-     * @throws InvalidConfigFileException if the config file is no longer valid
-     */
+    /** {@inheritDoc} */
+    @Override
     public void reload() throws IOException, InvalidConfigFileException {
         if (needSave) {
             return;
         }
 
-        final List<String[]> changes = new LinkedList<String[]>();
+        final List<String[]> changes = new LinkedList<>();
 
         synchronized (this) {
             final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
@@ -264,16 +255,13 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * @since 0.6.3m1
      */
     private void fireSettingChange(final String domain, final String key) {
-        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
+        for (ConfigChangeListener listener : new ArrayList<>(listeners)) {
             listener.configChanged(domain, key);
         }
     }
 
-    /**
-     * Returns the name of this identity.
-     *
-     * @return The name of this identity
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         if (hasOptionString(DOMAIN, "name")) {
             return getOption(DOMAIN, "name");
@@ -301,13 +289,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         }
     }
 
-    /**
-     * Determines whether this identity can be used as a profile when
-     * connecting to a server. Profiles are identities that can supply
-     * nick, ident, real name, etc.
-     *
-     * @return True iff this identity can be used as a profile
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isProfile() {
         return (hasOptionString(PROFILE_DOMAIN, "nicknames")
                 || hasOptionString(PROFILE_DOMAIN, "nickname"))
@@ -336,13 +319,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         return value;
     }
 
-    /**
-     * Sets the specified option in this identity to the specified value.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param value The new value for the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setOption(final String domain, final String option,
             final String value) {
         String oldValue;
@@ -394,37 +372,22 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         }
     }
 
-    /**
-     * Sets the specified option in this identity to the specified value.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param value The new value for the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setOption(final String domain, final String option,
             final int value) {
         setOption(domain, option, String.valueOf(value));
     }
 
-    /**
-     * Sets the specified option in this identity to the specified value.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param value The new value for the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setOption(final String domain, final String option,
             final boolean value) {
         setOption(domain, option, String.valueOf(value));
     }
 
-    /**
-     * Sets the specified option in this identity to the specified value.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param value The new value for the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setOption(final String domain, final String option,
             final List<String> value) {
         final StringBuilder temp = new StringBuilder();
@@ -435,12 +398,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         setOption(domain, option, temp.length() > 0 ? temp.substring(1) : temp.toString());
     }
 
-    /**
-     * Unsets a specified option.
-     *
-     * @param domain domain of the option
-     * @param option name of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public void unsetOption(final String domain, final String option) {
         synchronized (this) {
             file.getKeyDomain(domain).remove(option);
@@ -450,31 +409,20 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         fireSettingChange(domain, option);
     }
 
-    /**
-     * Returns the set of domains available in this identity.
-     *
-     * @since 0.6
-     * @return The set of domains used by this identity
-     */
+    /** {@inheritDoc} */
+    @Override
     public Set<String> getDomains() {
-        return new HashSet<String>(file.getKeyDomains().keySet());
+        return new HashSet<>(file.getKeyDomains().keySet());
     }
 
-    /**
-     * Retrieves a map of all options within the specified domain in this
-     * identity.
-     *
-     * @param domain The domain to retrieve
-     * @since 0.6
-     * @return A map of option names to values
-     */
+    /** {@inheritDoc} */
+    @Override
     public synchronized Map<String, String> getOptions(final String domain) {
-        return new HashMap<String, String>(file.getKeyDomain(domain));
+        return new HashMap<>(file.getKeyDomain(domain));
     }
 
-    /**
-     * Saves this identity to disk if it has been updated.
-     */
+    /** {@inheritDoc} */
+    @Override
     public synchronized void save() {
         log.info("{}: saving. Needsave = {}", new Object[]{ getName(), needSave });
 
@@ -514,8 +462,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
 
-                    for (Map.Entry<String, String> subentry
-                        : new HashSet<Map.Entry<String, String>>(entry.getValue().entrySet())) {
+                    for (Map.Entry<String, String> subentry : new HashSet<>(entry.getValue().entrySet())) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
 
@@ -544,9 +491,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         }
     }
 
-    /**
-     * Deletes this identity from disk.
-     */
+    /** {@inheritDoc} */
+    @Override
     public synchronized void delete() {
         if (file != null) {
             file.delete();
@@ -555,11 +501,8 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         IdentityManager.getIdentityManager().unregisterIdentity(this);
     }
 
-    /**
-     * Retrieves this identity's target.
-     *
-     * @return The target of this identity
-     */
+    /** {@inheritDoc} */
+    @Override
     public ConfigTarget getTarget() {
         return myTarget;
     }
@@ -575,20 +518,14 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
         return file != null && file.getFile() != null && file.getFile().equals(target);
     }
 
-    /**
-     * Adds a new config change listener for this identity.
-     *
-     * @param listener The listener to be added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addListener(final ConfigChangeListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * Removes the specific config change listener from this identity.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeListener(final ConfigChangeListener listener) {
         listeners.remove(listener);
     }
@@ -681,8 +618,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      */
     public static Identity buildIdentity(final ConfigTarget target)
             throws IOException {
-        final Map<String, Map<String, String>> settings
-                = new HashMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> settings = new HashMap<>();
         settings.put(DOMAIN, new HashMap<String, String>(2));
         settings.get(DOMAIN).put("name", target.getData());
         settings.get(DOMAIN).put(target.getTypeName(), target.getData());
@@ -705,8 +641,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      * @see #createIdentity(java.util.Map)
      */
     public static Identity buildProfile(final String name) throws IOException {
-        final Map<String, Map<String, String>> settings
-                = new HashMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> settings = new HashMap<>();
         settings.put(DOMAIN, new HashMap<String, String>(1));
         settings.put(PROFILE_DOMAIN, new HashMap<String, String>(2));
 
@@ -735,8 +670,7 @@ public class Identity extends ConfigSource implements Comparable<Identity> {
      */
     public static Identity buildIdentity(final String name, final String type)
             throws IOException {
-        final Map<String, Map<String, String>> settings
-                = new HashMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> settings = new HashMap<>();
         settings.put(DOMAIN, new HashMap<String, String>(2));
 
         settings.get(DOMAIN).put("name", name);

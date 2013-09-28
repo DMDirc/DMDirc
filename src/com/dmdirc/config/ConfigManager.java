@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
@@ -44,10 +45,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class ConfigManager extends ConfigSource implements ConfigChangeListener,
-        IdentityListener {
+        IdentityListener, AggregateConfigProvider {
 
     /** Temporary map for lookup stats. */
-    private static final Map<String, Integer> STATS = new TreeMap<String, Integer>();
+    private static final Map<String, Integer> STATS = new TreeMap<>();
 
     /** Magical domain to redirect to the version identity. */
     private static final String VERSION_DOMAIN = "version";
@@ -56,8 +57,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     private final List<Identity> sources;
 
     /** The listeners registered for this manager. */
-    private final MapList<String, ConfigChangeListener> listeners
-            = new MapList<String, ConfigChangeListener>();
+    private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
 
     /** The config binder to use for this manager. */
     @Getter
@@ -165,20 +165,15 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         return false;
     }
 
-    /**
-     * Returns the name of all the options in the specified domain. If the
-     * domain doesn't exist, an empty list is returned.
-     *
-     * @param domain The domain to search
-     * @return A list of options in the specified domain
-     */
+    /** {@inheritDoc} */
+    @Override
     public Map<String, String> getOptions(final String domain) {
         if (VERSION_DOMAIN.equals(domain)) {
             return IdentityManager.getIdentityManager()
                     .getGlobalVersionIdentity().getOptions(domain);
         }
 
-        final Map<String, String> res = new HashMap<String, String>();
+        final Map<String, String> res = new HashMap<>();
 
         synchronized (sources) {
             for (int i = sources.size() - 1; i >= 0; i--) {
@@ -199,7 +194,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
             return;
         }
 
-        final List<String[]> changed = new ArrayList<String[]>();
+        final List<String[]> changed = new ArrayList<>();
 
         // Determine which settings will have changed
         for (String domain : identity.getDomains()) {
@@ -330,13 +325,10 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         }
     }
 
-    /**
-     * Returns the name of all domains known by this manager.
-     *
-     * @return A list of domains known to this manager
-     */
+    /** {@inheritDoc} */
+    @Override
     public Set<String> getDomains() {
-        final Set<String> res = new HashSet<String>();
+        final Set<String> res = new HashSet<>();
 
         synchronized (sources) {
             for (Identity source : sources) {
@@ -347,42 +339,21 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         return res;
     }
 
-    /**
-     * Retrieves a list of sources for this config manager.
-     * @return This config manager's sources.
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<Identity> getSources() {
-        return new ArrayList<Identity>(sources);
+        return new ArrayList<>(sources);
     }
 
-    /**
-     * Migrates this ConfigManager from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
-     *
-     * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     public void migrate(final String protocol, final String ircd,
             final String network, final String server) {
         migrate(protocol, ircd, network, server, "<Unknown>");
     }
 
-    /**
-     * Migrates this ConfigManager from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
-     *
-     * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @param channel The new name of the channel for this manager
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     public void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
@@ -397,7 +368,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         this.server = server;
         this.channel = channel + "@" + network;
 
-        for (Identity identity : new ArrayList<Identity>(sources)) {
+        for (Identity identity : new ArrayList<>(sources)) {
             if (!identityApplies(identity)) {
                 log.debug("Removing identity that no longer applies: {}", identity);
                 removeIdentity(identity);
@@ -440,34 +411,22 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         return STATS;
     }
 
-    /**
-     * Adds a change listener for the specified domain.
-     *
-     * @param domain The domain to be monitored
-     * @param listener The listener to register
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addChangeListener(final String domain,
             final ConfigChangeListener listener) {
         addListener(domain, listener);
     }
 
-    /**
-     * Adds a change listener for the specified domain and key.
-     *
-     * @param domain The domain of the option
-     * @param key The option to be monitored
-     * @param listener The listener to register
-     */
+    /** {@inheritDoc} */
+    @Override
     public void addChangeListener(final String domain, final String key,
             final ConfigChangeListener listener) {
         addListener(domain + "." + key, listener);
     }
 
-    /**
-     * Removes the specified listener for all domains and options.
-     *
-     * @param listener The listener to be removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void removeListener(final ConfigChangeListener listener) {
         synchronized (listeners) {
             listeners.removeFromAll(listener);
@@ -490,8 +449,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        final List<ConfigChangeListener> targets
-                = new ArrayList<ConfigChangeListener>();
+        final List<ConfigChangeListener> targets = new ArrayList<>();
 
         if (listeners.containsKey(domain)) {
             targets.addAll(listeners.get(domain));

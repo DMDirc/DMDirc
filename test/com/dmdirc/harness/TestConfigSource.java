@@ -22,8 +22,10 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.config.*;
+import com.dmdirc.config.ConfigSource;
 import com.dmdirc.util.validators.Validator;
+
+import java.util.Map;
 
 public class TestConfigSource extends ConfigSource {
 
@@ -33,7 +35,12 @@ public class TestConfigSource extends ConfigSource {
     }
 
     @Override
-    protected String getOption(String domain, String option, Validator<String> validator) {
+    public String getOption(String domain, String option, Validator<String> validator) {
         return option;
+    }
+
+    @Override
+    public Map<String, String> getOptions(String domain) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

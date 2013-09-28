@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.validators.ColourValidator;
@@ -54,7 +55,7 @@ import javax.inject.Provider;
  * an implementation that takes values from multiple sources, such as a
  * {@link ConfigManager}.
  */
-public abstract class ConfigSource {
+public abstract class ConfigSource implements ReadOnlyConfigProvider {
 
     /** A permissive validator to use when callers don't specify one. */
     private static final Validator<String> PERMISSIVE_VALIDATOR
@@ -91,28 +92,15 @@ public abstract class ConfigSource {
         this(ColourManager.getColourManagerProvider());
     }
 
-    /**
-     * Retrieves the specified option from this config source.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The value of the option, or null if it doesn't exist
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getOption(final String domain, final String option) {
         return getOption(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /**
-     * Retrieves the first value for the specified option that matches the
-     * specified validator.
-     *
-     * @since 0.6.5
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param validator The validator to use to check legal values
-     * @return The value of the option, or null if no matching values exist
-     */
-    protected abstract String getOption(final String domain,
+    /** {@inheritDoc} */
+    @Override
+    public abstract String getOption(final String domain,
             final String option, final Validator<String> validator);
 
     /**
@@ -128,42 +116,14 @@ public abstract class ConfigSource {
     protected abstract boolean hasOption(final String domain,
             final String option, final Validator<String> validator);
 
-    /**
-     * Determines if this source has the specified String option.
-     * <p>
-     * A String option is considered to exist if:
-     * <ul>
-     *  <li>there is a value for the specified option,
-     *  <li>that value is not empty, and
-     *  <li>that value is not disabled (i.e., it doesn't begin with "false:")
-     * </ul>
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @since 0.6.3m1
-     * @return True iff the option exists and is not empty, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionString(final String domain, final String option) {
         return hasOptionString(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /**
-     * Determines if this source has the specified String option.
-     * <p>
-     * A String option is considered to exist if:
-     * <ul>
-     *  <li>there is a value for the specified option that
-     *      satisfies the specified validator,
-     *  <li>that value is not empty, and
-     *  <li>that value is not disabled (i.e., it doesn't begin with "false:")
-     * </ul>
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param validator The validator to use to check legal values
-     * @since 0.6.5
-     * @return True iff the option exists and is not empty, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionString(final String domain, final String option,
             final Validator<String> validator) {
         String value;
@@ -173,77 +133,32 @@ public abstract class ConfigSource {
                 && !value.startsWith("false:");
     }
 
-    /**
-     * Determines if this source has the specified integer option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @since 0.6.3m1
-     * @return True iff the option exists and is parsable as an integer,
-     * false otherwise.
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionInt(final String domain, final String option) {
         return hasOptionString(domain, option, INT_VALIDATOR);
     }
 
-    /**
-     * Determines if this source has the specified character option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @since 0.6.3m1
-     * @return True iff the option exists and is parsable as a char,
-     * false otherwise.
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionChar(final String domain, final String option) {
         return hasOptionString(domain, option);
     }
 
-    /**
-     * Determines if this source has the specified colour option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @since 0.6.3m1
-     * @return True iff the option exists and is parsable as a colour,
-     * false otherwise.
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionColour(final String domain, final String option) {
         return hasOptionString(domain, option, COLOUR_VALIDATOR);
     }
 
-    /**
-     * Retrieves a boolean representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The boolean representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOptionBool(final String domain, final String option) {
         return hasOption(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /**
-     * Retrieves the specified option as a String, if it exists and satisfies
-     * the specified validator.
-     * <p>
-     * If no fallback settings are supplied (or if fallback settings are
-     * supplied and execution reaches the last fallback setting) AND if the
-     * 'required' parameter is true, then all disabled values (i.e., those
-     * starting with <code>false:</code>) will be ignored. To check if a valid
-     * non-disabled value exists, call
-     * {@link #hasOptionString(java.lang.String, java.lang.String, com.dmdirc.util.validators.Validator)}.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param required Whether the specified option is required or not
-     * @param validator The validator to use to check the value
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The string representation of the option or null if optional
-     * setting is not specified
-     * @since 0.6.5
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getOptionString(final String domain, final String option,
             final boolean required, final Validator<String> validator,
             final String ... fallbacks) {
@@ -266,43 +181,21 @@ public abstract class ConfigSource {
         }
     }
 
-    /**
-     * Retrieves the specified option as a String, if it exists.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The string representation of the option or null if optional
-     * setting is not specified
-     * @since 0.6.3
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getOptionString(final String domain, final String option,
             final String ... fallbacks) {
         return getOptionString(domain, option, true, PERMISSIVE_VALIDATOR, fallbacks);
     }
 
-    /**
-     * Retrieves the specified option as a character.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The value of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public char getOptionChar(final String domain, final String option) {
         return getOption(domain, option).charAt(0);
     }
 
-    /**
-     * Retrieves a colour representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The colour representation of the option
-     * @since 0.6.3m1
-     */
+    /** {@inheritDoc} */
+    @Override
     public Colour getOptionColour(final String domain, final String option,
             final String ... fallbacks) {
         final String value = getOptionString(domain, option, true, COLOUR_VALIDATOR, fallbacks);
@@ -310,25 +203,14 @@ public abstract class ConfigSource {
         return value == null ? null : colourManager.get().getColourFromString(value, null);
     }
 
-    /**
-     * Retrieves a boolean representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The boolean representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean getOptionBool(final String domain, final String option) {
         return Boolean.parseBoolean(getOption(domain, option));
     }
 
-    /**
-     * Retrieves a list representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param trimEmpty Whether or not to trim empty lines
-     * @return The list representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<String> getOptionList(final String domain, final String option,
             final boolean trimEmpty) {
         final List<String> res = new ArrayList<>();
@@ -344,43 +226,21 @@ public abstract class ConfigSource {
         return res;
     }
 
-    /**
-     * Retrieves a list representation of the specified option, trimming empty
-     * lines by default.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The list representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public List<String> getOptionList(final String domain, final String option) {
         return getOptionList(domain, option, true);
     }
 
-    /**
-     * Retrieves an integral representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The integer representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public Integer getOptionInt(final String domain, final String option,
             final String ... fallbacks) {
         return getOptionInt(domain, option, true, fallbacks);
     }
 
-    /**
-     * Retrieves an integral representation of the specified option.
-     *
-     * @since 0.6.5
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param required Whether this option is required or optional
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The integer representation of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public Integer getOptionInt(final String domain, final String option,
             final boolean required, final String ... fallbacks) {
         final String value = getOptionString(domain, option, required, INT_VALIDATOR, fallbacks);
