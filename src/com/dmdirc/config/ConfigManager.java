@@ -23,7 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 

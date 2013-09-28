@@ -23,8 +23,8 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.interfaces.IdentityController;
-import com.dmdirc.interfaces.IdentityFactory;
+import com.dmdirc.interfaces.config.IdentityController;
+import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;

@@ -23,7 +23,7 @@
 package com.dmdirc.updater.manager;
 
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.DMDircCheckStrategy;

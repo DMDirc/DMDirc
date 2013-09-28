@@ -23,7 +23,7 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.config.CipherUtils;
-import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.config.IdentityController;
 
 public class TestCipherUtils extends CipherUtils {
 

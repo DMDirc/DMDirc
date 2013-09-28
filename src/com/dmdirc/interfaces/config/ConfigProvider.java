@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces.config;
 
 import com.dmdirc.config.ConfigTarget;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.IOException;

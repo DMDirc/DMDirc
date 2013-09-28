@@ -23,7 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.URLBuilder;
 
 import java.awt.Image;

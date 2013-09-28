@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.LifecycleController;
 
 import javax.inject.Inject;

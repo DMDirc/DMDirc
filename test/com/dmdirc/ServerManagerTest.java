@@ -23,8 +23,8 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.IdentityController;
-import com.dmdirc.interfaces.IdentityFactory;
+import com.dmdirc.interfaces.config.IdentityController;
+import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 
 import javax.inject.Provider;

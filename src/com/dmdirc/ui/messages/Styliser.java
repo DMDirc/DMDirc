@@ -25,7 +25,7 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.Colour;

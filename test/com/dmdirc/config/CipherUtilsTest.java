@@ -24,7 +24,7 @@ package com.dmdirc.config;
 
 import com.dmdirc.TestMain;
 import com.dmdirc.harness.TestCipherUtils;
-import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.config.IdentityController;
 
 import org.junit.Before;
 import org.junit.Test;

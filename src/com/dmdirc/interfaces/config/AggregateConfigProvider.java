@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces.config;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.util.List;
 import java.util.Set;

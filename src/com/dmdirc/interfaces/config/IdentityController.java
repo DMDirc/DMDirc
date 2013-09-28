@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.interfaces.config;
 
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;

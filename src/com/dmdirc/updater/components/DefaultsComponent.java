@@ -23,7 +23,7 @@
 package com.dmdirc.updater.components;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.interfaces.IdentityController;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
