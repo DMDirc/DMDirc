@@ -124,7 +124,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
         showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
 
-        tabCompleter = new TabCompleter(server.getTabCompleter());
+        tabCompleter = new TabCompleter(getConfigManager(), server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHANNEL));
         tabCompleter.addEntries(TabCompletionType.COMMAND,

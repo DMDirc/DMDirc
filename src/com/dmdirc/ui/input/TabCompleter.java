@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.collections.MapList;
 
@@ -37,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
@@ -47,26 +50,44 @@ public class TabCompleter {
      * The parent TabCompleter. Results from parents are merged with results
      * from this completer.
      */
-    private TabCompleter parent;
+    @Nullable
+    private final TabCompleter parent;
+
+    /**
+     * The config manager to use for reading settings.
+     */
+    private final ConfigManager configManager;
 
     /**
      * The entries in this completer.
      */
-    private final MapList<TabCompletionType, String> entries
-            = new MapList<TabCompletionType, String>();
+    private final MapList<TabCompletionType, String> entries = new MapList<>();
 
     /** Creates a new instance of TabCompleter. */
+    @Deprecated
     public TabCompleter() {
-        //Do nothing.
+        this(IdentityManager.getIdentityManager().getGlobalConfiguration());
     }
 
     /**
-     * Creates a new instance of TabCompleter, with a designated parent.
-     * @param newParent The parent TabCompleter, which is checked for matches if
-     * local ones fail
+     * Creates a new instance of {@link TabCompleter}.
+     *
+     * @param configManager The manager to read config settings from.
      */
-    public TabCompleter(final TabCompleter newParent) {
-        this.parent = newParent;
+    public TabCompleter(final ConfigManager configManager) {
+        this.parent = null;
+        this.configManager = configManager;
+    }
+
+    /**
+     * Creates a new instance of {@link TabCompleter}.
+     *
+     * @param configManager The manager to read config settings from.
+     * @param parent The parent tab completer to inherit completions from.
+     */
+    public TabCompleter(final ConfigManager configManager, final TabCompleter parent) {
+        this.parent = parent;
+        this.configManager = configManager;
     }
 
     /**
@@ -80,13 +101,10 @@ public class TabCompleter {
             final AdditionalTabTargets additionals) {
         final TabCompleterResult result = new TabCompleterResult();
 
-        final MapList<TabCompletionType, String> targets
-                = new MapList<TabCompletionType, String>(entries);
+        final MapList<TabCompletionType, String> targets = new MapList<>(entries);
 
-        final boolean caseSensitive = IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOptionBool("tabcompletion", "casesensitive");
-        final boolean allowEmpty = IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOptionBool("tabcompletion", "allowempty");
+        final boolean caseSensitive = configManager.getOptionBool("tabcompletion", "casesensitive");
+        final boolean allowEmpty = configManager.getOptionBool("tabcompletion", "allowempty");
 
         if (partial.isEmpty() && !allowEmpty) {
             return result;

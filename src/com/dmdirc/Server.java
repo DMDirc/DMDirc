@@ -154,7 +154,7 @@ public class Server extends WritableFrameContainer
     private final Timer whoTimer;
 
     /** The tabcompleter used for this server. */
-    private final TabCompleter tabCompleter = new TabCompleter();
+    private final TabCompleter tabCompleter;
 
     /** Our reason for being away, if any. */
     private String awayMessage;
@@ -237,6 +237,7 @@ public class Server extends WritableFrameContainer
         windowManager.addWindow(this);
 
         // TODO: Server shouldn't have to know about the alias wrapper.
+        tabCompleter = new TabCompleter(configManager);
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 aliasWrapper.getAliases());
         tabCompleter.addEntries(TabCompletionType.COMMAND,

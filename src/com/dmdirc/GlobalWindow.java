@@ -64,7 +64,7 @@ public class GlobalWindow extends WritableFrameContainer {
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier()));
 
-        tabCompleter = new TabCompleter();
+        tabCompleter = new TabCompleter(config);
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_GLOBAL));
         tabCompleter.addEntries(TabCompletionType.COMMAND,

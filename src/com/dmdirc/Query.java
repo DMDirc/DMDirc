@@ -101,7 +101,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_OPENED, null, this);
 
-        tabCompleter = new TabCompleter(server.getTabCompleter());
+        tabCompleter = new TabCompleter(getConfigManager(), server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_QUERY));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
