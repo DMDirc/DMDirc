@@ -36,6 +36,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
+import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
 
@@ -61,6 +62,7 @@ public class PluginInjectorInitialiser {
     private final PerformWrapper performWrapper;
     private final LifecycleController lifecycleController;
     private final CorePluginExtractor corePluginExtractor;
+    private final URLBuilder urlBuilder;
 
     /**
      * Creates a new {@link PluginInjectorInitialiser} which will inject all
@@ -81,7 +83,8 @@ public class PluginInjectorInitialiser {
             final PreferencesManager preferencesManager,
             final PerformWrapper performWrapper,
             final LifecycleController lifecycleController,
-            final CorePluginExtractor corePluginExtractor) {
+            final CorePluginExtractor corePluginExtractor,
+            final URLBuilder urlBuilder) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;
         this.pluginManager = pluginManager;
@@ -96,6 +99,7 @@ public class PluginInjectorInitialiser {
         this.performWrapper = performWrapper;
         this.lifecycleController = lifecycleController;
         this.corePluginExtractor = corePluginExtractor;
+        this.urlBuilder = urlBuilder;
     }
 
     /**
@@ -118,5 +122,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(corePluginExtractor);
         injector.addParameter(actionFactory);
         injector.addParameter(themeManager);
+        injector.addParameter(urlBuilder);
     }
 }

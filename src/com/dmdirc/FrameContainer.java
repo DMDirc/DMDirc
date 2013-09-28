@@ -36,6 +36,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.util.Collection;
@@ -121,7 +122,8 @@ public abstract class FrameContainer {
      * @param components The UI components that this frame requires
      * @since 0.6.4
      */
-    protected FrameContainer(final String icon, final String name,
+    protected FrameContainer(
+            final String icon, final String name,
             final String title, final ConfigManager config,
             final Collection<String> components) {
         this.configManager = config;
@@ -129,7 +131,7 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
 
-        iconManager = new IconManager(config);
+        iconManager = new IconManager(config, URLBuilder.getInstance());
 
         setIcon(icon);
     }

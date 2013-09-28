@@ -52,16 +52,23 @@ public class IconManager implements ConfigChangeListener {
     private final Map<String, Image> images;
     /** Config manager to retrieve settings from. */
     private final ConfigManager configManager;
+    /** URL builder to use for icons. */
+    private final URLBuilder urlBuilder;
 
     /**
      * Creates a new instance of IconManager.
      *
      * @param configManager Config manager to retrieve settings from
+     * @param urlBuilder URL builder to use for icons.
      */
-    public IconManager(final ConfigManager configManager) {
+    public IconManager(
+            final ConfigManager configManager,
+            final URLBuilder urlBuilder) {
         this.configManager = configManager;
-        icons = new HashMap<String, Icon>();
-        images = new HashMap<String, Image>();
+        this.urlBuilder = urlBuilder;
+
+        icons = new HashMap<>();
+        images = new HashMap<>();
 
         configManager.addChangeListener("icon", this);
     }
@@ -151,7 +158,7 @@ public class IconManager implements ConfigChangeListener {
                 : "dmdirc://com/dmdirc/res/" + iconType + ".png";
 
         //Get the url for the speficied path
-        URL imageURL = URLBuilder.buildURL(path);
+        URL imageURL = urlBuilder.getUrl(path);
 
         if (imageURL == null && defaultURL != null) {
            imageURL = defaultURL;

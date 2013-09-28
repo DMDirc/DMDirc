@@ -33,6 +33,9 @@ import java.net.URL;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
@@ -40,6 +43,8 @@ public class URLBuilder {
 
     /** Singleton instance. */
     @Deprecated
+    @Getter
+    @Setter
     private static URLBuilder instance;
 
     /** Provider to retrieve a plugin manager instance when needed. */
@@ -277,13 +282,4 @@ public class URLBuilder {
         }
     }
 
-    /**
-     * Sets the singleton instance to use.
-     *
-     * @param urlBuilder The instance to use.
-     */
-    @Deprecated
-    public static void setInstance(final URLBuilder urlBuilder) {
-        instance = urlBuilder;
-    }
 }
