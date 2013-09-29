@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -142,7 +142,7 @@ public class Styliser implements ConfigChangeListener {
     /** Server to get channel prefixes from, or null if not applicable. */
     private final Server server;
     /** Config manager to retrieve settings from. */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     /**
      * Creates a new instance of Styliser.
@@ -160,7 +160,7 @@ public class Styliser implements ConfigChangeListener {
      * @param configManager the {@link ConfigManager} to get settings from.
      * @since 0.6.3
      */
-    public Styliser(final Server server, final ConfigManager configManager) {
+    public Styliser(final Server server, final AggregateConfigProvider configManager) {
         this.server = server;
         this.configManager = configManager;
 

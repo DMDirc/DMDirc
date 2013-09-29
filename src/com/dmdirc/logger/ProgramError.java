@@ -271,7 +271,7 @@ public final class ProgramError implements Serializable {
         WRITING_SEM.acquireUninterruptibly();
 
         if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(IdentityManager.getIdentityManager().getConfigDir() + "errors");
+            errorDir = new File(IdentityManager.getIdentityManager().getConfigurationDirectory() + "errors");
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
             }

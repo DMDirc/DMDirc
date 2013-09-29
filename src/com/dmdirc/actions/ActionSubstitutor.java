@@ -27,11 +27,11 @@ import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
 
 import java.util.Arrays;
@@ -270,7 +270,7 @@ public class ActionSubstitutor {
             }
         }
 
-        final ConfigManager manager = getConfigManager(args);
+        final AggregateConfigProvider manager = getConfigManager(args);
 
         if (manager.hasOptionString("actions", substitution)) {
             return manager.getOption("actions", substitution);
@@ -328,7 +328,7 @@ public class ActionSubstitutor {
      * @return The best config manager to use for those arguments
      * @since 0.6.3m2
      */
-    protected ConfigManager getConfigManager(final Object ... args) {
+    protected AggregateConfigProvider getConfigManager(final Object ... args) {
         for (Object arg : args) {
             if (arg instanceof FrameContainer) {
                 return ((FrameContainer) arg).getConfigManager();

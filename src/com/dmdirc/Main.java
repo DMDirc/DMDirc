@@ -195,7 +195,7 @@ public class Main {
                 new WarningDialog(WarningDialog.NO_COMPAT_UIS_TITLE,
                         WarningDialog.NO_RECOV_UIS).displayBlocking();
             }
-            identityManager.getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
+            identityManager.getUserSettings().unsetOption("debug", "uiFixAttempted");
             System.exit(1);
         } else {
             // Try to extract the UIs again incase they changed between versions
@@ -210,7 +210,7 @@ public class Main {
             }
 
             // Allow the rebooted DMDirc to know that we have attempted restarting.
-            identityManager.getGlobalConfigIdentity().setOption("debug", "uiFixAttempted", "true");
+            identityManager.getUserSettings().setOption("debug", "uiFixAttempted", "true");
             // Tell the launcher to restart!
             System.exit(42);
         }
@@ -243,7 +243,7 @@ public class Main {
         } else {
             // The fix worked!
             if (identityManager.getGlobalConfiguration().hasOptionBool("debug", "uiFixAttempted")) {
-                identityManager.getGlobalConfigIdentity().unsetOption("debug", "uiFixAttempted");
+                identityManager.getUserSettings().unsetOption("debug", "uiFixAttempted");
             }
         }
     }
@@ -253,7 +253,7 @@ public class Main {
      */
     private void doFirstRun() {
         if (identityManager.getGlobalConfiguration().getOptionBool("general", "firstRun")) {
-            identityManager.getGlobalConfigIdentity().setOption("general", "firstRun", "false");
+            identityManager.getUserSettings().setOption("general", "firstRun", "false");
             for (UIController controller : CONTROLLERS) {
                 controller.showFirstRunWizard();
             }

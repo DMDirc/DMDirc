@@ -194,7 +194,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the defaults, formatters and icons for this plugin.
      */
     private void getDefaults() {
-        final ConfigProvider defaults = IdentityManager.getIdentityManager().getGlobalAddonIdentity();
+        final ConfigProvider defaults = IdentityManager.getIdentityManager().getAddonSettings();
         final String domain = "plugin-" + metaData.getName();
 
         log.trace("{}: Using domain '{}'",
@@ -244,7 +244,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 synchronized (identities) {
                     try {
                         final Identity thisIdentity = new Identity(stream, false);
-                        IdentityManager.getIdentityManager().registerIdentity(thisIdentity);
+                        IdentityManager.getIdentityManager().addConfigProvider(thisIdentity);
                         identities.add(thisIdentity);
                     } catch (final InvalidIdentityFileException ex) {
                         Logger.userError(ErrorLevel.MEDIUM,
@@ -265,7 +265,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private void unloadIdentities() {
         synchronized (identities) {
             for (Identity identity : identities) {
-                IdentityManager.getIdentityManager().unregisterIdentity(identity);
+                IdentityManager.getIdentityManager().removeConfigProvider(identity);
             }
 
             identities.clear();

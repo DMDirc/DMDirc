@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -55,7 +55,7 @@ public class ColourManager {
     private final Map<String, Colour> colourCache = new HashMap<>();
 
     /** Config manager to read settings from. */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     /** Actual colours we're using for the 16 IRC colours. */
     private Colour[] ircColours = DEFAULT_COLOURS.clone();
@@ -65,7 +65,7 @@ public class ColourManager {
      *
      * @param configManager The manager to read config settings from.
      */
-    public ColourManager(final ConfigManager configManager) {
+    public ColourManager(final AggregateConfigProvider configManager) {
         this.configManager = configManager;
 
         configManager.addChangeListener("colour", new ConfigChangeListener() {

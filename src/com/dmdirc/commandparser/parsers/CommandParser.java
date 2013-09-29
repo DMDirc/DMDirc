@@ -35,7 +35,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.RollingList;
 
 import java.io.Serializable;
@@ -73,7 +73,7 @@ public abstract class CommandParser implements Serializable {
     protected final CommandManager commandManager;
 
     /** Creates a new instance of CommandParser. */
-    protected CommandParser(final ConfigManager configManager,
+    protected CommandParser(final AggregateConfigProvider configManager,
             final CommandManager commandManager) {
         commands = new HashMap<>();
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));

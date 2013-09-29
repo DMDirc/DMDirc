@@ -20,28 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater.manager;
+package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Comparator;
 
 /**
- * An {@link UpdateComponentPolicy} which checks if the component is enabled
- * in DMDirc's configuration.
+ * Compares {@link ConfigProvider}s by their targets.
+ *
+ * A collection sorted by this comparator will have the most specific (tightly scoped) providers
+ * first, and global (loosely scoped) last.
  */
-@RequiredArgsConstructor
-public class ConfigComponentPolicy implements UpdateComponentPolicy {
-
-    /** The configuration manager to check. */
-    private final AggregateConfigProvider manager;
+public class ConfigProviderTargetComparator implements Comparator<ConfigProvider> {
 
     /** {@inheritDoc} */
     @Override
-    public boolean canCheck(final UpdateComponent component) {
-        return !manager.hasOptionBool("updater", "enable-" + component.getName())
-                || manager.getOptionBool("updater", "enable-" + component.getName());
+    public int compare(final ConfigProvider t, final ConfigProvider t1) {
+        return t1.getTarget().compareTo(t.getTarget());
     }
-
 }

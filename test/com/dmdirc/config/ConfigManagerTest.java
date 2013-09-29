@@ -22,9 +22,11 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 
 import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +45,7 @@ public class ConfigManagerTest {
     public void setup() {
         IdentityManager.setIdentityManager(identityManager);
         when(identityManager.getIdentitiesForManager(any(ConfigManager.class)))
-                .thenReturn(Collections.<Identity>emptyList());
+                .thenReturn(Collections.<ConfigProvider>emptyList());
     }
 
     @Test

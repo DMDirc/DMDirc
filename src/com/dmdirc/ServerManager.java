@@ -222,7 +222,7 @@ public class ServerManager implements ServerFactory {
      */
     public Server connectToAddress(final URI uri) {
         return connectToAddress(uri,
-                identityController.getIdentitiesByType("profile").get(0));
+                identityController.getProvidersByType("profile").get(0));
     }
 
     /**

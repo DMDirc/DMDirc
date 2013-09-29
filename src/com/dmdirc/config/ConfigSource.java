@@ -103,19 +103,6 @@ public abstract class ConfigSource implements ReadOnlyConfigProvider {
     public abstract String getOption(final String domain,
             final String option, final Validator<String> validator);
 
-    /**
-     * Determines if this source has a value for the specified option which
-     * matches the specified validator.
-     *
-     * @since 0.6.5
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param validator The validator to use to check legal values
-     * @return True iff a matching option exists, false otherwise.
-     */
-    protected abstract boolean hasOption(final String domain,
-            final String option, final Validator<String> validator);
-
     /** {@inheritDoc} */
     @Override
     public boolean hasOptionString(final String domain, final String option) {

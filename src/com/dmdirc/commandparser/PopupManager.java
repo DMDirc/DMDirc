@@ -24,8 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigManager;
-
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
@@ -47,7 +46,7 @@ public class PopupManager {
      * @param configManager The config manager to be used for the menu
      * @return The PopupMenu that should be displayed
      */
-    public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
+    public static PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
         final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
         ActionManager.getActionManager().triggerEvent(
@@ -66,7 +65,7 @@ public class PopupManager {
      * @return The PopupMenu with the specified name
      */
     private static PopupMenu getMenu(final String menuName,
-            final PopupType type, final ConfigManager configManager) {
+            final PopupType type, final AggregateConfigProvider configManager) {
         final PopupMenu res = new PopupMenu();
 
         for (String item : configManager.getOptionList("popups", menuName)) {
@@ -89,7 +88,7 @@ public class PopupManager {
      * @return The corresponding PopupMenuItem
      */
     private static PopupMenuItem getItem(final String item,
-            final PopupType type, final ConfigManager configManager) {
+            final PopupType type, final AggregateConfigProvider configManager) {
         PopupMenuItem res;
 
         if ("-".equals(item)) {

@@ -22,8 +22,7 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
@@ -87,7 +86,7 @@ public class PreferencesSetting {
     public PreferencesSetting(final PreferencesType type,
             final Validator<String> validator, final String domain,
             final String option, final String title, final String helptext,
-            final ConfigManager configManager, final ConfigProvider identity) {
+            final AggregateConfigProvider configManager, final ConfigProvider identity) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
@@ -120,7 +119,7 @@ public class PreferencesSetting {
      */
     public PreferencesSetting(final PreferencesType type, final String domain,
             final String option, final String title, final String helptext,
-            final ConfigManager configManager, final ConfigProvider identity) {
+            final AggregateConfigProvider configManager, final ConfigProvider identity) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
@@ -153,7 +152,7 @@ public class PreferencesSetting {
     public PreferencesSetting(final String domain, final String option,
             final String title, final String helptext,
             final Map<String, String> options,
-            final ConfigManager configManager, final ConfigProvider identity) {
+            final AggregateConfigProvider configManager, final ConfigProvider identity) {
         this.type = PreferencesType.MULTICHOICE;
         this.comboOptions = new HashMap<>(options);
         this.validator = new PermissiveValidator<>();

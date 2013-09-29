@@ -24,12 +24,12 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
@@ -91,7 +91,7 @@ public abstract class FrameContainer {
 
     /** The config manager for this container. */
     @Getter
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
@@ -124,7 +124,7 @@ public abstract class FrameContainer {
      */
     protected FrameContainer(
             final String icon, final String name,
-            final String title, final ConfigManager config,
+            final String title, final AggregateConfigProvider config,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;

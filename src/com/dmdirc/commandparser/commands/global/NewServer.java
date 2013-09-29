@@ -115,7 +115,7 @@ public class NewServer extends Command implements IntelligentCommand {
         }
 
         final Server server = serverFactory.createServer(address,
-                identityController.getIdentitiesByType("profile").get(0));
+                identityController.getProvidersByType("profile").get(0));
         server.connect();
     }
 

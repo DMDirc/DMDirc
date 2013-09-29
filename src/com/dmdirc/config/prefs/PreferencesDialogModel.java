@@ -24,7 +24,7 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -59,7 +59,7 @@ public class PreferencesDialogModel {
     private final PreferencesInterface urlHandlerPanel;
     /** Config Manager to read settings from. */
     @Getter
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
     /** Identity to write settings to. */
     @Getter
     private final ConfigProvider identity;
@@ -84,7 +84,7 @@ public class PreferencesDialogModel {
             final PreferencesInterface themePanel,
             final PreferencesInterface updatesPanel,
             final PreferencesInterface urlHandlerPanel,
-            final ConfigManager configManager,
+            final AggregateConfigProvider configManager,
             final ConfigProvider identity,
             final ActionManager actionManager,
             final PluginManager pluginManager) {

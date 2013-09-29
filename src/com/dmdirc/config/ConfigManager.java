@@ -22,10 +22,10 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
@@ -56,7 +56,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     private static final String VERSION_DOMAIN = "version";
 
     /** A list of sources for this config manager. */
-    private final List<Identity> sources;
+    private final List<ConfigProvider> sources;
 
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
@@ -115,7 +115,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         log.debug("Found {} source(s) for protocol: {}, ircd: {}, network: {}, server: {}, channel: {}",
                 new Object[] { sources.size(), protocol, ircd, network, server, chanName });
 
-        for (Identity identity : sources) {
+        for (ConfigProvider identity : sources) {
             log.trace("Found {}", identity);
             identity.addListener(this);
         }
@@ -131,11 +131,11 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
         if (VERSION_DOMAIN.equals(domain)) {
             return IdentityManager.getIdentityManager()
-                    .getGlobalVersionIdentity().getOption(domain, option, validator);
+                    .getVersionSettings().getOption(domain, option, validator);
         }
 
         synchronized (sources) {
-            for (Identity source : sources) {
+            for (ConfigProvider source : sources) {
                 if (source.hasOption(domain, option, validator)) {
                     return source.getOption(domain, option, validator);
                 }
@@ -147,17 +147,17 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    protected boolean hasOption(final String domain, final String option,
+    public boolean hasOption(final String domain, final String option,
             final Validator<String> validator) {
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
             return IdentityManager.getIdentityManager()
-                    .getGlobalVersionIdentity().hasOption(domain, option, validator);
+                    .getVersionSettings().hasOption(domain, option, validator);
         }
 
         synchronized (sources) {
-            for (Identity source : sources) {
+            for (ConfigProvider source : sources) {
                 if (source.hasOption(domain, option, validator)) {
                     return true;
                 }
@@ -172,7 +172,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     public Map<String, String> getOptions(final String domain) {
         if (VERSION_DOMAIN.equals(domain)) {
             return IdentityManager.getIdentityManager()
-                    .getGlobalVersionIdentity().getOptions(domain);
+                    .getVersionSettings().getOptions(domain);
         }
 
         final Map<String, String> res = new HashMap<>();
@@ -191,7 +191,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      *
      * @param identity The identity to be removed
      */
-    public void removeIdentity(final Identity identity) {
+    public void removeIdentity(final ConfigProvider identity) {
         if (!sources.contains(identity)) {
             return;
         }
@@ -226,14 +226,14 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @param option The option to search for
      * @return The identity that defines that setting, or null on failure
      */
-    protected Identity getScope(final String domain, final String option) {
+    protected ConfigProvider getScope(final String domain, final String option) {
         if (VERSION_DOMAIN.equals(domain)) {
             return IdentityManager.getIdentityManager()
-                    .getGlobalVersionIdentity();
+                    .getVersionSettings();
         }
 
         synchronized (sources) {
-            for (Identity source : sources) {
+            for (ConfigProvider source : sources) {
                 if (source.hasOptionString(domain, option)) {
                     return source;
                 }
@@ -249,7 +249,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      * @param identity The identity to test
      * @return True if the identity applies, false otherwise
      */
-    public boolean identityApplies(final Identity identity) {
+    public boolean identityApplies(final ConfigProvider identity) {
         String comp;
 
         switch (identity.getTarget().getType()) {
@@ -308,12 +308,12 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
      *
      * @param identity The identity to be checked
      */
-    public void checkIdentity(final Identity identity) {
+    public void checkIdentity(final ConfigProvider identity) {
         if (!sources.contains(identity) && identityApplies(identity)) {
             synchronized (sources) {
                 sources.add(identity);
                 identity.addListener(this);
-                Collections.sort(sources);
+                Collections.sort(sources, new ConfigProviderTargetComparator());
             }
 
             // Determine which settings will have changed
@@ -333,7 +333,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         final Set<String> res = new HashSet<>();
 
         synchronized (sources) {
-            for (Identity source : sources) {
+            for (ConfigProvider source : sources) {
                 res.addAll(source.getDomains());
             }
         }
@@ -343,7 +343,7 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    public List<Identity> getSources() {
+    public List<ConfigProvider> getSources() {
         return new ArrayList<>(sources);
     }
 
@@ -370,16 +370,16 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
         this.server = server;
         this.channel = channel + "@" + network;
 
-        for (Identity identity : new ArrayList<>(sources)) {
+        for (ConfigProvider identity : new ArrayList<>(sources)) {
             if (!identityApplies(identity)) {
                 log.debug("Removing identity that no longer applies: {}", identity);
                 removeIdentity(identity);
             }
         }
 
-        final List<Identity> newSources = IdentityManager.getIdentityManager()
+        final List<ConfigProvider> newSources = IdentityManager.getIdentityManager()
                 .getIdentitiesForManager(this);
-        for (Identity identity : newSources) {
+        for (ConfigProvider identity : newSources) {
             log.trace("Testing new identity: {}", identity);
             checkIdentity(identity);
         }

@@ -22,8 +22,8 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.manager.CachingUpdateManager;
@@ -64,10 +64,10 @@ public final class UpdateChecker implements Runnable {
             return;
         }
 
-        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
+        final AggregateConfigProvider config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         if (!config.getOptionBool(DOMAIN, "enable")) {
-            IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption(DOMAIN,
+            IdentityManager.getIdentityManager().getUserSettings().setOption(DOMAIN,
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
             MUTEX.release();
@@ -79,7 +79,7 @@ public final class UpdateChecker implements Runnable {
 
         MUTEX.release();
 
-        IdentityManager.getIdentityManager().getGlobalConfigIdentity().setOption(DOMAIN,
+        IdentityManager.getIdentityManager().getUserSettings().setOption(DOMAIN,
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
         UpdateChecker.initTimer();

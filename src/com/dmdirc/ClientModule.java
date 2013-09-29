@@ -32,16 +32,16 @@ import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.CommandModule;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
+import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -107,7 +107,7 @@ public class ClientModule {
         }
 
         if (commandLineParser.getDisableReporting()) {
-            identityManager.getGlobalConfigIdentity()
+            identityManager.getUserSettings()
                     .setOption("temp", "noerrorreporting", true);
         }
 
@@ -517,7 +517,7 @@ public class ClientModule {
     private void checkBundledPlugins(
             final CorePluginExtractor corePluginExtractor,
             final PluginManager pm,
-            final ConfigManager config) {
+            final AggregateConfigProvider config) {
         for (PluginInfo plugin : pm.getPluginInfos()) {
             if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
                 final Version bundled = new Version(config.getOption("bundledplugins_versions",

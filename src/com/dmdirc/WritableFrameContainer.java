@@ -24,8 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.input.TabCompleter;
@@ -43,10 +43,10 @@ import java.util.List;
 public abstract class WritableFrameContainer extends FrameContainer {
 
     /** The name of the server notification target. */
-    protected static final String NOTIFICATION_SERVER = "server".intern();
+    protected static final String NOTIFICATION_SERVER = "server";
 
     /** The name of the channel notification target. */
-    protected static final String NOTIFICATION_CHANNEL = "channel".intern();
+    protected static final String NOTIFICATION_CHANNEL = "channel";
 
     /** The command parser used for commands in this container. */
     protected final CommandParser commandParser;
@@ -63,7 +63,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
-            final String title, final ConfigManager config,
+            final String title, final AggregateConfigProvider config,
             final CommandParser parser, final Collection<String> components) {
         super(icon, name, title, config, components);
 

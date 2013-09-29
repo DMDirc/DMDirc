@@ -22,11 +22,6 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.Precondition;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
-import com.dmdirc.config.InvalidIdentityFileException;
-
 import java.util.List;
 
 /**
@@ -40,21 +35,21 @@ public interface IdentityController {
      *
      * @return The addons defaults identity
      */
-    Identity getGlobalAddonIdentity();
+    ConfigProvider getAddonSettings();
 
     /**
      * Retrieves the identity used for the global config.
      *
      * @return The global config identity
      */
-    Identity getGlobalConfigIdentity();
+    ConfigProvider getUserSettings();
 
     /**
      * Retrieves the global config manager.
      *
      * @return The global config manager
      */
-    ConfigManager getGlobalConfiguration();
+    AggregateConfigProvider getGlobalConfiguration();
 
     /**
      * Retrieves the identity bundled with the DMDirc client containing
@@ -63,7 +58,7 @@ public interface IdentityController {
      * @return The version identity
      * @since 0.6.3m2
      */
-    Identity getGlobalVersionIdentity();
+    ReadOnlyConfigProvider getVersionSettings();
 
     /**
      * Retrieves a list of identities that belong to the specified custom type.
@@ -72,38 +67,25 @@ public interface IdentityController {
      * @return A list of matching identities
      * @since 0.6.4
      */
-    List<Identity> getIdentitiesByType(final String type);
-
-    /**
-     * Retrieves a list of all config sources that should be applied to the
-     * specified config manager.
-     *
-     * @param manager The manager requesting sources
-     * @return A list of all matching config sources
-     */
-    List<Identity> getIdentitiesForManager(final ConfigManager manager);
+    List<ConfigProvider> getProvidersByType(String type);
 
     /**
      * Retrieves the directory used to store identities in.
      *
      * @return The identity directory path
+     * @deprecated Shouldn't be exposed through the controller.
      */
-    String getIdentityDirectory();
-
-    /**
-     * Loads all identity files.
-     *
-     * @throws InvalidIdentityFileException If there is an error with the config
-     * file.
-     */
-    void initialise() throws InvalidIdentityFileException;
+    @Deprecated
+    String getUserSettingsDirectory();
 
     /**
      * Get the config directory used by this identity controller.
      *
      * @return The config directory.
+     * @deprecated Shouldn't be exposed through the controller.
      */
-    String getConfigDir();
+    @Deprecated
+    String getConfigurationDirectory();
 
     /**
      * Loads user-defined identity files.
@@ -117,10 +99,10 @@ public interface IdentityController {
 
     /**
      * Adds the specific identity to this manager.
+     *
      * @param identity The identity to be added
      */
-    @Precondition(value = "The specified Identity is not null")
-    void registerIdentity(final Identity identity);
+    void addConfigProvider(ConfigProvider identity);
 
     /**
      * Adds a new identity listener which will be informed of all settings
@@ -129,8 +111,7 @@ public interface IdentityController {
      * @param listener The listener to be added
      * @since 0.6.4
      */
-    @Precondition(value = "The specified listener is not null")
-    void registerIdentityListener(final ConfigProviderListener listener);
+    void registerIdentityListener(ConfigProviderListener listener);
 
     /**
      * Adds a new identity listener which will be informed of all identities
@@ -140,15 +121,14 @@ public interface IdentityController {
      * @param listener The listener to be added
      * @since 0.6.4
      */
-    @Precondition(value = "The specified listener is not null")
-    void registerIdentityListener(final String type, final ConfigProviderListener listener);
+    void registerIdentityListener(String type, ConfigProviderListener listener);
 
     /**
      * Unregisters the given identity listener.
      *
      * @param listener The listener to be removed
      */
-    void unregisterIdentityListener(final ConfigProviderListener listener);
+    void unregisterIdentityListener(ConfigProviderListener listener);
 
     /**
      * Saves all modified identity files to disk.
@@ -159,7 +139,6 @@ public interface IdentityController {
      * Removes an identity from this manager.
      * @param identity The identity to be removed
      */
-    @Precondition(value = {"The specified Identity is not null", "The specified Identity has previously been added and not removed"})
-    void unregisterIdentity(final Identity identity);
+    void removeConfigProvider(ConfigProvider identity);
 
 }

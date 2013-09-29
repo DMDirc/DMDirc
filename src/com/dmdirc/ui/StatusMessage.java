@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusMessageNotifier;
 
 /**
@@ -39,7 +39,7 @@ public class StatusMessage {
     /** Timeout when initially displayed. */
     private final int timeout;
     /** Config manager to get default timeout from. */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     /**
      * Creates a new statusbar message.
@@ -52,7 +52,7 @@ public class StatusMessage {
      */
     public StatusMessage(final String iconType, final String message,
             final StatusMessageNotifier messageNotifier, final int timeout,
-            final ConfigManager configManager) {
+            final AggregateConfigProvider configManager) {
         this.iconType = iconType;
         this.message = message;
         this.messageNotifier = messageNotifier;
@@ -67,7 +67,7 @@ public class StatusMessage {
      * @param message Message to show
      * @param manager Config manager to get default timeout from
      */
-    public StatusMessage(final String message, final ConfigManager manager) {
+    public StatusMessage(final String message, final AggregateConfigProvider manager) {
         this(null, message, null, -1, manager);
     }
 

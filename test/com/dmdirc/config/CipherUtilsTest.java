@@ -45,7 +45,7 @@ public class CipherUtilsTest {
     @Before
     public void setup() {
         when(identityController.getGlobalConfiguration()).thenReturn(configManager);
-        when(identityController.getGlobalConfigIdentity()).thenReturn(identity);
+        when(identityController.getUserSettings()).thenReturn(identity);
     }
 
     @Test

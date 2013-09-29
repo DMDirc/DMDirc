@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.config.Identity;
+import com.dmdirc.config.ConfigBinder;
 
 import java.util.List;
 import java.util.Set;
@@ -64,7 +64,7 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
      * Retrieves a list of sources for this config manager.
      * @return This config manager's sources.
      */
-    List<Identity> getSources();
+    List<ConfigProvider> getSources();
 
     /**
      * Removes the specified listener for all domains and options.
@@ -99,5 +99,14 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
      * @since 0.6.3
      */
     void migrate(String protocol, String ircd, String network, String server, String channel);
+
+    /**
+     * Gets a binder that may be used to bind methods or fields in a class to configuration
+     * values known by this provider. Bound values update automatically whenever the value in
+     * this provider changes.
+     *
+     * @return A config binder for use with this provider.
+     */
+    ConfigBinder getBinder();
 
 }

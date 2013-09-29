@@ -22,8 +22,8 @@
 
 package com.dmdirc.config.validators;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
 
@@ -33,7 +33,7 @@ import com.dmdirc.util.validators.Validator;
 public class URLProtocolValidator implements Validator<String> {
 
     /** The global configuration to read settings from. */
-    private final ConfigManager globalConfig;
+    private final AggregateConfigProvider globalConfig;
 
     /**
      * Creates a {@link URLProtocolValidator} that will read from the given
@@ -41,7 +41,7 @@ public class URLProtocolValidator implements Validator<String> {
      *
      * @param globalConfig The config manager to read protocol info from.
      */
-    public URLProtocolValidator(final ConfigManager globalConfig) {
+    public URLProtocolValidator(final AggregateConfigProvider globalConfig) {
         this.globalConfig = globalConfig;
     }
 

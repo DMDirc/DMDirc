@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
@@ -57,7 +57,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Cached attributed strings. */
     private final RollingList<AttributedString> cachedStrings;
     /** Config Manager for getting settings. */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
     /** This document's styliser. */
     private final Styliser styliser;
     /** Font size. */
@@ -74,16 +74,16 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param styliser Styliser to style text
      * @since 0.6.3
      */
-    public IRCDocument(final ConfigManager configManager,
+    public IRCDocument(final AggregateConfigProvider configManager,
             final Styliser styliser) {
         this.configManager = configManager;
         this.styliser = styliser;
 
-        lines = new ArrayList<Line>();
+        lines = new ArrayList<>();
         listeners = new ListenerList();
 
-        cachedLines = new RollingList<Line>(50);
-        cachedStrings = new RollingList<AttributedString>(50);
+        cachedLines = new RollingList<>(50);
+        cachedStrings = new RollingList<>(50);
         frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", false);
 
         configManager.addChangeListener("ui", "textPaneFontSize", this);

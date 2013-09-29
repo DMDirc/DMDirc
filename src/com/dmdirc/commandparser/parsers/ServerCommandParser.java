@@ -31,7 +31,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 /**
  * A command parser used in the context of a server.
@@ -50,7 +50,7 @@ public class ServerCommandParser extends GlobalCommandParser {
      *
      * @param configManager Config manager to read settings from
      */
-    public ServerCommandParser(final ConfigManager configManager) {
+    public ServerCommandParser(final AggregateConfigProvider configManager) {
         super(configManager, CommandManager.getCommandManager());
     }
 

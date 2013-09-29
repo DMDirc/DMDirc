@@ -25,10 +25,10 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginManager;
 
 import java.net.URI;
@@ -48,7 +48,7 @@ public class NewServerTest {
 
     @Mock private CommandController controller;
     @Mock private IdentityController identityController;
-    @Mock private Identity identity;
+    @Mock private ConfigProvider identity;
     @Mock private FrameContainer container;
     @Mock private PluginManager pluginManager;
     @Mock private ServerFactory factory;
@@ -57,8 +57,8 @@ public class NewServerTest {
 
     @Before
     public void setup() {
-        when(factory.createServer(any(URI.class), any(Identity.class))).thenReturn(server);
-        when(identityController.getIdentitiesByType("profile")).thenReturn(Arrays.asList(new Identity[] { identity }));
+        when(factory.createServer(any(URI.class), any(ConfigProvider.class))).thenReturn(server);
+        when(identityController.getProvidersByType("profile")).thenReturn(Arrays.asList(new ConfigProvider[] { identity }));
         command = new NewServer(controller, factory, pluginManager, identityController);
     }
 
@@ -67,7 +67,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com:6667")), any(Identity.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:6667")), any(ConfigProvider.class));
         verify(server).connect();
     }
 
@@ -76,7 +76,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com:1234"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(Identity.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(ConfigProvider.class));
         verify(server).connect();
     }
 
@@ -85,7 +85,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo otheruri://foo.com:123/blah"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(Identity.class));
+        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(ConfigProvider.class));
         verify(server).connect();
     }
 

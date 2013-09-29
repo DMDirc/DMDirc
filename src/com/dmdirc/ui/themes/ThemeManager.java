@@ -163,7 +163,7 @@ public final class ThemeManager {
             enabled.remove(theme.getFileName());
         }
 
-        identityController.getGlobalConfigIdentity()
+        identityController.getUserSettings()
                 .setOption("themes", "enabled", enabled);
     }
 

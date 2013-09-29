@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces.config;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.config.Identity;
 
 /**
  * Defines methods implemented by a factory which can create useful identities.
@@ -39,7 +38,7 @@ public interface IdentityFactory {
      * @return A config source for the channel
      */
     @Precondition(value = {"The specified network is non-null and not empty", "The specified channel is non-null and not empty"})
-    Identity createChannelConfig(final String network, final String channel);
+    ConfigProvider createChannelConfig(final String network, final String channel);
 
     /**
      * Retrieves the config for the specified network. The config is
@@ -49,7 +48,7 @@ public interface IdentityFactory {
      * @return A config source for the network
      */
     @Precondition(value = "The specified network is non-null and not empty")
-    Identity createNetworkConfig(final String network);
+    ConfigProvider createNetworkConfig(final String network);
 
     /**
      * Retrieves the config for the specified server. The config is
@@ -59,6 +58,6 @@ public interface IdentityFactory {
      * @return A config source for the server
      */
     @Precondition(value = "The specified server is non-null and not empty")
-    Identity createServerConfig(final String server);
+    ConfigProvider createServerConfig(final String server);
 
 }

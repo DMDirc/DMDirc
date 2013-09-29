@@ -30,8 +30,8 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.MapList;
 
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class TabCompleter {
     /**
      * The config manager to use for reading settings.
      */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     /**
      * The entries in this completer.
@@ -74,7 +74,7 @@ public class TabCompleter {
      *
      * @param configManager The manager to read config settings from.
      */
-    public TabCompleter(final ConfigManager configManager) {
+    public TabCompleter(final AggregateConfigProvider configManager) {
         this.parent = null;
         this.configManager = configManager;
     }
@@ -85,7 +85,7 @@ public class TabCompleter {
      * @param configManager The manager to read config settings from.
      * @param parent The parent tab completer to inherit completions from.
      */
-    public TabCompleter(final ConfigManager configManager, final TabCompleter parent) {
+    public TabCompleter(final AggregateConfigProvider configManager, final TabCompleter parent) {
         this.parent = parent;
         this.configManager = configManager;
     }

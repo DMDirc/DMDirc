@@ -30,7 +30,7 @@ import java.util.Map;
 public class TestConfigSource extends ConfigSource {
 
     @Override
-    protected boolean hasOption(String domain, String option, Validator<String> validator) {
+    public boolean hasOption(String domain, String option, Validator<String> validator) {
         return Boolean.parseBoolean(domain);
     }
 

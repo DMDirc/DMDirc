@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -51,7 +51,7 @@ public class GlobalCommandParser extends CommandParser {
      * @param configManager Config manager to read settings from
      * @param commandManager Command manager to load commands from
      */
-    public GlobalCommandParser(final ConfigManager configManager,
+    public GlobalCommandParser(final AggregateConfigProvider configManager,
             final CommandManager commandManager) {
         super(configManager, commandManager);
     }

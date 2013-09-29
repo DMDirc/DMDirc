@@ -22,7 +22,7 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
@@ -72,7 +72,7 @@ public class ModeAliasesComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public Version getVersion() {
-        final ConfigManager globalConfig = identityController.getGlobalConfiguration();
+        final AggregateConfigProvider globalConfig = identityController.getGlobalConfiguration();
 
         if (globalConfig.hasOptionString("identity", "modealiasversion")) {
             return new Version(globalConfig.getOption("identity",
@@ -109,7 +109,7 @@ public class ModeAliasesComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", identityController.getIdentityDirectory());
+        ziprm.extractResources("", identityController.getUserSettingsDirectory());
 
         identityController.loadUserIdentities();
 

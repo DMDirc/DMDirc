@@ -27,14 +27,14 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.InviteListener;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -210,7 +210,7 @@ public class Server extends WritableFrameContainer
      */
     public Server(
             final ServerManager manager,
-            final ConfigManager configManager,
+            final AggregateConfigProvider configManager,
             final CommandParser commandParser,
             final ParserFactory parserFactory,
             final WindowManager windowManager,

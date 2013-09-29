@@ -106,7 +106,7 @@ public class Theme implements Comparable<Theme> {
         if (stream != null) {
             try {
                 identity = new ThemeIdentity(stream, this);
-                identityController.registerIdentity(identity);
+                identityController.addConfigProvider(identity);
             } catch (InvalidIdentityFileException | IOException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
                         + ex.getMessage());
@@ -123,7 +123,7 @@ public class Theme implements Comparable<Theme> {
         }
 
         enabled = false;
-        identityController.unregisterIdentity(identity);
+        identityController.removeConfigProvider(identity);
     }
 
     /**

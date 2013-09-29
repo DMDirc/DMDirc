@@ -27,8 +27,8 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
@@ -58,7 +58,7 @@ public class GlobalWindow extends WritableFrameContainer {
      * @param config The ConfigManager to retrieve settings from.
      * @param parser The command parser to use to parse input.
      */
-    public GlobalWindow(final ConfigManager config, final CommandParser parser) {
+    public GlobalWindow(final AggregateConfigProvider config, final CommandParser parser) {
         super("icon", "Global", "(Global)",
                 config, parser,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
@@ -129,7 +129,7 @@ public class GlobalWindow extends WritableFrameContainer {
      * general.showglobalwindow config setting.
      */
     protected static void updateWindowState() {
-        final ConfigManager configManager = IdentityManager.getIdentityManager()
+        final AggregateConfigProvider configManager = IdentityManager.getIdentityManager()
                 .getGlobalConfiguration();
 
         synchronized (GlobalWindow.class) {

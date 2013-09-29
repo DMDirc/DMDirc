@@ -28,8 +28,8 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.collections.MapList;
@@ -86,7 +86,7 @@ public class CommandManager implements CommandController {
      *
      * @param configManager The configuration manager to read settings from.
      */
-    public void initialise(final ConfigManager configManager) {
+    public void initialise(final AggregateConfigProvider configManager) {
         configManager.getBinder().bind(this, CommandManager.class);
     }
 

@@ -58,10 +58,10 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
     protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
 
     /** The domain used for identity settings. */
-    private static final String DOMAIN = "identity".intern();
+    private static final String DOMAIN = "identity";
 
     /** The domain used for profile settings. */
-    private static final String PROFILE_DOMAIN = "profile".intern();
+    private static final String PROFILE_DOMAIN = "profile";
 
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
@@ -299,7 +299,7 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
 
     /** {@inheritDoc} */
     @Override
-    protected boolean hasOption(final String domain, final String option,
+    public boolean hasOption(final String domain, final String option,
             final Validator<String> validator) {
         return file.isKeyDomain(domain)
                 && file.getKeyDomain(domain).containsKey(option)
@@ -449,10 +449,10 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
                 }
 
                 globalConfig.removeIdentity(this);
-                globalConfig.removeIdentity(IdentityManager.getIdentityManager().getGlobalVersionIdentity());
+                globalConfig.removeIdentity(IdentityManager.getIdentityManager().getVersionSettings());
 
                 if (log.isTraceEnabled()) {
-                    for (Identity source : globalConfig.getSources()) {
+                    for (ConfigProvider source : globalConfig.getSources()) {
                         log.trace("{}: source: {}",
                                 new Object[]{ getName(), source.getName() });
                     }
@@ -498,7 +498,7 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
             file.delete();
         }
 
-        IdentityManager.getIdentityManager().unregisterIdentity(this);
+        IdentityManager.getIdentityManager().removeConfigProvider(this);
     }
 
     /** {@inheritDoc} */
@@ -584,7 +584,7 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
         }
 
         final String fs = System.getProperty("file.separator");
-        final String location = IdentityManager.getIdentityManager().getConfigDir() + "identities" + fs;
+        final String location = IdentityManager.getIdentityManager().getConfigurationDirectory() + "identities" + fs;
         final String name = settings.get(DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
 
         File file = new File(location + name);
@@ -603,7 +603,7 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
         configFile.write();
 
         final Identity identity = new Identity(file, false);
-        IdentityManager.getIdentityManager().registerIdentity(identity);
+        IdentityManager.getIdentityManager().addConfigProvider(identity);
 
         return identity;
     }

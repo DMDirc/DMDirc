@@ -22,8 +22,8 @@
 
 package com.dmdirc.tls;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
@@ -77,7 +77,7 @@ public class CertificateManager implements X509TrustManager {
     private final String serverName;
 
     /** The configuration manager to use for settings. */
-    private final ConfigManager config;
+    private final AggregateConfigProvider config;
 
     /** The set of CAs from the global cacert file. */
     private final Set<X509Certificate> globalTrustedCAs = new HashSet<X509Certificate>();
@@ -104,7 +104,7 @@ public class CertificateManager implements X509TrustManager {
      * @param serverName The name the user used to connect to the server
      * @param config The configuration manager to use
      */
-    public CertificateManager(final String serverName, final ConfigManager config) {
+    public CertificateManager(final String serverName, final AggregateConfigProvider config) {
         this.serverName = serverName;
         this.config = config;
         this.checkDate = config.getOptionBool("ssl", "checkdate");
@@ -365,7 +365,7 @@ public class CertificateManager implements X509TrustManager {
                     final List<String> list = new ArrayList<String>(config
                             .getOptionList("ssl", "trusted"));
                     list.add(Base64.encodeToString(chain[0].getSignature(), false));
-                    IdentityManager.getIdentityManager().getGlobalConfigIdentity()
+                    IdentityManager.getIdentityManager().getUserSettings()
                             .setOption("ssl", "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:

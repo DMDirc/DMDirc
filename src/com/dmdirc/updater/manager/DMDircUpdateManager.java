@@ -70,7 +70,7 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
         checkStrategy = new DMDircCheckStrategy(UpdateChannel.STABLE);
         identityController.getGlobalConfiguration().getBinder().bind(this, DMDircUpdateManager.class);
         addCheckStrategy(checkStrategy);
-        addRetrievalStrategy(new DownloadRetrievalStrategy(identityController.getConfigDir()));
+        addRetrievalStrategy(new DownloadRetrievalStrategy(identityController.getConfigurationDirectory()));
         addInstallationStrategy(new LegacyInstallationStrategy());
 
         for (UpdateComponent component : components) {

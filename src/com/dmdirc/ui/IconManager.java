@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.URLBuilder;
 
@@ -51,7 +51,7 @@ public class IconManager implements ConfigChangeListener {
     /** A map of existing images. */
     private final Map<String, Image> images;
     /** Config manager to retrieve settings from. */
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
     /** URL builder to use for icons. */
     private final URLBuilder urlBuilder;
 
@@ -62,7 +62,7 @@ public class IconManager implements ConfigChangeListener {
      * @param urlBuilder URL builder to use for icons.
      */
     public IconManager(
-            final ConfigManager configManager,
+            final AggregateConfigProvider configManager,
             final URLBuilder urlBuilder) {
         this.configManager = configManager;
         this.urlBuilder = urlBuilder;

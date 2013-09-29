@@ -22,8 +22,9 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,7 +68,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Standard identities are inserted with a <code>null</code> key, custom
      * identities use their custom type as the key.
      */
-    private final MapList<String, Identity> identities = new MapList<>();
+    private final MapList<String, ConfigProvider> identities = new MapList<>();
 
     /**
      * The {@link IdentityListener}s that have registered with this manager.
@@ -99,12 +101,17 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public String getConfigDir() {
+    @Deprecated
+    public String getConfigurationDirectory() {
         return configDirectory;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Loads all identity files.
+     *
+     * @throws InvalidIdentityFileException If there is an error with the config
+     * file.
+     */
     public void initialise() throws InvalidIdentityFileException {
         identities.clear();
 
@@ -113,7 +120,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         loadUserIdentities();
         loadConfig();
 
-        if (getIdentitiesByType("profile").isEmpty()) {
+        if (getProvidersByType("profile").isEmpty()) {
             try {
                 Identity.buildProfile("Default Profile");
             } catch (IOException ex) {
@@ -132,7 +139,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         addonConfigFile.addDomain("identity", addonSettings);
 
         addonConfig = new Identity(addonConfigFile, target);
-        registerIdentity(addonConfig);
+        addConfigProvider(addonConfig);
 
         if (!getGlobalConfiguration().hasOptionString("identity", "defaultsversion")) {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
@@ -143,7 +150,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** Loads the default (built in) identities. */
     private void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
-        final String dir = getIdentityDirectory();
+        final String dir = getUserSettingsDirectory();
 
         for (String target : targets) {
             final File file = new File(dir + target);
@@ -197,7 +204,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             ResourceManager.getResourceManager().extractResource(
                     "com/dmdirc/config/defaults/default/formatter",
-                    getIdentityDirectory() + "default/", false);
+                    getUserSettingsDirectory() + "default/", false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "formatters: " + ex.getMessage());
@@ -214,7 +221,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             ResourceManager.getResourceManager().extractResources(
                     "com/dmdirc/config/defaults/" + target,
-                    getIdentityDirectory() + target, false);
+                    getUserSettingsDirectory() + target, false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "identities: " + ex.getMessage());
@@ -223,14 +230,15 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public String getIdentityDirectory() {
+    @Deprecated
+    public String getUserSettingsDirectory() {
         return configDirectory + "identities" + System.getProperty("file.separator");
     }
 
     /** {@inheritDoc} */
     @Override
     public void loadUserIdentities() {
-        final File dir = new File(getIdentityDirectory());
+        final File dir = new File(getUserSettingsDirectory());
 
         if (!dir.exists()) {
             try {
@@ -280,8 +288,10 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private void loadIdentity(final File file) {
         synchronized (identities) {
-            for (Identity identity : getAllIdentities()) {
-                if (identity.isFile(file)) {
+            for (ConfigProvider identity : getAllIdentities()) {
+                if ((identity instanceof Identity) && ((Identity) identity).isFile(file)) {
+                    // TODO: This manager should keep a list of files->identities instead of
+                    //       relying on the identities remembering.
                     try {
                         identity.reload();
                     } catch (IOException ex) {
@@ -298,7 +308,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         try {
-            registerIdentity(new Identity(file, false));
+            addConfigProvider(new Identity(file, false));
         } catch (InvalidIdentityFileException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid identity file: " + file.getAbsolutePath()
@@ -316,10 +326,10 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @return A set of all known identities
      * @since 0.6.4
      */
-    private Set<Identity> getAllIdentities() {
-        final Set<Identity> res = new LinkedHashSet<>();
+    private Set<ConfigProvider> getAllIdentities() {
+        final Set<ConfigProvider> res = new LinkedHashSet<>();
 
-        for (Map.Entry<String, List<Identity>> entry : identities.entrySet()) {
+        for (Map.Entry<String, List<ConfigProvider>> entry : identities.entrySet()) {
             res.addAll(entry.getValue());
         }
 
@@ -335,7 +345,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @return The group of the specified identity
      * @since 0.6.4
      */
-    private String getGroup(final Identity identity) {
+    private String getGroup(final ConfigProvider identity) {
         return identity.getTarget().getType() == ConfigTarget.TYPE.CUSTOM
                 ? identity.getTarget().getData() : null;
     }
@@ -345,7 +355,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     public void loadVersionIdentity() {
         try {
             versionConfig = new Identity(IdentityManager.class.getResourceAsStream("/com/dmdirc/version.config"), false);
-            registerIdentity(versionConfig);
+            addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         }
@@ -367,7 +377,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
             config = new Identity(file, true);
             config.setOption("identity", "name", "Global config");
-            registerIdentity(config);
+            addConfigProvider(config);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.FATAL, "I/O error when loading global config: "
                     + ex.getMessage(), ex);
@@ -376,19 +386,19 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public Identity getGlobalConfigIdentity() {
+    public Identity getUserSettings() {
         return config;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Identity getGlobalAddonIdentity() {
+    public Identity getAddonSettings() {
         return addonConfig;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Identity getGlobalVersionIdentity() {
+    public Identity getVersionSettings() {
         return versionConfig;
     }
 
@@ -396,7 +406,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void saveAll() {
         synchronized (identities) {
-            for (Identity identity : getAllIdentities()) {
+            for (ConfigProvider identity : getAllIdentities()) {
                 identity.save();
             }
         }
@@ -404,13 +414,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public void registerIdentity(final Identity identity) {
+    public void addConfigProvider(final ConfigProvider identity) {
         Logger.assertTrue(identity != null);
 
         final String target = getGroup(identity);
 
         if (identities.containsValue(target, identity)) {
-            unregisterIdentity(identity);
+            removeConfigProvider(identity);
         }
 
         synchronized (identities) {
@@ -429,7 +439,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public void unregisterIdentity(final Identity identity) {
+    public void removeConfigProvider(final ConfigProvider identity) {
         Logger.assertTrue(identity != null);
 
         final String group = getGroup(identity);
@@ -471,24 +481,30 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public List<Identity> getIdentitiesByType(final String type) {
+    public List<ConfigProvider> getProvidersByType(final String type) {
         return Collections.unmodifiableList(identities.safeGet(type));
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public List<Identity> getIdentitiesForManager(final ConfigManager manager) {
-        final List<Identity> sources = new ArrayList<>();
+    /**
+     * Retrieves a list of all config sources that should be applied to the
+     * specified config manager.
+     *
+     * @param manager The manager requesting sources
+     * @return A list of all matching config sources
+     */
+    public List<ConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
+        final List<ConfigProvider> sources = new ArrayList<>();
 
         synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.safeGet(null)) {
                 if (manager.identityApplies(identity)) {
                     sources.add(identity);
                 }
             }
         }
 
-        Collections.sort(sources);
+        // TODO: Expose this as a comparator other classes can use.
+        Collections.sort(sources, new ConfigProviderTargetComparator());
 
         return sources;
     }
@@ -505,7 +521,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public Identity createChannelConfig(final String network, final String channel) {
+    public ConfigProvider createChannelConfig(final String network, final String channel) {
         if (network == null || network.isEmpty()) {
             throw new IllegalArgumentException("getChannelConfig called "
                     + "with null or empty network\n\nNetwork: " + network);
@@ -519,7 +535,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = (channel + "@" + network).toLowerCase();
 
         synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -541,7 +557,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public Identity createNetworkConfig(final String network) {
+    public ConfigProvider createNetworkConfig(final String network) {
         if (network == null || network.isEmpty()) {
             throw new IllegalArgumentException("getNetworkConfig called "
                     + "with null or empty network\n\nNetwork:" + network);
@@ -550,7 +566,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = network.toLowerCase();
 
         synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -572,7 +588,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public Identity createServerConfig(final String server) {
+    public ConfigProvider createServerConfig(final String server) {
         if (server == null || server.isEmpty()) {
             throw new IllegalArgumentException("getServerConfig called "
                     + "with null or empty server\n\nServer: " + server);
@@ -581,7 +597,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = server.toLowerCase();
 
         synchronized (identities) {
-            for (Identity identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.safeGet(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -605,6 +621,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Gets a singleton instance of the Identity Manager.
      *
      * @return A singleton instance of the IdentityManager.
+     * @deprecated Shouldn't use global state.
      */
     @Deprecated
     public static IdentityManager getIdentityManager() {
@@ -615,6 +632,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Sets the singleton instance of the Identity Manager.
      *
      * @param identityManager The identity manager to use.
+     * @deprecated Shouldn't use global state.
      */
     @Deprecated
     public static void setIdentityManager(final IdentityManager identityManager) {

@@ -55,6 +55,18 @@ public interface ReadOnlyConfigProvider {
     String getOption(String domain, String option, Validator<String> validator);
 
     /**
+     * Determines if this source has a value for the specified option which
+     * matches the specified validator.
+     *
+     * @since 0.6.5
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param validator The validator to use to check legal values
+     * @return True iff a matching option exists, false otherwise.
+     */
+    boolean hasOption(String domain, String option, Validator<String> validator);
+
+    /**
      * Retrieves a boolean representation of the specified option.
      *
      * @param domain The domain of the option

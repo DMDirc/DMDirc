@@ -23,7 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.DateUtils;
 
 import java.util.HashMap;
@@ -40,8 +40,7 @@ public final class Formatter {
     /**
      * A cache of types needed by the various formatters.
      */
-    private static final Map<String, Character[]> TYPE_CACHE
-            = new HashMap<String, Character[]>();
+    private static final Map<String, Character[]> TYPE_CACHE = new HashMap<>();
 
     /**
      * Creates a new instance of Formatter.
@@ -60,7 +59,7 @@ public final class Formatter {
      * @return A formatted string
      */
     @Precondition("The specified message type is not null")
-    public static String formatMessage(final ConfigManager config, final String messageType,
+    public static String formatMessage(final AggregateConfigProvider config, final String messageType,
             final Object... arguments) {
         assert messageType != null;
 

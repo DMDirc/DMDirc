@@ -23,7 +23,7 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.ServerManager;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -46,7 +46,7 @@ public class URLHandler {
     /** The UI Controller that owns this handler. */
     private final UIController controller;
     /** Config manager. */
-    private final ConfigManager config;
+    private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
     private final ServerManager serverManager;
     /** Status bar manager to use to show messages. */
@@ -61,7 +61,7 @@ public class URLHandler {
      */
     public URLHandler(
             final UIController controller,
-            final ConfigManager globalConfig,
+            final AggregateConfigProvider globalConfig,
             final ServerManager serverManager,
             final StatusBarManager statusBarManager) {
         this.controller = controller;

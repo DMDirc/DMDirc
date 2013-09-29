@@ -22,8 +22,8 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.FatalErrorDialog;
@@ -86,7 +86,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @param controller The controller to use to read/write settings.
      */
     public void initialise(final IdentityController controller) {
-        final ConfigManager config = controller.getGlobalConfiguration();
+        final AggregateConfigProvider config = controller.getGlobalConfiguration();
 
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
@@ -495,7 +495,7 @@ public class ErrorManager implements ConfigChangeListener {
 
     /** Updates the settings used by this error manager. */
     protected void updateSettings() {
-        final ConfigManager config = IdentityManager.getIdentityManager().getGlobalConfiguration();
+        final AggregateConfigProvider config = IdentityManager.getIdentityManager().getGlobalConfiguration();
 
         try {
             sendReports = config.getOptionBool("general", "submitErrors")

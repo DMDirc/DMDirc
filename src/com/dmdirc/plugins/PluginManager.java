@@ -551,7 +551,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             list.remove(path);
         }
 
-        identityController.getGlobalConfigIdentity().setOption("plugins", "autoload", list);
+        identityController.getUserSettings().setOption("plugins", "autoload", list);
     }
 
     /**

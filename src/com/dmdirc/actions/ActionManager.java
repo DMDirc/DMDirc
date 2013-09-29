@@ -28,10 +28,10 @@ import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.UpdateChecker;
@@ -162,7 +162,7 @@ public class ActionManager implements ActionController {
             addGroup(wrapper);
         }
 
-        new WhoisNumericFormatter(identityManager.getGlobalAddonIdentity()).register();
+        new WhoisNumericFormatter(identityManager.getAddonSettings()).register();
 
         // Register a listener for the closing event, so we can save actions
         registerListener(new ActionListener() {
@@ -189,7 +189,7 @@ public class ActionManager implements ActionController {
     @Override
     public void registerSetting(final String name, final String value) {
         log.debug("Registering new action setting: {} = {}", name, value);
-        identityManager.getGlobalAddonIdentity().setOption("actions", name, value);
+        identityManager.getAddonSettings().setOption("actions", name, value);
     }
 
     /** {@inheritDoc} */
@@ -438,7 +438,7 @@ public class ActionManager implements ActionController {
      * @return The directory that should be used to store actions
      */
     public String getDirectory() {
-        return this.identityManager.getConfigDir() + "actions" + System.getProperty("file.separator");
+        return this.identityManager.getConfigurationDirectory() + "actions" + System.getProperty("file.separator");
     }
 
     /** {@inheritDoc} */

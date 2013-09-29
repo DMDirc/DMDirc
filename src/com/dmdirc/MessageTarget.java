@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Collection;
 
@@ -45,7 +45,7 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * @since 0.6.4
      */
     public MessageTarget(final String icon, final String name,
-            final String title, final ConfigManager config,
+            final String title, final AggregateConfigProvider config,
             final CommandParser parser, final Collection<String> components) {
         super(icon, name, title, config, parser, components);
     }

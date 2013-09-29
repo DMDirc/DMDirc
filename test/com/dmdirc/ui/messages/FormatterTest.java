@@ -22,9 +22,9 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestConfigManagerOptionToggle;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.Collections;
 
@@ -49,7 +49,7 @@ public class FormatterTest {
     public void setup() {
         IdentityManager.setIdentityManager(identityManager);
         when(identityManager.getIdentitiesForManager(any(ConfigManager.class)))
-                .thenReturn(Collections.<Identity>emptyList());
+                .thenReturn(Collections.<ConfigProvider>emptyList());
 
         mcm = new TestConfigManagerOptionToggle();
     }

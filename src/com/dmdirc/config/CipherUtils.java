@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -184,7 +185,7 @@ public abstract class CipherUtils {
      * @return true if auth was successful, false otherwise.
      */
     public boolean auth() {
-        final ConfigManager configManager = identityController.getGlobalConfiguration();
+        final AggregateConfigProvider configManager = identityController.getGlobalConfiguration();
 
         String passwordHash = null;
         String prompt = "Please enter your password";
@@ -200,7 +201,7 @@ public abstract class CipherUtils {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    identityController.getGlobalConfigIdentity()
+                    identityController.getUserSettings()
                             .setOption("encryption", "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {
