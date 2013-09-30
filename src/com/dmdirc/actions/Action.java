@@ -25,10 +25,10 @@ package com.dmdirc.actions;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
@@ -49,19 +49,19 @@ import java.util.Map;
 public class Action extends ActionModel implements ConfigChangeListener {
 
     /** The domain name for condition trees. */
-    private static final String DOMAIN_CONDITIONTREE = "conditiontree".intern();
+    private static final String DOMAIN_CONDITIONTREE = "conditiontree";
     /** The domain name for format changes. */
-    private static final String DOMAIN_FORMAT = "format".intern();
+    private static final String DOMAIN_FORMAT = "format";
     /** The domain name for meta-data. */
-    private static final String DOMAIN_METADATA = "metadata".intern();
+    private static final String DOMAIN_METADATA = "metadata";
     /** The domain name for response information. */
-    private static final String DOMAIN_RESPONSE = "response".intern();
+    private static final String DOMAIN_RESPONSE = "response";
     /** The domain name for triggers. */
-    private static final String DOMAIN_TRIGGERS = "triggers".intern();
+    private static final String DOMAIN_TRIGGERS = "triggers";
     /** The domain name for concurrency. */
-    private static final String DOMAIN_CONCURRENCY = "concurrency".intern();
+    private static final String DOMAIN_CONCURRENCY = "concurrency";
     /** The domain name for misc settings. */
-    private static final String DOMAIN_MISC = "misc".intern();
+    private static final String DOMAIN_MISC = "misc";
 
     /** The config file we're using. */
     protected ConfigFile config;
@@ -87,7 +87,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
             loadActionFromConfig();
             ActionManager.getActionManager().addAction(this);
         } catch (InvalidConfigFileException ex) {
-            // This isn't a valid config file. Maybe it's a properties file?
             error(ActionErrorType.FILE, "Unable to parse action file: " + ex.getMessage());
         } catch (IOException ex) {
             error(ActionErrorType.FILE, "I/O error when loading action: " + ex.getMessage());
@@ -96,24 +95,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         IdentityManager.getIdentityManager().getGlobalConfiguration().addChangeListener("disable_action",
                 (group + "/" + name).replace(' ', '.'), this);
         checkDisabled();
-    }
-
-    /**
-     * Creates a new instance of Action with the specified properties and saves
-     * it to disk.
-     *
-     * @param group The group the action belongs to
-     * @param name The name of the action
-     * @param triggers The triggers to use
-     * @param response The response to use
-     * @param conditions The conditions to use
-     * @param newFormat The new formatter to use
-     */
-    public Action(final String group, final String name,
-            final ActionType[] triggers, final String[] response,
-            final List<ActionCondition> conditions, final String newFormat) {
-        this(group, name, triggers, response, conditions,
-                ConditionTree.createConjunction(conditions.size()), newFormat);
     }
 
     /**
@@ -177,7 +158,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         if (config.isFlatDomain(DOMAIN_FORMAT)) {
-            newFormat = config.getFlatDomain(DOMAIN_FORMAT).size() == 0 ? ""
+            newFormat = config.getFlatDomain(DOMAIN_FORMAT).isEmpty() ? ""
                     : config.getFlatDomain(DOMAIN_FORMAT).get(0);
         }
 
@@ -306,8 +287,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         final ConfigFile newConfig = new ConfigFile(location);
 
-        final List<String> triggerNames = new ArrayList<String>();
-        final List<String> responseLines = new ArrayList<String>();
+        final List<String> triggerNames = new ArrayList<>();
+        final List<String> responseLines = new ArrayList<>();
         responseLines.addAll(Arrays.asList(response));
 
         for (ActionType trigger : triggers) {
@@ -395,8 +376,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private boolean readCondition(final Map<String, String> data) {
         int arg = 0;
         ActionComponent component = null;
-        ActionComparison comparison = null;
-        String target = "";
+        ActionComparison comparison;
+        String target;
         String starget = null;
 
         // ------ Read the argument
@@ -505,6 +486,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /**
      * Raises a trivial error, informing the user of the problem.
      *
+     * @param type The type of error that occurred.
      * @param message The message to be raised
      */
     private void error(final ActionErrorType type, final String message) {

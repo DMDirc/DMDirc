@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -130,8 +131,8 @@ public class ClientModule {
      *
      * @param serverManager The server manager to use to iterate servers.
      * @param identityController The identity controller to use to look up settings.
-     * @param aliasWrapperProvider Provider for {@link AliasWrapper}s.
-     * @param performWrapperProvider Provider for {@link PerformWrapper}s.
+     * @param actionFactory The factory to use to create actions.
+     * @param actionWrappersProvider Provider of action wrappers.
      * @return An unitialised action manager.
      */
     @Provides
@@ -139,9 +140,10 @@ public class ClientModule {
     public ActionManager getActionManager(
             final ServerManager serverManager,
             final IdentityController identityController,
+            final ActionFactory actionFactory,
             final Provider<Set<ActionGroup>> actionWrappersProvider) {
         final ActionManager actionManager = new ActionManager(serverManager,
-                identityController, actionWrappersProvider);
+                identityController, actionFactory, actionWrappersProvider);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }

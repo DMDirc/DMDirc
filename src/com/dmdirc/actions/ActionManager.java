@@ -68,6 +68,9 @@ public class ActionManager implements ActionController {
     /** The ServerManager currently in use. */
     private final ServerManager serverManager;
 
+    /** The factory to use to create actions. */
+    private final ActionFactory factory;
+
     /** Provider for action wrappers. */
     private final Provider<Set<ActionGroup>> actionWrappersProvider;
 
@@ -104,14 +107,17 @@ public class ActionManager implements ActionController {
      *
      * @param serverManager The ServerManager in use.
      * @param identityManager The IdentityManager to load configuration from.
+     * @param factory The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
      */
     public ActionManager(
             final ServerManager serverManager,
             final IdentityController identityManager,
+            final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
+        this.factory = factory;
         this.actionWrappersProvider = actionWrappersProvider;
     }
 
@@ -145,9 +151,6 @@ public class ActionManager implements ActionController {
 
     /**
      * Initialiases the actions manager.
-     *
-     * @param aliasWrapper The wrapper to use for aliases.
-     * @param performWrapper The wrapper to use for performs.
      */
     public void initialise() {
         log.info("Initialising the actions manager");
@@ -310,7 +313,7 @@ public class ActionManager implements ActionController {
         }
 
         for (File file : dir.listFiles()) {
-            new Action(dir.getName(), file.getName());
+            factory.create(dir.getName(), file.getName());
         }
     }
 

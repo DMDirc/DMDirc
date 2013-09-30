@@ -51,7 +51,8 @@ public class ActionTest {
     @Test
     public void testSave() {
         action = new Action("unit-test", "test1", new ActionType[0],
-                new String[0], new ArrayList<ActionCondition>(), null);
+                new String[0], new ArrayList<ActionCondition>(),
+                ConditionTree.createConjunction(0), null);
         assertTrue("Action constructor must create new file",
                 new File(ActionManager.getActionManager().getDirectory() + "unit-test"
                 + File.separator + "test1").isFile());

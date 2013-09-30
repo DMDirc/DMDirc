@@ -24,6 +24,7 @@ package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * Actions alias wrapper.
  */
-public final class Alias implements Serializable {
+public class Alias implements Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -45,6 +46,10 @@ public final class Alias implements Serializable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+
+    /** The factory to use to create actions. */
+    // TODO: This should be injected.
+    private final ActionFactory actionFactory = new ActionFactory();
 
     /** Alias command. */
     private String command;
@@ -62,7 +67,7 @@ public final class Alias implements Serializable {
      */
     public Alias(final String command) {
         this.command = command;
-        this.arguments = new ArrayList<ActionCondition>();
+        this.arguments = new ArrayList<>();
         this.arguments.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
                 CoreActionComparison.STRING_EQUALS, command));
         this.response = new String[]{"", };
@@ -78,7 +83,7 @@ public final class Alias implements Serializable {
     public Alias(final String command, final List<ActionCondition> arguments,
             final String[] response) {
         this.command = command;
-        this.arguments = new ArrayList<ActionCondition>(arguments);
+        this.arguments = new ArrayList<>(arguments);
         this.response = response.clone();
     }
 
@@ -140,7 +145,7 @@ public final class Alias implements Serializable {
      * @return Argument list
      */
     public List<ActionCondition> getArguments() {
-        return new ArrayList<ActionCondition>(arguments);
+        return new ArrayList<>(arguments);
     }
 
     /**
@@ -169,7 +174,7 @@ public final class Alias implements Serializable {
      */
     public void setArguments(final List<ActionCondition> arguments) {
         if (!this.arguments.equals(arguments)) {
-            this.arguments = new ArrayList<ActionCondition>(arguments);
+            this.arguments = new ArrayList<>(arguments);
         }
     }
 
@@ -222,7 +227,7 @@ public final class Alias implements Serializable {
      * @return A new action for this alias.
      */
     public Action createAction() {
-        return new Action(
+        return actionFactory.create(
                 AliasWrapper.getAliasWrapper().getName(),
                 getName(),
                 new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },

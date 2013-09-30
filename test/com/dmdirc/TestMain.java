@@ -1,5 +1,6 @@
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineParser;
@@ -97,7 +98,7 @@ public class TestMain extends Main {
                 final CommandManager commandManager = new CommandManager(serverManager);
 
                 final ActionManager actionManager = new ActionManager(
-                        serverManager, identityManager,
+                        serverManager, identityManager, new ActionFactory(),
                         new DummyProvider<>(Collections.<ActionGroup>emptySet()));
                 ActionManager.setActionManager(actionManager);
 

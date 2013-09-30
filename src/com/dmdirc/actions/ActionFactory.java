@@ -25,6 +25,7 @@ package com.dmdirc.actions;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -45,6 +46,7 @@ public class ActionFactory {
      *
      * @param group The group the action belongs to
      * @param name The name of the action
+     * @return A relevant action.
      */
     public Action create(final String group, final String name) {
         return new Action(group, name);
@@ -60,11 +62,13 @@ public class ActionFactory {
      * @param response The response to use
      * @param conditions The conditions to use
      * @param newFormat The new formatter to use
+     * @return A relevant action.
      */
     public Action create(final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions, final String newFormat) {
-        return new Action(group, name, triggers, response, conditions, newFormat);
+        return new Action(group, name, triggers, response, conditions,
+                ConditionTree.createConjunction(conditions.size()), newFormat);
     }
 
     /**
@@ -78,6 +82,7 @@ public class ActionFactory {
      * @param conditions The conditions to use
      * @param conditionTree The condition tree to use
      * @param newFormat The new formatter to use
+     * @return A relevant action.
      */
     public Action create(final String group, final String name,
             final ActionType[] triggers, final String[] response,
