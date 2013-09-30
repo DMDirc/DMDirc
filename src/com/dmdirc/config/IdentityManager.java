@@ -87,13 +87,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
 
     /** The identity file used for the global config. */
-    private Identity config;
+    private ConfigProvider config;
 
     /** The identity file used for addon defaults. */
-    private Identity addonConfig;
+    private ConfigProvider addonConfig;
 
     /** The identity file bundled with the client containing version info. */
-    private Identity versionConfig;
+    private ConfigProvider versionConfig;
 
     /** The config manager used for global settings. */
     private ConfigManager globalconfig;
@@ -390,19 +390,19 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public Identity getUserSettings() {
+    public ConfigProvider getUserSettings() {
         return config;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Identity getAddonSettings() {
+    public ConfigProvider getAddonSettings() {
         return addonConfig;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Identity getVersionSettings() {
+    public ConfigProvider getVersionSettings() {
         return versionConfig;
     }
 

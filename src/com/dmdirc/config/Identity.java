@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
 @Slf4j
-public class Identity extends ConfigSource implements Comparable<Identity>, ConfigProvider {
+public class Identity extends ConfigSource implements ConfigProvider {
 
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
@@ -549,19 +549,6 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
         return obj instanceof Identity
                 && getName().equals(((Identity) obj).getName())
                 && getTarget() == ((Identity) obj).getTarget();
-    }
-
-    /**
-     * Compares this identity to another config source to determine which
-     * is more specific.
-     *
-     * @param target The Identity to compare to
-     * @return -1 if this config source is less specific, 0 if they're equal,
-     * +1 if this config is more specific.
-     */
-    @Override
-    public int compareTo(final Identity target) {
-        return target.getTarget().compareTo(myTarget);
     }
 
 }

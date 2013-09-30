@@ -469,13 +469,13 @@ public class ConfigManager extends ConfigSource implements ConfigChangeListener,
     /** {@inheritDoc} */
     @Override
     public void configProviderAdded(final ConfigProvider configProvider) {
-        checkIdentity((Identity) configProvider);
+        checkIdentity(configProvider);
     }
 
     /** {@inheritDoc} */
     @Override
     public void configProviderRemoved(final ConfigProvider configProvider) {
-        removeIdentity((Identity) configProvider);
+        removeIdentity(configProvider);
     }
 
 }
