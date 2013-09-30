@@ -28,15 +28,14 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.parsers.*;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import lombok.ToString;
 
 public class TestCommandParser extends CommandParser {
     private static final long serialVersionUID = 7073002401375438532L;
 
-    private final ConfigManager configManager;
+    private final AggregateConfigProvider configManager;
 
     public String nonCommandLine;
 
@@ -48,7 +47,7 @@ public class TestCommandParser extends CommandParser {
 
     public String invalidCommand;
 
-    public TestCommandParser(final ConfigManager configManager,
+    public TestCommandParser(final AggregateConfigProvider configManager,
             final CommandManager commandManager) {
         super(configManager, commandManager);
         this.configManager = configManager;

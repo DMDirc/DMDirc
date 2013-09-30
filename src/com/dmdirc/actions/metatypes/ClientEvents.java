@@ -25,10 +25,10 @@ package com.dmdirc.actions.metatypes;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.actions.ActionMetaType;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.swing.KeyStroke;
 import javax.swing.text.StyledDocument;
@@ -45,7 +45,7 @@ public enum ClientEvents implements ActionMetaType {
     /** Client event with frame and message. */
     WINDOW_EVENT_WITH_MESSAGE(new String[]{"window", "message"}, FrameContainer.class, String.class),
     /** A popup-related event. */
-    POPUP_EVENT(new String[]{"popup type", "popup", "configuration manager"}, PopupType.class, PopupMenu.class, ConfigManager.class),
+    POPUP_EVENT(new String[]{"popup type", "popup", "configuration provider"}, PopupType.class, PopupMenu.class, AggregateConfigProvider.class),
     /** Client event type, with a key argument. */
     CLIENT_EVENT_WITH_KEY(new String[]{"key event"}, KeyStroke.class),
     /** Client event with an origin and editable buffer. */

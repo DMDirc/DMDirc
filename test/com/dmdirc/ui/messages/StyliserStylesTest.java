@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.TestMain;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.util.Utils;
 
 import java.awt.Color;
@@ -72,7 +72,7 @@ public class StyliserStylesTest {
         final StringBuilder builder = new StringBuilder();
 
         final FrameContainer container = mock(FrameContainer.class);
-        final ConfigManager manager = mock(ConfigManager.class);
+        final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         when(container.getConfigManager()).thenReturn(manager);
 
         final Styliser styliser = new Styliser(container);

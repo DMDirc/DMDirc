@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -48,11 +49,10 @@ import lombok.Synchronized;
 public class ConfigBinder {
 
     /** A map of instances to created listeners. */
-    private final MapList<Object, ConfigChangeListener> listeners
-            = new MapList<Object, ConfigChangeListener>();
+    private final MapList<Object, ConfigChangeListener> listeners = new MapList<>();
 
     /** The configuration manager to use to retrieve settings. */
-    private final ConfigManager manager;
+    private final AggregateConfigProvider manager;
 
     /**
      * Binds all annotated methods and fields of the given instance to this
@@ -63,8 +63,8 @@ public class ConfigBinder {
      */
     @SuppressWarnings("unchecked")
     public void bind(final Object instance, final Class<?> clazz) {
-        final List<ConfigChangeListener> newListeners = new ArrayList<ConfigChangeListener>();
-        final List<AccessibleObject> elements = new ArrayList<AccessibleObject>();
+        final List<ConfigChangeListener> newListeners = new ArrayList<>();
+        final List<AccessibleObject> elements = new ArrayList<>();
 
         elements.addAll(Arrays.asList(clazz.getDeclaredMethods()));
         elements.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -130,9 +130,7 @@ public class ConfigBinder {
         if (element instanceof Field) {
             try {
                 ((Field) element).set(instance, value);
-            } catch (IllegalAccessException ex) {
-                // Ignore
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
                 // Ignore
             }
         }
@@ -140,9 +138,7 @@ public class ConfigBinder {
         if (element instanceof Method) {
             try {
                 ((Method) element).invoke(instance, value);
-            } catch (IllegalAccessException ex) {
-                // Ignore
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
                 // Ignore
             } catch (InvocationTargetException ex) {
                Logger.appError(ErrorLevel.HIGH,

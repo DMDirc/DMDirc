@@ -26,8 +26,8 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.irc.IRCChannelClientInfo;
 import com.dmdirc.parser.irc.IRCChannelInfo;
 
@@ -96,7 +96,7 @@ public class KickReasonTest {
     @Test
     public void testWithoutReason() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        final ConfigManager manager = mock(ConfigManager.class);
+        final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
         final Channel channel = mock(Channel.class);
         final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);

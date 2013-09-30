@@ -24,9 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestWritableFrameContainer;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
 
@@ -40,25 +39,25 @@ import static org.mockito.Mockito.*;
 
 public class WritableFrameContainerTest {
 
-    @Mock private ConfigManager cm;
+    @Mock private AggregateConfigProvider acp;
     @Mock private ServerManager serverManager;
     private CommandManager commands;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(cm.getOption("general", "silencechar")).thenReturn(".");
-        when(cm.getOption("general", "commandchar")).thenReturn("/");
-        final ConfigBinder binder = new ConfigBinder(cm);
-        when(cm.getBinder()).thenReturn(binder);
+        when(acp.getOption("general", "silencechar")).thenReturn(".");
+        when(acp.getOption("general", "commandchar")).thenReturn("/");
+        final ConfigBinder binder = new ConfigBinder(acp);
+        when(acp.getBinder()).thenReturn(binder);
         commands = new CommandManager(serverManager);
-        commands.initialise(cm);
+        commands.initialise(acp);
     }
 
     @Test
     public void testGetNumLines() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, cm, commands);
+                = new TestWritableFrameContainer(10, acp, commands);
 
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -88,7 +87,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testSplitLine() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, cm, commands);
+                = new TestWritableFrameContainer(10, acp, commands);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

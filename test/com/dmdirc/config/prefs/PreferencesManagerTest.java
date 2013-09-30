@@ -23,10 +23,9 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,13 +34,13 @@ import static org.mockito.Mockito.*;
 public class PreferencesManagerTest {
 
     private ActionController actionController;
-    private ConfigManager configManager;
+    private AggregateConfigProvider configManager;
     private PreferencesManager manager;
 
     @Before
     public void setup() {
         this.actionController = mock(ActionController.class);
-        this.configManager = mock(ConfigManager.class);
+        this.configManager = mock(AggregateConfigProvider.class);
         this.manager = new PreferencesManager(actionController);
     }
 

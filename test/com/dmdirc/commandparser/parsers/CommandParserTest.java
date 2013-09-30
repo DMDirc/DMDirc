@@ -21,15 +21,13 @@
  */
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.TestMain;
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.global.Echo;
 import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestCommandParser;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +40,7 @@ import static org.mockito.Mockito.*;
 public class CommandParserTest {
 
     @Mock private ServerManager serverManager;
-    @Mock private ConfigManager cm;
+    @Mock private AggregateConfigProvider cm;
     private CommandManager commands;
 
     @Before

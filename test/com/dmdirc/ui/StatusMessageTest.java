@@ -21,7 +21,7 @@
  */
 package com.dmdirc.ui;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusMessageNotifier;
 
 import org.junit.Test;
@@ -33,35 +33,35 @@ public class StatusMessageTest {
 
     @Test
     public void testGetMessageShortConstructor() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         StatusMessage instance = new StatusMessage("test", config);
         assertEquals("test", instance.getMessage());
     }
 
     @Test
     public void testGetMessageLongConstructor() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals("test", instance.getMessage());
     }
 
     @Test
     public void testGetIconType() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals("icon", instance.getIconType());
     }
 
     @Test
     public void testGetMessageNotifierNull() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertNull(instance.getMessageNotifier());
     }
 
     @Test
     public void testGetMessageNotifierNotNull() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         final StatusMessageNotifier smn = mock(StatusMessageNotifier.class);
         StatusMessage instance = new StatusMessage("icon", "test", smn, 10, config);
         assertEquals(smn, instance.getMessageNotifier());
@@ -69,14 +69,14 @@ public class StatusMessageTest {
 
     @Test
     public void testGetTimeout() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals(10, instance.getTimeout());
     }
 
     @Test
     public void testGetTimeoutFallback() {
-        final ConfigManager config = mock(ConfigManager.class);
+        final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
 
         when(config.getOptionInt("statusBar", "messageDisplayLength")).thenReturn(10);
 

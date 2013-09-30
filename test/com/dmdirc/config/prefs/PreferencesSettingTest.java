@@ -21,7 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
@@ -52,7 +52,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testNormalConstructor() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -67,7 +67,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testValidatorConstructor() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 new NotEmptyValidator(), "domain",
@@ -83,7 +83,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testRestartNeeded() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -95,7 +95,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testMultichoiceAdding() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("new");
         final Map<String, String> map = new HashMap<>();
         map.put("a", "b");
@@ -110,7 +110,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSetValue() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -120,7 +120,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testDismiss() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -137,7 +137,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testListener() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -152,7 +152,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testNeedsSaving() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         when(cm.getOption("domain", "option2")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
@@ -173,7 +173,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveUnset() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
@@ -191,7 +191,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveNormal() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
@@ -209,7 +209,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testIsSet() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
@@ -223,7 +223,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testIsNotSet() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider identity = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn(null);
@@ -237,7 +237,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testUnknownComboOption() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
@@ -253,7 +253,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testKnownComboOption() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");

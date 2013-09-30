@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -515,7 +516,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized ConfigManager getGlobalConfiguration() {
+    public synchronized AggregateConfigProvider getGlobalConfiguration() {
         if (globalconfig == null) {
             globalconfig = new ConfigManager("", "", "", "");
         }

@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
 
@@ -42,7 +42,7 @@ public class CommandArgumentsTest {
 
     @Mock private CommandController controller;
     @Mock private IdentityManager identityManager;
-    @Mock private ConfigManager configManager;
+    @Mock private AggregateConfigProvider configManager;
 
     @Before
     public void setUp() {

@@ -21,11 +21,11 @@
  */
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.TestMain;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +49,7 @@ public class IntelligentLinkingTest {
         this.expected = expected;
 
         final FrameContainer container = mock(FrameContainer.class);
-        final ConfigManager manager = mock(ConfigManager.class);
+        final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Server server = mock(Server.class);
         when(server.getChannelPrefixes()).thenReturn("#&+");
         when(container.getServer()).thenReturn(server);

@@ -23,8 +23,8 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Server;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ActionComponentChainTest {
 
     @Mock private ActionManager actionManager;
     @Mock private IdentityManager identityManager;
-    @Mock private ConfigManager configManager;
+    @Mock private AggregateConfigProvider configManager;
 
     @Before
     public void setUp() throws Exception {

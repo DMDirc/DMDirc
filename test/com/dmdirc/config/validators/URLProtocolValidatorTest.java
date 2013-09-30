@@ -22,21 +22,21 @@
 
 package com.dmdirc.config.validators;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class URLProtocolValidatorTest {
 
-    @Mock private ConfigManager configManager;
+    @Mock private AggregateConfigProvider configManager;
 
     @Test
     public void testValidate() throws InvalidIdentityFileException {

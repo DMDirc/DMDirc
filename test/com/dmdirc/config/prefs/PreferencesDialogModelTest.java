@@ -24,8 +24,8 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 
@@ -48,7 +48,7 @@ public class PreferencesDialogModelTest {
         actionManager = mock(ActionManager.class);
         pluginManager = mock(PluginManager.class);
 
-        final List<Service> services = new ArrayList<Service>();
+        final List<Service> services = new ArrayList<>();
         final Service tabcompleter = mock(Service.class);
         when(tabcompleter.getName()).thenReturn("tabber");
         services.add(tabcompleter);
@@ -58,7 +58,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testDefaults() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
                 null, null, cm, null, actionManager, pluginManager);
@@ -74,7 +74,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testDismiss() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesCategory category = mock(PreferencesCategory.class);
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -89,7 +89,7 @@ public class PreferencesDialogModelTest {
     public void testSaveNoRestart() {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(false);
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -104,7 +104,7 @@ public class PreferencesDialogModelTest {
     public void testSaveRestart() {
         final PreferencesCategory category = mock(PreferencesCategory.class);
         when(category.save()).thenReturn(true);
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -117,7 +117,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testGetCategory() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -127,7 +127,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testGetCategories() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -142,7 +142,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testSaveListener() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -156,7 +156,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testOpenAction() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
@@ -168,7 +168,7 @@ public class PreferencesDialogModelTest {
     @Test
     public void testCloseAction() {
         final ActionListener tal = mock(ActionListener.class);
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
                 null, null, cm, null, actionManager, pluginManager);
@@ -179,7 +179,7 @@ public class PreferencesDialogModelTest {
 
     @Test
     public void testCategoryObjectSaveListeners() {
-        ConfigManager cm = mock(ConfigManager.class);
+        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,

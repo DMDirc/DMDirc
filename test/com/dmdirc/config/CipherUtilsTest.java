@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.harness.TestCipherUtils;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.*;
 public class CipherUtilsTest {
 
     @Mock private IdentityController identityController;
-    @Mock private ConfigManager configManager;
+    @Mock private AggregateConfigProvider configManager;
     @Mock private ConfigProvider configProvider;
 
     @Before

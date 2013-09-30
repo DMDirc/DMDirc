@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.*;
 public class ColourManagerTest {
 
     @Mock private ErrorManager errorManager;
-    @Mock private ConfigManager configManager;
+    @Mock private AggregateConfigProvider configManager;
     @Captor private ArgumentCaptor<ConfigChangeListener> configListener;
     private ColourManager manager;
 

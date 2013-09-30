@@ -25,9 +25,9 @@ package com.dmdirc.actions;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class ActionSubstitutorTest {
 
         this.channel = mock(Channel.class);
 
-        final ConfigManager manager = mock(ConfigManager.class);
+        final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Server server = mock(Server.class);
 
         final ChannelClientInfo clientInfo = mock(ChannelClientInfo.class);

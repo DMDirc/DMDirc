@@ -26,9 +26,9 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class PartTest {
 
     @Mock private Channel channel;
     @Mock private FrameContainer origin;
-    @Mock private ConfigManager manager;
+    @Mock private AggregateConfigProvider manager;
     @Mock private CommandController controller;
     private Part command;
 
