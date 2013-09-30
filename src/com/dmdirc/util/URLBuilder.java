@@ -72,18 +72,6 @@ public class URLBuilder {
      *
      * @param path The path that the URL is for
      * @return An URL corresponding to the specified path, or null on failure
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static URL buildFileURL(final String path) {
-        return instance.getUrlForFile(path);
-    }
-
-    /**
-     * Constructs an URL pointing to the specified resource on the file system.
-     *
-     * @param path The path that the URL is for
-     * @return An URL corresponding to the specified path, or null on failure
      */
     public URL getUrlForFile(final String path) {
         final String prefix = path.startsWith("file://") ? "" : "file://";
@@ -94,19 +82,6 @@ public class URLBuilder {
             Logger.appError(ErrorLevel.HIGH, "Unable to build file URL", ex);
             return null;
         }
-    }
-
-    /**
-     * Constructs an URL pointing to the specified resource within a jar file.
-     *
-     * @param jarFile Path to the jar file (including scheme)
-     * @param path Path to the resource within the jar file
-     * @return An URL corresponding to the specified resource, or null on failure
-     * @deprecated Use non-static methods.
-     */
-    @Deprecated
-    public static URL buildJarURL(final String jarFile, final String path) {
-        return instance.getUrlForJarFile(jarFile, path);
     }
 
     /**
@@ -135,35 +110,9 @@ public class URLBuilder {
      *
      * @param resource The path to the resource
      * @return An URL corresponding to the specified resource
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static URL buildDMDircURL(final String resource) {
-        return instance.getUrlForDMDircResource(resource);
-    }
-
-    /**
-     * Constructs an URL pointing to the specified resource within the DMDirc
-     * project.
-     *
-     * @param resource The path to the resource
-     * @return An URL corresponding to the specified resource
      */
     public URL getUrlForDMDircResource(final String resource) {
         return Thread.currentThread().getContextClassLoader().getResource(resource);
-    }
-
-    /**
-     * Builds an URL pointing to a resource within a DMDirc theme.
-     *
-     * @param theme The theme which the resource is located in
-     * @param path The path within the theme of the resource
-     * @return An URL corresponding to the specified resource, or null on failure
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static URL buildThemeURL(final String theme, final String path) {
-        return instance.getUrlForThemeResource(theme, path);
     }
 
     /**
@@ -176,19 +125,6 @@ public class URLBuilder {
     public URL getUrlForThemeResource(final String theme, final String path) {
         return getUrlForJarFile(themeManagerProvider.get().getDirectory()
                 + theme + ".zip", path);
-    }
-
-    /**
-     * Builds an URL pointing to a resource within a DMDirc plugin.
-     *
-     * @param plugin The plugin which the resource is located in
-     * @param path The path within the theme of the resource
-     * @return An URL corresponding to the specified resource, or null on failure
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static URL buildPluginURL(final String plugin, final String path) {
-        return instance.getUrlForPluginResource(plugin, path);
     }
 
     /**

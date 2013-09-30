@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
@@ -228,7 +229,7 @@ public class PerformWrapper extends ActionGroup {
 
         if (profile != null) {
             conditions.add(new ActionCondition(0,
-                    new ActionComponentChain(Server.class, PP_COMP_NAME),
+                    new ActionComponentChain(Server.class, PP_COMP_NAME, ActionManager.getActionManager()),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 

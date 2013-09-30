@@ -47,19 +47,6 @@ public class ActionComponentChain implements ActionComponent {
      *
      * @param source The class that this chain needs to start with
      * @param chain The textual representation of the chain
-     * @deprecated Should specify an action controller.
-     */
-    @Deprecated
-    public ActionComponentChain(final Class<?> source, final String chain) {
-        this(source, chain, ActionManager.getActionManager());
-    }
-
-    /**
-     * Creates a new component chain from the specified text representation.
-     * Chains are separated with full stops (.).
-     *
-     * @param source The class that this chain needs to start with
-     * @param chain The textual representation of the chain
      * @param manager The action manager to use to look up components
      */
     public ActionComponentChain(final Class<?> source, final String chain,

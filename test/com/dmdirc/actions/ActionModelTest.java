@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -29,10 +30,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActionModelTest {
+
+    @Mock private ActionController actionController;
 
     @Test
     public void testConditions() {
@@ -133,7 +140,7 @@ public class ActionModelTest {
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
                             CoreActionComparison.STRING_STARTSWITH, "abc"),
                 }), ConditionTree.parseString("0|1"), null);
-        final ActionSubstitutor sub = new ActionSubstitutor(CoreActionType.CHANNEL_ACTION);
+        final ActionSubstitutor sub = new ActionSubstitutor(actionController, CoreActionType.CHANNEL_ACTION);
 
         assertTrue("test must pass if one condition in disjunction passes (cond 1)",
                 model.test(sub, null, null, "abcdef"));
@@ -153,7 +160,7 @@ public class ActionModelTest {
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
                             CoreActionComparison.STRING_STARTSWITH, "abc"),
                 }), null, null);
-        final ActionSubstitutor sub = new ActionSubstitutor(CoreActionType.CHANNEL_ACTION);
+        final ActionSubstitutor sub = new ActionSubstitutor(actionController, CoreActionType.CHANNEL_ACTION);
 
         assertFalse("test must fail if one condition in conjunction fails (cond 1)",
                 model.test(sub, null, null, "abcdef"));

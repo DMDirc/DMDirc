@@ -88,17 +88,6 @@ public class ActionSubstitutor {
     }
 
     /**
-     * Creates a new substitutor for the specified action type.
-     *
-     * @param type The action type this substitutor is for
-     * @deprecated Should use {@link #ActionSubstitutor(ActionController, ActionType)}.
-     */
-    @Deprecated
-    public ActionSubstitutor(final ActionType type) {
-        this(ActionManager.getActionManager(), type);
-    }
-
-    /**
      * Retrieves a list of global config variables that will be substituted.
      * Note: does not include initial $.
      *

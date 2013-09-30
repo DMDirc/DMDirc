@@ -481,7 +481,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         } else {
             try {
                 component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
-                        componentName);
+                        componentName, ActionManager.getActionManager());
             } catch (IllegalArgumentException iae) {
                 error(ActionErrorType.CONDITIONS, iae.getMessage());
                 return null;

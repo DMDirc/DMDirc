@@ -22,7 +22,6 @@
 
 package com.dmdirc.config.validators;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
@@ -43,16 +42,6 @@ public class URLProtocolValidator implements Validator<String> {
      */
     public URLProtocolValidator(final AggregateConfigProvider globalConfig) {
         this.globalConfig = globalConfig;
-    }
-
-    /**
-     * Creates a {@link URLProtocolValidator} with the default global config.
-     *
-     * @deprecated Specify a global config
-     */
-    @Deprecated
-    public URLProtocolValidator() {
-        this(IdentityManager.getIdentityManager().getGlobalConfiguration());
     }
 
     /** {@inheritDoc} */

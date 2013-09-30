@@ -172,19 +172,6 @@ public class ColourManager {
      *
      * @param hex The hex string to convert into a Colour
      * @return A Colour object corresponding to the hex input
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static Colour getColour(final String hex) {
-        return getColourManager().getColourFromHex(hex);
-    }
-
-    /**
-     * Returns a Colour object that corresponds to the specified 6-digit hex
-     * string. If the string is invalid, logs a warning and returns white.
-     *
-     * @param hex The hex string to convert into a Colour
-     * @return A Colour object corresponding to the hex input
      */
     public Colour getColourFromHex(final String hex) {
         if (colourCache.containsKey(hex)) {

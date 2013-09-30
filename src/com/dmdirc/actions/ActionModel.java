@@ -136,7 +136,7 @@ public class ActionModel {
             return false;
         }
 
-        final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
+        final ActionSubstitutor sub = new ActionSubstitutor(ActionManager.getActionManager(), triggers[0]);
 
         if (!test(sub, arguments)) {
             return false;
