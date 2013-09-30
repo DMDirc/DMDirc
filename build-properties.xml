@@ -49,7 +49,6 @@
         </pathconvert>
 
         <path id="test-libs">
-            <fileset dir="lib/main" includes="*.jar"/>
             <fileset dir="lib/test" includes="*.jar"/>
             <pathelement location="${basedir}/build/classes"/>
             <pathelement location="${basedir}/modules/plugins/build/classes"/>
@@ -60,7 +59,7 @@
 
         <propertyfile file="nbproject/private/private.properties">
             <entry key="javac.classpath" value="${main-libs}" />
-            <entry key="javac.test.classpath" value="${test-libs}" />
+            <entry key="javac.test.classpath" value="${test-libs}${path.separator}$${javac.classpath}" />
         </propertyfile>
     </target>
 
