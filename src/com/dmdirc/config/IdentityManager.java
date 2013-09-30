@@ -40,7 +40,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,6 +54,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class IdentityManager implements IdentityFactory, IdentityController {
+
+    /** A regular expression that will match all characters illegal in file names. */
+    private static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
+
+    /** The domain used for identity settings. */
+    private static final String IDENTITY_DOMAIN = "identity";
+
+    /** The domain used for profile settings. */
+    private static final String PROFILE_DOMAIN = "profile";
 
     /** A singleton instance of IdentityManager. */
     private static IdentityManager instance;
@@ -121,11 +129,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         loadConfig();
 
         if (getProvidersByType("profile").isEmpty()) {
-            try {
-                Identity.buildProfile("Default Profile");
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.FATAL, "Unable to write default profile", ex);
-            }
+            createProfileConfig("Default Profile");
         }
 
         // Set up the identity used for the addons defaults
@@ -547,12 +551,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
 
-        try {
-            return Identity.buildIdentity(target);
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create channel identity", ex);
-            return null;
-        }
+        return createConfig(target);
     }
 
     /** {@inheritDoc} */
@@ -578,12 +577,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork(myTarget);
 
-        try {
-            return Identity.buildIdentity(target);
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
-            return null;
-        }
+        return createConfig(target);
     }
 
     /** {@inheritDoc} */
@@ -609,12 +603,103 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final ConfigTarget target = new ConfigTarget();
         target.setServer(myTarget);
 
+        return createConfig(target);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConfigProvider createCustomConfig(final String name, final String type) {
+        final Map<String, Map<String, String>> settings = new HashMap<>();
+        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(2));
+
+        settings.get(IDENTITY_DOMAIN).put("name", name);
+        settings.get(IDENTITY_DOMAIN).put("type", type);
+
         try {
-            return Identity.buildIdentity(target);
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException | IOException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
             return null;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConfigProvider createProfileConfig(final String name) {
+        final Map<String, Map<String, String>> settings = new HashMap<>();
+        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(1));
+        settings.put(PROFILE_DOMAIN, new HashMap<String, String>(2));
+
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+
+        settings.get(IDENTITY_DOMAIN).put("name", name);
+        settings.get(PROFILE_DOMAIN).put("nicknames", nick);
+        settings.get(PROFILE_DOMAIN).put("realname", nick);
+
+        try {
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException | IOException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            return null;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConfigProvider createConfig(final ConfigTarget target) {
+        final Map<String, Map<String, String>> settings = new HashMap<>();
+        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(2));
+        settings.get(IDENTITY_DOMAIN).put("name", target.getData());
+        settings.get(IDENTITY_DOMAIN).put(target.getTypeName(), target.getData());
+
+        try {
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException | IOException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            return null;
+        }
+    }
+
+    /**
+     * Creates a new identity containing the specified properties.
+     *
+     * @param settings The settings to populate the identity with
+     * @return A new identity containing the specified properties
+     * @throws IOException If the file cannot be created
+     * @throws InvalidIdentityFileException If the settings are invalid
+     * @since 0.6.3m1
+     */
+    protected Identity createIdentity(final Map<String, Map<String, String>> settings)
+            throws IOException, InvalidIdentityFileException {
+        if (!settings.containsKey(IDENTITY_DOMAIN) || !settings.get(IDENTITY_DOMAIN).containsKey("name")
+                || settings.get(IDENTITY_DOMAIN).get("name").isEmpty()) {
+            throw new InvalidIdentityFileException("identity.name is not set");
+        }
+
+        final String fs = System.getProperty("file.separator");
+        final String location = getUserSettingsDirectory();
+        final String name = settings.get(IDENTITY_DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
+
+        File file = new File(location + name);
+        int attempt = 1;
+
+        while (file.exists()) {
+            file = new File(location + name + "-" + attempt);
+            attempt++;
+        }
+
+        final ConfigFile configFile = new ConfigFile(file);
+
+        for (Map.Entry<String, Map<String, String>> entry : settings.entrySet()) {
+            configFile.addDomain(entry.getKey(), entry.getValue());
+        }
+
+        configFile.write();
+
+        final Identity identity = new Identity(file, false);
+        addConfigProvider(identity);
+
+        return identity;
     }
 
     /**

@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces.config;
 
 import com.dmdirc.Precondition;
+import com.dmdirc.config.ConfigTarget;
 
 /**
  * Defines methods implemented by a factory which can create useful identities.
@@ -35,29 +36,54 @@ public interface IdentityFactory {
      *
      * @param network The name of the network
      * @param channel The name of the channel
-     * @return A config source for the channel
+     * @return A config provider for the channel
      */
     @Precondition(value = {"The specified network is non-null and not empty", "The specified channel is non-null and not empty"})
-    ConfigProvider createChannelConfig(final String network, final String channel);
+    ConfigProvider createChannelConfig(String network, String channel);
 
     /**
      * Retrieves the config for the specified network. The config is
      * created if it doesn't exist.
      *
      * @param network The name of the network
-     * @return A config source for the network
+     * @return A config provider for the network
      */
     @Precondition(value = "The specified network is non-null and not empty")
-    ConfigProvider createNetworkConfig(final String network);
+    ConfigProvider createNetworkConfig(String network);
 
     /**
      * Retrieves the config for the specified server. The config is
      * created if it doesn't exist.
      *
      * @param server The name of the server
-     * @return A config source for the server
+     * @return A config provider for the server
      */
     @Precondition(value = "The specified server is non-null and not empty")
-    ConfigProvider createServerConfig(final String server);
+    ConfigProvider createServerConfig(String server);
+
+    /**
+     * Creates a custom configuration with the specified name and type.
+     *
+     * @param name The name of the configuration.
+     * @param type The custom type of the configuration.
+     * @return A custom config provider.
+     */
+    ConfigProvider createCustomConfig(String name, String type);
+
+    /**
+     * Creates a profile configuration with the specified name.
+     *
+     * @param name The name of the profile.
+     * @return A custom config provider.
+     */
+    ConfigProvider createProfileConfig(String name);
+
+    /**
+     * Creates a configuration for the specified target.
+     *
+     * @param target The target of the configuration.
+     * @return A config provider for the specified target.
+     */
+    ConfigProvider createConfig(ConfigTarget target);
 
 }

@@ -54,9 +54,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Identity extends ConfigSource implements Comparable<Identity>, ConfigProvider {
 
-    /** A regular expression that will match all characters illegal in file names. */
-    protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
-
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
 
@@ -565,123 +562,6 @@ public class Identity extends ConfigSource implements Comparable<Identity>, Conf
     @Override
     public int compareTo(final Identity target) {
         return target.getTarget().compareTo(myTarget);
-    }
-
-    /**
-     * Creates a new identity containing the specified properties.
-     *
-     * @param settings The settings to populate the identity with
-     * @return A new identity containing the specified properties
-     * @throws IOException If the file cannot be created
-     * @throws InvalidIdentityFileException If the settings are invalid
-     * @since 0.6.3m1
-     */
-    protected static Identity createIdentity(final Map<String, Map<String, String>> settings)
-            throws IOException, InvalidIdentityFileException {
-        if (!settings.containsKey(DOMAIN) || !settings.get(DOMAIN).containsKey("name")
-                || settings.get(DOMAIN).get("name").isEmpty()) {
-            throw new InvalidIdentityFileException("identity.name is not set");
-        }
-
-        final String fs = System.getProperty("file.separator");
-        final String location = IdentityManager.getIdentityManager().getConfigurationDirectory() + "identities" + fs;
-        final String name = settings.get(DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
-
-        File file = new File(location + name);
-        int attempt = 0;
-
-        while (file.exists()) {
-            file = new File(location + name + "-" + ++attempt);
-        }
-
-        final ConfigFile configFile = new ConfigFile(file);
-
-        for (Map.Entry<String, Map<String, String>> entry : settings.entrySet()) {
-            configFile.addDomain(entry.getKey(), entry.getValue());
-        }
-
-        configFile.write();
-
-        final Identity identity = new Identity(file, false);
-        IdentityManager.getIdentityManager().addConfigProvider(identity);
-
-        return identity;
-    }
-
-    /**
-     * Generates an empty identity for the specified target.
-     *
-     * @param target The target for the new identity
-     * @return An empty identity for the specified target
-     * @throws IOException if the file can't be written
-     * @see #createIdentity(java.util.Map)
-     */
-    public static Identity buildIdentity(final ConfigTarget target)
-            throws IOException {
-        final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(DOMAIN, new HashMap<String, String>(2));
-        settings.get(DOMAIN).put("name", target.getData());
-        settings.get(DOMAIN).put(target.getTypeName(), target.getData());
-
-        try {
-            return createIdentity(settings);
-        } catch (InvalidIdentityFileException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
-            return null;
-        }
-    }
-
-    /**
-     * Generates an empty profile with the specified name. Note the name is used
-     * as a file name, so should be sanitised.
-     *
-     * @param name The name of the profile to create
-     * @return A new profile with the specified name
-     * @throws IOException If the file can't be written
-     * @see #createIdentity(java.util.Map)
-     */
-    public static Identity buildProfile(final String name) throws IOException {
-        final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(DOMAIN, new HashMap<String, String>(1));
-        settings.put(PROFILE_DOMAIN, new HashMap<String, String>(2));
-
-        final String nick = System.getProperty("user.name").replace(' ', '_');
-
-        settings.get(DOMAIN).put("name", name);
-        settings.get(PROFILE_DOMAIN).put("nicknames", nick);
-        settings.get(PROFILE_DOMAIN).put("realname", nick);
-
-        try {
-            return createIdentity(settings);
-        } catch (InvalidIdentityFileException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
-            return null;
-        }
-    }
-
-    /**
-     * Generates a custom identity with the specified name and type. Note the
-     * name is used as a file name, so should be sanitised.
-     *
-     * @param type The type of the identity to create
-     * @param name The name of the identity to create
-     * @return A new custom identity with the specified name
-     * @throws IOException If the file can't be written
-     */
-    public static Identity buildIdentity(final String name, final String type)
-            throws IOException {
-        final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(DOMAIN, new HashMap<String, String>(2));
-
-        settings.get(DOMAIN).put("name", name);
-        settings.get(DOMAIN).put("type", type);
-
-        try {
-            return createIdentity(settings);
-        } catch (InvalidIdentityFileException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
-            return null;
-        }
     }
 
 }

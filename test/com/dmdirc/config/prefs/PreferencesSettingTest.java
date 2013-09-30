@@ -22,7 +22,7 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.StringLengthValidator;
@@ -97,7 +97,7 @@ public class PreferencesSettingTest {
     public void testMultichoiceAdding() {
         ConfigManager cm = mock(ConfigManager.class);
         when(cm.getOption("domain", "option")).thenReturn("new");
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         map.put("a", "b");
         map.put("c", "d");
 
@@ -174,49 +174,49 @@ public class PreferencesSettingTest {
     @Test
     public void testSaveUnset() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
-        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+        when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext", cm, identity);
+                "unit-test", "ps", "title", "helptext", cm, configProvider);
 
         assertFalse(ps.save());
         ps.setValue(null);
         assertTrue(ps.save());
 
-        verify(identity).unsetOption("unit-test", "ps");
+        verify(configProvider).unsetOption("unit-test", "ps");
     }
 
     @Test
     public void testSaveNormal() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
-        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+        when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext", cm, identity);
+                "unit-test", "ps", "title", "helptext", cm, configProvider);
 
         assertFalse(ps.save());
         ps.setValue("def");
         assertTrue(ps.save());
 
-        verify(identity).setOption("unit-test", "ps", "def");
+        verify(configProvider).setOption("unit-test", "ps", "def");
     }
 
     @Test
     public void testIsSet() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
-        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+        when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
 
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                "unit-test", "ps", "title", "helptext", cm, identity);
+                "unit-test", "ps", "title", "helptext", cm, configProvider);
 
         assertFalse(ps.isSet());
     }
@@ -224,7 +224,7 @@ public class PreferencesSettingTest {
     @Test
     public void testIsNotSet() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider identity = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn(null);
         when(identity.getOption("unit-test", "ps")).thenReturn(null);
@@ -238,15 +238,15 @@ public class PreferencesSettingTest {
     @Test
     public void testUnknownComboOption() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
-        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+        when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
 
-        final Map<String, String> options = new HashMap<String, String>();
+        final Map<String, String> options = new HashMap<>();
 
         final PreferencesSetting ps = new PreferencesSetting("unit-test",
-                "ps", "title", "helptext", options, cm, identity);
+                "ps", "title", "helptext", options, cm, configProvider);
 
         assertEquals("Current (abc)", ps.getComboOptions().get("abc"));
     }
@@ -254,16 +254,16 @@ public class PreferencesSettingTest {
     @Test
     public void testKnownComboOption() {
         ConfigManager cm = mock(ConfigManager.class);
-        Identity identity = mock(Identity.class);
+        ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
-        when(identity.getOption("unit-test", "ps")).thenReturn("abc");
+        when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
 
-        final Map<String, String> options = new HashMap<String, String>();
+        final Map<String, String> options = new HashMap<>();
         options.put("abc", "123");
 
         final PreferencesSetting ps = new PreferencesSetting("unit-test",
-                "ps", "title", "helptext", options, cm, identity);
+                "ps", "title", "helptext", options, cm, configProvider);
 
         assertEquals("123", ps.getComboOptions().get("abc"));
     }

@@ -89,8 +89,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final List<PluginInfo> children = new ArrayList<>();
     /** Map of exports. */
     private final Map<String, ExportInfo> exports = new HashMap<>();
-    /** List of identities. */
-    private final List<Identity> identities = new ArrayList<>();
+    /** List of configuration providers. */
+    private final List<ConfigProvider> configProviders = new ArrayList<>();
 
     /**
      * Create a new PluginInfo.
@@ -241,11 +241,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     continue;
                 }
 
-                synchronized (identities) {
+                synchronized (configProviders) {
                     try {
-                        final Identity thisIdentity = new Identity(stream, false);
-                        IdentityManager.getIdentityManager().addConfigProvider(thisIdentity);
-                        identities.add(thisIdentity);
+                        final ConfigProvider configProvider = new Identity(stream, false);
+                        IdentityManager.getIdentityManager().addConfigProvider(configProvider);
+                        configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {
                         Logger.userError(ErrorLevel.MEDIUM,
                                 "Error with identity file '" + name
@@ -263,12 +263,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Unload any identities loaded by this plugin.
      */
     private void unloadIdentities() {
-        synchronized (identities) {
-            for (Identity identity : identities) {
+        synchronized (configProviders) {
+            for (ConfigProvider identity : configProviders) {
                 IdentityManager.getIdentityManager().removeConfigProvider(identity);
             }
 
-            identities.clear();
+            configProviders.clear();
         }
     }
 

@@ -22,8 +22,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.harness.TestCipherUtils;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 
 import org.junit.Before;
@@ -40,12 +40,12 @@ public class CipherUtilsTest {
 
     @Mock private IdentityController identityController;
     @Mock private ConfigManager configManager;
-    @Mock private Identity identity;
+    @Mock private ConfigProvider configProvider;
 
     @Before
     public void setup() {
         when(identityController.getGlobalConfiguration()).thenReturn(configManager);
-        when(identityController.getUserSettings()).thenReturn(identity);
+        when(identityController.getUserSettings()).thenReturn(configProvider);
     }
 
     @Test

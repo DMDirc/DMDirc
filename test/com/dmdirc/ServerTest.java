@@ -24,9 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.WindowManager;
 
@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 public class ServerTest {
 
     @Mock private ServerManager serverManager;
-    @Mock private Identity profile;
+    @Mock private ConfigProvider profile;
     @Mock private AggregateConfigProvider configManager;
     @Mock private CommandParser commandParser;
     @Mock private ParserFactory parserFactory;

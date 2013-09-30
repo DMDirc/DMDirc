@@ -26,8 +26,8 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.actions.ActionComponent;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -176,7 +176,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class<?> appliesTo() { return Server.class; }
         /** {@inheritDoc} */
         @Override
-        public Class<?> getType() { return Identity.class; }
+        public Class<?> getType() { return ConfigProvider.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "profile"; }
@@ -565,10 +565,10 @@ public enum CoreActionComponent implements ActionComponent {
     IDENTITY_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Identity) arg).getName(); }
+        public Object get(final Object arg) { return ((ConfigProvider) arg).getName(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Identity.class; }
+        public Class<?> appliesTo() { return ConfigProvider.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }

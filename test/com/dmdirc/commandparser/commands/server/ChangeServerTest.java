@@ -25,8 +25,8 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 
@@ -47,20 +47,14 @@ public class ChangeServerTest {
     @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
     @Mock private FrameContainer tiw;
-    @Mock private Identity profile;
+    @Mock private ConfigProvider profile;
     @Mock private Server server;
     private ChangeServer command;
 
     @Before
     public void setUp() {
         Logger.setErrorManager(errorManager);
-
-        tiw = mock(FrameContainer.class);
-        profile = mock(Identity.class);
-        server = mock(Server.class);
-
         when(server.getProfile()).thenReturn(profile);
-
         command = new ChangeServer(controller);
     }
 
