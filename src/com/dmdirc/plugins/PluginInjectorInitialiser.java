@@ -34,6 +34,7 @@ import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.URLBuilder;
@@ -63,6 +64,7 @@ public class PluginInjectorInitialiser {
     private final LifecycleController lifecycleController;
     private final CorePluginExtractor corePluginExtractor;
     private final URLBuilder urlBuilder;
+    private final ColourManager colourManager;
 
     /**
      * Creates a new {@link PluginInjectorInitialiser} which will inject all
@@ -84,7 +86,8 @@ public class PluginInjectorInitialiser {
             final PerformWrapper performWrapper,
             final LifecycleController lifecycleController,
             final CorePluginExtractor corePluginExtractor,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final ColourManager colourManager) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;
         this.pluginManager = pluginManager;
@@ -100,6 +103,7 @@ public class PluginInjectorInitialiser {
         this.lifecycleController = lifecycleController;
         this.corePluginExtractor = corePluginExtractor;
         this.urlBuilder = urlBuilder;
+        this.colourManager = colourManager;
     }
 
     /**
@@ -123,5 +127,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(actionFactory);
         injector.addParameter(themeManager);
         injector.addParameter(urlBuilder);
+        injector.addParameter(colourManager);
     }
 }
