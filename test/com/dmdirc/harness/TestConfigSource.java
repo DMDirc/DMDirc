@@ -22,12 +22,12 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.BaseConfigProvider;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.Map;
 
-public class TestConfigSource extends ConfigSource {
+public class TestConfigSource extends BaseConfigProvider {
 
     @Override
     public boolean hasOption(String domain, String option, Validator<String> validator) {

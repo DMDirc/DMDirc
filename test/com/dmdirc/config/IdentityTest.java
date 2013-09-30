@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 
 public class IdentityTest {
 
-    private Identity myIdent;
+    private ConfigFileBackedConfigProvider myIdent;
     private ConfigTarget target;
 
     @Before
@@ -46,7 +46,7 @@ public class IdentityTest {
         target = new ConfigTarget();
         target.setChannel("#unittest@unittest");
 
-        myIdent = new Identity(new ConfigFile(getClass().getResourceAsStream("identity2")), target);
+        myIdent = new ConfigFileBackedConfigProvider(new ConfigFile(getClass().getResourceAsStream("identity2")), target);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class IdentityTest {
 
         myIdent.save();
 
-        myIdent = new Identity(myIdent.file.getFile(), false);
+        myIdent = new ConfigFileBackedConfigProvider(myIdent.file.getFile(), false);
 
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
     }
@@ -147,17 +147,17 @@ public class IdentityTest {
 
     @Test(expected=InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
-        new Identity(getClass().getResourceAsStream("identity1"), false);
+        new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity1"), false);
     }
 
     @Test(expected=InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
-        new Identity(getClass().getResourceAsStream("identity2"), false);
+        new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity2"), false);
     }
 
     @Test
     public void testMigrate() throws IOException, InvalidIdentityFileException {
-        final Identity id = new Identity(getClass().getResourceAsStream("identity3"), false);
+        final ConfigFileBackedConfigProvider id = new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity3"), false);
 
         assertTrue(id.file.isKeyDomain("identity"));
         assertTrue(id.file.isKeyDomain("meep"));

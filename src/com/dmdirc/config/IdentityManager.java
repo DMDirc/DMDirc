@@ -143,7 +143,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
 
-        addonConfig = new Identity(addonConfigFile, target);
+        addonConfig = new ConfigFileBackedConfigProvider(addonConfigFile, target);
         addConfigProvider(addonConfig);
 
         if (!getGlobalConfiguration().hasOptionString("identity", "defaultsversion")) {
@@ -294,7 +294,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     private void loadIdentity(final File file) {
         synchronized (identities) {
             for (ConfigProvider identity : getAllIdentities()) {
-                if ((identity instanceof Identity) && ((Identity) identity).isFile(file)) {
+                if ((identity instanceof ConfigFileBackedConfigProvider) && ((ConfigFileBackedConfigProvider) identity).isFile(file)) {
                     // TODO: This manager should keep a list of files->identities instead of
                     //       relying on the identities remembering.
                     try {
@@ -313,7 +313,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         try {
-            addConfigProvider(new Identity(file, false));
+            addConfigProvider(new ConfigFileBackedConfigProvider(file, false));
         } catch (InvalidIdentityFileException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid identity file: " + file.getAbsolutePath()
@@ -359,7 +359,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new Identity(IdentityManager.class.getResourceAsStream("/com/dmdirc/version.config"), false);
+            versionConfig = new ConfigFileBackedConfigProvider(IdentityManager.class.getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
@@ -380,7 +380,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 file.createNewFile();
             }
 
-            config = new Identity(file, true);
+            config = new ConfigFileBackedConfigProvider(file, true);
             config.setOption("identity", "name", "Global config");
             addConfigProvider(config);
         } catch (IOException ex) {
@@ -670,7 +670,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @throws InvalidIdentityFileException If the settings are invalid
      * @since 0.6.3m1
      */
-    protected Identity createIdentity(final Map<String, Map<String, String>> settings)
+    protected ConfigFileBackedConfigProvider createIdentity(final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {
         if (!settings.containsKey(IDENTITY_DOMAIN) || !settings.get(IDENTITY_DOMAIN).containsKey("name")
                 || settings.get(IDENTITY_DOMAIN).get("name").isEmpty()) {
@@ -697,7 +697,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         configFile.write();
 
-        final Identity identity = new Identity(file, false);
+        final ConfigFileBackedConfigProvider identity = new ConfigFileBackedConfigProvider(file, false);
         addConfigProvider(identity);
 
         return identity;

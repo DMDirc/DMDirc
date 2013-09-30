@@ -24,7 +24,7 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.Identity;
+import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -243,7 +243,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 synchronized (configProviders) {
                     try {
-                        final ConfigProvider configProvider = new Identity(stream, false);
+                        final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(stream, false);
                         IdentityManager.getIdentityManager().addConfigProvider(configProvider);
                         configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {

@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.config.Identity;
+import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.util.validators.Validator;
 
@@ -33,7 +33,7 @@ import java.io.InputStream;
  * An identity that only claims to know about settings under the UI domain,
  * for use with themes.
  */
-public class ThemeIdentity extends Identity {
+public class ThemeIdentity extends ConfigFileBackedConfigProvider {
 
     /**
      * A version number for this class. It should be changed whenever the class

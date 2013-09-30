@@ -40,22 +40,22 @@ import java.util.List;
 import javax.inject.Provider;
 
 /**
- * Defines methods to get options from a config source in various forms.
- * <p>
- * This implementation supports the idea of optional/disabled settings.
+ * Defines methods to get options from a config provider in various forms.
+ *
+ * <p>This implementation supports the idea of optional/disabled settings.
  * This is where values may be prefixed with the strings <code>true:</code>
  * or <code>false:</code>, where the former has no effect on the value of
  * the setting, and the latter indicates that the user wishes to disable
  * the setting.
- * <p>
- * Disabled settings allow for optional settings to have default values; a
+ *
+ * <p>Disabled settings allow for optional settings to have default values; a
  * value can be added with the <code>false:</code> prefix which effectively
  * disables the default value and makes the setting act as though it does not
  * have a value. Note that for this sort of behaviour to make sense, it requires
  * an implementation that takes values from multiple sources, such as a
  * {@link ConfigManager}.
  */
-public abstract class ConfigSource implements ReadOnlyConfigProvider {
+public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
 
     /** A permissive validator to use when callers don't specify one. */
     private static final Validator<String> PERMISSIVE_VALIDATOR
@@ -77,7 +77,7 @@ public abstract class ConfigSource implements ReadOnlyConfigProvider {
      *
      * @param colourManager The colour manager to use to convert colours.
      */
-    public ConfigSource(final Provider<ColourManager> colourManager) {
+    public BaseConfigProvider(final Provider<ColourManager> colourManager) {
         this.colourManager = colourManager;
     }
 
@@ -88,7 +88,7 @@ public abstract class ConfigSource implements ReadOnlyConfigProvider {
      * @deprecated Should pass in a {@link ColourManager}.
      */
     @Deprecated
-    public ConfigSource() {
+    public BaseConfigProvider() {
         this(ColourManager.getColourManagerProvider());
     }
 

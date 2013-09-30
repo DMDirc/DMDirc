@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class ConfigManager extends ConfigSource implements ConfigChangeListener,
+public class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         ConfigProviderListener, AggregateConfigProvider {
 
     /** Temporary map for lookup stats. */

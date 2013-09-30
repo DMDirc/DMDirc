@@ -45,14 +45,10 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * An identity is a group of settings that are applied to a connection, server,
- * network or channel. Identities may be automatically applied in certain
- * cases, or the user may manually apply them.
- * <p>
- * Note: this class has a natural ordering that is inconsistent with equals.
+ * Provides configuration settings from a {@link ConfigFile}.
  */
 @Slf4j
-public class Identity extends ConfigSource implements ConfigProvider {
+public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
 
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
@@ -84,7 +80,7 @@ public class Identity extends ConfigSource implements ConfigProvider {
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public Identity(final File file, final boolean forceDefault) throws IOException,
+    public ConfigFileBackedConfigProvider(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         super();
 
@@ -107,7 +103,7 @@ public class Identity extends ConfigSource implements ConfigProvider {
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
+    public ConfigFileBackedConfigProvider(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         super();
 
@@ -127,7 +123,7 @@ public class Identity extends ConfigSource implements ConfigProvider {
      * @param configFile The config file to use
      * @param target The target of this identity
      */
-    public Identity(final ConfigFile configFile, final ConfigTarget target) {
+    public ConfigFileBackedConfigProvider(final ConfigFile configFile, final ConfigTarget target) {
         super();
 
         this.file = configFile;
@@ -546,9 +542,9 @@ public class Identity extends ConfigSource implements ConfigProvider {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof Identity
-                && getName().equals(((Identity) obj).getName())
-                && getTarget() == ((Identity) obj).getTarget();
+        return obj instanceof ConfigFileBackedConfigProvider
+                && getName().equals(((ConfigFileBackedConfigProvider) obj).getName())
+                && getTarget() == ((ConfigFileBackedConfigProvider) obj).getTarget();
     }
 
 }
