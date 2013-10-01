@@ -45,7 +45,9 @@ public class CommandLineOptionsModule {
         /** The directory that plugins are stored in. */
         PLUGINS,
         /** The directory that themes are stored in. */
-        THEMES;
+        THEMES,
+        /** The directory that actions are stored in. */
+        ACTIONS;
     }
 
     /**
@@ -85,6 +87,19 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.PLUGINS)
     public String getPluginsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
         return baseDirectory + "plugins" + File.separator;
+    }
+
+    /**
+     * Provides the path to the actions directory.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     * @return The actions directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.ACTIONS)
+    public String getActionsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+        return baseDirectory + "actions" + File.separator;
     }
 
     /**

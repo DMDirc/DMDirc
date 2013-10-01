@@ -22,13 +22,14 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
@@ -63,6 +64,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The domain name for misc settings. */
     private static final String DOMAIN_MISC = "misc";
 
+    /** The base directory to save actions in. */
+    private final String actionsDirectory;
+    /** The controller to use to read and update settings. */
+    private final IdentityController identityController;
+    /** The controller to use to retrieve components, comparisons, etc. */
+    private final ActionController actionController;
+
     /** The config file we're using. */
     protected ConfigFile config;
 
@@ -73,26 +81,37 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
      *
+     * @param actionController The controller that owns this action.
+     * @param identityController The controller to use to retrieve and update settings.
+     * @param actionsDirectory The base directory to store actions in.
      * @param group The group the action belongs to
      * @param name The name of the action
      */
-    public Action(final String group, final String name) {
+    public Action(
+            final ActionController actionController,
+            final IdentityController identityController,
+            final String actionsDirectory,
+            final String group,
+            final String name) {
         super(group, name);
 
-        location = ActionManager.getActionManager().getDirectory() + group + File.separator + name;
+        this.actionController = actionController;
+        this.identityController = identityController;
+        this.actionsDirectory = actionsDirectory;
+        this.location = actionsDirectory + group + File.separator + name;
 
         try {
             config = new ConfigFile(location);
             config.read();
             loadActionFromConfig();
-            ActionManager.getActionManager().addAction(this);
+            actionController.addAction(this);
         } catch (InvalidConfigFileException ex) {
             error(ActionErrorType.FILE, "Unable to parse action file: " + ex.getMessage());
         } catch (IOException ex) {
             error(ActionErrorType.FILE, "I/O error when loading action: " + ex.getMessage());
         }
 
-        IdentityManager.getIdentityManager().getGlobalConfiguration().addChangeListener("disable_action",
+        identityController.getGlobalConfiguration().addChangeListener("disable_action",
                 (group + "/" + name).replace(' ', '.'), this);
         checkDisabled();
     }
@@ -101,6 +120,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action with the specified properties and saves
      * it to disk.
      *
+     * @param actionController The controller that owns this action.
+     * @param identityController The controller to use to retrieve and update settings.
+     * @param actionsDirectory The base directory to store actions in.
      * @param group The group the action belongs to
      * @param name The name of the action
      * @param triggers The triggers to use
@@ -109,27 +131,35 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param conditionTree The condition tree to use
      * @param newFormat The new formatter to use
      */
-    public Action(final String group, final String name,
-            final ActionType[] triggers, final String[] response,
+    public Action(
+            final ActionController actionController,
+            final IdentityController identityController,
+            final String actionsDirectory,
+            final String group,
+            final String name,
+            final ActionType[] triggers,
+            final String[] response,
             final List<ActionCondition> conditions,
-            final ConditionTree conditionTree, final String newFormat) {
+            final ConditionTree conditionTree,
+            final String newFormat) {
         super(group, name, triggers, response, conditions, conditionTree, newFormat);
 
-        final String dir = ActionManager.getActionManager().getDirectory() + group + File.separator;
-        location = dir + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
+        this.actionController = actionController;
+        this.identityController = identityController;
+        this.actionsDirectory = actionsDirectory;
+        this.location = actionsDirectory + group + File.separator + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
-        new File(dir).mkdirs();
+        new File(actionsDirectory + group).mkdirs();
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.ACTION_CREATED, null, this);
+        actionController.triggerEvent(CoreActionType.ACTION_CREATED, null, this);
 
         save();
 
-        IdentityManager.getIdentityManager().getGlobalConfiguration().addChangeListener("disable_action",
+        identityController.getGlobalConfiguration().addChangeListener("disable_action",
                 (group + "/" + name).replace(' ', '.'), this);
         checkDisabled();
 
-        ActionManager.getActionManager().addAction(this);
+        actionController.addAction(this);
     }
 
     /**
@@ -209,8 +239,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     private void checkMetaData() {
         if (config.isKeyDomain(DOMAIN_METADATA)) {
-            final ActionGroup myGroup = ActionManager.getActionManager()
-                    .getOrCreateGroup(group);
+            final ActionGroup myGroup = actionController.getOrCreateGroup(group);
             final Map<String, String> data = config.getKeyDomain(DOMAIN_METADATA);
 
             if (data.containsKey("description")) {
@@ -235,20 +264,18 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         for (int i = 0; config.isKeyDomain("setting " + i); i++) {
-            final ActionGroup myGroup = ActionManager.getActionManager()
-                    .getOrCreateGroup(group);
+            final ActionGroup myGroup = actionController.getOrCreateGroup(group);
             final Map<String, String> data = config.getKeyDomain("setting " + i);
 
             if (data.containsKey("type") && data.containsKey("setting")
                     && data.containsKey("title") && data.containsKey("default")
                     && data.containsKey("tooltip")) {
-                ActionManager.getActionManager().registerSetting(
-                        data.get("setting"), data.get("default"));
+                actionController.registerSetting(data.get("setting"), data.get("default"));
                 myGroup.getSettings().put(data.get("setting"), new PreferencesSetting(
                         PreferencesType.valueOf(data.get("type")), "actions",
                         data.get("setting"), data.get("title"), data.get("tooltip"),
-                        IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                        IdentityManager.getIdentityManager().getUserSettings()));
+                        identityController.getGlobalConfiguration(),
+                        identityController.getUserSettings()));
             }
         }
     }
@@ -263,7 +290,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         triggers = new ActionType[newTriggers.size()];
 
         for (int i = 0; i < triggers.length; i++) {
-            triggers[i] = ActionManager.getActionManager().getType(newTriggers.get(i));
+            triggers[i] = actionController.getType(newTriggers.get(i));
 
             if (triggers[i] == null) {
                 error(ActionErrorType.TRIGGERS, "Invalid trigger specified: " + newTriggers.get(i));
@@ -327,7 +354,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         int i = 0;
         for (ActionCondition condition : conditions) {
-            final Map<String, String> data = new HashMap<String, String>();
+            final Map<String, String> data = new HashMap<>();
 
             data.put("argument", String.valueOf(condition.getArg()));
 
@@ -363,8 +390,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
             Logger.userError(ErrorLevel.HIGH, "I/O error when saving action: "
                     + group + "/" + name + ": " + ex.getMessage());
         }
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.ACTION_UPDATED, null, this);
+
+        actionController.triggerEvent(CoreActionType.ACTION_UPDATED, null, this);
     }
 
     /**
@@ -374,7 +401,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @return True if the condition is valid, false otherwise
      */
     private boolean readCondition(final Map<String, String> data) {
-        int arg = 0;
+        int arg;
         ActionComponent component = null;
         ActionComparison comparison;
         String target;
@@ -413,7 +440,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         // ------ Read the comparison
 
-        comparison = ActionManager.getActionManager().getComparison(data.get("comparison"));
+        comparison = actionController.getComparison(data.get("comparison"));
         if (comparison == null) {
             error(ActionErrorType.CONDITIONS, "Invalid comparison specified: "
                     + data.get("comparison"));
@@ -458,11 +485,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
         ActionComponent component;
 
         if (componentName.indexOf('.') == -1) {
-            component = ActionManager.getActionManager().getComponent(componentName);
+            component = actionController.getComponent(componentName);
         } else {
             try {
                 component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
-                        componentName, ActionManager.getActionManager());
+                        componentName, actionController);
             } catch (IllegalArgumentException iae) {
                 error(ActionErrorType.CONDITIONS, iae.getMessage());
                 return null;
@@ -504,7 +531,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super.setName(newName);
 
         new File(location).delete();
-        location = ActionManager.getActionManager().getDirectory() + group + File.separator + newName;
+        location = actionsDirectory + group + File.separator + newName;
 
         save();
     }
@@ -516,7 +543,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         new File(location).delete();
 
-        final String dir = ActionManager.getActionManager().getDirectory() + group + File.separator;
+        final String dir = actionsDirectory + group + File.separator;
         location = dir + name;
 
         new File(dir).mkdirs();
@@ -528,8 +555,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Deletes this action.
      */
     public void delete() {
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.ACTION_DELETED, null, getGroup(), getName());
+        actionController.triggerEvent(CoreActionType.ACTION_DELETED, null, getGroup(), getName());
         new File(location).delete();
     }
 
@@ -555,10 +581,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     protected void checkDisabled() {
         final String key = (group + "/" + name).replace(' ', '.');
-        final boolean disabled = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().hasOptionBool("disable_action", key)
-                && IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOptionBool("disable_action", key);
+        final boolean disabled =
+                identityController.getGlobalConfiguration().hasOptionBool("disable_action", key)
+                && identityController.getGlobalConfiguration().getOptionBool("disable_action", key);
 
         if (disabled && status == ActionStatus.ACTIVE) {
             status = ActionStatus.DISABLED;
@@ -574,11 +599,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public void setEnabled(final boolean enabled) {
         if (enabled) {
-            IdentityManager.getIdentityManager().getUserSettings()
-                    .unsetOption("disable_action", (group + "/" + name).replace(' ', '.'));
+            identityController.getUserSettings().unsetOption("disable_action",
+                    (group + "/" + name).replace(' ', '.'));
         } else {
-            IdentityManager.getIdentityManager().getUserSettings()
-                    .setOption("disable_action", (group + "/" + name).replace(' ', '.'), true);
+            identityController.getUserSettings().setOption("disable_action",
+                    (group + "/" + name).replace(' ', '.'), true);
         }
     }
 

@@ -7,7 +7,9 @@ import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
@@ -87,6 +89,7 @@ public class TestMain extends Main {
 
                 final String configDirectory = tempFile.getAbsolutePath() + File.separator;
                 final String pluginDirectory = configDirectory + "plugins" + File.separator;
+                final String actionsDirectory = configDirectory + "actions" + File.separator;
 
                 // TODO: Tests probably shouldn't rely on a config dir... Who knows
                 //       what the user has done with their config.
@@ -97,8 +100,12 @@ public class TestMain extends Main {
                 final ServerManager serverManager = mock(ServerManager.class);
                 final CommandManager commandManager = new CommandManager(serverManager);
 
+                final ActionFactory actionFactory = new ActionFactory(
+                        new DummyProvider<>(mock(ActionController.class)),
+                        new DummyProvider<IdentityController>(identityManager),
+                        actionsDirectory);
                 final ActionManager actionManager = new ActionManager(
-                        serverManager, identityManager, new ActionFactory(),
+                        serverManager, identityManager, actionFactory,
                         new DummyProvider<>(Collections.<ActionGroup>emptySet()));
                 ActionManager.setActionManager(actionManager);
 
