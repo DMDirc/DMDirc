@@ -21,7 +21,6 @@
  */
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.TestMain;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;

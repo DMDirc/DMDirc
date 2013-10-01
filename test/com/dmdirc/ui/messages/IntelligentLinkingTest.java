@@ -23,14 +23,11 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.TestMain;
-import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -56,11 +53,6 @@ public class IntelligentLinkingTest {
         when(container.getConfigManager()).thenReturn(manager);
 
         styliser = new Styliser(container);
-    }
-
-    @BeforeClass
-    public static void setUp() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
     }
 
     @Test

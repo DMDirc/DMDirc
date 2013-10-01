@@ -23,13 +23,10 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.TestMain;
-import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Enumeration;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,11 +34,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class StyliserTest {
-
-    @Before
-    public void setUp() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
-    }
 
     @Test
     public void testStripControlCodes1() {

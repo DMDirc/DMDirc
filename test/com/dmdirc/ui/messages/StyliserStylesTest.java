@@ -23,8 +23,6 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.TestMain;
-import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.util.Utils;
 
@@ -37,7 +35,6 @@ import java.util.Map;
 
 import javax.swing.text.DefaultStyledDocument;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,11 +52,6 @@ public class StyliserStylesTest {
     public StyliserStylesTest(String input, String output) {
         this.input = input;
         this.output = output;
-    }
-
-    @BeforeClass
-    public static void setUp() throws InvalidIdentityFileException {
-        TestMain.getTestMain();
     }
 
     @Test

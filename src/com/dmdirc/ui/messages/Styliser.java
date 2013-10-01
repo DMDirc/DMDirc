@@ -143,6 +143,8 @@ public class Styliser implements ConfigChangeListener {
     private final Server server;
     /** Config manager to retrieve settings from. */
     private final AggregateConfigProvider configManager;
+    /** Colour manager to use to parse colours. */
+    private final ColourManager colourManager;
 
     /**
      * Creates a new instance of Styliser.
@@ -163,6 +165,9 @@ public class Styliser implements ConfigChangeListener {
     public Styliser(final Server server, final AggregateConfigProvider configManager) {
         this.server = server;
         this.configManager = configManager;
+
+        // TODO: This should probably be passed in, not created here.
+        this.colourManager = new ColourManager(configManager);
 
         configManager.addChangeListener("ui", "linkcolour", this);
         configManager.addChangeListener("ui", "channelcolour", this);
@@ -824,12 +829,13 @@ public class Styliser implements ConfigChangeListener {
      * @param attribs The attribute set to modify
      * @param foreground The colour code/hex of the new foreground colour
      */
-    private static void setForeground(final SimpleAttributeSet attribs,
+    private void setForeground(final SimpleAttributeSet attribs,
             final String foreground) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
-        attribs.addAttribute(StyleConstants.Foreground, convertColour(ColourManager.parseColour(foreground)));
+        attribs.addAttribute(StyleConstants.Foreground,
+                convertColour(colourManager.getColourFromString(foreground, Colour.WHITE)));
     }
 
     /**
@@ -838,12 +844,13 @@ public class Styliser implements ConfigChangeListener {
      * @param attribs The attribute set to modify
      * @param background The colour code/hex of the new background colour
      */
-    private static void setBackground(final SimpleAttributeSet attribs,
+    private void setBackground(final SimpleAttributeSet attribs,
             final String background) {
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
-        attribs.addAttribute(StyleConstants.Background, convertColour(ColourManager.parseColour(background)));
+        attribs.addAttribute(StyleConstants.Background,
+                convertColour(colourManager.getColourFromString(background, Colour.WHITE)));
     }
 
     /**
@@ -851,9 +858,9 @@ public class Styliser implements ConfigChangeListener {
      * @param attribs The attribute set to apply this default on
      * @param foreground The default foreground colour
      */
-    private static void setDefaultForeground(final SimpleAttributeSet attribs,
-            final String foreground) {
-        attribs.addAttribute("DefaultForeground", convertColour(ColourManager.parseColour(foreground)));
+    private void setDefaultForeground(final SimpleAttributeSet attribs, final String foreground) {
+        attribs.addAttribute("DefaultForeground",
+                convertColour(colourManager.getColourFromString(foreground, Colour.WHITE)));
     }
 
     /**
@@ -861,9 +868,9 @@ public class Styliser implements ConfigChangeListener {
      * @param attribs The attribute set to apply this default on
      * @param background The default background colour
      */
-    private static void setDefaultBackground(final SimpleAttributeSet attribs,
-            final String background) {
-        attribs.addAttribute("DefaultBackground", convertColour(ColourManager.parseColour(background)));
+    private void setDefaultBackground(final SimpleAttributeSet attribs, final String background) {
+        attribs.addAttribute("DefaultBackground",
+                convertColour(colourManager.getColourFromString(background, Colour.WHITE)));
     }
 
     /** {@inheritDoc} */
