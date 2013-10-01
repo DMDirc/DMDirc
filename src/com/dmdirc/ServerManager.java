@@ -68,6 +68,9 @@ public class ServerManager implements ServerFactory {
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
 
+    /** Provider of alias wrappers for servers. */
+    private final Provider<AliasWrapper> aliasWrapperProvider;
+
     /**
      * Creates a new instance of ServerManager.
      *
@@ -75,17 +78,20 @@ public class ServerManager implements ServerFactory {
      * @param identityController The identity controller to use to find profiles.
      * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
+     * @param aliasWrapperProvider A provider of {@link AliasWrapper}s to give to servers.
      */
     @Inject
     public ServerManager(
             final Provider<ParserFactory> parserFactoryProvider,
             final IdentityController identityController,
             final IdentityFactory identityFactory,
-            final Provider<CommandController> commandController) {
+            final Provider<CommandController> commandController,
+            final Provider<AliasWrapper> aliasWrapperProvider) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
+        this.aliasWrapperProvider = aliasWrapperProvider;
     }
 
     /** {@inheritDoc} */
@@ -99,7 +105,7 @@ public class ServerManager implements ServerFactory {
                 new ServerCommandParser(configManager),
                 parserFactoryProvider.get(),
                 WindowManager.getWindowManager(),
-                AliasWrapper.getAliasWrapper(),
+                aliasWrapperProvider.get(),
                 commandController.get(),
                 identityFactory,
                 uri,
