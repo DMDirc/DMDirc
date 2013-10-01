@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -50,6 +51,9 @@ public class AliasCommand extends Command implements IntelligentCommand {
             "alias [--remove] <name> [command] - creates or removes the specified alias",
             CommandType.TYPE_GLOBAL);
 
+    /** Factory to use when creating aliases. */
+    private final ActionFactory actionFactory;
+
     /** Wrapper to use to modify aliases. */
     private final AliasWrapper aliasWrapper;
 
@@ -57,11 +61,16 @@ public class AliasCommand extends Command implements IntelligentCommand {
      * Creates a new instance of {@link AliasCommand}.
      *
      * @param controller The controller that owns this command.
+     * @param actionFactory The factory to use when creating new aliases.
      * @param aliasWrapper The wrapper to use to modify aliases.
      */
     @Inject
-    public AliasCommand(final CommandController controller, final AliasWrapper aliasWrapper) {
+    public AliasCommand(
+            final CommandController controller,
+            final ActionFactory actionFactory,
+            final AliasWrapper aliasWrapper) {
         super(controller);
+        this.actionFactory = actionFactory;
         this.aliasWrapper = aliasWrapper;
     }
 
@@ -103,7 +112,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
             }
         }
 
-        final Alias myAlias = new Alias(name);
+        final Alias myAlias = new Alias(actionFactory, name);
         myAlias.setResponse(new String[]{args.getArgumentsAsString(1)});
         myAlias.createAction().save();
 

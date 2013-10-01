@@ -49,7 +49,7 @@ public class Alias implements Serializable {
 
     /** The factory to use to create actions. */
     // TODO: This should be injected.
-    private final ActionFactory actionFactory = new ActionFactory();
+    private final ActionFactory actionFactory;
 
     /** Alias command. */
     private String command;
@@ -63,9 +63,11 @@ public class Alias implements Serializable {
     /**
      * Creates a new Alias wrapper.
      *
+     * @param actionFactory Factory to use to create alias actions.
      * @param command Alias command
      */
-    public Alias(final String command) {
+    public Alias(final ActionFactory actionFactory, final String command) {
+        this.actionFactory = actionFactory;
         this.command = command;
         this.arguments = new ArrayList<>();
         this.arguments.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
@@ -76,12 +78,14 @@ public class Alias implements Serializable {
     /**
      * Wraps an existing Action in an Alias.
      *
+     * @param actionFactory Factory to use to create alias actions.
      * @param command Alias command
      * @param arguments List of arguments for the alias
      * @param response Response for the alias
      */
-    public Alias(final String command, final List<ActionCondition> arguments,
-            final String[] response) {
+    public Alias(final ActionFactory actionFactory, final String command,
+            final List<ActionCondition> arguments, final String[] response) {
+        this.actionFactory = actionFactory;
         this.command = command;
         this.arguments = new ArrayList<>(arguments);
         this.response = response.clone();

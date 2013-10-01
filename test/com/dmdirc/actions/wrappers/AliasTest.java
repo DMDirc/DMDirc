@@ -22,17 +22,20 @@
 
 package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.actions.ActionFactory;
+
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class AliasTest {
 
     @Test
     public void testBasics() {
-        final Alias alias = new Alias("testing");
+        final Alias alias = new Alias(mock(ActionFactory.class), "testing");
 
         assertEquals("testing", alias.getCommand());
         assertEquals("testing-Any", alias.getName());

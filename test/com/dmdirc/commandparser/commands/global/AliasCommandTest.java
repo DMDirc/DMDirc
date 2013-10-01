@@ -22,6 +22,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -44,7 +45,7 @@ public class AliasCommandTest {
 
     @Before
     public void setup() {
-        command = new AliasCommand(controller, aliasWrapper);
+        command = new AliasCommand(controller, mock(ActionFactory.class), aliasWrapper);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
     }
