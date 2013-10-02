@@ -22,11 +22,11 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.ui.input.TabCompleterFactory;
 
 import javax.inject.Provider;
 
@@ -48,13 +48,13 @@ public class ServerManagerTest {
     @Mock private IdentityFactory identityFactory;
     @Mock private Provider<ParserFactory> parserFactoryProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
-    @Mock private Provider<AliasWrapper> aliasWrapperProvider;
+    @Mock private TabCompleterFactory tabCompleterFactory;
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(parserFactoryProvider, identityController,
-                identityFactory, commandControllerProvider, aliasWrapperProvider);
+                identityFactory, commandControllerProvider, tabCompleterFactory);
     }
 
     @After

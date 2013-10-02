@@ -22,13 +22,13 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
 
@@ -37,8 +37,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ServerTest {
 
@@ -49,7 +49,7 @@ public class ServerTest {
     @Mock private ParserFactory parserFactory;
     @Mock private IdentityFactory identityFactory;
     @Mock private WindowManager windowManager;
-    @Mock private AliasWrapper aliasWrapper;
+    @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private CommandController commandController;
 
     private Server server;
@@ -66,7 +66,7 @@ public class ServerTest {
                 commandParser,
                 parserFactory,
                 windowManager,
-                aliasWrapper,
+                tabCompleterFactory,
                 commandController,
                 identityFactory,
                 new URI("irc-test://255.255.255.255"),

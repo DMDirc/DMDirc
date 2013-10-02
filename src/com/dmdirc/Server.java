@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.AwayStateListener;
@@ -57,6 +56,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
 
@@ -90,19 +90,19 @@ import lombok.extern.slf4j.Slf4j;
  * to the server.
  */
 @Slf4j
-public class Server extends WritableFrameContainer
-        implements ConfigChangeListener, CertificateProblemListener, Connection {
+public class Server extends WritableFrameContainer implements ConfigChangeListener,
+        CertificateProblemListener, Connection {
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
 
     // <editor-fold defaultstate="collapsed" desc="Static">
 
     /** The name of the general domain. */
-    private static final String DOMAIN_GENERAL = "general".intern();
+    private static final String DOMAIN_GENERAL = "general";
     /** The name of the profile domain. */
-    private static final String DOMAIN_PROFILE = "profile".intern();
+    private static final String DOMAIN_PROFILE = "profile";
     /** The name of the server domain. */
-    private static final String DOMAIN_SERVER = "server".intern();
+    private static final String DOMAIN_SERVER = "server";
 
     // </editor-fold>
 
@@ -202,7 +202,7 @@ public class Server extends WritableFrameContainer
      * @param commandParser The parser to use for commands in this server's window.
      * @param parserFactory The factory to use to generate parsers.
      * @param windowManager The window manager to register this server with.
-     * @param aliasWrapper The actions wrapper to retrieve aliases from.
+     * @param tabCompleterFactory The factory to use for tab completers.
      * @param commandController The controller to use to retrieve commands.
      * @param identityFactory The factory to use to create identities.
      * @param uri The address of the server to connect to
@@ -214,7 +214,7 @@ public class Server extends WritableFrameContainer
             final CommandParser commandParser,
             final ParserFactory parserFactory,
             final WindowManager windowManager,
-            final AliasWrapper aliasWrapper,
+            final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final IdentityFactory identityFactory,
             final URI uri,
@@ -236,14 +236,8 @@ public class Server extends WritableFrameContainer
         manager.registerServer(this);
         windowManager.addWindow(this);
 
-        // TODO: Server shouldn't have to know about the alias wrapper.
-        tabCompleter = new TabCompleter(configManager);
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                aliasWrapper.getAliases());
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                commandController.getCommandNames(CommandType.TYPE_SERVER));
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                commandController.getCommandNames(CommandType.TYPE_GLOBAL));
+        tabCompleter = tabCompleterFactory.getTabCompleter(configManager,
+                CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL);
 
         updateIcon();
 

@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.CommandController;
@@ -34,6 +33,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -68,8 +68,8 @@ public class ServerManager implements ServerFactory {
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
 
-    /** Provider of alias wrappers for servers. */
-    private final Provider<AliasWrapper> aliasWrapperProvider;
+    /** Factory to use for tab completers. */
+    private final TabCompleterFactory tabCompleterFactory;
 
     /**
      * Creates a new instance of ServerManager.
@@ -78,7 +78,7 @@ public class ServerManager implements ServerFactory {
      * @param identityController The identity controller to use to find profiles.
      * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
-     * @param aliasWrapperProvider A provider of {@link AliasWrapper}s to give to servers.
+     * @param tabCompleterFactory Factory to use for tab completers.
      */
     @Inject
     public ServerManager(
@@ -86,12 +86,12 @@ public class ServerManager implements ServerFactory {
             final IdentityController identityController,
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
-            final Provider<AliasWrapper> aliasWrapperProvider) {
+            final TabCompleterFactory tabCompleterFactory) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
-        this.aliasWrapperProvider = aliasWrapperProvider;
+        this.tabCompleterFactory = tabCompleterFactory;
     }
 
     /** {@inheritDoc} */
@@ -105,7 +105,7 @@ public class ServerManager implements ServerFactory {
                 new ServerCommandParser(configManager),
                 parserFactoryProvider.get(),
                 WindowManager.getWindowManager(),
-                aliasWrapperProvider.get(),
+                tabCompleterFactory,
                 commandController.get(),
                 identityFactory,
                 uri,
