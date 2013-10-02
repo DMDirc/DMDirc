@@ -56,36 +56,31 @@ import lombok.extern.slf4j.Slf4j;
 public class UpdateManagerImpl implements UpdateManager {
 
     /** Collection of known update checking strategies. */
-    private final List<UpdateCheckStrategy> checkers
-            = new CopyOnWriteArrayList<UpdateCheckStrategy>();
+    private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
 
     /** Collection of known update retrieval strategies. */
-    private final List<UpdateRetrievalStategy> retrievers
-            = new CopyOnWriteArrayList<UpdateRetrievalStategy>();
+    private final List<UpdateRetrievalStategy> retrievers = new CopyOnWriteArrayList<>();
 
     /** Collection of known update installation strategies. */
-    private final List<UpdateInstallationStrategy> installers
-            = new CopyOnWriteArrayList<UpdateInstallationStrategy>();
+    private final List<UpdateInstallationStrategy> installers = new CopyOnWriteArrayList<>();
 
-    /** Map of known component names to their components. */
-    private final Map<String, UpdateComponent> components
-            = new HashMap<String, UpdateComponent>();
+    /** Map of known component names to their components. Guarded by {@link #componentsLock}. */
+    private final Map<String, UpdateComponent> components = new HashMap<>();
 
     /** Listener used to proxy retrieval events. */
-    private final UpdateRetrievalListener retrievalListener
-            = new RetrievalListener();
+    private final UpdateRetrievalListener retrievalListener = new RetrievalListener();
 
     /** Listener used to proxy setRetrievalResult events. */
-    private final UpdateInstallationListener installationListener
-            = new InstallListener();
+    private final UpdateInstallationListener installationListener = new InstallListener();
 
     /** Cache of update check results. */
-    private final Map<UpdateComponent, UpdateCheckResult> checkResults
-            = new HashMap<UpdateComponent, UpdateCheckResult>();
+    private final Map<UpdateComponent, UpdateCheckResult> checkResults = new HashMap<>();
 
     /** Cache of retrieval results. */
-    private final Map<UpdateComponent, UpdateRetrievalResult> retrievalResults
-            = new HashMap<UpdateComponent, UpdateRetrievalResult>();
+    private final Map<UpdateComponent, UpdateRetrievalResult> retrievalResults = new HashMap<>();
+
+    /** Lock for accessing {@link #components}. */
+    private final Object componentsLock = new Object();
 
     /** Executor to use to schedule retrieval and installation jobs. */
     private final Executor executor;
@@ -125,14 +120,19 @@ public class UpdateManagerImpl implements UpdateManager {
     @Override
     public void addComponent(final UpdateComponent component) {
         log.trace("Adding new component: {}", component);
-        this.components.put(component.getName(), component);
+        synchronized (componentsLock) {
+            this.components.put(component.getName(), component);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeComponent(final UpdateComponent component) {
         log.trace("Removing component: {}", component);
-        this.components.remove(component.getName());
+        synchronized (componentsLock) {
+            this.components.remove(component.getName());
+        }
+
         this.checkResults.remove(component);
         this.retrievalResults.remove(component);
     }
@@ -140,7 +140,9 @@ public class UpdateManagerImpl implements UpdateManager {
     /** {@inheritDoc} */
     @Override
     public Collection<UpdateComponent> getComponents() {
-        return Collections.unmodifiableCollection(this.components.values());
+        synchronized (componentsLock) {
+            return Collections.unmodifiableCollection(this.components.values());
+        }
     }
 
     /** {@inheritDoc} */
@@ -152,25 +154,34 @@ public class UpdateManagerImpl implements UpdateManager {
     /** {@inheritDoc} */
     @Override
     public void checkForUpdates() {
-        final Collection<Map<UpdateComponent, UpdateCheckResult>> results
-                = new ArrayList<Map<UpdateComponent, UpdateCheckResult>>();
+        final Collection<Map<UpdateComponent, UpdateCheckResult>> results = new ArrayList<>();
 
         log.info("Checking for updates for {} components using {} strategies",
                 components.size(), checkers.size());
         log.trace("Components: {}", components);
         log.trace("Strategies: {}", checkers);
 
-        final List<UpdateComponent> enabledComponents
-                = new ArrayList<UpdateComponent>(components.size());
+        final List<UpdateComponent> enabledComponents = new ArrayList<>(components.size());
+        final List<UpdateComponent> disabledComponents = new ArrayList<>(components.size());
 
-        for (UpdateComponent component : components.values()) {
-            if (policy.canCheck(component)) {
-                fireUpdateStatusChanged(component, UpdateStatus.CHECKING, 0);
-                enabledComponents.add(component);
-            } else {
-                log.debug("Checking for updates for {} denied by policy", component.getName());
-                fireUpdateStatusChanged(component, UpdateStatus.CHECKING_NOT_PERMITTED, 0);
+        synchronized (componentsLock) {
+            for (UpdateComponent component : components.values()) {
+                if (policy.canCheck(component)) {
+                    enabledComponents.add(component);
+                } else {
+                    log.debug("Checking for updates for {} denied by policy", component.getName());
+                    disabledComponents.add(component);
+                }
             }
+        }
+
+        // Fire the listeners now we don't care about concurrent modifications.
+        for (UpdateComponent component : enabledComponents) {
+            fireUpdateStatusChanged(component, UpdateStatus.CHECKING, 0);
+        }
+
+        for (UpdateComponent component : disabledComponents) {
+            fireUpdateStatusChanged(component, UpdateStatus.CHECKING_NOT_PERMITTED, 0);
         }
 
         for (UpdateCheckStrategy strategy : checkers) {
