@@ -65,17 +65,6 @@ public class ParserFactory {
      * @since 0.6.3
      */
     public Parser getParser(final MyInfo myInfo, final URI address) {
-        // TODO: Hacky Hack McHack
-        if ("irc-test".equals(address.getScheme())) {
-            try {
-                return (Parser) Class.forName("com.dmdirc.harness.parser.TestParser")
-                        .getConstructor(MyInfo.class, URI.class)
-                        .newInstance(myInfo, address);
-            } catch (Exception ex) {
-                Logger.userError(ErrorLevel.UNKNOWN, "Unable to create parser", ex);
-            }
-        }
-
         final Object obj = getExportResult(address, "getParser", myInfo, address);
 
         if (obj instanceof Parser) {
