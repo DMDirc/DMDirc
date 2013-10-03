@@ -17,7 +17,7 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.+" conf="main->default" />
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.+" conf="test->default" />
 
-        <dependency org="com.github.peichhorn" name="lombok-pg" rev="latest.release" conf="main->default" />
+        <dependency org="org.projectlombok" name="lombok" rev="latest.integration" conf="main->default" />
 
         <dependency org="com.squareup.dagger" name="dagger" rev="1.1.+" conf="main->default" />
         <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.1.+" conf="main->default" />
