@@ -42,12 +42,15 @@ import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Utility class that can initialise a {@link SimpleInjector} for use by plugins.
  *
  * Eventually this should be replaced by using the same DI framework for plugins
  * as for the client.
  */
+@RequiredArgsConstructor(onConstructor = @_(@Inject))
 public class PluginInjectorInitialiser {
 
     private final ActionManager actionManager;
@@ -67,48 +70,6 @@ public class PluginInjectorInitialiser {
     private final CorePluginExtractor corePluginExtractor;
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
-
-    /**
-     * Creates a new {@link PluginInjectorInitialiser} which will inject all
-     * of the given parameters.
-     */
-    @Inject
-    public PluginInjectorInitialiser(
-            final ActionManager actionManager,
-            final ActionFactory actionFactory,
-            final AliasWrapper aliasWrapper,
-            final PluginManager pluginManager,
-            final IdentityManager identityManager,
-            final ServerManager serverManager,
-            final ThemeManager themeManager,
-            final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager,
-            final StatusBarManager statusBarManager,
-            final PreferencesManager preferencesManager,
-            final PerformWrapper performWrapper,
-            final LifecycleController lifecycleController,
-            final CorePluginExtractor corePluginExtractor,
-            final URLBuilder urlBuilder,
-            final ColourManager colourManager) {
-        this.actionManager = actionManager;
-        this.actionFactory = actionFactory;
-        this.aliasWrapper = aliasWrapper;
-        this.pluginManager = pluginManager;
-        this.identityManager = identityManager;
-        this.serverManager = serverManager;
-        this.themeManager = themeManager;
-        this.commandManager = commandManager;
-        this.messageSinkManager = messageSinkManager;
-        this.windowManager = windowManager;
-        this.statusBarManager = statusBarManager;
-        this.preferencesManager = preferencesManager;
-        this.performWrapper = performWrapper;
-        this.lifecycleController = lifecycleController;
-        this.corePluginExtractor = corePluginExtractor;
-        this.urlBuilder = urlBuilder;
-        this.colourManager = colourManager;
-    }
 
     /**
      * Initialises the given injector with all of the known "global" managers.
