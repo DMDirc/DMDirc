@@ -49,13 +49,11 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
-import lombok.ListenerSupport;
 
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
  */
-@ListenerSupport({NotificationListener.class, FrameInfoListener.class})
 @SuppressWarnings("PMD.UnusedPrivateField")
 public abstract class FrameContainer {
 
@@ -228,7 +226,7 @@ public abstract class FrameContainer {
     protected void setName(final String name) {
         this.name = name;
 
-        fireNameChanged(this, name);
+        listeners.getCallable(FrameInfoListener.class).nameChanged(this, name);
     }
 
     /**
@@ -240,7 +238,7 @@ public abstract class FrameContainer {
     public void setTitle(final String title) {
         this.title = title;
 
-        fireTitleChanged(this, title);
+        listeners.getCallable(FrameInfoListener.class).titleChanged(this, title);
     }
 
     /**
@@ -322,7 +320,7 @@ public abstract class FrameContainer {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        fireIconChanged(this, icon);
+        listeners.getCallable(FrameInfoListener.class).iconChanged(this, icon);
     }
 
     /**
@@ -346,7 +344,7 @@ public abstract class FrameContainer {
         // TODO: This should default ot something colour independent
         notification = Colour.BLACK;
 
-        fireNotificationCleared(this);
+        listeners.getCallable(NotificationListener.class).notificationCleared(this);
     }
 
     /**
@@ -358,7 +356,7 @@ public abstract class FrameContainer {
         if (!colour.equals(notification)) {
             notification = colour;
 
-            fireNotificationSet(this, colour);
+            listeners.getCallable(NotificationListener.class).notificationSet(this, colour);
         }
     }
 
@@ -542,6 +540,42 @@ public abstract class FrameContainer {
      */
     public void removeComponentListener(final FrameComponentChangeListener listener) {
         listeners.remove(FrameComponentChangeListener.class, listener);
+    }
+
+    /**
+     * Adds a notification listener to this container.
+     *
+     * @param listener The listener to inform of notification events.
+     */
+    public void addNotificationListener(final NotificationListener listener) {
+        listeners.add(NotificationListener.class, listener);
+    }
+
+    /**
+     * Removes a notification listener from this container.
+     *
+     * @param listener The listener to be removed.
+     */
+    public void removeNotificationListener(final NotificationListener listener) {
+        listeners.remove(NotificationListener.class, listener);
+    }
+
+    /**
+     * Adds a frame info listener to this container.
+     *
+     * @param listener The listener to be informed of frame information changes.
+     */
+    public void addFrameInfoListener(final FrameInfoListener listener) {
+        listeners.add(FrameInfoListener.class, listener);
+    }
+
+    /**
+     * Removes a frame info listener from this container.
+     *
+     * @param listener The listener to be removed.
+     */
+    public void removeFrameInfoListener(final FrameInfoListener listener) {
+        listeners.remove(FrameInfoListener.class, listener);
     }
 
     /**

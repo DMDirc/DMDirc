@@ -24,6 +24,7 @@ package com.dmdirc.updater.retrieving;
 
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.DownloadableUpdate;
+import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.io.DownloadListener;
 import com.dmdirc.util.io.Downloader;
 
@@ -31,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 
 import lombok.AllArgsConstructor;
-import lombok.ListenerSupport;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,8 +39,10 @@ import lombok.extern.slf4j.Slf4j;
  * {@link DownloadableUpdate}.
  */
 @Slf4j
-@ListenerSupport(UpdateRetrievalListener.class)
 public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<DownloadableUpdate> {
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /** The directory to put temporary update files in. */
     private final String directory;
@@ -63,18 +65,21 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
         try {
             final String file = getFileName();
 
-            fireRetrievalProgressChanged(checkResult.getComponent(), 0);
+            listenerList.getCallable(UpdateRetrievalListener.class)
+                    .retrievalProgressChanged(checkResult.getComponent(), 0);
 
             log.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
             Downloader.downloadPage(checkResult.getUrl().toString(), file,
                     new DownloadProgressListener(checkResult.getComponent()));
 
-            fireRetrievalCompleted(checkResult.getComponent());
+            listenerList.getCallable(UpdateRetrievalListener.class)
+                    .retrievalCompleted(checkResult.getComponent());
 
             return new BaseSingleFileResult(checkResult, new File(file));
         } catch (IOException ex) {
             log.warn("I/O exception downloading update from {}", checkResult.getUrl(), ex);
-            fireRetrievalFailed(checkResult.getComponent());
+            listenerList.getCallable(UpdateRetrievalListener.class)
+                    .retrievalFailed(checkResult.getComponent());
         }
 
         return new BaseRetrievalResult(checkResult, false);
@@ -90,6 +95,18 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
                     + Math.round(10000 * Math.random()) + ".tmp";
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void addUpdateRetrievalListener(final UpdateRetrievalListener listener) {
+        listenerList.add(UpdateRetrievalListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdateRetrievalListener(final UpdateRetrievalListener listener) {
+        listenerList.remove(UpdateRetrievalListener.class, listener);
+    }
+
     /**
      * A {@link DownloadListener} which proxies progress updates on to
      * this strategy's {@link UpdateRetrievalListener}s.
@@ -103,7 +120,8 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
         /** {@inheritDoc} */
         @Override
         public void downloadProgress(final float percent) {
-            fireRetrievalProgressChanged(component, percent);
+            listenerList.getCallable(UpdateRetrievalListener.class)
+                    .retrievalProgressChanged(component, percent);
         }
 
         /** {@inheritDoc} */

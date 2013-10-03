@@ -24,8 +24,8 @@ package com.dmdirc.updater.installing;
 
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.retrieving.SingleFileRetrievalResult;
+import com.dmdirc.util.collections.ListenerList;
 
-import lombok.ListenerSupport;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -34,8 +34,10 @@ import lombok.extern.slf4j.Slf4j;
  * installation.
  */
 @Slf4j
-@ListenerSupport(UpdateInstallationListener.class)
 public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrategy<UpdateComponent, SingleFileRetrievalResult> {
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /**
      * Creates a new {@link LegacyInstallationStrategy}.
@@ -52,11 +54,23 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
 
         try {
             component.doInstall(retrievalResult.getFile().getAbsolutePath());
-            fireInstallCompleted(component);
+            listenerList.getCallable(UpdateInstallationListener.class).installCompleted(component);
         } catch (Exception ex) {
             log.warn("Error installing update for {}", component.getName(), ex);
-            fireInstallFailed(component);
+            listenerList.getCallable(UpdateInstallationListener.class).installFailed(component);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addUpdateInstallationListener(final UpdateInstallationListener listener) {
+        listenerList.add(UpdateInstallationListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdateInstallationListener(final UpdateInstallationListener listener) {
+        listenerList.remove(UpdateInstallationListener.class, listener);
     }
 
 }

@@ -28,6 +28,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEntryListener;
 import com.dmdirc.parser.interfaces.callbacks.GroupListStartListener;
+import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.ObservableList;
 import com.dmdirc.util.collections.ObservableListDecorator;
 
@@ -35,16 +36,17 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import lombok.Getter;
-import lombok.ListenerSupport;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Manages a group list request.
  */
 @RequiredArgsConstructor
-@ListenerSupport(GroupListObserver.class)
 public class GroupListManager implements GroupListStartListener,
         GroupListEntryListener, GroupListEndListener {
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /** The server to request group information from. */
     private final Server server;
@@ -52,7 +54,7 @@ public class GroupListManager implements GroupListStartListener,
     /** The cached groups. */
     @Getter
     private final ObservableList<GroupListEntry> groups
-            = new ObservableListDecorator<GroupListEntry>(new LinkedList<GroupListEntry>());
+            = new ObservableListDecorator<>(new LinkedList<GroupListEntry>());
 
     /**
      * Starts a search with the given search terms.
@@ -72,7 +74,7 @@ public class GroupListManager implements GroupListStartListener,
     /** {@inheritDoc} */
     @Override
     public void onGroupListStart(final Parser parser, final Date date) {
-        fireOnGroupListStarted();
+        listenerList.getCallable(GroupListObserver.class).onGroupListStarted();
     }
 
     /** {@inheritDoc} */
@@ -86,7 +88,7 @@ public class GroupListManager implements GroupListStartListener,
     @Override
     public void onGroupListEnd(final Parser parser, final Date date) {
         parser.getCallbackManager().delAllCallback(this);
-        fireOnGroupListFinished();
+        listenerList.getCallable(GroupListObserver.class).onGroupListFinished();
     }
 
     /**
@@ -96,6 +98,24 @@ public class GroupListManager implements GroupListStartListener,
      */
     public void joinGroupListEntry(final GroupListEntry entry) {
         server.join(new ChannelJoinRequest(entry.getName()));
+    }
+
+    /**
+     * Adds an observer to this mananger.
+     *
+     * @param observer The observer to be notified of group start/stop events.
+     */
+    public void addGroupListObserver(final GroupListObserver observer) {
+        listenerList.add(GroupListObserver.class, observer);
+    }
+
+    /**
+     * Removes an observer from this manager.
+     *
+     * @param observer The observer to be removed.
+     */
+    public void removeGroupListObserver(final GroupListObserver observer) {
+        listenerList.remove(GroupListObserver.class, observer);
     }
 
 }

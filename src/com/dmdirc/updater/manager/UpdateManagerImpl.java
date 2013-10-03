@@ -31,6 +31,7 @@ import com.dmdirc.updater.installing.UpdateInstallationStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalListener;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.util.collections.ListenerList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +45,6 @@ import java.util.concurrent.Executor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ListenerSupport;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-@ListenerSupport(UpdateStatusListener.class)
 public class UpdateManagerImpl implements UpdateManager {
 
     /** Collection of known update checking strategies. */
@@ -78,6 +77,9 @@ public class UpdateManagerImpl implements UpdateManager {
 
     /** Cache of retrieval results. */
     private final Map<UpdateComponent, UpdateRetrievalResult> retrievalResults = new HashMap<>();
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /** Lock for accessing {@link #components}. */
     private final Object componentsLock = new Object();
@@ -177,11 +179,13 @@ public class UpdateManagerImpl implements UpdateManager {
 
         // Fire the listeners now we don't care about concurrent modifications.
         for (UpdateComponent component : enabledComponents) {
-            fireUpdateStatusChanged(component, UpdateStatus.CHECKING, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.CHECKING, 0);
         }
 
         for (UpdateComponent component : disabledComponents) {
-            fireUpdateStatusChanged(component, UpdateStatus.CHECKING_NOT_PERMITTED, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.CHECKING_NOT_PERMITTED, 0);
         }
 
         for (UpdateCheckStrategy strategy : checkers) {
@@ -193,9 +197,11 @@ public class UpdateManagerImpl implements UpdateManager {
         for (UpdateComponent component : enabledComponents) {
             if (checkResults.containsKey(component) && checkResults.get(component).isUpdateAvailable()) {
                 log.trace("Update is available for {}", component);
-                fireUpdateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
+                listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
             } else {
-                fireUpdateStatusChanged(component, UpdateStatus.IDLE, 0);
+                listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
             }
         }
     }
@@ -213,9 +219,11 @@ public class UpdateManagerImpl implements UpdateManager {
         final UpdateInstallationStrategy strategy = getStrategy(update);
 
         if (strategy == null) {
-            fireUpdateStatusChanged(component, UpdateStatus.IDLE, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         } else {
-            fireUpdateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
             log.debug("Scheduling install for {}", update);
             executor.execute(new InstallationTask(strategy, update));
         }
@@ -244,9 +252,11 @@ public class UpdateManagerImpl implements UpdateManager {
         final UpdateRetrievalStategy strategy = getStrategy(update);
 
         if (strategy == null) {
-            fireUpdateStatusChanged(component, UpdateStatus.IDLE, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         } else {
-            fireUpdateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
             log.debug("Scheduling retrieval for {}", update);
             executor.execute(new RetrievalTask(this, strategy, update, install));
         }
@@ -310,6 +320,18 @@ public class UpdateManagerImpl implements UpdateManager {
         return null;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void addUpdateStatusListener(UpdateStatusListener listener) {
+        listenerList.add(UpdateStatusListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdateStatusListener(final UpdateStatusListener listener) {
+        listenerList.remove(UpdateStatusListener.class, listener);
+    }
+
     /**
      * Listens for changes announced by {@link UpdateInstallationStrategy}s
      * and proxies them on to the manager's own {@link UpdateStatusListener}s.
@@ -319,20 +341,23 @@ public class UpdateManagerImpl implements UpdateManager {
         /** {@inheritDoc} */
         @Override
         public void installCompleted(final UpdateComponent component) {
-            fireUpdateStatusChanged(component, component.requiresRestart()
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, component.requiresRestart()
                     ? UpdateStatus.RESTART_PENDING : UpdateStatus.UPDATED, 0);
         }
 
         /** {@inheritDoc} */
         @Override
         public void installFailed(final UpdateComponent component) {
-            fireUpdateStatusChanged(component, UpdateStatus.IDLE, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         }
 
         /** {@inheritDoc} */
         @Override
         public void installProgressChanged(final UpdateComponent component, final double progress) {
-            fireUpdateStatusChanged(component, UpdateStatus.INSTALLING, progress);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.INSTALLING, progress);
         }
 
     }
@@ -346,19 +371,22 @@ public class UpdateManagerImpl implements UpdateManager {
         /** {@inheritDoc} */
         @Override
         public void retrievalCompleted(final UpdateComponent component) {
-            fireUpdateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
         }
 
         /** {@inheritDoc} */
         @Override
         public void retrievalFailed(final UpdateComponent component) {
-            fireUpdateStatusChanged(component, UpdateStatus.IDLE, 0);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         }
 
         /** {@inheritDoc} */
         @Override
         public void retrievalProgressChanged(final UpdateComponent component, final double progress) {
-            fireUpdateStatusChanged(component, UpdateStatus.RETRIEVING, progress);
+            listenerList.getCallable(UpdateStatusListener.class)
+                    .updateStatusChanged(component, UpdateStatus.RETRIEVING, progress);
         }
 
     }

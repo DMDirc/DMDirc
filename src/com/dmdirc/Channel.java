@@ -28,9 +28,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
+import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -41,24 +41,27 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.ListenerSupport;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
  * ChannelWindow, and handles user input for the channel.
  */
-@ListenerSupport({TopicChangeListener.class, NicklistListener.class})
 public class Channel extends MessageTarget implements ConfigChangeListener {
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /** The parser's pChannel class. */
     @Getter
@@ -296,7 +299,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
         setIcon("channel-inactive");
 
-        fireClientListUpdated(new ArrayList<ChannelClientInfo>());
+        listenerList.getCallable(NicklistListener.class)
+                .clientListUpdated(Collections.<ChannelClientInfo>emptyList());
     }
 
     /** {@inheritDoc} */
@@ -347,7 +351,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        fireClientAdded(client);
+        listenerList.getCallable(NicklistListener.class).clientAdded(client);
 
         tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
     }
@@ -358,7 +362,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        fireClientRemoved(client);
+        listenerList.getCallable(NicklistListener.class).clientRemoved(client);
 
         tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
 
@@ -374,7 +378,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        fireClientListUpdated(clients);
+        listenerList.getCallable(NicklistListener.class).clientListUpdated(clients);
 
         tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
@@ -404,7 +408,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             return;
         }
 
-        fireClientListUpdated();
+        listenerList.getCallable(NicklistListener.class).clientListUpdated();
     }
 
     /**
@@ -537,7 +541,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                fireTopicChanged(Channel.this, topic);
+                listenerList.getCallable(TopicChangeListener.class)
+                        .topicChanged(Channel.this, topic);
             }
         }, "Topic change listener runner").start();
     }
@@ -589,5 +594,41 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     public int getMaxTopicLength() {
         return server.getParser().getMaxTopicLength();
+    }
+
+    /**
+     * Adds a nicklist listener to this channel.
+     *
+     * @param listener The listener to notify about nicklist changes.
+     */
+    public void addNicklistListener(final NicklistListener listener) {
+        listenerList.add(NicklistListener.class, listener);
+    }
+
+    /**
+     * Removes a nicklist listener from this channel.
+     *
+     * @param listener The listener to be removed.
+     */
+    public void removeNicklistListener(final NicklistListener listener) {
+        listenerList.remove(NicklistListener.class, listener);
+    }
+
+    /**
+     * Adds a topic change listener to this channel.
+     *
+     * @param listener The listener to notify about topic changes.
+     */
+    public void addTopicChangeListener(final TopicChangeListener listener) {
+        listenerList.add(TopicChangeListener.class, listener);
+    }
+
+    /**
+     * Removes a topic change listener from this channel.
+     *
+     * @param listener The listener to be removed.
+     */
+    public void removeTopicChangeListener(final TopicChangeListener listener) {
+        listenerList.remove(TopicChangeListener.class, listener);
     }
 }

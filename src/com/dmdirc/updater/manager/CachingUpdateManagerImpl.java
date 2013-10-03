@@ -24,6 +24,7 @@ package com.dmdirc.updater.manager;
 
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
+import com.dmdirc.util.collections.ListenerList;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -31,18 +32,19 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 import lombok.Getter;
-import lombok.ListenerSupport;
 
 /**
  * An extension of {@link UpdateManagerImpl} which implements status caching
  * functionality.
  */
-@ListenerSupport(UpdateManagerListener.class)
 public class CachingUpdateManagerImpl extends UpdateManagerImpl implements CachingUpdateManager {
 
     /** Map of component to their most recent status. */
     private final Map<UpdateComponent, UpdateStatus> cachedStatuses
-            = new ConcurrentSkipListMap<UpdateComponent, UpdateStatus>(new UpdateComponentComparator());
+            = new ConcurrentSkipListMap<>(new UpdateComponentComparator());
+
+    /** List of registered listeners. */
+    private final ListenerList listenerList = new ListenerList();
 
     /** Our current status. */
     @Getter
@@ -121,8 +123,21 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
 
         if (managerStatus != newStatus) {
             managerStatus = newStatus;
-            fireUpdateManagerStatusChanged(this, managerStatus);
+            listenerList.getCallable(UpdateManagerListener.class)
+                    .updateManagerStatusChanged(this, managerStatus);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addUpdateManagerListener(final UpdateManagerListener listener) {
+        listenerList.add(UpdateManagerListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdateManagerListener(final UpdateManagerListener listener) {
+        listenerList.remove(UpdateManagerListener.class, listener);
     }
 
     /**
