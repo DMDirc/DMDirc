@@ -151,7 +151,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
                 doNotification("querySelfMessage",
                         CoreActionType.QUERY_SELF_MESSAGE,
-                        server.getParser().getLocalClient(), line);
+                        server.getParser().getLocalClient(), part);
             }
         }
     }
