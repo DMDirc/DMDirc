@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 
 import javax.inject.Provider;
@@ -49,12 +50,13 @@ public class ServerManagerTest {
     @Mock private Provider<ParserFactory> parserFactoryProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
     @Mock private TabCompleterFactory tabCompleterFactory;
+    @Mock private WindowManager windowManager;
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(parserFactoryProvider, identityController,
-                identityFactory, commandControllerProvider, tabCompleterFactory);
+                identityFactory, commandControllerProvider, tabCompleterFactory, windowManager);
     }
 
     @After

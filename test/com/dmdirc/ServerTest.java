@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
@@ -48,7 +47,6 @@ public class ServerTest {
     @Mock private CommandParser commandParser;
     @Mock private ParserFactory parserFactory;
     @Mock private IdentityFactory identityFactory;
-    @Mock private WindowManager windowManager;
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private CommandController commandController;
 
@@ -65,7 +63,6 @@ public class ServerTest {
                 configManager,
                 commandParser,
                 parserFactory,
-                windowManager,
                 tabCompleterFactory,
                 commandController,
                 identityFactory,

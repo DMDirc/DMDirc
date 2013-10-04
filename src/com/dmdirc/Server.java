@@ -52,7 +52,6 @@ import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
@@ -201,7 +200,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param configManager THe configuration manager to read config settings from.
      * @param commandParser The parser to use for commands in this server's window.
      * @param parserFactory The factory to use to generate parsers.
-     * @param windowManager The window manager to register this server with.
      * @param tabCompleterFactory The factory to use for tab completers.
      * @param commandController The controller to use to retrieve commands.
      * @param identityFactory The factory to use to create identities.
@@ -213,7 +211,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final AggregateConfigProvider configManager,
             final CommandParser commandParser,
             final ParserFactory parserFactory,
-            final WindowManager windowManager,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final IdentityFactory identityFactory,
@@ -232,9 +229,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
         setConnectionDetails(uri, profile);
-
-        manager.registerServer(this);
-        windowManager.addWindow(this);
 
         tabCompleter = tabCompleterFactory.getTabCompleter(configManager,
                 CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL);

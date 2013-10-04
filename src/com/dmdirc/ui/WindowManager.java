@@ -44,12 +44,10 @@ public class WindowManager {
     private static final WindowManager INSTANCE = new WindowManager();
 
     /** A list of root windows. */
-    private final List<FrameContainer> rootWindows
-            = new CopyOnWriteArrayList<FrameContainer>();
+    private final List<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
 
     /** A list of frame listeners. */
-    private final ListenerList listeners
-            = new ListenerList();
+    private final ListenerList listeners = new ListenerList();
 
     /**
      * Registers a FrameListener with the WindowManager.

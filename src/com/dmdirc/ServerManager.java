@@ -71,6 +71,9 @@ public class ServerManager implements ServerFactory {
     /** Factory to use for tab completers. */
     private final TabCompleterFactory tabCompleterFactory;
 
+    /** Window manager to add new servers to. */
+    private final WindowManager windowManager;
+
     /**
      * Creates a new instance of ServerManager.
      *
@@ -79,6 +82,7 @@ public class ServerManager implements ServerFactory {
      * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
      * @param tabCompleterFactory Factory to use for tab completers.
+     * @param windowManager Window manager to add new servers to.
      */
     @Inject
     public ServerManager(
@@ -86,12 +90,14 @@ public class ServerManager implements ServerFactory {
             final IdentityController identityController,
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
-            final TabCompleterFactory tabCompleterFactory) {
+            final TabCompleterFactory tabCompleterFactory,
+            final WindowManager windowManager) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
         this.tabCompleterFactory = tabCompleterFactory;
+        this.windowManager = windowManager;
     }
 
     /** {@inheritDoc} */
@@ -99,17 +105,19 @@ public class ServerManager implements ServerFactory {
     public Server createServer(final URI uri, final ConfigProvider profile) {
         final ConfigManager configManager = new ConfigManager(uri.getScheme(), "", "", uri.getHost());
 
-        return new Server(
+        final Server server = new Server(
                 this,
                 configManager,
                 new ServerCommandParser(configManager),
                 parserFactoryProvider.get(),
-                WindowManager.getWindowManager(),
                 tabCompleterFactory,
                 commandController.get(),
                 identityFactory,
                 uri,
                 profile);
+        registerServer(server);
+        windowManager.addWindow(server);
+        return server;
     }
 
     /**
