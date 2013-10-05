@@ -364,9 +364,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public ColourManager getColourManager(final IdentityController controller) {
-        final ColourManager manager = new ColourManager(controller.getGlobalConfiguration());
-        ColourManager.setColourManager(manager);
-        return manager;
+        return new ColourManager(controller.getGlobalConfiguration());
     }
 
     /**

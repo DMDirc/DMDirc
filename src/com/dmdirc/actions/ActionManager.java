@@ -151,14 +151,18 @@ public class ActionManager implements ActionController {
 
     /**
      * Initialiases the actions manager.
+     *
+     * @param colourComparisons The colour comparisons to use.
      */
-    public void initialise() {
+    // TODO: Refactor to take a list of comparisons/sources.
+    public void initialise(final ColourActionComparison colourComparisons) {
         log.info("Initialising the actions manager");
 
         identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
 
         registerTypes(CoreActionType.values());
         registerComparisons(CoreActionComparison.values());
+        registerComparisons(colourComparisons.getComparisons());
         registerComponents(CoreActionComponent.values());
 
         for (ActionGroup wrapper : actionWrappersProvider.get()) {

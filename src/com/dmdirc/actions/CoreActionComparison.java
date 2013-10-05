@@ -23,8 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.interfaces.actions.ActionComparison;
-import com.dmdirc.ui.Colour;
-import com.dmdirc.ui.messages.ColourManager;
 
 import java.util.regex.PatternSyntaxException;
 
@@ -141,36 +139,6 @@ public enum CoreActionComparison implements ActionComparison {
         /** {@inheritDoc} */
         @Override
         public String getName() { return "is"; }
-    },
-
-    /** Checks if the colour is the same as another colour. */
-    COLOUR_EQUALS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((Colour) arg1).equals(ColourManager.parseColour((String) arg2));
-        }
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() { return Colour.class; }
-        /** {@inheritDoc} */
-        @Override
-        public String getName() { return "equals"; }
-    },
-
-    /** Checks if the colour is not the same as another colour. */
-    COLOUR_NEQUALS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return !COLOUR_EQUALS.test(arg1, arg2);
-        }
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() { return Colour.class; }
-        /** {@inheritDoc} */
-        @Override
-        public String getName() { return "does not equal"; }
     },
 
     /** Checks if the int is equals to another int. */

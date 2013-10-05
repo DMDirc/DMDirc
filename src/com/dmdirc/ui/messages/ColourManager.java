@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -32,7 +31,6 @@ import com.dmdirc.ui.Colour;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Provider;
 
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows
@@ -47,9 +45,6 @@ public class ColourManager {
         Colour.YELLOW, new Colour(0, 252, 0), new Colour(0, 128, 128), new Colour(0, 255, 255),
         Colour.BLUE, new Colour(255, 0, 255), Colour.GRAY, Colour.LIGHT_GRAY,
     };
-
-    /** Singleton instance of the manager. */
-    private static ColourManager instance;
 
     /** Colour cache. */
     private final Map<String, Colour> colourCache = new HashMap<>();
@@ -102,20 +97,6 @@ public class ColourManager {
      * @param spec The string to parse
      * @param fallback The colour to use if the spec isn't valid
      * @return A colour representation of the specified string
-     * @deprecated Use non-static methods
-     */
-    public static Colour parseColour(final String spec, final Colour fallback) {
-        return getColourManager().getColourFromString(spec, fallback);
-    }
-
-    /**
-     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
-     * target string, and returns the corresponding colour. Returns the
-     * specified fallback colour if the spec can't be parsed.
-     *
-     * @param spec The string to parse
-     * @param fallback The colour to use if the spec isn't valid
-     * @return A colour representation of the specified string
      */
     public Colour getColourFromString(final String spec, final Colour fallback) {
         if (colourCache.containsKey(spec)) {
@@ -150,20 +131,6 @@ public class ColourManager {
         }
 
         return res;
-    }
-
-    /**
-     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
-     * target string, and returns the corresponding colour. Returns white if the
-     * spec can't be parsed.
-     *
-     * @param spec The string to parse
-     * @return A colour representation of the specified string
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static Colour parseColour(final String spec) {
-        return instance.getColourFromString(spec, Colour.WHITE);
     }
 
     /**
@@ -205,20 +172,6 @@ public class ColourManager {
      *
      * @param number The IRC colour code to look up
      * @return The corresponding Colour object
-     * @deprecated Use non-static methods.
-     */
-    @Deprecated
-    public static Colour getColour(final int number) {
-        return getColourManager().getColourFromIrcCode(number);
-    }
-
-    /**
-     * Returns a Colour object that represents the colour associated with the
-     * specified IRC colour code. If the code is not found, a warning is logged
-     * with the client's Logger class, and white is returned.
-     *
-     * @param number The IRC colour code to look up
-     * @return The corresponding Colour object
      */
     public Colour getColourFromIrcCode(final int number) {
         if (number >= 0 && number <= 15) {
@@ -250,47 +203,6 @@ public class ColourManager {
     private static String toHex(final int value) {
         final String hex = Integer.toHexString(value);
         return (hex.length() < 2 ? "0" : "") + hex;
-    }
-
-    /**
-     * Gets a singleton instance of the colour manager.
-     *
-     * @return An instance of the colour manager.
-     */
-    @Deprecated
-    public static synchronized ColourManager getColourManager() {
-        if (instance == null) {
-            instance = new ColourManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
-        }
-
-        return instance;
-    }
-
-    /**
-     * Gets a provider of a colour manager for use in the future.
-     *
-     * @return A colour manager provider
-     * @deprecated Should be injected instead.
-     */
-    @Deprecated
-    public static Provider<ColourManager> getColourManagerProvider() {
-        return new Provider<ColourManager>() {
-            /** {@inheritDoc} */
-            @Override
-            public ColourManager get() {
-                return instance;
-            }
-        };
-    }
-
-    /**
-     * Sets the singleton instance of the colour manager to use.
-     *
-     * @param colourManager The colour manager to use.
-     */
-    @Deprecated
-    public static void setColourManager(final ColourManager colourManager) {
-        instance = colourManager;
     }
 
 }

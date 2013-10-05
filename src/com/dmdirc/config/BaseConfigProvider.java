@@ -89,7 +89,13 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
      */
     @Deprecated
     public BaseConfigProvider() {
-        this(ColourManager.getColourManagerProvider());
+        this(new Provider<ColourManager>() {
+            /** {@inheritDoc} */
+            @Override
+            public ColourManager get() {
+                return new ColourManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
+            }
+        });
     }
 
     /** {@inheritDoc} */

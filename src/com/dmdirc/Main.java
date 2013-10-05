@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.GlobalWindow.GlobalWindowManager;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ColourActionComparison;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
@@ -88,6 +89,9 @@ public class Main {
     /** The global window manager to use. */
     private final GlobalWindowManager globalWindowManager;
 
+    /** The colour-based action comparisons. */
+    private final ColourActionComparison colourActionComparison;
+
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
@@ -105,6 +109,7 @@ public class Main {
      * @param corePluginExtractor Extractor to use for core plugins.
      * @param urlBuilder URL builder to use as a singleton.
      * @param globalWindowManager Global window manager to use.
+     * @param colourActionComparison The colour-based action comparisons.
      * @param commands The commands to be loaded into the command manager.
      */
     @Inject
@@ -120,6 +125,7 @@ public class Main {
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
             final GlobalWindowManager globalWindowManager,
+            final ColourActionComparison colourActionComparison,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -129,6 +135,7 @@ public class Main {
         this.corePluginExtractor = corePluginExtractor;
         this.commandManager = commandManager;
         this.globalWindowManager = globalWindowManager;
+        this.colourActionComparison = colourActionComparison;
         this.commands = commands;
         URLBuilder.setInstance(urlBuilder);
     }
@@ -165,7 +172,7 @@ public class Main {
 
         doFirstRun();
 
-        actionManager.initialise();
+        actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
         actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
