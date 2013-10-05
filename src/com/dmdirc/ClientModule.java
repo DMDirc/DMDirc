@@ -71,6 +71,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.inject.Provider;
+import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -84,6 +85,10 @@ import dagger.Provides;
     includes = {CommandLineOptionsModule.class, CommandModule.class}
 )
 public class ClientModule {
+
+    /** Qualifier that identities a global configuration source. */
+    @Qualifier
+    public @interface GlobalConfig {}
 
     /**
      * Provides an identity manager for the client.
@@ -124,6 +129,18 @@ public class ClientModule {
     @Provides
     public IdentityController getIdentityController(final IdentityManager manager) {
         return manager;
+    }
+
+    /**
+     * Provides a global config provider.
+     *
+     * @param controller The controller to retrieve the config from.
+     * @return A global configuration provider.
+     */
+    @Provides
+    @GlobalConfig
+    public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
+        return controller.getGlobalConfiguration();
     }
 
     /**
@@ -204,16 +221,16 @@ public class ClientModule {
      * Gets the command manager the client should use.
      *
      * @param serverManager The manager to use to iterate servers.
-     * @param identityController The controller to use to read settings.
+     * @param globalConfig The global configuration provider to read settings from.
      * @return The command manager the client should use.
      */
     @Provides
     @Singleton
     public CommandManager getCommandManager(
             final ServerManager serverManager,
-            final IdentityController identityController) {
+            @GlobalConfig final AggregateConfigProvider globalConfig) {
         final CommandManager manager = new CommandManager(serverManager);
-        manager.initialise(identityController.getGlobalConfiguration());
+        manager.initialise(globalConfig);
         CommandManager.setCommandManager(manager);
         return manager;
     }
@@ -358,13 +375,13 @@ public class ClientModule {
     /**
      * Gets the colour manager.
      *
-     * @param controller The identity controller to read settings from.
+     * @param globalConfig A global configuration provider to read settings from.
      * @return A colour manager for the client.
      */
     @Provides
     @Singleton
-    public ColourManager getColourManager(final IdentityController controller) {
-        return new ColourManager(controller.getGlobalConfiguration());
+    public ColourManager getColourManager(@GlobalConfig final AggregateConfigProvider globalConfig) {
+        return new ColourManager(globalConfig);
     }
 
     /**
