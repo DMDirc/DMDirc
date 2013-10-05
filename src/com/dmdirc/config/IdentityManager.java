@@ -26,6 +26,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -723,6 +724,22 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Deprecated
     public static void setIdentityManager(final IdentityManager identityManager) {
         instance = identityManager;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConfigProviderMigrator createMigratableConfig(final String protocol,
+            final String ircd, final String network, final String server) {
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server);
+        return new ConfigManagerMigrator(configManager);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ConfigProviderMigrator createMigratableConfig(final String protocol,
+            final String ircd, final String network, final String server, final String channel) {
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server, channel);
+        return new ConfigManagerMigrator(configManager);
     }
 
 }

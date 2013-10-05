@@ -26,13 +26,14 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -193,6 +194,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** Window manager to pas to children. */
     private final WindowManager windowManager;
 
+    /** The migrator to use to change our config provider. */
+    private final ConfigProviderMigrator configMigrator;
+
     // </editor-fold>
 
     // </editor-fold>
@@ -205,7 +209,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      *
      * @since 0.6.3
      * @param manager The server manager that owns this server.
-     * @param configManager THe configuration manager to read config settings from.
+     * @param configMigrator The migrateable configuration manager to read config settings from.
      * @param commandParser The parser to use for commands in this server's window.
      * @param parserFactory The factory to use to generate parsers.
      * @param tabCompleterFactory The factory to use for tab completers.
@@ -218,7 +222,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public Server(
             final ServerManager manager,
-            final AggregateConfigProvider configManager,
+            final ConfigProviderMigrator configMigrator,
             final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
@@ -231,7 +235,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         super("server-disconnected",
                 getHost(uri),
                 getHost(uri),
-                configManager,
+                configMigrator.getConfigProvider(),
                 commandParser,
                 messageSinkManager,
                 windowManager,
@@ -245,9 +249,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
+        this.configMigrator = configMigrator;
+
         setConnectionDetails(uri, profile);
 
-        tabCompleter = tabCompleterFactory.getTabCompleter(configManager,
+        tabCompleter = tabCompleterFactory.getTabCompleter(getConfigManager(),
                 CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL);
 
         updateIcon();
@@ -353,7 +359,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                             + "is still connected.\n\nMy state:" + getState());
                 }
 
-                getConfigManager().migrate(address.getScheme(), "", "", address.getHost());
+                configMigrator.migrate(address.getScheme(), "", "", address.getHost());
 
                 setConnectionDetails(address, profile);
 
@@ -650,7 +656,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             getChannel(chan.getName()).setChannelInfo(chan);
             getChannel(chan.getName()).selfJoin();
         } else {
-            final Channel newChan = new Channel(this, chan, focus, messageSinkManager, windowManager);
+            final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
+                    getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
+            final Channel newChan = new Channel(this, chan, focus, channelConfig,
+                    messageSinkManager, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
@@ -1456,7 +1465,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             myState.transition(ServerState.CONNECTED);
 
-            getConfigManager().migrate(address.getScheme(),
+            configMigrator.migrate(address.getScheme(),
                     parser.getServerSoftwareType(), getNetwork(), parser.getServerName());
 
             updateIcon();

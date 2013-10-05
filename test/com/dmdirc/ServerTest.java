@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
@@ -47,6 +48,7 @@ public class ServerTest {
     @Mock private ServerManager serverManager;
     @Mock private ConfigProvider profile;
     @Mock private AggregateConfigProvider configManager;
+    @Mock private ConfigProviderMigrator configMigrator;
     @Mock private CommandParser commandParser;
     @Mock private ParserFactory parserFactory;
     @Mock private IdentityFactory identityFactory;
@@ -60,12 +62,12 @@ public class ServerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(configManager.getOptionInt(anyString(), anyString()))
-                .thenReturn(Integer.MAX_VALUE);
+        when(configManager.getOptionInt(anyString(), anyString())).thenReturn(Integer.MAX_VALUE);
+        when(configMigrator.getConfigProvider()).thenReturn(configManager);
 
         server = new Server(
                 serverManager,
-                configManager,
+                configMigrator,
                 commandParser,
                 parserFactory,
                 tabCompleterFactory,

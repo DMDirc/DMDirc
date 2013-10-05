@@ -86,4 +86,31 @@ public interface IdentityFactory {
      */
     ConfigProvider createConfig(ConfigTarget target);
 
+    /**
+     * Creates a new {@link AggregateConfigProvider} that may be migrated, with the given initial
+     * configuration.
+     *
+     * @param protocol The protocol for the provider
+     * @param ircd The name of the ircd for the provider
+     * @param network The name of the network for the provider
+     * @param server The name of the server for the provider
+     * @return A new {@link ConfigProviderMigrator}.
+     */
+    ConfigProviderMigrator createMigratableConfig(String protocol, String ircd, String network,
+            String server);
+
+    /**
+     * Creates a new {@link AggregateConfigProvider} that may be migrated, with the given initial
+     * configuration.
+     *
+     * @param protocol The protocol for the provider
+     * @param ircd The name of the ircd for the provider
+     * @param network The name of the network for the provider
+     * @param server The name of the server for the provider
+     * @param channel The name of the channel for the provider
+     * @return A new {@link ConfigProviderMigrator}.
+     */
+    ConfigProviderMigrator createMigratableConfig(String protocol, String ircd, String network,
+            String server, String channel);
+
 }

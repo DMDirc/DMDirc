@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
@@ -347,16 +348,21 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
         return new ArrayList<>(sources);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void migrate(final String protocol, final String ircd,
-            final String network, final String server) {
-        migrate(protocol, ircd, network, server, "<Unknown>");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void migrate(final String protocol, final String ircd,
+    /**
+     * Migrates this manager from its current configuration to the
+     * appropriate one for the specified new parameters, firing listeners where
+     * settings have changed.
+     *
+     * <p>This is package private - only callers with access to a {@link ConfigProviderMigrator}
+     * should be able to migrate managers.
+     *
+     * @param protocol The protocol for this manager
+     * @param ircd The new name of the ircd for this manager
+     * @param network The new name of the network for this manager
+     * @param server The new name of the server for this manager
+     * @param channel The new name of the channel for this manager
+     */
+    void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
                 new Object[] {

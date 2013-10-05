@@ -23,10 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -110,12 +110,13 @@ public class ServerManager implements ServerFactory {
     /** {@inheritDoc} */
     @Override
     public Server createServer(final URI uri, final ConfigProvider profile) {
-        final ConfigManager configManager = new ConfigManager(uri.getScheme(), "", "", uri.getHost());
+        final ConfigProviderMigrator configProvider =
+                identityFactory.createMigratableConfig(uri.getScheme(), "", "", uri.getHost());
 
         final Server server = new Server(
                 this,
-                configManager,
-                new ServerCommandParser(configManager),
+                configProvider,
+                new ServerCommandParser(configProvider.getConfigProvider()),
                 parserFactoryProvider.get(),
                 tabCompleterFactory,
                 commandController.get(),

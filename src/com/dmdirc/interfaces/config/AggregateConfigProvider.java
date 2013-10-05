@@ -74,33 +74,6 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
     void removeListener(ConfigChangeListener listener);
 
     /**
-     * Migrates this ConfigManager from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
-     *
-     * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @since 0.6.3
-     */
-    void migrate(String protocol, String ircd, String network, String server);
-
-    /**
-     * Migrates this ConfigManager from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
-     *
-     * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @param channel The new name of the channel for this manager
-     * @since 0.6.3
-     */
-    void migrate(String protocol, String ircd, String network, String server, String channel);
-
-    /**
      * Gets a binder that may be used to bind methods or fields in a class to configuration
      * values known by this provider. Bound values update automatically whenever the value in
      * this provider changes.

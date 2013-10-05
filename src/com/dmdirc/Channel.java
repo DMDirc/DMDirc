@@ -27,10 +27,10 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -82,6 +82,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     /** Our event handler. */
     private final ChannelEventHandler eventHandler;
 
+    /** The migrator to use to migrate our config provider. */
+    private final ConfigProviderMigrator configMigrator;
+
     /** Whether we're in this channel or not. */
     @Getter
     private boolean isOnChannel;
@@ -99,9 +102,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * Creates a new instance of Channel.
      *
      * @param newServer The server object that this channel belongs to
-     * @param newChannelInfo The parser's channel object that corresponds to
-     * this channel
+     * @param newChannelInfo The parser's channel object that corresponds to this channel
      * @param focus Whether or not to focus this channel
+     * @param configMigrator The config migrator which provides the config for this channel.
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
@@ -109,18 +112,19 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             final Server newServer,
             final ChannelInfo newChannelInfo,
             final boolean focus,
+            final ConfigProviderMigrator configMigrator,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
-                new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
-                newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
+                configMigrator.getConfigProvider(),
                 new ChannelCommandParser(newServer), messageSinkManager, windowManager,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),
                     WindowComponent.TOPICBAR.getIdentifier(),
                     WindowComponent.USERLIST.getIdentifier()));
 
+        this.configMigrator = configMigrator;
         channelInfo = newChannelInfo;
         server = newServer;
 
@@ -158,7 +162,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
-        getConfigManager().migrate(server.getProtocol(), server.getIrcd(),
+        configMigrator.migrate(server.getProtocol(), server.getIrcd(),
                 server.getNetwork(), server.getAddress(), channelInfo.getName());
     }
 
