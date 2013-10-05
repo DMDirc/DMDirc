@@ -26,7 +26,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
