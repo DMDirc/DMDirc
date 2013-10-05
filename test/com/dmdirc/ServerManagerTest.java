@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -49,6 +50,7 @@ public class ServerManagerTest {
     @Mock private IdentityFactory identityFactory;
     @Mock private Provider<ParserFactory> parserFactoryProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
+    @Mock private Provider<MessageSinkManager> messageSinkManager;
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private WindowManager windowManager;
     private ServerManager serverManager;
@@ -56,7 +58,8 @@ public class ServerManagerTest {
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(parserFactoryProvider, identityController,
-                identityFactory, commandControllerProvider, tabCompleterFactory, windowManager);
+                identityFactory, commandControllerProvider, tabCompleterFactory,
+                messageSinkManager, windowManager);
     }
 
     @After

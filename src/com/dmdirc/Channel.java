@@ -31,6 +31,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
@@ -101,19 +102,24 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
      * @param focus Whether or not to focus this channel
+     * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
-    public Channel(final Server newServer, final ChannelInfo newChannelInfo,
-            final boolean focus, final WindowManager windowManager) {
+    public Channel(
+            final Server newServer,
+            final ChannelInfo newChannelInfo,
+            final boolean focus,
+            final MessageSinkManager messageSinkManager,
+            final WindowManager windowManager) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
                 newServer.getNetwork(), newServer.getAddress(), newChannelInfo.getName()),
-                new ChannelCommandParser(newServer),
+                new ChannelCommandParser(newServer), messageSinkManager, windowManager,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier(),
-                WindowComponent.TOPICBAR.getIdentifier(),
-                        WindowComponent.USERLIST.getIdentifier()), windowManager);
+                    WindowComponent.INPUTFIELD.getIdentifier(),
+                    WindowComponent.TOPICBAR.getIdentifier(),
+                    WindowComponent.USERLIST.getIdentifier()));
 
         channelInfo = newChannelInfo;
         server = newServer;

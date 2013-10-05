@@ -36,6 +36,7 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
@@ -186,6 +187,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
 
+    /** The sink manager to use to despatch messages. */
+    private final MessageSinkManager messageSinkManager;
+
     /** Window manager to pas to children. */
     private final WindowManager windowManager;
 
@@ -207,6 +211,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param tabCompleterFactory The factory to use for tab completers.
      * @param commandController The controller to use to retrieve commands.
      * @param identityFactory The factory to use to create identities.
+     * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window Manager
      * @param uri The address of the server to connect to
      * @param profile The profile to use
@@ -219,6 +224,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final IdentityFactory identityFactory,
+            final MessageSinkManager messageSinkManager,
             final WindowManager windowManager,
             final URI uri,
             final ConfigProvider profile) {
@@ -227,13 +233,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 getHost(uri),
                 configManager,
                 commandParser,
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier(),
-                        WindowComponent.CERTIFICATE_VIEWER.getIdentifier()), windowManager);
+                messageSinkManager,
+                windowManager,
+                Arrays.asList(
+                    WindowComponent.TEXTAREA.getIdentifier(),
+                    WindowComponent.INPUTFIELD.getIdentifier(),
+                    WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
+        this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
         setConnectionDetails(uri, profile);
 
@@ -548,7 +558,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, focus, windowManager);
+            final Query newQuery = new Query(this, host, focus, messageSinkManager, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -584,7 +594,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this, windowManager);
+            raw = new Raw(this, messageSinkManager, windowManager);
 
             try {
                 parserLock.readLock().lock();
@@ -640,7 +650,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             getChannel(chan.getName()).setChannelInfo(chan);
             getChannel(chan.getName()).selfJoin();
         } else {
-            final Channel newChan = new Channel(this, chan, focus, windowManager);
+            final Channel newChan = new Channel(this, chan, focus, messageSinkManager, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);

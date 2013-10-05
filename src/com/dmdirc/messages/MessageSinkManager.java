@@ -38,9 +38,6 @@ import java.util.regex.Matcher;
  */
 public class MessageSinkManager {
 
-    /** A singleton instance of the manager. */
-    private static MessageSinkManager instance;
-
     /** The configuration domain to use for looking up default sinks. */
     public static final String CONFIG_DOMAIN = "notifications";
 
@@ -146,24 +143,6 @@ public class MessageSinkManager {
         addSink(new SelfMessageSink());
         addSink(new ServerMessageSink());
         addSink(new StatusBarMessageSink(statusBarManager));
-    }
-
-    /**
-     * Retrieves a singleton instance of the sink manager.
-     *
-     * @return A singleton manager instance
-     */
-    public static MessageSinkManager getManager() {
-        return instance;
-    }
-
-    /**
-     * Sets the singleton instance of the sink manager.
-     *
-     * @param manager The new singleton manager instance.
-     */
-    public static void setManager(final MessageSinkManager manager) {
-        instance = manager;
     }
 
 }

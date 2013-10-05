@@ -52,6 +52,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /** The command parser used for commands in this container. */
     protected final CommandParser commandParser;
 
+    /** The manager to use to despatch messages to sinks. */
+    private final MessageSinkManager messageSinkManager;
+
     /**
      * Creates a new WritableFrameContainer.
      *
@@ -60,17 +63,24 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param title The title of this container
      * @param config The config manager for this container
      * @param parser The command parser for this container
+     * @param messageSinkManager The sink manager to use to despatch messages
      * @param components The UI components that this frame requires
      * @param windowManager For window management
      * @since 0.6.4
      */
-    public WritableFrameContainer(final String icon, final String name,
-            final String title, final AggregateConfigProvider config,
-            final CommandParser parser, final Collection<String> components,
-            final WindowManager windowManager) {
+    public WritableFrameContainer(
+            final String icon,
+            final String name,
+            final String title,
+            final AggregateConfigProvider config,
+            final CommandParser parser,
+            final MessageSinkManager messageSinkManager,
+            final WindowManager windowManager,
+            final Collection<String> components) {
         super(icon, name, title, config, components, windowManager);
 
         this.commandParser = parser;
+        this.messageSinkManager = messageSinkManager;
         parser.setOwner(this);
     }
 
@@ -254,7 +264,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param args The arguments for the message
      */
     public void handleNotification(final Date date, final String messageType, final Object... args) {
-        MessageSinkManager.getManager().despatchMessage(this, date, messageType, args);
+        messageSinkManager.despatchMessage(this, date, messageType, args);
     }
 
     /**

@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.common.CompositionState;
@@ -72,27 +73,20 @@ public class Query extends MessageTarget implements PrivateActionListener,
      *
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
-     * @param windowManager Window management
-     */
-    public Query(final Server newServer, final String newHost, final WindowManager windowManager) {
-        this(newServer, newHost, false, windowManager);
-    }
-
-    /**
-     * Creates a new instance of Query.
-     *
-     * @param newHost host of the remove client
-     * @param newServer The server object that this Query belongs to
      * @param focus Should we focus the query on open?
+     * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
     public Query(final Server newServer, final String newHost,
-            final boolean focus, final WindowManager windowManager) {
+            final boolean focus, final MessageSinkManager messageSinkManager,
+            final WindowManager windowManager) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(), new QueryCommandParser(newServer),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                        WindowComponent.INPUTFIELD.getIdentifier()), windowManager);
+                messageSinkManager, windowManager,
+                Arrays.asList(
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
         this.host = newHost;

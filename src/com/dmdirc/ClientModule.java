@@ -196,7 +196,6 @@ public class ClientModule {
             final StatusBarManager statusBarManager,
             final WindowManager windowManager) {
         final MessageSinkManager messageSinkManager = new MessageSinkManager();
-        MessageSinkManager.setManager(messageSinkManager);
         messageSinkManager.loadDefaultSinks(statusBarManager, windowManager);
         return messageSinkManager;
     }

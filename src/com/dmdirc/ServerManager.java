@@ -31,6 +31,7 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -65,6 +66,9 @@ public class ServerManager implements ServerFactory {
     /** A provider of {@link CommandController}s to pass to servers. */
     private final Provider<CommandController> commandController;
 
+    /** A provider of {@link MessageSinkManager}s to pass to servers. */
+    private final Provider<MessageSinkManager> messageSinkManager;
+
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
 
@@ -82,6 +86,7 @@ public class ServerManager implements ServerFactory {
      * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
      * @param tabCompleterFactory Factory to use for tab completers.
+     * @param messageSinkManager A provider of sink managers to use to despatch messages.
      * @param windowManager Window manager to add new servers to.
      */
     @Inject
@@ -91,12 +96,14 @@ public class ServerManager implements ServerFactory {
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
             final TabCompleterFactory tabCompleterFactory,
+            final Provider<MessageSinkManager> messageSinkManager,
             final WindowManager windowManager) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
         this.tabCompleterFactory = tabCompleterFactory;
+        this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
     }
 
@@ -113,6 +120,7 @@ public class ServerManager implements ServerFactory {
                 tabCompleterFactory,
                 commandController.get(),
                 identityFactory,
+                messageSinkManager.get(),
                 windowManager,
                 uri,
                 profile);

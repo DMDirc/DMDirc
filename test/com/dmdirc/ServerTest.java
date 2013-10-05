@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 
@@ -51,6 +52,7 @@ public class ServerTest {
     @Mock private IdentityFactory identityFactory;
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private CommandController commandController;
+    @Mock private MessageSinkManager messageSinkManager;
     @Mock private WindowManager windowManager;
 
     private Server server;
@@ -69,6 +71,7 @@ public class ServerTest {
                 tabCompleterFactory,
                 commandController,
                 identityFactory,
+                messageSinkManager,
                 windowManager,
                 new URI("irc-test://255.255.255.255"),
                 profile);

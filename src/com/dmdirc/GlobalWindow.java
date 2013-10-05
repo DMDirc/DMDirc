@@ -31,6 +31,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
+import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
@@ -62,14 +63,18 @@ public class GlobalWindow extends WritableFrameContainer {
      *
      * @param config The ConfigManager to retrieve settings from.
      * @param parser The command parser to use to parse input.
-     * @param windowManager Window management
+     * @param windowManager The window manager.
+     * @param messageSinkManager The sink manager to use to despatch messages.
      */
-    public GlobalWindow(final AggregateConfigProvider config, final CommandParser parser,
-            final WindowManager windowManager) {
-        super("icon", "Global", "(Global)",
-                config, parser,
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                        WindowComponent.INPUTFIELD.getIdentifier()), windowManager);
+    public GlobalWindow(
+            final AggregateConfigProvider config,
+            final CommandParser parser,
+            final WindowManager windowManager,
+            final MessageSinkManager messageSinkManager) {
+        super("icon", "Global", "(Global)", config, parser, messageSinkManager, windowManager,
+                Arrays.asList(
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = new TabCompleter(config);
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -124,6 +129,8 @@ public class GlobalWindow extends WritableFrameContainer {
         private final Provider<CommandController> commandControllerProvider;
         /** The provider to use to retrieve a window manager. */
         private final Provider<WindowManager> windowManagerProvider;
+        /** The provider to use to retrieve message sink managers. */
+        private final Provider<MessageSinkManager> messageSinkManagerProvider;
 
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
@@ -131,15 +138,18 @@ public class GlobalWindow extends WritableFrameContainer {
          * @param identityController Controller to retrieve global configuration from.
          * @param commandControllerProvider The provider to use to retrieve a command controller.
          * @param windowManagerProvider The provider to use to retrieve a window manager.
+         * @param messageSinkManagerProvider The provider to use to retrieve a sink manager.
          */
         @Inject
         public GlobalWindowManager(
                 final IdentityController identityController,
                 final Provider<CommandController> commandControllerProvider,
-                final Provider<WindowManager> windowManagerProvider) {
+                final Provider<WindowManager> windowManagerProvider,
+                final Provider<MessageSinkManager> messageSinkManagerProvider) {
             this.globalConfig = identityController.getGlobalConfiguration();
             this.commandControllerProvider = commandControllerProvider;
             this.windowManagerProvider = windowManagerProvider;
+            this.messageSinkManagerProvider = messageSinkManagerProvider;
         }
 
         /** {@inheritDoc} */
@@ -166,7 +176,7 @@ public class GlobalWindow extends WritableFrameContainer {
                     if (globalWindow == null) {
                         globalWindow = new GlobalWindow(globalConfig,
                                 new GlobalCommandParser(globalConfig, commandControllerProvider.get()),
-                                windowManagerProvider.get());
+                                windowManagerProvider.get(), messageSinkManagerProvider.get());
                     }
                 } else {
                     if (globalWindow != null) {
