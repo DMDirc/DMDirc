@@ -103,7 +103,9 @@ public class ErrorManager implements ConfigChangeListener {
     public static synchronized ErrorManager getErrorManager() {
         if (me == null) {
             me = new ErrorManager();
-            me.initialise(IdentityManager.getIdentityManager());
+            if (IdentityManager.getIdentityManager() != null) {
+                me.initialise(IdentityManager.getIdentityManager());
+            }
         }
         return me;
     }
