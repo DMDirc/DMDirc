@@ -27,15 +27,20 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 
 import java.util.Arrays;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import lombok.Getter;
 
@@ -109,43 +114,68 @@ public class GlobalWindow extends WritableFrameContainer {
         return -1;
     }
 
-    /**
-     * Initialises the global window if it's enabled in the config.
-     */
-    public static void init() {
-        IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .addChangeListener("general", "showglobalwindow",
-                new ConfigChangeListener() {
+    /** Handles the state of the global window. */
+    @Singleton
+    public static class GlobalWindowManager implements ConfigChangeListener {
 
-            @Override
-            public void configChanged(final String domain, final String key) {
-                updateWindowState();
-            }
-        });
+        /** The global configuration to read settings from. */
+        private final AggregateConfigProvider globalConfig;
+        /** The provider to use to retrieve a command controller. */
+        private final Provider<CommandController> commandControllerProvider;
+        /** The provider to use to retrieve a window manager. */
+        private final Provider<WindowManager> windowManagerProvider;
 
-        updateWindowState();
-    }
+        /**
+         * Creates a new instance of {@link GlobalWindowManager}.
+         *
+         * @param identityController Controller to retrieve global configuration from.
+         * @param commandControllerProvider The provider to use to retrieve a command controller.
+         * @param windowManagerProvider The provider to use to retrieve a window manager.
+         */
+        @Inject
+        public GlobalWindowManager(
+                final IdentityController identityController,
+                final Provider<CommandController> commandControllerProvider,
+                final Provider<WindowManager> windowManagerProvider) {
+            this.globalConfig = identityController.getGlobalConfiguration();
+            this.commandControllerProvider = commandControllerProvider;
+            this.windowManagerProvider = windowManagerProvider;
+        }
 
-    /**
-     * Updates the state of the global window in line with the
-     * general.showglobalwindow config setting.
-     */
-    protected static void updateWindowState() {
-        final AggregateConfigProvider configManager = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration();
+        /** {@inheritDoc} */
+        @Override
+        public void configChanged(final String domain, final String key) {
+            updateWindowState();
+        }
 
-        synchronized (GlobalWindow.class) {
-            if (configManager.getOptionBool("general", "showglobalwindow")) {
-                if (globalWindow == null) {
-                    globalWindow = new GlobalWindow(configManager,
-                            new GlobalCommandParser(configManager,
-                                    CommandManager.getCommandManager()), WindowManager.getWindowManager());
-                }
-            } else {
-                if (globalWindow != null) {
-                    globalWindow.close();
+        /**
+         * Initialises the global window if it's enabled in the config.
+         */
+        public void init() {
+            globalConfig.addChangeListener("general", "showglobalwindow", this);
+            updateWindowState();
+        }
+
+        /**
+         * Updates the state of the global window in line with the
+         * general.showglobalwindow config setting.
+         */
+        protected void updateWindowState() {
+            synchronized (GlobalWindow.class) {
+                if (globalConfig.getOptionBool("general", "showglobalwindow")) {
+                    if (globalWindow == null) {
+                        globalWindow = new GlobalWindow(globalConfig,
+                                new GlobalCommandParser(globalConfig, commandControllerProvider.get()),
+                                windowManagerProvider.get());
+                    }
+                } else {
+                    if (globalWindow != null) {
+                        globalWindow.close();
+                    }
                 }
             }
         }
+
     }
+
 }

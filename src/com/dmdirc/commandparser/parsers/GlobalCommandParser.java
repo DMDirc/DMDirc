@@ -25,10 +25,10 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -52,7 +52,7 @@ public class GlobalCommandParser extends CommandParser {
      * @param commandManager Command manager to load commands from
      */
     public GlobalCommandParser(final AggregateConfigProvider configManager,
-            final CommandManager commandManager) {
+            final CommandController commandManager) {
         super(configManager, commandManager);
     }
 

@@ -25,12 +25,11 @@ package com.dmdirc.harness;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
 
 public class TestCommandParser extends CommandParser {
     private static final long serialVersionUID = 7073002401375438532L;
@@ -48,7 +47,7 @@ public class TestCommandParser extends CommandParser {
     public String invalidCommand;
 
     public TestCommandParser(final AggregateConfigProvider configManager,
-            final CommandManager commandManager) {
+            final CommandController commandManager) {
         super(configManager, commandManager);
         this.configManager = configManager;
     }

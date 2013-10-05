@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.GlobalWindow.GlobalWindowManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
@@ -84,6 +85,9 @@ public class Main {
     /** The command manager to use. */
     private final CommandManager commandManager;
 
+    /** The global window manager to use. */
+    private final GlobalWindowManager globalWindowManager;
+
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
@@ -98,9 +102,9 @@ public class Main {
      * @param commandManager The command manager the client will use.
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
-     * @param aliasWrapper Alias wrapper to provide to the actions manager.
      * @param corePluginExtractor Extractor to use for core plugins.
      * @param urlBuilder URL builder to use as a singleton.
+     * @param globalWindowManager Global window manager to use.
      * @param commands The commands to be loaded into the command manager.
      */
     @Inject
@@ -115,6 +119,7 @@ public class Main {
             final ThemeManager themeManager,
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
+            final GlobalWindowManager globalWindowManager,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -123,6 +128,7 @@ public class Main {
         this.pluginManager = pluginManager;
         this.corePluginExtractor = corePluginExtractor;
         this.commandManager = commandManager;
+        this.globalWindowManager = globalWindowManager;
         this.commands = commands;
         URLBuilder.setInstance(urlBuilder);
     }
@@ -149,8 +155,6 @@ public class Main {
 
     /**
      * Initialises the client.
-     *
-     * @param args The command line arguments
      */
     public void init() {
         for (CommandDetails command : commands) {
@@ -168,7 +172,7 @@ public class Main {
 
         commandLineParser.processArguments(serverManager);
 
-        GlobalWindow.init();
+        globalWindowManager.init();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             /** {@inheritDoc} */

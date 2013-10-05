@@ -129,12 +129,15 @@ public class MessageSinkManager {
      * Loads the default message sinks into this manager.
      *
      * @param statusBarManager The status bar manager to give to status-bar related sinks.
+     * @param windowManager The window manager to give to sinks that iterate windows.
      */
-    public void loadDefaultSinks(final StatusBarManager statusBarManager) {
+    public void loadDefaultSinks(
+            final StatusBarManager statusBarManager,
+            final WindowManager windowManager) {
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
         addSink(new CommonChanelsMessageSink());
-        addSink(new CustomWindowMessageSink(WindowManager.getWindowManager()));
+        addSink(new CustomWindowMessageSink(windowManager));
         addSink(new ForkMessageSink());
         addSink(new FormatMessageSink());
         addSink(new GroupMessageSink());

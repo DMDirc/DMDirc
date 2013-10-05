@@ -34,20 +34,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * The WindowManager maintains a list of all open windows, and their
  * parent/child relations.
  */
+@Singleton
 public class WindowManager {
-
-    /** Singleton instance of the WindowManager. */
-    private static final WindowManager INSTANCE = new WindowManager();
 
     /** A list of root windows. */
     private final List<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
 
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
+
+    /**
+     * Creates a new instance of {@link WindowManager}.
+     */
+    @Inject
+    public WindowManager() {
+    }
 
     /**
      * Registers a FrameListener with the WindowManager.
@@ -343,12 +351,4 @@ public class WindowManager {
         }
     }
 
-    /**
-     * Returns a singleton instance of the WindowManager.
-     *
-     * @return A singleton WindowManager instance
-     */
-    public static WindowManager getWindowManager() {
-        return INSTANCE;
-    }
 }

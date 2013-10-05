@@ -187,14 +187,17 @@ public class ClientModule {
      * Gets the message sink manager for the client.
      *
      * @param statusBarManager The status bar manager to use for status bar sinks.
+     * @param windowManager The window manager to use for sinks that iterate windows.
      * @return The message sink manager the client should use.
      */
     @Provides
     @Singleton
-    public MessageSinkManager getMessageSinkManager(final StatusBarManager statusBarManager) {
+    public MessageSinkManager getMessageSinkManager(
+            final StatusBarManager statusBarManager,
+            final WindowManager windowManager) {
         final MessageSinkManager messageSinkManager = new MessageSinkManager();
         MessageSinkManager.setManager(messageSinkManager);
-        messageSinkManager.loadDefaultSinks(statusBarManager);
+        messageSinkManager.loadDefaultSinks(statusBarManager, windowManager);
         return messageSinkManager;
     }
 
@@ -365,16 +368,6 @@ public class ClientModule {
         final ColourManager manager = new ColourManager(controller.getGlobalConfiguration());
         ColourManager.setColourManager(manager);
         return manager;
-    }
-
-    /**
-     * Gets a window manager.
-     *
-     * @return A singleton window manager.
-     */
-    @Provides
-    public WindowManager getWindowManager() {
-        return new WindowManager();
     }
 
     /**
