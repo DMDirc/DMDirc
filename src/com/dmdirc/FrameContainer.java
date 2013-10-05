@@ -110,6 +110,10 @@ public abstract class FrameContainer {
     @Getter
     private final IconManager iconManager;
 
+    /** Window management. */
+    @Getter
+    private final WindowManager windowManager;
+
     /**
      * Instantiate new frame container.
      *
@@ -118,12 +122,15 @@ public abstract class FrameContainer {
      * @param title The title of this container
      * @param config The config manager for this container
      * @param components The UI components that this frame requires
+     * @param windowManager Window manager to register from
      * @since 0.6.4
      */
     protected FrameContainer(
             final String icon, final String name,
             final String title, final AggregateConfigProvider config,
-            final Collection<String> components) {
+            final Collection<String> components,
+            final WindowManager windowManager) {
+        this.windowManager = windowManager;
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -292,7 +299,7 @@ public abstract class FrameContainer {
 
         windowClosing();
 
-        WindowManager.getWindowManager().removeWindow(this);
+        windowManager.removeWindow(this);
     }
 
     /**

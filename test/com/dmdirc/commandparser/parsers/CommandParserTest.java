@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.ui.WindowManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,7 @@ public class CommandParserTest {
 
     @Mock private ServerManager serverManager;
     @Mock private AggregateConfigProvider cm;
+    @Mock private WindowManager windowManager;
     private CommandManager commands;
 
     @Before
@@ -53,7 +55,7 @@ public class CommandParserTest {
         when(cm.getBinder()).thenReturn(binder);
         commands = new CommandManager(serverManager);
         commands.initialise(cm);
-        commands.registerCommand(new Echo(commands), Echo.INFO);
+        commands.registerCommand(new Echo(commands, windowManager), Echo.INFO);
     }
 
     @Test

@@ -27,6 +27,7 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.Collections;
@@ -36,10 +37,11 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
-            final AggregateConfigProvider cm, final CommandManager commandManager) {
+            final AggregateConfigProvider cm, final CommandManager commandManager,
+            final WindowManager windowManager) {
         super("raw", "Raw", "(Raw)", cm,
                 new GlobalCommandParser(cm, commandManager),
-                Collections.<String>emptySet());
+                Collections.<String>emptySet(), windowManager);
 
         this.lineLength = lineLength;
     }

@@ -28,6 +28,7 @@ import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.ArrayList;
@@ -60,12 +61,14 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param config The config manager for this container
      * @param parser The command parser for this container
      * @param components The UI components that this frame requires
+     * @param windowManager For window management
      * @since 0.6.4
      */
     public WritableFrameContainer(final String icon, final String name,
             final String title, final AggregateConfigProvider config,
-            final CommandParser parser, final Collection<String> components) {
-        super(icon, name, title, config, components);
+            final CommandParser parser, final Collection<String> components,
+            final WindowManager windowManager) {
+        super(icon, name, title, config, components, windowManager);
 
         this.commandParser = parser;
         parser.setOwner(this);

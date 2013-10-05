@@ -40,7 +40,7 @@ import java.util.Date;
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
  */
-public final class Raw extends WritableFrameContainer
+public class Raw extends WritableFrameContainer
         implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
@@ -50,18 +50,19 @@ public final class Raw extends WritableFrameContainer
      * Creates a new instance of Raw.
      *
      * @param newServer the server to monitor
+     * @param windowManager Window management
      */
-    public Raw(final Server newServer) {
+    public Raw(final Server newServer, final WindowManager windowManager) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
                 new ServerCommandParser(newServer.getConfigManager()),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.INPUTFIELD.getIdentifier()), windowManager);
 
         this.server = newServer;
 
         getCommandParser().setOwner(server);
 
-        WindowManager.getWindowManager().addWindow(server, this);
+        windowManager.addWindow(server, this);
     }
 
     /**

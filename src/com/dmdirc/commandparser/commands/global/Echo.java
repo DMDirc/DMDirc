@@ -62,16 +62,20 @@ public class Echo extends Command implements IntelligentCommand {
     private final CommandFlag targetFlag = new CommandFlag("target", true, 1, 0);
     /** The command flag handler for this command. */
     private final CommandFlagHandler handler;
+    /** Window management. */
+    private final WindowManager windowManager;
 
     /**
      * Creates a new instance of Echo.
      *
      * @param controller Command controller
+     * @param windowManager Window management
      */
     @Inject
-    public Echo(final CommandController controller) {
+    public Echo(final CommandController controller, final WindowManager windowManager) {
         super(controller);
 
+        this.windowManager = windowManager;
         handler = new CommandFlagHandler(timeStampFlag, targetFlag);
     }
 
@@ -100,13 +104,13 @@ public class Echo extends Command implements IntelligentCommand {
             FrameContainer target = origin;
 
             while (frame == null && target != null) {
-                frame = WindowManager.getWindowManager().findCustomWindow(target,
+                frame = windowManager.findCustomWindow(target,
                         results.getArgumentsAsString(targetFlag));
                 target = target.getParent();
             }
 
             if (frame == null) {
-                frame = WindowManager.getWindowManager().findCustomWindow(results.getArgumentsAsString(targetFlag));
+                frame = windowManager.findCustomWindow(results.getArgumentsAsString(targetFlag));
             }
 
             if (frame == null) {
@@ -145,7 +149,7 @@ public class Echo extends Command implements IntelligentCommand {
             }
 
             //Global Windows
-            windowList.addAll(WindowManager.getWindowManager().getRootWindows());
+            windowList.addAll(windowManager.getRootWindows());
             for (FrameContainer customWindow : windowList) {
                 if (customWindow instanceof CustomWindow) {
                     targets.add(customWindow.getName());

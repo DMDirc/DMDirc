@@ -47,15 +47,20 @@ public class OpenWindow extends Command implements IntelligentCommand {
             "openwindow [--server|--child] <name> [title] "
             + "- opens a window with the specified name and title",
             CommandType.TYPE_GLOBAL);
+    /** Window management. */
+    private final WindowManager windowManager;
 
     /**
      * Creates a new instance of this command.
      *
      * @param controller The controller to use for command information.
+     * @param windowManager Window management
      */
     @Inject
-    public OpenWindow(final CommandController controller) {
+    public OpenWindow(final CommandController controller, final WindowManager windowManager) {
         super(controller);
+
+        this.windowManager = windowManager;
     }
 
     /** {@inheritDoc} */
@@ -86,9 +91,9 @@ public class OpenWindow extends Command implements IntelligentCommand {
             final FrameContainer window;
 
             if (parent == null) {
-                window = WindowManager.getWindowManager().findCustomWindow(args.getArguments()[start]);
+                window = windowManager.findCustomWindow(args.getArguments()[start]);
             } else {
-                window = WindowManager.getWindowManager().findCustomWindow(parent, args.getArguments()[start]);
+                window = windowManager.findCustomWindow(parent, args.getArguments()[start]);
             }
 
             final String title = args.getArguments().length > start + 1
@@ -96,7 +101,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
 
             if (window == null) {
                 if (parent == null) {
-                    new CustomWindow(args.getArguments()[start], title);
+                    new CustomWindow(args.getArguments()[start], title, windowManager);
                 } else {
                     new CustomWindow(args.getArguments()[start], title, parent);
                 }

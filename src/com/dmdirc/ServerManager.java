@@ -113,6 +113,7 @@ public class ServerManager implements ServerFactory {
                 tabCompleterFactory,
                 commandController.get(),
                 identityFactory,
+                windowManager,
                 uri,
                 profile);
         registerServer(server);

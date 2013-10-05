@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
@@ -36,8 +37,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class ServerTest {
 
@@ -49,6 +51,7 @@ public class ServerTest {
     @Mock private IdentityFactory identityFactory;
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private CommandController commandController;
+    @Mock private WindowManager windowManager;
 
     private Server server;
 
@@ -66,6 +69,7 @@ public class ServerTest {
                 tabCompleterFactory,
                 commandController,
                 identityFactory,
+                windowManager,
                 new URI("irc-test://255.255.255.255"),
                 profile);
     }

@@ -52,6 +52,7 @@ import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
@@ -185,6 +186,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
 
+    /** Window manager to pas to children. */
+    private final WindowManager windowManager;
+
     // </editor-fold>
 
     // </editor-fold>
@@ -203,6 +207,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param tabCompleterFactory The factory to use for tab completers.
      * @param commandController The controller to use to retrieve commands.
      * @param identityFactory The factory to use to create identities.
+     * @param windowManager Window Manager
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -214,6 +219,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final IdentityFactory identityFactory,
+            final WindowManager windowManager,
             final URI uri,
             final ConfigProvider profile) {
         super("server-disconnected",
@@ -223,11 +229,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 commandParser,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier(),
-                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+                        WindowComponent.CERTIFICATE_VIEWER.getIdentifier()), windowManager);
 
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
+        this.windowManager = windowManager;
         setConnectionDetails(uri, profile);
 
         tabCompleter = tabCompleterFactory.getTabCompleter(configManager,
@@ -541,7 +548,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, focus);
+            final Query newQuery = new Query(this, host, focus, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -577,7 +584,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this);
+            raw = new Raw(this, windowManager);
 
             try {
                 parserLock.readLock().lock();
@@ -633,7 +640,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             getChannel(chan.getName()).setChannelInfo(chan);
             getChannel(chan.getName()).selfJoin();
         } else {
-            final Channel newChan = new Channel(this, chan, focus);
+            final Channel newChan = new Channel(this, chan, focus, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);

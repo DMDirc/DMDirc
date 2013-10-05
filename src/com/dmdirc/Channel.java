@@ -101,9 +101,10 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
      * @param focus Whether or not to focus this channel
+     * @param windowManager Window management
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo,
-            final boolean focus) {
+            final boolean focus, final WindowManager windowManager) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 new ConfigManager(newServer.getProtocol(), newServer.getIrcd(),
@@ -112,7 +113,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                 WindowComponent.INPUTFIELD.getIdentifier(),
                 WindowComponent.TOPICBAR.getIdentifier(),
-                WindowComponent.USERLIST.getIdentifier()));
+                        WindowComponent.USERLIST.getIdentifier()), windowManager);
 
         channelInfo = newChannelInfo;
         server = newServer;
@@ -133,7 +134,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHAT));
 
-        WindowManager.getWindowManager().addWindow(server, this, focus);
+        windowManager.addWindow(server, this, focus);
 
         eventHandler = new ChannelEventHandler(this);
 

@@ -374,7 +374,7 @@ public class ClientModule {
      */
     @Provides
     public WindowManager getWindowManager() {
-        return WindowManager.getWindowManager();
+        return new WindowManager();
     }
 
     /**

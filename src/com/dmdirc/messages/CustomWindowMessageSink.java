@@ -38,6 +38,17 @@ public class CustomWindowMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("window:(.*)");
+    /** Window management. */
+    private final WindowManager windowManager;
+
+    /**
+     * Creates a new custom window message sink.
+     *
+     * @param windowManager Window management
+     */
+    public CustomWindowMessageSink(final WindowManager windowManager) {
+        this.windowManager = windowManager;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -51,8 +62,7 @@ public class CustomWindowMessageSink implements MessageSink {
             final WritableFrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        FrameContainer targetWindow = WindowManager.getWindowManager()
-                .findCustomWindow(source.getServer(), patternMatches[0]);
+        FrameContainer targetWindow = windowManager.findCustomWindow(source.getServer(), patternMatches[0]);
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0],

@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.ui.WindowManager;
 
 import java.util.Collection;
 
@@ -42,12 +43,14 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * @param config The config manager to use for this target
      * @param parser The command parser for this container
      * @param components The UI components that this frame requires
+     * @param windowManager Window manager
      * @since 0.6.4
      */
     public MessageTarget(final String icon, final String name,
             final String title, final AggregateConfigProvider config,
-            final CommandParser parser, final Collection<String> components) {
-        super(icon, name, title, config, parser, components);
+            final CommandParser parser, final Collection<String> components,
+            final WindowManager windowManager) {
+        super(icon, name, title, config, parser, components, windowManager);
     }
 
     /**

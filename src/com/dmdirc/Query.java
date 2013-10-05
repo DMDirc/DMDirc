@@ -72,9 +72,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
      *
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
+     * @param windowManager Window management
      */
-    public Query(final Server newServer, final String newHost) {
-        this(newServer, newHost, false);
+    public Query(final Server newServer, final String newHost, final WindowManager windowManager) {
+        this(newServer, newHost, false, windowManager);
     }
 
     /**
@@ -83,20 +84,21 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
      * @param focus Should we focus the query on open?
+     * @param windowManager Window management
      */
     public Query(final Server newServer, final String newHost,
-            final boolean focus) {
+            final boolean focus, final WindowManager windowManager) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(), new QueryCommandParser(newServer),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.INPUTFIELD.getIdentifier()), windowManager);
 
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
 
-        WindowManager.getWindowManager().addWindow(server, this, focus);
+        windowManager.addWindow(server, this, focus);
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_OPENED, null, this);

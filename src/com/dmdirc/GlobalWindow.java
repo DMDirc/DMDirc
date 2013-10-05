@@ -57,12 +57,14 @@ public class GlobalWindow extends WritableFrameContainer {
      *
      * @param config The ConfigManager to retrieve settings from.
      * @param parser The command parser to use to parse input.
+     * @param windowManager Window management
      */
-    public GlobalWindow(final AggregateConfigProvider config, final CommandParser parser) {
+    public GlobalWindow(final AggregateConfigProvider config, final CommandParser parser,
+            final WindowManager windowManager) {
         super("icon", "Global", "(Global)",
                 config, parser,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.INPUTFIELD.getIdentifier()), windowManager);
 
         tabCompleter = new TabCompleter(config);
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -70,7 +72,7 @@ public class GlobalWindow extends WritableFrameContainer {
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 AliasWrapper.getAliasWrapper().getAliases());
 
-        WindowManager.getWindowManager().addWindow(this);
+        windowManager.addWindow(this);
     }
 
     /** {@inheritDoc} */
@@ -137,7 +139,7 @@ public class GlobalWindow extends WritableFrameContainer {
                 if (globalWindow == null) {
                     globalWindow = new GlobalWindow(configManager,
                             new GlobalCommandParser(configManager,
-                            CommandManager.getCommandManager()));
+                                    CommandManager.getCommandManager()), WindowManager.getWindowManager());
                 }
             } else {
                 if (globalWindow != null) {

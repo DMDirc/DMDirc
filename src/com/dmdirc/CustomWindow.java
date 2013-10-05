@@ -43,9 +43,9 @@ public class CustomWindow extends FrameContainer {
     public CustomWindow(final String name, final String title,
             final FrameContainer parent) {
         super("custom", name, title, parent.getConfigManager(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()), parent.getWindowManager());
 
-        WindowManager.getWindowManager().addWindow(parent, this);
+        parent.getWindowManager().addWindow(parent, this);
     }
 
     /**
@@ -53,13 +53,14 @@ public class CustomWindow extends FrameContainer {
      *
      * @param name The name of this custom window
      * @param title The parent of this custom window
+     * @param windowManager For window management
      */
-    public CustomWindow(final String name, final String title) {
+    public CustomWindow(final String name, final String title, final WindowManager windowManager) {
         super("custom", name, title,
                 IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()), windowManager);
 
-        WindowManager.getWindowManager().addWindow(this);
+        windowManager.addWindow(this);
     }
 
     /** {@inheritDoc} */

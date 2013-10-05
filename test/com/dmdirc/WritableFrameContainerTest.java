@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.ui.WindowManager;
 
 import java.util.Arrays;
 
@@ -41,6 +42,7 @@ public class WritableFrameContainerTest {
 
     @Mock private AggregateConfigProvider acp;
     @Mock private ServerManager serverManager;
+    @Mock private WindowManager windowManager;
     private CommandManager commands;
 
     @Before
@@ -57,7 +59,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testGetNumLines() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, acp, commands);
+                = new TestWritableFrameContainer(10, acp, commands, windowManager);
 
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -87,7 +89,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testSplitLine() {
         final WritableFrameContainer container10
-                = new TestWritableFrameContainer(10, acp, commands);
+                = new TestWritableFrameContainer(10, acp, commands, windowManager);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

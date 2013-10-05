@@ -25,6 +25,7 @@ package com.dmdirc.messages;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class MessageSinkManager {
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
         addSink(new CommonChanelsMessageSink());
-        addSink(new CustomWindowMessageSink());
+        addSink(new CustomWindowMessageSink(WindowManager.getWindowManager()));
         addSink(new ForkMessageSink());
         addSink(new FormatMessageSink());
         addSink(new GroupMessageSink());
