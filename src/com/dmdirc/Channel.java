@@ -103,7 +103,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      *
      * @param newServer The server object that this channel belongs to
      * @param newChannelInfo The parser's channel object that corresponds to this channel
-     * @param focus Whether or not to focus this channel
      * @param configMigrator The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
@@ -112,7 +111,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     public Channel(
             final Server newServer,
             final ChannelInfo newChannelInfo,
-            final boolean focus,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
@@ -143,14 +141,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
                 getConfigManager(), CommandType.TYPE_CHANNEL, CommandType.TYPE_CHAT);
 
-        windowManager.addWindow(server, this, focus);
-
         eventHandler = new ChannelEventHandler(this);
 
         registerCallbacks();
-
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CHANNEL_OPENED, null, this);
 
         updateTitle();
         selfJoin();

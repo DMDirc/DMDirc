@@ -72,13 +72,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
      *
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
-     * @param focus Should we focus the query on open?
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
     public Query(final Server newServer, final String newHost,
-            final boolean focus, final TabCompleterFactory tabCompleterFactory,
+            final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager) {
         super("query", newServer.parseHostmask(newHost)[0],
@@ -92,11 +91,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
-
-        windowManager.addWindow(server, this, focus);
-
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.QUERY_OPENED, null, this);
 
         tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
                 getConfigManager(), CommandType.TYPE_QUERY, CommandType.TYPE_CHAT);

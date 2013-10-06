@@ -66,8 +66,6 @@ public class Raw extends WritableFrameContainer
         this.server = newServer;
 
         getCommandParser().setOwner(server);
-
-        windowManager.addWindow(server, this);
     }
 
     /**

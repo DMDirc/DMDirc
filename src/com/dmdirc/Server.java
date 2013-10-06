@@ -567,8 +567,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, focus, tabCompleterFactory,
+            final Query newQuery = new Query(this, host, tabCompleterFactory,
                     messageSinkManager, windowManager);
+
+            windowManager.addWindow(this, newQuery, focus);
+            ActionManager.getActionManager().triggerEvent(
+                    CoreActionType.QUERY_OPENED, null, newQuery);
 
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -605,6 +609,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public void addRaw() {
         if (raw == null) {
             raw = new Raw(this, messageSinkManager, windowManager);
+            windowManager.addWindow(raw, this);
 
             try {
                 parserLock.readLock().lock();
@@ -662,8 +667,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         } else {
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
-            final Channel newChan = new Channel(this, chan, focus, channelConfig,
+            final Channel newChan = new Channel(this, chan, channelConfig,
                     tabCompleterFactory, messageSinkManager, windowManager);
+
+            windowManager.addWindow(this, newChan, focus);
+            ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_OPENED, null,
+                    newChan);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
