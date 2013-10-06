@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.logger.ErrorLevel;
@@ -43,7 +42,7 @@ import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -74,11 +73,13 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
      * @param focus Should we focus the query on open?
+     * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
     public Query(final Server newServer, final String newHost,
-            final boolean focus, final MessageSinkManager messageSinkManager,
+            final boolean focus, final TabCompleterFactory tabCompleterFactory,
+            final MessageSinkManager messageSinkManager,
             final WindowManager windowManager) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
@@ -97,11 +98,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_OPENED, null, this);
 
-        tabCompleter = new TabCompleter(getConfigManager(), server.getTabCompleter());
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_QUERY));
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHAT));
+        tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
+                getConfigManager(), CommandType.TYPE_QUERY, CommandType.TYPE_CHAT);
 
         if (!server.getState().isDisconnected()) {
             reregister();

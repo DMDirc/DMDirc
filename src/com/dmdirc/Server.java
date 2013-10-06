@@ -157,6 +157,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter;
 
+    /** The factory to give to children to create tabcompleters. */
+    private final TabCompleterFactory tabCompleterFactory;
+
     /** Our reason for being away, if any. */
     private String awayMessage;
 
@@ -249,6 +252,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
         this.configMigrator = configMigrator;
+        this.tabCompleterFactory = tabCompleterFactory;
 
         setConnectionDetails(uri, profile);
 
@@ -563,7 +567,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, focus, messageSinkManager, windowManager);
+            final Query newQuery = new Query(this, host, focus, tabCompleterFactory,
+                    messageSinkManager, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -658,7 +663,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
             final Channel newChan = new Channel(this, chan, focus, channelConfig,
-                    messageSinkManager, windowManager);
+                    tabCompleterFactory, messageSinkManager, windowManager);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);

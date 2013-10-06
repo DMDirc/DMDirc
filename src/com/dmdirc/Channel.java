@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.interfaces.NicklistListener;
@@ -39,6 +38,7 @@ import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
@@ -105,6 +105,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param newChannelInfo The parser's channel object that corresponds to this channel
      * @param focus Whether or not to focus this channel
      * @param configMigrator The config migrator which provides the config for this channel.
+     * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window management
      */
@@ -113,6 +114,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             final ChannelInfo newChannelInfo,
             final boolean focus,
             final ConfigProviderMigrator configMigrator,
+            final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager) {
         super("channel-inactive", newChannelInfo.getName(),
@@ -138,11 +140,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
         showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
 
-        tabCompleter = new TabCompleter(getConfigManager(), server.getTabCompleter());
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHANNEL));
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_CHAT));
+        tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
+                getConfigManager(), CommandType.TYPE_CHANNEL, CommandType.TYPE_CHAT);
 
         windowManager.addWindow(server, this, focus);
 

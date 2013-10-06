@@ -22,20 +22,18 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.util.Arrays;
 
@@ -55,6 +53,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** The tab completer we use. */
     @Getter
+    @SuppressWarnings("PMD.UnusedPrivateField")
     private final TabCompleter tabCompleter;
 
     /**
@@ -63,23 +62,21 @@ public class GlobalWindow extends WritableFrameContainer {
      * @param config The ConfigManager to retrieve settings from.
      * @param parser The command parser to use to parse input.
      * @param windowManager The window manager.
+     * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public GlobalWindow(
             final AggregateConfigProvider config,
             final CommandParser parser,
             final WindowManager windowManager,
+            final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager) {
         super("icon", "Global", "(Global)", config, parser, messageSinkManager, windowManager,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
-        tabCompleter = new TabCompleter(config);
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                CommandManager.getCommandManager().getCommandNames(CommandType.TYPE_GLOBAL));
-        tabCompleter.addEntries(TabCompletionType.COMMAND,
-                AliasWrapper.getAliasWrapper().getAliases());
+        tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
 
         windowManager.addWindow(this);
     }
@@ -124,6 +121,8 @@ public class GlobalWindow extends WritableFrameContainer {
 
         /** The global configuration to read settings from. */
         private final AggregateConfigProvider globalConfig;
+        /** The factory to use to create tab completers. */
+        private final TabCompleterFactory tabCompleterFactory;
         /** The provider to use to retrieve a command controller. */
         private final Provider<CommandController> commandControllerProvider;
         /** The provider to use to retrieve a window manager. */
@@ -134,18 +133,21 @@ public class GlobalWindow extends WritableFrameContainer {
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
          *
-         * @param identityController Controller to retrieve global configuration from.
+         * @param globalConfig Configuration provider to read settings from.
+         * @param tabCompleterFactory Factory to use to create tab completers.
          * @param commandControllerProvider The provider to use to retrieve a command controller.
          * @param windowManagerProvider The provider to use to retrieve a window manager.
          * @param messageSinkManagerProvider The provider to use to retrieve a sink manager.
          */
         @Inject
         public GlobalWindowManager(
-                final IdentityController identityController,
+                @GlobalConfig final AggregateConfigProvider globalConfig,
+                final TabCompleterFactory tabCompleterFactory,
                 final Provider<CommandController> commandControllerProvider,
                 final Provider<WindowManager> windowManagerProvider,
                 final Provider<MessageSinkManager> messageSinkManagerProvider) {
-            this.globalConfig = identityController.getGlobalConfiguration();
+            this.globalConfig = globalConfig;
+            this.tabCompleterFactory = tabCompleterFactory;
             this.commandControllerProvider = commandControllerProvider;
             this.windowManagerProvider = windowManagerProvider;
             this.messageSinkManagerProvider = messageSinkManagerProvider;
@@ -175,7 +177,8 @@ public class GlobalWindow extends WritableFrameContainer {
                     if (globalWindow == null) {
                         globalWindow = new GlobalWindow(globalConfig,
                                 new GlobalCommandParser(globalConfig, commandControllerProvider.get()),
-                                windowManagerProvider.get(), messageSinkManagerProvider.get());
+                                windowManagerProvider.get(), tabCompleterFactory,
+                                messageSinkManagerProvider.get());
                     }
                 } else {
                     if (globalWindow != null) {
