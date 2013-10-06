@@ -51,7 +51,6 @@ import lombok.Getter;
 public class GlobalWindow extends WritableFrameContainer {
 
     /** The global window that's in use, if any. */
-    @Getter
     private static GlobalWindow globalWindow;
 
     /** The tab completer we use. */

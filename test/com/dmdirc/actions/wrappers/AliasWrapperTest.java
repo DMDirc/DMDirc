@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
@@ -32,6 +31,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class AliasWrapperTest {
 
     @Mock private Action action;
     @Mock private ActionCondition condition;
-    @Mock private ServerManager serverManager;
+    @Mock private WindowManager windowManager;
     @Mock private CommandController commandController;
     private List<ActionCondition> conditions;
 
@@ -68,7 +68,7 @@ public class AliasWrapperTest {
         when(commandController.getCommandChar()).thenReturn('!');
 
         conditions = new ArrayList<>();
-        aliasWrapper = new AliasWrapper(commandController, serverManager);
+        aliasWrapper = new AliasWrapper(commandController, windowManager);
 
         when(condition.getArg()).thenReturn(1);
         when(condition.getComparison()).thenReturn(CoreActionComparison.STRING_EQUALS);

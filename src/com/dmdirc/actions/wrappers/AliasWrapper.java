@@ -22,9 +22,8 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.GlobalWindow;
-import com.dmdirc.Server;
-import com.dmdirc.ServerManager;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
@@ -32,6 +31,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompletionType;
 
 import java.util.ArrayList;
@@ -52,24 +52,28 @@ public class AliasWrapper extends ActionGroup {
     private final CommandController commandController;
 
     /** Server Manager. */
-    private final ServerManager serverManager;
+    private final WindowManager windowManager;
 
     /**
      * Creates a new instance of AliasWrapper.
      *
      * @param commandController Command controller to get command info from.
+     * @param windowManager The window manager to use to find root windows.
      */
-    public AliasWrapper(final CommandController commandController, final ServerManager serverManager) {
+    public AliasWrapper(
+            final CommandController commandController,
+            final WindowManager windowManager) {
         super("aliases");
 
         this.commandController = commandController;
-        this.serverManager = serverManager;
+        this.windowManager = windowManager;
     }
 
     /**
      * Retrieves a singleton instance of this alias wrapper.
      *
      * @return A singleton instance of AliasWrapper
+     * @deprecated Global state is bad.
      */
     @Deprecated
     public static AliasWrapper getAliasWrapper() {
@@ -80,6 +84,7 @@ public class AliasWrapper extends ActionGroup {
      * Sets the alias wrapper that will be used as a singleton instance.
      *
      * @param wrapper The wrapper to use as a singleton.
+     * @deprecated Global state is bad.
      */
     @Deprecated
     public static void setAliasWrapper(final AliasWrapper wrapper) {
@@ -106,13 +111,11 @@ public class AliasWrapper extends ActionGroup {
                 super.add(action);
                 aliases.add(commandName);
 
-                if (GlobalWindow.getGlobalWindow() != null) {
-                    GlobalWindow.getGlobalWindow().getTabCompleter()
-                            .addEntry(TabCompletionType.COMMAND, commandName);
-                }
-
-                for (Server server : serverManager.getServers()) {
-                    server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
+                for (FrameContainer root : windowManager.getRootWindows()) {
+                    if (root instanceof WritableFrameContainer) {
+                        ((WritableFrameContainer) root).getTabCompleter()
+                                .addEntry(TabCompletionType.COMMAND, commandName);
+                    }
                 }
             } else {
                 Logger.userError(ErrorLevel.MEDIUM, "Invalid alias action (no name): "
@@ -134,8 +137,11 @@ public class AliasWrapper extends ActionGroup {
 
             aliases.remove(commandName);
 
-            for (Server server : serverManager.getServers()) {
-                server.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
+            for (FrameContainer root : windowManager.getRootWindows()) {
+                if (root instanceof WritableFrameContainer) {
+                    ((WritableFrameContainer) root).getTabCompleter()
+                            .removeEntry(TabCompletionType.COMMAND, commandName);
+                }
             }
         }
     }
