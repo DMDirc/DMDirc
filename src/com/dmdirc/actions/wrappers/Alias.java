@@ -232,7 +232,7 @@ public class Alias implements Serializable {
      */
     public Action createAction() {
         return actionFactory.create(
-                AliasWrapper.getAliasWrapper().getName(),
+                AliasWrapper.GROUP_NAME,
                 getName(),
                 new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
                 getResponse(),

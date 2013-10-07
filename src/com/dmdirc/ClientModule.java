@@ -345,23 +345,6 @@ public class ClientModule {
     }
 
     /**
-     * Gets the alias actions wrapper.
-     *
-     * @param commandController The controller to register commands with
-     * @param windowManager The manager to use to iterate windows.
-     * @return An alias wrapper to use in the client.
-     */
-    @Provides
-    @Singleton
-    public AliasWrapper getAliasWrapper(
-            final CommandController commandController,
-            final WindowManager windowManager) {
-        final AliasWrapper wrapper = new AliasWrapper(commandController, windowManager);
-        AliasWrapper.setAliasWrapper(wrapper);
-        return wrapper;
-    }
-
-    /**
      * Gets the performs actions wrapper.
      *
      * @return An performs wrapper to use in the client.

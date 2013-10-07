@@ -37,13 +37,17 @@ import com.dmdirc.ui.input.TabCompletionType;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Encapsulates alias actions.
  */
+@Singleton
 public class AliasWrapper extends ActionGroup {
 
-    /** Singleton instance of the alias wrapper. */
-    private static AliasWrapper me;
+    /** The name of the actions group we wrap. */
+    protected static final String GROUP_NAME = "aliases";
 
     /** A list of registered alias names. */
     private final List<String> aliases = new ArrayList<>();
@@ -60,35 +64,14 @@ public class AliasWrapper extends ActionGroup {
      * @param commandController Command controller to get command info from.
      * @param windowManager The window manager to use to find root windows.
      */
+    @Inject
     public AliasWrapper(
             final CommandController commandController,
             final WindowManager windowManager) {
-        super("aliases");
+        super(GROUP_NAME);
 
         this.commandController = commandController;
         this.windowManager = windowManager;
-    }
-
-    /**
-     * Retrieves a singleton instance of this alias wrapper.
-     *
-     * @return A singleton instance of AliasWrapper
-     * @deprecated Global state is bad.
-     */
-    @Deprecated
-    public static AliasWrapper getAliasWrapper() {
-        return me;
-    }
-
-    /**
-     * Sets the alias wrapper that will be used as a singleton instance.
-     *
-     * @param wrapper The wrapper to use as a singleton.
-     * @deprecated Global state is bad.
-     */
-    @Deprecated
-    public static void setAliasWrapper(final AliasWrapper wrapper) {
-        me = wrapper;
     }
 
     /**
