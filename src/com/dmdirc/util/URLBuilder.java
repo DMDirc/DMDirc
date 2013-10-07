@@ -45,6 +45,7 @@ public class URLBuilder {
     @Deprecated
     @Getter
     @Setter
+    @SuppressWarnings("PMD.UnusedPrivateField")
     private static URLBuilder instance;
 
     /** Provider to retrieve a plugin manager instance when needed. */
@@ -93,7 +94,7 @@ public class URLBuilder {
      */
     public URL getUrlForJarFile(final String jarFile, final String path) {
         try {
-            String url = "jar:" + buildURL(jarFile) + "!/" + path;
+            String url = "jar:" + getUrl(jarFile) + "!/" + path;
             if (url.startsWith("jar:file://")) {
                 url = "jar:file:/" + url.substring(11);
             }
@@ -138,27 +139,6 @@ public class URLBuilder {
         return getUrlForJarFile(
                 pluginManagerProvider.get().getPluginInfoByName(plugin)
                 .getMetaData().getPluginUrl().getPath(), path);
-    }
-
-    /**
-     * Constructs an URL corresponding to the described resource.
-     *
-     * @param spec The resource location. May take the form of: <ul>
-     * <li>dmdirc://com/dmdirc/etc/
-     * <li>jar://path/to/jarfile:path/inside/jarfile
-     * <li>zip://path/to/zipfile:path/inside/zipfile
-     * <li>theme://theme_name:file/inside/theme
-     * <li>plugin://plugin_name:file/inside/plugin
-     * <li>http://server/path
-     * <li>https://server/path
-     * <li>[file://]/path/on/filesystem</ul>
-     *
-     * @return An URL corresponding to the specified resource, or null on failure
-     * @deprecated Use non-static methods
-     */
-    @Deprecated
-    public static URL buildURL(final String spec) {
-        return instance.getUrl(spec);
     }
 
     /**
