@@ -106,12 +106,7 @@ public abstract class FrameContainer {
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
 
-    /** The IconManager for this container. */
-    @Getter
-    private final IconManager iconManager;
-
     /** Window management. */
-    @Getter
     private final WindowManager windowManager;
 
     /**
@@ -135,8 +130,6 @@ public abstract class FrameContainer {
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
-
-        iconManager = new IconManager(config, URLBuilder.getInstance());
 
         setIcon(icon);
     }
@@ -207,6 +200,38 @@ public abstract class FrameContainer {
         }
 
         this.parent = parent;
+    }
+
+    /**
+     * Gets an icon manager for this container.
+     *
+     * @return An icon manager for this container.
+     * @deprecated Use {@link #getIconManager(com.dmdirc.util.URLBuilder)}.
+     */
+    @Deprecated
+    public IconManager getIconManager() {
+        return getIconManager(URLBuilder.getInstance());
+    }
+
+    /**
+     * Gets an icon manager for this container.
+     *
+     * @param urlBuilder The builder to use to construct icon URLs.
+     * @return An icon manager for this container.
+     */
+    public IconManager getIconManager(final URLBuilder urlBuilder) {
+        return new IconManager(getConfigManager(), urlBuilder);
+    }
+
+    /**
+     * Gets the window manager associated with this container.
+     *
+     * @return This container's window manager.
+     * @deprecated Window managers should be supplied to classes that need them.
+     */
+    @Deprecated
+    public WindowManager getWindowManager() {
+        return windowManager;
     }
 
     /**
