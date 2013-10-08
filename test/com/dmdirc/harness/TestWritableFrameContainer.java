@@ -28,7 +28,6 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.Collections;
@@ -39,9 +38,9 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager, final WindowManager windowManager) {
+            final MessageSinkManager messageSinkManager) {
         super("raw", "Raw", "(Raw)", cm,
-                new GlobalCommandParser(cm, commandManager), messageSinkManager, windowManager,
+                new GlobalCommandParser(cm, commandManager), messageSinkManager,
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;

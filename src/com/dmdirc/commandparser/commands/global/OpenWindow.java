@@ -100,10 +100,13 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 ? args.getArgumentsAsString(start + 1) : args.getArguments()[start];
 
             if (window == null) {
+                CustomWindow newWindow;
                 if (parent == null) {
-                    new CustomWindow(args.getArguments()[start], title, windowManager);
+                    newWindow = new CustomWindow(args.getArguments()[start], title);
+                    windowManager.addWindow(newWindow);
                 } else {
-                    new CustomWindow(args.getArguments()[start], title, parent);
+                    newWindow = new CustomWindow(args.getArguments()[start], title, parent);
+                    windowManager.addWindow(parent, newWindow);
                 }
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,

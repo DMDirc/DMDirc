@@ -61,24 +61,20 @@ public class GlobalWindow extends WritableFrameContainer {
      *
      * @param config The ConfigManager to retrieve settings from.
      * @param parser The command parser to use to parse input.
-     * @param windowManager The window manager.
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public GlobalWindow(
             final AggregateConfigProvider config,
             final CommandParser parser,
-            final WindowManager windowManager,
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager) {
-        super("icon", "Global", "(Global)", config, parser, messageSinkManager, windowManager,
+        super("icon", "Global", "(Global)", config, parser, messageSinkManager,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
-
-        windowManager.addWindow(this);
     }
 
     /** {@inheritDoc} */
@@ -176,9 +172,11 @@ public class GlobalWindow extends WritableFrameContainer {
                 if (globalConfig.getOptionBool("general", "showglobalwindow")) {
                     if (globalWindow == null) {
                         globalWindow = new GlobalWindow(globalConfig,
-                                new GlobalCommandParser(globalConfig, commandControllerProvider.get()),
-                                windowManagerProvider.get(), tabCompleterFactory,
+                                new GlobalCommandParser(globalConfig,
+                                commandControllerProvider.get()),
+                                tabCompleterFactory,
                                 messageSinkManagerProvider.get());
+                        windowManagerProvider.get().addWindow(globalWindow);
                     }
                 } else {
                     if (globalWindow != null) {

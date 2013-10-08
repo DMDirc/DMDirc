@@ -30,7 +30,6 @@ import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 
@@ -52,13 +51,11 @@ public class Raw extends WritableFrameContainer
      *
      * @param newServer the server to monitor
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param windowManager Window management
      */
-    public Raw(final Server newServer, final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager) {
+    public Raw(final Server newServer, final MessageSinkManager messageSinkManager) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
                 new ServerCommandParser(newServer.getConfigManager()),
-                messageSinkManager, windowManager,
+                messageSinkManager,
                 Arrays.asList(
                     WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier()));

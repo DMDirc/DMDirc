@@ -67,6 +67,7 @@ public class CustomWindowMessageSink implements MessageSink {
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0],
                     patternMatches[0], source.getServer());
+            windowManager.addWindow(source.getServer(), targetWindow);
         }
 
         targetWindow.addLine(messageType, date, args);

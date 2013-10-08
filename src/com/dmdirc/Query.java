@@ -39,7 +39,6 @@ import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -74,16 +73,14 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newServer The server object that this Query belongs to
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param windowManager Window management
      */
     public Query(final Server newServer, final String newHost,
             final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager) {
+            final MessageSinkManager messageSinkManager) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(), new QueryCommandParser(newServer),
-                messageSinkManager, windowManager,
+                messageSinkManager,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

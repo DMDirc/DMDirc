@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 
 import java.util.Arrays;
@@ -43,9 +42,7 @@ public class CustomWindow extends FrameContainer {
     public CustomWindow(final String name, final String title,
             final FrameContainer parent) {
         super("custom", name, title, parent.getConfigManager(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()), parent.getWindowManager());
-
-        parent.getWindowManager().addWindow(parent, this);
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     /**
@@ -53,14 +50,11 @@ public class CustomWindow extends FrameContainer {
      *
      * @param name The name of this custom window
      * @param title The parent of this custom window
-     * @param windowManager For window management
      */
-    public CustomWindow(final String name, final String title, final WindowManager windowManager) {
+    public CustomWindow(final String name, final String title) {
         super("custom", name, title,
                 IdentityManager.getIdentityManager().getGlobalConfiguration(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()), windowManager);
-
-        windowManager.addWindow(this);
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     /** {@inheritDoc} */

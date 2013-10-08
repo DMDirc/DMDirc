@@ -106,9 +106,6 @@ public abstract class FrameContainer {
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
 
-    /** Window management. */
-    private final WindowManager windowManager;
-
     /**
      * Instantiate new frame container.
      *
@@ -117,15 +114,12 @@ public abstract class FrameContainer {
      * @param title The title of this container
      * @param config The config manager for this container
      * @param components The UI components that this frame requires
-     * @param windowManager Window manager to register from
      * @since 0.6.4
      */
     protected FrameContainer(
             final String icon, final String name,
             final String title, final AggregateConfigProvider config,
-            final Collection<String> components,
-            final WindowManager windowManager) {
-        this.windowManager = windowManager;
+            final Collection<String> components) {
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -224,17 +218,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Gets the window manager associated with this container.
-     *
-     * @return This container's window manager.
-     * @deprecated Window managers should be supplied to classes that need them.
-     */
-    @Deprecated
-    public WindowManager getWindowManager() {
-        return windowManager;
-    }
-
-    /**
      * Retrieves the {@link IRCDocument} used to store this frame's content.
      *
      * @return This frame's document
@@ -323,8 +306,6 @@ public abstract class FrameContainer {
         }
 
         windowClosing();
-
-        windowManager.removeWindow(this);
     }
 
     /**

@@ -35,7 +35,6 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.Colour;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -106,19 +105,17 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param configMigrator The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param windowManager Window management
      */
     public Channel(
             final Server newServer,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager) {
+            final MessageSinkManager messageSinkManager) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
-                new ChannelCommandParser(newServer), messageSinkManager, windowManager,
+                new ChannelCommandParser(newServer), messageSinkManager,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),
                     WindowComponent.TOPICBAR.getIdentifier(),

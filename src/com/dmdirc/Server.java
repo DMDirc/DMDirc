@@ -240,7 +240,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 configMigrator.getConfigProvider(),
                 commandParser,
                 messageSinkManager,
-                windowManager,
                 Arrays.asList(
                     WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),
@@ -567,8 +566,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, tabCompleterFactory,
-                    messageSinkManager, windowManager);
+            final Query newQuery = new Query(this, host, tabCompleterFactory, messageSinkManager);
 
             windowManager.addWindow(this, newQuery, focus);
             ActionManager.getActionManager().triggerEvent(
@@ -608,7 +606,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this, messageSinkManager, windowManager);
+            raw = new Raw(this, messageSinkManager);
             windowManager.addWindow(raw, this);
 
             try {
@@ -668,7 +666,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
             final Channel newChan = new Channel(this, chan, channelConfig,
-                    tabCompleterFactory, messageSinkManager, windowManager);
+                    tabCompleterFactory, messageSinkManager);
 
             windowManager.addWindow(this, newChan, focus);
             ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_OPENED, null,

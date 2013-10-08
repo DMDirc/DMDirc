@@ -25,6 +25,7 @@ package com.dmdirc.ui;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
@@ -49,6 +50,9 @@ public class WindowManager {
 
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
+
+    /** Listener for frame close events. */
+    private final FrameCloseListener closeListener = new CloseListener();
 
     /**
      * Creates a new instance of {@link WindowManager}.
@@ -148,6 +152,8 @@ public class WindowManager {
         rootWindows.add(window);
 
         fireAddWindow(window, focus);
+
+        window.addCloseListener(closeListener);
     }
 
     /**
@@ -186,6 +192,8 @@ public class WindowManager {
         parent.addChild(child);
 
         fireAddWindow(parent, child, focus);
+
+        child.addCloseListener(closeListener);
     }
 
     /**
@@ -349,6 +357,19 @@ public class WindowManager {
         for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.delWindow(parent, child);
         }
+    }
+
+    /**
+     * Frame close listener that removes the window from this manager.
+     */
+    private class CloseListener implements FrameCloseListener {
+
+        /** {@inheritDoc} */
+        @Override
+        public void windowClosing(final FrameContainer window) {
+            removeWindow(window);
+        }
+
     }
 
 }
