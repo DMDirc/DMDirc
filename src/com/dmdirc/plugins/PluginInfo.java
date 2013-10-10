@@ -52,6 +52,8 @@ import javax.inject.Provider;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import dagger.ObjectGraph;
+
 /**
  * Stores plugin metadata and handles loading of plugin resources.
  */
@@ -63,6 +65,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final PluginMetaData metaData;
     /** The initialiser to use for the injector. */
     private final Provider<PluginInjectorInitialiser> injectorInitialiser;
+    /** The object graph to pass to plugins for DI purposes. */
+    private final ObjectGraph objectGraph;
     /** Filename for this plugin (taken from URL). */
     @Getter
     private final String filename;
@@ -97,13 +101,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @param metadata The plugin's metadata information
      * @param injectorInitialiser The initialiser to use for the plugin's injector.
+     * @param objectGraph The object graph to give to plugins for DI purposes.
      * @throws PluginException if there is an error loading the Plugin
-     * @since 0.6.6
      */
     public PluginInfo(
             final PluginMetaData metadata,
-            final Provider<PluginInjectorInitialiser> injectorInitialiser) throws PluginException {
+            final Provider<PluginInjectorInitialiser> injectorInitialiser,
+            final ObjectGraph objectGraph) throws PluginException {
         this.injectorInitialiser = injectorInitialiser;
+        this.objectGraph = objectGraph;
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
 

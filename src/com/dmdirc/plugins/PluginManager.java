@@ -26,8 +26,8 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.PluginComponent;
@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Provider;
+
+import dagger.ObjectGraph;
 
 /**
  * Searches for and manages plugins and services.
@@ -81,6 +83,9 @@ public class PluginManager implements ActionListener, ServiceManager {
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
 
+    /** The graph to pass to plugins for DI purposes. */
+    private final ObjectGraph objectGraph;
+
     /**
      * Creates a new instance of PluginManager.
      *
@@ -88,6 +93,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param actionController The action controller to use for events.
      * @param updateManager The update manager to inform about plugins.
      * @param initialiserProvider A provider of initialisers for plugin injectors.
+     * @param objectGraph The graph to pass to plugins for DI purposes.
      * @param directory The directory to load plugins from.
      */
     public PluginManager(
@@ -95,6 +101,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             final ActionController actionController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
+            final ObjectGraph objectGraph,
             final String directory) {
         this.identityController = identityController;
         this.actionController = actionController;
@@ -102,6 +109,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         this.initialiserProvider = initialiserProvider;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
+        this.objectGraph = objectGraph;
 
         actionController.registerListener(this,
                 CoreActionType.CLIENT_PREFS_OPENED,
@@ -260,7 +268,7 @@ public class PluginManager implements ActionListener, ServiceManager {
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider);
+            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM,

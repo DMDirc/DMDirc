@@ -75,6 +75,7 @@ import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
+import dagger.ObjectGraph;
 import dagger.Provides;
 
 /**
@@ -89,6 +90,9 @@ public class ClientModule {
     /** Qualifier that identities a global configuration source. */
     @Qualifier
     public @interface GlobalConfig {}
+
+    /** The object graph to inject where necessary. */
+    private ObjectGraph objectGraph;
 
     /**
      * Provides an identity manager for the client.
@@ -252,6 +256,8 @@ public class ClientModule {
      * @param identityController The controller to read settings from.
      * @param actionController The action controller to use for events.
      * @param updateManager The update manager to inform about plugins.
+     * @param initialiserProvider Provider to use to create plugin initialisers.
+     * @param objectGraph The graph to provide to plugins for DI purposes.
      * @param directory The directory to load and save plugins in.
      * @return An initialised plugin manager for the client.
      */
@@ -262,9 +268,10 @@ public class ClientModule {
             final ActionController actionController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
+            final ObjectGraph objectGraph,
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(identityController,
-                actionController, updateManager, initialiserProvider, directory);
+                actionController, updateManager, initialiserProvider, objectGraph, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
         checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
 
@@ -430,6 +437,26 @@ public class ClientModule {
     @Provides(type = Provides.Type.SET)
     public UpdateComponent getDefaultsComponent(final DefaultsComponent component) {
         return component;
+    }
+
+    /**
+     * Sets the object graph that will be injected. Must be called before any provider method.
+     *
+     * @param objectGraph The object graph to inject.
+     */
+    public void setObjectGraph(final ObjectGraph objectGraph) {
+        this.objectGraph = objectGraph;
+    }
+
+    /**
+     * Provides an object graph for future dependency injection.
+     *
+     * @return An object graph to use.
+     */
+    @Provides
+    @Singleton
+    public ObjectGraph getObjectGraph() {
+        return objectGraph;
     }
 
     /**

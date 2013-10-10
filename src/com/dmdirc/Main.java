@@ -150,7 +150,10 @@ public class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         try {
-            final ObjectGraph graph = ObjectGraph.create(new ClientModule());
+            ClientModule clientModule = new ClientModule();
+            final ObjectGraph graph = ObjectGraph.create(clientModule);
+            clientModule.setObjectGraph(graph);
+
             final CommandLineParser parser = graph.get(CommandLineParser.class);
             parser.parse(args);
             graph.get(Main.class).init();
