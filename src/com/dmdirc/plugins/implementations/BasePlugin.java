@@ -24,7 +24,10 @@ package com.dmdirc.plugins.implementations;
 
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.util.validators.ValidationResponse;
+
+import dagger.ObjectGraph;
 
 /**
  * Base implementation of the Plugin interface.
@@ -44,6 +47,18 @@ public abstract class BasePlugin implements Plugin {
             myDomain = newDomain;
             domainUpdated();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void load(final PluginInfo pluginInfo, final ObjectGraph graph) {
+        // Do nothing, for now.
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ObjectGraph getObjectGraph() {
+        return null;
     }
 
     /** {@inheritDoc} */
