@@ -203,7 +203,7 @@ public abstract class CommandParser implements Serializable {
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
                                 origin, server, channel, silent,
-                                new CommandArguments(args.getCommandName()
+                                new CommandArguments(commandManager, args.getCommandName()
                                 + " " + args.getWordsAsString(2)));
                     }
                 }
