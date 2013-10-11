@@ -65,43 +65,34 @@ import java.util.Map;
 public class PluginMetaData {
 
     /** A collection of errors that occurred when reading or validating the data. */
-    private final Collection<String> errors
-            = new ArrayList<String>();
+    private final Collection<String> errors = new ArrayList<>();
 
     /** Default settings defined in the plugin metadata. */
-    private final Map<String, String> defaultSettings
-            = new HashMap<String, String>();
+    private final Map<String, String> defaultSettings = new HashMap<>();
 
     /** Formatters defined in the plugin metadata. */
-    private final Map<String, String> formatters
-            = new HashMap<String, String>();
+    private final Map<String, String> formatters = new HashMap<>();
 
     /** Icons defined in the plugin metadata. */
-    private final Map<String, String> icons
-            = new HashMap<String, String>();
+    private final Map<String, String> icons = new HashMap<>();
 
     /** A set of requirements made by the plugin. */
-    private final Map<String, String> requirements
-            = new HashMap<String, String>();
+    private final Map<String, String> requirements = new HashMap<>();
 
     /** A list of required services. */
-    private final Collection<String> requiredServices
-            = new ArrayList<String>();
+    private final Collection<String> requiredServices = new ArrayList<>();
 
     /** Services provided by this plugin. */
-    private final Collection<String> services
-            = new ArrayList<String>();
+    private final Collection<String> services = new ArrayList<>();
 
     /** Methods exported by this plugin. */
-    private final Collection<String> exports
-            = new ArrayList<String>();
+    private final Collection<String> exports = new ArrayList<>();
 
     /** Persistent classes in this plugin. */
-    private final Collection<String> persistentClasses
-            = new ArrayList<String>();
+    private final Collection<String> persistentClasses = new ArrayList<>();
 
     /** The name of the parent plugin, if any. */
-    private String[] parents;
+    private String parent;
 
     /** The name of the main class, if any. */
     private String mainClass;
@@ -173,10 +164,7 @@ public class PluginMetaData {
             readProvides(configFile.getFlatDomain("provides"));
             readPersistent(configFile.getFlatDomain("persistent"));
             readExports(configFile.getFlatDomain("exports"));
-        } catch (IOException ex) {
-            errors.add("Unable to read config file: " + ex.getMessage());
-            StreamUtils.close(stream);
-        } catch (InvalidConfigFileException ex) {
+        } catch (IOException | InvalidConfigFileException ex) {
             errors.add("Unable to read config file: " + ex.getMessage());
             StreamUtils.close(stream);
         }
@@ -359,9 +347,9 @@ public class PluginMetaData {
         readSettings(requirements, data);
 
         if (requirements.containsKey("parent")) {
-            parents = requirements.get("parent").split(",");
+            parent = requirements.get("parent");
         } else {
-            parents = new String[0];
+            parent = null;
         }
 
         this.requiredServices.clear();
@@ -587,12 +575,12 @@ public class PluginMetaData {
     }
 
     /**
-     * Retrieves this plugin's parents, if specified.
+     * Retrieves this plugin's parent, if specified.
      *
-     * @return The desired parent plugins
+     * @return The desired parent plugin
      */
-    public String[] getParents() {
-        return parents;
+    public String getParent() {
+        return parent;
     }
 
     /**
