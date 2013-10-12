@@ -24,12 +24,15 @@ package com.dmdirc.plugins.implementations;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.plugins.PluginInfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Setter;
+
+import dagger.ObjectGraph;
 
 /**
  * Implementation of {@link BasePlugin} that maintains commands.
@@ -39,21 +42,29 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     /**
      * List of commands to load and unload.
      */
-    private final Map<CommandInfo, Command> commands =
-            new HashMap<CommandInfo, Command>();
+    private final Map<CommandInfo, Command> commands = new HashMap<>();
+
     /**
      * Command controller to register commands.
      */
-    @Getter(AccessLevel.PROTECTED)
-    private final CommandController commandController;
+    @Setter(AccessLevel.PROTECTED)
+    private CommandController commandController;
 
     /**
      * Creates a new instance of this plugin
      *
-     * @param commandController Command controller to register commands
+     * @param commandController Command controller to register commands.
+     * @deprecated No longer required, use empty constructor.
      */
+    @Deprecated
     public BaseCommandPlugin(final CommandController commandController) {
         this.commandController = commandController;
+    }
+
+    /**
+     * Creates a new instance of this plugin.
+     */
+    public BaseCommandPlugin() {
     }
 
     /**
@@ -61,6 +72,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      */
     @Override
     public void onLoad() {
+        super.onLoad();
         loadCommands();
     }
 
@@ -69,7 +81,17 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      */
     @Override
     public void onUnload() {
+        super.onUnload();
         unloadCommands();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void load(final PluginInfo pluginInfo, final ObjectGraph graph) {
+        super.load(pluginInfo, graph);
+
+        commandController = graph.plus(new CommandHelper.CommandHelperModule())
+                .get(CommandHelper.class).getCommandController();
     }
 
     /**
@@ -78,9 +100,26 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * @param command Command to register
      * @param commandInfo Command info to register
      */
-    protected void registerCommand(final Command command,
-            final CommandInfo commandInfo) {
+    protected void registerCommand(final Command command, final CommandInfo commandInfo) {
         commands.put(commandInfo, command);
+    }
+
+    /**
+     * Registers a command from this plugin.
+     *
+     * <p>This method will create a new instance of the specified command class using the
+     * dependency-injection framework. It must only be called after
+     * {@link #setObjectGraph(dagger.ObjectGraph)}, and any command must be injectable using
+     * that object graph.
+     *
+     * @param <T> The type of the command that will be registered.
+     * @param command The class of the command to register.
+     * @param commandInfo Command info to register.
+     */
+    protected <T extends Command> void registerCommand(
+            final Class<T> command,
+            final CommandInfo commandInfo) {
+        commands.put(commandInfo, getObjectGraph().get(command));
     }
 
     /**
@@ -98,8 +137,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      */
     private void loadCommands() {
         for (Map.Entry<CommandInfo, Command> command : commands.entrySet()) {
-            commandController.registerCommand(
-                    command.getValue(), command.getKey());
+            commandController.registerCommand(command.getValue(), command.getKey());
         }
     }
 
@@ -110,5 +148,15 @@ public abstract class BaseCommandPlugin extends BasePlugin {
         for (CommandInfo command : commands.keySet()) {
             commandController.unregisterCommand(command);
         }
+    }
+
+    /**
+     * Gets the command controller used.
+     *
+     * @return A command controller.
+     * @deprecated Plugins should inject their own controllers.
+     */
+    protected CommandController getCommandController() {
+        return commandController;
     }
 }
