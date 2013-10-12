@@ -38,7 +38,10 @@ public class CommandNameValidator extends ValidatorChain<String> {
     /**
      * Instantiates a new command name validator, using the command char
      * provided by the default Command Manager.
+     *
+     * @deprecated Provide a command char.
      */
+    @Deprecated
     public CommandNameValidator() {
         this(CommandManager.getCommandManager().getCommandChar());
     }

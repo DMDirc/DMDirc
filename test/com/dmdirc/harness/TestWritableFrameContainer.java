@@ -73,6 +73,6 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     @Override
     public TabCompleter getTabCompleter() {
-        return new TabCompleter();
+        return new TabCompleter(getConfigManager());
     }
 }

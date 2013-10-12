@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.messages.Styliser;
@@ -48,17 +47,6 @@ public abstract class Command {
     /** The controller this command is associated with. */
     @Getter(AccessLevel.PROTECTED)
     private final CommandController controller;
-
-    /**
-     * Creates a new instance of Command using the default CommandManager
-     * provided by {@link CommandManager#getCommandManager()}.
-     *
-     * @deprecated All commands should provide a command controller.
-     */
-    @Deprecated
-    public Command() {
-        this(CommandManager.getCommandManager());
-    }
 
     /**
      * Sends a line, if appropriate, to the specified target.

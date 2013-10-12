@@ -291,7 +291,9 @@ public class CommandManager implements CommandController {
      * Initialise the singleton instance of the CommandManager.
      *
      * @param commandManager The new singleton command manager instance.
+     * @deprecated Don't use statically.
      */
+    @Deprecated
     public static void setCommandManager(final CommandManager commandManager) {
         instance = commandManager;
     }
@@ -300,7 +302,9 @@ public class CommandManager implements CommandController {
      * Retrieves a singleton instance of the CommandManager.
      *
      * @return A singleton instance of the CommandManager.
+     * @deprecated Don't use statically.
      */
+    @Deprecated
     public static synchronized CommandManager getCommandManager() {
         return instance;
     }
