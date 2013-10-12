@@ -183,6 +183,29 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
+     * Gets the {@link ObjectGraph} that should be used when loading this plugin.
+     *
+     * <p>Where this plugin has a parent which returns a non-null graph from
+     * {@link Plugin#getObjectGraph()} that object graph will be used unmodified. Otherwise, the
+     * global object graph will be used.
+     *
+     * @return An {@link ObjectGraph} to be used.
+     */
+    protected ObjectGraph getObjectGraph() {
+        if (metaData.getParent() != null) {
+            final PluginInfo parentInfo = metaData.getManager()
+                    .getPluginInfoByName(metaData.getParent());
+            Plugin parent = parentInfo.getPlugin();
+            ObjectGraph parentGraph = parent.getObjectGraph();
+            if (parentGraph != null) {
+                return parentGraph;
+            }
+        }
+
+        return objectGraph;
+    }
+
+    /**
      * Get the licence for this plugin if it exists.
      *
      * @return An InputStream for the licence of this plugin, or null if no
@@ -560,6 +583,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
 
             try {
+                plugin.load(this, getObjectGraph());
                 plugin.onLoad();
             } catch (LinkageError | Exception e) {
                 lastError = "Error in onLoad for " + metaData.getName() + ":"
@@ -702,6 +726,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         plugin.setDomain(domain);
                         if (!tempLoaded) {
                             try {
+                                plugin.load(this, getObjectGraph());
                                 plugin.onLoad();
                             } catch (LinkageError | Exception e) {
                                 lastError = "Error in onLoad for "
