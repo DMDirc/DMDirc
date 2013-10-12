@@ -30,6 +30,8 @@
         <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="analyse->default" />
         <dependency org="net.sourceforge.findbugs" name="findbugs-ant" rev="1.+" conf="analyse->default" />
 
+        <dependency org="net.sf.proguard" name="proguard-anttask" rev="4.+" conf="analyse->default" />
+
         <exclude org="ant" module="ant"/>
     </dependencies>
 </ivy-module>

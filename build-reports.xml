@@ -88,4 +88,117 @@
         </findbugs>
         <xslt in="reports/findbugs/report-fb.xml" style="checkstyle/findbugs.xslt" out="reports/report-fb.html" />
     </target>
+
+    <target name="-init-proguard" depends="-init-dependencies">
+        <taskdef resource="proguard/ant/task.properties" classpathref="analyse-classpath"/>
+    </target>
+
+    <target name="deadcode" depends="-init-proguard">
+        <proguard>
+            -libraryjars ${java.home}/lib/rt.jar
+            -libraryjars ${java.home}/lib/jce.jar
+            -libraryjars lib/main/
+            -libraryjars modules/plugins/lib/main/
+
+            -injars dist/DMDirc.jar(com/dmdirc/**,net/miginfocom/**)
+            -injars modules/plugins/dist/(com/dmdirc/**)
+
+            -dontoptimize
+            -dontobfuscate
+            -dontpreverify
+            -printusage reports/deadcode.txt
+
+            -dontnote !com.dmdirc.**
+
+            <!-- The main entry point -->
+            -keep public class com.dmdirc.Main {
+                public static void main(java.lang.String[]);
+            }
+
+            <!-- All plugins -->
+            -keep class ** implements com.dmdirc.plugins.Plugin {
+                &lt;init&gt;(...);
+                public void load(com.dmdirc.plugins.PluginInfo, dagger.ObjectGraph);
+		public void onLoad();
+		public void showConfig(com.dmdirc.config.prefs.PreferencesDialogModel);
+            }
+
+            <!-- Dagger provider methods -->
+            -keepclassmembers @dagger.Module class ** {
+                @dagger.Provides *;
+            }
+
+            <!-- Dagger generated subclasses -->
+            -keep class **$$ModuleAdapter
+            -keep class **$$InjectAdapter
+            -keep class **$$StaticInjection
+
+            <!-- Injectable constructors -->
+            -keepclassmembers class * {
+                @javax.inject.Inject *;
+                &lt;init&gt;();
+            }
+
+            <!-- Package info classes -->
+            -keep class **.package-info
+
+            <!-- Enum stuff. -->
+            -keepclassmembers enum ** {
+                *** valueOf(java.lang.String);
+                *** values();
+            }
+
+            <!-- Parser callbacks -->
+            -keepclassmembers class ** {
+                public void on*(com.dmdirc.parser.interfaces.Parser, ...);
+            }
+
+            <!-- Serializable version fields -->
+            -keepclassmembers class ** implements java.io.Serializable {
+                static final long serialVersionUID;
+            }
+
+            <!-- Swing dialogs -->
+            -keep class com.dmdirc.addons.ui_swing.** extends com.dmdirc.addons.ui_swing.dialogs.StandardDialog {
+                &lt;init&gt;(...);
+            }
+
+            <!-- Swing window implementations -->
+            -keep class ** extends com.dmdirc.addons.ui_swing.components.frames.TextFrame {
+                &lt;init&gt;(...);
+            }
+
+            <!-- Swing frame managers -->
+            -keep class ** implements com.dmdirc.addons.ui_swing.framemanager.FrameManager {
+                &lt;init&gt;(...);
+            }
+
+            <!-- DCC plugin panels -->
+            -keep class com.dmdirc.addons.dcc.ui.PlaceholderPanel { &lt;init&gt;(...); }
+            -keep class com.dmdirc.addons.dcc.ui.TransferPanel { &lt;init&gt;(...); }
+
+            <!-- Exported services -->
+            -keepclassmembers class ** implements com.dmdirc.plugins.Plugin {
+                <!-- Parsers -->
+                public com.dmdirc.parser.interfaces.Parser getParser(com.dmdirc.parser.common.MyInfo,java.net.URI);
+                public com.dmdirc.parser.interfaces.ProtocolDescription getDescription();
+                <!-- Tab completers -->
+                public com.dmdirc.ui.input.tabstyles.TabCompletionStyle getCompletionStyle(com.dmdirc.ui.input.TabCompleter,com.dmdirc.WritableFrameContainer);
+            }
+
+            <!-- Possibly inlined constants -->
+            -keepclassmembers class * {
+                static final % *;
+                static final java.lang.String *;
+            }
+
+            <!-- Non-DMDirc classes -->
+            -keep class org.** { *; }
+            -keep class net.** { *; }
+            -keep class com.sun.** { *; }
+            -keep class com.google.** { *; }
+            -keep class com.palintir.** { *; }
+            -keep class dagger.** { *; }
+        </proguard>
+    </target>
 </project>
