@@ -224,16 +224,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void getDefaults() {
         final ConfigProvider defaults = IdentityManager.getIdentityManager().getAddonSettings();
-        final String domain = "plugin-" + metaData.getName();
 
         log.trace("{}: Using domain '{}'",
-                new Object[]{metaData.getName(), domain});
+                new Object[]{metaData.getName(), getDomain()});
 
         for (Map.Entry<String, String> entry : metaData.getDefaultSettings().entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
 
-            defaults.setOption(domain, key, value);
+            defaults.setOption(getDomain(), key, value);
         }
 
         for (Map.Entry<String, String> entry : metaData.getFormatters().entrySet()) {
@@ -717,13 +716,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                             Logger.userError(ErrorLevel.LOW, lastError);
                         }
                     } else {
-                        final String domain = "plugin-" + metaData.getName();
                         plugin = (Plugin) temp;
 
                         log.debug("{}: Setting domain '{}'",
-                                new Object[]{metaData.getName(), domain});
+                                new Object[]{metaData.getName(), getDomain()});
 
-                        plugin.setDomain(domain);
+                        plugin.setDomain(getDomain());
                         if (!tempLoaded) {
                             try {
                                 plugin.load(this, getObjectGraph());
@@ -762,6 +760,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     + "') - Unable to construct: " + ex.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, ex);
         }
+    }
+
+    /**
+     * Gets the configuration domain that should be used by this plugin.
+     *
+     * @return The configuration domain to use.
+     */
+    public String getDomain() {
+        return "plugin-" + metaData.getName();
     }
 
     /**

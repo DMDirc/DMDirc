@@ -46,8 +46,10 @@ public interface Plugin {
     /**
      * Get the domain name settings for this plugin should be stored in.
      *
+     * @deprecated Domain should be obtained from {@link PluginInfo}
      * @return Domain name for plugin settings
      */
+    @Deprecated
     String getDomain();
 
     /**
@@ -122,8 +124,10 @@ public interface Plugin {
      * Called by PluginInfo to set the domain name.
      * This can only be called once, all other attempts will be ignored.
      *
+     * @deprecated Domain should be obtained from {@link PluginInfo}
      * @param newDomain Domain name for plugin settings
      */
+    @Deprecated
     void setDomain(final String newDomain);
 
     /**
