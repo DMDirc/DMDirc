@@ -38,6 +38,8 @@ public abstract class BasePlugin implements Plugin {
     private String myDomain = "plugin-unknown";
     /** Has the domain been set? */
     private boolean domainSet;
+    /** The object graph to return for subplugins, if any. */
+    private ObjectGraph objectGraph;
 
     /** {@inheritDoc} */
     @Override
@@ -58,7 +60,16 @@ public abstract class BasePlugin implements Plugin {
     /** {@inheritDoc} */
     @Override
     public ObjectGraph getObjectGraph() {
-        return null;
+        return objectGraph;
+    }
+
+    /**
+     * Sets the object graph that this implementation will return for subplugins.
+     *
+     * @param objectGraph The object graph to return.
+     */
+    protected void setObjectGraph(final ObjectGraph objectGraph) {
+        this.objectGraph = objectGraph;
     }
 
     /** {@inheritDoc} */
