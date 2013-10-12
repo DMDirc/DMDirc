@@ -30,7 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.MapList;
 
@@ -53,40 +53,42 @@ public class TabCompleter {
     @Nullable
     private final TabCompleter parent;
 
-    /**
-     * The config manager to use for reading settings.
-     */
+    /** The config manager to use for reading settings. */
     private final AggregateConfigProvider configManager;
 
-    /**
-     * The entries in this completer.
-     */
-    private final MapList<TabCompletionType, String> entries = new MapList<>();
+    /** The controller to use to retrieve command information. */
+    private final CommandController commandController;
 
-    /** Creates a new instance of TabCompleter. */
-    @Deprecated
-    public TabCompleter() {
-        this(IdentityManager.getIdentityManager().getGlobalConfiguration());
-    }
+    /** The entries in this completer. */
+    private final MapList<TabCompletionType, String> entries = new MapList<>();
 
     /**
      * Creates a new instance of {@link TabCompleter}.
      *
+     * @param commandController The controller to use for command information.
      * @param configManager The manager to read config settings from.
      */
-    public TabCompleter(final AggregateConfigProvider configManager) {
+    public TabCompleter(
+            final CommandController commandController,
+            final AggregateConfigProvider configManager) {
         this.parent = null;
+        this.commandController = commandController;
         this.configManager = configManager;
     }
 
     /**
      * Creates a new instance of {@link TabCompleter}.
      *
+     * @param commandController The controller to use for command information.
      * @param configManager The manager to read config settings from.
      * @param parent The parent tab completer to inherit completions from.
      */
-    public TabCompleter(final AggregateConfigProvider configManager, final TabCompleter parent) {
+    public TabCompleter(
+            final CommandController commandController,
+            final AggregateConfigProvider configManager,
+            final TabCompleter parent) {
         this.parent = parent;
+        this.commandController = commandController;
         this.configManager = configManager;
     }
 
@@ -156,11 +158,11 @@ public class TabCompleter {
         entries.add(type, entry);
 
         if (type == TabCompletionType.COMMAND && entry.length() > 1
-                && entry.charAt(0) == CommandManager.getCommandManager().getCommandChar()
-                && entry.charAt(1) != CommandManager.getCommandManager().getSilenceChar()) {
+                && entry.charAt(0) == commandController.getCommandChar()
+                && entry.charAt(1) != commandController.getSilenceChar()) {
             // If we're adding a command name that doesn't include the silence
             // character, also add a version with the silence char
-            addEntry(type, entry.substring(0, 1) + CommandManager.getCommandManager().getSilenceChar()
+            addEntry(type, entry.substring(0, 1) + commandController.getSilenceChar()
                     + entry.substring(1));
         }
     }

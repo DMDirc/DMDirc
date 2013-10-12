@@ -73,7 +73,7 @@ public class TabCompleterFactory {
     public TabCompleter getTabCompleter(
             final AggregateConfigProvider configProvider,
             final CommandType ... commandTypes) {
-        final TabCompleter tabCompleter = new TabCompleter(configProvider);
+        final TabCompleter tabCompleter = new TabCompleter(commandController.get(), configProvider);
         addCommands(tabCompleter, commandTypes);
         tabCompleter.addEntries(TabCompletionType.COMMAND, aliasWrapper.get().getAliases());
         return tabCompleter;
@@ -92,7 +92,8 @@ public class TabCompleterFactory {
             final TabCompleter parent,
             final AggregateConfigProvider configProvider,
             final CommandType ... commandTypes) {
-        final TabCompleter tabCompleter = new TabCompleter(configProvider, parent);
+        final TabCompleter tabCompleter = new TabCompleter(commandController.get(),
+                configProvider, parent);
         addCommands(tabCompleter, commandTypes);
         return tabCompleter;
     }

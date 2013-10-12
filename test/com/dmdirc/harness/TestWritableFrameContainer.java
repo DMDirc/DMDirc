@@ -26,11 +26,14 @@ import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.Collections;
+
+import static org.mockito.Mockito.*;
 
 public class TestWritableFrameContainer extends WritableFrameContainer {
 
@@ -73,6 +76,6 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     @Override
     public TabCompleter getTabCompleter() {
-        return new TabCompleter(getConfigManager());
+        return new TabCompleter(mock(CommandController.class), getConfigManager());
     }
 }
