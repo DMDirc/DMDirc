@@ -27,10 +27,10 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 /**
@@ -49,9 +49,12 @@ public class ServerCommandParser extends GlobalCommandParser {
      * Creates a new command parser for server commands.
      *
      * @param configManager Config manager to read settings from
+     * @param commandController The controller to load commands from.
      */
-    public ServerCommandParser(final AggregateConfigProvider configManager) {
-        super(configManager, CommandManager.getCommandManager());
+    public ServerCommandParser(
+            final AggregateConfigProvider configManager,
+            final CommandController commandController) {
+        super(configManager, commandController);
     }
 
     /**

@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -104,6 +105,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param newChannelInfo The parser's channel object that corresponds to this channel
      * @param configMigrator The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
+     * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public Channel(
@@ -111,11 +113,12 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
+            final CommandController commandController,
             final MessageSinkManager messageSinkManager) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
-                new ChannelCommandParser(newServer), messageSinkManager,
+                new ChannelCommandParser(newServer, commandController), messageSinkManager,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),
                     WindowComponent.TOPICBAR.getIdentifier(),

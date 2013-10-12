@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * A command parser which implements common functionality for chat windows
@@ -54,9 +55,10 @@ public class ChatCommandParser extends ServerCommandParser {
      * specified server.
      *
      * @param server The server which owns this parser's container
+     * @param commandController The controller to load commands from.
      */
-    public ChatCommandParser(final Server server) {
-        super(server.getConfigManager());
+    public ChatCommandParser(final Server server, final CommandController commandController) {
+        super(server.getConfigManager(), commandController);
         super.setOwner(server);
     }
 

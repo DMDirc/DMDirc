@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -72,14 +73,16 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
      * @param tabCompleterFactory The factory to use to create tab completers.
+     * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public Query(final Server newServer, final String newHost,
             final TabCompleterFactory tabCompleterFactory,
+            final CommandController commandController,
             final MessageSinkManager messageSinkManager) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
-                newServer.getConfigManager(), new QueryCommandParser(newServer),
+                newServer.getConfigManager(), new QueryCommandParser(newServer, commandController),
                 messageSinkManager,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),

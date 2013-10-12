@@ -116,7 +116,7 @@ public class ServerManager implements ServerFactory {
         final Server server = new Server(
                 this,
                 configProvider,
-                new ServerCommandParser(configProvider.getConfigProvider()),
+                new ServerCommandParser(configProvider.getConfigProvider(), commandController.get()),
                 parserFactoryProvider.get(),
                 tabCompleterFactory,
                 commandController.get(),

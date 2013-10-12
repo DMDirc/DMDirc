@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -50,11 +51,15 @@ public class Raw extends WritableFrameContainer
      * Creates a new instance of Raw.
      *
      * @param newServer the server to monitor
+     * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
-    public Raw(final Server newServer, final MessageSinkManager messageSinkManager) {
+    public Raw(
+            final Server newServer,
+            final CommandController commandController,
+            final MessageSinkManager messageSinkManager) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
-                new ServerCommandParser(newServer.getConfigManager()),
+                new ServerCommandParser(newServer.getConfigManager(), commandController),
                 messageSinkManager,
                 Arrays.asList(
                     WindowComponent.TEXTAREA.getIdentifier(),

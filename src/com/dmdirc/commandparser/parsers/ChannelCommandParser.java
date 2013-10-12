@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * A command parser that is tailored for use in a channel environment.
@@ -52,9 +53,10 @@ public class ChannelCommandParser extends ChatCommandParser {
      * Creates a new instance of ChannelCommandParser.
      *
      * @param server The server this parser's query belongs to
+     * @param commandController The controller to load commands from.
      */
-    public ChannelCommandParser(final Server server) {
-        super(server);
+    public ChannelCommandParser(final Server server, final CommandController commandController) {
+        super(server, commandController);
     }
 
     /** {@inheritDoc} */

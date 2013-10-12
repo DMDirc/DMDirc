@@ -199,6 +199,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
 
+    /** The command controller to pass into child windows. */
+    private final CommandController commandController;
+
     // </editor-fold>
 
     // </editor-fold>
@@ -251,6 +254,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
         this.configMigrator = configMigrator;
+        this.commandController = commandController;
         this.tabCompleterFactory = tabCompleterFactory;
 
         setConnectionDetails(uri, profile);
@@ -566,7 +570,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(this, host, tabCompleterFactory, messageSinkManager);
+            final Query newQuery = new Query(
+                    this, host, tabCompleterFactory, commandController, messageSinkManager);
 
             windowManager.addWindow(this, newQuery, focus);
             ActionManager.getActionManager().triggerEvent(
@@ -606,7 +611,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this, messageSinkManager);
+            raw = new Raw(this, commandController, messageSinkManager);
             windowManager.addWindow(raw, this);
 
             try {
@@ -666,7 +671,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
             final Channel newChan = new Channel(this, chan, channelConfig,
-                    tabCompleterFactory, messageSinkManager);
+                    tabCompleterFactory, commandController, messageSinkManager);
 
             windowManager.addWindow(this, newChan, focus);
             ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_OPENED, null,

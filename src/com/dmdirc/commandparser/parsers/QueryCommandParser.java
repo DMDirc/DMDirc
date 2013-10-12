@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
+import com.dmdirc.interfaces.CommandController;
 
 /**
  * A command parser that is tailored for use in a query environment. Handles
@@ -53,9 +54,10 @@ public class QueryCommandParser extends ChatCommandParser {
      * Creates a new instance of QueryCommandParser.
      *
      * @param server The server this parser's query belongs to
+     * @param commandController The controller to load commands from.
      */
-    public QueryCommandParser(final Server server) {
-        super(server);
+    public QueryCommandParser(final Server server, final CommandController commandController) {
+        super(server, commandController);
     }
 
     /** {@inheritDoc} */
