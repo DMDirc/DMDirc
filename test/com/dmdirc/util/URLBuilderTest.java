@@ -75,9 +75,21 @@ public class URLBuilderTest {
     }
 
     @Test
+    public void testGetUrlInvalid() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrlForFile("file://[test"));
+    }
+
+    @Test
     public void testGetUrlForJarFile() throws MalformedURLException {
         URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
         Assert.assertEquals(new URL("jar:file:/jarFile!/test"), urlBuilder.getUrlForJarFile("jarFile", "test"));
+    }
+
+    @Test
+    public void testGetUrlForJarFileInvalud() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrlForJarFile("[jarFile", "test"));
     }
 
     @Test
@@ -121,9 +133,21 @@ public class URLBuilderTest {
     }
 
     @Test
+    public void testGetUrlJarWithoutFile() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrl("jar://jarFile"));
+    }
+
+    @Test
     public void testGetUrlZip() throws MalformedURLException {
         URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
         Assert.assertEquals(new URL("jar:file:/zipFile!/testFile"), urlBuilder.getUrl("zip://zipFile:testFile"));
+    }
+
+    @Test
+    public void testGetUrlZipWithoutFile() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrl("zip://zipFile"));
     }
 
     @Test
@@ -133,15 +157,33 @@ public class URLBuilderTest {
     }
 
     @Test
+    public void testGetUrlPluginWithoutFile() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrl("plugin://pluginFile"));
+    }
+
+    @Test
     public void testGetUrlTheme() throws MalformedURLException {
         URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
         Assert.assertEquals(new URL("jar:file:/themes/themeFile.zip!/testFile"), urlBuilder.getUrl("theme://themeFile:testFile"));
     }
 
     @Test
+    public void testGetUrlThemeWithoutFile() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrl("theme://themeFile"));
+    }
+
+    @Test
     public void testGetUrlHTTP() throws MalformedURLException {
         URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
         Assert.assertEquals(new URL("http://testDomain"), urlBuilder.getUrl("http://testDomain"));
+    }
+
+    @Test
+    public void testGetUrlHTTPInvalid() throws MalformedURLException {
+        URLBuilder urlBuilder = new URLBuilder(pluginManagerProvider, themeManagerProvider);
+        Assert.assertNull(urlBuilder.getUrl("http://[testDomain"));
     }
 
     @Test
