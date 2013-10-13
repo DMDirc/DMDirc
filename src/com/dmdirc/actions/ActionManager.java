@@ -583,18 +583,6 @@ public class ActionManager implements ActionController {
 
     /** {@inheritDoc} */
     @Override
-    public List<ActionType> getAllTypes() {
-        return Collections.unmodifiableList(types);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<ActionComparison> getAllComparisons() {
-        return Collections.unmodifiableList(comparisons);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public ActionComponent getComponent(final String type) {
         Logger.assertTrue(type != null);
         Logger.assertTrue(!type.isEmpty());

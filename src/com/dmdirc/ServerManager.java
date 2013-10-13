@@ -198,24 +198,6 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Retrieves a list of servers connected to the specified address.
-     *
-     * @param address The address to search for
-     * @return A list of servers connected to the network
-     */
-    public List<Server> getServersByAddress(final String address) {
-        final List<Server> res = new ArrayList<>();
-
-        for (Server server : servers) {
-            if (server.getAddress().equalsIgnoreCase(address)) {
-                res.add(server);
-            }
-        }
-
-        return res;
-    }
-
-    /**
      * Creates a new server which will connect to the specified URI with the
      * default profile.
      *

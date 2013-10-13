@@ -48,11 +48,6 @@ public class InviteTest {
     }
 
     @Test
-    public void testGetServer() {
-        assertSame(server, invite.getServer());
-    }
-
-    @Test
     public void testGetChannel() {
         assertEquals("#channel", invite.getChannel());
     }

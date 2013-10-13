@@ -124,20 +124,6 @@ public interface ActionController {
     List<ActionType> findCompatibleTypes(final ActionType type);
 
     /**
-     * Returns a list of all the action types registered by this manager.
-     *
-     * @return A list of registered action comparisons
-     */
-    List<ActionComparison> getAllComparisons();
-
-    /**
-     * Returns a list of all the action types registered by this manager.
-     *
-     * @return A list of registered action types
-     */
-    List<ActionType> getAllTypes();
-
-    /**
      * Returns the action type specified by the given string, or null if it
      * doesn't match a valid registered action type.
      *

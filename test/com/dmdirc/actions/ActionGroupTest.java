@@ -94,27 +94,18 @@ public class ActionGroupTest {
     public void testClear() {
         ActionGroup instance = new ActionGroup("zzz");
         instance.add(null);
-        assertEquals(1, instance.size());
+        assertTrue(instance.iterator().hasNext());
         instance.clear();
-        assertEquals(0, instance.size());
+        assertFalse(instance.iterator().hasNext());
     }
 
     @Test
     public void testRemove() {
         ActionGroup instance = new ActionGroup("zzz");
         instance.add(null);
-        assertEquals(1, instance.size());
+        assertTrue(instance.iterator().hasNext());
         instance.remove(null);
-        assertEquals(0, instance.size());
-    }
-
-    @Test
-    public void testContains() {
-        ActionGroup instance = new ActionGroup("zzz");
-        instance.add(null);
-        assertTrue(instance.contains(null));
-        instance.remove(null);
-        assertFalse(instance.contains(null));
+        assertFalse(instance.iterator().hasNext());
     }
 
     @Test

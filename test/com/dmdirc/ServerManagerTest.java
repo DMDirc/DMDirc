@@ -25,10 +25,8 @@ package com.dmdirc;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.input.TabCompleterFactory;
 
 import javax.inject.Provider;
 
@@ -89,21 +87,6 @@ public class ServerManagerTest {
         assertEquals(serverManager.getServers().size(), serverManager.numServers());
         serverManager.unregisterServer(server);
         assertEquals(serverManager.getServers().size(), serverManager.numServers());
-    }
-
-    @Test
-    public void testGetServerByAddress() {
-        final Server serverA = mock(Server.class);
-        final Server serverB = mock(Server.class);
-        when(serverA.getAddress()).thenReturn("255.255.255.255");
-        when(serverB.getAddress()).thenReturn("255.255.255.254");
-
-        serverManager.registerServer(serverA);
-        serverManager.registerServer(serverB);
-
-        assertEquals(serverA, serverManager.getServersByAddress("255.255.255.255").get(0));
-        assertEquals(serverB, serverManager.getServersByAddress("255.255.255.254").get(0));
-        assertEquals(0, serverManager.getServersByAddress("255.255.255.253").size());
     }
 
     @Test

@@ -171,15 +171,6 @@ public class ActionGroup implements Iterable<Action> {
     }
 
     /**
-     * Determines the size of this group.
-     *
-     * @return The size of this group
-     */
-    public int size() {
-        return actions.size();
-    }
-
-    /**
      * Removes the specified action from this group.
      *
      * @param action The action to be removed
@@ -192,26 +183,6 @@ public class ActionGroup implements Iterable<Action> {
     @Override
     public Iterator<Action> iterator() {
         return actions.iterator();
-    }
-
-    /**
-     * Retrieves the action at the specified index.
-     *
-     * @param index The index of the action to return
-     * @return The action at the specified index
-     */
-    public Action get(final int index) {
-        return actions.get(index);
-    }
-
-    /**
-     * Determines if this group contains the specified action.
-     *
-     * @param action The action to search for
-     * @return True if the action is contained in this list, false otherwise
-     */
-    public boolean contains(final Action action) {
-        return actions.contains(action);
     }
 
     /**

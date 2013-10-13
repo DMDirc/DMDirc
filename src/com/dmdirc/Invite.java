@@ -33,7 +33,6 @@ import lombok.Getter;
 public class Invite {
 
     /** The server this invite was on. */
-    @Getter
     private final Server server;
 
     /** The channel this invite is for. */

@@ -25,7 +25,6 @@ package com.dmdirc.interfaces;
 import com.dmdirc.Channel;
 import com.dmdirc.Invite;
 import com.dmdirc.Query;
-import com.dmdirc.Raw;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -309,13 +308,6 @@ public interface Connection {
      * @return The appropriate query object
      */
     Query getQuery(final String host, final boolean focus);
-
-    /**
-     * Retrieves the raw window associated with this server.
-     *
-     * @return The raw window associated with this server.
-     */
-    Raw getRaw();
 
     /**
      * Retrieves the identity for this server.

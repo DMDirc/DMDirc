@@ -27,7 +27,6 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.AwayStateListener;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -606,12 +605,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 parserLock.readLock().unlock();
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Raw getRaw() {
-        return raw;
     }
 
     /** {@inheritDoc} */
