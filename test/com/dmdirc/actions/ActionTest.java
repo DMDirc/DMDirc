@@ -21,6 +21,7 @@
  */
 package com.dmdirc.actions;
 
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionController;
@@ -40,6 +41,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,6 +57,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTest {
 
+    @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private ActionController actionController;
     @Mock private ActionGroup actionGroup;
     @Mock private IdentityController identityController;
@@ -100,7 +104,7 @@ public class ActionTest {
 
     @Test
     public void testSave() {
-        new Action(actionController, identityController, testDirectory,
+        new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -111,7 +115,7 @@ public class ActionTest {
 
     @Test
     public void testSetGroup() {
-        Action action = new Action(actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -125,7 +129,7 @@ public class ActionTest {
 
     @Test
     public void testSetName() {
-        Action action = new Action(actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -139,7 +143,7 @@ public class ActionTest {
 
     @Test
     public void testDelete() {
-        Action action = new Action(actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -152,7 +156,7 @@ public class ActionTest {
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        Action action = new Action(actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
@@ -170,7 +174,7 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        Action action = new Action(actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
         action.config.read();

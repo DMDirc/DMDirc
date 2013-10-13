@@ -25,21 +25,24 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Provider;
+
 /**
  * Represents the basic model of an action, and its triggering mechanism.
  * Saving and loading are handled by the Action class.
  */
 public class ActionModel {
+
+    /** Provider of global command parsers, for use when triggering window-less actions. */
+    private final Provider<GlobalCommandParser> globalCommandParserProvider;
 
     /** The group this action belongs to. */
     protected String group;
@@ -83,10 +86,15 @@ public class ActionModel {
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
+     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param group The group the action belongs to
      * @param name The name of the action
      */
-    public ActionModel(final String group, final String name) {
+    public ActionModel(
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final String group,
+            final String name) {
+        this.globalCommandParserProvider = globalCommandParserProvider;
         this.group = group;
         this.name = name;
     }
@@ -94,6 +102,7 @@ public class ActionModel {
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
+     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param group The group the action belongs to
      * @param name The name of the action
      * @param triggers The triggers to use
@@ -102,11 +111,13 @@ public class ActionModel {
      * @param conditionTree The condition tree to use
      * @param newFormat The new formatter to use
      */
-    public ActionModel(final String group, final String name,
+    public ActionModel(
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        this(group, name);
+        this(globalCommandParserProvider, group, name);
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;
@@ -154,8 +165,7 @@ public class ActionModel {
         }
 
         if (container == null) {
-            cp = new GlobalCommandParser(IdentityManager.getIdentityManager()
-                    .getGlobalConfiguration(), CommandManager.getCommandManager());
+            cp = globalCommandParserProvider.get();
         } else {
             cp = container.getCommandParser();
         }

@@ -29,6 +29,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
@@ -233,10 +234,11 @@ public class PerformWrapper extends ActionGroup {
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 
-        return actionFactory.create(getName(), server + network
+        return actionFactory.getAction(getName(), server + network
                 + (profile == null ? "" : " - " + profile),
                 new ActionType[]{CoreActionType.SERVER_CONNECTED},
-                new String[0], conditions, null);
+                new String[0], conditions,
+                ConditionTree.createConjunction(conditions.size()), null);
     }
 
     /**

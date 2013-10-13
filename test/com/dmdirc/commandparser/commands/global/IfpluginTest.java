@@ -24,9 +24,11 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
+import javax.inject.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class IfpluginTest {
 
+    @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
     @Mock private FrameContainer tiw;
@@ -45,7 +48,7 @@ public class IfpluginTest {
 
     @Before
     public void setUp() {
-        command = new Ifplugin(controller, pluginManager);
+        command = new Ifplugin(controller, pluginManager, gcpProvider);
     }
 
     @Test

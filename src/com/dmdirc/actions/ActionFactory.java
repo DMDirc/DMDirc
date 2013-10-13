@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -40,6 +41,8 @@ import javax.inject.Singleton;
 @Singleton
 public class ActionFactory {
 
+    /** Provider of global command parsers. */
+    private final Provider<GlobalCommandParser> globalCommandParserProvider;
     /** The controller that will own actions. */
     private final Provider<ActionController> actionController;
     /** The controller to use to retrieve and update settings. */
@@ -52,15 +55,18 @@ public class ActionFactory {
      *
      * @param actionController The controller that will own actions.
      * @param identityController The controller to use to retrieve and update settings.
+     * @param globalCommandParserProvider The global command parser to use for actions without windows.
      * @param actionsDirectory The base directory to store actions in.
      */
     @Inject
     public ActionFactory(
             final Provider<ActionController> actionController,
             final Provider<IdentityController> identityController,
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
             @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
         this.actionController = actionController;
         this.identityController = identityController;
+        this.globalCommandParserProvider = globalCommandParserProvider;
         this.actionsDirectory = actionsDirectory;
     }
 
@@ -72,27 +78,9 @@ public class ActionFactory {
      * @param name The name of the action
      * @return A relevant action.
      */
-    public Action create(final String group, final String name) {
-        return new Action(actionController.get(), identityController.get(), actionsDirectory, group, name);
-    }
-
-    /**
-     * Creates a new instance of Action with the specified properties and saves
-     * it to disk.
-     *
-     * @param group The group the action belongs to
-     * @param name The name of the action
-     * @param triggers The triggers to use
-     * @param response The response to use
-     * @param conditions The conditions to use
-     * @param newFormat The new formatter to use
-     * @return A relevant action.
-     */
-    public Action create(final String group, final String name,
-            final ActionType[] triggers, final String[] response,
-            final List<ActionCondition> conditions, final String newFormat) {
-        return create(group, name, triggers, response, conditions,
-                ConditionTree.createConjunction(conditions.size()), newFormat);
+    public Action getAction(final String group, final String name) {
+        return new Action(globalCommandParserProvider, actionController.get(),
+                identityController.get(), actionsDirectory, group, name);
     }
 
     /**
@@ -108,11 +96,12 @@ public class ActionFactory {
      * @param newFormat The new formatter to use
      * @return A relevant action.
      */
-    public Action create(final String group, final String name,
+    public Action getAction(final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        return new Action(actionController.get(), identityController.get(), actionsDirectory, group,
+        return new Action(globalCommandParserProvider, actionController.get(),
+                identityController.get(), actionsDirectory, group,
                 name, triggers, response, conditions, conditionTree, newFormat);
     }
 

@@ -39,6 +39,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * The if plugin command allows the user to execute commands based on whether
@@ -55,16 +56,24 @@ public class Ifplugin extends Command implements IntelligentCommand {
     /** The plugin manager to use to query plugins. */
     private final PluginManager pluginManager;
 
+    /** Provider of global command parsers. */
+    private final Provider<GlobalCommandParser> globalCommandParserProvider;
+
     /**
      * Creates a new instance of the {@link Ifplugin} command.
      *
      * @param controller The controller to use for command information.
      * @param pluginManager The plugin manager to use to query plugins.
+     * @param globalCommandParserProvider Provider to use to retrieve a global command parser.
      */
     @Inject
-    public Ifplugin(final CommandController controller, final PluginManager pluginManager) {
+    public Ifplugin(
+            final CommandController controller,
+            final PluginManager pluginManager,
+            final Provider<GlobalCommandParser> globalCommandParserProvider) {
         super(controller);
         this.pluginManager = pluginManager;
+        this.globalCommandParserProvider = globalCommandParserProvider;
     }
 
     /** {@inheritDoc} */
@@ -90,7 +99,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
         if (result != negative) {
             if (origin == null) {
-                new GlobalCommandParser(origin.getConfigManager(), getController())
+                globalCommandParserProvider.get()
                         .parseCommand(null, args.getArgumentsAsString(1));
             } else {
                 ((WritableFrameContainer) origin).getCommandParser()

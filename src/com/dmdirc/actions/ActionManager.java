@@ -317,7 +317,7 @@ public class ActionManager implements ActionController {
         }
 
         for (File file : dir.listFiles()) {
-            factory.create(dir.getName(), file.getName());
+            factory.getAction(dir.getName(), file.getName());
         }
     }
 

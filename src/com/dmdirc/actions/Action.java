@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionController;
@@ -43,6 +44,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Provider;
 
 /**
  * Describes a single action.
@@ -81,6 +84,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
      *
+     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param actionController The controller that owns this action.
      * @param identityController The controller to use to retrieve and update settings.
      * @param actionsDirectory The base directory to store actions in.
@@ -88,12 +92,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param name The name of the action
      */
     public Action(
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
             final ActionController actionController,
             final IdentityController identityController,
             final String actionsDirectory,
             final String group,
             final String name) {
-        super(group, name);
+        super(globalCommandParserProvider, group, name);
 
         this.actionController = actionController;
         this.identityController = identityController;
@@ -120,6 +125,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action with the specified properties and saves
      * it to disk.
      *
+     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param actionController The controller that owns this action.
      * @param identityController The controller to use to retrieve and update settings.
      * @param actionsDirectory The base directory to store actions in.
@@ -132,6 +138,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param newFormat The new formatter to use
      */
     public Action(
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
             final ActionController actionController,
             final IdentityController identityController,
             final String actionsDirectory,
@@ -142,7 +149,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree,
             final String newFormat) {
-        super(group, name, triggers, response, conditions, conditionTree, newFormat);
+        super(globalCommandParserProvider, group, name, triggers, response, conditions, conditionTree, newFormat);
 
         this.actionController = actionController;
         this.identityController = identityController;

@@ -25,6 +25,7 @@ package com.dmdirc.actions.wrappers;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionFactory;
+import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
@@ -231,12 +232,13 @@ public class Alias implements Serializable {
      * @return A new action for this alias.
      */
     public Action createAction() {
-        return actionFactory.create(
+        return actionFactory.getAction(
                 AliasWrapper.GROUP_NAME,
                 getName(),
                 new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
                 getResponse(),
                 getArguments(),
+                ConditionTree.createConjunction(getArguments().size()),
                 "");
     }
 

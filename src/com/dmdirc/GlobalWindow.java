@@ -26,7 +26,6 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
@@ -119,34 +118,34 @@ public class GlobalWindow extends WritableFrameContainer {
         private final AggregateConfigProvider globalConfig;
         /** The factory to use to create tab completers. */
         private final TabCompleterFactory tabCompleterFactory;
-        /** The provider to use to retrieve a command controller. */
-        private final Provider<CommandController> commandControllerProvider;
         /** The provider to use to retrieve a window manager. */
         private final Provider<WindowManager> windowManagerProvider;
         /** The provider to use to retrieve message sink managers. */
         private final Provider<MessageSinkManager> messageSinkManagerProvider;
+        /** The provider to use to retrieve a global command parser. */
+        private final Provider<GlobalCommandParser> globalCommandParserProvider;
 
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
          *
          * @param globalConfig Configuration provider to read settings from.
          * @param tabCompleterFactory Factory to use to create tab completers.
-         * @param commandControllerProvider The provider to use to retrieve a command controller.
          * @param windowManagerProvider The provider to use to retrieve a window manager.
          * @param messageSinkManagerProvider The provider to use to retrieve a sink manager.
+         * @param globalCommandParserProvider The provider to use to retrieve a global command parser.
          */
         @Inject
         public GlobalWindowManager(
                 @GlobalConfig final AggregateConfigProvider globalConfig,
                 final TabCompleterFactory tabCompleterFactory,
-                final Provider<CommandController> commandControllerProvider,
                 final Provider<WindowManager> windowManagerProvider,
-                final Provider<MessageSinkManager> messageSinkManagerProvider) {
+                final Provider<MessageSinkManager> messageSinkManagerProvider,
+                final Provider<GlobalCommandParser> globalCommandParserProvider) {
             this.globalConfig = globalConfig;
             this.tabCompleterFactory = tabCompleterFactory;
-            this.commandControllerProvider = commandControllerProvider;
             this.windowManagerProvider = windowManagerProvider;
             this.messageSinkManagerProvider = messageSinkManagerProvider;
+            this.globalCommandParserProvider = globalCommandParserProvider;
         }
 
         /** {@inheritDoc} */
@@ -172,8 +171,7 @@ public class GlobalWindow extends WritableFrameContainer {
                 if (globalConfig.getOptionBool("general", "showglobalwindow")) {
                     if (globalWindow == null) {
                         globalWindow = new GlobalWindow(globalConfig,
-                                new GlobalCommandParser(globalConfig,
-                                commandControllerProvider.get()),
+                                globalCommandParserProvider.get(),
                                 tabCompleterFactory,
                                 messageSinkManagerProvider.get());
                         windowManagerProvider.get().addWindow(globalWindow);

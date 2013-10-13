@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.ClientModule;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,9 +34,13 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * The command parser used for global commands.
  */
+@Singleton
 public class GlobalCommandParser extends CommandParser {
 
     /**
@@ -51,7 +56,9 @@ public class GlobalCommandParser extends CommandParser {
      * @param configManager Config manager to read settings from
      * @param commandManager Command manager to load commands from
      */
-    public GlobalCommandParser(final AggregateConfigProvider configManager,
+    @Inject
+    public GlobalCommandParser(
+            @ClientModule.GlobalConfig final AggregateConfigProvider configManager,
             final CommandController commandManager) {
         super(configManager, commandManager);
     }
