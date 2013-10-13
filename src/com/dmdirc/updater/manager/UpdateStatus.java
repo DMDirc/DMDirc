@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Describes the possible statuses of an {@link UpdateComponent}.
+ * Describes the possible statuses of an {@link com.dmdirc.updater.UpdateComponent}.
  */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.UnusedPrivateField")

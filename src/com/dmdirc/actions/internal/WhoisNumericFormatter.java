@@ -48,8 +48,7 @@ public class WhoisNumericFormatter implements ActionListener {
     /**
      * Creates a new whois numeric formatter that will add automatic formats
      * to the specified identity. This will normally be a temporary global
-     * identity, such as the one returned by
-     * {@link IdentityManager#getAddonIdentity()}.
+     * identity.
      *
      * @param identity The identity to write formatters to
      */

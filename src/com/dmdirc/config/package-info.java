@@ -42,6 +42,6 @@
  * Identities are all stored on disk under the 'identities' directory in the
  * user's DMDirc profile. Default identities in this package are extracted
  * automatically by the {@link IdentityManager} if they do not exist.
- * Identities use the DMDirc {@link com.dmdirc.util.ConfigFile} file format.
+ * Identities use the DMDirc {@link com.dmdirc.util.io.ConfigFile} file format.
  */
 package com.dmdirc.config;

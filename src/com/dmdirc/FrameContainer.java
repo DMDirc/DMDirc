@@ -389,7 +389,7 @@ public abstract class FrameContainer {
      *      unregistering the window with any specific managers, or from the
      *      parent windows if they track children)</li>
      *  <li>Remove the window from the window manager (by calling
-     *      {@link WindowManager#removeWindow(com.dmdirc.ui.interfaces.Window)}</li>
+     *      {@link WindowManager#removeWindow(com.dmdirc.FrameContainer)}</li>
      * </ol>
      * <p>
      * <strong>NB:</strong> As of DMDirc 0.6.5, points 1 and 6 (making windows

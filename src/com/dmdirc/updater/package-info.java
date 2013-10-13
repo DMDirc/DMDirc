@@ -26,24 +26,5 @@
  * (using the domain updates.dmdirc.com). The website then replies with a
  * message saying whether each component is out of date, up to date, or not
  * known.
- *
- * For each update that is available, the {@link UpdateChecker} creates
- * a new {@link Update} instance, which is responsible for parsing the full
- * response from the DMDirc website.
- *
- * The status of the {@link UpdateChecker} can be monitored by registering a
- * {@link UpdateCheckerListener} with it. This enables, for example, UI
- * components to notify the user when updates are available. Such components
- * can then remove certain updates (by calling
- * {@link UpdateChecker#removeUpdate(Update)}), and have the
- * {@link UpdateChecker} apply the updates by calling
- * {@link UpdateChecker#applyUpdates()}.
- *
- * Internally, when applying updates, the {@link UpdateChecker} calls the
- * {@link Update#doUpdate()} method on each relevant {@link Update}, which
- * downloads the required files to a temporary location, and then has the
- * relevant {@link UpdateComponent} perform the installation. During this time,
- * the {@link Update} can be monitored by registering an {@link UpdateListener}
- * with it.
  */
 package com.dmdirc.updater;

@@ -159,7 +159,7 @@ public class Styliser implements ConfigChangeListener {
      * Creates a new instance of Styliser.
      *
      * @param server The {@link Server} that owns this styliser or null if n/a.
-     * @param configManager the {@link ConfigManager} to get settings from.
+     * @param configManager the {@link AggregateConfigProvider} to get settings from.
      * @since 0.6.3
      */
     public Styliser(final Server server, final AggregateConfigProvider configManager) {

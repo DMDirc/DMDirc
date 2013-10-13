@@ -72,11 +72,11 @@ public class PreferencesCategory {
 
     /** A list of settings in this category. */
     @Getter
-    private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
+    private final List<PreferencesSetting> settings = new ArrayList<>();
 
     /** A list of subcategories of this category. */
     @Getter
-    private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
+    private final List<PreferencesCategory> subcats = new ArrayList<>();
 
     /** The replacement object to use for this category. */
     @Getter
@@ -191,7 +191,6 @@ public class PreferencesCategory {
      * Determines if this category has a replacement object.
      *
      * @return True if the category has a replacement object, false otherwise
-     * @see #getObject()
      */
     public boolean hasObject() {
         return object != null;

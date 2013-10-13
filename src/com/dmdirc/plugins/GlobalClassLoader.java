@@ -101,10 +101,12 @@ public final class GlobalClassLoader extends ClassLoader {
     }
 
     /**
-     * Look in all known sources of persisant classes for file asked for.
+     * Look in all known sources of persistent classes for file asked for.
      *
      * @param classname Class name to define.
      * @param data Data to define class with.
+     *
+     * @return The resulting {@link Class} object
      */
     public Class<?> defineClass(final String classname, final byte[] data) {
         return defineClass(classname, data, 0, data.length);

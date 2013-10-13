@@ -83,6 +83,8 @@ public class CommandLineParser {
 
     /**
      * Creates a new instance of CommandLineParser.
+     *
+     * @param serverManagerProvider ServerManager
      */
     @Inject
     public CommandLineParser(final Provider<ServerManager> serverManagerProvider) {

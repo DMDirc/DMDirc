@@ -354,6 +354,8 @@ public class ClientModule {
     /**
      * Gets the performs actions wrapper.
      *
+     * @param wrapper Wrapper to return
+     *
      * @return An performs wrapper to use in the client.
      */
     @Provides(type = Provides.Type.SET)

@@ -37,6 +37,8 @@ public interface MessageSink {
      * this sink matches a given configuration entry. If the pattern contains
      * groups, the values of the matched groups are passed into the
      * handleMessage method.
+     *
+     * @return Pattern to matches a config entry
      */
     Pattern getPattern();
 

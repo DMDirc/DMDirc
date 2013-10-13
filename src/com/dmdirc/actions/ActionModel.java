@@ -118,6 +118,7 @@ public class ActionModel {
     /**
      * Triggers this action.
      *
+     * @param serverManager The server manager used to iterate servers
      * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
      * @return True if the execution of the event should be stopped, or false

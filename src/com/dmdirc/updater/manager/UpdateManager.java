@@ -39,7 +39,8 @@ public interface UpdateManager {
      * Adds a new check strategy to this manager. {@link UpdateCheckStrategy}s
      * are responsible for checking to see if an updated version of a set of
      * components is available. If multiple strategies are configured, their
-     * results are merged using this manager's {@link CheckResultConsolidator}.
+     * results are merged using this manager's
+     * {@link com.dmdirc.updater.checking.CheckResultConsolidator}.
      *
      * @param strategy The strategy to be added.
      */

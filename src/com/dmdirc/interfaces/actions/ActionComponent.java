@@ -45,7 +45,11 @@ public interface ActionComponent {
     @Target(ElementType.METHOD)
     @interface ComponentOptions {
 
-        /** Whether or not the component requires a connected server. */
+        /**
+         * Whether or not the component requires a connected server.
+         *
+         * @return true if component requires a connected server
+         */
         boolean requireConnected() default false;
 
     }

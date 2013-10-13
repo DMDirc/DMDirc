@@ -563,9 +563,9 @@ public class PluginManager implements ActionListener, ServiceManager {
     }
 
     /**
-     * Get Collection<PluginInfo> of known plugins.
+     * Get Collection&lt;PluginInf&gt; of known plugins.
      *
-     * @return Collection<PluginInfo> of known plugins.
+     * @return Collection&lt;PluginInfo&gt; of known plugins.
      */
     public Collection<PluginInfo> getPluginInfos() {
         return new ArrayList<>(knownPlugins.values());

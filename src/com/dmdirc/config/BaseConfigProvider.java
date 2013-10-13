@@ -73,7 +73,7 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     private final Provider<ColourManager> colourManager;
 
     /**
-     * Creates a new instance of {@link ConfigSource}.
+     * Creates a new instance of {@link com.dmdirc.interfaces.config.ConfigProvider}.
      *
      * @param colourManager The colour manager to use to convert colours.
      */
@@ -82,8 +82,8 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     }
 
     /**
-     * Creates a new instance of {@link ConfigSource} using the singleton
-     * colour manager.
+     * Creates a new instance of {@link com.dmdirc.interfaces.config.ConfigProvider} using the
+     * singleton colour manager.
      *
      * @deprecated Should pass in a {@link ColourManager}.
      */

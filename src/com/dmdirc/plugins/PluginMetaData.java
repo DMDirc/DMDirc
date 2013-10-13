@@ -133,6 +133,7 @@ public class PluginMetaData {
     /**
      * Creates a new meta data reader for a config file at the specified URL.
      *
+     * @param manager Plugin manager
      * @param url The URL to load the config file from
      * @param pluginUrl The URL to the plugin that this data corresponds to
      */

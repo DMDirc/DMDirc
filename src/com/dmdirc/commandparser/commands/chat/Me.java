@@ -49,7 +49,8 @@ public class Me extends Command implements ValidatingCommand {
             CommandType.TYPE_CHAT);
 
     /**
-     * Creates a new instance of {@link Ban} using the given command controller.
+     * Creates a new instance of {@link com.dmdirc.commandparser.commands.channel.Ban} using the
+     * given command controller.
      *
      * @param controller The controller to use for command information.
      */

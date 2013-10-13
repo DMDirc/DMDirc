@@ -58,6 +58,9 @@ public class URLHandler {
      * Instantiates a new URL Handler.
      *
      * @param controller The UI controller to show dialogs etc on
+     * @param globalConfig Config to retrieve settings from
+     * @param serverManager Server manager to connect to servers
+     * @param statusBarManager Status bar manager used to show messages
      */
     public URLHandler(
             final UIController controller,
@@ -160,24 +163,28 @@ public class URLHandler {
         }
 
         final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
-
-        if ("DMDIRC".equals(command)) {
-            statusBarManager.setMessage(
-                    new StatusMessage("Connecting to: " + uri.toString(),
-                    config));
-            serverManager.connectToAddress(uri);
-        } else if ("BROWSER".equals(command)) {
-            statusBarManager.setMessage(
-                    new StatusMessage("Opening: " + uri.toString(),
-                    config));
-            execBrowser(uri);
-        } else if ("MAIL".equals(command)) {
-            execMail(uri);
-        } else {
-            statusBarManager.setMessage(
-                    new StatusMessage("Opening: " + uri.toString(),
-                    config));
-            execApp(substituteParams(uri, command));
+        switch (command) {
+            case "DMDIRC":
+                statusBarManager.setMessage(
+                        new StatusMessage("Connecting to: " + uri.toString(),
+                                config));
+                serverManager.connectToAddress(uri);
+                break;
+            case "BROWSER":
+                statusBarManager.setMessage(
+                        new StatusMessage("Opening: " + uri.toString(),
+                                config));
+                execBrowser(uri);
+                break;
+            case "MAIL":
+                execMail(uri);
+                break;
+            default:
+                statusBarManager.setMessage(
+                        new StatusMessage("Opening: " + uri.toString(),
+                                config));
+                execApp(substituteParams(uri, command));
+                break;
         }
     }
 

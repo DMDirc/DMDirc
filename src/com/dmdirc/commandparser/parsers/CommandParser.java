@@ -72,7 +72,12 @@ public abstract class CommandParser implements Serializable {
     @Getter
     protected final CommandController commandManager;
 
-    /** Creates a new instance of CommandParser. */
+    /**
+     * Creates a new instance of CommandParser.
+     *
+     * @param configManager Config manager to read settings
+     * @param commandManager Command manager to load plugins from
+     */
     protected CommandParser(final AggregateConfigProvider configManager,
             final CommandController commandManager) {
         commands = new HashMap<>();

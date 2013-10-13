@@ -59,7 +59,8 @@ public abstract class TypeSensitiveRetrievalStrategy<T extends UpdateCheckResult
      * requiring retrieval.
      * @return An {@link UpdateRetrievalResult} which describes the result of
      * the retrieval, providing information for an
-     * {@link UpdateInstallationStrategy} to use to install the update.
+     * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy}
+     * to use to install the update.
      * @see #retrieve(com.dmdirc.updater.checking.UpdateCheckResult)
      */
     protected abstract UpdateRetrievalResult retrieveImpl(T checkResult);

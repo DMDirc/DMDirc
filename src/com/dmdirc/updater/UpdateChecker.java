@@ -103,7 +103,7 @@ public final class UpdateChecker implements Runnable {
      * Initialises the update checker. Sets a timer to check based on the
      * frequency specified in the config.
      *
-     * @param main Parent Main class
+     * @param manager Manager to monitor updates
      */
     public static void init(final CachingUpdateManager manager) {
         UpdateChecker.manager = manager;

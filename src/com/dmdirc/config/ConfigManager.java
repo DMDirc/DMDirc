@@ -394,7 +394,7 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
     }
 
     /**
-     * Records the lookup request for the specified domain & option.
+     * Records the lookup request for the specified domain and option.
      *
      * @param domain The domain that is being looked up
      * @param option The option that is being looked up
