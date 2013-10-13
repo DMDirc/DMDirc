@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Manages available themes.
  */
-public final class ThemeManager {
+public class ThemeManager {
 
     /** The identity controller to read settings from. */
     private final IdentityController identityController;
