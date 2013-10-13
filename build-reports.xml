@@ -186,6 +186,13 @@
                 public com.dmdirc.ui.input.tabstyles.TabCompletionStyle getCompletionStyle(com.dmdirc.ui.input.TabCompleter,com.dmdirc.WritableFrameContainer);
             }
 
+            <!-- Debug plugin commands -->
+            -keep class * extends com.dmdirc.addons.debug.DebugCommand {
+                &lt;init&gt;(...);
+                String getName();
+                void execute(...);
+            }
+
             <!-- Possibly inlined constants -->
             -keepclassmembers class * {
                 static final % *;
