@@ -26,7 +26,6 @@
         <module organisation="com.github.shanemcc" name="jgit-describe" resolver="jgit-describe"/>
         <module organisation="net.sourceforge.fikin-ant-tasks" name="ant-fikin" resolver="packager"/>
         <module organisation="org.eclipse.jgit" name="*" resolver="jgit"/>
-        <module organisation="org.projectlombok" name="*" resolver="dmdirc-thirdparty"/>
         <module organisation="net.miginfocom" name="*" resolver="dmdirc-thirdparty"/>
         <module organisation="com.dmdirc" name="*" resolver="dmdirc-releases"/>
     </modules>
