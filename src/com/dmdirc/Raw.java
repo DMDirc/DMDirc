@@ -33,6 +33,8 @@ import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -41,6 +43,7 @@ import java.util.Date;
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
  */
+@Factory(inject = true, providers = true, singleton = true)
 public class Raw extends WritableFrameContainer
         implements DataInListener, DataOutListener {
 
@@ -55,7 +58,7 @@ public class Raw extends WritableFrameContainer
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public Raw(
-            final Server newServer,
+            @Unbound final Server newServer,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),

@@ -42,6 +42,8 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
@@ -59,6 +61,7 @@ import lombok.Getter;
  * callbacks for channel events from the parser, maintains the corresponding
  * ChannelWindow, and handles user input for the channel.
  */
+@Factory(inject = true, providers = true, singleton = true)
 public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** List of registered listeners. */
@@ -109,9 +112,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
     public Channel(
-            final Server newServer,
-            final ChannelInfo newChannelInfo,
-            final ConfigProviderMigrator configMigrator,
+            @Unbound final Server newServer,
+            @Unbound final ChannelInfo newChannelInfo,
+            @Unbound final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager) {

@@ -148,9 +148,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter;
 
-    /** The factory to give to children to create tabcompleters. */
-    private final TabCompleterFactory tabCompleterFactory;
-
     /** Our reason for being away, if any. */
     private String awayMessage;
 
@@ -181,17 +178,20 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
 
-    /** The sink manager to use to despatch messages. */
-    private final MessageSinkManager messageSinkManager;
-
     /** Window manager to pas to children. */
     private final WindowManager windowManager;
 
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
 
-    /** The command controller to pass into child windows. */
-    private final CommandController commandController;
+    /** Factory to use for creating channels. */
+    private final ChannelFactory channelFactory;
+
+    /** Factory to use for creating queries. */
+    private final QueryFactory queryFactory;
+
+    /** Factory to use for creating raw windows. */
+    private final RawFactory rawFactory;
 
     /**
      * Creates a new server which will connect to the specified URL with
@@ -203,10 +203,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param commandParser The parser to use for commands in this server's window.
      * @param parserFactory The factory to use to generate parsers.
      * @param tabCompleterFactory The factory to use for tab completers.
-     * @param commandController The controller to use to retrieve commands.
      * @param identityFactory The factory to use to create identities.
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param windowManager Window Manager
+     * @param channelFactory The factory to use to create channels.
+     * @param queryFactory The factory to use to create queries.
+     * @param rawFactory The factory to use to create raw windows.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -216,10 +218,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
-            final CommandController commandController,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager,
+            final ChannelFactory channelFactory,
+            final QueryFactory queryFactory,
+            final RawFactory rawFactory,
             final URI uri,
             final ConfigProvider profile) {
         super("server-disconnected",
@@ -236,11 +240,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
-        this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
         this.configMigrator = configMigrator;
-        this.commandController = commandController;
-        this.tabCompleterFactory = tabCompleterFactory;
+        this.channelFactory = channelFactory;
+        this.queryFactory = queryFactory;
+        this.rawFactory = rawFactory;
 
         setConnectionDetails(uri, profile);
 
@@ -547,8 +551,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = new Query(
-                    this, host, tabCompleterFactory, commandController, messageSinkManager);
+            final Query newQuery = queryFactory.getQuery(this, host);
 
             windowManager.addWindow(this, newQuery, focus);
             ActionManager.getActionManager().triggerEvent(
@@ -588,7 +591,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public void addRaw() {
         if (raw == null) {
-            raw = new Raw(this, commandController, messageSinkManager);
+            raw = rawFactory.getRaw(this);
             windowManager.addWindow(raw, this);
 
             try {
@@ -647,8 +650,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         } else {
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
-            final Channel newChan = new Channel(this, chan, channelConfig,
-                    tabCompleterFactory, commandController, messageSinkManager);
+            final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
 
             windowManager.addWindow(this, newChan, focus);
             ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_OPENED, null,

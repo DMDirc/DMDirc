@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -53,9 +52,11 @@ public class ServerTest {
     @Mock private ParserFactory parserFactory;
     @Mock private IdentityFactory identityFactory;
     @Mock private TabCompleterFactory tabCompleterFactory;
-    @Mock private CommandController commandController;
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private WindowManager windowManager;
+    @Mock private ChannelFactory channelFactory;
+    @Mock private QueryFactory queryFactory;
+    @Mock private RawFactory rawFactory;
 
     private Server server;
 
@@ -71,10 +72,12 @@ public class ServerTest {
                 commandParser,
                 parserFactory,
                 tabCompleterFactory,
-                commandController,
                 identityFactory,
                 messageSinkManager,
                 windowManager,
+                channelFactory,
+                queryFactory,
+                rawFactory,
                 new URI("irc-test://255.255.255.255"),
                 profile);
     }

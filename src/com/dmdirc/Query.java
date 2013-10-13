@@ -43,6 +43,8 @@ import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -54,6 +56,7 @@ import java.util.List;
  * It handles callbacks for query events from the parser, maintains the
  * corresponding QueryWindow, and handles user input for the query.
  */
+@Factory(inject = true, providers = true, singleton = true)
 public class Query extends MessageTarget implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener,
         CompositionStateChangeListener {
@@ -76,7 +79,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
      */
-    public Query(final Server newServer, final String newHost,
+    public Query(
+            @Unbound final Server newServer,
+            @Unbound final String newHost,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager) {

@@ -78,6 +78,15 @@ public class ServerManager implements ServerFactory {
     /** Window manager to add new servers to. */
     private final WindowManager windowManager;
 
+    /** Channel factory to provide to servers. */
+    private final ChannelFactory channelFactory;
+
+    /** Query factory to provide to servers. */
+    private final QueryFactory queryFactory;
+
+    /** Raw factory to provide to servers. */
+    private final RawFactory rawFactory;
+
     /**
      * Creates a new instance of ServerManager.
      *
@@ -88,6 +97,7 @@ public class ServerManager implements ServerFactory {
      * @param tabCompleterFactory Factory to use for tab completers.
      * @param messageSinkManager A provider of sink managers to use to despatch messages.
      * @param windowManager Window manager to add new servers to.
+     * @param channelFactory Channel factory to provide to servers.
      */
     @Inject
     public ServerManager(
@@ -97,7 +107,10 @@ public class ServerManager implements ServerFactory {
             final Provider<CommandController> commandController,
             final TabCompleterFactory tabCompleterFactory,
             final Provider<MessageSinkManager> messageSinkManager,
-            final WindowManager windowManager) {
+            final WindowManager windowManager,
+            final ChannelFactory channelFactory,
+            final QueryFactory queryFactory,
+            final RawFactory rawFactory) {
         this.parserFactoryProvider = parserFactoryProvider;
         this.identityController = identityController;
         this.identityFactory = identityFactory;
@@ -105,6 +118,9 @@ public class ServerManager implements ServerFactory {
         this.tabCompleterFactory = tabCompleterFactory;
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
+        this.channelFactory = channelFactory;
+        this.queryFactory = queryFactory;
+        this.rawFactory = rawFactory;
     }
 
     /** {@inheritDoc} */
@@ -119,10 +135,12 @@ public class ServerManager implements ServerFactory {
                 new ServerCommandParser(configProvider.getConfigProvider(), commandController.get()),
                 parserFactoryProvider.get(),
                 tabCompleterFactory,
-                commandController.get(),
                 identityFactory,
                 messageSinkManager.get(),
                 windowManager,
+                channelFactory,
+                queryFactory,
+                rawFactory,
                 uri,
                 profile);
         registerServer(server);
