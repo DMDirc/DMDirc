@@ -31,10 +31,8 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,70 +55,42 @@ public class ServerManager implements ServerFactory {
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
 
-    /** Provider of {@link ParserFactory}s for servers. */
-    private final Provider<ParserFactory> parserFactoryProvider;
-
     /** The identity controller to use to find profiles. */
     private final IdentityController identityController;
 
     /** A provider of {@link CommandController}s to pass to servers. */
     private final Provider<CommandController> commandController;
 
-    /** A provider of {@link MessageSinkManager}s to pass to servers. */
-    private final Provider<MessageSinkManager> messageSinkManager;
-
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
-
-    /** Factory to use for tab completers. */
-    private final TabCompleterFactory tabCompleterFactory;
 
     /** Window manager to add new servers to. */
     private final WindowManager windowManager;
 
-    /** Channel factory to provide to servers. */
-    private final ChannelFactory channelFactory;
-
-    /** Query factory to provide to servers. */
-    private final QueryFactory queryFactory;
-
-    /** Raw factory to provide to servers. */
-    private final RawFactory rawFactory;
+    /** Concrete server factory to use. */
+    private final ServerFactoryImpl serverFactoryImpl;
 
     /**
      * Creates a new instance of ServerManager.
      *
-     * @param parserFactoryProvider The provider of {@link ParserFactory}s to give to servers.
      * @param identityController The identity controller to use to find profiles.
      * @param identityFactory The factory to use to create new identities.
      * @param commandController A provider of {@link CommandController}s to pass to servers.
-     * @param tabCompleterFactory Factory to use for tab completers.
-     * @param messageSinkManager A provider of sink managers to use to despatch messages.
      * @param windowManager Window manager to add new servers to.
-     * @param channelFactory Channel factory to provide to servers.
+     * @param serverFactory The factory to use to create servers.
      */
     @Inject
     public ServerManager(
-            final Provider<ParserFactory> parserFactoryProvider,
             final IdentityController identityController,
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
-            final TabCompleterFactory tabCompleterFactory,
-            final Provider<MessageSinkManager> messageSinkManager,
             final WindowManager windowManager,
-            final ChannelFactory channelFactory,
-            final QueryFactory queryFactory,
-            final RawFactory rawFactory) {
-        this.parserFactoryProvider = parserFactoryProvider;
+            final ServerFactoryImpl serverFactory) {
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
-        this.tabCompleterFactory = tabCompleterFactory;
-        this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
-        this.channelFactory = channelFactory;
-        this.queryFactory = queryFactory;
-        this.rawFactory = rawFactory;
+        this.serverFactoryImpl = serverFactory;
     }
 
     /** {@inheritDoc} */
@@ -129,18 +99,9 @@ public class ServerManager implements ServerFactory {
         final ConfigProviderMigrator configProvider =
                 identityFactory.createMigratableConfig(uri.getScheme(), "", "", uri.getHost());
 
-        final Server server = new Server(
-                this,
+        final Server server = serverFactoryImpl.getServer(
                 configProvider,
                 new ServerCommandParser(configProvider.getConfigProvider(), commandController.get()),
-                parserFactoryProvider.get(),
-                tabCompleterFactory,
-                identityFactory,
-                messageSinkManager.get(),
-                windowManager,
-                channelFactory,
-                queryFactory,
-                rawFactory,
                 uri,
                 profile);
         registerServer(server);

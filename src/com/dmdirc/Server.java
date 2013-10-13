@@ -60,6 +60,8 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -91,6 +93,7 @@ import lombok.extern.slf4j.Slf4j;
  * to the server.
  */
 @Slf4j
+@Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
 public class Server extends WritableFrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
@@ -214,8 +217,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      */
     public Server(
             final ServerManager manager,
-            final ConfigProviderMigrator configMigrator,
-            final CommandParser commandParser,
+            @Unbound final ConfigProviderMigrator configMigrator,
+            @Unbound final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
@@ -224,8 +227,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
-            final URI uri,
-            final ConfigProvider profile) {
+            @Unbound final URI uri,
+            @Unbound final ConfigProvider profile) {
         super("server-disconnected",
                 getHost(uri),
                 getHost(uri),

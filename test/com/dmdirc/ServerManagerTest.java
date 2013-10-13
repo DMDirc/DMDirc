@@ -48,21 +48,15 @@ public class ServerManagerTest {
 
     @Mock private IdentityController identityController;
     @Mock private IdentityFactory identityFactory;
-    @Mock private Provider<ParserFactory> parserFactoryProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
-    @Mock private Provider<MessageSinkManager> messageSinkManager;
-    @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private WindowManager windowManager;
-    @Mock private ChannelFactory channelFactory;
-    @Mock private QueryFactory queryFactory;
-    @Mock private RawFactory rawFactory;
+    @Mock private ServerFactoryImpl serverFactoryImpl;
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
-        serverManager = new ServerManager(parserFactoryProvider, identityController,
-                identityFactory, commandControllerProvider, tabCompleterFactory,
-                messageSinkManager, windowManager, channelFactory, queryFactory, rawFactory);
+        serverManager = new ServerManager(identityController, identityFactory,
+                commandControllerProvider, windowManager, serverFactoryImpl);
     }
 
     @After
