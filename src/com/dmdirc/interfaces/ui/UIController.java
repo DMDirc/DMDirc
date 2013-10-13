@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 
 import java.net.URI;
@@ -40,14 +39,6 @@ public interface UIController {
      * @param window The window to be focused
      */
     void requestWindowFocus(Window window);
-
-    /**
-     * Requests that the specified container's window be bought to focus in
-     * this UI.
-     *
-     * @param container The framecontainer whose window is to be focused
-     */
-    void requestWindowFocus(FrameContainer container);
 
     /**
      * Shows the first run wizard for the ui.
@@ -80,11 +71,4 @@ public interface UIController {
      */
     void showFeedbackNag();
 
-    /**
-     * Shows a message dialog to the user.
-     *
-     * @param title Dialog title
-     * @param message Message to display
-     */
-    void showMessageDialog(final String title, final String message);
 }
