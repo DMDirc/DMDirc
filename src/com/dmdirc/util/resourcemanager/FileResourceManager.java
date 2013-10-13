@@ -145,7 +145,7 @@ public final class FileResourceManager extends ResourceManager {
     public Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix) {
         final List<File> files = getFileListing(new File(basePath));
-        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        final Map<String, byte[]> resources = new HashMap<>();
 
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
@@ -163,7 +163,7 @@ public final class FileResourceManager extends ResourceManager {
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
-        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        final Map<String, byte[]> resources = new HashMap<>();
 
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
@@ -181,7 +181,7 @@ public final class FileResourceManager extends ResourceManager {
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
-        final Map<String, InputStream> resources = new HashMap<String, InputStream>();
+        final Map<String, InputStream> resources = new HashMap<>();
 
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
@@ -198,7 +198,7 @@ public final class FileResourceManager extends ResourceManager {
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
-        final List<String> resources = new ArrayList<String>();
+        final List<String> resources = new ArrayList<>();
 
         for (File file : files) {
             final String path = file.getPath().substring(basePath.length(),
@@ -219,7 +219,7 @@ public final class FileResourceManager extends ResourceManager {
      * @return Recursive directory listing
      */
     private static List<File> getFileListing(final File startingDirectory) {
-        final List<File> result = new ArrayList<File>();
+        final List<File> result = new ArrayList<>();
 
         if (startingDirectory.listFiles() == null) {
             return result;

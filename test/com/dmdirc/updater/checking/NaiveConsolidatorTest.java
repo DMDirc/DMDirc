@@ -45,9 +45,9 @@ public class NaiveConsolidatorTest {
     @Before
     public void setUp() {
         consolidator = new NaiveConsolidator();
-        components = new ArrayList<UpdateComponent>();
-        positiveResults = new ArrayList<UpdateCheckResult>();
-        negativeResults = new ArrayList<UpdateCheckResult>();
+        components = new ArrayList<>();
+        positiveResults = new ArrayList<>();
+        negativeResults = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
             final UpdateComponent component = mock(UpdateComponent.class);
@@ -67,11 +67,11 @@ public class NaiveConsolidatorTest {
     @Test
     public void testIncludesAllComponentsFromAllMaps() {
         final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<Map<UpdateComponent, UpdateCheckResult>>();
+                = new ArrayList<>();
 
         map1.put(components.get(0), negativeResults.get(0));
         map1.put(components.get(1), negativeResults.get(1));
@@ -90,11 +90,11 @@ public class NaiveConsolidatorTest {
     @Test
     public void testIncludesPositiveResultsForKnownNegativeComponents() {
         final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<Map<UpdateComponent, UpdateCheckResult>>();
+                = new ArrayList<>();
 
         map1.put(components.get(0), negativeResults.get(0));
         map1.put(components.get(1), negativeResults.get(1));
@@ -112,11 +112,11 @@ public class NaiveConsolidatorTest {
     @Test
     public void testIgnoresNegativeResultsForKnownPositiveComponents() {
         final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+                = new HashMap<>();
         final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<Map<UpdateComponent, UpdateCheckResult>>();
+                = new ArrayList<>();
 
         map1.put(components.get(0), negativeResults.get(0));
         map1.put(components.get(1), positiveResults.get(1));

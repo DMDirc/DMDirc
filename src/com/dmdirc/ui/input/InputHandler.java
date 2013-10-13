@@ -472,7 +472,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @return A copy of the input backbuffer.
      */
     public List<String> getBackBuffer() {
-        return new ArrayList<String>(buffer.getList());
+        return new ArrayList<>(buffer.getList());
     }
 
     /**

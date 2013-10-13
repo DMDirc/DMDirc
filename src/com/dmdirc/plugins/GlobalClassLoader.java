@@ -35,7 +35,7 @@ import java.util.Map;
 public final class GlobalClassLoader extends ClassLoader {
 
     /** HashMap containing sources of Global class files. */
-    private final Map<String, String> resourcesList = new HashMap<String, String>();
+    private final Map<String, String> resourcesList = new HashMap<>();
 
     /** Plugin Manager that owns this GlobalClassLoader. */
     private final PluginManager manager;

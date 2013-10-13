@@ -57,7 +57,7 @@ public class ActionModel {
     protected String newFormat;
 
     /** The conditions for this action. */
-    protected List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+    protected List<ActionCondition> conditions = new ArrayList<>();
 
     /** The condition tree used for evaluating conditions. */
     protected ConditionTree conditionTree;

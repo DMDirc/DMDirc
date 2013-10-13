@@ -248,17 +248,16 @@ public final class ProgramError implements Serializable {
      * Saves this error to disk.
      */
     public void save() {
-        final PrintWriter out = new PrintWriter(getErrorFile(), true);
-        out.println("Date:" + getDate());
-        out.println("Level: " + getLevel());
-        out.println("Description: " + getMessage());
-        out.println("Details:");
+        try (PrintWriter out = new PrintWriter(getErrorFile(), true)) {
+            out.println("Date:" + getDate());
+            out.println("Level: " + getLevel());
+            out.println("Description: " + getMessage());
+            out.println("Details:");
 
-        for (String traceLine : getTrace()) {
-            out.println('\t' + traceLine);
+            for (String traceLine : getTrace()) {
+                out.println('\t' + traceLine);
+            }
         }
-
-        out.close();
     }
 
     /**
@@ -304,8 +303,8 @@ public final class ProgramError implements Serializable {
      * Sends this error report to the DMDirc developers.
      */
     public void send() {
-        final Map<String, String> postData = new HashMap<String, String>();
-        List<String> response = new ArrayList<String>();
+        final Map<String, String> postData = new HashMap<>();
+        List<String> response = new ArrayList<>();
         int tries = 0;
 
         String traceString = Arrays.toString(getTrace());

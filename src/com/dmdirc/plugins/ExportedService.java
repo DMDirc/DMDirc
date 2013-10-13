@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import lombok.extern.slf4j.Slf4j;
@@ -84,13 +85,10 @@ public class ExportedService {
     public Object execute(final Object... args) {
         try {
             return method.invoke(object, args);
-        } catch (final LinkageError le) {
+        } catch (final LinkageError | IllegalAccessException |
+                IllegalArgumentException | InvocationTargetException le) {
             log.error("Error with exported service calling {}",
                     method, le);
-            return null;
-        } catch (final Exception e) {
-            log.error("Error with exported service calling {}",
-                    method, e);
             return null;
         }
     }

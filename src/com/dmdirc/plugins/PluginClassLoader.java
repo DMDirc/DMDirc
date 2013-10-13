@@ -211,7 +211,7 @@ public class PluginClassLoader extends ClassLoader {
     protected Enumeration<URL> findResources(final String name)
             throws IOException {
         final URL resource = findResource(name);
-        final List<URL> resources = new ArrayList<URL>();
+        final List<URL> resources = new ArrayList<>();
 
         if (resource != null) {
             resources.add(resource);

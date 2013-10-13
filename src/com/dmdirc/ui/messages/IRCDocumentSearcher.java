@@ -167,7 +167,7 @@ public class IRCDocumentSearcher {
      * @return List of matches
      */
     private List<LinePosition> searchLine(final int lineNum, final String line) {
-        final List<LinePosition> matches = new ArrayList<LinePosition>();
+        final List<LinePosition> matches = new ArrayList<>();
         final Matcher matcher = Pattern.compile((caseSensitive ? "" : "(?i)")
                 + "\\Q" + phrase + "\\E").matcher(line);
 

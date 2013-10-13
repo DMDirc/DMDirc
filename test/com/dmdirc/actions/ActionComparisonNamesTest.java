@@ -51,7 +51,7 @@ public class ActionComparisonNamesTest {
 
     @Parameterized.Parameters
     public static List<Object[]> data() {
-        final List<Object[]> res = new LinkedList<Object[]>();
+        final List<Object[]> res = new LinkedList<>();
 
         for (ActionComparison comp : CoreActionComparison.values()) {
             res.add(new Object[]{comp});

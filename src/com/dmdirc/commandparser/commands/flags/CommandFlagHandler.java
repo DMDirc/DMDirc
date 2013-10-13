@@ -40,13 +40,13 @@ import java.util.Map;
 public class CommandFlagHandler {
 
     /** A map of all known flag names to their flag objects. */
-    private final Map<String, CommandFlag> flags = new HashMap<String, CommandFlag>();
+    private final Map<String, CommandFlag> flags = new HashMap<>();
     /** A map of currently enabled flag names to their flag objects. */
-    private final Map<String, CommandFlag> enabledFlags = new HashMap<String, CommandFlag>();
+    private final Map<String, CommandFlag> enabledFlags = new HashMap<>();
     /** A map of currently disabled flag names to their flag objects. */
-    private final Map<String, CommandFlag> disabledFlags = new HashMap<String, CommandFlag>();
+    private final Map<String, CommandFlag> disabledFlags = new HashMap<>();
     /** A map of disabled flag names to the flag objects that caused them to be disabled. */
-    private final Map<String, CommandFlag> disabledBy = new HashMap<String, CommandFlag>();
+    private final Map<String, CommandFlag> disabledBy = new HashMap<>();
 
     /**
      * Creates a new command flag handler which will handle all of the specified
@@ -98,8 +98,8 @@ public class CommandFlagHandler {
             (flag.isEnabled() ? enabledFlags : disabledFlags).put(flag.getName(), flag);
         }
 
-        final Map<CommandFlag, Integer> results = new HashMap<CommandFlag, Integer>();
-        final List<CommandFlag> delayedFlags = new ArrayList<CommandFlag>(flags.size());
+        final Map<CommandFlag, Integer> results = new HashMap<>();
+        final List<CommandFlag> delayedFlags = new ArrayList<>(flags.size());
 
         int offset;
         for (offset = 0; offset < arguments.getArguments().length; offset++) {
@@ -221,7 +221,7 @@ public class CommandFlagHandler {
      * specified flag.
      */
     protected String getEnablers(final CommandFlag flag) {
-        final List<CommandFlag> enablers = new LinkedList<CommandFlag>();
+        final List<CommandFlag> enablers = new LinkedList<>();
 
         for (CommandFlag target : flags.values()) {
             if (target.getEnables().contains(flag)) {

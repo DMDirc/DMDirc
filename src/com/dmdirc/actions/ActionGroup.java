@@ -46,7 +46,7 @@ public class ActionGroup implements Iterable<Action> {
     private static final long serialVersionUID = 1;
 
     /** The actions in this group. */
-    private final List<Action> actions = new ArrayList<Action>();
+    private final List<Action> actions = new ArrayList<>();
 
     /** The name of this action group. */
     private final String name;
@@ -64,8 +64,7 @@ public class ActionGroup implements Iterable<Action> {
     private Version version;
 
     /** A list of settings used by this action group. */
-    private final Map<String, PreferencesSetting> settings
-            = new HashMap<String, PreferencesSetting>();
+    private final Map<String, PreferencesSetting> settings = new HashMap<>();
 
     /**
      * Creates a new instance of ActionGroup.
@@ -219,7 +218,7 @@ public class ActionGroup implements Iterable<Action> {
      * Removes all actions from this group, and removes all meta-data.
      */
     public void clear() {
-        for (Action action : new ArrayList<Action>(actions)) {
+        for (Action action : new ArrayList<>(actions)) {
             remove(action);
         }
 
@@ -245,7 +244,7 @@ public class ActionGroup implements Iterable<Action> {
      * @return A list of actions in this group
      */
     public List<Action> getActions() {
-        return new ArrayList<Action>(actions);
+        return new ArrayList<>(actions);
     }
 
     /**

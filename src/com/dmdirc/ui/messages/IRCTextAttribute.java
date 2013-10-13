@@ -41,8 +41,7 @@ public final class IRCTextAttribute extends Attribute {
     private static final long serialVersionUID = 1;
 
     /** table of all instances in this class, used by readResolve. */
-    private static final Map<String, IRCTextAttribute> INSTANCE_MAP
-            = new HashMap<String, IRCTextAttribute>(1);
+    private static final Map<String, IRCTextAttribute> INSTANCE_MAP = new HashMap<>(1);
 
     /**
      * Constructs an Attribute with the given name.

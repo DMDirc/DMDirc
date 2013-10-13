@@ -876,14 +876,19 @@ public class Styliser implements ConfigChangeListener {
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        if ("stylelinks".equals(key)) {
-            styleURIs = configManager.getOptionBool("ui", "stylelinks");
-        } else if ("stylechannels".equals(key)) {
-            styleChannels = configManager.getOptionBool("ui", "stylechannels");
-        } else if ("linkcolour".equals(key)) {
-            uriColour = configManager.getOptionColour("ui", "linkcolour");
-        } else if ("channelcolour".equals(key)) {
-            channelColour = configManager.getOptionColour("ui", "channelcolour");
+        switch (key) {
+            case "stylelinks":
+                styleURIs = configManager.getOptionBool("ui", "stylelinks");
+                break;
+            case "stylechannels":
+                styleChannels = configManager.getOptionBool("ui", "stylechannels");
+                break;
+            case "linkcolour":
+                uriColour = configManager.getOptionColour("ui", "linkcolour");
+                break;
+            case "channelcolour":
+                channelColour = configManager.getOptionColour("ui", "channelcolour");
+                break;
         }
     }
 

@@ -43,8 +43,7 @@ public class PluginMetaDataValidator {
     private final PluginMetaData metadata;
 
     /** A collection of errors which have been identified. */
-    private final Collection<String> errors
-            = new ArrayList<String>();
+    private final Collection<String> errors = new ArrayList<>();
 
     /**
      * Creates a new metadata validator.

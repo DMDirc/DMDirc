@@ -436,12 +436,16 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        if ("sendwho".equals(key)) {
-            sendWho = getConfigManager().getOptionBool("channel", "sendwho");
-        } else if ("showmodeprefix".equals(key)) {
-            showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
-        } else if ("shownickcoloursintext".equals(key)) {
-            showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
+        switch (key) {
+            case "sendwho":
+                sendWho = getConfigManager().getOptionBool("channel", "sendwho");
+                break;
+            case "showmodeprefix":
+                showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
+                break;
+            case "shownickcoloursintext":
+                showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
+                break;
         }
     }
 

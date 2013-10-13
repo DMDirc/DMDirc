@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 public class ActionNameValidatorTest {
 
     private ActionGroup getGroup() {
-        final List<Action> actions = new ArrayList<Action>();
+        final List<Action> actions = new ArrayList<>();
         final Action action1 = mock(Action.class);
         final Action action2 = mock(Action.class);
         final ActionGroup group = mock(ActionGroup.class);

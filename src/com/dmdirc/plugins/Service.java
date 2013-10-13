@@ -37,7 +37,7 @@ public class Service {
     private final String name;
 
     /** List of ServiceProviders that implement this service. */
-    private final List<ServiceProvider> serviceproviders = new ArrayList<ServiceProvider>();
+    private final List<ServiceProvider> serviceproviders = new ArrayList<>();
 
     /**
      * Create a new Service.
@@ -92,7 +92,7 @@ public class Service {
      * @return List of ServiceProvider that provide this service
      */
     public List<ServiceProvider> getProviders() {
-        return new ArrayList<ServiceProvider>(serviceproviders);
+        return new ArrayList<>(serviceproviders);
     }
 
     /**

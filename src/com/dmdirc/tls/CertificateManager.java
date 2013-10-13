@@ -33,11 +33,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
@@ -80,7 +80,7 @@ public class CertificateManager implements X509TrustManager {
     private final AggregateConfigProvider config;
 
     /** The set of CAs from the global cacert file. */
-    private final Set<X509Certificate> globalTrustedCAs = new HashSet<X509Certificate>();
+    private final Set<X509Certificate> globalTrustedCAs = new HashSet<>();
 
     /** Whether or not to check specified parts of the certificate. */
     private boolean checkDate, checkIssuer, checkHost;
@@ -92,7 +92,7 @@ public class CertificateManager implements X509TrustManager {
     private CertificateAction action;
 
     /** A list of problems encountered most recently. */
-    private final List<CertificateException> problems = new ArrayList<CertificateException>();
+    private final List<CertificateException> problems = new ArrayList<>();
 
     /** The chain of certificates currently being validated. */
     private X509Certificate[] chain;
@@ -131,15 +131,8 @@ public class CertificateManager implements X509TrustManager {
             for (TrustAnchor anchor : params.getTrustAnchors()) {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
-        } catch (CertificateException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
-        } catch (InvalidAlgorithmParameterException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
-        } catch (KeyStoreException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
+                KeyStoreException | NoSuchAlgorithmException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } finally {
             StreamUtils.close(is);
@@ -175,15 +168,7 @@ public class CertificateManager implements X509TrustManager {
                 return kmf.getKeyManagers();
             } catch (FileNotFoundException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Certificate file not found", ex);
-            } catch (KeyStoreException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
-            } catch (CertificateException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
-            } catch (UnrecoverableKeyException ex) {
+            } catch (GeneralSecurityException | IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } finally {
                 StreamUtils.close(fis);
@@ -225,7 +210,7 @@ public class CertificateManager implements X509TrustManager {
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (GeneralSecurityException ex) {
            return TrustResult.UNTRUSTED_EXCEPTION;
         }
 
@@ -362,7 +347,7 @@ public class CertificateManager implements X509TrustManager {
                 case DISCONNECT:
                     throw new CertificateException("Not trusted");
                 case IGNORE_PERMANENTY:
-                    final List<String> list = new ArrayList<String>(config
+                    final List<String> list = new ArrayList<>(config
                             .getOptionList("ssl", "trusted"));
                     list.add(Base64.encodeToString(chain[0].getSignature(), false));
                     IdentityManager.getIdentityManager().getUserSettings()
@@ -426,7 +411,7 @@ public class CertificateManager implements X509TrustManager {
      * name
      */
     public static Map<String, String> getDNFieldsFromCert(final X509Certificate cert) {
-        final Map<String, String> res = new HashMap<String, String>();
+        final Map<String, String> res = new HashMap<>();
 
         try {
             final LdapName name = new LdapName(cert.getSubjectX500Principal().getName());

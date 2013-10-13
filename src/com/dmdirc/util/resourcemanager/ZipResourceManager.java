@@ -77,7 +77,7 @@ public final class ZipResourceManager extends ResourceManager {
     protected ZipResourceManager(final ZipFile file) {
         super();
         zipFile = file;
-        entries = new ArrayList<String>();
+        entries = new ArrayList<>();
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while (zipEntries.hasMoreElements()) {
             entries.add(zipEntries.nextElement().getName());
@@ -169,7 +169,7 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix) {
-        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        final Map<String, byte[]> resources = new HashMap<>();
 
         for (String entry : entries) {
             if (entry.endsWith(resourcesSuffix)) {
@@ -184,7 +184,7 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
-        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        final Map<String, byte[]> resources = new HashMap<>();
 
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
@@ -200,7 +200,7 @@ public final class ZipResourceManager extends ResourceManager {
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final Map<String, InputStream> resources =
-                new HashMap<String, InputStream>();
+                new HashMap<>();
 
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
@@ -214,7 +214,7 @@ public final class ZipResourceManager extends ResourceManager {
     /** {@inheritDoc} */
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
-        final List<String> resources = new ArrayList<String>();
+        final List<String> resources = new ArrayList<>();
 
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {

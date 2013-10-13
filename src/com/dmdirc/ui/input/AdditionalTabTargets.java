@@ -41,7 +41,7 @@ public final class AdditionalTabTargets extends ArrayList<String> {
 
     /** Whether to include normal targets. */
     private List<TabCompletionType> includes
-            = new ArrayList<TabCompletionType>(Arrays.asList(TabCompletionType.values()));
+            = new ArrayList<>(Arrays.asList(TabCompletionType.values()));
 
     /**
      * Determines if the specified type of completion should be used.

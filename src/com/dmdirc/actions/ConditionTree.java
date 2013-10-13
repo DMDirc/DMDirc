@@ -185,7 +185,7 @@ public class ConditionTree {
      * while parsing the data
      */
     public static ConditionTree parseString(final String string) {
-        final Deque<Object> stack = new ArrayDeque<Object>();
+        final Deque<Object> stack = new ArrayDeque<>();
 
         for (int i = 0; i < string.length(); i++) {
             final char m = string.charAt(i);
@@ -220,7 +220,7 @@ public class ConditionTree {
      * while parsing the data.
      */
     private static ConditionTree parseStack(final Deque<Object> stack) {
-        final Deque<Object> myStack = new ArrayDeque<Object>();
+        final Deque<Object> myStack = new ArrayDeque<>();
 
         while (!stack.isEmpty()) {
             final Object object = stack.poll();
@@ -318,7 +318,7 @@ public class ConditionTree {
      * mismatched.
      */
     private static ConditionTree readBracket(final Deque<Object> stack) {
-        final Deque<Object> tempStack = new ArrayDeque<Object>();
+        final Deque<Object> tempStack = new ArrayDeque<>();
         boolean found = false;
 
         while (!found && !stack.isEmpty()) {

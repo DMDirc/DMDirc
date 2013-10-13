@@ -32,7 +32,7 @@ import java.util.List;
 public class PopupMenu {
 
     /** The items contained within this popup menu. */
-    private final List<PopupMenuItem> items = new ArrayList<PopupMenuItem>();
+    private final List<PopupMenuItem> items = new ArrayList<>();
 
     /**
      * Retrieves a list of items contained within this popup menu.

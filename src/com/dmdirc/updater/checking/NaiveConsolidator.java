@@ -38,8 +38,7 @@ public class NaiveConsolidator implements CheckResultConsolidator {
     @Override
     public Map<UpdateComponent, UpdateCheckResult> consolidate(
             final Collection<Map<UpdateComponent, UpdateCheckResult>> results) {
-        final Map<UpdateComponent, UpdateCheckResult> res
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+        final Map<UpdateComponent, UpdateCheckResult> res = new HashMap<>();
 
         for (Map<UpdateComponent, UpdateCheckResult> set : results) {
             for (Map.Entry<UpdateComponent, UpdateCheckResult> entry : set.entrySet()) {

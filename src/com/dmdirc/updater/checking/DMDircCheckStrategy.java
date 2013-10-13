@@ -57,8 +57,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     /** {@inheritDoc} */
     @Override
     public Map<UpdateComponent, UpdateCheckResult> checkForUpdates(final Collection<UpdateComponent> components) {
-        final Map<UpdateComponent, UpdateCheckResult> res
-                = new HashMap<UpdateComponent, UpdateCheckResult>();
+        final Map<UpdateComponent, UpdateCheckResult> res = new HashMap<>();
         final Map<String, UpdateComponent> names = getComponentsByName(components);
 
         try {
@@ -139,15 +138,17 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     private UpdateCheckResult parseResponse(final UpdateComponent component,
             final String line) {
         final String[] parts = line.split(" ");
-
-        if ("outofdate".equals(parts[0])) {
-            return parseOutOfDateResponse(component, parts);
-        } else if ("uptodate".equals(parts[0])) {
-            return new BaseCheckResult(component);
-        } else if ("error".equals(parts[0])) {
-            log.warn("Error received from update server: {}", line);
-        } else {
-            log.error("Unknown update line received from server: {}", line);
+        switch (parts[0]) {
+            case "outofdate":
+                return parseOutOfDateResponse(component, parts);
+            case "uptodate":
+                return new BaseCheckResult(component);
+            case "error":
+                log.warn("Error received from update server: {}", line);
+                break;
+            default:
+                log.error("Unknown update line received from server: {}", line);
+                break;
         }
 
         return null;
@@ -181,7 +182,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
      * which the component's name as a key and the component itself as a value.
      */
     private Map<String, UpdateComponent> getComponentsByName(final Collection<UpdateComponent> components) {
-        final Map<String, UpdateComponent> res = new HashMap<String, UpdateComponent>();
+        final Map<String, UpdateComponent> res = new HashMap<>();
 
         for (UpdateComponent component : components) {
             res.put(component.getName(), component);

@@ -78,7 +78,7 @@ public class SSLCertificateDialogModel {
      * certificate chain being questioned.
      */
     public List<CertificateChainEntry> getCertificateChain() {
-        final List<CertificateChainEntry> res = new ArrayList<CertificateChainEntry>();
+        final List<CertificateChainEntry> res = new ArrayList<>();
 
         boolean first = true;
 
@@ -109,7 +109,7 @@ public class SSLCertificateDialogModel {
      */
     public List<List<CertificateInformationEntry>> getCertificateInfo(final int index) {
         final List<List<CertificateInformationEntry>> res
-                = new ArrayList<List<CertificateInformationEntry>>();
+                = new ArrayList<>();
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
@@ -123,7 +123,7 @@ public class SSLCertificateDialogModel {
             tooNew = true;
         }
 
-        group = new ArrayList<CertificateInformationEntry>();
+        group = new ArrayList<>();
         group.add(new CertificateInformationEntry("Valid from",
                 cert.getNotBefore().toString(), tooNew, false));
         group.add(new CertificateInformationEntry("Valid to",
@@ -134,7 +134,7 @@ public class SSLCertificateDialogModel {
         final String names = getAlternateNames(cert);
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
 
-        group = new ArrayList<CertificateInformationEntry>();
+        group = new ArrayList<>();
         addCertField(fields, group, "Common name", "CN", wrongName);
 
         group.add(new CertificateInformationEntry("Alternate names",
@@ -147,7 +147,7 @@ public class SSLCertificateDialogModel {
         addCertField(fields, group, "Country", "C", false);
         res.add(group);
 
-        group = new ArrayList<CertificateInformationEntry>();
+        group = new ArrayList<>();
         group.add(new CertificateInformationEntry("Serial number",
                 cert.getSerialNumber().toString(), false, false));
         group.add(new CertificateInformationEntry("Algorithm",
@@ -217,7 +217,7 @@ public class SSLCertificateDialogModel {
      * @return A list of summary entries
      */
     public List<CertificateSummaryEntry> getSummary() {
-        final List<CertificateSummaryEntry> res = new ArrayList<CertificateSummaryEntry>();
+        final List<CertificateSummaryEntry> res = new ArrayList<>();
 
         boolean outofdate = false, wronghost = false, nottrusted = false;
 

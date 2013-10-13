@@ -43,9 +43,9 @@ public class CommandFlag {
     /** The name of the flag. */
     private final String name;
     /** The list of flags that become enabled if this one is used. */
-    private final List<CommandFlag> enables = new LinkedList<CommandFlag>();
+    private final List<CommandFlag> enables = new LinkedList<>();
     /** The list of flags that become disabled if this one is used. */
-    private final List<CommandFlag> disables = new LinkedList<CommandFlag>();
+    private final List<CommandFlag> disables = new LinkedList<>();
     /** The number of args expected following this flag. */
     private final int immediateArgs;
     /** The number of args expected after flags are finished. */

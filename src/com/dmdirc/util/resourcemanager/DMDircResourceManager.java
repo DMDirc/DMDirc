@@ -38,6 +38,10 @@ import java.net.URLDecoder;
  */
 public class DMDircResourceManager {
 
+    private DMDircResourceManager() {
+        //Prevent instantiation
+    }
+
     /**
      * Returns the working directory for the application.
      *
@@ -57,8 +61,7 @@ public class DMDircResourceManager {
      */
     public static String getWorkingDirectoryString(final URL mainClassURL) {
         try {
-            return URLDecoder.decode(
-                    getWorkingDirectoryURL(mainClassURL).getPath(), "UTF-8");
+            return URLDecoder.decode(getWorkingDirectoryURL(mainClassURL).getPath(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
         }
@@ -86,8 +89,7 @@ public class DMDircResourceManager {
      * @return URL of client folder file or null
      */
     protected static URL getFileURL() {
-        return Thread.currentThread().getContextClassLoader()
-                    .getResource("");
+        return Thread.currentThread().getContextClassLoader().getResource("");
     }
 
     /**
@@ -99,11 +101,9 @@ public class DMDircResourceManager {
      */
     protected static URL getJarURL(final URL mainClassURL) {
         try {
-            return new URI(mainClassURL.getPath()
-                    .substring(0,mainClassURL.getPath().indexOf("!/"))).toURL();
-        } catch(MalformedURLException ex) {
-            return null;
-        } catch (URISyntaxException ex) {
+            return new URI(mainClassURL.getPath().substring(0, mainClassURL.getPath()
+                    .indexOf("!/"))).toURL();
+        } catch (MalformedURLException | URISyntaxException ex) {
             return null;
         }
     }
@@ -115,7 +115,7 @@ public class DMDircResourceManager {
      */
     public static boolean isRunningFromJar() {
         return isRunningFromJar(Thread.currentThread().getContextClassLoader().
-                        getResource("com/dmdirc/Main.class"));
+                getResource("com/dmdirc/Main.class"));
 
     }
 

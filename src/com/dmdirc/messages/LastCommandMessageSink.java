@@ -63,7 +63,7 @@ public class LastCommandMessageSink implements MessageSink {
         WritableFrameContainer best = source;
         long besttime = 0;
 
-        final List<FrameContainer> containers = new ArrayList<FrameContainer>();
+        final List<FrameContainer> containers = new ArrayList<>();
 
         containers.add(source.getServer());
         containers.addAll(source.getServer().getChildren());

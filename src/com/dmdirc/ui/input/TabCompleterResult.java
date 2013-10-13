@@ -42,7 +42,7 @@ public final class TabCompleterResult {
      * Creates a new instance of TabCompleterResult with an empty result set.
      */
     public TabCompleterResult() {
-        this.results = new ArrayList<String>();
+        this.results = new ArrayList<>();
     }
 
     /**
