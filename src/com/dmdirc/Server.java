@@ -94,10 +94,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Server extends WritableFrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
-    // <editor-fold defaultstate="collapsed" desc="Properties">
-
-    // <editor-fold defaultstate="collapsed" desc="Static">
-
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
     /** The name of the profile domain. */
@@ -105,13 +101,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Instance">
-
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels = new ConcurrentSkipListMap<>();
-
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
 
@@ -202,12 +193,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The command controller to pass into child windows. */
     private final CommandController commandController;
 
-    // </editor-fold>
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Constructors">
-
     /**
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
@@ -282,10 +267,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         getConfigManager().addChangeListener("formatter", "serverName", this);
         getConfigManager().addChangeListener("formatter", "serverTitle", this);
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Connection, disconnection & reconnection">
 
     /**
      * Updates the connection details for this server. If the specified URI
@@ -522,10 +503,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Child windows">
-
     /** {@inheritDoc} */
     @Override
     public boolean hasChannel(final String channel) {
@@ -710,10 +687,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             query.close();
         }
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Miscellaneous methods">
 
     /**
      * Retrieves the host component of the specified URI, or throws a relevant
@@ -1230,10 +1203,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Parser callbacks">
-
     /**
      * Called when the server says that the nickname we're trying to use is
      * already in use.
@@ -1554,10 +1523,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Ignore lists">
-
     /** {@inheritDoc} */
     @Override
     public IgnoreList getIgnoreList() {
@@ -1577,10 +1542,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Identity handling">
-
     /** {@inheritDoc} */
     @Override
     public ConfigProvider getServerIdentity() {
@@ -1592,10 +1553,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public ConfigProvider getNetworkIdentity() {
         return identityFactory.createNetworkConfig(getNetwork());
     }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Invite handling">
 
     /** {@inheritDoc} */
     @Override
@@ -1691,10 +1648,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return invites;
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Away state handling">
-
     /** {@inheritDoc} */
     @Override
     public void addAwayStateListener(final AwayStateListener listener) {
@@ -1741,10 +1694,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }, "Away state listener runner").start();
     }
 
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="TLS listener handling">
-
     /** {@inheritDoc} */
     @Override
     public void addCertificateProblemListener(final CertificateProblemListener listener) {
@@ -1779,7 +1728,5 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             listener.certificateProblemResolved(manager);
         }
     }
-
-    // </editor-fold>
 
 }
