@@ -235,7 +235,6 @@ public class ClientModule {
             @GlobalConfig final AggregateConfigProvider globalConfig) {
         final CommandManager manager = new CommandManager(serverManager);
         manager.initialise(globalConfig);
-        CommandManager.setCommandManager(manager);
         return manager;
     }
 

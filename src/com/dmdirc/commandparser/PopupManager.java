@@ -24,18 +24,27 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+
+import javax.inject.Inject;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
  */
 public class PopupManager {
 
+    /** The command controller to use for items. */
+    private final CommandController commandController;
+
     /**
      * Creates a new instance of PopupManager.
+     *
+     * @param commandController The controller to use for commands.
      */
-    private PopupManager() {
-        // Shouldn't be instansiated.
+    @Inject
+    public PopupManager(final CommandController commandController) {
+        this.commandController = commandController;
     }
 
     /**
@@ -46,7 +55,7 @@ public class PopupManager {
      * @param configManager The config manager to be used for the menu
      * @return The PopupMenu that should be displayed
      */
-    public static PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
+    public PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
         final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
         ActionManager.getActionManager().triggerEvent(
@@ -64,7 +73,7 @@ public class PopupManager {
      * @param configManager The config manager to be used for the menu
      * @return The PopupMenu with the specified name
      */
-    private static PopupMenu getMenu(final String menuName,
+    private PopupMenu getMenu(final String menuName,
             final PopupType type, final AggregateConfigProvider configManager) {
         final PopupMenu res = new PopupMenu();
 
@@ -87,12 +96,12 @@ public class PopupManager {
      * @param configManager The config manager to beused for the menu
      * @return The corresponding PopupMenuItem
      */
-    private static PopupMenuItem getItem(final String item,
+    private PopupMenuItem getItem(final String item,
             final PopupType type, final AggregateConfigProvider configManager) {
         PopupMenuItem res;
 
         if ("-".equals(item)) {
-            res = new PopupMenuItem(CommandManager.getCommandManager());
+            res = new PopupMenuItem(commandController);
         } else {
             final int colon = item.indexOf(':');
 
@@ -105,11 +114,11 @@ public class PopupManager {
             final String command = item.substring(colon + 1);
 
             if (command.length() > 0 && command.charAt(0) == '<') {
-                res = new PopupMenuItem(CommandManager.getCommandManager(),
+                res = new PopupMenuItem(commandController,
                         name, getMenu(command.substring(1),
                         type, configManager));
             } else {
-                res = new PopupMenuItem(CommandManager.getCommandManager(),
+                res = new PopupMenuItem(commandController,
                         name, type.getArity(), command);
             }
         }

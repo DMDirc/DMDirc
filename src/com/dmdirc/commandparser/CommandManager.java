@@ -48,9 +48,6 @@ import lombok.Getter;
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandManager implements CommandController {
 
-    /** A singleton instance of the command manager. */
-    private static CommandManager instance;
-
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands
             = new HashMap<>();
@@ -279,28 +276,6 @@ public class CommandManager implements CommandController {
         }
 
         return res;
-    }
-
-    /**
-     * Initialise the singleton instance of the CommandManager.
-     *
-     * @param commandManager The new singleton command manager instance.
-     * @deprecated Don't use statically.
-     */
-    @Deprecated
-    public static void setCommandManager(final CommandManager commandManager) {
-        instance = commandManager;
-    }
-
-    /**
-     * Retrieves a singleton instance of the CommandManager.
-     *
-     * @return A singleton instance of the CommandManager.
-     * @deprecated Don't use statically.
-     */
-    @Deprecated
-    public static synchronized CommandManager getCommandManager() {
-        return instance;
     }
 
 }
