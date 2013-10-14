@@ -179,11 +179,7 @@
 
             <!-- Exported services -->
             -keepclassmembers class ** implements com.dmdirc.plugins.Plugin {
-                <!-- Parsers -->
-                public com.dmdirc.parser.interfaces.Parser getParser(com.dmdirc.parser.common.MyInfo,java.net.URI);
-                public com.dmdirc.parser.interfaces.ProtocolDescription getDescription();
-                <!-- Tab completers -->
-                public com.dmdirc.ui.input.tabstyles.TabCompletionStyle getCompletionStyle(com.dmdirc.ui.input.TabCompleter,com.dmdirc.WritableFrameContainer);
+                @com.dmdirc.plugins.Exported &lt;methods&gt;;
             }
 
             <!-- Debug plugin commands -->
