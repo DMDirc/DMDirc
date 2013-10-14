@@ -44,15 +44,6 @@ public class ActionNameValidator implements Validator<String> {
     private final String originalName;
 
     /**
-     * Instantiates a new action name validator.
-     *
-     * @param group Associated action group
-     */
-    public ActionNameValidator(final ActionGroup group) {
-        this (group, "");
-    }
-
-    /**
      * Instantiates a new action name validator for an existing action.
      *
      * @param group Associated action group

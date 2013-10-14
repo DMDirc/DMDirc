@@ -134,17 +134,6 @@ public interface CommandController {
     void registerCommand(final Command command, final CommandInfo info);
 
     /**
-     * Registers a {@link Command} which also implements the {@link CommandInfo}
-     * interface with the command manager.
-     *
-     * @param <T> The type of object that's being registered
-     * @param command An object that extends {@link Command} and implements
-     * {@link CommandInfo} to be registered.
-     * @since 0.6.3m1
-     */
-    <T extends Command & CommandInfo> void registerCommand(final T command);
-
-    /**
      * Unregisters a command with the command manager.
      *
      * @param info The information object for the command that should be unregistered

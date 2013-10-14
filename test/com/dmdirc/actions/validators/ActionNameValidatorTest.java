@@ -51,7 +51,7 @@ public class ActionNameValidatorTest {
 
     @Test
     public void testConflicting() {
-        final ActionNameValidator instance = new ActionNameValidator(getGroup());
+        final ActionNameValidator instance = new ActionNameValidator(getGroup(), "blah");
 
         assertTrue(instance.validate("test1").isFailure());
     }

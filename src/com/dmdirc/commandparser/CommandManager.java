@@ -98,12 +98,6 @@ public class CommandManager implements CommandController {
 
     /** {@inheritDoc} */
     @Override
-    public <T extends Command & CommandInfo> void registerCommand(final T command) {
-        registerCommand(command, command);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void unregisterCommand(final CommandInfo info) {
         registerCommand(info, commands.get(info), false);
     }
