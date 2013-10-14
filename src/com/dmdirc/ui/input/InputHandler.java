@@ -27,7 +27,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
@@ -255,11 +254,12 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected void validateText() {
         final String text = target.getText();
 
-        final CommandArguments args = new CommandArguments(text);
+        final CommandArguments args = new CommandArguments(
+                parentWindow.getCommandParser().getCommandManager(), text);
 
         if (args.isCommand()) {
             final Map.Entry<CommandInfo, Command> command
-                    = CommandManager.getCommandManager().getCommand(args.getCommandName());
+                    = parentWindow.getCommandParser().getCommandManager().getCommand(args.getCommandName());
 
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
@@ -523,7 +523,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         log.trace("Offsets: start: {}, end: {}",
                 new Object[]{ start, end });
 
-        if (start > 0 && text.charAt(0) == CommandManager.getCommandManager().getCommandChar()) {
+        if (start > 0 && text.charAt(0) == parentWindow.getCommandParser().getCommandManager().getCommandChar()) {
             doCommandTabCompletion(text, start, end, shiftPressed);
         } else {
             doNormalTabCompletion(text, start, end, shiftPressed,  null);

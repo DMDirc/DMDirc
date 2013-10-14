@@ -22,17 +22,20 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,6 +47,7 @@ import java.util.regex.Pattern;
 /**
  * Handles the substitution of variables into action targets and responses.
  */
+@Factory(inject = true, providers = true, singleton = true)
 public class ActionSubstitutor {
 
     /** Substitution to use when a component requires a connected server. */
@@ -73,6 +77,10 @@ public class ActionSubstitutor {
 
     /** The action controller to use to find components. */
     private final ActionController actionController;
+    /** The global config to read settings from. */
+    private final AggregateConfigProvider globalConfig;
+    /** The command controller to use when building command arguments. */
+    private final CommandController commandController;
     /** The action type this substitutor is for. */
     private final ActionType type;
 
@@ -80,10 +88,18 @@ public class ActionSubstitutor {
      * Creates a new substitutor for the specified action type.
      *
      * @param actionController The action controller to use to find components.
+     * @param commandController The command controller to use when building command arguments.
+     * @param globalConfig The global config to read settings from.
      * @param type The action type this substitutor is for
      */
-    public ActionSubstitutor(final ActionController actionController, final ActionType type) {
+    public ActionSubstitutor(
+            final ActionController actionController,
+            final CommandController commandController,
+            @SuppressWarnings("qualifiers") @GlobalConfig final AggregateConfigProvider globalConfig,
+            @Unbound final ActionType type) {
         this.actionController = actionController;
+        this.globalConfig = globalConfig;
+        this.commandController = commandController;
         this.type = type;
     }
 
@@ -94,7 +110,7 @@ public class ActionSubstitutor {
      * @return A list of global variable names that will be substituted
      */
     public Set<String> getConfigSubstitutions() {
-        return IdentityManager.getIdentityManager().getGlobalConfiguration().getOptions("actions").keySet();
+        return globalConfig.getOptions("actions").keySet();
     }
 
     /**
@@ -230,8 +246,8 @@ public class ActionSubstitutor {
 
         if (usesWordSubstitutions() && numberMatcher.matches()) {
             final CommandArguments words = args[2] instanceof String
-                    ? new CommandArguments((String) args[2])
-                    : new CommandArguments(Arrays.asList((String[]) args[2]));
+                    ? new CommandArguments(commandController, (String) args[2])
+                    : new CommandArguments(commandController, Arrays.asList((String[]) args[2]));
 
             int start, end;
 
@@ -326,7 +342,7 @@ public class ActionSubstitutor {
             }
         }
 
-        return IdentityManager.getIdentityManager().getGlobalConfiguration();
+        return globalConfig;
     }
 
     /**

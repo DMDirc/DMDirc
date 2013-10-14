@@ -58,6 +58,7 @@ import static org.mockito.Mockito.*;
 public class ActionTest {
 
     @Mock private Provider<GlobalCommandParser> gcpProvider;
+    @Mock private ActionSubstitutorFactory substitutorFactory;
     @Mock private ActionController actionController;
     @Mock private ActionGroup actionGroup;
     @Mock private IdentityController identityController;
@@ -104,8 +105,8 @@ public class ActionTest {
 
     @Test
     public void testSave() {
-        new Action(gcpProvider, actionController, identityController, testDirectory,
-                "unit-test", "test1", new ActionType[0],
+        new Action(gcpProvider, substitutorFactory, actionController, identityController,
+                testDirectory, "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         assertTrue("Action constructor must create new file",
@@ -115,7 +116,8 @@ public class ActionTest {
 
     @Test
     public void testSetGroup() {
-        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, substitutorFactory, actionController,
+                identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -129,7 +131,8 @@ public class ActionTest {
 
     @Test
     public void testSetName() {
-        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, substitutorFactory, actionController,
+                identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -143,7 +146,8 @@ public class ActionTest {
 
     @Test
     public void testDelete() {
-        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, substitutorFactory, actionController,
+                identityController, testDirectory,
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -156,7 +160,8 @@ public class ActionTest {
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, substitutorFactory, actionController,
+                identityController, testDirectory,
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
@@ -174,7 +179,8 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        Action action = new Action(gcpProvider, actionController, identityController, testDirectory,
+        Action action = new Action(gcpProvider, substitutorFactory, actionController,
+                identityController, testDirectory,
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
         action.config.read();

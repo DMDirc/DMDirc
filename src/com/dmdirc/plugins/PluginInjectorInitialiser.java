@@ -26,6 +26,7 @@ import com.dmdirc.CorePluginExtractor;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionSubstitutorFactory;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -70,6 +71,7 @@ public class PluginInjectorInitialiser {
     private final CorePluginExtractor corePluginExtractor;
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
+    private final ActionSubstitutorFactory actionSubstitutorFactory;
 
     /**
      * Initialises the given injector with all of the known "global" managers.
@@ -94,5 +96,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(themeManager);
         injector.addParameter(urlBuilder);
         injector.addParameter(colourManager);
+        injector.addParameter(actionSubstitutorFactory);
     }
 }

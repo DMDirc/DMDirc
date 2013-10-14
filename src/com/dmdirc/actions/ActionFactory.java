@@ -47,6 +47,8 @@ public class ActionFactory {
     private final Provider<ActionController> actionController;
     /** The controller to use to retrieve and update settings. */
     private final Provider<IdentityController> identityController;
+    /** The factory to use to create substitutors. */
+    private final ActionSubstitutorFactory substitutorFactory;
     /** The base directory to store actions in. */
     private final String actionsDirectory;
 
@@ -56,6 +58,7 @@ public class ActionFactory {
      * @param actionController The controller that will own actions.
      * @param identityController The controller to use to retrieve and update settings.
      * @param globalCommandParserProvider The global command parser to use for actions without windows.
+     * @param substitutorFactory The factory to use to create substitutors.
      * @param actionsDirectory The base directory to store actions in.
      */
     @Inject
@@ -63,10 +66,12 @@ public class ActionFactory {
             final Provider<ActionController> actionController,
             final Provider<IdentityController> identityController,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final ActionSubstitutorFactory substitutorFactory,
             @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
         this.actionController = actionController;
         this.identityController = identityController;
         this.globalCommandParserProvider = globalCommandParserProvider;
+        this.substitutorFactory = substitutorFactory;
         this.actionsDirectory = actionsDirectory;
     }
 
@@ -79,7 +84,7 @@ public class ActionFactory {
      * @return A relevant action.
      */
     public Action getAction(final String group, final String name) {
-        return new Action(globalCommandParserProvider, actionController.get(),
+        return new Action(globalCommandParserProvider, substitutorFactory, actionController.get(),
                 identityController.get(), actionsDirectory, group, name);
     }
 
@@ -100,7 +105,7 @@ public class ActionFactory {
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        return new Action(globalCommandParserProvider, actionController.get(),
+        return new Action(globalCommandParserProvider, substitutorFactory, actionController.get(),
                 identityController.get(), actionsDirectory, group,
                 name, triggers, response, conditions, conditionTree, newFormat);
     }

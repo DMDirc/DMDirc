@@ -23,6 +23,8 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,8 @@ import static org.junit.Assert.*;
 public class ActionConditionTest {
 
     @Mock private ActionController actionController;
+    @Mock private CommandController commandController;
+    @Mock private AggregateConfigProvider configProvider;
 
     @Test
     public void testConstructor1() {
@@ -59,14 +63,16 @@ public class ActionConditionTest {
     public void testTest1() {
         final ActionCondition ac = new ActionCondition(1, CoreActionComponent.STRING_STRING,
             CoreActionComparison.STRING_STARTSWITH, "foo");
-        assertTrue(ac.test(new ActionSubstitutor(actionController, CoreActionType.CLIENT_USER_INPUT), null, "foo bar"));
+        assertTrue(ac.test(new ActionSubstitutor(actionController, commandController,
+                configProvider, CoreActionType.CLIENT_USER_INPUT), null, "foo bar"));
     }
 
     @Test
     public void testTest2() {
         final ActionCondition ac = new ActionCondition("foobarbaz",
             CoreActionComparison.STRING_STARTSWITH, "foo");
-        assertTrue(ac.test(new ActionSubstitutor(actionController, CoreActionType.CLIENT_CLOSED)));
+        assertTrue(ac.test(new ActionSubstitutor(actionController, commandController,
+                configProvider, CoreActionType.CLIENT_CLOSED)));
     }
 
     @Test

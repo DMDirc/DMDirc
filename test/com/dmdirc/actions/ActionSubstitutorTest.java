@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
@@ -92,7 +93,8 @@ public class ActionSubstitutorTest {
         when(controller.getComponent("SERVER_PROTOCOL")).thenReturn(CoreActionComponent.SERVER_PROTOCOL);
         when(controller.getComponent("SERVER_MYAWAYREASON")).thenReturn(CoreActionComponent.SERVER_MYAWAYREASON);
 
-        substitutor = new ActionSubstitutor(controller, CoreActionType.CHANNEL_MESSAGE);
+        substitutor = new ActionSubstitutor(controller, mock(CommandController.class),
+                mock(AggregateConfigProvider.class), CoreActionType.CHANNEL_MESSAGE);
 
         args = new Object[]{
             channel,

@@ -44,6 +44,9 @@ public class ActionModel {
     /** Provider of global command parsers, for use when triggering window-less actions. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
 
+    /** Factory to use to creator substitutors. */
+    private final ActionSubstitutorFactory substitutorFactory;
+
     /** The group this action belongs to. */
     protected String group;
 
@@ -87,14 +90,17 @@ public class ActionModel {
      * Creates a new instance of ActionModel with the specified properties.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param substitutorFactory Factory to use to create action substitutors.
      * @param group The group the action belongs to
      * @param name The name of the action
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final ActionSubstitutorFactory substitutorFactory,
             final String group,
             final String name) {
         this.globalCommandParserProvider = globalCommandParserProvider;
+        this.substitutorFactory = substitutorFactory;
         this.group = group;
         this.name = name;
     }
@@ -103,6 +109,7 @@ public class ActionModel {
      * Creates a new instance of ActionModel with the specified properties.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param substitutorFactory Factory to use to create action substitutors.
      * @param group The group the action belongs to
      * @param name The name of the action
      * @param triggers The triggers to use
@@ -113,11 +120,12 @@ public class ActionModel {
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final ActionSubstitutorFactory substitutorFactory,
             final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        this(globalCommandParserProvider, group, name);
+        this(globalCommandParserProvider, substitutorFactory, group, name);
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;
@@ -148,7 +156,7 @@ public class ActionModel {
             return false;
         }
 
-        final ActionSubstitutor sub = new ActionSubstitutor(ActionManager.getActionManager(), triggers[0]);
+        final ActionSubstitutor sub = substitutorFactory.getActionSubstitutor(triggers[0]);
 
         if (!test(sub, arguments)) {
             return false;

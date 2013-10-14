@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.validators;
 
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.util.validators.RegexStringValidator;
 import com.dmdirc.util.validators.ValidatorChain;
 
@@ -34,17 +33,6 @@ import java.util.regex.Pattern;
  * @since 0.6.3m1rc3
  */
 public class CommandNameValidator extends ValidatorChain<String> {
-
-    /**
-     * Instantiates a new command name validator, using the command char
-     * provided by the default Command Manager.
-     *
-     * @deprecated Provide a command char.
-     */
-    @Deprecated
-    public CommandNameValidator() {
-        this(CommandManager.getCommandManager().getCommandChar());
-    }
 
     /**
      * Instantiates a new command name validator using the given command char.

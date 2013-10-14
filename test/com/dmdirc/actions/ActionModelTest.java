@@ -24,13 +24,16 @@ package com.dmdirc.actions;
 
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Provider;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -42,11 +45,14 @@ import static org.junit.Assert.*;
 public class ActionModelTest {
 
     @Mock private Provider<GlobalCommandParser> gcpProvider;
+    @Mock private ActionSubstitutorFactory substitutorFactory;
     @Mock private ActionController actionController;
+    @Mock private CommandController commandController;
+    @Mock private AggregateConfigProvider configProvider;
 
     @Test
     public void testConditions() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertTrue("ActionModel must start with no conditions",
                 model.getConditions().isEmpty());
@@ -61,7 +67,7 @@ public class ActionModelTest {
 
     @Test
     public void testTriggers() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertNull("ActionModel must start with null triggers",
                 model.getTriggers());
@@ -76,7 +82,7 @@ public class ActionModelTest {
 
     @Test
     public void testNewFormat() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertNull("ActionModel must start with null format",
                 model.getNewFormat());
@@ -94,7 +100,7 @@ public class ActionModelTest {
 
     @Test
     public void testResponse() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertNull("ActionModel must start with null response",
                 model.getResponse());
@@ -109,7 +115,7 @@ public class ActionModelTest {
 
     @Test
     public void testGroup() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertEquals("ActionModel constructor must set group",
                 "group", model.getGroup());
@@ -122,7 +128,7 @@ public class ActionModelTest {
 
     @Test
     public void testName() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name");
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name");
 
         assertEquals("ActionModel constructor must set name",
                 "name", model.getName());
@@ -135,7 +141,7 @@ public class ActionModelTest {
 
     @Test
     public void testTest() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name",
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
                 new String[0], Arrays.asList(new ActionCondition[]{
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
@@ -143,7 +149,8 @@ public class ActionModelTest {
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
                             CoreActionComparison.STRING_STARTSWITH, "abc"),
                 }), ConditionTree.parseString("0|1"), null);
-        final ActionSubstitutor sub = new ActionSubstitutor(actionController, CoreActionType.CHANNEL_ACTION);
+        final ActionSubstitutor sub = new ActionSubstitutor(actionController,
+                commandController, configProvider, CoreActionType.CHANNEL_ACTION);
 
         assertTrue("test must pass if one condition in disjunction passes (cond 1)",
                 model.test(sub, null, null, "abcdef"));
@@ -155,7 +162,7 @@ public class ActionModelTest {
 
     @Test
     public void testTestNoCondTree() {
-        final ActionModel model = new ActionModel(gcpProvider, "group", "name",
+        final ActionModel model = new ActionModel(gcpProvider, substitutorFactory, "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
                 new String[0], Arrays.asList(new ActionCondition[]{
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
@@ -163,7 +170,8 @@ public class ActionModelTest {
                     new ActionCondition(2, CoreActionComponent.STRING_STRING,
                             CoreActionComparison.STRING_STARTSWITH, "abc"),
                 }), null, null);
-        final ActionSubstitutor sub = new ActionSubstitutor(actionController, CoreActionType.CHANNEL_ACTION);
+        final ActionSubstitutor sub = new ActionSubstitutor(actionController, commandController,
+                configProvider, CoreActionType.CHANNEL_ACTION);
 
         assertFalse("test must fail if one condition in conjunction fails (cond 1)",
                 model.test(sub, null, null, "abcdef"));

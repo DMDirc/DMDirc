@@ -85,6 +85,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * be the group and name of a valid action already saved to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param substitutorFactory Factory to use to create action substitutors.
      * @param actionController The controller that owns this action.
      * @param identityController The controller to use to retrieve and update settings.
      * @param actionsDirectory The base directory to store actions in.
@@ -93,12 +94,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController,
             final IdentityController identityController,
             final String actionsDirectory,
             final String group,
             final String name) {
-        super(globalCommandParserProvider, group, name);
+        super(globalCommandParserProvider, substitutorFactory, group, name);
 
         this.actionController = actionController;
         this.identityController = identityController;
@@ -126,6 +128,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * it to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param substitutorFactory Factory to use to create action substitutors.
      * @param actionController The controller that owns this action.
      * @param identityController The controller to use to retrieve and update settings.
      * @param actionsDirectory The base directory to store actions in.
@@ -139,6 +142,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController,
             final IdentityController identityController,
             final String actionsDirectory,
@@ -149,7 +153,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree,
             final String newFormat) {
-        super(globalCommandParserProvider, group, name, triggers, response, conditions, conditionTree, newFormat);
+        super(globalCommandParserProvider, substitutorFactory, group, name, triggers, response,
+                conditions, conditionTree, newFormat);
 
         this.actionController = actionController;
         this.identityController = identityController;

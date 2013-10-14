@@ -25,7 +25,6 @@ package com.dmdirc.ui.input;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -237,7 +236,8 @@ public class TabCompleter {
             return targets;
         } else {
             return getIntelligentResults(context.getWindow(),
-                    new CommandArguments(context.getPreviousArgs().subList(offset,
+                    new CommandArguments(context.getWindow().getCommandParser().getCommandManager(),
+                    context.getPreviousArgs().subList(offset,
                     context.getPreviousArgs().size())), context.getPartial());
         }
     }
@@ -260,7 +260,7 @@ public class TabCompleter {
         }
 
         final Map.Entry<CommandInfo, Command> command
-                = CommandManager.getCommandManager().getCommand(args.getCommandName());
+                = window.getCommandParser().getCommandManager().getCommand(args.getCommandName());
 
         AdditionalTabTargets targets = null;
 
@@ -296,6 +296,7 @@ public class TabCompleter {
     public static AdditionalTabTargets getIntelligentResults(
             final WritableFrameContainer window, final String text,
             final String partial) {
-        return getIntelligentResults(window, new CommandArguments(text), partial);
+        return getIntelligentResults(window,
+                new CommandArguments(window.getCommandParser().getCommandManager(), text), partial);
     }
 }
