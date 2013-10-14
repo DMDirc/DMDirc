@@ -53,17 +53,6 @@ public class CommandArguments {
     /**
      * Creates a new command arguments parser for the specified line.
      *
-     * @param line The line to be parsed
-     * @deprecated Specify a {@link CommandController}.
-     */
-    @Deprecated
-    public CommandArguments(final String line) {
-        this(CommandManager.getCommandManager(), line);
-    }
-
-    /**
-     * Creates a new command arguments parser for the specified line.
-     *
      * @param controller The command controller to consult for information
      * about command characters, etc.
      * @param line The line to be parsed
@@ -72,18 +61,6 @@ public class CommandArguments {
     public CommandArguments(final CommandController controller, final String line) {
         this.controller = controller;
         this.line = line;
-    }
-
-    /**
-     * Creates a new command arguments parser for the specified words.
-     *
-     * @param words The words which form the line ot be parsed
-     * @since 0.6.3
-     * @deprecated Specify a {@link CommandController}.
-     */
-    @Deprecated
-    public CommandArguments(final Collection<String> words) {
-        this(CommandManager.getCommandManager(), words);
     }
 
     /**
