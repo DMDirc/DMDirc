@@ -50,6 +50,7 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -84,7 +85,8 @@ import dagger.Provides;
  */
 @Module(
     injects = {Main.class, CommandLineParser.class},
-    includes = {CommandLineOptionsModule.class, CommandModule.class}
+    includes = {CommandLineOptionsModule.class, CommandModule.class},
+    library = true
 )
 public class ClientModule {
 
@@ -301,6 +303,17 @@ public class ClientModule {
         extractor.extractCorePlugins("parser_irc");
         manager.refreshPlugins();
         return manager;
+    }
+
+    /**
+     * Provides a service manager.
+     *
+     * @param pluginManager The plugin manager to use as the service manager implementation.
+     * @return A service manager.
+     */
+    @Provides
+    public ServiceManager getServiceManager(final PluginManager pluginManager) {
+        return pluginManager;
     }
 
     /**
