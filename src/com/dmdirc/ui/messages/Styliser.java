@@ -22,8 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -139,31 +138,24 @@ public class Styliser implements ConfigChangeListener {
     /** Colours to use for URI and channel links. */
     private Colour uriColour, channelColour;
 
-    /** Server to get channel prefixes from, or null if not applicable. */
-    private final Server server;
+    /** Connection to get channel prefixes from, or null if not applicable. */
+    private final Connection connection;
+
     /** Config manager to retrieve settings from. */
     private final AggregateConfigProvider configManager;
+
     /** Colour manager to use to parse colours. */
     private final ColourManager colourManager;
 
     /**
      * Creates a new instance of Styliser.
      *
-     * @param owner The {@link FrameContainer} that owns this styliser.
-     */
-    public Styliser(final FrameContainer owner) {
-        this(owner.getServer(), owner.getConfigManager());
-    }
-
-    /**
-     * Creates a new instance of Styliser.
-     *
-     * @param server The {@link Server} that owns this styliser or null if n/a.
+     * @param connection The {@link Connection} that this styliser is for. May be {@code null}.
      * @param configManager the {@link AggregateConfigProvider} to get settings from.
      * @since 0.6.3
      */
-    public Styliser(final Server server, final AggregateConfigProvider configManager) {
-        this.server = server;
+    public Styliser(final Connection connection, final AggregateConfigProvider configManager) {
+        this.connection = connection;
         this.configManager = configManager;
 
         // TODO: This should probably be passed in, not created here.
@@ -303,8 +295,8 @@ public class Styliser implements ConfigChangeListener {
      */
     public String doLinks(final String string) {
         String target = string;
-        final String prefixes = server == null ? null
-                : server.getChannelPrefixes();
+        final String prefixes = connection == null ? null
+                : connection.getChannelPrefixes();
 
         String target2 = target;
         target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);

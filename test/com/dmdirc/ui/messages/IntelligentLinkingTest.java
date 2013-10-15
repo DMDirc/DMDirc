@@ -21,7 +21,6 @@
  */
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -45,14 +44,11 @@ public class IntelligentLinkingTest {
         this.input = input;
         this.expected = expected;
 
-        final FrameContainer container = mock(FrameContainer.class);
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Server server = mock(Server.class);
         when(server.getChannelPrefixes()).thenReturn("#&+");
-        when(container.getServer()).thenReturn(server);
-        when(container.getConfigManager()).thenReturn(manager);
 
-        styliser = new Styliser(container);
+        styliser = new Styliser(server, manager);
     }
 
     @Test

@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.util.Utils;
 
@@ -63,11 +62,9 @@ public class StyliserStylesTest {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
 
-        final FrameContainer container = mock(FrameContainer.class);
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        when(container.getConfigManager()).thenReturn(manager);
 
-        final Styliser styliser = new Styliser(container);
+        final Styliser styliser = new Styliser(null, manager);
         styliser.addStyledString(doc, new String[]{input});
         final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
                 new String[]{input, }, "dialog", 12).
