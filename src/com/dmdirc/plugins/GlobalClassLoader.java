@@ -97,7 +97,7 @@ public final class GlobalClassLoader extends ClassLoader {
             }
         }
 
-        return null;
+        throw new ClassNotFoundException("Not found in global classloader:" + name);
     }
 
     /**
