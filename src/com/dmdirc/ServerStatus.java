@@ -37,19 +37,19 @@ import java.util.List;
 public class ServerStatus {
 
     /** The server to which this status belongs. */
-    protected final Server server;
+    private final Server server;
 
     /** Object to notify when the state of the server changes. */
-    protected final Object notifier;
+    private final Object notifier;
 
     /** The current state of the server. */
-    protected ServerState state = ServerState.DISCONNECTED;
+    private ServerState state = ServerState.DISCONNECTED;
 
     /** A history of transactions for debugging purposes. */
-    protected RollingList<String> history = new RollingList<>(10);
+    private RollingList<String> history = new RollingList<>(10);
 
     /** A list of known parser hashcodes. */
-    protected final List<Integer> parsers = new ArrayList<>();
+    private final List<Integer> parsers = new ArrayList<>();
 
     /**
      * Creates a new ServerStatus instance for the specified server.

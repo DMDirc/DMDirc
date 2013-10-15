@@ -22,8 +22,9 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.config.IdentityController;
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.inject.Inject;
 
@@ -33,16 +34,16 @@ import javax.inject.Inject;
 public class SystemLifecycleController implements LifecycleController {
 
     /** Controller to retrieve settings from. */
-    private final IdentityController identityController;
+    private final AggregateConfigProvider configProvider;
 
     /** Manager to use to disconnect servers. */
     private final ServerManager serverManager;
 
     @Inject
     public SystemLifecycleController(
-            final IdentityController identityController,
+            @GlobalConfig final AggregateConfigProvider configProvider,
             final ServerManager serverManager) {
-        this.identityController = identityController;
+        this.configProvider = configProvider;
         this.serverManager = serverManager;
     }
 
@@ -55,8 +56,7 @@ public class SystemLifecycleController implements LifecycleController {
     /** {@inheritDoc} */
     @Override
     public void quit(final int exitCode) {
-        quit(identityController.getGlobalConfiguration()
-                .getOption("general", "closemessage"), exitCode);
+        quit(configProvider.getOption("general", "closemessage"), exitCode);
     }
 
     /** {@inheritDoc} */

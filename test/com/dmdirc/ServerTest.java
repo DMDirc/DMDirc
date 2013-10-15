@@ -47,6 +47,7 @@ public class ServerTest {
     @Mock private ServerManager serverManager;
     @Mock private ConfigProvider profile;
     @Mock private AggregateConfigProvider configManager;
+    @Mock private ConfigProvider userConfig;
     @Mock private ConfigProviderMigrator configMigrator;
     @Mock private CommandParser commandParser;
     @Mock private ParserFactory parserFactory;
@@ -78,6 +79,7 @@ public class ServerTest {
                 channelFactory,
                 queryFactory,
                 rawFactory,
+                userConfig,
                 new URI("irc-test://255.255.255.255"),
                 profile);
     }

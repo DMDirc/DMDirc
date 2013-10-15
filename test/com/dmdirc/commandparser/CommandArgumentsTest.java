@@ -22,9 +22,7 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
 
@@ -41,14 +39,9 @@ import static org.mockito.Mockito.*;
 public class CommandArgumentsTest {
 
     @Mock private CommandController controller;
-    @Mock private IdentityManager identityManager;
-    @Mock private AggregateConfigProvider configManager;
 
     @Before
     public void setUp() {
-        when(identityManager.getGlobalConfiguration()).thenReturn(configManager);
-        IdentityManager.setIdentityManager(identityManager);
-
         when(this.controller.getCommandChar()).thenReturn('/');
         when(this.controller.getSilenceChar()).thenReturn('.');
     }

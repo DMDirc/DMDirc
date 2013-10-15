@@ -28,8 +28,8 @@ import com.dmdirc.actions.ColourActionComparison;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
@@ -66,7 +66,7 @@ public class Main {
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
 
     /** The identity manager the client will use. */
-    private final IdentityManager identityManager;
+    private final IdentityController identityManager;
 
     /** The server manager the client will use. */
     private final ServerManager serverManager;
@@ -114,7 +114,7 @@ public class Main {
      */
     @Inject
     public Main(
-            final IdentityManager identityManager,
+            final IdentityController identityManager,
             final ServerManager serverManager,
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,

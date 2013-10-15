@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
 
 import java.util.Arrays;
@@ -50,10 +50,11 @@ public class CustomWindow extends FrameContainer {
      *
      * @param name The name of this custom window
      * @param title The parent of this custom window
+     * @param configProvider The config provider to read settings from.
      */
-    public CustomWindow(final String name, final String title) {
-        super("custom", name, title,
-                IdentityManager.getIdentityManager().getGlobalConfiguration(),
+    public CustomWindow(final String name, final String title,
+            final AggregateConfigProvider configProvider) {
+        super("custom", name, title, configProvider,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

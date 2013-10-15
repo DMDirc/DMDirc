@@ -23,8 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Server;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,14 +37,9 @@ import static org.mockito.Mockito.*;
 public class ActionComponentChainTest {
 
     @Mock private ActionManager actionManager;
-    @Mock private IdentityManager identityManager;
-    @Mock private AggregateConfigProvider configManager;
 
     @Before
     public void setUp() throws Exception {
-        IdentityManager.setIdentityManager(identityManager);
-        when(identityManager.getGlobalConfiguration()).thenReturn(configManager);
-
         when(actionManager.getComponent("SERVER_NAME"))
                 .thenReturn(CoreActionComponent.SERVER_NAME);
         when(actionManager.getComponent("SERVER_NETWORK"))

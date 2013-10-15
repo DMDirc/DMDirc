@@ -268,7 +268,8 @@ public class PluginManager implements ActionListener, ServiceManager {
                     + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider, objectGraph);
+            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider,
+                    identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 Logger.userError(ErrorLevel.MEDIUM,
@@ -280,7 +281,8 @@ public class PluginManager implements ActionListener, ServiceManager {
             if ((metadata.getUpdaterId() > 0 && metadata.getVersion().isValid())
                     || (identityController.getGlobalConfiguration()
                     .hasOptionInt("plugin-addonid", metadata.getName()))) {
-                updateManager.addComponent(new PluginComponent(pluginInfo));
+                updateManager.addComponent(new PluginComponent(
+                        identityController.getGlobalConfiguration(), pluginInfo));
             }
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);

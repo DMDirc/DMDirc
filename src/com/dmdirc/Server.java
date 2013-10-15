@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ClientModule.UserConfig;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
@@ -195,6 +196,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** Factory to use for creating raw windows. */
     private final RawFactory rawFactory;
 
+    /** The config provider to write user settings to. */
+    private final ConfigProvider userSettings;
+
     /**
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
@@ -211,6 +215,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param channelFactory The factory to use to create channels.
      * @param queryFactory The factory to use to create queries.
      * @param rawFactory The factory to use to create raw windows.
+     * @param userSettings The config provider to write user settings to.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
      */
@@ -226,6 +231,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
+            @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
             @Unbound final URI uri,
             @Unbound final ConfigProvider profile) {
         super("server-disconnected",
@@ -247,6 +253,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.rawFactory = rawFactory;
+        this.userSettings = userSettings;
 
         setConnectionDetails(uri, profile);
 
@@ -714,7 +721,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         final Parser myParser = parserFactory.getParser(myInfo, address);
 
         if (myParser instanceof SecureParser) {
-            certificateManager = new CertificateManager(address.getHost(), getConfigManager());
+            certificateManager = new CertificateManager(
+                    address.getHost(), getConfigManager(), userSettings);
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certificateManager});
             secureParser.setKeyManagers(certificateManager.getKeyManager());

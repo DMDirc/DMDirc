@@ -24,6 +24,7 @@ package com.dmdirc.tls;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
@@ -97,19 +98,27 @@ public class CertificateManager implements X509TrustManager {
     /** The chain of certificates currently being validated. */
     private X509Certificate[] chain;
 
+    /** The user settings to write to. */
+    private final ConfigProvider userSettings;
+
     /**
      * Creates a new certificate manager for a client connecting to the
      * specified server.
      *
      * @param serverName The name the user used to connect to the server
      * @param config The configuration manager to use
+     * @param userSettings The user settings to write to.
      */
-    public CertificateManager(final String serverName, final AggregateConfigProvider config) {
+    public CertificateManager(
+            final String serverName,
+            final AggregateConfigProvider config,
+            final ConfigProvider userSettings) {
         this.serverName = serverName;
         this.config = config;
         this.checkDate = config.getOptionBool("ssl", "checkdate");
         this.checkIssuer = config.getOptionBool("ssl", "checkissuer");
         this.checkHost = config.getOptionBool("ssl", "checkhost");
+        this.userSettings = userSettings;
 
         loadTrustedCAs();
     }
@@ -350,8 +359,7 @@ public class CertificateManager implements X509TrustManager {
                     final List<String> list = new ArrayList<>(config
                             .getOptionList("ssl", "trusted"));
                     list.add(Base64.encodeToString(chain[0].getSignature(), false));
-                    IdentityManager.getIdentityManager().getUserSettings()
-                            .setOption("ssl", "trusted", list);
+                    userSettings.setOption("ssl", "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:
                     // Do nothing, continue connecting

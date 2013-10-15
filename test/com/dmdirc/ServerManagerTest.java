@@ -114,15 +114,6 @@ public class ServerManagerTest {
     }
 
     @Test
-    public void testCloseAll() {
-        final Server serverA = mock(Server.class);
-        serverManager.registerServer(serverA);
-        serverManager.closeAll();
-        verify(serverA).disconnect();
-        verify(serverA).close();
-    }
-
-    @Test
     public void testCloseAllWithMessage() {
         final Server serverA = mock(Server.class);
         serverManager.registerServer(serverA);

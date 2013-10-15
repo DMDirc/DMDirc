@@ -22,7 +22,6 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateComponent;
@@ -42,7 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class PluginComponent implements UpdateComponent {
 
     /** The config to use. */
-    private static final AggregateConfigProvider CONFIG = IdentityManager.getIdentityManager().getGlobalConfiguration();
+    private final AggregateConfigProvider globalConfig;
 
     /** The plugin this component is for. */
     private final PluginInfo plugin;
@@ -53,7 +52,7 @@ public class PluginComponent implements UpdateComponent {
         if (plugin.getMetaData().getUpdaterId() > 0) {
             return "addon-" + plugin.getMetaData().getUpdaterId();
         } else {
-            return "addon-" + CONFIG.getOption("plugin-addonid", plugin.getMetaData().getName());
+            return "addon-" + globalConfig.getOption("plugin-addonid", plugin.getMetaData().getName());
         }
     }
 

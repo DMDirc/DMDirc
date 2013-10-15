@@ -100,7 +100,7 @@ public class TabCompleter {
      */
     public TabCompleterResult complete(final String partial,
             final AdditionalTabTargets additionals) {
-        final TabCompleterResult result = new TabCompleterResult();
+        final TabCompleterResult result = new TabCompleterResult(configManager);
 
         final MapList<TabCompletionType, String> targets = new MapList<>(entries);
 

@@ -25,9 +25,9 @@ package com.dmdirc.plugins;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.SimpleInjector;
@@ -67,6 +67,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final Provider<PluginInjectorInitialiser> injectorInitialiser;
     /** The object graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
+    /** The controller to add and remove settings from. */
+    private final IdentityController identityController;
     /** Filename for this plugin (taken from URL). */
     @Getter
     private final String filename;
@@ -101,15 +103,18 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @param metadata The plugin's metadata information
      * @param injectorInitialiser The initialiser to use for the plugin's injector.
+     * @param identityController The identity controller to add and remove settings from.
      * @param objectGraph The object graph to give to plugins for DI purposes.
      * @throws PluginException if there is an error loading the Plugin
      */
     public PluginInfo(
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
+            final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.injectorInitialiser = injectorInitialiser;
         this.objectGraph = objectGraph;
+        this.identityController = identityController;
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
 
@@ -223,7 +228,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the defaults, formatters and icons for this plugin.
      */
     private void getDefaults() {
-        final ConfigProvider defaults = IdentityManager.getIdentityManager().getAddonSettings();
+        final ConfigProvider defaults = identityController.getAddonSettings();
 
         log.trace("{}: Using domain '{}'",
                 new Object[]{metaData.getName(), getDomain()});
@@ -256,7 +261,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void loadIdentities() {
         try {
-            final Map<String, InputStream> identityStreams = getResourceManager().getResourcesStartingWithAsInputStreams("META-INF/identities/");
+            final Map<String, InputStream> identityStreams = getResourceManager()
+                    .getResourcesStartingWithAsInputStreams("META-INF/identities/");
 
             unloadIdentities();
 
@@ -272,7 +278,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 synchronized (configProviders) {
                     try {
                         final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(stream, false);
-                        IdentityManager.getIdentityManager().addConfigProvider(configProvider);
+                        identityController.addConfigProvider(configProvider);
                         configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {
                         Logger.userError(ErrorLevel.MEDIUM,
@@ -293,7 +299,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private void unloadIdentities() {
         synchronized (configProviders) {
             for (ConfigProvider identity : configProviders) {
-                IdentityManager.getIdentityManager().removeConfigProvider(identity);
+                identityController.removeConfigProvider(identity);
             }
 
             configProviders.clear();

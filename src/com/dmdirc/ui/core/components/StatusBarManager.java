@@ -99,6 +99,7 @@ public class StatusBarManager implements StatusBar {
      *
      * @return A singleton instance of the status bar manager.
      */
+    @Deprecated
     public static StatusBarManager getStatusBarManager() {
         return instance;
     }
@@ -108,6 +109,7 @@ public class StatusBarManager implements StatusBar {
      *
      * @param manager The manager to use as a singleton instance.
      */
+    @Deprecated
     public static void setStatusBarManager(final StatusBarManager manager) {
         instance = manager;
     }

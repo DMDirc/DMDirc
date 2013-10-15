@@ -30,9 +30,9 @@ import com.dmdirc.actions.ActionSubstitutorFactory;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -58,7 +58,7 @@ public class PluginInjectorInitialiser {
     private final ActionFactory actionFactory;
     private final AliasWrapper aliasWrapper;
     private final PluginManager pluginManager;
-    private final IdentityManager identityManager;
+    private final IdentityController identityController;
     private final ServerManager serverManager;
     private final ThemeManager themeManager;
     private final CommandManager commandManager;
@@ -81,7 +81,7 @@ public class PluginInjectorInitialiser {
     public void initialise(final SimpleInjector injector) {
         injector.addParameter(actionManager);
         injector.addParameter(PluginManager.class, pluginManager);
-        injector.addParameter(identityManager);
+        injector.addParameter(identityController);
         injector.addParameter(ServerManager.class, serverManager);
         injector.addParameter(commandManager);
         injector.addParameter(MessageSinkManager.class, messageSinkManager);

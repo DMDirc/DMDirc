@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
@@ -32,6 +33,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -47,20 +49,29 @@ public class OpenWindow extends Command implements IntelligentCommand {
             "openwindow [--server|--child] <name> [title] "
             + "- opens a window with the specified name and title",
             CommandType.TYPE_GLOBAL);
+
     /** Window management. */
     private final WindowManager windowManager;
+
+    /** The config provider to retrieve settings from. */
+    private final AggregateConfigProvider configProvider;
 
     /**
      * Creates a new instance of this command.
      *
      * @param controller The controller to use for command information.
      * @param windowManager Window management
+     * @param configProvider The config provider to retrieve settings from.
      */
     @Inject
-    public OpenWindow(final CommandController controller, final WindowManager windowManager) {
+    public OpenWindow(
+            final CommandController controller,
+            final WindowManager windowManager,
+            @GlobalConfig final AggregateConfigProvider configProvider) {
         super(controller);
 
         this.windowManager = windowManager;
+        this.configProvider = configProvider;
     }
 
     /** {@inheritDoc} */
@@ -102,7 +113,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
             if (window == null) {
                 CustomWindow newWindow;
                 if (parent == null) {
-                    newWindow = new CustomWindow(args.getArguments()[start], title);
+                    newWindow = new CustomWindow(args.getArguments()[start], title, configProvider);
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent);

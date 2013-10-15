@@ -23,6 +23,7 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,12 @@ import java.util.Locale;
 /**
  * Represents the result set from a tab completion operation.
  */
-public final class TabCompleterResult {
+public class TabCompleterResult {
+
+    /**
+     * The config provider to read settings from.
+     */
+    private final AggregateConfigProvider configProvider;
 
     /**
      * The result list for this tab completer.
@@ -40,17 +46,12 @@ public final class TabCompleterResult {
 
     /**
      * Creates a new instance of TabCompleterResult with an empty result set.
+     *
+     * @param configProvider The config provider to read settings from.
      */
-    public TabCompleterResult() {
+    public TabCompleterResult(final AggregateConfigProvider configProvider) {
+        this.configProvider = configProvider;
         this.results = new ArrayList<>();
-    }
-
-    /**
-     * Creates a new instance of TabCompleterResult.
-     * @param newResults The list of results that this result set contains
-     */
-    public TabCompleterResult(final List<String> newResults) {
-        results = newResults;
     }
 
     /**
@@ -99,8 +100,7 @@ public final class TabCompleterResult {
             return "";
         }
 
-        final boolean caseSensitive = IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOptionBool("tabcompletion", "casesensitive");
+        final boolean caseSensitive = configProvider.getOptionBool("tabcompletion", "casesensitive");
 
         String res = results.get(0);
         for (String entry : results) {

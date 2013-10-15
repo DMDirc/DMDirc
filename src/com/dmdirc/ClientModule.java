@@ -41,6 +41,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
@@ -90,6 +91,10 @@ public class ClientModule {
     /** Qualifier that identities a global configuration source. */
     @Qualifier
     public @interface GlobalConfig {}
+
+    /** Qualifier that identities the user settings config provider. */
+    @Qualifier
+    public @interface UserConfig {}
 
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
@@ -145,6 +150,18 @@ public class ClientModule {
     @GlobalConfig
     public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
         return controller.getGlobalConfiguration();
+    }
+
+    /**
+     * Provides the user's configuration provider.
+     *
+     * @param controller The controller to retrieve the config from.
+     * @return The user's configuration provider.
+     */
+    @Provides
+    @UserConfig
+    public ConfigProvider getUserConfig(final IdentityController controller) {
+        return controller.getUserSettings();
     }
 
     /**

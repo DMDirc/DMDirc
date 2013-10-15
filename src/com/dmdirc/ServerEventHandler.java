@@ -39,7 +39,7 @@ import java.util.Date;
 /**
  * Handles parser events for a Server object.
  */
-public final class ServerEventHandler extends EventHandler implements
+public class ServerEventHandler extends EventHandler implements
         ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
         ErrorInfoListener, PrivateCtcpListener, PrivateCtcpReplyListener,
         SocketCloseListener, PrivateNoticeListener, MotdStartListener,

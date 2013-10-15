@@ -149,16 +149,6 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Closes all servers with a default quit message.
-     */
-    public void closeAll() {
-        for (Server server : servers) {
-            server.disconnect();
-            server.close();
-        }
-    }
-
-    /**
      * Closes all servers with the specified quit message.
      *
      * @param message The quit message to send to the IRC servers
