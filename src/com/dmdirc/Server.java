@@ -199,6 +199,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
 
+    /** The manager to use to add status bar messages. */
+    private final StatusBarManager statusBarManager;
+
     /**
      * Creates a new server which will connect to the specified URL with
      * the specified profile.
@@ -211,6 +214,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param tabCompleterFactory The factory to use for tab completers.
      * @param identityFactory The factory to use to create identities.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param statusBarManager The manager to use to add status bar messages.
      * @param windowManager Window Manager
      * @param channelFactory The factory to use to create channels.
      * @param queryFactory The factory to use to create queries.
@@ -227,6 +231,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
+            final StatusBarManager statusBarManager,
             final WindowManager windowManager,
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
@@ -254,6 +259,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.queryFactory = queryFactory;
         this.rawFactory = rawFactory;
         this.userSettings = userSettings;
+        this.statusBarManager = statusBarManager;
 
         setConnectionDetails(uri, profile);
 
@@ -1420,7 +1426,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * Called when we fail to receive a ping reply within a set period of time.
      */
     public void onPingFailed() {
-        StatusBarManager.getStatusBarManager().setMessage(new StatusMessage(
+        statusBarManager.setMessage(new StatusMessage(
                 "No ping reply from " + getName() + " for over "
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", getConfigManager()));

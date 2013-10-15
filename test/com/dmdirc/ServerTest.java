@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 
 import java.net.URI;
@@ -58,6 +59,7 @@ public class ServerTest {
     @Mock private ChannelFactory channelFactory;
     @Mock private QueryFactory queryFactory;
     @Mock private RawFactory rawFactory;
+    @Mock private StatusBarManager statusBarManager;
 
     private Server server;
 
@@ -75,6 +77,7 @@ public class ServerTest {
                 tabCompleterFactory,
                 identityFactory,
                 messageSinkManager,
+                statusBarManager,
                 windowManager,
                 channelFactory,
                 queryFactory,
