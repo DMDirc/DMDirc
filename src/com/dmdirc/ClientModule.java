@@ -211,19 +211,6 @@ public class ClientModule {
     }
 
     /**
-     * Provides a status bar manager.
-     *
-     * @return The status bar manager the client should use.
-     */
-    @Provides
-    @Singleton
-    public StatusBarManager getStatusBarManager() {
-        final StatusBarManager manager = new StatusBarManager();
-        StatusBarManager.setStatusBarManager(manager);
-        return manager;
-    }
-
-    /**
      * Gets the message sink manager for the client.
      *
      * @param statusBarManager The status bar manager to use for status bar sinks.

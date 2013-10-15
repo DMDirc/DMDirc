@@ -29,18 +29,26 @@ import com.dmdirc.ui.StatusMessage;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * A manager for status bars or status bar like components.
  *
  * @since 0.6.5
  */
+@Singleton
 public class StatusBarManager implements StatusBar {
-
-    /** A singleton instance of the manager. */
-    private static StatusBarManager instance;
 
     /** A collection of known status bars. */
     private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<>();
+
+    /**
+     * Creates a new instance of {@link StatusBarManager}.
+     */
+    @Inject
+    public StatusBarManager() {
+    }
 
     /**
      * Registers a new status bar with the manager. All requests to
@@ -92,26 +100,6 @@ public class StatusBarManager implements StatusBar {
         for (StatusBar statusBar : statusBars) {
             statusBar.removeComponent(component);
         }
-    }
-
-    /**
-     * Retrieves a singleton instance of the status bar manager.
-     *
-     * @return A singleton instance of the status bar manager.
-     */
-    @Deprecated
-    public static StatusBarManager getStatusBarManager() {
-        return instance;
-    }
-
-    /**
-     * Sets the singleton instance of the status bar manager.
-     *
-     * @param manager The manager to use as a singleton instance.
-     */
-    @Deprecated
-    public static void setStatusBarManager(final StatusBarManager manager) {
-        instance = manager;
     }
 
 }
