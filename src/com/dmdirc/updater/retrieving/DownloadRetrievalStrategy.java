@@ -22,6 +22,8 @@
 
 package com.dmdirc.updater.retrieving;
 
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.DownloadableUpdate;
 import com.dmdirc.util.collections.ListenerList;
@@ -30,6 +32,8 @@ import com.dmdirc.util.io.Downloader;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +57,8 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
      *
      * @param directory The directory to use to download files to
      */
-    public DownloadRetrievalStrategy(final String directory) {
+    @Inject
+    public DownloadRetrievalStrategy(@Directory(DirectoryType.BASE) final String directory) {
         super(DownloadableUpdate.class);
 
         this.directory = directory;

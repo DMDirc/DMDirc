@@ -22,6 +22,9 @@
 
 package com.dmdirc.updater.checking;
 
+import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
@@ -35,8 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Setter;
+import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -44,15 +47,39 @@ import lombok.extern.slf4j.Slf4j;
  * information.
  */
 @Slf4j
-@AllArgsConstructor
 public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "http://updates.dmdirc.com/";
 
     /** The update channel to check for updates on. */
-    @Setter
     private UpdateChannel channel;
+
+    /**
+     * Creates a new instance of {@link DMDircCheckStrategy}.
+     *
+     * @param configProvider The provider to use to retrieve update channel information.
+     */
+    @Inject
+    public DMDircCheckStrategy(@GlobalConfig final AggregateConfigProvider configProvider) {
+        configProvider.getBinder().bind(this, DMDircCheckStrategy.class);
+    }
+
+    /**
+     * Sets the channel which will be used by the {@link DMDircCheckStrategy}.
+     *
+     * @param channel The new channel to use
+     */
+    @ConfigBinding(domain="updater", key="channel")
+    public void setChannel(final String channel) {
+        log.info("Changing channel to {}", channel);
+
+        try {
+            this.channel = UpdateChannel.valueOf(channel.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            log.warn("Unknown channel {}", channel, ex);
+        }
+    }
 
     /** {@inheritDoc} */
     @Override

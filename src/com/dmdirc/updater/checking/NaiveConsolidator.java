@@ -28,11 +28,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * A simple {@link CheckResultConsolidator} that returns the first check result
  * for each component that has an update available.
  */
 public class NaiveConsolidator implements CheckResultConsolidator {
+
+    /**
+     * Creates a new instance of {@link NaiveConsolidator}.
+     */
+    @Inject
+    public NaiveConsolidator() {
+    }
 
     /** {@inheritDoc} */
     @Override

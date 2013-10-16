@@ -26,6 +26,7 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.retrieving.SingleFileRetrievalResult;
 import com.dmdirc.util.collections.ListenerList;
 
+import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,6 +43,7 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
     /**
      * Creates a new {@link LegacyInstallationStrategy}.
      */
+    @Inject
     public LegacyInstallationStrategy() {
         super(UpdateComponent.class, SingleFileRetrievalResult.class);
     }

@@ -22,20 +22,30 @@
 
 package com.dmdirc.updater.manager;
 
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateComponent;
 
-import lombok.RequiredArgsConstructor;
+import javax.inject.Inject;
 
 /**
  * An {@link UpdateComponentPolicy} which checks if the component is enabled
  * in DMDirc's configuration.
  */
-@RequiredArgsConstructor
 public class ConfigComponentPolicy implements UpdateComponentPolicy {
 
     /** The configuration manager to check. */
     private final AggregateConfigProvider manager;
+
+    /**
+     * Creates a new instance of {@link ConfigComponentPolicy}.
+     *
+     * @param manager The config provider to use to check if components are enabled.
+     */
+    @Inject
+    public ConfigComponentPolicy(@GlobalConfig final AggregateConfigProvider manager) {
+        this.manager = manager;
+    }
 
     /** {@inheritDoc} */
     @Override

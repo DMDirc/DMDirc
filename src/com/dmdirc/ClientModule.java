@@ -56,14 +56,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
-import com.dmdirc.updater.UpdateChecker;
-import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.Version;
-import com.dmdirc.updater.components.ClientComponent;
-import com.dmdirc.updater.components.DefaultsComponent;
-import com.dmdirc.updater.components.LauncherComponent;
-import com.dmdirc.updater.components.ModeAliasesComponent;
-import com.dmdirc.updater.manager.DMDircUpdateManager;
 import com.dmdirc.updater.manager.UpdateManager;
 
 import java.awt.GraphicsEnvironment;
@@ -85,7 +79,7 @@ import dagger.Provides;
  */
 @Module(
     injects = {Main.class, CommandLineParser.class},
-    includes = {CommandLineOptionsModule.class, CommandModule.class},
+    includes = {CommandLineOptionsModule.class, CommandModule.class, UpdaterModule.class},
     library = true
 )
 public class ClientModule {
@@ -318,28 +312,6 @@ public class ClientModule {
     }
 
     /**
-     * Gets an update manager for the client.
-     *
-     * @param commandLineParser CLI parser to use to find launcher version.
-     * @param updateManager The underlying update manager.
-     * @return The update manager to use.
-     */
-    @Provides
-    @Singleton
-    public UpdateManager getUpdateManager(
-            final CommandLineParser commandLineParser,
-            final DMDircUpdateManager updateManager) {
-        UpdateChecker.init(updateManager);
-        final UpdateManager manager = UpdateChecker.getManager();
-
-        if (commandLineParser.getLauncherVersion() != null) {
-            LauncherComponent.setLauncherInfo(manager, commandLineParser.getLauncherVersion());
-        }
-
-        return manager;
-    }
-
-    /**
      * Gets a theme manager for the client.
      *
      * @param controller The identity controller to use to access settings.
@@ -422,39 +394,6 @@ public class ClientModule {
     @Provides
     public IdentityFactory getIdentityFactory(final IdentityManager identityManager) {
         return identityManager;
-    }
-
-    /**
-     * Provides a client component for the updater component set.
-     *
-     * @param component The client component to provide.
-     * @return The component entry in the set.
-     */
-    @Provides(type = Provides.Type.SET)
-    public UpdateComponent getClientComponent(final ClientComponent component) {
-        return component;
-    }
-
-    /**
-     * Provides a mode aliases component for the updater component set.
-     *
-     * @param component The mode aliases component to provide.
-     * @return The component entry in the set.
-     */
-    @Provides(type = Provides.Type.SET)
-    public UpdateComponent getModeAliasesComponent(final ModeAliasesComponent component) {
-        return component;
-    }
-
-    /**
-     * Provides a defaults component for the updater component set.
-     *
-     * @param component The defaults component to provide.
-     * @return The component entry in the set.
-     */
-    @Provides(type = Provides.Type.SET)
-    public UpdateComponent getDefaultsComponent(final DefaultsComponent component) {
-        return component;
     }
 
     /**

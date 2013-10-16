@@ -22,14 +22,11 @@
 
 package com.dmdirc.updater.manager;
 
-import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
-import com.dmdirc.updater.checking.DMDircCheckStrategy;
-import com.dmdirc.updater.checking.NaiveConsolidator;
-import com.dmdirc.updater.installing.LegacyInstallationStrategy;
-import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
+import com.dmdirc.updater.checking.CheckResultConsolidator;
+import com.dmdirc.updater.checking.UpdateCheckStrategy;
+import com.dmdirc.updater.installing.UpdateInstallationStrategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
 
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -50,47 +47,42 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
     /** Number of threads to use. */
     private static final int THREAD_COUNT = 3;
 
-    /** The default check strategy we use. */
-    private final DMDircCheckStrategy checkStrategy;
-
     /**
      * Creates a new instance of the update manager.
      *
-     * @param identityController The controller to use for config information.
+     * @param updatePolicy The policy to use to decide if components should be updated.
+     * @param checkStrategies The strategies to use to actually perform checks.
+     * @param consolidator The consolidator to use to pick from multiple available updates.
+     * @param retrievalStategies The strategies to use to retrieve updates.
+     * @param installationStrategies The strategies to use to install updates.
      * @param components The default components to add to the manager.
      */
     @Inject
     public DMDircUpdateManager(
-            final IdentityController identityController,
+            final UpdateComponentPolicy updatePolicy,
+            final Set<UpdateCheckStrategy> checkStrategies,
+            final CheckResultConsolidator consolidator,
+            final Set<UpdateRetrievalStategy> retrievalStategies,
+            final Set<UpdateInstallationStrategy> installationStrategies,
             final Set<UpdateComponent> components) {
         super(new ThreadPoolExecutor(THREAD_COUNT, THREAD_COUNT, 1, TimeUnit.MINUTES,
                 new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory()),
-                new NaiveConsolidator(),
-                new ConfigComponentPolicy(identityController.getGlobalConfiguration()));
-        checkStrategy = new DMDircCheckStrategy(UpdateChannel.STABLE);
-        identityController.getGlobalConfiguration().getBinder().bind(this, DMDircUpdateManager.class);
-        addCheckStrategy(checkStrategy);
-        addRetrievalStrategy(new DownloadRetrievalStrategy(identityController.getConfigurationDirectory()));
-        addInstallationStrategy(new LegacyInstallationStrategy());
+                consolidator, updatePolicy);
+
+        for (UpdateCheckStrategy checkStrategy : checkStrategies) {
+            addCheckStrategy(checkStrategy);
+        }
+
+        for (UpdateRetrievalStategy retrievalStategy : retrievalStategies) {
+            addRetrievalStrategy(retrievalStategy);
+        }
+
+        for (UpdateInstallationStrategy installationStrategy : installationStrategies) {
+            addInstallationStrategy(installationStrategy);
+        }
 
         for (UpdateComponent component : components) {
             addComponent(component);
-        }
-    }
-
-    /**
-     * Sets the channel which will be used by the {@link DMDircCheckStrategy}.
-     *
-     * @param channel The new channel to use
-     */
-    @ConfigBinding(domain="updater", key="channel")
-    public void setChannel(final String channel) {
-        log.info("Changing channel to {}", channel);
-
-        try {
-            checkStrategy.setChannel(UpdateChannel.valueOf(channel.toUpperCase()));
-        } catch (IllegalArgumentException ex) {
-            log.warn("Unknown channel {}", channel, ex);
         }
     }
 
