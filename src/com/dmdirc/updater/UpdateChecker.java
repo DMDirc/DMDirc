@@ -34,8 +34,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import lombok.Getter;
-
 /**
  * The update checker contacts the DMDirc website to check to see if there
  * are any updates available.
@@ -52,7 +50,6 @@ public final class UpdateChecker implements Runnable {
     private static Timer timer = new Timer("Update Checker Timer");
 
     /** The update manager to use. */
-    @Getter
     private static CachingUpdateManager manager;
 
     /** {@inheritDoc} */
@@ -150,6 +147,17 @@ public final class UpdateChecker implements Runnable {
      */
     public static void checkNow() {
         new Thread(new UpdateChecker(), "Update Checker thread").start();
+    }
+
+    /**
+     * Gets the current manager.
+     *
+     * @return The update manager in use.
+     * @deprecated Should be injected
+     */
+    @Deprecated
+    public static CachingUpdateManager getManager() {
+        return manager;
     }
 
 }

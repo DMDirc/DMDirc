@@ -74,6 +74,9 @@ public class ActionManager implements ActionController {
     /** Provider for action wrappers. */
     private final Provider<Set<ActionGroup>> actionWrappersProvider;
 
+    /** Provider of an update manager. */
+    private final Provider<UpdateManager> updateManagerProvider;
+
     /** A list of registered action types. */
     private final List<ActionType> types = new ArrayList<>();
 
@@ -109,16 +112,19 @@ public class ActionManager implements ActionController {
      * @param identityManager The IdentityManager to load configuration from.
      * @param factory The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
+     * @param updateManagerProvider Provider of an update manager, to register components.
      */
     public ActionManager(
             final ServerManager serverManager,
             final IdentityController identityManager,
             final ActionFactory factory,
-            final Provider<Set<ActionGroup>> actionWrappersProvider) {
+            final Provider<Set<ActionGroup>> actionWrappersProvider,
+            final Provider<UpdateManager> updateManagerProvider) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.factory = factory;
         this.actionWrappersProvider = actionWrappersProvider;
+        this.updateManagerProvider = updateManagerProvider;
     }
 
     /**
@@ -284,7 +290,7 @@ public class ActionManager implements ActionController {
             }
         }
 
-        registerComponents(UpdateChecker.getManager());
+        registerComponents(updateManagerProvider.get());
     }
 
     /**

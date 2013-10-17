@@ -97,13 +97,13 @@ public class UpdaterModule {
             final CommandLineParser commandLineParser,
             final DMDircUpdateManager updateManager) {
         UpdateChecker.init(updateManager);
-        final UpdateManager manager = UpdateChecker.getManager();
 
         if (commandLineParser.getLauncherVersion() != null) {
-            LauncherComponent.setLauncherInfo(manager, commandLineParser.getLauncherVersion());
+            LauncherComponent.setLauncherInfo(updateManager,
+                    commandLineParser.getLauncherVersion());
         }
 
-        return manager;
+        return updateManager;
     }
 
     /**

@@ -167,6 +167,7 @@ public class ClientModule {
      * @param identityController The identity controller to use to look up settings.
      * @param actionFactory The factory to use to create actions.
      * @param actionWrappersProvider Provider of action wrappers.
+     * @param updateManagerProvider Provider of an update manager.
      * @return An unitialised action manager.
      */
     @Provides
@@ -175,9 +176,10 @@ public class ClientModule {
             final ServerManager serverManager,
             final IdentityController identityController,
             final ActionFactory actionFactory,
-            final Provider<Set<ActionGroup>> actionWrappersProvider) {
+            final Provider<Set<ActionGroup>> actionWrappersProvider,
+            final Provider<UpdateManager> updateManagerProvider) {
         final ActionManager actionManager = new ActionManager(serverManager,
-                identityController, actionFactory, actionWrappersProvider);
+                identityController, actionFactory, actionWrappersProvider, updateManagerProvider);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
