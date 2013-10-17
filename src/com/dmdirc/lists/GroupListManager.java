@@ -22,7 +22,7 @@
 
 package com.dmdirc.lists;
 
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
@@ -48,8 +48,8 @@ public class GroupListManager implements GroupListStartListener,
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
 
-    /** The server to request group information from. */
-    private final Server server;
+    /** The connection to request group information from. */
+    private final Connection connection;
 
     /** The cached groups. */
     @Getter
@@ -65,10 +65,10 @@ public class GroupListManager implements GroupListStartListener,
     public void startSearch(final String searchTerm) {
         groups.clear();
 
-        server.getParser().getCallbackManager().addCallback(GroupListStartListener.class, this);
-        server.getParser().getCallbackManager().addCallback(GroupListEntryListener.class, this);
-        server.getParser().getCallbackManager().addCallback(GroupListEndListener.class, this);
-        server.getParser().requestGroupList(searchTerm);
+        connection.getParser().getCallbackManager().addCallback(GroupListStartListener.class, this);
+        connection.getParser().getCallbackManager().addCallback(GroupListEntryListener.class, this);
+        connection.getParser().getCallbackManager().addCallback(GroupListEndListener.class, this);
+        connection.getParser().requestGroupList(searchTerm);
     }
 
     /** {@inheritDoc} */
@@ -97,7 +97,7 @@ public class GroupListManager implements GroupListStartListener,
      * @param entry Group list entry to join
      */
     public void joinGroupListEntry(final GroupListEntry entry) {
-        server.join(new ChannelJoinRequest(entry.getName()));
+        connection.join(new ChannelJoinRequest(entry.getName()));
     }
 
     /**

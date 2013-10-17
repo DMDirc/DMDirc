@@ -22,7 +22,7 @@
 
 package com.dmdirc.actions.metatypes;
 
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionMetaType;
 import com.dmdirc.parser.interfaces.ClientInfo;
 
@@ -32,23 +32,23 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 public enum ServerEvents implements ActionMetaType {
 
     /** Server ping event type. */
-    SERVER_PING(new String[]{"server", "ping"}, Server.class, Long.class),
+    SERVER_PING(new String[]{"server", "ping"}, Connection.class, Long.class),
     /** Server numeric event type. */
-    SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Server.class, Integer.class, String[].class),
+    SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Connection.class, Integer.class, String[].class),
     /** Server event with argument. */
-    SERVER_EVENT_WITH_ARG(new String[]{"server", "message"}, Server.class, String.class),
+    SERVER_EVENT_WITH_ARG(new String[]{"server", "message"}, Connection.class, String.class),
     /** Server nick change. */
-    SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Server.class, String.class, String.class),
+    SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Connection.class, String.class, String.class),
     /** Server event, with source and argument. */
-    SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Server.class, ClientInfo.class, String.class),
+    SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Connection.class, ClientInfo.class, String.class),
     /** Server CTCP event. */
-    SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Server.class, ClientInfo.class, String.class, String.class),
+    SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Connection.class, ClientInfo.class, String.class, String.class),
     /** Server event with argument. */
-    SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Server.class, String.class, String.class, String.class),
+    SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Connection.class, String.class, String.class, String.class),
     /** Server invite event. */
-    SERVER_INVITE(new String[]{"server", "source", "channel"}, Server.class, ClientInfo.class, String.class),
+    SERVER_INVITE(new String[]{"server", "source", "channel"}, Connection.class, ClientInfo.class, String.class),
     /** Server event type. */
-    SERVER_EVENT(new String[]{"server"}, Server.class);
+    SERVER_EVENT(new String[]{"server"}, Connection.class);
 
     /** The names of the arguments for this meta type. */
     private String[] argNames;

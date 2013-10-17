@@ -25,7 +25,7 @@ package com.dmdirc.actions;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
@@ -52,10 +52,10 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_NAME {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Server) arg).getAddress(); }
+        public Object get(final Object arg) { return ((Connection) arg).getAddress(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -69,10 +69,10 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         @ComponentOptions(requireConnected = true)
-        public Object get(final Object arg) { return ((Server) arg).getNetwork(); }
+        public Object get(final Object arg) { return ((Connection) arg).getNetwork(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -89,10 +89,10 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_PROTOCOL {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Server) arg).getProtocol(); }
+        public Object get(final Object arg) { return ((Connection) arg).getProtocol(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -105,10 +105,10 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_MYAWAYREASON {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Server) arg).getAwayMessage(); }
+        public Object get(final Object arg) { return ((Connection) arg).getAwayMessage(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -122,10 +122,10 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         @Override
         @ComponentOptions(requireConnected = true)
-        public Object get(final Object arg) { return ((Server) arg).getParser().getChannelUserModes(); }
+        public Object get(final Object arg) { return ((Connection) arg).getParser().getChannelUserModes(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -140,7 +140,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         @ComponentOptions(requireConnected = true)
         public Object get(final Object arg) {
-            final Server server = (Server) arg;
+            final Connection server = (Connection) arg;
 
             if (server == null || server.getParser() == null) {
                 Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
@@ -157,7 +157,7 @@ public enum CoreActionComponent implements ActionComponent {
         }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return String.class; }
@@ -170,10 +170,10 @@ public enum CoreActionComponent implements ActionComponent {
     SERVER_PROFILE {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Server) arg).getProfile(); }
+        public Object get(final Object arg) { return ((Connection) arg).getProfile(); }
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Server.class; }
+        public Class<?> appliesTo() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public Class<?> getType() { return ConfigProvider.class; }
@@ -555,7 +555,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class<?> appliesTo() { return Window.class; }
         /** {@inheritDoc} */
         @Override
-        public Class<?> getType() { return Server.class; }
+        public Class<?> getType() { return Connection.class; }
         /** {@inheritDoc} */
         @Override
         public String getName() { return "server"; }

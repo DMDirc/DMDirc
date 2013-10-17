@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.AwayState;
@@ -76,7 +77,7 @@ public class ServerEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    protected Server getServer() {
+    protected Connection getConnection() {
         return owner;
     }
 

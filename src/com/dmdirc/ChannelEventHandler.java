@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -66,7 +67,7 @@ public class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    protected Server getServer() {
+    protected Connection getConnection() {
         return owner.getServer();
     }
 

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.CallbackManager;
@@ -39,7 +40,7 @@ public abstract class EventHandler implements CallbackInterface {
      * owner's parser.
      */
     public void registerCallbacks() {
-        final CallbackManager cbm = getServer().getParser().getCallbackManager();
+        final CallbackManager cbm = getConnection().getParser().getCallbackManager();
 
         try {
             for (Class<?> iface : this.getClass().getInterfaces()) {
@@ -57,8 +58,8 @@ public abstract class EventHandler implements CallbackInterface {
      * Unregisters all callbacks that have been registered by this event handler.
      */
     public void unregisterCallbacks() {
-        if (getServer().getParser() != null) {
-            getServer().getParser().getCallbackManager().delAllCallback(this);
+        if (getConnection().getParser() != null) {
+            getConnection().getParser().getCallbackManager().delAllCallback(this);
         }
     }
 
@@ -74,12 +75,12 @@ public abstract class EventHandler implements CallbackInterface {
             final CallbackManager cbm, final Class<T> type);
 
     /**
-     * Retrieves the server belonging to this EventHandler's owner.
+     * Retrieves the connection that this event handler is for.
      *
      * @since 0.6.3m1
-     * @return This EventHandler's expected server
+     * @return This EventHandler's expected connection.
      */
-    protected abstract Server getServer();
+    protected abstract Connection getConnection();
 
     /**
      * Checks that the specified parser is the same as the one the server is
@@ -89,11 +90,11 @@ public abstract class EventHandler implements CallbackInterface {
      * @param parser The parser to check
      */
     protected void checkParser(final Parser parser) {
-        if (parser != getServer().getParser()) {
+        if (parser != getConnection().getParser()) {
             parser.disconnect("Shouldn't be in use");
             throw new IllegalArgumentException("Event called from a parser that's not in use (#"
-                    + getServer().getStatus().getParserID(parser)
-                    + ").\n\n " + getServer().getStatus().getTransitionHistory());
+                    + getConnection().getStatus().getParserID(parser)
+                    + ").\n\n " + getConnection().getStatus().getTransitionHistory());
         }
     }
 

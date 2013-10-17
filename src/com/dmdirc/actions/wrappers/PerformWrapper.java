@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.ActionCondition;
@@ -33,6 +32,7 @@ import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
@@ -230,7 +230,7 @@ public class PerformWrapper extends ActionGroup {
 
         if (profile != null) {
             conditions.add(new ActionCondition(0,
-                    new ActionComponentChain(Server.class, PP_COMP_NAME, ActionManager.getActionManager()),
+                    new ActionComponentChain(Connection.class, PP_COMP_NAME, ActionManager.getActionManager()),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 

@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
+
 import java.util.Date;
 
 import lombok.Getter;
@@ -32,8 +34,8 @@ import lombok.Getter;
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class Invite {
 
-    /** The server this invite was on. */
-    private final Server server;
+    /** The connection this invite was on. */
+    private final Connection connection;
 
     /** The channel this invite is for. */
     @Getter
@@ -49,12 +51,12 @@ public class Invite {
     /**
      * Creates a new instance of Invite.
      *
-     * @param server The server that this invite was received for
+     * @param connection The connection that this invite was received on
      * @param channel The channel that this invite is for
      * @param source The source of this invite
      */
-    public Invite(final Server server, final String channel, final String source) {
-        this.server = server;
+    public Invite(final Connection connection, final String channel, final String source) {
+        this.connection = connection;
         this.channel = channel;
         this.source = source;
         this.timestamp = new Date().getTime();
@@ -67,20 +69,20 @@ public class Invite {
      * @see Server#parseHostmask(java.lang.String)
      */
     public String[] getSource() {
-        return server.parseHostmask(source);
+        return connection.parseHostmask(source);
     }
 
     /**
      * Join the channel that belongs to this invite.
      */
     public void accept() {
-        server.acceptInvites(this);
+        connection.acceptInvites(this);
     }
 
     /**
      * Decline this invite removing it from the invite list.
      */
     public void decline() {
-        server.removeInvite(this);
+        connection.removeInvite(this);
     }
 }

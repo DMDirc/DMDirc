@@ -59,7 +59,7 @@ public class ActionComponentChain implements ActionComponent {
             if (component == null) {
                 throw new IllegalArgumentException("Component " + componentName
                         + " not found");
-            } else if (component.appliesTo() == current) {
+            } else if (component.appliesTo().isAssignableFrom(current)) {
                 components.add(component);
                 current = component.getType();
             } else {
