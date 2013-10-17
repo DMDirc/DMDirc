@@ -48,7 +48,6 @@
 <rule ref="rulesets/design.xml/SimplifyBooleanExpressions"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/AvoidReassigningParameters"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/FinalFieldCouldBeStatic"><priority>1</priority></rule>
-<rule ref="rulesets/design.xml/CloseResource"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/NonStaticInitializer"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/OptimizableToArrayCall"><priority>1</priority></rule>
 <rule ref="rulesets/design.xml/BadComparison"><priority>1</priority></rule>
