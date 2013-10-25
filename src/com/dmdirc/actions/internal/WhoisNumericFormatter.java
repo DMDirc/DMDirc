@@ -22,10 +22,10 @@
 
 package com.dmdirc.actions.internal;
 
-import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
@@ -40,7 +40,7 @@ import java.util.Map;
 public class WhoisNumericFormatter implements ActionListener {
 
     /** The name of the target of any current whois requests. */
-    private final Map<Server, String> targets = new HashMap<>();
+    private final Map<Connection, String> targets = new HashMap<>();
 
     /** The identity to add formatters to. */
     private final ConfigProvider identity;
@@ -71,9 +71,9 @@ public class WhoisNumericFormatter implements ActionListener {
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (CoreActionType.SERVER_DISCONNECTED == type) {
-            handleServerDisconnected((Server) arguments[0]);
+            handleServerDisconnected((Connection) arguments[0]);
         } else {
-            handleNumeric((Server) arguments[0], (Integer) arguments[1],
+            handleNumeric((Connection) arguments[0], (Integer) arguments[1],
                     (String[]) arguments[2], format);
         }
     }
@@ -84,7 +84,7 @@ public class WhoisNumericFormatter implements ActionListener {
      *
      * @param server The server that was disconnected
      */
-    private void handleServerDisconnected(final Server server) {
+    private void handleServerDisconnected(final Connection server) {
         targets.remove(server);
     }
 
@@ -99,7 +99,7 @@ public class WhoisNumericFormatter implements ActionListener {
      * @param arguments The arguments to the numeric event
      * @param format The format that should be used to display the event
      */
-    private void handleNumeric(final Server server, final int numeric,
+    private void handleNumeric(final Connection server, final int numeric,
             final String[] arguments, final StringBuffer format) {
         switch (numeric) {
             case 311: // RPL_WHOISUSER

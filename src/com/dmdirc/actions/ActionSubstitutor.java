@@ -25,11 +25,11 @@ package com.dmdirc.actions;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
-import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -149,7 +149,7 @@ public class ActionSubstitutor {
         final Map<String, String> res = new HashMap<>();
 
         if (hasFrameContainer()) {
-            for (ActionComponent comp : actionController.findCompatibleComponents(Server.class)) {
+            for (ActionComponent comp : actionController.findCompatibleComponents(Connection.class)) {
                 final String key = "{" + comp.toString() + "}";
                 final String desc = "The connection's " + comp.getName();
 
@@ -282,12 +282,12 @@ public class ActionSubstitutor {
         }
 
         if (hasFrameContainer() && serverMatcher.matches()) {
-            final Server server = ((FrameContainer) args[0]).getServer();
+            final Connection server = ((FrameContainer) args[0]).getServer();
 
             if (server != null) {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
-                        Server.class, substitution, actionController);
+                        Connection.class, substitution, actionController);
                     return escape(checkConnection(chain, args, server));
                 } catch (IllegalArgumentException ex) {
                     return ERR_ILLEGAL_COMPONENT;
