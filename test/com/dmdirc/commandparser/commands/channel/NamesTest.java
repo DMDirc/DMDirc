@@ -52,7 +52,7 @@ public class NamesTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        when(channel.getServer()).thenReturn(server);
+        when(channel.getConnection()).thenReturn(server);
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getName()).thenReturn("#chan");

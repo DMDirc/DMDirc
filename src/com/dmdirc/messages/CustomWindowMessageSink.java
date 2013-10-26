@@ -24,6 +24,7 @@ package com.dmdirc.messages;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.WindowManager;
 
@@ -62,12 +63,13 @@ public class CustomWindowMessageSink implements MessageSink {
             final WritableFrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        FrameContainer targetWindow = windowManager.findCustomWindow(source.getServer(), patternMatches[0]);
+        FrameContainer targetWindow = windowManager
+                .findCustomWindow((Server) source.getConnection(), patternMatches[0]);
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0],
-                    patternMatches[0], source.getServer());
-            windowManager.addWindow(source.getServer(), targetWindow);
+                    patternMatches[0], (Server) source.getConnection());
+            windowManager.addWindow((Server) source.getConnection(), targetWindow);
         }
 
         targetWindow.addLine(messageType, date, args);

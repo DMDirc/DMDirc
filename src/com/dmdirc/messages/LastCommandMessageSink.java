@@ -23,6 +23,7 @@
 package com.dmdirc.messages;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 
 import java.util.ArrayList;
@@ -65,8 +66,8 @@ public class LastCommandMessageSink implements MessageSink {
 
         final List<FrameContainer> containers = new ArrayList<>();
 
-        containers.add(source.getServer());
-        containers.addAll(source.getServer().getChildren());
+        containers.add((Server) source.getConnection());
+        containers.addAll(((Server) source.getConnection()).getChildren());
 
         for (FrameContainer container : containers) {
             if (!(container instanceof WritableFrameContainer)) {

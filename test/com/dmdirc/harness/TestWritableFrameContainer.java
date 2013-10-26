@@ -22,11 +22,11 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
@@ -70,7 +70,7 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     }
 
     @Override
-    public Server getServer() {
+    public Connection getConnection() {
         return null;
     }
 

@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -313,13 +314,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /**
-     * Returns the Server associated with this query.
-     *
-     * @return associated Server
-     */
+    /** {@inheritDoc} */
     @Override
-    public Server getServer() {
+    public Connection getConnection() {
         return server;
     }
 
@@ -371,7 +368,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     /** {@inheritDoc} */
     @Override
     public void setCompositionState(final CompositionState state) {
-        getServer().getParser().setCompositionState(host, state);
+        getConnection().getParser().setCompositionState(host, state);
     }
 
 }

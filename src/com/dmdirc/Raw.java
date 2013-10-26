@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -122,7 +123,7 @@ public class Raw extends WritableFrameContainer
 
     /** {@inheritDoc} */
     @Override
-    public Server getServer() {
+    public Connection getConnection() {
         return server;
     }
 

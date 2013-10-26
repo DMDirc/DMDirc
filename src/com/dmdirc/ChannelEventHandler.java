@@ -68,7 +68,7 @@ public class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     protected Connection getConnection() {
-        return owner.getServer();
+        return owner.getConnection();
     }
 
     /**
@@ -78,7 +78,7 @@ public class ChannelEventHandler extends EventHandler implements
      * @return True if the client is ourself, false otherwise.
      */
     protected boolean isMyself(final ChannelClientInfo client) {
-        return client.getClient().equals(owner.getServer().getParser().getLocalClient());
+        return client.getClient().equals(owner.getConnection().getParser().getLocalClient());
     }
 
     /** {@inheritDoc} */
@@ -258,7 +258,7 @@ public class ChannelEventHandler extends EventHandler implements
 
         if (owner.doNotification(date, "channelCTCP", CoreActionType.CHANNEL_CTCP,
                 client, type, message)) {
-            owner.getServer().sendCTCPReply(client.getClient().getNickname(),
+            owner.getConnection().sendCTCPReply(client.getClient().getNickname(),
                     type, message);
         }
     }

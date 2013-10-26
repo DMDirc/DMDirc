@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.RollingList;
 
@@ -178,12 +179,12 @@ public abstract class CommandParser implements Serializable {
         final String[] cargs = args.getArguments();
 
         if (cargs.length == 0 || !parseChannel || origin == null
-                || origin.getServer() == null
+                || origin.getConnection() == null
                 || !commandManager.isChannelCommand(command)) {
             return false;
         }
 
-        final Server server = origin.getServer();
+        final Connection server = origin.getConnection();
         final String[] parts = cargs[0].split(",");
         boolean someValid = false;
         for (String part : parts) {
@@ -207,7 +208,7 @@ public abstract class CommandParser implements Serializable {
 
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
-                                origin, server, channel, silent,
+                                origin, (Server) server, channel, silent,
                                 new CommandArguments(commandManager, args.getCommandName()
                                 + " " + args.getWordsAsString(2)));
                     }

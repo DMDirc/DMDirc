@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -114,14 +115,14 @@ public class SetCommand extends Command implements IntelligentCommand {
         AggregateConfigProvider manager = identityController.getGlobalConfiguration();
 
         if (res.hasFlag(serverFlag)) {
-            if (origin.getServer() == null) {
+            if (origin.getConnection() == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Cannot use --server in this context");
                 return;
             }
 
-            identity = origin.getServer().getServerIdentity();
-            manager = origin.getServer().getConfigManager();
+            identity = origin.getConnection().getServerIdentity();
+            manager = ((Server) origin.getConnection()).getConfigManager();
         }
 
         if (res.hasFlag(channelFlag)) {
@@ -133,7 +134,7 @@ public class SetCommand extends Command implements IntelligentCommand {
 
             final Channel channel = ((ChannelCommandContext) context).getChannel();
             identity = identityFactory.createChannelConfig(
-                    origin.getServer().getNetwork(), channel.getName());
+                    origin.getConnection().getNetwork(), channel.getName());
             manager = channel.getConfigManager();
         }
 

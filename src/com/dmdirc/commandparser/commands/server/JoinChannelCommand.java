@@ -36,6 +36,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -122,7 +123,7 @@ public class JoinChannelCommand extends Command implements
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final FrameContainer source = context.getWindow();
-        final Server server = source.getServer();
+        final Connection connection = source.getConnection();
         final List<String> results = checkSource(source, true, true);
 
         final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
@@ -143,13 +144,13 @@ public class JoinChannelCommand extends Command implements
         if (!showExisting) {
             for (String result : results) {
                 // Only tab complete channels we're not already on
-                if (!server.hasChannel(result)) {
+                if (!connection.hasChannel(result)) {
                     targets.add(prefix + result);
                 }
             }
         }
 
-        for (char chPrefix : server.getChannelPrefixes().toCharArray()) {
+        for (char chPrefix : connection.getChannelPrefixes().toCharArray()) {
             // Let them tab complete the prefixes as well
             targets.add(prefix + chPrefix);
         }

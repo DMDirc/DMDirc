@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -72,7 +73,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private ChannelInfo channelInfo;
 
     /** The server this channel is on. */
-    @Getter
     private Server server;
 
     /** The tabcompleter used for this channel. */
@@ -640,5 +640,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      */
     public void removeTopicChangeListener(final TopicChangeListener listener) {
         listenerList.remove(TopicChangeListener.class, listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Connection getConnection() {
+        return server;
     }
 }

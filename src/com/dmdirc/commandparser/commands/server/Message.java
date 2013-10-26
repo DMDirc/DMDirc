@@ -120,7 +120,7 @@ public class Message extends Command implements IntelligentCommand,
             final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return origin.getServer().getNumLines("PRIVMSG "
+            return ((Server) origin.getConnection()).getNumLines("PRIVMSG "
                     + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;

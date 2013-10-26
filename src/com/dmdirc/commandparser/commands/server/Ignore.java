@@ -180,7 +180,7 @@ public class Ignore extends Command implements IntelligentCommand {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
-            final IgnoreList ignoreList = context.getWindow().getServer()
+            final IgnoreList ignoreList = context.getWindow().getConnection()
                 .getIgnoreList();
             if (ignoreList.canConvert()) {
                 for (String entry : ignoreList.getSimpleList()) {

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
 
@@ -75,8 +76,8 @@ public class CustomWindow extends FrameContainer {
 
     /** {@inheritDoc} */
     @Override
-    public Server getServer() {
-        return getParent() == null ? null : getParent().getServer();
+    public Connection getConnection() {
+        return getParent() == null ? null : getParent().getConnection();
     }
 
 }

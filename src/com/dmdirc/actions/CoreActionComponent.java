@@ -548,8 +548,9 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_SERVER {
         /** {@inheritDoc} */
         @Override
-        public Object get(final Object arg) { return ((Window) arg)
-                .getContainer().getServer(); }
+        public Object get(final Object arg) {
+            return ((Window) arg).getContainer().getConnection();
+        }
         /** {@inheritDoc} */
         @Override
         public Class<?> appliesTo() { return Window.class; }

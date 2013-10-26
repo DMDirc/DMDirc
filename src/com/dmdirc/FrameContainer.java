@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.FrameInfoListener;
@@ -309,11 +310,11 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Returns the server instance associated with this container.
+     * Returns the connection that this container is associated with.
      *
-     * @return the associated server connection
+     * @return the associated connection, or {@code null}.
      */
-    public abstract Server getServer();
+    public abstract Connection getConnection();
 
     /**
      * Sets the icon to be used by this frame container.
@@ -344,7 +345,7 @@ public abstract class FrameContainer {
     public Styliser getStyliser() {
         synchronized (styliserSync) {
             if (styliser == null) {
-                styliser = new Styliser(getServer(), getConfigManager());
+                styliser = new Styliser(getConnection(), getConfigManager());
             }
             return styliser;
         }

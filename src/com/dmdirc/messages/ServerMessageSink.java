@@ -22,6 +22,7 @@
 
 package com.dmdirc.messages;
 
+import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 
 import java.util.Date;
@@ -47,7 +48,7 @@ public class ServerMessageSink implements MessageSink {
             final WritableFrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        source.getServer().addLine(messageType, date, args);
+        ((Server) source.getConnection()).addLine(messageType, date, args);
     }
 
 }

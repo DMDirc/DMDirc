@@ -26,6 +26,7 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
@@ -94,7 +95,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** {@inheritDoc} */
     @Override
-    public Server getServer() {
+    public Connection getConnection() {
         return null;
     }
 

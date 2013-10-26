@@ -76,14 +76,14 @@ public class Me extends Command implements ValidatingCommand {
     public ValidationResponse validateArguments(
             final WritableFrameContainer origin,
             final CommandArguments arguments) {
-        if (origin.getServer() == null
-                || origin.getServer().getParser() == null) {
+        if (origin.getConnection() == null
+                || origin.getConnection().getParser() == null) {
             return new ValidationResponse();
         }
 
         final int length = 2 + arguments.getArgumentsAsString().length();
 
-        if (origin.getServer().getParser().getMaxLength("PRIVMSG",
+        if (origin.getConnection().getParser().getMaxLength("PRIVMSG",
                 origin.getName()) <= length) {
             return new ValidationResponse("Too long");
         } else {

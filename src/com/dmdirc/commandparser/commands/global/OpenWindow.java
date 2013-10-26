@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -82,13 +83,13 @@ public class OpenWindow extends Command implements IntelligentCommand {
         FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
-            if (origin.getServer() == null) {
+            if (origin.getConnection() == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "This window doesn't have an associated server.");
                 return;
             }
 
-            parent = origin.getServer();
+            parent = (Server) origin.getConnection();
             start = 1;
         } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
             parent = origin;

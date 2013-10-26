@@ -1163,7 +1163,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     /** {@inheritDoc} */
     @Override
-    public Server getServer() {
+    public Connection getConnection() {
         return this;
     }
 

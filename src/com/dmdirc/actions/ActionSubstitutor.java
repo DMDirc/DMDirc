@@ -282,13 +282,13 @@ public class ActionSubstitutor {
         }
 
         if (hasFrameContainer() && serverMatcher.matches()) {
-            final Connection server = ((FrameContainer) args[0]).getServer();
+            final Connection connection = ((FrameContainer) args[0]).getConnection();
 
-            if (server != null) {
+            if (connection != null) {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
                         Connection.class, substitution, actionController);
-                    return escape(checkConnection(chain, args, server));
+                    return escape(checkConnection(chain, args, connection));
                 } catch (IllegalArgumentException ex) {
                     return ERR_ILLEGAL_COMPONENT;
                 }
@@ -314,7 +314,7 @@ public class ActionSubstitutor {
     protected String checkConnection(final ActionComponentChain chain,
             final Object[] args, final Object argument) {
         if ((chain.requiresConnection() && args[0] instanceof FrameContainer
-                    && ((FrameContainer) args[0]).getServer().getState()
+                    && ((FrameContainer) args[0]).getConnection().getState()
                     == ServerState.CONNECTED) || !chain.requiresConnection()) {
             final Object res = chain.get(argument);
             return res == null ? ERR_NULL_CHAIN : res.toString();
