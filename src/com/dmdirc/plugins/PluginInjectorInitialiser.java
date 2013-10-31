@@ -41,6 +41,8 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -72,6 +74,7 @@ public class PluginInjectorInitialiser {
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
     private final ActionSubstitutorFactory actionSubstitutorFactory;
+    private final EventBus eventBus;
 
     /**
      * Initialises the given injector with all of the known "global" managers.
@@ -97,5 +100,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(urlBuilder);
         injector.addParameter(colourManager);
         injector.addParameter(actionSubstitutorFactory);
+        injector.addParameter(eventBus);
     }
 }
