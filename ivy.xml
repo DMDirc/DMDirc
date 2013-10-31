@@ -25,6 +25,8 @@
 
         <dependency org="net.miginfocom" name="base64" rev="2.2" conf="main->default" />
 
+        <dependency org="com.google.guava" name="guava" rev="15.+" conf="main->default" />
+
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
         <dependency org="com.cenqua.clover" name="clover" rev="3.+" conf="test->default" />

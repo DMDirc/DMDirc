@@ -67,6 +67,27 @@
         </jar>
     </target>
 
+    <target name="-bundle-guava" depends="-init-proguard">
+        <proguard>
+            -libraryjars ${java.home}/lib/rt.jar
+
+            -injars lib/main/guava.jar
+            -outjars build/guava.jar
+
+            -dontobfuscate
+            -dontpreverify
+            -dontwarn
+            -dontnote
+
+            -keep public class com.google.common.eventbus.* { *; }
+            -keep public class com.google.common.base.Preconditions { *; }
+      </proguard>
+
+      <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="build/guava.jar" includes="com/google/**"/>
+      </jar>
+    </target>
+
     <target name="-init-submodule-dependencies">
         <subant buildpath="modules/plugins" target="init-dependencies"/>
     </target>
@@ -74,6 +95,6 @@
     <target name="-pre-init" depends="-init-dependencies,-init-submodule-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64"/>
+    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava"/>
 
 </project>
