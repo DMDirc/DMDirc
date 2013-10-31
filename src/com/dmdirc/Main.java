@@ -28,6 +28,7 @@ import com.dmdirc.actions.ColourActionComparison;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
@@ -41,6 +42,8 @@ import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.URLBuilder;
+
+import com.google.common.eventbus.EventBus;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Collection;
@@ -92,6 +95,9 @@ public class Main {
     /** The colour-based action comparisons. */
     private final ColourActionComparison colourActionComparison;
 
+    /** The event bus to dispatch events on. */
+    private final EventBus eventBus;
+
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
@@ -110,6 +116,7 @@ public class Main {
      * @param urlBuilder URL builder to use as a singleton.
      * @param globalWindowManager Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
+     * @param eventBus The event bus to dispatch events on.
      * @param commands The commands to be loaded into the command manager.
      */
     @Inject
@@ -126,6 +133,7 @@ public class Main {
             final URLBuilder urlBuilder,
             final GlobalWindowManager globalWindowManager,
             final ColourActionComparison colourActionComparison,
+            final EventBus eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -136,6 +144,7 @@ public class Main {
         this.commandManager = commandManager;
         this.globalWindowManager = globalWindowManager;
         this.colourActionComparison = colourActionComparison;
+        this.eventBus = eventBus;
         this.commands = commands;
         URLBuilder.setInstance(urlBuilder);
     }
@@ -179,6 +188,7 @@ public class Main {
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
         actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
+        eventBus.post(new ClientOpenedEvent());
 
         commandLineParser.processArguments(serverManager);
 
