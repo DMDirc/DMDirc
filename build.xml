@@ -74,6 +74,7 @@
             -injars lib/main/guava.jar
             -outjars build/guava.jar
 
+            -dontoptimize
             -dontobfuscate
             -dontpreverify
             -dontwarn
@@ -84,7 +85,7 @@
       </proguard>
 
       <jar destfile="${dist.jar}" update="true">
-            <zipfileset src="build/guava.jar" includes="com/google/**"/>
+          <zipfileset src="build/guava.jar" includes="com/google/**"/>
       </jar>
     </target>
 
