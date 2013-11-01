@@ -83,18 +83,6 @@ public final class Logger {
     }
 
     /**
-     * Asserts that the specified value is true. If not, an AssertionError
-     * exception is thrown.
-     *
-     * @param value The value to be tested
-     */
-    public static void assertTrue(final boolean value) {
-        if (!value) {
-            throw new AssertionError();
-        }
-    }
-
-    /**
      * Gets the manager that should be used to report errors.
      *
      * @return The error manager to be used.

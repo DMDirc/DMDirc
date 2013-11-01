@@ -27,7 +27,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.ui.FrameListener;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.util.Collection;
@@ -37,6 +36,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The WindowManager maintains a list of all open windows, and their
@@ -68,7 +70,7 @@ public class WindowManager {
      */
     @Precondition("The specified FrameListener is not null")
     public void addListener(final FrameListener frameListener) {
-        Logger.assertTrue(frameListener != null);
+        checkNotNull(frameListener);
 
         listeners.add(FrameListener.class, frameListener);
     }
@@ -146,8 +148,8 @@ public class WindowManager {
         "The specified Window has not already been added"
     })
     public void addWindow(final FrameContainer window, final boolean focus) {
-        Logger.assertTrue(window != null);
-        Logger.assertTrue(!rootWindows.contains(window));
+        checkNotNull(window);
+        checkArgument(!rootWindows.contains(window));
 
         rootWindows.add(window);
 
@@ -184,10 +186,10 @@ public class WindowManager {
     })
     public void addWindow(final FrameContainer parent,
             final FrameContainer child, final boolean focus) {
-        Logger.assertTrue(parent != null);
-        Logger.assertTrue(isInHierarchy(parent));
-        Logger.assertTrue(child != null);
-        Logger.assertTrue(!isInHierarchy(child));
+        checkNotNull(parent);
+        checkArgument(isInHierarchy(parent));
+        checkNotNull(child);
+        checkArgument(!isInHierarchy(child));
 
         parent.addChild(child);
 
@@ -224,8 +226,8 @@ public class WindowManager {
         "The specified window is in the window hierarchy"
     })
     public void removeWindow(final FrameContainer window) {
-        Logger.assertTrue(isInHierarchy(window));
-        Logger.assertTrue(window != null);
+        checkNotNull(window != null);
+        checkArgument(isInHierarchy(window));
 
         for (FrameContainer child : window.getChildren()) {
             child.close();
@@ -252,7 +254,7 @@ public class WindowManager {
      */
     @Precondition("The specified window name is not null")
     public FrameContainer findCustomWindow(final String name) {
-        Logger.assertTrue(name != null);
+        checkNotNull(name);
 
         return findCustomWindow(rootWindows, name);
     }
@@ -270,10 +272,9 @@ public class WindowManager {
         "The specified parent window is not null",
         "The specified parent window has been added to the Window Manager"
     })
-    public FrameContainer findCustomWindow(final FrameContainer parent,
-            final String name) {
-        Logger.assertTrue(parent != null);
-        Logger.assertTrue(name != null);
+    public FrameContainer findCustomWindow(final FrameContainer parent, final String name) {
+        checkNotNull(parent);
+        checkNotNull(name);
 
         return findCustomWindow(parent.getChildren(), name);
     }

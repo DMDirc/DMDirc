@@ -22,16 +22,15 @@
 
 package com.dmdirc;
 
-import com.dmdirc.logger.Logger;
-
 import java.io.Serializable;
 import java.util.Comparator;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Compares FrameContainers by name.
  */
-public final class FrameContainerComparator implements Comparator<FrameContainer>,
-        Serializable {
+public class FrameContainerComparator implements Comparator<FrameContainer>, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -56,10 +55,10 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
         "item2.toString() returns a non-null value"
     })
     public int compare(final FrameContainer item1, final FrameContainer item2) {
-        Logger.assertTrue(item1 != null);
-        Logger.assertTrue(item2 != null);
-        Logger.assertTrue(item1.getName() != null);
-        Logger.assertTrue(item2.getName() != null);
+        checkNotNull(item1);
+        checkNotNull(item2);
+        checkNotNull(item1.getName());
+        checkNotNull(item2.getName());
 
         if (sortBefore(item1, item2)) {
             return -1;
@@ -84,9 +83,9 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @param item2 The existing container to test against
      * @return True iff the new container should be before the old container
      */
-    private static boolean sortBefore(final FrameContainer item1,
+    private static boolean sortBefore(
+            final FrameContainer item1,
             final FrameContainer item2) {
-
         return getPosition(item1) < getPosition(item2);
     }
 

@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.Precondition;
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
 
 import java.util.ArrayList;
@@ -32,6 +31,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a group of actions, along with their meta-data.
@@ -230,8 +232,8 @@ public class ActionGroup implements Iterable<Action> {
     })
     @SuppressWarnings("deprecation")
     public void deleteAction(final Action action) {
-        Logger.assertTrue(action != null);
-        Logger.assertTrue(actions.contains(action));
+        checkNotNull(action);
+        checkArgument(actions.contains(action));
 
         ActionManager.getActionManager().removeAction(action);
         action.delete();

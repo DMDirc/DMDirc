@@ -45,6 +45,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
@@ -210,7 +212,7 @@ public class ServerManager implements ServerFactory {
      * @since 0.6.3
      */
     public Server connectToAddress(final URI uri, final ConfigProvider profile) {
-        Logger.assertTrue(profile.isProfile());
+        checkArgument(profile.isProfile());
         Server server = null;
 
         for (Server loopServer : servers) {

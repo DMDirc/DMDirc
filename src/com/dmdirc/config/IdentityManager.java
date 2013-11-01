@@ -50,6 +50,9 @@ import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
@@ -268,8 +271,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         "The specified File is a directory"
     })
     private void loadUser(final File dir) {
-        Logger.assertTrue(dir != null);
-        Logger.assertTrue(dir.isDirectory());
+        checkNotNull(dir);
+        checkArgument(dir.isDirectory());
 
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM,
@@ -421,7 +424,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** {@inheritDoc} */
     @Override
     public void addConfigProvider(final ConfigProvider identity) {
-        Logger.assertTrue(identity != null);
+        checkNotNull(identity);
 
         final String target = getGroup(identity);
 
@@ -446,11 +449,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** {@inheritDoc} */
     @Override
     public void removeConfigProvider(final ConfigProvider identity) {
-        Logger.assertTrue(identity != null);
+        checkNotNull(identity);
 
         final String group = getGroup(identity);
 
-        Logger.assertTrue(identities.containsValue(group, identity));
+        checkArgument(identities.containsValue(group, identity));
 
         synchronized (identities) {
             identities.remove(group, identity);
@@ -478,7 +481,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** {@inheritDoc} */
     @Override
     public void registerIdentityListener(final String type, final ConfigProviderListener listener) {
-        Logger.assertTrue(listener != null);
+        checkNotNull(listener);
 
         synchronized (listeners) {
             listeners.add(type, listener);

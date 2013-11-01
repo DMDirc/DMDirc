@@ -34,7 +34,6 @@ import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.components.ActionGroupComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
@@ -52,6 +51,9 @@ import java.util.Set;
 import javax.inject.Provider;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Manages all actions for the client.
@@ -215,7 +217,7 @@ public class ActionManager implements ActionController {
     @Override
     public void registerTypes(final ActionType[] newTypes) {
         for (ActionType type : newTypes) {
-            Logger.assertTrue(type != null);
+            checkNotNull(type);
 
             if (!types.contains(type)) {
                 log.debug("Registering action type: {}", type);
@@ -229,7 +231,7 @@ public class ActionManager implements ActionController {
     @Override
     public void registerComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
-            Logger.assertTrue(comp != null);
+            checkNotNull(comp);
 
             log.debug("Registering action component: {}", comp);
             components.add(comp);
@@ -240,7 +242,7 @@ public class ActionManager implements ActionController {
     @Override
     public void registerComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
-            Logger.assertTrue(comp != null);
+            checkNotNull(comp);
 
             log.debug("Registering action comparison: {}", comp);
             comparisons.add(comp);
@@ -313,8 +315,8 @@ public class ActionManager implements ActionController {
      */
     @Precondition("The specified File is not null and represents a directory")
     private void loadActions(final File dir) {
-        Logger.assertTrue(dir != null);
-        Logger.assertTrue(dir.isDirectory());
+        checkNotNull(dir);
+        checkArgument(dir.isDirectory());
 
         log.debug("Loading actions from directory: {}", dir.getAbsolutePath());
 
@@ -330,7 +332,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void addAction(final Action action) {
-        Logger.assertTrue(action != null);
+        checkNotNull(action);
 
         log.debug("Registering action: {}/{} (status: {})",
                 new Object[] { action.getGroup(), action.getName(), action.getStatus() });
@@ -358,7 +360,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void removeAction(final Action action) {
-        Logger.assertTrue(action != null);
+        checkNotNull(action);
 
         actions.removeFromAll(action);
         getOrCreateGroup(action.getGroup()).remove(action);
@@ -375,9 +377,9 @@ public class ActionManager implements ActionController {
     @Override
     public boolean triggerEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        Logger.assertTrue(type != null);
-        Logger.assertTrue(type.getType() != null);
-        Logger.assertTrue(type.getType().getArity() == arguments.length);
+        checkNotNull(type);
+        checkNotNull(type.getType());
+        checkArgument(type.getType().getArity() == arguments.length);
 
         log.trace("Calling listeners for event of type {}", type);
 
@@ -413,7 +415,7 @@ public class ActionManager implements ActionController {
     @Precondition("The specified ActionType is not null")
     private boolean triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        Logger.assertTrue(type != null);
+        checkNotNull(type);
 
         boolean res = false;
 
@@ -457,9 +459,9 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public ActionGroup createGroup(final String group) {
-        Logger.assertTrue(group != null);
-        Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(!groups.containsKey(group));
+        checkNotNull(group);
+        checkArgument(!group.isEmpty());
+        checkArgument(!groups.containsKey(group));
 
         final File file = new File(getDirectory() + group);
         if (file.isDirectory() || file.mkdir()) {
@@ -475,9 +477,9 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void deleteGroup(final String group) {
-        Logger.assertTrue(group != null);
-        Logger.assertTrue(!group.isEmpty());
-        Logger.assertTrue(groups.containsKey(group));
+        checkNotNull(group);
+        checkArgument(!group.isEmpty());
+        checkArgument(groups.containsKey(group));
 
         for (Action action : groups.get(group).getActions()) {
             removeAction(action);
@@ -507,13 +509,13 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void changeGroupName(final String oldName, final String newName) {
-        Logger.assertTrue(oldName != null);
-        Logger.assertTrue(!oldName.isEmpty());
-        Logger.assertTrue(newName != null);
-        Logger.assertTrue(!newName.isEmpty());
-        Logger.assertTrue(groups.containsKey(oldName));
-        Logger.assertTrue(!groups.containsKey(newName));
-        Logger.assertTrue(!newName.equals(oldName));
+        checkNotNull(oldName);
+        checkArgument(!oldName.isEmpty());
+        checkNotNull(newName);
+        checkArgument(!newName.isEmpty());
+        checkArgument(groups.containsKey(oldName));
+        checkArgument(!groups.containsKey(newName));
+        checkArgument(!newName.equals(oldName));
 
         createGroup(newName);
 
@@ -545,7 +547,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public List<ActionType> findCompatibleTypes(final ActionType type) {
-        Logger.assertTrue(type != null);
+        checkNotNull(type);
 
         final List<ActionType> res = new ArrayList<>();
         for (ActionType target : types) {
@@ -560,7 +562,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
-        Logger.assertTrue(target != null);
+        checkNotNull(target);
 
         final List<ActionComponent> res = new ArrayList<>();
         for (ActionComponent subject : components) {
@@ -575,7 +577,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
-        Logger.assertTrue(target != null);
+        checkNotNull(target);
 
         final List<ActionComparison> res = new ArrayList<>();
         for (ActionComparison subject : comparisons) {
@@ -590,8 +592,8 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public ActionComponent getComponent(final String type) {
-        Logger.assertTrue(type != null);
-        Logger.assertTrue(!type.isEmpty());
+        checkNotNull(type);
+        checkArgument(!type.isEmpty());
 
         for (ActionComponent target : components) {
             if (target.name().equals(type)) {
@@ -605,8 +607,8 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public ActionComparison getComparison(final String type) {
-        Logger.assertTrue(type != null);
-        Logger.assertTrue(!type.isEmpty());
+        checkNotNull(type);
+        checkArgument(!type.isEmpty());
 
         for (ActionComparison target : comparisons) {
             if (target.name().equals(type)) {

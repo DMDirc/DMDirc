@@ -87,6 +87,9 @@ import javax.net.ssl.TrustManager;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
@@ -830,8 +833,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         "The current profile specifies at least one nickname"
     })
     private MyInfo buildMyInfo() {
-        Logger.assertTrue(profile != null);
-        Logger.assertTrue(!profile.getOptionList(DOMAIN_PROFILE, "nicknames").isEmpty());
+        checkNotNull(profile);
+        checkArgument(!profile.getOptionList(DOMAIN_PROFILE, "nicknames").isEmpty());
 
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOptionList(DOMAIN_PROFILE, "nicknames").get(0));

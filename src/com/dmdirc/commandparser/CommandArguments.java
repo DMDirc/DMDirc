@@ -24,12 +24,13 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.logger.Logger;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
  * Represents a command and its arguments. In this class, input is split into
@@ -156,7 +157,7 @@ public class CommandArguments {
     public String getArgumentsAsString(final int start) {
         parse();
 
-        return getArgumentsAsString(start, words.length - 2);
+        return getArgumentsAsString(start, Math.max(start, words.length - 2));
     }
 
     /**
@@ -195,7 +196,7 @@ public class CommandArguments {
      */
     @Precondition("Start index is less than or equal to end index")
     public String getWordsAsString(final int start, final int end) {
-        Logger.assertTrue(start <= end + 1);
+        checkPositionIndex(start, end);
 
         final Pattern pattern = Pattern.compile("(\\S+\\s+){" + start + "}"
                 + "((\\S+\\s+){" + Math.max(0, end - start) + "}\\S+(\\s+$)?).*?");

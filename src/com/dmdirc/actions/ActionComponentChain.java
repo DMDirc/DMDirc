@@ -25,10 +25,11 @@ package com.dmdirc.actions;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComponent;
-import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * An action component chain supports chaining of multiple action components
@@ -89,7 +90,7 @@ public class ActionComponentChain implements ActionComponent {
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> appliesTo() {
-        Logger.assertTrue(!components.isEmpty());
+        checkArgument(!components.isEmpty());
 
         return components.get(0).appliesTo();
     }
@@ -98,7 +99,7 @@ public class ActionComponentChain implements ActionComponent {
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> getType() {
-        Logger.assertTrue(!components.isEmpty());
+        checkArgument(!components.isEmpty());
 
         return components.get(components.size() - 1).getType();
     }
@@ -107,7 +108,7 @@ public class ActionComponentChain implements ActionComponent {
     @Precondition("This component chain has one or more components")
     @Override
     public String getName() {
-        Logger.assertTrue(!components.isEmpty());
+        checkArgument(!components.isEmpty());
 
         final StringBuilder name = new StringBuilder();
 
@@ -123,7 +124,7 @@ public class ActionComponentChain implements ActionComponent {
     @Override
     @Precondition("This component chain has one or more components")
     public String toString() {
-        Logger.assertTrue(!components.isEmpty());
+        checkArgument(!components.isEmpty());
 
         final StringBuilder name = new StringBuilder();
 
