@@ -22,19 +22,27 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
+import java.net.URI;
+import java.util.Arrays;
+
 import javax.inject.Provider;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -46,34 +54,44 @@ public class ServerManagerTest {
 
     @Mock private IdentityController identityController;
     @Mock private IdentityFactory identityFactory;
+    @Mock private ConfigProviderMigrator configProviderMigrator;
+    @Mock private ConfigProvider profile;
+    @Mock private AggregateConfigProvider configProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
+    @Mock private CommandController commandController;
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
+    @Mock private Server server;
+
+    @Captor private ArgumentCaptor<URI> uriCaptor;
+
     private ServerManager serverManager;
 
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(identityController, identityFactory,
                 commandControllerProvider, windowManager, serverFactoryImpl);
-    }
 
-    @After
-    public void tearDown() {
-        for (Server server : serverManager.getServers()) {
-            serverManager.unregisterServer(server);
-        }
+        when(commandControllerProvider.get()).thenReturn(commandController);
+
+        when(identityController.getProvidersByType("profile")).thenReturn(Arrays.asList(profile));
+        when(identityFactory.createMigratableConfig(anyString(), anyString(), anyString(),
+                anyString())).thenReturn(configProviderMigrator);
+        when(configProviderMigrator.getConfigProvider()).thenReturn(configProvider);
+        when(profile.isProfile()).thenReturn(true);
+
+        when(serverFactoryImpl.getServer(eq(configProviderMigrator), any(CommandParser.class),
+                uriCaptor.capture(), eq(profile))).thenReturn(server);
     }
 
     @Test
     public void testRegisterServer() {
-        final Server server = mock(Server.class);
         serverManager.registerServer(server);
         assertEquals(1, serverManager.numServers());
     }
 
     @Test
     public void testUnregisterServer() {
-        final Server server = mock(Server.class);
         serverManager.registerServer(server);
         serverManager.unregisterServer(server);
         assertEquals(0, serverManager.numServers());
@@ -82,7 +100,6 @@ public class ServerManagerTest {
     @Test
     public void testNumServers() {
         assertEquals(serverManager.getServers().size(), serverManager.numServers());
-        final Server server = mock(Server.class);
         serverManager.registerServer(server);
         assertEquals(serverManager.getServers().size(), serverManager.numServers());
         serverManager.unregisterServer(server);
@@ -157,14 +174,13 @@ public class ServerManagerTest {
     }
 
     @Test
-    @Ignore("Doesn't work in a headless environment (causes a new server to initialise an IRCDocument)")
     public void testDevChatNoServers() {
         final Server serverA = mock(Server.class);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
         when(serverA.getState()).thenReturn(ServerState.DISCONNECTING);
 
         final Server serverB = mock(Server.class);
-        when(serverB.getNetwork()).thenReturn("Foonet");
+        when(serverB.isNetwork("Quakenet")).thenReturn(false);
         when(serverB.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);
@@ -173,6 +189,31 @@ public class ServerManagerTest {
         serverManager.joinDevChat();
 
         assertEquals(3, serverManager.numServers());
+
+        URI serverUri = uriCaptor.getValue();
+        assertEquals("irc", serverUri.getScheme());
+        assertEquals("irc.quakenet.org", serverUri.getHost());
+        assertEquals("DMDirc", serverUri.getPath().substring(1));
+    }
+
+    @Test
+    public void testAddsNewServersToWindowManager() {
+        final Server newServer = serverManager.connectToAddress(URI.create("irc://fobar"));
+        verify(windowManager).addWindow(newServer);
+    }
+
+    @Test
+    public void testAddsRawWindows() {
+        when(configProvider.getOptionBool("general", "showrawwindow")).thenReturn(true);
+        serverManager.connectToAddress(URI.create("irc://fobar"));
+        verify(server).addRaw();
+    }
+
+    @Test
+    public void testDoesNotAddRawWindows() {
+        when(configProvider.getOptionBool("general", "showrawwindow")).thenReturn(false);
+        serverManager.connectToAddress(URI.create("irc://fobar"));
+        verify(server, never()).addRaw();
     }
 
 }
