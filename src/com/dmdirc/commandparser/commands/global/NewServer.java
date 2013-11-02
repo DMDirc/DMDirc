@@ -32,13 +32,15 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.util.InvalidURIException;
+import com.dmdirc.util.URIParser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -66,6 +68,9 @@ public class NewServer extends Command implements IntelligentCommand {
     /** Identity controller to use to find profiles. */
     private final IdentityController identityController;
 
+    /** The parser to use for user input. */
+    private final URIParser uriParser;
+
     /**
      * Creates a new newserver command which will use the specified factory
      * to construct servers.
@@ -74,49 +79,44 @@ public class NewServer extends Command implements IntelligentCommand {
      * @param serverFactory The factory to use to construct servers.
      * @param pluginManager The plugin manager to use to query available services.
      * @param identityController Identity controller to use to find profiles.
+     * @param uriParser The parser to use for user input.
      */
     @Inject
     public NewServer(
             final CommandController controller,
             final ServerFactory serverFactory,
             final PluginManager pluginManager,
-            final IdentityController identityController) {
+            final IdentityController identityController,
+            final URIParser uriParser) {
         super(controller);
         this.serverFactory = serverFactory;
         this.pluginManager = pluginManager;
         this.identityController = identityController;
+        this.uriParser = uriParser;
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        URI address = null;
-
         if (args.getArguments().length == 0) {
-            showUsage(origin, args.isSilent(), "newserver",
-                    "<host[:[+]port]> [password]");
+            showUsage(origin, args.isSilent(), "newserver", "<host[:[+]port]> [password]");
             return;
-        } else if (args.getArguments().length == 1
-                && args.getArgumentsAsString().contains("://")) {
-            try {
-                address = getURI(args.getArgumentsAsString());
-            } catch (URISyntaxException ex) {
-                origin.addLine(FORMAT_ERROR, "URI specified was invalid.");
-                return;
+        }
+
+        try {
+            final URI address = uriParser.parseFromText(args.getArgumentsAsString());
+            final Server server = serverFactory.createServer(address,
+                    identityController.getProvidersByType("profile").get(0));
+            server.connect();
+        } catch (InvalidURIException ex) {
+            if (origin == null) {
+                Logger.userError(ErrorLevel.LOW, "Invalid URI given to /newserver", ex);
+            } else {
+                origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()
+                        + (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage()));
             }
         }
-        if (address == null) {
-            address = parseInput(origin, args.isSilent(), args);
-        }
-
-        if (address == null) {
-            return;
-        }
-
-        final Server server = serverFactory.createServer(address,
-                identityController.getProvidersByType("profile").get(0));
-        server.connect();
     }
 
     /**
@@ -126,7 +126,9 @@ public class NewServer extends Command implements IntelligentCommand {
      * @param address Address to parse
      * @return URI from address.
      * @throws URISyntaxException If the string is not parseable.
+     * @deprecated Use a {@link URIParser}.
      */
+    @Deprecated
     public static URI getURI(final String address) throws URISyntaxException {
         final URI uri = new URI(address);
         final int port = uri.getPort();
@@ -156,99 +158,6 @@ public class NewServer extends Command implements IntelligentCommand {
         // If a port already existed, or we were unable to find a port, just
         // use the default one we had to start with.
         return uri;
-    }
-
-    /**
-     * Parses an input string and attempts to create a URI from it.
-     *
-     * @param origin origin input window
-     * @param isSilent is this a silent command
-     * @param args command arguments
-     *
-     * @return URI is input was valid
-     */
-    public static URI parseInput(final FrameContainer origin, final boolean isSilent,
-            final CommandArguments args) {
-
-        boolean ssl = false;
-        String host;
-        String pass = null;
-        int port = 6667;
-        int offset = 0;
-
-        // Check for SSL
-        if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
-            Logger.userError(ErrorLevel.LOW,
-                    "Using /newserver --ssl is deprecated, and may be removed in the future."
-                    + " Use /newserver <host>:+<port> instead.");
-
-            ssl = true;
-            offset++;
-        }
-
-        // Check for port
-        if (args.getArguments()[offset].indexOf(':') > -1) {
-            final String[] parts = args.getArguments()[offset].split(":");
-
-            if (parts.length < 2) {
-                if (origin != null) {
-                    origin.addLine(FORMAT_ERROR, "Invalid port specified");
-                } else {
-                    Logger.userError(ErrorLevel.LOW, "Invalid port specified "
-                            + "in newserver command");
-                }
-                return null;
-            }
-            host = parts[0];
-
-            if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
-                ssl = true;
-                parts[1] = parts[1].substring(1);
-            }
-
-            try {
-                port = Integer.parseInt(parts[1]);
-            } catch (NumberFormatException ex) {
-                if (origin != null) {
-                    origin.addLine(FORMAT_ERROR, "Invalid port specified");
-                } else {
-                    Logger.userError(ErrorLevel.LOW, "Invalid port specified "
-                            + "in newserver command");
-                }
-                return null;
-            }
-
-            if (port <= 0 || port > 65535) {
-                if (origin == null) {
-                    Logger.userError(ErrorLevel.LOW, "Port must be between 1 "
-                            + "and 65535 in newserver command");
-                } else if (!args.isSilent()) {
-                    origin.addLine(FORMAT_ERROR, "Port must be between 1 and 65535");
-                }
-
-                return null;
-            }
-        } else {
-            host = args.getArguments()[offset];
-        }
-
-        // Check for password
-        if (args.getArguments().length > ++offset) {
-            pass = args.getArgumentsAsString(offset);
-        }
-
-        try {
-            return new URI("irc" + (ssl ? "s" : ""), pass, host, port, null, null, null);
-        } catch (URISyntaxException ex) {
-            if (origin == null) {
-                Logger.userError(ErrorLevel.LOW, "Invalid address provided to "
-                        + "newserver command. Host: " + host + ", Port: " + port, ex);
-            } else if (!args.isSilent()) {
-                origin.addLine(FORMAT_ERROR, "Invalid address specified.");
-            }
-
-            return null;
-        }
     }
 
     /** {@inheritDoc} */

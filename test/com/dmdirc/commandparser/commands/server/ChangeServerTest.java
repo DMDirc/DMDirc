@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.URIParser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +56,7 @@ public class ChangeServerTest {
     public void setUp() {
         Logger.setErrorManager(errorManager);
         when(server.getProfile()).thenReturn(profile);
-        command = new ChangeServer(controller);
+        command = new ChangeServer(controller, new URIParser());
     }
 
     @Test
@@ -104,14 +105,6 @@ public class ChangeServerTest {
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
         verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
-    }
-
-    @Test
-    public void testDeprecatedSSL() throws URISyntaxException {
-        command.execute(tiw, new CommandArguments(controller, "/server --ssl foo"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
-
-        verify(server).connect(eq(new URI("ircs://foo:6667")), same(profile));
     }
 
     @Test

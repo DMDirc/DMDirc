@@ -31,11 +31,11 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.util.InvalidURIException;
+import com.dmdirc.util.URIParser;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
@@ -49,42 +49,39 @@ public class ChangeServer extends Command {
             "server <host[:[+]port]> [password] - connect to a different server",
             CommandType.TYPE_SERVER);
 
+    /** The parser to use for user input. */
+    private final URIParser uriParser;
+
     /**
      * Creates a new instance of this command.
      *
      * @param controller The controller to use for command information.
+     * @param uriParser The parser to use for user input.
      */
     @Inject
-    public ChangeServer(final CommandController controller) {
+    public ChangeServer(final CommandController controller, final URIParser uriParser) {
         super(controller);
+
+        this.uriParser = uriParser;
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
-        URI address = null;
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "server", "<host[:[+]port]> [password]");
             return;
-        } else if (args.getArguments().length == 1
-                && args.getArgumentsAsString().contains("://")) {
-            try {
-                address = NewServer.getURI(args.getArgumentsAsString());
-            } catch (URISyntaxException ex) {
-                address = null;
-            }
-        }
-        if (address == null) {
-            address = NewServer.parseInput(origin, args.isSilent(), args);
         }
 
-        if (address == null) {
-            return;
+        try {
+            final Server server = ((ServerCommandContext) context).getServer();
+            final URI address = uriParser.parseFromText(args.getArgumentsAsString());
+            server.connect(address, server.getProfile());
+        } catch (InvalidURIException ex) {
+            origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()
+                    + (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage()));
         }
-
-        server.connect(address, server.getProfile());
     }
 
 }

@@ -30,6 +30,7 @@ import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.util.URIParser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -59,7 +60,7 @@ public class NewServerTest {
     public void setup() {
         when(factory.createServer(any(URI.class), any(ConfigProvider.class))).thenReturn(server);
         when(identityController.getProvidersByType("profile")).thenReturn(Arrays.asList(new ConfigProvider[] { identity }));
-        command = new NewServer(controller, factory, pluginManager, identityController);
+        command = new NewServer(controller, factory, pluginManager, identityController, new URIParser());
     }
 
     @Test
