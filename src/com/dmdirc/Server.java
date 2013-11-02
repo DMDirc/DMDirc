@@ -282,10 +282,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             }
         }, 0, getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime"));
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "showrawwindow")) {
-            addRaw();
-        }
-
         getConfigManager().addChangeListener("formatter", "serverName", this);
         getConfigManager().addChangeListener("formatter", "serverTitle", this);
     }
