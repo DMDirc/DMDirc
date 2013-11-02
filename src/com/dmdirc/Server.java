@@ -606,7 +606,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public void addRaw() {
         if (raw == null) {
             raw = rawFactory.getRaw(this);
-            windowManager.addWindow(raw, this);
+            windowManager.addWindow(this, raw);
 
             try {
                 parserLock.readLock().lock();
