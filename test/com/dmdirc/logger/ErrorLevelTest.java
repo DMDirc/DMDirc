@@ -23,7 +23,8 @@ package com.dmdirc.logger;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ErrorLevelTest {
 
@@ -34,6 +35,15 @@ public class ErrorLevelTest {
         assertTrue("High".equalsIgnoreCase(ErrorLevel.HIGH.toString()));
         assertTrue("Fatal".equalsIgnoreCase(ErrorLevel.FATAL.toString()));
         assertTrue("Unknown".equalsIgnoreCase(ErrorLevel.UNKNOWN.toString()));
+    }
+
+    @Test
+    public void testIcons() {
+        assertTrue("info".equalsIgnoreCase(ErrorLevel.LOW.getIcon()));
+        assertTrue("warning".equalsIgnoreCase(ErrorLevel.MEDIUM.getIcon()));
+        assertTrue("error".equalsIgnoreCase(ErrorLevel.HIGH.getIcon()));
+        assertTrue("error".equalsIgnoreCase(ErrorLevel.FATAL.getIcon()));
+        assertTrue("info".equalsIgnoreCase(ErrorLevel.UNKNOWN.getIcon()));
     }
 
     @Test

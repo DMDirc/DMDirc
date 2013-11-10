@@ -23,17 +23,29 @@ package com.dmdirc.logger;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ErrorReportStatusTest {
 
     @Test
     public void testToString() {
-        assertTrue(ErrorReportStatus.ERROR.toString().toLowerCase().indexOf("error") > -1);
-        assertTrue(ErrorReportStatus.WAITING.toString().toLowerCase().indexOf("wait") > -1);
-        assertTrue(ErrorReportStatus.SENDING.toString().toLowerCase().indexOf("send") > -1);
-        assertTrue(ErrorReportStatus.FINISHED.toString().toLowerCase().indexOf("finish") > -1);
-        assertTrue(ErrorReportStatus.NOT_APPLICABLE.toString().toLowerCase().indexOf("not") > -1);
+        assertEquals("Queued", ErrorReportStatus.QUEUED.toString());
+        assertEquals("Error sending", ErrorReportStatus.ERROR.toString());
+        assertEquals("Waiting", ErrorReportStatus.WAITING.toString());
+        assertEquals("Sending...", ErrorReportStatus.SENDING.toString());
+        assertEquals("Finished", ErrorReportStatus.FINISHED.toString());
+        assertEquals("Not applicable", ErrorReportStatus.NOT_APPLICABLE.toString());
+    }
+
+    @Test
+    public void testTerminal() {
+        assertTrue(ErrorReportStatus.ERROR.isTerminal());
+        assertTrue(ErrorReportStatus.WAITING.isTerminal());
+        assertFalse(ErrorReportStatus.SENDING.isTerminal());
+        assertTrue(ErrorReportStatus.FINISHED.isTerminal());
+        assertTrue(ErrorReportStatus.NOT_APPLICABLE.isTerminal());
     }
 
 }
