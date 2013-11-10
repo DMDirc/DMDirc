@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.util;
 
 import java.net.URI;
@@ -36,8 +35,14 @@ import javax.inject.Singleton;
 @Singleton
 public class URIParser {
 
-    /** Pattern used to match ports that start with a '+'. */
-    private final Pattern plusPortPattern = Pattern.compile(".*://[^/:]+:\\+([0-9]+).*");
+    /**
+     * Pattern used to breakdown a URI authority.
+     */
+    private final Pattern authorityBreakdown = Pattern.compile("(?:(?<auth>[^@]*)@)?(?<host>[^:]+)(?::(?<secure>\\+)?(?<port>[0-9]*))?");
+    /**
+     * Pattern used to breakdown a URI. From RFC3986 appendix-B.
+     */
+    private final Pattern uriBreadown = Pattern.compile("((?<scheme>[^:/?#]+):)?(//(?<authority>[^/?#]*))?(?<path>[^?#]*)(\\?(?<query>[^#]*))?(#(?<fragment>.*))?");
 
     /**
      * Creates a new instance of {@link URIParser}.
@@ -55,28 +60,49 @@ public class URIParser {
      * @throws InvalidURIException If the string cannot be parsed as a URI.
      */
     public URI parseFromURI(final String input) throws InvalidURIException {
-        try {
-            final URI uri = new URI(input);
-            final int port = uri.getPort();
-
-            // Either no port was specified, or a +port was used, let's try to find one.
-            if (port == -1) {
-                final Matcher m = plusPortPattern.matcher(input);
-
-                if (m.matches()) {
-                    final int newPort = Integer.parseInt(m.group(2));
-
-                    // Add 's' to scheme if not already there.
-                    String scheme = uri.getScheme();
-                    if (scheme.charAt(scheme.length() - 1) != 's') {
-                        scheme += "s";
-                    }
-                    return new URI(scheme, uri.getUserInfo(), uri.getHost(), newPort, uri.getPath(),
-                            uri.getQuery(), uri.getFragment());
-                }
+        String scheme;
+        final String userInfo;
+        final String authority;
+        final String host;
+        final String portString;
+        int port;
+        final String path;
+        final String query;
+        final String fragment;
+        final Matcher uriMatcher = uriBreadown.matcher(input);
+        if (!uriMatcher.matches() || uriMatcher.group("scheme") == null || uriMatcher.group("authority") == null) {
+            throw new InvalidURIException("Invalid address specified");
+        }
+        scheme = uriMatcher.group("scheme");
+        authority = uriMatcher.group("authority");
+        path = uriMatcher.group("path");
+        query = uriMatcher.group("query");
+        fragment = uriMatcher.group("fragment");
+        final Matcher authorityMatcher = authorityBreakdown.matcher(authority);
+        if (!authorityMatcher.matches()) {
+            throw new InvalidURIException("Invalid address specified");
+        }
+        userInfo = authorityMatcher.group("auth");
+        host = authorityMatcher.group("host");
+        if (authorityMatcher.group("secure") != null && scheme.charAt(scheme.length() - 1) != 's') {
+            scheme += "s";
+        }
+        portString = authorityMatcher.group("port");
+        if (portString != null) {
+            try {
+                port = Integer.parseInt(authorityMatcher.group(4));
+            } catch (NumberFormatException ex) {
+                throw new InvalidURIException("Invalid port specified", ex);
             }
-
-            return uri;
+            if (port <= 0 || port > 65535) {
+                throw new InvalidURIException("Invalid port specified",
+                        new IllegalArgumentException("Port must be between 1 and 65535"));
+            }
+        } else {
+            port = -1;
+        }
+        try {
+            return new URI(scheme, userInfo, host, port, path, query, fragment);
         } catch (URISyntaxException ex) {
             throw new InvalidURIException("Invalid address specified", ex);
         }
@@ -84,13 +110,13 @@ public class URIParser {
 
     /**
      * Parses the given string as a free-form address. This takes the form of a hostname and
-     * optional port, followed by an optional password. If the input appears to contain a full
-     * URI already, it is parsed by {@link #parseFromURI(java.lang.String)}.
+     * optional port, followed by an optional password. If the input appears to contain a full URI
+     * already, it is parsed by {@link #parseFromURI(java.lang.String)}.
      *
      * @param input The string to be parsed.
      * @return An equivalent URI, if one can be parsed.
      * @throws InvalidURIException If the string cannot be parsed as a URI, or an invalid component
-     *         is specified.
+     * is specified.
      */
     public URI parseFromText(final String input) throws InvalidURIException {
         if (input.indexOf(' ') == -1 && input.contains("://")) {
@@ -101,7 +127,7 @@ public class URIParser {
         boolean ssl = false;
         String host;
         String pass = null;
-        int port = 6667;
+        int port = -1;
 
         final String[] parts = input.split(" ", 2);
 

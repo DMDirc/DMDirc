@@ -40,7 +40,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyChar;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ChangeServerTest {
@@ -104,7 +109,7 @@ public class ChangeServerTest {
         command.execute(tiw, new CommandArguments(controller, "/server foo"),
                 new ServerCommandContext(null, ChangeServer.INFO, server));
 
-        verify(server).connect(eq(new URI("irc://foo:6667")), same(profile));
+        verify(server).connect(eq(new URI("irc://foo")), same(profile));
     }
 
     @Test
