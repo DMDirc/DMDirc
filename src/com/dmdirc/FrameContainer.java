@@ -43,9 +43,11 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -106,6 +108,9 @@ public abstract class FrameContainer {
 
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
+
+    /** Previously-constructed iconmanagers. */
+    private Map<URLBuilder, IconManager> iconManagers = new HashMap<>();
 
     /**
      * Instantiate new frame container.
@@ -215,7 +220,10 @@ public abstract class FrameContainer {
      * @return An icon manager for this container.
      */
     public IconManager getIconManager(final URLBuilder urlBuilder) {
-        return new IconManager(getConfigManager(), urlBuilder);
+        if (!iconManagers.containsKey(urlBuilder)) {
+            iconManagers.put(urlBuilder, new IconManager(getConfigManager(), urlBuilder));
+        }
+        return iconManagers.get(urlBuilder);
     }
 
     /**
