@@ -55,6 +55,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import lombok.Getter;
 
 /**
@@ -73,7 +75,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private ChannelInfo channelInfo;
 
     /** The server this channel is on. */
-    private Server server;
+    private final Server server;
 
     /** The tabcompleter used for this channel. */
     @Getter
@@ -335,10 +337,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     /** {@inheritDoc} */
     @Override
     public void windowClosed() {
-        // 7: Remove any references to the window and parents
-        synchronized (this) {
-            server = null; // NOPMD
-        }
     }
 
     /**
@@ -644,6 +642,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** {@inheritDoc} */
     @Override
+    @Nonnull
     public Connection getConnection() {
         return server;
     }

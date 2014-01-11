@@ -30,6 +30,8 @@ import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
+import javax.annotation.Nonnull;
+
 /**
  * Abstracts some behaviour used by Event Handlers.
  */
@@ -80,6 +82,7 @@ public abstract class EventHandler implements CallbackInterface {
      * @since 0.6.3m1
      * @return This EventHandler's expected connection.
      */
+    @Nonnull
     protected abstract Connection getConnection();
 
     /**

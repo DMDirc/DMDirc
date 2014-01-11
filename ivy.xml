@@ -19,6 +19,7 @@
 
         <dependency org="org.projectlombok" name="lombok" rev="latest.integration" conf="main->default" />
         <dependency org="com.dmdirc" name="annotations" rev="[0.3.4,)" conf="main->default" />
+        <dependency org="com.google.code.findbugs" name="jsr305" rev="2.+" conf="main->default" />
 
         <dependency org="com.squareup.dagger" name="dagger" rev="1.1.+" conf="main->default" />
         <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.1.+" conf="main->default" />
@@ -33,7 +34,7 @@
 
         <dependency org="pmd" name="pmd" rev="4.+" conf="analyse->default" />
         <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="analyse->default" />
-        <dependency org="net.sourceforge.findbugs" name="findbugs-ant" rev="1.+" conf="analyse->default" />
+        <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.+" conf="analyse->default" />
 
         <dependency org="net.sf.proguard" name="proguard-anttask" rev="4.+" conf="analyse->default" />
 
