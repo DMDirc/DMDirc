@@ -49,19 +49,17 @@ import java.util.TreeMap;
 
 import javax.inject.Provider;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.LoggerFactory;
 import dagger.ObjectGraph;
 
 /**
  * Stores plugin metadata and handles loading of plugin resources.
  */
-@Slf4j
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PluginInfo.class);
+
     /** The metadata for this plugin. */
-    @Getter
     private final PluginMetaData metaData;
     /** The initialiser to use for the injector. */
     private final Provider<PluginInjectorInitialiser> injectorInitialiser;
@@ -70,13 +68,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** The controller to add and remove settings from. */
     private final IdentityController identityController;
     /** Filename for this plugin (taken from URL). */
-    @Getter
     private final String filename;
     /** The actual Plugin from this jar. */
-    @Getter
     private Plugin plugin;
     /** The classloader used for this Plugin. */
-    @Getter
     private PluginClassLoader pluginClassLoader;
     /** The resource manager used by this pluginInfo. */
     private ResourceManager resourceManager;
@@ -85,7 +80,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** List of classes this plugin has. */
     private final List<String> myClasses = new ArrayList<>();
     /** Last Error Message. */
-    @Getter
     private String lastError = "No Error";
     /** Are we trying to load? */
     private boolean isLoading;
@@ -136,6 +130,26 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
         updateProvides();
         getDefaults();
+    }
+
+    public PluginMetaData getMetaData() {
+        return metaData;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    public PluginClassLoader getPluginClassLoader() {
+        return pluginClassLoader;
+    }
+
+    public String getLastError() {
+        return lastError;
     }
 
     /**

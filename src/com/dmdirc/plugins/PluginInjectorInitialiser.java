@@ -45,15 +45,12 @@ import com.google.common.eventbus.EventBus;
 
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Utility class that can initialise a {@link SimpleInjector} for use by plugins.
  *
  * Eventually this should be replaced by using the same DI framework for plugins
  * as for the client.
  */
-@RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class PluginInjectorInitialiser {
 
     private final ActionManager actionManager;
@@ -75,6 +72,47 @@ public class PluginInjectorInitialiser {
     private final ColourManager colourManager;
     private final ActionSubstitutorFactory actionSubstitutorFactory;
     private final EventBus eventBus;
+
+    @Inject
+    public PluginInjectorInitialiser(final ActionManager actionManager,
+            final ActionFactory actionFactory,
+            final AliasWrapper aliasWrapper,
+            final PluginManager pluginManager,
+            final IdentityController identityController,
+            final ServerManager serverManager,
+            final ThemeManager themeManager,
+            final CommandManager commandManager,
+            final MessageSinkManager messageSinkManager,
+            final WindowManager windowManager,
+            final StatusBarManager statusBarManager,
+            final PreferencesManager preferencesManager,
+            final PerformWrapper performWrapper,
+            final LifecycleController lifecycleController,
+            final CorePluginExtractor corePluginExtractor,
+            final URLBuilder urlBuilder,
+            final ColourManager colourManager,
+            final ActionSubstitutorFactory actionSubstitutorFactory,
+            final EventBus eventBus) {
+        this.actionManager = actionManager;
+        this.actionFactory = actionFactory;
+        this.aliasWrapper = aliasWrapper;
+        this.pluginManager = pluginManager;
+        this.identityController = identityController;
+        this.serverManager = serverManager;
+        this.themeManager = themeManager;
+        this.commandManager = commandManager;
+        this.messageSinkManager = messageSinkManager;
+        this.windowManager = windowManager;
+        this.statusBarManager = statusBarManager;
+        this.preferencesManager = preferencesManager;
+        this.performWrapper = performWrapper;
+        this.lifecycleController = lifecycleController;
+        this.corePluginExtractor = corePluginExtractor;
+        this.urlBuilder = urlBuilder;
+        this.colourManager = colourManager;
+        this.actionSubstitutorFactory = actionSubstitutorFactory;
+        this.eventBus = eventBus;
+    }
 
     /**
      * Initialises the given injector with all of the known "global" managers.

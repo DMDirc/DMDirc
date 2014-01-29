@@ -32,12 +32,9 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * An update component for plugins.
  */
-@RequiredArgsConstructor
 public class PluginComponent implements UpdateComponent {
 
     /** The config to use. */
@@ -45,6 +42,11 @@ public class PluginComponent implements UpdateComponent {
 
     /** The plugin this component is for. */
     private final PluginInfo plugin;
+
+    public PluginComponent(final AggregateConfigProvider globalConfig, final PluginInfo plugin) {
+        this.globalConfig = globalConfig;
+        this.plugin = plugin;
+    }
 
     /** {@inheritDoc} */
     @Override
