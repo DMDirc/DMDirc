@@ -29,13 +29,14 @@ import com.dmdirc.updater.Version;
 
 import java.io.IOException;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Update component for action groups.
  */
-@RequiredArgsConstructor
 public class ActionGroupComponent implements UpdateComponent {
+
+    public ActionGroupComponent(final ActionGroup group) {
+        this.group = group;
+    }
 
     /** The group that this component represents. */
     private final ActionGroup group;

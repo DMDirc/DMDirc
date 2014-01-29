@@ -50,16 +50,16 @@ import java.util.Set;
 
 import javax.inject.Provider;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Manages all actions for the client.
  */
-@Slf4j
 public class ActionManager implements ActionController {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ActionManager.class);
 
     /** The ActionManager Instance. */
     private static ActionManager me;
