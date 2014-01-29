@@ -24,20 +24,21 @@ package com.dmdirc.updater.retrieving;
 
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Base class for {@link UpdateRetrievalStategy} implementations that can
  * handle a single subclass of {@link UpdateCheckResult}.
  *
  * @param <T> The type of result that this strategy can handle
  */
-@RequiredArgsConstructor
 public abstract class TypeSensitiveRetrievalStrategy<T extends UpdateCheckResult>
         implements UpdateRetrievalStategy {
 
     /** The type of result that this strategy can handle. */
     private final Class<T> clazz;
+
+    public TypeSensitiveRetrievalStrategy(final Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     /** {@inheritDoc} */
     @Override

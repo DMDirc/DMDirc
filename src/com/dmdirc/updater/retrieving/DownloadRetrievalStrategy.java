@@ -35,15 +35,15 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link UpdateRetrievalStategy} that downloads a file specified in a
  * {@link DownloadableUpdate}.
  */
-@Slf4j
 public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<DownloadableUpdate> {
+
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DownloadRetrievalStrategy.class);
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -73,7 +73,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
             listenerList.getCallable(UpdateRetrievalListener.class)
                     .retrievalProgressChanged(checkResult.getComponent(), 0);
 
-            log.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
+            LOG.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
             Downloader.downloadPage(checkResult.getUrl().toString(), file,
                     new DownloadProgressListener(checkResult.getComponent()));
 
@@ -82,7 +82,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
 
             return new BaseSingleFileResult(checkResult, new File(file));
         } catch (IOException ex) {
-            log.warn("I/O exception downloading update from {}", checkResult.getUrl(), ex);
+            LOG.warn("I/O exception downloading update from {}", checkResult.getUrl(), ex);
             listenerList.getCallable(UpdateRetrievalListener.class)
                     .retrievalFailed(checkResult.getComponent());
         }
@@ -116,11 +116,14 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
      * A {@link DownloadListener} which proxies progress updates on to
      * this strategy's {@link UpdateRetrievalListener}s.
      */
-    @AllArgsConstructor
     private class DownloadProgressListener implements DownloadListener {
 
         /** The component to fire updates for. */
         private final UpdateComponent component;
+
+        public DownloadProgressListener(final UpdateComponent component) {
+            this.component = component;
+        }
 
         /** {@inheritDoc} */
         @Override

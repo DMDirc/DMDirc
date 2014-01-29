@@ -24,17 +24,9 @@ package com.dmdirc.updater.retrieving;
 
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
 /**
  * Simple implementation of a {@link UpdateRetrievalResult}.
  */
-@Getter
-@ToString
-@RequiredArgsConstructor
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class BaseRetrievalResult implements UpdateRetrievalResult {
 
     /** The check result that triggered this retrieval. */
@@ -42,5 +34,24 @@ public class BaseRetrievalResult implements UpdateRetrievalResult {
 
     /** Whether or not the retrieval was successful. */
     private final boolean successful;
+
+    public BaseRetrievalResult(final UpdateCheckResult checkResult, final boolean successful) {
+        this.checkResult = checkResult;
+        this.successful = successful;
+    }
+
+    public UpdateCheckResult getCheckResult() {
+        return checkResult;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseRetrievalResult{" + "checkResult=" + checkResult
+                + ", successful=" + successful + '}';
+    }
 
 }

@@ -26,15 +26,9 @@ import com.dmdirc.updater.checking.UpdateCheckResult;
 
 import java.io.File;
 
-import lombok.Getter;
-import lombok.ToString;
-
 /**
  * Simple implementation of a {@link SingleFileRetrievalResult}.
  */
-@Getter
-@ToString(callSuper=true)
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class BaseSingleFileResult extends BaseRetrievalResult
         implements SingleFileRetrievalResult {
 
@@ -51,6 +45,15 @@ public class BaseSingleFileResult extends BaseRetrievalResult
         super(checkResult, true);
 
         this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseSingleFileResult{super=" + super.toString() + "file=" + file + '}';
     }
 
 }
