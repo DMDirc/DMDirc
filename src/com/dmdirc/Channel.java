@@ -57,8 +57,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import lombok.Getter;
-
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
@@ -71,14 +69,12 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private final ListenerList listenerList = new ListenerList();
 
     /** The parser's pChannel class. */
-    @Getter
     private ChannelInfo channelInfo;
 
     /** The server this channel is on. */
     private final Server server;
 
     /** The tabcompleter used for this channel. */
-    @Getter
     private final TabCompleter tabCompleter;
 
     /** A list of previous topics we've seen. */
@@ -91,7 +87,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private final ConfigProviderMigrator configMigrator;
 
     /** Whether we're in this channel or not. */
-    @Getter
     private boolean isOnChannel;
 
     /** Whether we should send WHO requests for this channel. */
@@ -152,6 +147,18 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
         updateTitle();
         selfJoin();
+    }
+
+    public ChannelInfo getChannelInfo() {
+        return channelInfo;
+    }
+
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
+    }
+
+    public boolean isOnChannel() {
+        return isOnChannel;
     }
 
     /**

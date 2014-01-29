@@ -85,8 +85,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.TrustManager;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -95,10 +94,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
  */
-@Slf4j
 @Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
 public class Server extends WritableFrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
+    
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
 
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";

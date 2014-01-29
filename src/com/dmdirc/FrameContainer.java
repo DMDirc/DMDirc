@@ -51,20 +51,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import lombok.Getter;
-
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 public abstract class FrameContainer {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
 
     /** The colour of our frame's notifications. */
-    @Getter
     private Colour notification = Colour.BLACK;
 
     /** The document used to store this container's content. */
@@ -75,23 +71,18 @@ public abstract class FrameContainer {
             = new CopyOnWriteArrayList<>();
 
     /** The parent of this frame. */
-    @Getter
     private FrameContainer parent;
 
     /** The name of the icon being used for this container's frame. */
-    @Getter
     private String icon;
 
     /** The name of this container. */
-    @Getter
     private String name;
 
     /** The title of this container. */
-    @Getter
     private String title;
 
     /** The config manager for this container. */
-    @Getter
     private final AggregateConfigProvider configManager;
 
     /** The IconChanger for this container. */
@@ -132,6 +123,30 @@ public abstract class FrameContainer {
         this.components = new HashSet<>(components);
 
         setIcon(icon);
+    }
+
+    public Colour getNotification() {
+        return notification;
+    }
+
+    public FrameContainer getParent() {
+        return parent;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public AggregateConfigProvider getConfigManager() {
+        return configManager;
     }
 
     /**

@@ -53,7 +53,7 @@ import lombok.RequiredArgsConstructor;
  * Eventually this should be replaced by using the same DI framework for plugins
  * as for the client.
  */
-@RequiredArgsConstructor(onConstructor = @_(@Inject))
+@RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class PluginInjectorInitialiser {
 
     private final ActionManager actionManager;

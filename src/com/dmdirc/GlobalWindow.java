@@ -41,8 +41,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 /**
  * A window which can be used to execute global commands.
  */
@@ -52,8 +50,6 @@ public class GlobalWindow extends WritableFrameContainer {
     private static GlobalWindow globalWindow;
 
     /** The tab completer we use. */
-    @Getter
-    @SuppressWarnings("PMD.UnusedPrivateField")
     private final TabCompleter tabCompleter;
 
     /**
@@ -75,6 +71,10 @@ public class GlobalWindow extends WritableFrameContainer {
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
+    }
+
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
     }
 
     /** {@inheritDoc} */

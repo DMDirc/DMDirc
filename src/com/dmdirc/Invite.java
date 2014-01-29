@@ -26,23 +26,18 @@ import com.dmdirc.interfaces.Connection;
 
 import java.util.Date;
 
-import lombok.Getter;
-
 /**
  * Model for a channel invitation.
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class Invite {
 
     /** The connection this invite was on. */
     private final Connection connection;
 
     /** The channel this invite is for. */
-    @Getter
     private final String channel;
 
     /** The time this invite was created. */
-    @Getter
     private final long timestamp;
 
     /** The source of this invite. */
@@ -60,6 +55,14 @@ public class Invite {
         this.channel = channel;
         this.source = source;
         this.timestamp = new Date().getTime();
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
     /**
