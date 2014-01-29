@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -57,8 +57,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The identity manager manages all known identities, providing easy methods
  * to access them.
  */
-@Slf4j
 public class IdentityManager implements IdentityFactory, IdentityController {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(IdentityManager.class);
 
     /** A regular expression that will match all characters illegal in file names. */
     private static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";

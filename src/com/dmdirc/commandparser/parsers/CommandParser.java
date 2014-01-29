@@ -43,8 +43,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-
 /**
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
@@ -70,7 +68,6 @@ public abstract class CommandParser implements Serializable {
     private final RollingList<PreviousCommand> history;
 
     /** Command manager to use. */
-    @Getter
     protected final CommandController commandManager;
 
     /**
@@ -85,6 +82,10 @@ public abstract class CommandParser implements Serializable {
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));
         this.commandManager = commandManager;
         loadCommands();
+    }
+
+    public CommandController getCommandManager() {
+        return commandManager;
     }
 
     /**

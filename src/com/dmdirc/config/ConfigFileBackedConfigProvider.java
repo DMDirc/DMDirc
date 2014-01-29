@@ -42,13 +42,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides configuration settings from a {@link ConfigFile}.
  */
-@Slf4j
 public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigFileBackedConfigProvider.class);
 
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";

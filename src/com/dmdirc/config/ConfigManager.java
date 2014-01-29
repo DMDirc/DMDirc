@@ -39,16 +39,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * The config manager manages the various config sources for each entity.
  */
-@Slf4j
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         ConfigProviderListener, AggregateConfigProvider {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigManager.class);
 
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> STATS = new TreeMap<>();
@@ -63,7 +62,6 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
 
     /** The config binder to use for this manager. */
-    @Getter
     private final ConfigBinder binder = new ConfigBinder(this);
 
     /** The protocol this manager is for. */
@@ -122,6 +120,10 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
         }
 
         IdentityManager.getIdentityManager().registerIdentityListener(this);
+    }
+
+    public ConfigBinder getBinder() {
+        return binder;
     }
 
     /** {@inheritDoc} */

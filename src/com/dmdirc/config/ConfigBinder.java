@@ -38,14 +38,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Synchronized;
-
 /**
  * Facilitates automatically binding fields or methods annotated with a
  * {@link ConfigBinding} element to a configuration value.
  */
-@AllArgsConstructor
 public class ConfigBinder {
 
     /** A map of instances to created listeners. */
@@ -53,6 +49,10 @@ public class ConfigBinder {
 
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
+
+    public ConfigBinder(final AggregateConfigProvider manager) {
+        this.manager = manager;
+    }
 
     /**
      * Binds all annotated methods and fields of the given instance to this
@@ -208,10 +208,11 @@ public class ConfigBinder {
      * @param instance The instance to add listeners for
      * @param newListeners The listeners to be added
      */
-    @Synchronized
     private void addListeners(final Object instance,
             final Collection<ConfigChangeListener> newListeners) {
-        listeners.add(instance, newListeners);
+        synchronized (listeners) {
+            listeners.add(instance, newListeners);
+        }
     }
 
     /**
@@ -220,12 +221,13 @@ public class ConfigBinder {
      *
      * @param instance The instance to be unbound
      */
-    @Synchronized
     public void unbind(final Object instance) {
-        for (ConfigChangeListener listener : listeners.safeGet(instance)) {
-            manager.removeListener(listener);
-        }
+        synchronized (listeners) {
+            for (ConfigChangeListener listener : listeners.safeGet(instance)) {
+                manager.removeListener(listener);
+            }
 
-        listeners.remove(instance);
+            listeners.remove(instance);
+        }
     }
 }
