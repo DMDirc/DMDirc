@@ -38,8 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-
 /**
  * Manages categories that should appear in the preferences dialog.
  */
@@ -58,10 +56,8 @@ public class PreferencesDialogModel {
     /** UI specific URL panel. */
     private final PreferencesInterface urlHandlerPanel;
     /** Config Manager to read settings from. */
-    @Getter
     private final AggregateConfigProvider configManager;
     /** Identity to write settings to. */
-    @Getter
     private final ConfigProvider identity;
     /** Plugin manager. */
     private final PluginManager pluginManager;
@@ -101,6 +97,14 @@ public class PreferencesDialogModel {
         addDefaultCategories();
 
         actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
+    }
+
+    public AggregateConfigProvider getConfigManager() {
+        return configManager;
+    }
+
+    public ConfigProvider getIdentity() {
+        return identity;
     }
 
     /**

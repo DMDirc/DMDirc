@@ -27,59 +27,45 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents one category of preferences. Categories can contain 0 or more
  * subcategories, and either 0 or more PreferencesSettings or exactly 1
  * PreferencesInterface object.
  */
-@Slf4j
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class PreferencesCategory {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PreferencesCategory.class);
+
     /** The title (name) of this category. */
-    @Getter
     private final String title;
 
     /** A description of this category. */
-    @Getter
     private final String description;
 
     /** The icon to use for this category. */
-    @Getter
     private final String icon;
 
     /** The warning displayed for this category, if any. */
-    @Getter
-    @Setter
     private String warning;
 
     /** Whether or not this category is inline. */
-    @Getter
     private boolean isInline;
 
     /** Whether or not to show inline categories before settings. */
-    @Getter
     private boolean inlineBefore = true;
 
     /** Our parent category, if known. */
-    @Getter
-    @Setter
     private PreferencesCategory parent;
 
     /** A list of settings in this category. */
-    @Getter
     private final List<PreferencesSetting> settings = new ArrayList<>();
 
     /** A list of subcategories of this category. */
-    @Getter
     private final List<PreferencesCategory> subcats = new ArrayList<>();
 
     /** The replacement object to use for this category. */
-    @Getter
     private final PreferencesInterface object;
 
     /** A list of listeners who are interested in this category. */
@@ -135,6 +121,54 @@ public class PreferencesCategory {
         this.description = description;
         this.icon = icon;
         this.object = object;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public boolean isInline() {
+        return isInline;
+    }
+
+    public boolean isInlineBefore() {
+        return inlineBefore;
+    }
+
+    public List<PreferencesSetting> getSettings() {
+        return settings;
+    }
+
+    public List<PreferencesCategory> getSubcats() {
+        return subcats;
+    }
+
+    public PreferencesInterface getObject() {
+        return object;
+    }
+
+    public String getWarning() {
+        return warning;
+    }
+
+    public void setWarning(final String warning) {
+        this.warning = warning;
+    }
+
+    public PreferencesCategory getParent() {
+        return parent;
+    }
+
+    public void setParent(final PreferencesCategory parent) {
+        this.parent = parent;
     }
 
     /**

@@ -32,34 +32,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-
 /**
  * Represents a single setting.
  */
 public class PreferencesSetting {
 
     /** The type of this setting. */
-    @Getter
     protected final PreferencesType type;
     /** The possible options for a multichoice setting. */
-    @Getter
     protected final Map<String, String> comboOptions;
     /** The validator to use to validate this setting. */
-    @Getter
     protected final Validator<String> validator;
     /** The domain of the setting. */
     protected final String domain;
     /** The option name of the setting. */
     protected final String option;
     /** The title of this setting. */
-    @Getter
     protected final String title;
     /** Text to inform the user what the setting is for. */
-    @Getter
     protected final String helptext;
     /** The current value of the setting. */
-    @Getter
     protected String value;
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
@@ -168,6 +160,30 @@ public class PreferencesSetting {
         if (!comboOptions.containsKey(value)) {
             comboOptions.put(value, "Current (" + value + ")");
         }
+    }
+
+    public PreferencesType getType() {
+        return type;
+    }
+
+    public Map<String, String> getComboOptions() {
+        return comboOptions;
+    }
+
+    public Validator<String> getValidator() {
+        return validator;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getHelptext() {
+        return helptext;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     /**

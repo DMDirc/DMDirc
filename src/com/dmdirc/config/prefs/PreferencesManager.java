@@ -30,14 +30,11 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Manages preferences for the client.
  *
  * @since 0.6.5
  */
-@RequiredArgsConstructor
 public class PreferencesManager {
 
     /** Singleton instance of the preferences manager. */
@@ -45,6 +42,10 @@ public class PreferencesManager {
 
     /** The action controller to fire events on. */
     private final ActionController actionController;
+
+    public PreferencesManager(final ActionController actionController) {
+        this.actionController = actionController;
+    }
 
     /**
      * Retrieves a category containing preferences settings which should be
