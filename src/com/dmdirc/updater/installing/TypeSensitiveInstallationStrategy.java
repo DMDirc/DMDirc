@@ -25,8 +25,6 @@ package com.dmdirc.updater.installing;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
-import lombok.AllArgsConstructor;
-
 /**
  * Base class for {@link UpdateInstallationStrategy} implementations that
  * can only handle a specific subclass of {@link UpdateComponent} or
@@ -35,7 +33,6 @@ import lombok.AllArgsConstructor;
  * @param <S> The type of {@link UpdateComponent} that can be handled
  * @param <T> The type of {@link UpdateRetrievalResult} that can be handled
  */
-@AllArgsConstructor
 public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponent,T extends UpdateRetrievalResult>
         implements UpdateInstallationStrategy {
 
@@ -44,6 +41,12 @@ public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponen
 
     /** The type of {@link UpdateRetrievalResult} that can be handled. */
     private final Class<T> updateRetrievalClass;
+
+    public TypeSensitiveInstallationStrategy(final Class<S> updateComponentClass,
+            final Class<T> updateRetrievalClass) {
+        this.updateComponentClass = updateComponentClass;
+        this.updateRetrievalClass = updateRetrievalClass;
+    }
 
     /** {@inheritDoc} */
     @Override

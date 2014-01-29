@@ -40,14 +40,15 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * A strategy which sends a request to the DMDirc update service for
  * information.
  */
-@Slf4j
 public class DMDircCheckStrategy implements UpdateCheckStrategy {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(DMDircCheckStrategy.class);
 
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "http://updates.dmdirc.com/";

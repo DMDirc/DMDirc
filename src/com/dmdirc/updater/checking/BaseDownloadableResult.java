@@ -27,18 +27,12 @@ import com.dmdirc.updater.Version;
 
 import java.net.URL;
 
-import lombok.Getter;
-import lombok.ToString;
-
 /**
  * A simple implementation of a {@link DownloadableUpdate}.
  */
-@ToString(callSuper=true)
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class BaseDownloadableResult extends BaseCheckResult implements DownloadableUpdate {
 
     /** The URL the update may be downloaded from. */
-    @Getter
     private final URL url;
 
     /**
@@ -54,6 +48,15 @@ public class BaseDownloadableResult extends BaseCheckResult implements Downloada
         super(component, true, updatedVersionName, updatedVersion);
 
         this.url = url;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseDownloadableResult{super=" + super.toString() + ", url=" + url + '}';
     }
 
 }

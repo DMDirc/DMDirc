@@ -27,15 +27,17 @@ import com.dmdirc.updater.retrieving.SingleFileRetrievalResult;
 import com.dmdirc.util.collections.ListenerList;
 
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link UpdateInstallationStrategy} which uses the old
  * {@link UpdateComponent#doInstall(java.lang.String)} methods to perform
  * installation.
  */
-@Slf4j
 public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrategy<UpdateComponent, SingleFileRetrievalResult> {
+
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LegacyInstallationStrategy.class);
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -51,14 +53,14 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
     /** {@inheritDoc} */
     @Override
     protected void installImpl(final UpdateComponent component, final SingleFileRetrievalResult retrievalResult) {
-        log.info("Installing file from {} for component {} using legacy strategy",
+        LOG.info("Installing file from {} for component {} using legacy strategy",
                 retrievalResult.getFile(), component.getName());
 
         try {
             component.doInstall(retrievalResult.getFile().getAbsolutePath());
             listenerList.getCallable(UpdateInstallationListener.class).installCompleted(component);
         } catch (Exception ex) {
-            log.warn("Error installing update for {}", component.getName(), ex);
+            LOG.warn("Error installing update for {}", component.getName(), ex);
             listenerList.getCallable(UpdateInstallationListener.class).installFailed(component);
         }
     }

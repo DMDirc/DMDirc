@@ -25,17 +25,9 @@ package com.dmdirc.updater.checking;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-
 /**
  * Simple implementation of {@link UpdateCheckResult}.
  */
-@Getter
-@ToString
-@AllArgsConstructor
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class BaseCheckResult implements UpdateCheckResult {
 
     /** The component this result is for. */
@@ -50,6 +42,14 @@ public class BaseCheckResult implements UpdateCheckResult {
     /** The version available to update to, if any. */
     private final Version updatedVersion;
 
+    public BaseCheckResult(final UpdateComponent component, final boolean updateAvailable,
+            final String updatedVersionName, final Version updatedVersion) {
+        this.component = component;
+        this.updateAvailable = updateAvailable;
+        this.updatedVersionName = updatedVersionName;
+        this.updatedVersion = updatedVersion;
+    }
+
     /**
      * Creates a new {@link BaseCheckResult} which reports no update is
      * available.
@@ -61,6 +61,34 @@ public class BaseCheckResult implements UpdateCheckResult {
         this.updateAvailable = false;
         this.updatedVersion = null;
         this.updatedVersionName = null;
+    }
+
+    @Override
+    public UpdateComponent getComponent() {
+        return component;
+    }
+
+    @Override
+    public boolean isUpdateAvailable() {
+        return updateAvailable;
+    }
+
+    @Override
+    public String getUpdatedVersionName() {
+        return updatedVersionName;
+    }
+
+    @Override
+    public Version getUpdatedVersion() {
+        return updatedVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseCheckResult{" + "component=" + component
+                + ", updateAvailable=" + updateAvailable
+                + ", updatedVersionName=" + updatedVersionName
+                + ", updatedVersion=" + updatedVersion + '}';
     }
 
 }
