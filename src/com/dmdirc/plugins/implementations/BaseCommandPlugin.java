@@ -29,9 +29,6 @@ import com.dmdirc.plugins.PluginInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AccessLevel;
-import lombok.Setter;
-
 import dagger.ObjectGraph;
 
 /**
@@ -47,7 +44,6 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     /**
      * Command controller to register commands.
      */
-    @Setter(AccessLevel.PROTECTED)
     private CommandController commandController;
 
     /**
@@ -65,6 +61,10 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * Creates a new instance of this plugin.
      */
     public BaseCommandPlugin() {
+    }
+
+    protected void setCommandController(final CommandController commandController) {
+        this.commandController = commandController;
     }
 
     /**

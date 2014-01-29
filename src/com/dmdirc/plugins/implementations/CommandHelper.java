@@ -27,8 +27,6 @@ import com.dmdirc.interfaces.CommandController;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
-
 import dagger.Module;
 
 /**
@@ -37,11 +35,9 @@ import dagger.Module;
  * <p>Because the plugins themselves aren't dependency injected, but require a command controller
  * themselves to sensibly register commands, we use this helper and module to obtain a reference.
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandHelper {
 
     /** The command controller. */
-    @Getter
     private final CommandController commandController;
 
     /**
@@ -52,6 +48,10 @@ public class CommandHelper {
     @Inject
     public CommandHelper(final CommandController commandController) {
         this.commandController = commandController;
+    }
+
+    public CommandController getCommandController() {
+        return commandController;
     }
 
     /** Module that allows inflation of {@link CommandHelper}. */

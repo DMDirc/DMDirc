@@ -34,12 +34,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Represents one theme file.
  */
-@RequiredArgsConstructor
 public class Theme implements Comparable<Theme> {
 
     /** The controller to add theme identities to. */
@@ -59,6 +56,11 @@ public class Theme implements Comparable<Theme> {
 
     /** The Identity we've registered. */
     private ThemeIdentity identity;
+
+    public Theme(final IdentityController identityController, final File file) {
+        this.identityController = identityController;
+        this.file = file;
+    }
 
     /**
      * Determines if this theme is valid or not (i.e., it is a valid zip file,

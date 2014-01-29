@@ -28,8 +28,6 @@ import com.dmdirc.plugins.PluginMetaData;
 import java.io.File;
 import java.io.IOException;
 
-import lombok.Getter;
-
 /**
  * Helper file to manage plugins that need extracted files on disk.
  */
@@ -40,7 +38,6 @@ public class PluginFilesHelper {
     /** This plugins information object. */
     private final PluginInfo pluginInfo;
     /** This plugins files directory. */
-    @Getter
     private File filesDir;
 
     /**
@@ -53,6 +50,10 @@ public class PluginFilesHelper {
         this.pluginInfo = pluginInfo;
         this.metaData = pluginInfo.getMetaData();
         filesDir = initFilesDir();
+    }
+
+    public File getFilesDir() {
+        return filesDir;
     }
 
     /**
