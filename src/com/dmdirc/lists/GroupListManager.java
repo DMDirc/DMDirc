@@ -35,13 +35,9 @@ import com.dmdirc.util.collections.ObservableListDecorator;
 import java.util.Date;
 import java.util.LinkedList;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Manages a group list request.
  */
-@RequiredArgsConstructor
 public class GroupListManager implements GroupListStartListener,
         GroupListEntryListener, GroupListEndListener {
 
@@ -52,9 +48,16 @@ public class GroupListManager implements GroupListStartListener,
     private final Connection connection;
 
     /** The cached groups. */
-    @Getter
     private final ObservableList<GroupListEntry> groups
             = new ObservableListDecorator<>(new LinkedList<GroupListEntry>());
+
+    public GroupListManager(final Connection connection) {
+        this.connection = connection;
+    }
+
+    public ObservableList<GroupListEntry> getGroups() {
+        return groups;
+    }
 
     /**
      * Starts a search with the given search terms.

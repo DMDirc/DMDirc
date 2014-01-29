@@ -22,15 +22,9 @@
 
 package com.dmdirc.lists;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Represents a single entry returned by a group list request.
  */
-@RequiredArgsConstructor
-@Getter
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class GroupListEntry {
 
     /** The name of the group. */
@@ -41,5 +35,23 @@ public class GroupListEntry {
 
     /** The current topic of the group. */
     private final String topic;
+
+    public GroupListEntry(final String name, final int users, final String topic) {
+        this.name = name;
+        this.users = users;
+        this.topic = topic;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getUsers() {
+        return users;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
 
 }

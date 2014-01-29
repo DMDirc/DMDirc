@@ -22,18 +22,14 @@
 
 package com.dmdirc.events;
 
-import lombok.Getter;
-
 /**
  * Base class for all DMDirc events.
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 public abstract class DMDircEvent {
 
     /**
      * The timestamp the event was triggered at, in milliseconds.
      */
-    @Getter
     private final long timestamp;
 
     /**
@@ -50,6 +46,10 @@ public abstract class DMDircEvent {
      */
     public DMDircEvent() {
         this.timestamp = System.currentTimeMillis();
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
 }
