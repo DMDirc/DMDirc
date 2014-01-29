@@ -97,7 +97,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
 public class Server extends WritableFrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
-    
+
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
 
     /** The name of the general domain. */

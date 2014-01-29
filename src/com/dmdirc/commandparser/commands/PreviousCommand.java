@@ -23,18 +23,11 @@
 package com.dmdirc.commandparser.commands;
 
 import java.util.Date;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
 
 /**
  * Stores information about a previously executed command.
  */
-@RequiredArgsConstructor
-@EqualsAndHashCode
-@Getter
-@SuppressWarnings("PMD.UnusedPrivateField")
 public final class PreviousCommand {
 
     /** The full command that was executed. */
@@ -42,5 +35,37 @@ public final class PreviousCommand {
 
     /** The timestamp of its execution. */
     private final long time = new Date().getTime();
+
+    public PreviousCommand(final String line) {
+        this.line = line;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (time ^ (time >>> 32)) + (line == null ? 0 : line.hashCode());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PreviousCommand other = (PreviousCommand) obj;
+        if (!Objects.equals(this.line, other.line)) {
+            return false;
+        }
+        return this.time == other.time;
+    }
 
 }

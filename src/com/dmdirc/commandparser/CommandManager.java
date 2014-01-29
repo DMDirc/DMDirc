@@ -39,13 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandManager implements CommandController {
 
     /** A list of commands that have been instantiated. */
@@ -61,12 +58,10 @@ public class CommandManager implements CommandController {
 
     /** The command char we're using. */
     @ConfigBinding(domain="general", key="commandchar")
-    @Getter
     private char commandChar;
 
     /** The silence char we're using. */
     @ConfigBinding(domain="general", key="silencechar")
-    @Getter
     private char silenceChar;
 
     /**
@@ -76,6 +71,14 @@ public class CommandManager implements CommandController {
      */
     public CommandManager(final ServerManager serverManager) {
         this.serverManager = serverManager;
+    }
+
+    public char getCommandChar() {
+        return commandChar;
+    }
+
+    public char getSilenceChar() {
+        return silenceChar;
     }
 
     /**

@@ -28,14 +28,9 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.messages.Styliser;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Represents a generic command.
  */
-@RequiredArgsConstructor
 public abstract class Command {
 
     /** The format name used for command output. */
@@ -45,8 +40,15 @@ public abstract class Command {
     protected static final String FORMAT_ERROR = "commandError";
 
     /** The controller this command is associated with. */
-    @Getter(AccessLevel.PROTECTED)
     private final CommandController controller;
+
+    public Command(final CommandController controller) {
+        this.controller = controller;
+    }
+
+    protected CommandController getController() {
+        return controller;
+    }
 
     /**
      * Sends a line, if appropriate, to the specified target.

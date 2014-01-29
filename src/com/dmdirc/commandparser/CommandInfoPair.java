@@ -24,18 +24,12 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.commandparser.commands.Command;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * A combination of a {@link Command} and the {@link CommandInfo} which
  * triggered it.
  *
  * @since 0.6.4
  */
-@RequiredArgsConstructor
-@Getter
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class CommandInfoPair {
 
     /** The command info which caused the command to be triggered. */
@@ -43,5 +37,18 @@ public class CommandInfoPair {
 
     /** The command in question. */
     private final Command command;
+
+    public CommandInfoPair(final CommandInfo commandInfo, final Command command) {
+        this.commandInfo = commandInfo;
+        this.command = command;
+    }
+
+    public CommandInfo getCommandInfo() {
+        return commandInfo;
+    }
+
+    public Command getCommand() {
+        return command;
+    }
 
 }

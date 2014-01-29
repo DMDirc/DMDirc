@@ -27,9 +27,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Intelligent commands implement a method that provides a list of possible
  * options for them, for use (for example) by table completers.
@@ -52,10 +49,27 @@ public interface IntelligentCommand {
      *
      * @since 0.6.4
      */
-    @RequiredArgsConstructor
-    @Getter
     @SuppressWarnings("PMD.UnusedPrivateField")
     class IntelligentCommandContext {
+
+        public IntelligentCommandContext(final WritableFrameContainer window,
+                final List<String> previousArgs, final String partial) {
+            this.window = window;
+            this.previousArgs = previousArgs;
+            this.partial = partial;
+        }
+
+        public WritableFrameContainer getWindow() {
+            return window;
+        }
+
+        public List<String> getPreviousArgs() {
+            return previousArgs;
+        }
+
+        public String getPartial() {
+            return partial;
+        }
 
         /** The window the command is being entered in. */
         private final WritableFrameContainer window;

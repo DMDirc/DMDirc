@@ -72,9 +72,6 @@ import com.dmdirc.interfaces.CommandController.CommandDetails;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -565,9 +562,20 @@ public class CommandModule {
     /**
      * Simple implementation of {@link CommandDetails}.
      */
-    @Getter
-    @RequiredArgsConstructor
     private static class SimpleCommandDetails implements CommandDetails {
+
+        public SimpleCommandDetails(Command command, CommandInfo info) {
+            this.command = command;
+            this.info = info;
+        }
+
+        public Command getCommand() {
+            return command;
+        }
+
+        public CommandInfo getInfo() {
+            return info;
+        }
 
         /** The command. */
         private final Command command;
