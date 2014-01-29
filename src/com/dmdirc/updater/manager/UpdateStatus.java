@@ -22,14 +22,9 @@
 
 package com.dmdirc.updater.manager;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Describes the possible statuses of an {@link com.dmdirc.updater.UpdateComponent}.
  */
-@RequiredArgsConstructor
-@SuppressWarnings("PMD.UnusedPrivateField")
 public enum UpdateStatus {
 
     /** There is no known update available, and the manager is not active checking. */
@@ -60,7 +55,14 @@ public enum UpdateStatus {
     RESTART_PENDING("Restart required");
 
     /** Textual description of the status. */
-    @Getter
     private final String description;
+
+    private UpdateStatus(final String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
 }

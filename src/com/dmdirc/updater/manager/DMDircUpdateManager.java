@@ -36,12 +36,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Specialised update manager for DMDirc.
  */
-@Slf4j
 public class DMDircUpdateManager extends CachingUpdateManagerImpl {
 
     /** Number of threads to use. */

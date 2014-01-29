@@ -42,17 +42,14 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 /**
  * Concrete implementation of {@link UpdateManager}.
  */
-@Slf4j
-@AllArgsConstructor
 public class UpdateManagerImpl implements UpdateManager {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(UpdateManagerImpl.class);
 
     /** Collection of known update checking strategies. */
     private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
@@ -88,12 +85,25 @@ public class UpdateManagerImpl implements UpdateManager {
     private final Executor executor;
 
     /** Consolidator to use to merge multiple check results. */
-    @Getter(AccessLevel.PROTECTED)
     private final CheckResultConsolidator consolidator;
 
     /** The policy to use to determine whether updates are enabled. */
-    @Getter(AccessLevel.PROTECTED)
     private final UpdateComponentPolicy policy;
+
+    public UpdateManagerImpl(final Executor executor, final CheckResultConsolidator consolidator,
+            final UpdateComponentPolicy policy) {
+        this.executor = executor;
+        this.consolidator = consolidator;
+        this.policy = policy;
+    }
+
+    protected CheckResultConsolidator getConsolidator() {
+        return consolidator;
+    }
+
+    protected UpdateComponentPolicy getPolicy() {
+        return policy;
+    }
 
     /** {@inheritDoc} */
     @Override

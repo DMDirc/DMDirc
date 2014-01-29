@@ -25,13 +25,10 @@ package com.dmdirc.updater.manager;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Task which installs an update using a given
  * {@link UpdateInstallationStrategy}.
  */
-@RequiredArgsConstructor
 public class InstallationTask implements Runnable {
 
     /** The strategy to use to install the update. */
@@ -39,6 +36,12 @@ public class InstallationTask implements Runnable {
 
     /** The update which will be installed. */
     private final UpdateRetrievalResult result;
+
+    public InstallationTask(final UpdateInstallationStrategy strategy,
+            final UpdateRetrievalResult result) {
+        this.strategy = strategy;
+        this.result = result;
+    }
 
     /** {@inheritDoc} */
     @Override

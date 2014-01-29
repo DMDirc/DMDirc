@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
-import lombok.Getter;
-
 /**
  * An extension of {@link UpdateManagerImpl} which implements status caching
  * functionality.
@@ -47,7 +45,6 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
     private final ListenerList listenerList = new ListenerList();
 
     /** Our current status. */
-    @Getter
     private UpdateManagerStatus managerStatus = UpdateManagerStatus.IDLE;
 
     /**
@@ -63,6 +60,10 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
         super(executor, consolidator, policy);
 
         addUpdateStatusListener(new Listener());
+    }
+
+    public UpdateManagerStatus getManagerStatus() {
+        return managerStatus;
     }
 
     /** {@inheritDoc} */

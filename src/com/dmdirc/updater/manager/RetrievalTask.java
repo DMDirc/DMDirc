@@ -26,14 +26,11 @@ import com.dmdirc.updater.checking.UpdateCheckResult;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * Task which retrieves an available update using the given
  * {@link UpdateRetrievalStategy} and passes the result back to the
  * {@link UpdateManagerImpl}.
  */
-@RequiredArgsConstructor
 public class RetrievalTask implements Runnable {
 
     /** The update manager launching this task. */
@@ -47,6 +44,14 @@ public class RetrievalTask implements Runnable {
 
     /** Whether to install afterwards or not. */
     private final boolean install;
+
+    public RetrievalTask(final UpdateManagerImpl manager, final UpdateRetrievalStategy strategy,
+            final UpdateCheckResult result, final boolean install) {
+        this.manager = manager;
+        this.strategy = strategy;
+        this.result = result;
+        this.install = install;
+    }
 
     /** {@inheritDoc} */
     @Override
