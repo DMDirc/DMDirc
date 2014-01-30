@@ -27,7 +27,6 @@ import com.dmdirc.updater.checking.CheckResultConsolidator;
 
 import java.util.concurrent.Executor;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +37,6 @@ import org.mockito.stubbing.Answer;
 
 import static org.mockito.Mockito.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateManagerImplTest {
 
