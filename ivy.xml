@@ -17,8 +17,6 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.+" conf="main->default" />
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.+" conf="test->default" />
 
-        <dependency org="org.projectlombok" name="lombok" rev="latest.integration" conf="main->default" />
-
         <dependency org="com.dmdirc" name="annotations" rev="[0.3.4,)" conf="main->default" />
         <dependency org="com.google.code.findbugs" name="jsr305" rev="2.+" conf="main->default" />
 
