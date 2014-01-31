@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
@@ -45,9 +46,6 @@ import javax.inject.Singleton;
  * A window which can be used to execute global commands.
  */
 public class GlobalWindow extends WritableFrameContainer {
-
-    /** The global window that's in use, if any. */
-    private static GlobalWindow globalWindow;
 
     /** The tab completer we use. */
     private final TabCompleter tabCompleter;
@@ -75,13 +73,6 @@ public class GlobalWindow extends WritableFrameContainer {
 
     public TabCompleter getTabCompleter() {
         return tabCompleter;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void windowClosed() {
-        // 7: Remove any references to the window and parents
-        globalWindow = null;
     }
 
     /** {@inheritDoc} */
@@ -116,6 +107,9 @@ public class GlobalWindow extends WritableFrameContainer {
         private final Provider<MessageSinkManager> messageSinkManagerProvider;
         /** The provider to use to retrieve a global command parser. */
         private final Provider<GlobalCommandParser> globalCommandParserProvider;
+
+        /** The global window that's in use, if any. */
+        private GlobalWindow globalWindow;
 
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
@@ -166,6 +160,7 @@ public class GlobalWindow extends WritableFrameContainer {
                                 globalCommandParserProvider.get(),
                                 tabCompleterFactory,
                                 messageSinkManagerProvider.get());
+                        addCloseListener(globalWindow);
                         windowManagerProvider.get().addWindow(globalWindow);
                     }
                 } else {
@@ -174,6 +169,21 @@ public class GlobalWindow extends WritableFrameContainer {
                     }
                 }
             }
+        }
+
+        /**
+         * Adds a {@link FrameCloseListener} to the specified window to update the global window
+         * state if the user closes it from the UI.
+         */
+        private void addCloseListener(final GlobalWindow window) {
+            window.addCloseListener(new FrameCloseListener() {
+                @Override
+                public void windowClosing(final FrameContainer container) {
+                    synchronized (GlobalWindow.class) {
+                        globalWindow = null;
+                    }
+                }
+            });
         }
 
     }

@@ -1113,14 +1113,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     /** {@inheritDoc} */
     @Override
-    public void windowClosed() {
-        // 7: Remove any references to the window and parents
-        oldParser = null; //NOPMD
-        parser = null; //NOPMD
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
         for (Channel channel : channels.values()) {
