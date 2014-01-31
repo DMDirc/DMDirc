@@ -322,19 +322,19 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void windowClosing() {
-        // 2: Remove any callbacks or listeners
+    public void close() {
+        super.close();
+
+        // Remove any callbacks or listeners
         if (server != null && server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(this);
         }
 
-        // 3: Trigger any actions neccessary
-
-        // 4: Trigger action for the window closing
+        // Trigger action for the window closing
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.QUERY_CLOSED, null, this);
 
-        // 5: Inform any parents that the window is closing
+        // Inform any parents that the window is closing
         if (server != null) {
             server.delQuery(this);
         }

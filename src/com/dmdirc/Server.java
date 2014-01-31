@@ -1085,14 +1085,16 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     /** {@inheritDoc} */
     @Override
-    public void windowClosing() {
+    public void close() {
+        super.close();
+
         synchronized (myStateLock) {
-            // 2: Remove any callbacks or listeners
+            // Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
             getConfigManager().removeListener(this);
             whoTimer.cancel();
 
-            // 3: Trigger any actions neccessary
+            // Trigger any actions neccessary
             disconnect();
 
             myState.transition(ServerState.CLOSING);
@@ -1106,8 +1108,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             raw.close();
         }
 
-        // 4: Trigger action for the window closing
-        // 5: Inform any parents that the window is closing
+        // Inform any parents that the window is closing
         manager.unregisterServer(this);
     }
 

@@ -320,24 +320,26 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** {@inheritDoc} */
     @Override
-    public void windowClosing() {
-        // 2: Remove any callbacks or listeners
+    public void close() {
+        super.close();
+
+        // Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
 
         if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(eventHandler);
         }
 
-        // 3: Trigger any actions neccessary
+        // Trigger any actions neccessary
         if (isOnChannel) {
             part(getConfigManager().getOption("general", "partmessage"));
         }
 
-        // 4: Trigger action for the window closing
+        // Trigger action for the window closing
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.CHANNEL_CLOSED, null, this);
 
-        // 5: Inform any parents that the window is closing
+        // Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());
     }
 
