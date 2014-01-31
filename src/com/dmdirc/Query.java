@@ -63,7 +63,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         CompositionStateChangeListener {
 
     /** The Server this Query is on. */
-    private Server server;
+    private final Server server;
 
     /** The full host and nickname of the client associated with this Query. */
     private String host, nickname;
@@ -338,13 +338,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         if (server != null) {
             server.delQuery(this);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void windowClosed() {
-        // 7: Remove any references to the window and parents
-        server = null;
     }
 
     /**

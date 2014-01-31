@@ -341,11 +341,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         server.delChannel(channelInfo.getName());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void windowClosed() {
-    }
-
     /**
      * Called every {general.whotime} seconds to check if the channel needs
      * to send a who request.

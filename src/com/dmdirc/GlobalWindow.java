@@ -79,15 +79,6 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** {@inheritDoc} */
     @Override
-    public void windowClosing() {
-        // 2: Remove any callbacks or listeners
-        // 3: Trigger any actions neccessary
-        // 4: Trigger action for the window closing
-        // 5: Inform any parents that the window is closing
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void windowClosed() {
         // 7: Remove any references to the window and parents
         globalWindow = null;

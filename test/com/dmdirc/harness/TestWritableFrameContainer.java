@@ -60,16 +60,6 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     }
 
     @Override
-    public void windowClosing() {
-        // Do nothing
-    }
-
-    @Override
-    public void windowClosed() {
-        // Do nothing
-    }
-
-    @Override
     public Connection getConnection() {
         return null;
     }

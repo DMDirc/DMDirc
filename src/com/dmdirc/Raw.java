@@ -49,7 +49,7 @@ public class Raw extends WritableFrameContainer
         implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
-    private Server server;
+    private final Server server;
 
     /**
      * Creates a new instance of Raw.
@@ -99,13 +99,6 @@ public class Raw extends WritableFrameContainer
 
         // 5: Inform any parents that the window is closing
         server.delRaw();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void windowClosed() {
-        // 7: Remove any references to the window and parents
-        server = null;
     }
 
     /** {@inheritDoc} */
