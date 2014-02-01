@@ -241,8 +241,6 @@ public class WindowManager {
             fireDeleteWindow(parent, window);
             parent.removeChild(window);
         }
-
-        window.windowClosed();
     }
 
     /**

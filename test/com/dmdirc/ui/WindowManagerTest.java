@@ -142,7 +142,6 @@ public class WindowManagerTest {
         manager.removeWindow(container);
 
         verify(frameListener).delWindow(container);
-        verify(container).windowClosed();
     }
 
     @Test
@@ -157,7 +156,6 @@ public class WindowManagerTest {
 
         verify(frameListener).delWindow(container);
         verify(child).close();
-        verify(container).windowClosed();
     }
 
     @Test
@@ -171,7 +169,6 @@ public class WindowManagerTest {
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
-        verify(child).windowClosed();
         verify(container).removeChild(child);
     }
 
@@ -189,7 +186,6 @@ public class WindowManagerTest {
 
         verify(frameListener).delWindow(container, child);
         verify(grandchild).close();
-        verify(child).windowClosed();
         verify(container).removeChild(child);
     }
 

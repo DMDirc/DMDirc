@@ -328,8 +328,6 @@ public abstract class FrameContainer {
         for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
             listener.windowClosing(this);
         }
-
-        windowClosing();
     }
 
     /**
@@ -395,41 +393,6 @@ public abstract class FrameContainer {
 
             listeners.getCallable(NotificationListener.class).notificationSet(this, colour);
         }
-    }
-
-    /**
-     * Invoked when our window is closing.
-     * <p>
-     * Frame containers must perform the following actions in this order:
-     * <ol>
-     *  <li>Remove any callbacks or listeners (events should not be processed
-     *      once a window has been requested to close)</li>
-     *  <li>Trigger any actions necessary (terminating any TCP connections,
-     *      disconnecting parsers, closing children, etc)</li>
-     *  <li>Trigger action for the window closing (raise a DMDirc action for
-     *      the closure of the window, if required)</li>
-     *  <li>Inform any parents that the window is closing (this includes
-     *      unregistering the window with any specific managers, or from the
-     *      parent windows if they track children)</li>
-     * </ol>
-     *
-     * @deprecated Clearing up should be performed in the {@link #close()} method.
-     */
-    @Deprecated
-    protected void windowClosing() {
-    }
-
-    /**
-     * Invoked when our window has been closed.
-     * <p>
-     * At this point, all interested parties have been told that the window
-     * has been closed, and therefore any references to frames or other
-     * resources may be completely freed.
-     *
-     * @deprecated Clearing up should be performed in the {@link #close()} method.
-     */
-    @Deprecated
-    public void windowClosed() {
     }
 
     /**
