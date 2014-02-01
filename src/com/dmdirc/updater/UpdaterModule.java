@@ -23,6 +23,7 @@
 package com.dmdirc.updater;
 
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 import com.dmdirc.updater.checking.DMDircCheckStrategy;
 import com.dmdirc.updater.checking.NaiveConsolidator;
@@ -90,14 +91,16 @@ public class UpdaterModule {
      *
      * @param commandLineParser CLI parser to use to find launcher version.
      * @param updateManager The underlying update manager.
+     * @param identityController The controller to use to read and update settings.
      * @return The update manager to use.
      */
     @Provides
     @Singleton
     public UpdateManager getUpdateManager(
             final CommandLineParser commandLineParser,
-            final DMDircUpdateManager updateManager) {
-        UpdateChecker.init(updateManager);
+            final DMDircUpdateManager updateManager,
+            final IdentityController identityController) {
+        UpdateChecker.init(updateManager, identityController);
 
         if (commandLineParser.getLauncherVersion() != null) {
             LauncherComponent.setLauncherInfo(updateManager,
