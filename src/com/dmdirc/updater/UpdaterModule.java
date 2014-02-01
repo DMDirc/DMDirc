@@ -33,6 +33,7 @@ import com.dmdirc.updater.components.LauncherComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.updater.installing.LegacyInstallationStrategy;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
+import com.dmdirc.updater.manager.CachingUpdateManager;
 import com.dmdirc.updater.manager.ConfigComponentPolicy;
 import com.dmdirc.updater.manager.DMDircUpdateManager;
 import com.dmdirc.updater.manager.UpdateComponentPolicy;
@@ -103,6 +104,18 @@ public class UpdaterModule {
                     commandLineParser.getLauncherVersion());
         }
 
+        return updateManager;
+    }
+
+    /**
+     * Gets a caching update manager for the client.
+     *
+     * @param updateManager The underlying update manager.
+     * @return The update manager to use.
+     */
+    @Provides
+    @Singleton
+    public CachingUpdateManager getCachingUpdateManager(final DMDircUpdateManager updateManager) {
         return updateManager;
     }
 
