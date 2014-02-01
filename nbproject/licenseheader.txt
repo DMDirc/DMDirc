@@ -1,7 +1,7 @@
 <#if licenseFirst??>
 ${licenseFirst}
 </#if>
-${licensePrefix}Copyright (c) 2006-2012 DMDirc Developers
+${licensePrefix}Copyright (c) 2006-2014 DMDirc Developers
 ${licensePrefix}
 ${licensePrefix}Permission is hereby granted, free of charge, to any person obtaining a copy
 ${licensePrefix}of this software and associated documentation files (the "Software"), to deal
