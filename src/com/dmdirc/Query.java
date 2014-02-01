@@ -65,8 +65,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
     /** The Server this Query is on. */
     private final Server server;
 
-    /** The full host and nickname of the client associated with this Query. */
-    private String host, nickname;
+    /** The full host of the client associated with this query. */
+    private String host;
+
+    /** The nickname of the client associated with this query. */
+    private String nickname;
 
     /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;

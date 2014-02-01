@@ -22,7 +22,6 @@
 
 package com.dmdirc.tls;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
@@ -83,8 +82,14 @@ public class CertificateManager implements X509TrustManager {
     /** The set of CAs from the global cacert file. */
     private final Set<X509Certificate> globalTrustedCAs = new HashSet<>();
 
-    /** Whether or not to check specified parts of the certificate. */
-    private boolean checkDate, checkIssuer, checkHost;
+    /** Whether or not to the issue and expiry dates of the certificate. */
+    private final boolean checkDate;
+
+    /** Whether or not to the issuer of the certificate. */
+    private final boolean checkIssuer;
+
+    /** Whether or not to the hostname of the certificate. */
+    private final boolean checkHost;
 
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);

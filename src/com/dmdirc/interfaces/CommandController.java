@@ -36,27 +36,6 @@ import java.util.Map;
 public interface CommandController {
 
     /**
-     * Describes a command and its associated {@link CommandInfo} object.
-     */
-    interface CommandDetails {
-
-        /**
-         * Gets the command.
-         *
-         * @return The command.
-         */
-        Command getCommand();
-
-        /**
-         * Gets the command's information.
-         *
-         * @return The command information.
-         */
-        CommandInfo getInfo();
-
-    }
-
-    /**
      * Retrieves the command identified by the specified name, regardless of
      * type.
      *
@@ -140,5 +119,26 @@ public interface CommandController {
      * @since 0.6.3m1
      */
     void unregisterCommand(final CommandInfo info);
+
+    /**
+     * Describes a command and its associated {@link CommandInfo} object.
+     */
+    interface CommandDetails {
+
+        /**
+         * Gets the command.
+         *
+         * @return The command.
+         */
+        Command getCommand();
+
+        /**
+         * Gets the command's information.
+         *
+         * @return The command information.
+         */
+        CommandInfo getInfo();
+
+    }
 
 }

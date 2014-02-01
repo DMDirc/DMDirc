@@ -26,7 +26,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
@@ -355,7 +354,8 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
      * appropriate one for the specified new parameters, firing listeners where
      * settings have changed.
      *
-     * <p>This is package private - only callers with access to a {@link ConfigProviderMigrator}
+     * <p>This is package private - only callers with access to a
+     * {@link com.dmdirc.interfaces.config.ConfigProviderMigrator}
      * should be able to migrate managers.
      *
      * @param protocol The protocol for this manager

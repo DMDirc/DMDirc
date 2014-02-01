@@ -564,15 +564,17 @@ public class CommandModule {
      */
     private static class SimpleCommandDetails implements CommandDetails {
 
-        public SimpleCommandDetails(Command command, CommandInfo info) {
+        public SimpleCommandDetails(final Command command, final CommandInfo info) {
             this.command = command;
             this.info = info;
         }
 
+        @Override
         public Command getCommand() {
             return command;
         }
 
+        @Override
         public CommandInfo getInfo() {
             return info;
         }

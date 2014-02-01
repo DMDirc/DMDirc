@@ -63,10 +63,6 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     public BaseCommandPlugin() {
     }
 
-    protected void setCommandController(final CommandController commandController) {
-        this.commandController = commandController;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -156,6 +152,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * @return A command controller.
      * @deprecated Plugins should inject their own controllers.
      */
+    @Deprecated
     protected CommandController getCommandController() {
         return commandController;
     }

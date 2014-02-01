@@ -22,11 +22,9 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.ClientModule;
 import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 
-import dagger.Module;
 import dagger.ObjectGraph;
 
 /**
@@ -72,13 +70,13 @@ public interface Plugin {
      * or objects shared by this plugin's parent.
      *
      * <p>Plugins wishing to use this form of dependency injection should define a new
-     * {@link Module} which specifies an {@link Module#addsTo()} argument of either:
+     * {@link dagger.Module} which specifies an {@link dagger.Module#addsTo()} argument of either:
      *
      * <ul>
      *  <li>For plugins with no parents, or plugins which do not have a dependency on their parent,
-     *      {@link ClientModule}.</li>
-     *  <li>For plugins with dependencies on a parent plugin, that plugin's own {@link Module}
-     *      implementation.</li>
+     *      {@link com.dmdirc.ClientModule}.</li>
+     *  <li>For plugins with dependencies on a parent plugin, that plugin's own
+     *      {@link dagger.Module} implementation.</li>
      * </ul>
      *
      * <p>The implementation of this method should then call

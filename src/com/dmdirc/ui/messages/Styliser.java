@@ -133,10 +133,16 @@ public class Styliser implements ConfigChangeListener {
             + RESERVED_CHARS + "+)";
 
     /** Whether or not we should style links. */
-    private boolean styleURIs, styleChannels;
+    private boolean styleURIs;
 
-    /** Colours to use for URI and channel links. */
-    private Colour uriColour, channelColour;
+    /** Whether or not we should style channel names. */
+    private boolean styleChannels;
+
+    /** Colour to use for URIs. */
+    private Colour uriColour;
+
+    /** Colour to use for channel names. */
+    private Colour channelColour;
 
     /** Connection to get channel prefixes from, or null if not applicable. */
     private final Connection connection;

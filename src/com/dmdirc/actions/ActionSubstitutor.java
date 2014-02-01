@@ -220,7 +220,8 @@ public class ActionSubstitutor {
             final Matcher matcher = first ? bracesMatcher : otherMatcher;
 
             final String group = matcher.group(3);
-            final int start = matcher.start() + matcher.group(1).length(), end = matcher.end();
+            final int start = matcher.start() + matcher.group(1).length();
+            final int end = matcher.end();
 
             res.delete(start, end);
             res.insert(start, getSubstitution(doSubstitution(group, args), args));
@@ -249,7 +250,8 @@ public class ActionSubstitutor {
                     ? new CommandArguments(commandController, (String) args[2])
                     : new CommandArguments(commandController, Arrays.asList((String[]) args[2]));
 
-            int start, end;
+            int start;
+            int end;
 
             start = end = Integer.parseInt(numberMatcher.group(1)) - 1;
 

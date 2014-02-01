@@ -188,7 +188,8 @@ public class PerformWrapper extends ActionGroup {
      * @return True if the conditions are valid, false otherwise
      */
     protected boolean checkConditions(final List<ActionCondition> conditions) {
-        boolean target = false, profile = false;
+        boolean target = false;
+        boolean profile = false;
 
         for (ActionCondition condition : conditions) {
             if ((condition.getComponent() == CoreActionComponent.SERVER_NETWORK

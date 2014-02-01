@@ -23,11 +23,10 @@
 package com.dmdirc.updater.installing;
 
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
 
 /**
  * Describes a strategy for installing updates which have been retrieved
- * by a {@link UpdateRetrievalStategy}.
+ * by a {@link com.dmdirc.updater.retrieving.UpdateRetrievalStategy}.
  */
 public interface UpdateInstallationStrategy {
 

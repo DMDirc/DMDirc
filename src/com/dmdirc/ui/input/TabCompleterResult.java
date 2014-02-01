@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.ArrayList;

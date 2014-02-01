@@ -66,8 +66,14 @@ public class Colour {
     /** The colour blue. */
     public static final Colour BLUE = new Colour(0, 0, 255);
 
-    /** The red, green and blue values that make up this colour. */
-    private final int red, green, blue;
+    /** The intensity of the red component of this colour (0-255). */
+    private final int red;
+
+    /** The intensity of the green component of this colour (0-255). */
+    private final int green;
+
+    /** The intensity of the blue component of this colour (0-255). */
+    private final int blue;
 
     /**
      * Creates a new Colour instance with the given RGB values.

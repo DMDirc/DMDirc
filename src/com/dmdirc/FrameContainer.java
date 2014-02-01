@@ -33,7 +33,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
@@ -101,7 +100,7 @@ public abstract class FrameContainer {
     private final Object documentSync = new Object();
 
     /** Previously-constructed iconmanagers. */
-    private Map<URLBuilder, IconManager> iconManagers = new HashMap<>();
+    private final Map<URLBuilder, IconManager> iconManagers = new HashMap<>();
 
     /**
      * Instantiate new frame container.

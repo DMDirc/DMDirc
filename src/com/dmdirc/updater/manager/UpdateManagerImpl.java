@@ -332,7 +332,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
     /** {@inheritDoc} */
     @Override
-    public void addUpdateStatusListener(UpdateStatusListener listener) {
+    public void addUpdateStatusListener(final UpdateStatusListener listener) {
         listenerList.add(UpdateStatusListener.class, listener);
     }
 

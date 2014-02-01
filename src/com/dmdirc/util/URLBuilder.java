@@ -62,10 +62,12 @@ public class URLBuilder {
         this.themeManagerProvider = themeManagerProvider;
     }
 
+    @Deprecated
     public static URLBuilder getInstance() {
         return instance;
     }
 
+    @Deprecated
     public static void setInstance(final URLBuilder instance) {
         URLBuilder.instance = instance;
     }

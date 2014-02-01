@@ -113,7 +113,8 @@ public class SSLCertificateDialogModel {
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
-        boolean tooOld = false, tooNew = false;
+        boolean tooOld = false;
+        boolean tooNew = false;
 
         try {
             cert.checkValidity();
@@ -175,7 +176,7 @@ public class SSLCertificateDialogModel {
             }
 
             for (List<?> entry : cert.getSubjectAlternativeNames()) {
-                final int type = ((Integer) entry.get(0)).intValue();
+                final int type = (Integer) entry.get(0);
 
                 // DNS or IP
                 if (type == 2 || type == 7) {
@@ -219,7 +220,9 @@ public class SSLCertificateDialogModel {
     public List<CertificateSummaryEntry> getSummary() {
         final List<CertificateSummaryEntry> res = new ArrayList<>();
 
-        boolean outofdate = false, wronghost = false, nottrusted = false;
+        boolean outofdate = false;
+        boolean wronghost = false;
+        boolean nottrusted = false;
 
         for (CertificateException ex : problems) {
             if (ex instanceof CertificateExpiredException

@@ -23,13 +23,12 @@
 package com.dmdirc.updater.retrieving;
 
 import com.dmdirc.updater.checking.UpdateCheckResult;
-import com.dmdirc.updater.checking.UpdateCheckStrategy;
-import com.dmdirc.updater.installing.UpdateInstallationStrategy;
 
 /**
  * Defines a strategy for retrieving updated files that have been identified by
- * an {@link UpdateCheckStrategy}. Retrieval strategies will place updates in
- * a temporary location on disk for use by an {@link UpdateInstallationStrategy}.
+ * an {@link com.dmdirc.updater.checking.UpdateCheckStrategy}. Retrieval strategies will place
+ * updates in a temporary location on disk for use by an
+ * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy}.
  */
 public interface UpdateRetrievalStategy {
 
@@ -49,7 +48,8 @@ public interface UpdateRetrievalStategy {
      * requiring retrieval.
      * @return An {@link UpdateRetrievalResult} which describes the result of
      * the retrieval, providing information for an
-     * {@link UpdateInstallationStrategy} to use to install the update.
+     * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy} to use to install the
+     * update.
      */
     UpdateRetrievalResult retrieve(UpdateCheckResult checkResult);
 
