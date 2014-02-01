@@ -51,6 +51,7 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.ServiceManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -59,6 +60,7 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.Version;
 import com.dmdirc.updater.manager.UpdateManager;
+import com.dmdirc.util.URLBuilder;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
@@ -150,6 +152,22 @@ public class ClientModule {
     @GlobalConfig
     public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
         return controller.getGlobalConfiguration();
+    }
+
+    /**
+     * Provides an icon manager backed by the global configuration.
+     *
+     * @param globalConfig The global configuration provider.
+     * @param urlBuilder The builder to use to construct icon URLs.
+     * @return An icon manager backed by the global config.
+     */
+    @Provides
+    @GlobalConfig
+    @Singleton
+    public IconManager getGlobalIconManager(
+            @GlobalConfig final AggregateConfigProvider globalConfig,
+            final URLBuilder urlBuilder) {
+        return new IconManager(globalConfig, urlBuilder);
     }
 
     /**
