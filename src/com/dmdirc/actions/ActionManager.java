@@ -103,6 +103,9 @@ public class ActionManager implements ActionController {
     /** The listeners that we have registered. */
     private final MapList<ActionType, ActionListener> listeners = new MapList<>();
 
+    /** The directory to load and save actions in. */
+    private final String directory;
+
     /** Indicates whether or not user actions should be killed (not processed). */
     @ConfigBinding(domain="actions", key="killswitch")
     private boolean killSwitch;
@@ -115,18 +118,21 @@ public class ActionManager implements ActionController {
      * @param factory The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
      * @param updateManagerProvider Provider of an update manager, to register components.
+     * @param directory The directory to load and save actions in.
      */
     public ActionManager(
             final ServerManager serverManager,
             final IdentityController identityManager,
             final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
-            final Provider<UpdateManager> updateManagerProvider) {
+            final Provider<UpdateManager> updateManagerProvider,
+            final String directory) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.factory = factory;
         this.actionWrappersProvider = actionWrappersProvider;
         this.updateManagerProvider = updateManagerProvider;
+        this.directory = directory;
     }
 
     /**
@@ -270,7 +276,7 @@ public class ActionManager implements ActionController {
             group.clear();
         }
 
-        final File dir = new File(getDirectory());
+        final File dir = new File(directory);
 
         if (!dir.exists()) {
             try {
@@ -447,15 +453,6 @@ public class ActionManager implements ActionController {
         return res;
     }
 
-    /**
-     * Returns the directory that should be used to store actions.
-     *
-     * @return The directory that should be used to store actions
-     */
-    public String getDirectory() {
-        return this.identityManager.getConfigurationDirectory() + "actions" + System.getProperty("file.separator");
-    }
-
     /** {@inheritDoc} */
     @Override
     public ActionGroup createGroup(final String group) {
@@ -463,14 +460,14 @@ public class ActionManager implements ActionController {
         checkArgument(!group.isEmpty());
         checkArgument(!groups.containsKey(group));
 
-        final File file = new File(getDirectory() + group);
+        final File file = new File(directory + group);
         if (file.isDirectory() || file.mkdir()) {
             final ActionGroup actionGroup = new ActionGroup(group);
             groups.put(group, actionGroup);
             return actionGroup;
         } else {
             throw new IllegalArgumentException("Unable to create action group directory"
-                    + "\n\nDir: " + getDirectory() + group);
+                    + "\n\nDir: " + directory + group);
         }
     }
 
@@ -485,7 +482,7 @@ public class ActionManager implements ActionController {
             removeAction(action);
         }
 
-        final File dir = new File(getDirectory() + group);
+        final File dir = new File(directory + group);
 
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()) {
@@ -628,7 +625,7 @@ public class ActionManager implements ActionController {
     public static void installActionPack(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", getActionManager().getDirectory());
+        ziprm.extractResources("", getActionManager().directory);
 
         getActionManager().loadUserActions();
 

@@ -190,6 +190,7 @@ public class ClientModule {
      * @param actionFactory The factory to use to create actions.
      * @param actionWrappersProvider Provider of action wrappers.
      * @param updateManagerProvider Provider of an update manager.
+     * @param directory The directory to read and write actions in.
      * @return An unitialised action manager.
      */
     @Provides
@@ -199,9 +200,10 @@ public class ClientModule {
             final IdentityController identityController,
             final ActionFactory actionFactory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
-            final Provider<UpdateManager> updateManagerProvider) {
-        final ActionManager actionManager = new ActionManager(serverManager,
-                identityController, actionFactory, actionWrappersProvider, updateManagerProvider);
+            final Provider<UpdateManager> updateManagerProvider,
+            @Directory(DirectoryType.ACTIONS) final String directory) {
+        final ActionManager actionManager = new ActionManager(serverManager, identityController,
+                actionFactory, actionWrappersProvider, updateManagerProvider, directory);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
