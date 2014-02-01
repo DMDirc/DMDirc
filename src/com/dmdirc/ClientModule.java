@@ -104,23 +104,26 @@ public class ClientModule {
     /**
      * Provides an identity manager for the client.
      *
-     * @param directory The directory to load settings from.
+     * @param baseDirectory The base directory to load settings from.
+     * @param identitiesDirectory The directory to store and read identities in.
      * @param commandLineParser The CLI parser to read command line settings from.
      * @return An initialised {@link IdentityManager}.
      */
     @Provides
     @Singleton
     public IdentityManager getIdentityManager(
-            @Directory(DirectoryType.BASE) final String directory,
+            @Directory(DirectoryType.BASE) final String baseDirectory,
+            @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
             final CommandLineParser commandLineParser) {
-        final IdentityManager identityManager = new IdentityManager(directory);
+        final IdentityManager identityManager =
+                new IdentityManager(baseDirectory, identitiesDirectory);
         IdentityManager.setIdentityManager(identityManager);
         identityManager.loadVersionIdentity();
 
         try {
             identityManager.initialise();
         } catch (InvalidIdentityFileException ex) {
-            handleInvalidConfigFile(identityManager, directory);
+            handleInvalidConfigFile(identityManager, baseDirectory);
         }
 
         if (commandLineParser.getDisableReporting()) {

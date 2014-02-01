@@ -22,6 +22,8 @@
 
 package com.dmdirc.updater.components;
 
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.UpdateComponent;
@@ -40,15 +42,21 @@ public class ModeAliasesComponent implements UpdateComponent {
 
     /** The controller to read settings from. */
     private final IdentityController identityController;
+    /** The directory to put mode aliases in. */
+    private final String directory;
 
     /**
      * Creates a new instance of {@link DefaultsComponent}.
      *
      * @param identityController The controller to read settings from.
+     * @param directory The directory to place mode aliases in.
      */
     @Inject
-    public ModeAliasesComponent(final IdentityController identityController) {
+    public ModeAliasesComponent(
+            final IdentityController identityController,
+            @Directory(DirectoryType.IDENTITIES) final String directory) {
         this.identityController = identityController;
+        this.directory = directory;
     }
 
     /** {@inheritDoc} */
@@ -109,7 +117,7 @@ public class ModeAliasesComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
 
-        ziprm.extractResources("", identityController.getUserSettingsDirectory());
+        ziprm.extractResources("", directory);
 
         identityController.loadUserIdentities();
 

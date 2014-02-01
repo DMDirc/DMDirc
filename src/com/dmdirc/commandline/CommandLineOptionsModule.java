@@ -103,6 +103,19 @@ public class CommandLineOptionsModule {
     }
 
     /**
+     * Provides the path to the identities directory.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     * @return The identities directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.IDENTITIES)
+    public String getIdentitiesDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+        return baseDirectory + "identities" + File.separator;
+    }
+
+    /**
      * Provides the path to the themes directory.
      *
      * @param baseDirectory The base DMDirc directory.

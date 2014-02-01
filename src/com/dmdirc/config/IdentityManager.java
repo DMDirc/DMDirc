@@ -73,8 +73,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** A singleton instance of IdentityManager. */
     private static IdentityManager instance;
 
-    /** Config Directory. */
-    private String configDirectory;
+    /** Base configuration directory where the main configuration file will be located. */
+    private final String configDirectory;
+
+    /** Directory to save and load identities in. */
+    private final String identitiesDirectory;
 
     /**
      * The identities that have been loaded into this manager.
@@ -107,10 +110,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /**
      * Creates a new instance of IdentityManager.
      *
-     * @param directory The BASE config directory.
+     * @param baseDirectory The BASE config directory.
+     * @param identitiesDirectory The directory to store identities in.
      */
-    public IdentityManager(final String directory) {
-        this.configDirectory = directory;
+    public IdentityManager(final String baseDirectory, final String identitiesDirectory) {
+        this.configDirectory = baseDirectory;
+        this.identitiesDirectory = identitiesDirectory;
     }
 
     /** {@inheritDoc} */
@@ -160,10 +165,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** Loads the default (built in) identities. */
     private void loadDefaults() {
         final String[] targets = {"default", "modealiases"};
-        final String dir = getUserSettingsDirectory();
 
         for (String target : targets) {
-            final File file = new File(dir + target);
+            final File file = new File(identitiesDirectory + target);
 
             if (file.exists() && !file.isDirectory()) {
                 boolean success = false;
@@ -202,7 +206,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
             if (bundledVersion.compareTo(installedVersion) > 0) {
                 extractIdentities("default");
-                loadUser(new File(dir, "default"));
+                loadUser(new File(identitiesDirectory, "default"));
             }
         }
     }
@@ -214,7 +218,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             ResourceManager.getResourceManager().extractResource(
                     "com/dmdirc/config/defaults/default/formatter",
-                    getUserSettingsDirectory() + "default/", false);
+                    identitiesDirectory + "default/", false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "formatters: " + ex.getMessage());
@@ -231,7 +235,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             ResourceManager.getResourceManager().extractResources(
                     "com/dmdirc/config/defaults/" + target,
-                    getUserSettingsDirectory() + target, false);
+                    identitiesDirectory + target, false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "identities: " + ex.getMessage());
@@ -240,22 +244,15 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /** {@inheritDoc} */
     @Override
-    @Deprecated
-    public String getUserSettingsDirectory() {
-        return configDirectory + "identities" + System.getProperty("file.separator");
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void loadUserIdentities() {
-        final File dir = new File(getUserSettingsDirectory());
+        final File dir = new File(identitiesDirectory);
 
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to create identity dir");
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to create identity dir", ex);
             }
         }
 
@@ -682,15 +679,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             throw new InvalidIdentityFileException("identity.name is not set");
         }
 
-        final String fs = System.getProperty("file.separator");
-        final String location = getUserSettingsDirectory();
         final String name = settings.get(IDENTITY_DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
 
-        File file = new File(location + name);
+        File file = new File(identitiesDirectory + name);
         int attempt = 1;
 
         while (file.exists()) {
-            file = new File(location + name + "-" + attempt);
+            file = new File(identitiesDirectory + name + "-" + attempt);
             attempt++;
         }
 
