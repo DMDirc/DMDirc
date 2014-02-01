@@ -22,7 +22,6 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
@@ -51,17 +50,9 @@ public final class UpdateChecker implements Runnable {
     private static Timer timer = new Timer("Update Checker Timer");
 
     /** The update manager to use. */
-    private static CachingUpdateManager manager;
-
-    /** The update manager to use. */
     private final CachingUpdateManager updateManager;
     /** The controller to use to read and write settings. */
     private final IdentityController identityController;
-
-    @Deprecated
-    public UpdateChecker() {
-        this(manager, IdentityManager.getIdentityManager());
-    }
 
     /**
      * Creates a new instance of {@link UpdateChecker}.
@@ -91,18 +82,18 @@ public final class UpdateChecker implements Runnable {
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
             MUTEX.release();
-            initTimer(updateManager, identityController);
+            init(updateManager, identityController);
             return;
         }
 
-        manager.checkForUpdates();
+        updateManager.checkForUpdates();
 
         MUTEX.release();
 
         identityController.getUserSettings().setOption(DOMAIN,
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
-        initTimer(updateManager, identityController);
+        init(updateManager, identityController);
 
         if (config.getOptionBool(DOMAIN, "autoupdate")) {
             for (UpdateComponent component : updateManager.getComponents()) {
@@ -129,23 +120,9 @@ public final class UpdateChecker implements Runnable {
     public static void init(
             final CachingUpdateManager manager,
             final IdentityController controller) {
-        UpdateChecker.manager = manager;
-        initTimer(manager, controller);
-    }
-
-    /**
-     * Initialises the timer to check for updates.
-     *
-     * @param updateManager The manager to use when checking for updates.
-     * @param identityController The controller to use to retrieve and update settings.
-     * @since 0.6.5
-     */
-    protected static void initTimer(
-            final CachingUpdateManager updateManager,
-            final IdentityController identityController) {
-        final int last = identityController.getGlobalConfiguration()
+        final int last = controller.getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "lastcheck");
-        final int freq = identityController.getGlobalConfiguration()
+        final int freq = controller.getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "frequency");
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
@@ -167,17 +144,9 @@ public final class UpdateChecker implements Runnable {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                checkNow(updateManager, identityController);
+                checkNow(manager, controller);
             }
         }, time * 1000);
-    }
-
-    /**
-     * Checks for updates now.
-     */
-    @Deprecated
-    public static void checkNow() {
-        checkNow(manager, IdentityManager.getIdentityManager(), "Update Checker thread");
     }
 
     /**
@@ -189,7 +158,7 @@ public final class UpdateChecker implements Runnable {
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController) {
-        checkNow(manager, identityController, "Update Checker thread");
+        checkNow(updateManager, identityController, "Update Checker thread");
     }
 
     /**
