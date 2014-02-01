@@ -47,7 +47,9 @@ public class CommandLineOptionsModule {
         /** The directory that themes are stored in. */
         THEMES,
         /** The directory that actions are stored in. */
-        ACTIONS;
+        ACTIONS,
+        /** The directory to use for temporary files (downloads in flight, caches, etc). */
+        TEMPORARY;
     }
 
     /**
@@ -126,6 +128,22 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.THEMES)
     public String getThemesDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
         return baseDirectory + "themes" + File.separator;
+    }
+
+    /**
+     * Provides the path to a DMDirc pseudo-temporary directory. This is somewhere the client can
+     * use to store limited-use files such as downloads not yet installed, or cached update
+     * information. It is not automatically purged - items placed there must be cleaned up
+     * explicitly.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     * @return The temporary directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.TEMPORARY)
+    public String getTempDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+        return baseDirectory;
     }
 
     /**
