@@ -13,4 +13,4 @@ fi;
 
 echo "Updating copyright to: ${THISYEAR}"
 
-find . -regextype posix-egrep -iregex '.*/(.*\.(java|sh|php|xml|dpr|nsh|html|htm)|dmdirc.license|LICENCE|DMDirc-Apple.c|DMDirc - MIT|copyright)$' -exec sed -i 's/\(Copyright.*\)2006-20[0-9][0-9]\(.*DMDirc.*\)/\12006-'${THISYEAR}'\2/' {} \;
+find . -regextype posix-egrep -iregex '.*/(.*\.(java|sh|php|xml|dpr|nsh|html|htm)|dmdirc.license|LICENCE|licenseheader.txt|DMDirc-Apple.c|DMDirc - MIT|copyright)$' -exec sed -i 's/\(Copyright.*\)2006-20[0-9][0-9]\(.*DMDirc.*\)/\12006-'${THISYEAR}'\2/' {} \;
