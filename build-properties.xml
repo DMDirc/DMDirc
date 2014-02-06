@@ -6,39 +6,12 @@
         <available file="nbproject/private/private.properties"/>
     </condition>
 
-    <target name="-init-properties">
-        <taskdef resource="net/sf/fikin/ant/ant.properties" classpathref="build-classpath"/>
-        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="build-classpath"/>
-    </target>
-
     <target name="-create-private-properties" unless="private.properties.exists">
         <mkdir dir="nbproject/private"/>
         <echo file="nbproject/private/private.properties"/>
     </target>
 
-    <target name="-check-private-classpath">
-        <loadfile property="private.properties.old" srcFile="nbproject/private/private.properties"/>
-        <condition property="private.properties.needs.javac">
-            <not>
-                <matches string="${private.properties.old}" pattern="^javac.classpath=(.*)$" multiline="true" casesensitive="true"/>
-            </not>
-        </condition>
-        <condition property="private.properties.needs.javac.test">
-            <not>
-                <matches string="${private.properties.old}" pattern="^javac.test.classpath=(.*)$" multiline="true" casesensitive="true"/>
-            </not>
-        </condition>
-    </target>
-
-    <target name="-create-private-classpath" if="private.properties.needs.javac">
-        <echo append="true" file="nbproject/private/private.properties">${line.separator}javac.classpath=${line.separator}</echo>
-    </target>
-
-    <target name="-create-private-test-classpath" if="private.properties.needs.javac.test">
-        <echo append="true" file="nbproject/private/private.properties">${line.separator}javac.test.classpath=${line.separator}</echo>
-    </target>
-
-    <target name="-init-private-properties" depends="-init-properties,-create-private-properties,-check-private-classpath,-create-private-classpath,-create-private-test-classpath">
+    <target name="-init-private-properties" depends="-create-private-properties">
         <path id="main-libs">
             <fileset dir="lib/main" includes="*.jar"/>
             <fileset dir="modules" includes="*/lib/*.jar"/>
