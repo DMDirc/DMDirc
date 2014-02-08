@@ -35,10 +35,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Specialised update manager for DMDirc.
  */
+@Singleton
 public class DMDircUpdateManager extends CachingUpdateManagerImpl {
 
     /** Number of threads to use. */
