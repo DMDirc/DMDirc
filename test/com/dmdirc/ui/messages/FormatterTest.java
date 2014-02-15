@@ -21,68 +21,66 @@
  */
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestConfigManagerOptionToggle;
-import com.dmdirc.interfaces.config.ConfigProvider;
-
-import java.util.Collections;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormatterTest {
 
-    private TestConfigManagerOptionToggle mcm;
-
-    @Mock private IdentityManager identityManager;
+    @Mock private AggregateConfigProvider configProvider;
 
     @Before
     public void setup() {
-        IdentityManager.setIdentityManager(identityManager);
-        when(identityManager.getIdentitiesForManager(any(ConfigManager.class)))
-                .thenReturn(Collections.<ConfigProvider>emptyList());
-
-        mcm = new TestConfigManagerOptionToggle();
+        when(configProvider.hasOptionString(any(String.class), startsWith("1"))).thenReturn(true);
+        when(configProvider.getOption(any(String.class), startsWith("1"))).thenAnswer(new Answer<String> () {
+            @Override
+            public String answer(final InvocationOnMock invocation) throws Throwable {
+                return invocation.getArguments()[1].toString().substring(1);
+            }
+        });
     }
 
     @Test
     public void testBasicFormats() {
-        assertEquals("Hello!", Formatter.formatMessage(mcm, "1%1$s", "Hello!"));
-        assertEquals("Hello!", Formatter.formatMessage(mcm, "1%1$s", "Hello!", "Moo!", "Bar!"));
-        assertTrue(Formatter.formatMessage(mcm, "0%1$s", "Hello!")
+        assertEquals("Hello!", Formatter.formatMessage(configProvider, "1%1$s", "Hello!"));
+        assertEquals("Hello!", Formatter.formatMessage(configProvider, "1%1$s", "Hello!", "Moo!", "Bar!"));
+        assertTrue(Formatter.formatMessage(configProvider, "0%1$s", "Hello!")
                 .toLowerCase().indexOf("no format string") > -1);
-        assertTrue(Formatter.formatMessage(mcm, "1%5$s", "Hello!")
+        assertTrue(Formatter.formatMessage(configProvider, "1%5$s", "Hello!")
                 .toLowerCase().indexOf("invalid format string") > -1);
-        assertTrue(Formatter.formatMessage(mcm, "1%1$Z", "Hello!")
+        assertTrue(Formatter.formatMessage(configProvider, "1%1$Z", "Hello!")
                 .toLowerCase().indexOf("invalid format string") > -1);
     }
 
     @Test
     public void testCasting() {
-        assertEquals("H", Formatter.formatMessage(mcm, "1%1$c", "Hello!"));
-        assertEquals("10", Formatter.formatMessage(mcm, "1%1$d", "10"));
-        assertEquals("111999", Formatter.formatMessage(mcm, "1%1$s", "111999"));
+        assertEquals("H", Formatter.formatMessage(configProvider, "1%1$c", "Hello!"));
+        assertEquals("10", Formatter.formatMessage(configProvider, "1%1$d", "10"));
+        assertEquals("111999", Formatter.formatMessage(configProvider, "1%1$s", "111999"));
     }
 
     @Test
     public void testCaching() {
-        assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!"));
-        assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!", 123, null));
-        assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!", 123, null));
-        assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!"));
+        assertEquals("H", Formatter.formatMessage(configProvider, "1%1$C", "Hello!"));
+        assertEquals("H", Formatter.formatMessage(configProvider, "1%1$C", "Hello!", 123, null));
+        assertEquals("HELLO!", Formatter.formatMessage(configProvider, "1%1$S", "Hello!", 123, null));
+        assertEquals("HELLO!", Formatter.formatMessage(configProvider, "1%1$S", "Hello!"));
     }
 
     @Test
     public void testFormatDuration() {
-        assertEquals("1 minute, 1 second", Formatter.formatMessage(mcm, "1%1$u", "61"));
+        assertEquals("1 minute, 1 second", Formatter.formatMessage(configProvider, "1%1$u", "61"));
     }
 }

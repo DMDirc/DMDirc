@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The config manager manages the various config sources for each entity.
  */
-public class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
+class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         ConfigProviderListener, AggregateConfigProvider {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigManager.class);
@@ -83,7 +83,7 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
      * @param server The name of the server for this manager
      * @since 0.6.3
      */
-    public ConfigManager(final String protocol, final String ircd,
+    ConfigManager(final String protocol, final String ircd,
             final String network, final String server) {
         this(protocol, ircd, network, server, "<Unknown>");
     }
@@ -98,7 +98,7 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
      * @param channel The name of the channel for this manager
      * @since 0.6.3
      */
-    public ConfigManager(final String protocol, final String ircd,
+    ConfigManager(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         final String chanName = channel + "@" + network;
 
@@ -121,6 +121,7 @@ public class ConfigManager extends BaseConfigProvider implements ConfigChangeLis
         IdentityManager.getIdentityManager().registerIdentityListener(this);
     }
 
+    @Override
     public ConfigBinder getBinder() {
         return binder;
     }
