@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigTarget;
 /**
  * Defines methods implemented by a factory which can create useful identities.
  */
+// TODO: Rename this to ConfigFactory or something along those lines.
 public interface IdentityFactory {
 
     /**
@@ -111,6 +112,31 @@ public interface IdentityFactory {
      * @return A new {@link ConfigProviderMigrator}.
      */
     ConfigProviderMigrator createMigratableConfig(String protocol, String ircd, String network,
+            String server, String channel);
+
+    /**
+     * Creates a new aggregate, read-only config.
+     *
+     * @param protocol The protocol for this provider.
+     * @param ircd The name of the ircd for this provider.
+     * @param network The name of the network for this provider.
+     * @param server The name of the server for this provider.
+     * @return A new {@link AggregateConfigProvider}.
+     */
+    AggregateConfigProvider createAggregateConfig(String protocol, String ircd, String network,
+            String server);
+
+    /**
+     * Creates a new aggregate, read-only config.
+     *
+     * @param protocol The protocol for this provider.
+     * @param ircd The name of the ircd for this provider.
+     * @param network The name of the network for this provider.
+     * @param server The name of the server for this provider.
+     * @param channel The name of the channel for this provider.
+     * @return A new {@link AggregateConfigProvider}.
+     */
+    AggregateConfigProvider createAggregateConfig(String protocol, String ircd, String network,
             String server, String channel);
 
 }

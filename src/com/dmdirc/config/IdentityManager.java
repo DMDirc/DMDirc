@@ -741,4 +741,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return new ConfigManagerMigrator(configManager);
     }
 
+    @Override
+    public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
+            final String network, final String server) {
+        return new ConfigManager(protocol, ircd, network, server);
+    }
+
+    @Override
+    public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
+            final String network, final String server, final String channel) {
+        return new ConfigManager(protocol, ircd, network, server, channel);
+    }
+
 }
