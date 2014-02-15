@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
@@ -77,16 +78,26 @@ public class QueryCommandParser extends ChatCommandParser {
                 CommandType.TYPE_SERVER, CommandType.TYPE_QUERY);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
-            final CommandInfo commandInfo, final Command command,
+    protected CommandContext getCommandContext(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
             final CommandArguments args) {
+        return new QueryCommandContext(origin, commandInfo, query);
+    }
+
+    @Override
+    protected void executeCommand(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
+            final CommandArguments args,
+            final CommandContext context) {
         if (commandInfo.getType() == CommandType.TYPE_QUERY) {
-            command.execute(origin, args, new QueryCommandContext(origin,
-                    commandInfo, query));
+            command.execute(origin, args, context);
         } else {
-            super.executeCommand(origin, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args, context);
         }
     }
 

@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -78,11 +79,22 @@ public class ServerCommandParser extends GlobalCommandParser {
         commandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
-            final CommandInfo commandInfo, final Command command,
+    protected CommandContext getCommandContext(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
             final CommandArguments args) {
+        return new ServerCommandContext(origin, commandInfo, server);
+    }
+
+    @Override
+    protected void executeCommand(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
+            final CommandArguments args,
+            final CommandContext context) {
         if (commandInfo.getType() == CommandType.TYPE_SERVER) {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
                     && (server == null || (server.getState() != ServerState.CONNECTED
@@ -92,10 +104,10 @@ public class ServerCommandParser extends GlobalCommandParser {
                     origin.addLine("commandError", "You must be connected to use this command");
                 }
             } else {
-                command.execute(origin, args, new ServerCommandContext(origin, commandInfo, server));
+                command.execute(origin, args, context);
             }
         } else {
-            super.executeCommand(origin, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args, context);
         }
     }
 

@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
 /**
@@ -76,16 +77,26 @@ public class ChannelCommandParser extends ChatCommandParser {
                 CommandType.TYPE_SERVER, CommandType.TYPE_CHANNEL);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
-            final CommandInfo commandInfo, final Command command,
+    protected CommandContext getCommandContext(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
             final CommandArguments args) {
+        return new ChannelCommandContext(origin, commandInfo, channel);
+    }
+
+    @Override
+    protected void executeCommand(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
+            final CommandArguments args,
+            final CommandContext context) {
         if (commandInfo.getType() == CommandType.TYPE_CHANNEL) {
-            command.execute(origin, args, new ChannelCommandContext(origin,
-                    commandInfo, channel));
+            command.execute(origin, args, context);
         } else {
-            super.executeCommand(origin, commandInfo, command, args);
+            super.executeCommand(origin, commandInfo, command, args, context);
         }
     }
 

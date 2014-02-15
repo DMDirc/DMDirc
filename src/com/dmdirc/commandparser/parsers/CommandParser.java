@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -151,7 +152,8 @@ public abstract class CommandParser implements Serializable {
             if (commands.containsKey(args.getCommandName().toLowerCase())) {
                 final CommandInfoPair pair = commands.get(args.getCommandName().toLowerCase());
                 addHistory(args.getStrippedLine());
-                executeCommand(origin, pair.getCommandInfo(), pair.getCommand(), args);
+                executeCommand(origin, pair.getCommandInfo(), pair.getCommand(), args,
+                        getCommandContext(origin, pair.getCommandInfo(), pair.getCommand(), args));
             } else {
                 handleInvalidCommand(origin, args);
             }
@@ -278,17 +280,32 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
+     * Gets the context that the command will execute with.
+     *
+     * @param origin The container which received the command
+     * @param commandInfo The command information object matched by the command
+     * @param command The command to be executed
+     * @param args The arguments to the command
+     * @return The context for the command.
+     */
+    protected abstract CommandContext getCommandContext(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
+            final CommandArguments args);
+
+    /**
      * Executes the specified command with the given arguments.
      *
      * @param origin The container which received the command
      * @param commandInfo The command information object matched by the command
      * @param command The command to be executed
      * @param args The arguments to the command
-     * @since 0.6.4
+     * @param context The context to use when executing the command
      */
     protected abstract void executeCommand(final FrameContainer origin,
             final CommandInfo commandInfo, final Command command,
-            final CommandArguments args);
+            final CommandArguments args, final CommandContext context);
 
     /**
      * Called when the user attempted to issue a command (i.e., used the command

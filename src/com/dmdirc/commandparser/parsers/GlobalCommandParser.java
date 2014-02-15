@@ -75,12 +75,23 @@ public class GlobalCommandParser extends CommandParser {
         commandManager.loadCommands(this, CommandType.TYPE_GLOBAL);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void executeCommand(final FrameContainer origin,
-            final CommandInfo commandInfo, final Command command,
+    protected CommandContext getCommandContext(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
             final CommandArguments args) {
-        command.execute(origin, args, new CommandContext(origin, commandInfo));
+        return new CommandContext(origin, commandInfo);
+    }
+
+    @Override
+    protected void executeCommand(
+            final FrameContainer origin,
+            final CommandInfo commandInfo,
+            final Command command,
+            final CommandArguments args,
+            final CommandContext context) {
+        command.execute(origin, args, context);
     }
 
     /**

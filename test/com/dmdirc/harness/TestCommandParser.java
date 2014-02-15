@@ -27,14 +27,13 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 public class TestCommandParser extends CommandParser {
     private static final long serialVersionUID = 7073002401375438532L;
-
-    private final AggregateConfigProvider configManager;
 
     public String nonCommandLine;
 
@@ -49,7 +48,6 @@ public class TestCommandParser extends CommandParser {
     public TestCommandParser(final AggregateConfigProvider configManager,
             final CommandController commandManager) {
         super(configManager, commandManager);
-        this.configManager = configManager;
     }
 
     @Override
@@ -58,11 +56,17 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(FrameContainer origin,
-            CommandInfo commandInfo, Command command, CommandArguments args) {
+    protected void executeCommand(FrameContainer origin, CommandInfo commandInfo, Command command,
+            CommandArguments args, CommandContext context) {
         executedCommand = command;
         wasSilent = args.isSilent();
         commandArgs = args;
+    }
+
+    @Override
+    protected CommandContext getCommandContext(FrameContainer origin, CommandInfo commandInfo,
+            Command command, CommandArguments args) {
+        return new CommandContext(origin, commandInfo);
     }
 
     @Override
