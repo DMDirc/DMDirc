@@ -499,7 +499,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param manager The manager requesting sources
      * @return A list of all matching config sources
      */
-    public List<ConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
+    List<ConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
         final List<ConfigProvider> sources = new ArrayList<>();
 
         synchronized (identities) {
@@ -675,7 +675,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     protected ConfigFileBackedConfigProvider createIdentity(final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {
-        if (!settings.containsKey(IDENTITY_DOMAIN) || !settings.get(IDENTITY_DOMAIN).containsKey("name")
+        if (!settings.containsKey(IDENTITY_DOMAIN)
+                || !settings.get(IDENTITY_DOMAIN).containsKey("name")
                 || settings.get(IDENTITY_DOMAIN).get("name").isEmpty()) {
             throw new InvalidIdentityFileException("identity.name is not set");
         }
