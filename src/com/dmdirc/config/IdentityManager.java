@@ -105,7 +105,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     private ConfigProvider versionConfig;
 
     /** The config manager used for global settings. */
-    private ConfigManager globalconfig;
+    private AggregateConfigProvider globalconfig;
 
     /**
      * Creates a new instance of IdentityManager.
@@ -510,8 +510,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             }
         }
 
-        // TODO: Expose this as a comparator other classes can use.
         Collections.sort(sources, new ConfigProviderTargetComparator());
+
+        log.debug("Found {} source(s) for {}", sources.size(), manager);
 
         return sources;
     }
@@ -520,7 +521,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public synchronized AggregateConfigProvider getGlobalConfiguration() {
         if (globalconfig == null) {
-            globalconfig = new ConfigManager("", "", "", "");
+            globalconfig = createAggregateConfig("", "", "", "");
         }
 
         return globalconfig;
@@ -725,11 +726,28 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         instance = identityManager;
     }
 
+    /**
+     * Finds and adds sources for the given manager, and adds it as an identity listener.
+     *
+     * @param configManager The manager to be initialised.
+     */
+    private void setUpConfigManager(final ConfigManager configManager) {
+        List<ConfigProvider> sources = getIdentitiesForManager(configManager);
+
+        for (ConfigProvider identity : sources) {
+            log.trace("Found {}", identity);
+            configManager.checkIdentity(identity);
+        }
+
+        registerIdentityListener(configManager);
+    }
+
     /** {@inheritDoc} */
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
         final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server);
+        setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
 
@@ -738,19 +756,24 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
         final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server, channel);
+        setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
 
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        return new ConfigManager(protocol, ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server);
+        setUpConfigManager(configManager);
+        return configManager;
     }
 
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        return new ConfigManager(protocol, ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server, channel);
+        setUpConfigManager(configManager);
+        return configManager;
     }
 
 }

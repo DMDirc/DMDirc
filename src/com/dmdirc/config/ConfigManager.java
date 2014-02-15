@@ -55,7 +55,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     private static final String VERSION_DOMAIN = "version";
 
     /** A list of sources for this config manager. */
-    private final List<ConfigProvider> sources;
+    private final List<ConfigProvider> sources = new ArrayList<>();
 
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
@@ -83,7 +83,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * @param server The name of the server for this manager
      * @since 0.6.3
      */
-    ConfigManager(final String protocol, final String ircd,
+    ConfigManager(
+            final String protocol, final String ircd,
             final String network, final String server) {
         this(protocol, ircd, network, server, "<Unknown>");
     }
@@ -107,18 +108,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         this.network = network;
         this.server = server;
         this.channel = chanName;
-
-        sources = IdentityManager.getIdentityManager().getIdentitiesForManager(this);
-
-        log.debug("Found {} source(s) for protocol: {}, ircd: {}, network: {}, server: {}, channel: {}",
-                new Object[] { sources.size(), protocol, ircd, network, server, chanName });
-
-        for (ConfigProvider identity : sources) {
-            log.trace("Found {}", identity);
-            identity.addListener(this);
-        }
-
-        IdentityManager.getIdentityManager().registerIdentityListener(this);
     }
 
     @Override
