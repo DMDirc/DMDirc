@@ -22,9 +22,10 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.global.NewServer;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
@@ -69,6 +70,9 @@ public class CommandLineParser {
     /** Provider to use to get server managers. */
     private final Provider<ServerManager> serverManagerProvider;
 
+    /** Provider to use to get the global config. */
+    private final Provider<AggregateConfigProvider> globalConfigProvider;
+
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
 
@@ -84,11 +88,15 @@ public class CommandLineParser {
     /**
      * Creates a new instance of CommandLineParser.
      *
-     * @param serverManagerProvider ServerManager
+     * @param serverManagerProvider Provider to use to get server managers.
+     * @param globalConfigProvider Provider to use to get the global config.
      */
     @Inject
-    public CommandLineParser(final Provider<ServerManager> serverManagerProvider) {
+    public CommandLineParser(
+            final Provider<ServerManager> serverManagerProvider,
+            @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider) {
         this.serverManagerProvider = serverManagerProvider;
+        this.globalConfigProvider = globalConfigProvider;
     }
 
     /**
@@ -146,7 +154,7 @@ public class CommandLineParser {
         boolean needsArg = false;
 
         for (Object[] target : ARGUMENTS) {
-            if ((Character) argument == target[0]) {
+            if (target[0].equals(argument)) {
                 needsArg = (Boolean) target[3];
                 break;
             }
@@ -316,12 +324,12 @@ public class CommandLineParser {
      * Prints out the client version and exits.
      */
     private void doVersion() {
+        final AggregateConfigProvider globalConfig = globalConfigProvider.get();
+
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
-        System.out.println("        Version: " + IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOption("version", "version"));
-        System.out.println(" Update channel: " + IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOption("updater", "channel"));
+        System.out.println("        Version: " + globalConfig.getOption("version", "version"));
+        System.out.println(" Update channel: " + globalConfig.getOption("updater", "channel"));
         exit();
     }
 
