@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.ui.Colour;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.List;
@@ -83,18 +82,6 @@ public interface ReadOnlyConfigProvider {
      * @return The value of the option
      */
     char getOptionChar(String domain, String option);
-
-    /**
-     * Retrieves a colour representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallbacks An ordered array of further domains and options
-     * (in pairs) to try if the specified domain/option isn't found
-     * @return The colour representation of the option
-     * @since 0.6.3m1
-     */
-    Colour getOptionColour(String domain, String option, String... fallbacks);
 
     /**
      * Retrieves an integral representation of the specified option.
@@ -195,17 +182,6 @@ public interface ReadOnlyConfigProvider {
      * false otherwise.
      */
     boolean hasOptionChar(String domain, String option);
-
-    /**
-     * Determines if this source has the specified colour option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @since 0.6.3m1
-     * @return True iff the option exists and is parsable as a colour,
-     * false otherwise.
-     */
-    boolean hasOptionColour(String domain, String option);
 
     /**
      * Determines if this source has the specified integer option.

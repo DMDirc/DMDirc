@@ -23,9 +23,6 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-import com.dmdirc.ui.Colour;
-import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.util.validators.ColourValidator;
 import com.dmdirc.util.validators.DisabledOptionValidator;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
@@ -36,8 +33,6 @@ import com.dmdirc.util.validators.ValidatorChain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Provider;
 
 /**
  * Defines methods to get options from a config provider in various forms.
@@ -64,39 +59,6 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     /** A validator for integer settings. */
     private static final Validator<String> INT_VALIDATOR
             = new OptionalValidator(new NumericalValidator(-1, -1));
-
-    /** A validator for colour settings. */
-    private static final Validator<String> COLOUR_VALIDATOR
-            = new OptionalValidator(new ColourValidator());
-
-    /** Manager to use to convert colours. */
-    private final Provider<ColourManager> colourManager;
-
-    /**
-     * Creates a new instance of {@link com.dmdirc.interfaces.config.ConfigProvider}.
-     *
-     * @param colourManager The colour manager to use to convert colours.
-     */
-    public BaseConfigProvider(final Provider<ColourManager> colourManager) {
-        this.colourManager = colourManager;
-    }
-
-    /**
-     * Creates a new instance of {@link com.dmdirc.interfaces.config.ConfigProvider} using the
-     * singleton colour manager.
-     *
-     * @deprecated Should pass in a {@link ColourManager}.
-     */
-    @Deprecated
-    public BaseConfigProvider() {
-        this(new Provider<ColourManager>() {
-            /** {@inheritDoc} */
-            @Override
-            public ColourManager get() {
-                return new ColourManager(IdentityManager.getIdentityManager().getGlobalConfiguration());
-            }
-        });
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -140,12 +102,6 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasOptionColour(final String domain, final String option) {
-        return hasOptionString(domain, option, COLOUR_VALIDATOR);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public boolean hasOptionBool(final String domain, final String option) {
         return hasOption(domain, option, PERMISSIVE_VALIDATOR);
     }
@@ -185,15 +141,6 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     @Override
     public char getOptionChar(final String domain, final String option) {
         return getOption(domain, option).charAt(0);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Colour getOptionColour(final String domain, final String option,
-            final String ... fallbacks) {
-        final String value = getOptionString(domain, option, true, COLOUR_VALIDATOR, fallbacks);
-
-        return value == null ? null : colourManager.get().getColourFromString(value, null);
     }
 
     /** {@inheritDoc} */

@@ -173,8 +173,10 @@ public class Styliser implements ConfigChangeListener {
         configManager.addChangeListener("ui", "stylechannels", this);
         styleURIs = configManager.getOptionBool("ui", "stylelinks");
         styleChannels = configManager.getOptionBool("ui", "stylechannels");
-        uriColour = configManager.getOptionColour("ui", "linkcolour");
-        channelColour = configManager.getOptionColour("ui", "channelcolour");
+        uriColour = colourManager.getColourFromString(
+                configManager.getOptionString("ui", "linkcolour"), null);
+        channelColour = colourManager.getColourFromString(
+                configManager.getOptionString("ui", "channelcolour"), null);
     }
 
     /**
@@ -882,10 +884,12 @@ public class Styliser implements ConfigChangeListener {
                 styleChannels = configManager.getOptionBool("ui", "stylechannels");
                 break;
             case "linkcolour":
-                uriColour = configManager.getOptionColour("ui", "linkcolour");
+                uriColour = colourManager.getColourFromString(
+                        configManager.getOptionString("ui", "linkcolour"), null);
                 break;
             case "channelcolour":
-                channelColour = configManager.getOptionColour("ui", "channelcolour");
+                channelColour = colourManager.getColourFromString(
+                        configManager.getOptionString("ui", "channelcolour"), null);
                 break;
         }
     }

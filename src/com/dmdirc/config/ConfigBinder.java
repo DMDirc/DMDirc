@@ -26,7 +26,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.Colour;
 import com.dmdirc.util.collections.MapList;
 
 import java.lang.reflect.AccessibleObject;
@@ -161,10 +160,6 @@ public class ConfigBinder {
             final Class<?> targetClass) {
         if (targetClass.equals(String.class)) {
             return manager.getOptionString(binding.domain(), binding.key(), binding.fallbacks());
-        }
-
-        if (targetClass.equals(Colour.class)) {
-            return manager.getOptionColour(binding.domain(), binding.key(), binding.fallbacks());
         }
 
         if (targetClass.equals(Boolean.class) || targetClass.equals(Boolean.TYPE)) {

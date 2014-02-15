@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.Colour;
+import com.dmdirc.util.validators.ColourValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,9 +79,11 @@ public class ColourManager {
      * Initialises the IRC_COLOURS array.
      */
     private void initColours() {
+        final ColourValidator validator = new ColourValidator();
         for (int i = 0; i < 16; i++) {
-            if (configManager.hasOptionColour("colour", String.valueOf(i))) {
-                ircColours[i] = configManager.getOptionColour("colour", String.valueOf(i));
+            if (configManager.hasOptionString("colour", String.valueOf(i), validator)) {
+                ircColours[i] = getColourFromHex(
+                        configManager.getOptionString("colour", String.valueOf(i)));
                 colourCache.remove(String.valueOf(i));
             } else if (!ircColours[i].equals(DEFAULT_COLOURS[i])) {
                 ircColours[i] = DEFAULT_COLOURS[i];

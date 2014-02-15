@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.Colour;
+import com.dmdirc.util.validators.ColourValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -138,19 +139,19 @@ public class ColourManagerTest {
 
     @Test
     public void testCustomColours() {
-        when(configManager.hasOptionColour("colour", "4")).thenReturn(true);
-        when(configManager.getOptionColour("colour", "4")).thenReturn(Colour.GREEN);
+        when(configManager.hasOptionString(eq("colour"), eq("4"), any(ColourValidator.class))).thenReturn(true);
+        when(configManager.getOptionString("colour", "4")).thenReturn("00FF00");
         configListener.getValue().configChanged("colour", "4");
         assertEquals("00ff00", ColourManager.getHex(manager.getColourFromIrcCode(4)).toLowerCase());
     }
 
     @Test
     public void testCustomColours2() {
-        when(configManager.hasOptionColour("colour", "4")).thenReturn(true);
-        when(configManager.getOptionColour("colour", "4")).thenReturn(Colour.GREEN);
+        when(configManager.hasOptionString(eq("colour"), eq("4"), any(ColourValidator.class))).thenReturn(true);
+        when(configManager.getOptionString("colour", "4")).thenReturn("00FF00");
         configListener.getValue().configChanged("colour", "4");
 
-        when(configManager.hasOptionColour("colour", "4")).thenReturn(false);
+        when(configManager.hasOptionString(eq("colour"), eq("4"), any(ColourValidator.class))).thenReturn(false);
         configListener.getValue().configChanged("colour", "4");
         assertEquals("ff0000", ColourManager.getHex(manager.getColourFromIrcCode(4)).toLowerCase());
     }
