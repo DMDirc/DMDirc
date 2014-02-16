@@ -10,7 +10,7 @@
 
         <condition property="clover.installed">
             <and>
-                <available classname="com.cenqua.clover.CloverInstr"/>
+                <available classname="com.atlassian.clover.CloverInstr"/>
                 <available file="etc/clover.license"/>
             </and>
         </condition>
