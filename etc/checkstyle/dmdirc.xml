@@ -16,7 +16,7 @@
     <module name="NewlineAtEndOfFile"/>
 
     <module name="Header">
-        <property name="headerFile" value="checkstyle/dmdirc.license"/>
+        <property name="headerFile" value="etc/checkstyle/dmdirc.license"/>
         <property name="ignoreLines" value="2, 21"/>
     </module>
 

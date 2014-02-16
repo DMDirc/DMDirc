@@ -5,13 +5,13 @@
     <target name="-init-clover" depends="-init-dependencies">
         <taskdef resource="cloverlib.xml" classpathref="test-classpath"/>
         <taskdef resource="cloverjunitlib.xml" classpathref="test-classpath"/>
-        <property name="clover.license.path" location="etc/clover.license"/>
+        <property name="clover.license.path" location="etc/clover/clover.license"/>
         <property name="clover.init.string" location=".clover/clover.db"/>
 
         <condition property="clover.installed">
             <and>
                 <available classname="com.atlassian.clover.CloverInstr"/>
-                <available file="etc/clover.license"/>
+                <available file="etc/clover/clover.license"/>
             </and>
         </condition>
 
@@ -94,7 +94,7 @@
             description="Run tests and generate Clover XML and HTML reports."/>
 
     <target name="teamcity-clover-report">
-        <xslt in="reports/clover/clover.xml" style="checkstyle/clover.xsl" out="teamcity-info.xml" />
+        <xslt in="reports/clover/clover.xml" style="etc/clover/clover.xsl" out="teamcity-info.xml" />
     </target>
 
 </project>

@@ -20,7 +20,7 @@
         <echo>Downloading private files, if this fails please pass username and</echo>
         <echo>password to ant using -Dusername=... -Dpassword=...</echo>
 
-        <get src="http://www.dmdirc.com/private/clover.license" dest="etc/clover.license" username="${username}" password="${password}"/>
+        <get src="http://www.dmdirc.com/private/clover.license" dest="etc/clover/clover.license" username="${username}" password="${password}"/>
 
         <get dest="installer/signing/" username="${username}" password="${password}">
             <url url="http://www.dmdirc.com/private/DMDirc.cer"/>
@@ -33,8 +33,8 @@
         <!-- Re-evaluate as the license is probably here now -->
         <condition property="clover.installed">
             <and>
-                <available classname="com.cenqua.clover.CloverInstr"/>
-                <available file="etc/clover.license"/>
+                <available classname="com.atlassian.clover.CloverInstr"/>
+                <available file="etc/clover/clover.license"/>
             </and>
         </condition>
     </target>

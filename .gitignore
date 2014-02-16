@@ -34,6 +34,7 @@ __history
 /reports/checkstyle.*
 /reports/deadcode.txt
 /etc/clover.license
+/etc/clover/clover.license
 /.clover
 /test_profile
 /*.key
