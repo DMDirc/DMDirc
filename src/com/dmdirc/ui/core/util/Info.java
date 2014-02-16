@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
@@ -40,13 +41,26 @@ public class Info {
     /**
      * Returns the DMDirc version info.
      *
+     * @deprecated Pass a config.
      * @return DMDirc version string
      */
+    @Deprecated
     public static String getDMDircVersion() {
         return IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOption("version", "version") + " ("
                 + IdentityManager.getIdentityManager().getGlobalConfiguration()
                 .getOption("updater", "channel") + ")";
+    }
+
+    /**
+     * Returns the DMDirc version info.
+     *
+     * @param globalConfig The config to read version information from.
+     * @return DMDirc version string
+     */
+    public static String getDMDircVersion(final AggregateConfigProvider globalConfig) {
+        return globalConfig.getOption("version", "version") + " ("
+                + globalConfig.getOption("updater", "channel") + ")";
     }
 
     /**
