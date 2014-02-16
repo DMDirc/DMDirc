@@ -42,11 +42,9 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -99,8 +97,8 @@ public abstract class FrameContainer {
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
 
-    /** Previously-constructed iconmanagers. */
-    private final Map<URLBuilder, IconManager> iconManagers = new HashMap<>();
+    /** The icon manager to use for this container. */
+    private final IconManager iconManager;
 
     /**
      * Instantiate new frame container.
@@ -109,17 +107,22 @@ public abstract class FrameContainer {
      * @param name The name of this container
      * @param title The title of this container
      * @param config The config manager for this container
+     * @param urlBuilder The URL builder to use when finding icons.
      * @param components The UI components that this frame requires
      * @since 0.6.4
      */
     protected FrameContainer(
-            final String icon, final String name,
-            final String title, final AggregateConfigProvider config,
+            final String icon,
+            final String name,
+            final String title,
+            final AggregateConfigProvider config,
+            final URLBuilder urlBuilder,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
+        this.iconManager = new IconManager(configManager, urlBuilder);
 
         setIcon(icon);
     }
@@ -220,11 +223,9 @@ public abstract class FrameContainer {
      * Gets an icon manager for this container.
      *
      * @return An icon manager for this container.
-     * @deprecated Use {@link #getIconManager(com.dmdirc.util.URLBuilder)}.
      */
-    @Deprecated
     public IconManager getIconManager() {
-        return getIconManager(URLBuilder.getInstance());
+        return iconManager;
     }
 
     /**
@@ -232,12 +233,11 @@ public abstract class FrameContainer {
      *
      * @param urlBuilder The builder to use to construct icon URLs.
      * @return An icon manager for this container.
+     * @deprecated Don't bother passing in a URL builder. That was a bad idea.
      */
+    @Deprecated
     public IconManager getIconManager(final URLBuilder urlBuilder) {
-        if (!iconManagers.containsKey(urlBuilder)) {
-            iconManagers.put(urlBuilder, new IconManager(getConfigManager(), urlBuilder));
-        }
-        return iconManagers.get(urlBuilder);
+        return iconManager;
     }
 
     /**

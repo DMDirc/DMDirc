@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
+import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
 
@@ -39,10 +40,14 @@ public class CustomWindow extends FrameContainer {
      * @param name The name of this custom window
      * @param title The title of this custom window
      * @param parent The parent of this custom window
+     * @param urlBuilder The URL builder to use when finding icons.
      */
-    public CustomWindow(final String name, final String title,
-            final FrameContainer parent) {
-        super("custom", name, title, parent.getConfigManager(),
+    public CustomWindow(
+            final String name,
+            final String title,
+            final FrameContainer parent,
+            final URLBuilder urlBuilder) {
+        super("custom", name, title, parent.getConfigManager(), urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
@@ -52,10 +57,14 @@ public class CustomWindow extends FrameContainer {
      * @param name The name of this custom window
      * @param title The parent of this custom window
      * @param configProvider The config provider to read settings from.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
-    public CustomWindow(final String name, final String title,
-            final AggregateConfigProvider configProvider) {
-        super("custom", name, title, configProvider,
+    public CustomWindow(
+            final String name,
+            final String title,
+            final AggregateConfigProvider configProvider,
+            final URLBuilder urlBuilder) {
+        super("custom", name, title, configProvider, urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

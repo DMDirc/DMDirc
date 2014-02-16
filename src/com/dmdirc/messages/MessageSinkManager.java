@@ -27,6 +27,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.util.URLBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,14 +128,16 @@ public class MessageSinkManager {
      *
      * @param statusBarManager The status bar manager to give to status-bar related sinks.
      * @param windowManager The window manager to give to sinks that iterate windows.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
     public void loadDefaultSinks(
             final StatusBarManager statusBarManager,
-            final WindowManager windowManager) {
+            final WindowManager windowManager,
+            final URLBuilder urlBuilder) {
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
         addSink(new CommonChanelsMessageSink());
-        addSink(new CustomWindowMessageSink(windowManager));
+        addSink(new CustomWindowMessageSink(windowManager, urlBuilder));
         addSink(new ForkMessageSink());
         addSink(new FormatMessageSink());
         addSink(new GroupMessageSink());

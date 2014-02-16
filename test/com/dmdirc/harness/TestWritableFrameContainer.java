@@ -30,6 +30,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.util.URLBuilder;
 
 import java.util.Collections;
 
@@ -41,9 +42,9 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager) {
+            final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder) {
         super("raw", "Raw", "(Raw)", cm,
-                new GlobalCommandParser(cm, commandManager), messageSinkManager,
+                new GlobalCommandParser(cm, commandManager), messageSinkManager, urlBuilder,
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;

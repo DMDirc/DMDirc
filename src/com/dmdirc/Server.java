@@ -60,6 +60,7 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
@@ -86,6 +87,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.net.ssl.TrustManager;
 
 import org.slf4j.LoggerFactory;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -222,6 +224,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param channelFactory The factory to use to create channels.
      * @param queryFactory The factory to use to create queries.
      * @param rawFactory The factory to use to create raw windows.
+     * @param urlBuilder The URL builder to use when finding icons.
      * @param userSettings The config provider to write user settings to.
      * @param uri The address of the server to connect to
      * @param profile The profile to use
@@ -239,6 +242,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
+            final URLBuilder urlBuilder,
             @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
             @Unbound final URI uri,
             @Unbound final ConfigProvider profile) {
@@ -248,6 +252,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 configMigrator.getConfigProvider(),
                 commandParser,
                 messageSinkManager,
+                urlBuilder,
                 Arrays.asList(
                     WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),

@@ -31,6 +31,7 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.util.URLBuilder;
 
 import java.net.URI;
 
@@ -60,6 +61,7 @@ public class ServerTest {
     @Mock private QueryFactory queryFactory;
     @Mock private RawFactory rawFactory;
     @Mock private StatusBarManager statusBarManager;
+    @Mock private URLBuilder urlBuilder;
 
     private Server server;
 
@@ -82,6 +84,7 @@ public class ServerTest {
                 channelFactory,
                 queryFactory,
                 rawFactory,
+                urlBuilder,
                 userConfig,
                 new URI("irc-test://255.255.255.255"),
                 profile);

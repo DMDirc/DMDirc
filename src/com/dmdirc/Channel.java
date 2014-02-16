@@ -43,6 +43,7 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.collections.ListenerList;
@@ -107,6 +108,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
     public Channel(
             @Unbound final Server newServer,
@@ -114,11 +116,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             @Unbound final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
-            final MessageSinkManager messageSinkManager) {
+            final MessageSinkManager messageSinkManager,
+            final URLBuilder urlBuilder) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
-                new ChannelCommandParser(newServer, commandController), messageSinkManager,
+                new ChannelCommandParser(newServer, commandController),
+                messageSinkManager,
+                urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier(),
                     WindowComponent.TOPICBAR.getIdentifier(),

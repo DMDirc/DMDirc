@@ -44,6 +44,7 @@ import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
@@ -82,17 +83,20 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
     public Query(
             @Unbound final Server newServer,
             @Unbound final String newHost,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
-            final MessageSinkManager messageSinkManager) {
+            final MessageSinkManager messageSinkManager,
+            final URLBuilder urlBuilder) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(), new QueryCommandParser(newServer, commandController),
                 messageSinkManager,
+                urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

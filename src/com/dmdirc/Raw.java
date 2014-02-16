@@ -34,6 +34,7 @@ import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
@@ -57,14 +58,17 @@ public class Raw extends WritableFrameContainer
      * @param newServer the server to monitor
      * @param commandController The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
     public Raw(
             @Unbound final Server newServer,
             final CommandController commandController,
-            final MessageSinkManager messageSinkManager) {
+            final MessageSinkManager messageSinkManager,
+            final URLBuilder urlBuilder) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
                 new ServerCommandParser(newServer.getConfigManager(), commandController),
                 messageSinkManager,
+                urlBuilder,
                 Arrays.asList(
                     WindowComponent.TEXTAREA.getIdentifier(),
                     WindowComponent.INPUTFIELD.getIdentifier()));

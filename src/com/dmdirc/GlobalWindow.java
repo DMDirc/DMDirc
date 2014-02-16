@@ -35,6 +35,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
 
@@ -57,13 +58,15 @@ public class GlobalWindow extends WritableFrameContainer {
      * @param parser The command parser to use to parse input.
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param urlBuilder The URL builder to use when finding icons.
      */
     public GlobalWindow(
             final AggregateConfigProvider config,
             final CommandParser parser,
             final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager) {
-        super("icon", "Global", "(Global)", config, parser, messageSinkManager,
+            final MessageSinkManager messageSinkManager,
+            final URLBuilder urlBuilder) {
+        super("icon", "Global", "(Global)", config, parser, messageSinkManager, urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
@@ -107,6 +110,8 @@ public class GlobalWindow extends WritableFrameContainer {
         private final Provider<MessageSinkManager> messageSinkManagerProvider;
         /** The provider to use to retrieve a global command parser. */
         private final Provider<GlobalCommandParser> globalCommandParserProvider;
+        /** The URL builder to use when finding icons. */
+        private final URLBuilder urlBuilder;
 
         /** The global window that's in use, if any. */
         private GlobalWindow globalWindow;
@@ -119,6 +124,7 @@ public class GlobalWindow extends WritableFrameContainer {
          * @param windowManagerProvider The provider to use to retrieve a window manager.
          * @param messageSinkManagerProvider The provider to use to retrieve a sink manager.
          * @param globalCommandParserProvider The provider to use to retrieve a global command parser.
+         * @param urlBuilder The URL builder to use when finding icons.
          */
         @Inject
         public GlobalWindowManager(
@@ -126,12 +132,14 @@ public class GlobalWindow extends WritableFrameContainer {
                 final TabCompleterFactory tabCompleterFactory,
                 final Provider<WindowManager> windowManagerProvider,
                 final Provider<MessageSinkManager> messageSinkManagerProvider,
-                final Provider<GlobalCommandParser> globalCommandParserProvider) {
+                final Provider<GlobalCommandParser> globalCommandParserProvider,
+                final URLBuilder urlBuilder) {
             this.globalConfig = globalConfig;
             this.tabCompleterFactory = tabCompleterFactory;
             this.windowManagerProvider = windowManagerProvider;
             this.messageSinkManagerProvider = messageSinkManagerProvider;
             this.globalCommandParserProvider = globalCommandParserProvider;
+            this.urlBuilder = urlBuilder;
         }
 
         /** {@inheritDoc} */
@@ -159,7 +167,8 @@ public class GlobalWindow extends WritableFrameContainer {
                         globalWindow = new GlobalWindow(globalConfig,
                                 globalCommandParserProvider.get(),
                                 tabCompleterFactory,
-                                messageSinkManagerProvider.get());
+                                messageSinkManagerProvider.get(),
+                                urlBuilder);
                         addCloseListener(globalWindow);
                         windowManagerProvider.get().addWindow(globalWindow);
                     }
