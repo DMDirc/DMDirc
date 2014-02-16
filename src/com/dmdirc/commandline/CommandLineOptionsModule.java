@@ -23,8 +23,10 @@
 package com.dmdirc.commandline;
 
 import java.io.File;
+
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -87,7 +89,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.PLUGINS)
-    public String getPluginsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+    public String getPluginsDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory + "plugins" + File.separator;
     }
 
@@ -100,7 +102,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.ACTIONS)
-    public String getActionsDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+    public String getActionsDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory + "actions" + File.separator;
     }
 
@@ -113,7 +115,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.IDENTITIES)
-    public String getIdentitiesDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+    public String getIdentitiesDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory + "identities" + File.separator;
     }
 
@@ -126,7 +128,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.THEMES)
-    public String getThemesDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+    public String getThemesDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory + "themes" + File.separator;
     }
 
@@ -142,7 +144,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.TEMPORARY)
-    public String getTempDirectory(final @Directory(DirectoryType.BASE) String baseDirectory) {
+    public String getTempDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory;
     }
 

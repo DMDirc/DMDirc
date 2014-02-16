@@ -52,7 +52,7 @@ public class CommandLineParser {
      * following order: short option, long option, description, whether or not
      * the option takes an argument.
      */
-    private final Object[][] ARGUMENTS = new Object[][]{
+    private static final Object[][] ARGUMENTS = new Object[][]{
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'e', "existing", "Try to use an existing instance of DMDirc (use with -c)", Boolean.FALSE},
@@ -221,39 +221,39 @@ public class CommandLineParser {
      */
     private void processArgument(final char arg, final String param) {
         switch (arg) {
-        case 'c':
-            doConnect(param);
-            break;
-        case 'd':
-            doDirectory(param);
-            break;
-        case 'e':
-            doExisting();
-            break;
-        case 'k':
-            doExistingCheck();
-            break;
-        case 'h':
-            doHelp();
-            break;
-        case 'l':
-            launcherVersion = param;
-            break;
-        case 'p':
-            doDirectory(DMDircResourceManager.getCurrentWorkingDirectory());
-            break;
-        case 'r':
-            disablereporting = true;
-            break;
-        case 'v':
-            doVersion();
-            break;
-        default:
-            // This really shouldn't ever happen, but we'll handle it nicely
-            // anyway.
+            case 'c':
+                doConnect(param);
+                break;
+            case 'd':
+                doDirectory(param);
+                break;
+            case 'e':
+                doExisting();
+                break;
+            case 'k':
+                doExistingCheck();
+                break;
+            case 'h':
+                doHelp();
+                break;
+            case 'l':
+                launcherVersion = param;
+                break;
+            case 'p':
+                doDirectory(DMDircResourceManager.getCurrentWorkingDirectory());
+                break;
+            case 'r':
+                disablereporting = true;
+                break;
+            case 'v':
+                doVersion();
+                break;
+            default:
+                // This really shouldn't ever happen, but we'll handle it nicely
+                // anyway.
 
-            doUnknownArg("Unknown argument: " + arg);
-            break;
+                doUnknownArg("Unknown argument: " + arg);
+                break;
         }
     }
 

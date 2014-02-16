@@ -46,22 +46,20 @@ import java.util.Map;
 public class CommandManager implements CommandController {
 
     /** A list of commands that have been instantiated. */
-    private final Map<CommandInfo, Command> commands
-            = new HashMap<>();
+    private final Map<CommandInfo, Command> commands = new HashMap<>();
 
     /** A list of command parsers that have been instantiated. */
-    private final MapList<CommandType, CommandParser> parsers
-            = new MapList<>();
+    private final MapList<CommandType, CommandParser> parsers = new MapList<>();
 
     /** The manager to use to iterate servers. */
     private final ServerManager serverManager;
 
     /** The command char we're using. */
-    @ConfigBinding(domain="general", key="commandchar")
+    @ConfigBinding(domain = "general", key = "commandchar")
     private char commandChar;
 
     /** The silence char we're using. */
-    @ConfigBinding(domain="general", key="silencechar")
+    @ConfigBinding(domain = "general", key = "silencechar")
     private char silenceChar;
 
     /**
@@ -73,10 +71,12 @@ public class CommandManager implements CommandController {
         this.serverManager = serverManager;
     }
 
+    @Override
     public char getCommandChar() {
         return commandChar;
     }
 
+    @Override
     public char getSilenceChar() {
         return silenceChar;
     }

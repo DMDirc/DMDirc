@@ -230,7 +230,7 @@ public abstract class CommandParser implements Serializable {
      * @param command The command name and arguments that were used
      */
     private void addHistory(final String command) {
-        synchronized(history) {
+        synchronized (history) {
             final PreviousCommand pc = new PreviousCommand(command);
             history.remove(pc);
             history.add(pc);
@@ -247,7 +247,7 @@ public abstract class CommandParser implements Serializable {
     public long getCommandTime(final String command) {
         long res = 0;
 
-        synchronized(history) {
+        synchronized (history) {
             for (PreviousCommand pc : history.getList()) {
                 if (pc.getLine().matches("(?i)" + command)) {
                     res = Math.max(res, pc.getTime());
