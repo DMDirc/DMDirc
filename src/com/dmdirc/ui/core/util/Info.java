@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.lang.management.ManagementFactory;
@@ -36,20 +35,6 @@ public class Info {
     /** Not intended to be instantiated. */
     private Info() {
         //Prevent instantiation.
-    }
-
-    /**
-     * Returns the DMDirc version info.
-     *
-     * @deprecated Pass a config.
-     * @return DMDirc version string
-     */
-    @Deprecated
-    public static String getDMDircVersion() {
-        return IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOption("version", "version") + " ("
-                + IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOption("updater", "channel") + ")";
     }
 
     /**
