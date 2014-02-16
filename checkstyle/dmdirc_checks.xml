@@ -55,6 +55,7 @@
         </module>
 	<module name="LineLength">
 		<property name="severity" value="warning"/>
+		<property name="max" value="100"/>
 	</module>
 	<module name="JavaNCSS">
 	    <property name="methodMaximum" value="200"/>
@@ -66,7 +67,7 @@
 	<module name="CyclomaticComplexity"/>
 
 	<module name="ImportOrder">
-		    <property name="groups" value="com.dmdirc,java,javax"/>
+		    <property name="groups" value="com.dmdirc,com.google,java,javax"/>
 		    <property name="ordered" value="true"/>
 		    <property name="separated" value="true"/>
 	</module>
