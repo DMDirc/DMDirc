@@ -24,15 +24,15 @@ package com.dmdirc.commandline;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.ServerManager;
-import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.InvalidURIException;
+import com.dmdirc.util.URIParser;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,18 +85,24 @@ public class CommandLineParser {
     /** The RMI server we're using. */
     private RemoteInterface server;
 
+    /** The parser to use for URIs. */
+    private final URIParser uriParser;
+
     /**
      * Creates a new instance of CommandLineParser.
      *
      * @param serverManagerProvider Provider to use to get server managers.
      * @param globalConfigProvider Provider to use to get the global config.
+     * @param uriParser The parser to use for URIs.
      */
     @Inject
     public CommandLineParser(
             final Provider<ServerManager> serverManagerProvider,
-            @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider) {
+            @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider,
+            final URIParser uriParser) {
         this.serverManagerProvider = serverManagerProvider;
         this.globalConfigProvider = globalConfigProvider;
+        this.uriParser = uriParser;
     }
 
     /**
@@ -277,8 +283,8 @@ public class CommandLineParser {
      */
     private void doConnect(final String address) {
         try {
-            addresses.add(NewServer.getURI(address));
-        } catch (URISyntaxException ex) {
+            addresses.add(uriParser.parseFromText(address));
+        } catch (InvalidURIException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
         }
     }
