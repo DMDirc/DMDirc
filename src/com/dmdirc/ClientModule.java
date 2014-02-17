@@ -238,6 +238,7 @@ public class ClientModule {
      *
      * @param statusBarManager The status bar manager to use for status bar sinks.
      * @param windowManager The window manager to use for sinks that iterate windows.
+     * @param urlBuilder The URL Builder to use when creating new containers.
      * @return The message sink manager the client should use.
      */
     @Provides

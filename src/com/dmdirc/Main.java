@@ -41,7 +41,6 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.themes.ThemeManager;
-import com.dmdirc.util.URLBuilder;
 
 import com.google.common.eventbus.EventBus;
 
@@ -113,7 +112,6 @@ public class Main {
      * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
      * @param corePluginExtractor Extractor to use for core plugins.
-     * @param urlBuilder URL builder to use as a singleton.
      * @param globalWindowManager Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
      * @param eventBus The event bus to dispatch events on.
@@ -130,7 +128,6 @@ public class Main {
             final MessageSinkManager messageSinkManager,
             final ThemeManager themeManager,
             final CorePluginExtractor corePluginExtractor,
-            final URLBuilder urlBuilder,
             final GlobalWindowManager globalWindowManager,
             final ColourActionComparison colourActionComparison,
             final EventBus eventBus,
@@ -146,7 +143,6 @@ public class Main {
         this.colourActionComparison = colourActionComparison;
         this.eventBus = eventBus;
         this.commands = commands;
-        URLBuilder.setInstance(urlBuilder);
     }
 
     /**

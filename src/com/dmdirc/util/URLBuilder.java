@@ -32,15 +32,13 @@ import java.net.URL;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
+@Singleton
 public class URLBuilder {
-
-    /** Singleton instance. */
-    @Deprecated
-    private static URLBuilder instance;
 
     /** Provider to retrieve a plugin manager instance when needed. */
     private final Provider<PluginManager> pluginManagerProvider;
@@ -60,16 +58,6 @@ public class URLBuilder {
             final Provider<ThemeManager> themeManagerProvider) {
         this.pluginManagerProvider = pluginManagerProvider;
         this.themeManagerProvider = themeManagerProvider;
-    }
-
-    @Deprecated
-    public static URLBuilder getInstance() {
-        return instance;
-    }
-
-    @Deprecated
-    public static void setInstance(final URLBuilder instance) {
-        URLBuilder.instance = instance;
     }
 
     /**
