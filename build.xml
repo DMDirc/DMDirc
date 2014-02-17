@@ -67,6 +67,14 @@
         </jar>
     </target>
 
+    <target name="-bundle-raven">
+        <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="lib/main/jackson-core.jar" includes="com/fasterxml/**"/>
+            <zipfileset src="lib/main/commons-codec.jar" includes="org/apache/**"/>
+            <zipfileset src="lib/main/raven.jar" includes="net/kencochrane/**"/>
+        </jar>
+    </target>
+
     <target name="-bundle-guava" depends="-init-proguard">
         <proguard>
             -libraryjars ${java.home}/lib/rt.jar
@@ -96,6 +104,6 @@
     <target name="-pre-init" depends="-init-dependencies,-init-submodule-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava"/>
+    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava,-bundle-raven"/>
 
 </project>
