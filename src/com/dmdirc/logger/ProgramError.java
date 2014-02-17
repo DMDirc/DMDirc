@@ -23,6 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.core.util.Info;
 import com.dmdirc.util.io.Downloader;
 
 import java.io.File;
@@ -39,9 +40,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nullable;
+
+import net.kencochrane.raven.Dsn;
+import net.kencochrane.raven.Raven;
+import net.kencochrane.raven.RavenFactory;
+import net.kencochrane.raven.event.Event;
+import net.kencochrane.raven.event.EventBuilder;
+import net.kencochrane.raven.event.interfaces.ExceptionInterface;
 
 /**
  * Stores a program error.
@@ -61,6 +73,8 @@ public final class ProgramError implements Serializable {
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
 
+    public static final String SENTRY_DSN = "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2";
+
     /** Error ID. */
     private final long id;
 
@@ -70,8 +84,11 @@ public final class ProgramError implements Serializable {
     /** Error message. */
     private final String message;
 
-    /** Error trace. */
-    private final String[] trace;
+    /** Underlying exception. */
+    private final Throwable exception;
+
+    /** Underlying details message. */
+    private final String details;
 
     /** Date/time error first occurred. */
     private final Date firstDate;
@@ -94,11 +111,14 @@ public final class ProgramError implements Serializable {
      * @param id error id
      * @param level Error level
      * @param message Error message
-     * @param trace Error trace
+     * @param exception The exception that caused the error, if any.
+     * @param details The detailed cause of the error, if any.
      * @param date Error time and date
      */
-    public ProgramError(final long id, final ErrorLevel level,
-            final String message, final String[] trace, final Date date) {
+    public ProgramError(final long id, final ErrorLevel level, final String message,
+            @Nullable final Throwable exception,
+            @Nullable final String details,
+            final Date date) {
 
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
@@ -112,10 +132,6 @@ public final class ProgramError implements Serializable {
             throw new IllegalArgumentException("Message cannot be null or an empty string");
         }
 
-        if (trace == null) {
-            throw new IllegalArgumentException("Trace cannot be null");
-        }
-
         if (date == null) {
             throw new IllegalArgumentException("date cannot be null");
         }
@@ -123,7 +139,8 @@ public final class ProgramError implements Serializable {
         this.id = id;
         this.level = level;
         this.message = message;
-        this.trace = Arrays.copyOf(trace, trace.length);
+        this.exception = exception;
+        this.details = details;
         this.firstDate = (Date) date.clone();
         this.lastDate = (Date) date.clone();
         this.count = new AtomicInteger(1);
@@ -155,7 +172,9 @@ public final class ProgramError implements Serializable {
      * @return Error trace
      */
     public String[] getTrace() {
-        return Arrays.copyOf(trace, trace.length);
+        return exception != null ? getTrace(exception) :
+                message != null ? new String[] { message } :
+                new String[0];
     }
 
     /**
@@ -303,6 +322,43 @@ public final class ProgramError implements Serializable {
      * Sends this error report to the DMDirc developers.
      */
     public void send() {
+        sendToSentry();
+        sendToLegacy();
+    }
+
+    private void sendToSentry() {
+        final Raven raven = RavenFactory.ravenInstance(new Dsn(SENTRY_DSN));
+
+        // record a simple message
+        final EventBuilder eventBuilder = new EventBuilder()
+                .setMessage(message)
+                .setLevel(getSentryLevel())
+                .setServerName("")
+                .setTimestamp(firstDate)
+                .addTag("version", getVersion())
+                .addTag("version.major", getVersion().replaceAll("-.*", ""))
+                .addTag("os.name", System.getProperty("os.name", "unknown"))
+                .addTag("os.version", System.getProperty("os.version", "unknown"))
+                .addTag("os.arch", System.getProperty("os.arch", "unknown"))
+                .addTag("encoding", System.getProperty("file.encoding", "unknown"))
+                .addTag("locale", Locale.getDefault().toString())
+                .addTag("jvm.name", System.getProperty("java.vm.name", "unknown"))
+                .addTag("jvm.vendor", System.getProperty("java.vm.vendor", "unknown"))
+                .addTag("jvm.version", System.getProperty("java.version", "unknown"))
+                .addTag("jvm.version.major", System.getProperty("java.version", "unknown").replaceAll("_.*", ""));
+
+        if (exception != null) {
+            eventBuilder.addSentryInterface(new ExceptionInterface(exception));
+        }
+
+        if (details != null) {
+            eventBuilder.addExtra("details", details);
+        }
+
+        raven.sendEvent(eventBuilder.build());
+    }
+
+    private void sendToLegacy() {
         final Map<String, String> postData = new HashMap<>();
         List<String> response = new ArrayList<>();
         int tries = 0;
@@ -398,6 +454,8 @@ public final class ProgramError implements Serializable {
      * @return This error's source line
      */
     public String getSourceLine() {
+        final String[] trace = getTrace();
+
         for (String line : trace) {
             if (line.startsWith("com.dmdirc")) {
                 return line;
@@ -472,7 +530,11 @@ public final class ProgramError implements Serializable {
             return false;
         }
 
-        if (!Arrays.equals(this.trace, other.trace)) {
+        if (!Objects.equals(this.exception, other.exception)) {
+            return false;
+        }
+
+        if (!Objects.equals(this.details, other.details)) {
             return false;
         }
 
@@ -485,7 +547,67 @@ public final class ProgramError implements Serializable {
         int hash = 7;
         hash = 67 * hash + this.level.hashCode();
         hash = 67 * hash + this.message.hashCode();
-        hash = 67 * hash + Arrays.hashCode(this.trace);
+        hash = 67 * hash + (this.exception == null ? 1 : this.exception.hashCode());
+        hash = 67 * hash + (this.details == null ? 1 : this.details.hashCode());
         return hash;
     }
+
+
+    /**
+     * Converts an exception into a string array.
+     *
+     * @param throwable Exception to convert
+     * @since 0.6.3m1
+     * @return Exception string array
+     */
+    private static String[] getTrace(final Throwable throwable) {
+        String[] trace;
+
+        if (throwable == null) {
+            trace = new String[0];
+        } else {
+            final StackTraceElement[] traceElements = throwable.getStackTrace();
+            trace = new String[traceElements.length + 1];
+
+            trace[0] = throwable.toString();
+
+            for (int i = 0; i < traceElements.length; i++) {
+                trace[i + 1] = traceElements[i].toString();
+            }
+
+            if (throwable.getCause() != null) {
+                final String[] causeTrace = getTrace(throwable.getCause());
+                final String[] newTrace = new String[trace.length + causeTrace.length];
+                trace[0] = "\nWhich caused: " + trace[0];
+
+                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
+                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
+
+                trace = newTrace;
+            }
+        }
+
+        return trace;
+    }
+
+    private Event.Level getSentryLevel() {
+        switch (level) {
+            case FATAL:
+                return Event.Level.FATAL;
+            case HIGH:
+                return Event.Level.ERROR;
+            case MEDIUM:
+                return Event.Level.WARNING;
+            case LOW:
+                return Event.Level.INFO;
+            default:
+                return Event.Level.INFO;
+        }
+    }
+
+    private String getVersion() {
+        return IdentityManager.getIdentityManager().getGlobalConfiguration()
+                .getOption("version", "version");
+    }
+
 }

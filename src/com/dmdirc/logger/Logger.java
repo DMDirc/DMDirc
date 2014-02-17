@@ -54,7 +54,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level, final String message,
             final String details) {
-        getErrorManager().addError(level, message, new String[]{details}, false);
+        getErrorManager().addError(level, message, details, false);
     }
 
     /**

@@ -129,7 +129,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message) {
-        addError(level, message, new String[0], false);
+        addError(level, message, (String) null, false);
     }
 
     /**
@@ -143,7 +143,7 @@ public class ErrorManager implements ConfigChangeListener {
      */
     protected void addError(final ErrorLevel level, final String message,
             final Throwable exception, final boolean appError) {
-        addError(level, message, getTrace(exception), appError, isValidError(exception));
+        addError(level, message, exception, null, appError, isValidError(exception));
     }
 
     /**
@@ -155,9 +155,9 @@ public class ErrorManager implements ConfigChangeListener {
      * @param appError Whether or not this is an application error
      * @since 0.6.3m1
      */
-    protected void addError(final ErrorLevel level, final String message,
-            final String[] details, final boolean appError) {
-        addError(level, message, details, appError, true);
+    protected void addError(final ErrorLevel level, final String message, final String details,
+            final boolean appError) {
+        addError(level, message, null, details, appError, true);
     }
 
     /**
@@ -171,8 +171,9 @@ public class ErrorManager implements ConfigChangeListener {
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
-            final String[] details, final boolean appError, final boolean canReport) {
-        final ProgramError error = getError(level, message, details, appError);
+            final Throwable exception, final String details, final boolean appError,
+            final boolean canReport) {
+        final ProgramError error = getError(level, message, exception, details, appError);
 
         final boolean dupe = addError(error);
         if (level.equals(ErrorLevel.FATAL)) {
@@ -240,8 +241,8 @@ public class ErrorManager implements ConfigChangeListener {
      * @return A corresponding ProgramError
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
-            final String[] details, final boolean appError) {
-        return new ProgramError(nextErrorID.getAndIncrement(), level, message,
+            final Throwable exception, final String details, final boolean appError) {
+        return new ProgramError(nextErrorID.getAndIncrement(), level, message, exception,
                 details, new Date());
     }
 
@@ -267,43 +268,6 @@ public class ErrorManager implements ConfigChangeListener {
         }
 
         return true;
-    }
-
-    /**
-     * Converts an exception into a string array.
-     *
-     * @param throwable Exception to convert
-     * @since 0.6.3m1
-     * @return Exception string array
-     */
-    public static String[] getTrace(final Throwable throwable) {
-        String[] trace;
-
-        if (throwable == null) {
-            trace = new String[0];
-        } else {
-            final StackTraceElement[] traceElements = throwable.getStackTrace();
-            trace = new String[traceElements.length + 1];
-
-            trace[0] = throwable.toString();
-
-            for (int i = 0; i < traceElements.length; i++) {
-                trace[i + 1] = traceElements[i].toString();
-            }
-
-            if (throwable.getCause() != null) {
-                final String[] causeTrace = getTrace(throwable.getCause());
-                final String[] newTrace = new String[trace.length + causeTrace.length];
-                trace[0] = "\nWhich caused: " + trace[0];
-
-                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
-                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
-
-                trace = newTrace;
-            }
-        }
-
-        return trace;
     }
 
     /**

@@ -45,73 +45,60 @@ public class ProgramErrorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNegativeID() {
-        new ProgramError(-1, ErrorLevel.HIGH, "moo", new String[0], new Date());
+        new ProgramError(-1, ErrorLevel.HIGH, "moo", null, null, new Date());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullErrorLevel() {
-        new ProgramError(1, null, "moo", new String[0], new Date());
+        new ProgramError(1, null, "moo", null, null, new Date());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullMessage() {
-        new ProgramError(1, ErrorLevel.HIGH, null, new String[0], new Date());
+        new ProgramError(1, ErrorLevel.HIGH, null, null, null, new Date());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyMessage() {
-        new ProgramError(1, ErrorLevel.HIGH, "", new String[0], new Date());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNullTrace() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", null, new Date());
+        new ProgramError(1, ErrorLevel.HIGH, "", null, null, new Date());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullDate() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], null);
+        new ProgramError(1, ErrorLevel.HIGH, "moo", null, null, null);
     }
 
     @Test
     public void testConstructorGood() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", new String[0], new Date());
+        new ProgramError(1, ErrorLevel.HIGH, "moo", new Exception(), null, new Date());
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], new Date());
+                new Exception(), null, new Date());
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
     @Test
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], new Date());
+                new Exception(), null, new Date());
         assertEquals("moo", pe.getMessage());
-    }
-
-    @Test
-    public void testGetTrace() {
-        final String[] trace = new String[]{"abc", "def", "ghi", ""};
-        final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                trace, new Date());
-        assertTrue(Arrays.equals(trace, pe.getTrace()));
     }
 
     @Test
     public void testGetDate() {
         final Date date = new Date();
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], date);
+                new Exception(), null, date);
         assertEquals(date, pe.getDate());
     }
 
     @Test
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], new Date());
+                new Exception(), null, new Date());
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -124,7 +111,7 @@ public class ProgramErrorTest {
     @Test
     public void testFixedStatus() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], new Date());
+                new Exception(), null, new Date());
         assertEquals(ErrorFixedStatus.UNKNOWN, pe.getFixedStatus());
         pe.setFixedStatus(null);
         assertEquals(ErrorFixedStatus.UNKNOWN, pe.getFixedStatus());
@@ -137,22 +124,23 @@ public class ProgramErrorTest {
     @Test
     public void testToString() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new String[0], new Date());
+                new Exception(), null, new Date());
         assertTrue(pe.toString().indexOf("moo") > -1);
     }
 
     @Test
     public void testEquals() {
+        final Exception ex = new Exception();
         final ProgramError pe1 = new ProgramError(10, ErrorLevel.LOW, "moo",
-                new String[0], new Date());
+                ex, null, new Date());
         final ProgramError pe2 = new ProgramError(11, ErrorLevel.LOW, "moo",
-                new String[0], new Date());
+                ex, null, new Date());
         final ProgramError pe3 = new ProgramError(10, ErrorLevel.MEDIUM, "moo",
-                new String[0], new Date());
+                ex, null, new Date());
         final ProgramError pe4 = new ProgramError(10, ErrorLevel.LOW, "bar",
-                new String[0], new Date());
+                ex, null, new Date());
         final ProgramError pe5 = new ProgramError(10, ErrorLevel.LOW, "moo",
-                new String[]{"Hello"}, new Date());
+                null, "Hello", new Date());
 
         assertFalse(pe1.equals(null));
         assertFalse(pe1.equals("moo"));
