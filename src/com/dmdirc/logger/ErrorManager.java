@@ -37,6 +37,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
+import net.kencochrane.raven.DefaultRavenFactory;
+import net.kencochrane.raven.RavenFactory;
+
 /**
  * Error manager.
  */
@@ -86,6 +89,8 @@ public class ErrorManager implements ConfigChangeListener {
      * @param controller The controller to use to read/write settings.
      */
     public void initialise(final IdentityController controller) {
+        RavenFactory.registerFactory(new DefaultRavenFactory());
+
         final AggregateConfigProvider config = controller.getGlobalConfiguration();
 
         config.addChangeListener("general", "logerrors", this);

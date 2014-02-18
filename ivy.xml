@@ -25,7 +25,7 @@
 
         <dependency org="net.miginfocom" name="base64" rev="2.2" conf="main->default" />
 
-        <dependency org="net.kencochrane.raven" name="raven" rev="4.0" conf="main->default" />
+        <dependency org="net.kencochrane.raven" name="raven" rev="4.+" conf="main->default" />
 
         <dependency org="com.google.guava" name="guava" rev="15.+" conf="main->default" />
 

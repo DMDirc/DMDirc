@@ -70,8 +70,7 @@
     <target name="-bundle-raven">
         <jar destfile="${dist.jar}" update="true">
             <zipfileset src="lib/main/jackson-core.jar" includes="com/fasterxml/**"/>
-            <zipfileset src="lib/main/commons-codec.jar" includes="org/apache/**"/>
-            <zipfileset src="lib/main/raven.jar" includes="net/kencochrane/**"/>
+            <zipfileset src="lib/main/raven.jar" includes="net/kencochrane/**,raven-build.properties"/>
         </jar>
     </target>
 
@@ -89,7 +88,12 @@
             -dontnote
 
             -keep public class com.google.common.eventbus.* { *; }
+            -keep public class com.google.common.base.Charsets { *; }
+            -keep public class com.google.common.base.Joiner { *; }
             -keep public class com.google.common.base.Preconditions { *; }
+            -keep public class com.google.common.base.Splitter { *; }
+            -keep public class com.google.common.collect.Iterables { *; }
+            -keep public class com.google.common.io.BaseEncoding { *; }
       </proguard>
 
       <jar destfile="${dist.jar}" update="true">
