@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.plugins.implementations;
 
 import com.dmdirc.commandparser.CommandInfo;
@@ -40,7 +41,6 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * List of commands to load and unload.
      */
     private final Map<CommandInfo, Command> commands = new HashMap<>();
-
     /**
      * Command controller to register commands.
      */
@@ -50,6 +50,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * Creates a new instance of this plugin
      *
      * @param commandController Command controller to register commands.
+     *
      * @deprecated No longer required, use empty constructor.
      */
     @Deprecated
@@ -93,7 +94,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     /**
      * Registers a command from this plugin.
      *
-     * @param command Command to register
+     * @param command     Command to register
      * @param commandInfo Command info to register
      */
     protected void registerCommand(final Command command, final CommandInfo commandInfo) {
@@ -105,11 +106,11 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      *
      * <p>This method will create a new instance of the specified command class using the
      * dependency-injection framework. It must only be called after
-     * {@link #setObjectGraph(dagger.ObjectGraph)}, and any command must be injectable using
-     * that object graph.
+     * {@link #setObjectGraph(dagger.ObjectGraph)}, and any command must be injectable using that
+     * object graph.
      *
-     * @param <T> The type of the command that will be registered.
-     * @param command The class of the command to register.
+     * @param <T>         The type of the command that will be registered.
+     * @param command     The class of the command to register.
      * @param commandInfo Command info to register.
      */
     protected <T extends Command> void registerCommand(
@@ -150,10 +151,12 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * Gets the command controller used.
      *
      * @return A command controller.
+     *
      * @deprecated Plugins should inject their own controllers.
      */
     @Deprecated
     protected CommandController getCommandController() {
         return commandController;
     }
+
 }

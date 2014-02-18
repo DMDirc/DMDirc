@@ -37,9 +37,9 @@ public class CustomWindow extends FrameContainer {
     /**
      * Creates a new custom window as a child of the specified window.
      *
-     * @param name The name of this custom window
-     * @param title The title of this custom window
-     * @param parent The parent of this custom window
+     * @param name       The name of this custom window
+     * @param title      The title of this custom window
+     * @param parent     The parent of this custom window
      * @param urlBuilder The URL builder to use when finding icons.
      */
     public CustomWindow(
@@ -54,10 +54,10 @@ public class CustomWindow extends FrameContainer {
     /**
      * Creates a new custom window as a top-level window.
      *
-     * @param name The name of this custom window
-     * @param title The parent of this custom window
+     * @param name           The name of this custom window
+     * @param title          The parent of this custom window
      * @param configProvider The config provider to read settings from.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param urlBuilder     The URL builder to use when finding icons.
      */
     public CustomWindow(
             final String name,

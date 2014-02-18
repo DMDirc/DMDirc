@@ -26,8 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 
 /**
- * An interface for objects interested in receiving topic change events from
- * a {@link Channel}.
+ * An interface for objects interested in receiving topic change events from a {@link Channel}.
  *
  * @since 0.6.3
  */
@@ -37,7 +36,7 @@ public interface TopicChangeListener {
      * Called whenever a topic is changed.
      *
      * @param channel The channel whose topic has been changed
-     * @param topic The new topic of the channel
+     * @param topic   The new topic of the channel
      */
     void topicChanged(final Channel channel, final Topic topic);
 

@@ -25,8 +25,8 @@ package com.dmdirc.updater.retrieving;
 import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Interface for objects interested in the progress of a retrieval attempt
- * performed by an {@link UpdateRetrievalStategy}.
+ * Interface for objects interested in the progress of a retrieval attempt performed by an
+ * {@link UpdateRetrievalStategy}.
  */
 public interface UpdateRetrievalListener {
 
@@ -34,7 +34,7 @@ public interface UpdateRetrievalListener {
      * Called when the progress of a retrieval operation has changed.
      *
      * @param component The component being retrieved
-     * @param progress The percentage progress completed (0-100)
+     * @param progress  The percentage progress completed (0-100)
      */
     void retrievalProgressChanged(UpdateComponent component, double progress);
 

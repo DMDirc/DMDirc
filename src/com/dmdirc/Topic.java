@@ -37,9 +37,9 @@ public class Topic {
     /**
      * Creates a new topic.
      *
-     * @param topic Topic
+     * @param topic  Topic
      * @param client Topic client
-     * @param time Topic time
+     * @param time   Topic time
      */
     public Topic(final String topic, final String client, final long time) {
         this.topic = topic;

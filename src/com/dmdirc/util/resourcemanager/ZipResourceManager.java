@@ -45,7 +45,6 @@ public final class ZipResourceManager extends ResourceManager {
 
     /** Zipfile instance. */
     private final ZipFile zipFile;
-
     /** Entries list. */
     private final List<String> entries;
 
@@ -53,6 +52,7 @@ public final class ZipResourceManager extends ResourceManager {
      * Instantiates ZipResourceManager.
      *
      * @param file Filename of the zip to load
+     *
      * @throws IOException Throw when the zip fails to load
      */
     protected ZipResourceManager(final String file) throws IOException {
@@ -63,6 +63,7 @@ public final class ZipResourceManager extends ResourceManager {
      * Instantiates ZipResourceManager.
      *
      * @param file File of the zip to load
+     *
      * @throws IOException Throw when the zip fails to load
      */
     protected ZipResourceManager(final File file) throws IOException {
@@ -224,5 +225,5 @@ public final class ZipResourceManager extends ResourceManager {
 
         return resources;
     }
-}
 
+}

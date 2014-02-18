@@ -27,26 +27,24 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import java.util.Collection;
 
 /**
- * Interface for objects interested in receiving updates pertaining to a
- * channel's list of active users (the 'nicklist').
+ * Interface for objects interested in receiving updates pertaining to a channel's list of active
+ * users (the 'nicklist').
  *
  * @since 0.6.5
  */
 public interface NicklistListener {
 
     /**
-     * Called to indicate the client list has been extensively updated,
-     * and any cached data should be discarded and replaced with the specified
-     * set of clients.
+     * Called to indicate the client list has been extensively updated, and any cached data should
+     * be discarded and replaced with the specified set of clients.
      *
      * @param clients The new set of clients for the channel
      */
     void clientListUpdated(Collection<ChannelClientInfo> clients);
 
     /**
-     * Called to indicate a member of the channel has had their nicklist entry
-     * changed in some manner, and their display text, colours, etc, should be
-     * re-read from the object.
+     * Called to indicate a member of the channel has had their nicklist entry changed in some
+     * manner, and their display text, colours, etc, should be re-read from the object.
      */
     void clientListUpdated();
 

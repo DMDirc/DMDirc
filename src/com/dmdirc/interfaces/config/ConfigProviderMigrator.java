@@ -29,27 +29,25 @@ package com.dmdirc.interfaces.config;
 public interface ConfigProviderMigrator {
 
     /**
-     * Migrates this associated provider from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
+     * Migrates this associated provider from its current configuration to the appropriate one for
+     * the specified new parameters, firing listeners where settings have changed.
      *
      * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
+     * @param ircd     The new name of the ircd for this manager
+     * @param network  The new name of the network for this manager
+     * @param server   The new name of the server for this manager
      */
     void migrate(String protocol, String ircd, String network, String server);
 
     /**
-     * Migrates the associated provider from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
+     * Migrates the associated provider from its current configuration to the appropriate one for
+     * the specified new parameters, firing listeners where settings have changed.
      *
      * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @param channel The new name of the channel for this manager
+     * @param ircd     The new name of the ircd for this manager
+     * @param network  The new name of the network for this manager
+     * @param server   The new name of the server for this manager
+     * @param channel  The new name of the channel for this manager
      */
     void migrate(String protocol, String ircd, String network, String server, String channel);
 

@@ -33,8 +33,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 /**
- * Provides utility methods for working with resources from the DMDirc
- * distribution.
+ * Provides utility methods for working with resources from the DMDirc distribution.
  */
 public class DMDircResourceManager {
 
@@ -129,4 +128,5 @@ public class DMDircResourceManager {
     protected static boolean isRunningFromJar(final URL mainClassURL) {
         return "jar".equals(mainClassURL.getProtocol());
     }
+
 }

@@ -44,11 +44,11 @@ public class StatusMessage {
     /**
      * Creates a new statusbar message.
      *
-     * @param iconType Icon type to use for the message (can be null)
-     * @param message Message to show
+     * @param iconType        Icon type to use for the message (can be null)
+     * @param message         Message to show
      * @param messageNotifier Optional notifier (can be null)
-     * @param timeout message timeout (can be -1)
-     * @param configManager Config manager to get default timeout from
+     * @param timeout         message timeout (can be -1)
+     * @param configManager   Config manager to get default timeout from
      */
     public StatusMessage(final String iconType, final String message,
             final StatusMessageNotifier messageNotifier, final int timeout,
@@ -61,8 +61,8 @@ public class StatusMessage {
     }
 
     /**
-     * Creates a new statusbar message.  This will show no icon, won't have a
-     * message notifier and will time out in the default timeout.
+     * Creates a new statusbar message. This will show no icon, won't have a message notifier and
+     * will time out in the default timeout.
      *
      * @param message Message to show
      * @param manager Config manager to get default timeout from
@@ -111,4 +111,5 @@ public class StatusMessage {
             return timeout;
         }
     }
+
 }

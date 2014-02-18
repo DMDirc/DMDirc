@@ -31,10 +31,8 @@ public enum CertificateAction {
 
     /** Disconnects from the server and does nothing. */
     DISCONNECT,
-
     /** Ignores the problem but does not store the exception. */
     IGNORE_TEMPORARILY,
-
     /** Adds a permanent exception for the certificate. */
     IGNORE_PERMANENTY;
 

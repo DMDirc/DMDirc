@@ -41,14 +41,12 @@ public class WhoisNumericFormatter implements ActionListener {
 
     /** The name of the target of any current whois requests. */
     private final Map<Connection, String> targets = new HashMap<>();
-
     /** The identity to add formatters to. */
     private final ConfigProvider identity;
 
     /**
-     * Creates a new whois numeric formatter that will add automatic formats
-     * to the specified identity. This will normally be a temporary global
-     * identity.
+     * Creates a new whois numeric formatter that will add automatic formats to the specified
+     * identity. This will normally be a temporary global identity.
      *
      * @param identity The identity to write formatters to
      */
@@ -57,8 +55,7 @@ public class WhoisNumericFormatter implements ActionListener {
     }
 
     /**
-     * Registers this this whois numeric formatter with the global actions
-     * manager.
+     * Registers this this whois numeric formatter with the global actions manager.
      */
     public void register() {
         ActionManager.getActionManager().registerListener(this,
@@ -79,8 +76,8 @@ public class WhoisNumericFormatter implements ActionListener {
     }
 
     /**
-     * Handles a server disconnected event. This clears any entry for that
-     * server in the <code>target</code> map.
+     * Handles a server disconnected event. This clears any entry for that server in the
+     * {@link #targets} map.
      *
      * @param server The server that was disconnected
      */
@@ -89,15 +86,15 @@ public class WhoisNumericFormatter implements ActionListener {
     }
 
     /**
-     * Handles a received numeric event. This method has special handling for
-     * numerics 311 and 318, used to signal the start and end of a WHOIS
-     * request. It then monitors any other numerics without formatters for
-     * events which look like WHOIS information, and formats them automatically.
+     * Handles a received numeric event. This method has special handling for numerics 311 and 318,
+     * used to signal the start and end of a WHOIS request. It then monitors any other numerics
+     * without formatters for events which look like WHOIS information, and formats them
+     * automatically.
      *
-     * @param server The server on which the event was received
-     * @param numeric The numeric code of the event
+     * @param server    The server on which the event was received
+     * @param numeric   The numeric code of the event
      * @param arguments The arguments to the numeric event
-     * @param format The format that should be used to display the event
+     * @param format    The format that should be used to display the event
      */
     private void handleNumeric(final Connection server, final int numeric,
             final String[] arguments, final StringBuffer format) {
@@ -134,7 +131,7 @@ public class WhoisNumericFormatter implements ActionListener {
     /**
      * Ensures that the specified formatter exists in our identity.
      *
-     * @param target The target to be checked and added if necessary
+     * @param target    The target to be checked and added if necessary
      * @param arguments The number of arguments for the numeric
      */
     private void ensureExists(final String target, final int arguments) {

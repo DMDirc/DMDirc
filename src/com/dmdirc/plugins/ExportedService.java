@@ -33,17 +33,15 @@ import org.slf4j.LoggerFactory;
 public class ExportedService {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ExportedService.class);
-
     /** Method we will be executing today! */
     private final Method method;
-
     /** Object we will be executing this method on. */
     private final Object object;
 
     /**
      * Create a new ExportedService object.
      *
-     * @param myClass class method is in.
+     * @param myClass    class method is in.
      * @param methodName Name of method
      */
     public ExportedService(final Class<?> myClass, final String methodName) {
@@ -53,9 +51,9 @@ public class ExportedService {
     /**
      * Create a new ExportedService object.
      *
-     * @param myClass class method is in.
+     * @param myClass    class method is in.
      * @param methodName Name of method
-     * @param object Object to execute this method on.
+     * @param object     Object to execute this method on.
      */
     public ExportedService(final Class<?> myClass, final String methodName,
             final Object object) {
@@ -81,6 +79,7 @@ public class ExportedService {
      * Execute the method.
      *
      * @param args Arguments to pass to method
+     *
      * @return result of executing the method
      */
     public Object execute(final Object... args) {

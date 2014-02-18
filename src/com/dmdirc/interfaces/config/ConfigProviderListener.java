@@ -23,8 +23,8 @@
 package com.dmdirc.interfaces.config;
 
 /**
- * An interface of objects which are interested in config providers being added
- * and removed from the {@link IdentityController}.
+ * An interface of objects which are interested in config providers being added and removed from the
+ * {@link IdentityController}.
  *
  * @since 0.6.4
  */
@@ -36,7 +36,6 @@ public interface ConfigProviderListener {
      *
      * @param configProvider The configProvider which has been added
      */
-
     void configProviderAdded(final ConfigProvider configProvider);
 
     /**
@@ -45,7 +44,6 @@ public interface ConfigProviderListener {
      *
      * @param configProvider The configProvider which has been removed
      */
-
     void configProviderRemoved(final ConfigProvider configProvider);
 
 }

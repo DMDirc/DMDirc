@@ -23,15 +23,14 @@
 package com.dmdirc.config;
 
 /**
- * Thrown when an identity file is read that does not contain the required
- * fields.
+ * Thrown when an identity file is read that does not contain the required fields.
  */
 public class InvalidIdentityFileException extends Exception {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
@@ -44,6 +43,7 @@ public class InvalidIdentityFileException extends Exception {
      * Creates a new instance of InvalidIdentityFileException.
      *
      * @param cause The cause of the exception
+     *
      * @since 0.6.3m1
      */
     public InvalidIdentityFileException(final Throwable cause) {
@@ -52,6 +52,7 @@ public class InvalidIdentityFileException extends Exception {
 
     /**
      * Creates a new instance of InvalidIdentityFileException.
+     *
      * @param s Detail message
      */
     public InvalidIdentityFileException(final String s) {

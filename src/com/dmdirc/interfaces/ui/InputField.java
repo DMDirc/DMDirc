@@ -126,4 +126,5 @@ public interface InputField {
      * Hides the colour picker for this input field.
      */
     void hideColourPicker();
+
 }

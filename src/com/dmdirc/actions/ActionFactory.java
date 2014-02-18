@@ -55,11 +55,12 @@ public class ActionFactory {
     /**
      * Creates a new instance of {@link ActionFactory}.
      *
-     * @param actionController The controller that will own actions.
-     * @param identityController The controller to use to retrieve and update settings.
-     * @param globalCommandParserProvider The global command parser to use for actions without windows.
-     * @param substitutorFactory The factory to use to create substitutors.
-     * @param actionsDirectory The base directory to store actions in.
+     * @param actionController            The controller that will own actions.
+     * @param identityController          The controller to use to retrieve and update settings.
+     * @param globalCommandParserProvider The global command parser to use for actions without
+     *                                    windows.
+     * @param substitutorFactory          The factory to use to create substitutors.
+     * @param actionsDirectory            The base directory to store actions in.
      */
     @Inject
     public ActionFactory(
@@ -76,11 +77,12 @@ public class ActionFactory {
     }
 
     /**
-     * Creates a new instance of Action. The group and name specified must
-     * be the group and name of a valid action already saved to disk.
+     * Creates a new instance of Action. The group and name specified must be the group and name of
+     * a valid action already saved to disk.
      *
      * @param group The group the action belongs to
-     * @param name The name of the action
+     * @param name  The name of the action
+     *
      * @return A relevant action.
      */
     public Action getAction(final String group, final String name) {
@@ -89,16 +91,16 @@ public class ActionFactory {
     }
 
     /**
-     * Creates a new instance of Action with the specified properties and saves
-     * it to disk.
+     * Creates a new instance of Action with the specified properties and saves it to disk.
      *
-     * @param group The group the action belongs to
-     * @param name The name of the action
-     * @param triggers The triggers to use
-     * @param response The response to use
-     * @param conditions The conditions to use
+     * @param group         The group the action belongs to
+     * @param name          The name of the action
+     * @param triggers      The triggers to use
+     * @param response      The response to use
+     * @param conditions    The conditions to use
      * @param conditionTree The condition tree to use
-     * @param newFormat The new formatter to use
+     * @param newFormat     The new formatter to use
+     *
      * @return A relevant action.
      */
     public Action getAction(final String group, final String name,

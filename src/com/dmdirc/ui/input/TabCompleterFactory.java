@@ -32,14 +32,14 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Factory for {@link TabCompleter}s which can inject the appropriate default tab completion targets.
+ * Factory for {@link TabCompleter}s which can inject the appropriate default tab completion
+ * targets.
  */
 @Singleton
 public class TabCompleterFactory {
 
     /** The command controller to use to find commands. */
     private final Provider<CommandController> commandController;
-
     /** The alias wrapper to use for alias tab completion. */
     // TODO: There should be an easy way to inject completion providers here, instead of
     //       calling out the AliasWrapper in particular. Specifically, plugins should be able to
@@ -50,7 +50,7 @@ public class TabCompleterFactory {
      * Creates a new instance of {@link TabCompleterFactory}.
      *
      * @param commandController The command controller to use to find commands.
-     * @param aliasWrapper The alias wrapper to use for alias tab completion.
+     * @param aliasWrapper      The alias wrapper to use for alias tab completion.
      */
     @Inject
     public TabCompleterFactory(
@@ -67,12 +67,13 @@ public class TabCompleterFactory {
      * command completion targets.
      *
      * @param configProvider The configuration provider to use for completion settings.
-     * @param commandTypes The types of command to be added
+     * @param commandTypes   The types of command to be added
+     *
      * @return A new tab completer with the appropriate configuration.
      */
     public TabCompleter getTabCompleter(
             final AggregateConfigProvider configProvider,
-            final CommandType ... commandTypes) {
+            final CommandType... commandTypes) {
         final TabCompleter tabCompleter = new TabCompleter(commandController.get(), configProvider);
         addCommands(tabCompleter, commandTypes);
         tabCompleter.addEntries(TabCompletionType.COMMAND, aliasWrapper.get().getAliases());
@@ -83,15 +84,16 @@ public class TabCompleterFactory {
      * Gets a new child tab completer with the specified additional command types added as
      * completion targets.
      *
-     * @param parent The parent tab completer to inherit completions from.
+     * @param parent         The parent tab completer to inherit completions from.
      * @param configProvider The configuration provider to use for completion settings.
-     * @param commandTypes The types of command to be added
+     * @param commandTypes   The types of command to be added
+     *
      * @return A new tab completer with the appropriate configuration.
      */
     public TabCompleter getTabCompleter(
             final TabCompleter parent,
             final AggregateConfigProvider configProvider,
-            final CommandType ... commandTypes) {
+            final CommandType... commandTypes) {
         final TabCompleter tabCompleter = new TabCompleter(commandController.get(),
                 configProvider, parent);
         addCommands(tabCompleter, commandTypes);
@@ -104,7 +106,7 @@ public class TabCompleterFactory {
      * @param tabCompleter The completer to add commands to.
      * @param commandTypes The types of command that should be added to the completer.
      */
-    private void addCommands(final TabCompleter tabCompleter, final CommandType ... commandTypes) {
+    private void addCommands(final TabCompleter tabCompleter, final CommandType... commandTypes) {
         for (CommandType commandType : commandTypes) {
             tabCompleter.addEntries(TabCompletionType.COMMAND,
                     commandController.get().getCommandNames(commandType));

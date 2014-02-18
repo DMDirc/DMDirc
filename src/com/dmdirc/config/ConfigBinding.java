@@ -28,8 +28,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a field or method should be bound to a given configuration
- * setting. If a method is targeted, the method should take a single argument.
+ * Indicates that a field or method should be bound to a given configuration setting. If a method is
+ * targeted, the method should take a single argument.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
@@ -57,8 +57,7 @@ public @interface ConfigBinding {
     String[] fallbacks() default {};
 
     /**
-     * Whether or not the configuration will be applied initially or only
-     * on updates.
+     * Whether or not the configuration will be applied initially or only on updates.
      *
      * @return True if the value should be applied initially, false otherwise.
      */

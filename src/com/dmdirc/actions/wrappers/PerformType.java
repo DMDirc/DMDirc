@@ -33,8 +33,7 @@ public enum PerformType {
     SERVER("Server"),
     /** A perform targeting a network. */
     NETWORK("Network");
-
-     /** Friendly name. */
+    /** Friendly name. */
     private final String friendlyName;
 
     /**
@@ -51,4 +50,5 @@ public enum PerformType {
     public String toString() {
         return friendlyName;
     }
+
 }

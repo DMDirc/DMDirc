@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 public final class ClientInfo {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfo.class);
-
     /** Domain to read version settings from. */
     private static final String VERSION_DOMAIN = "version";
     /** Key within the version domain that holds the actual version. */
@@ -47,13 +46,10 @@ public final class ClientInfo {
     private static final String UPDATER_DOMAIN = "updater";
     /** Key within the updater domain that holds the channel. */
     private static final String UPDATER_CHANNEL_KEY = "channel";
-
     /** Fallback value to use if a system property isn't found. */
     private static final String PROPERTY_FALLBACK = "unknown";
-
     /** Lock used to guard access to {@link #versionConfig}. */
     private static final Object VERSION_CONFIG_LOCK = new Object();
-
     /** Cached config file containing the client's version information. */
     private static ConfigFile versionConfig;
 
@@ -168,7 +164,7 @@ public final class ClientInfo {
 
     /**
      * @return A string containing the OS name, version and architecture, and the default file
-     * encoding and locale.
+     *         encoding and locale.
      */
     public static String getOperatingSystemInformation() {
         return getOperatingSystemName() + " "
@@ -182,7 +178,8 @@ public final class ClientInfo {
      * Retrieves a single setting from the version configuration file bundled with the client.
      *
      * @param domain The domain of the setting to retrieve.
-     * @param key The key of the setting to retrieve.
+     * @param key    The key of the setting to retrieve.
+     *
      * @return The value of the key within the version config, or {@code null} if it doesn't exist.
      */
     public static String getVersionConfigSetting(final String domain, final String key) {

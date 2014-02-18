@@ -163,5 +163,7 @@ public class UIAttachDialog extends JDialog implements ActionListener,
 
             return label;
         }
+
     }
+
 }

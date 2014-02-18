@@ -27,17 +27,15 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 
 /**
- * Listener interface for objects interested in being notified when there
- * are certificate problems.
+ * Listener interface for objects interested in being notified when there are certificate problems.
  */
 public interface CertificateProblemListener {
 
     /**
-     * Called when a problem is encountered with a server's certificate which
-     * requires user input.
+     * Called when a problem is encountered with a server's certificate which requires user input.
      *
-     * @param chain The certificate chain received from the server
-     * @param problems A collection of errors that were encountered
+     * @param chain              The certificate chain received from the server
+     * @param problems           A collection of errors that were encountered
      * @param certificateManager The certificate manager handling the connection
      */
     void certificateProblemEncountered(X509Certificate[] chain,

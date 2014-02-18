@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which adds the message to the window where a command matching
- * the provided regex was most recently executed. If no such window is found,
- * falls back to the source.
+ * A message sink which adds the message to the window where a command matching the provided regex
+ * was most recently executed. If no such window is found, falls back to the source.
  */
 public class LastCommandMessageSink implements MessageSink {
 

@@ -23,8 +23,8 @@
 package com.dmdirc.updater;
 
 /**
- * Describes a version of a component, either as an integer or as a String which
- * corresponds to the output of `git-describe --tags`.
+ * Describes a version of a component, either as an integer or as a String which corresponds to the
+ * output of `git-describe --tags`.
  *
  * @since 0.6.3m1
  */
@@ -60,7 +60,8 @@ public class Version implements Comparable<Version> {
         if (version.matches("^[0-9]+$")) {
             this.intVersion = Integer.parseInt(version);
             this.strVersion = null;
-        } else if (version.matches("^[0-9]+(\\.[0-9]+)*((a|b|rc|m)[0-9]+)*(\\-[0-9]+\\-g[a-z0-9]{7})?$")) {
+        } else if (version.matches(
+                "^[0-9]+(\\.[0-9]+)*((a|b|rc|m)[0-9]+)*(\\-[0-9]+\\-g[a-z0-9]{7})?$")) {
             this.intVersion = Integer.MIN_VALUE;
             this.strVersion = version;
         } else {

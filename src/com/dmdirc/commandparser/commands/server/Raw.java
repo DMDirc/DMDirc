@@ -37,10 +37,9 @@ import com.dmdirc.interfaces.CommandController;
 import javax.inject.Inject;
 
 /**
- * The raw command allows the user to send a raw line of text directly to the
- * irc server.
+ * The raw command allows the user to send a raw line of text directly to the irc server.
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class Raw extends Command {
 
     /** A command info object for this command. */

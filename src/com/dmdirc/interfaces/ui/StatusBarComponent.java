@@ -33,4 +33,5 @@ public interface StatusBarComponent {
      * @param visible component visibility
      */
     void setVisible(final boolean visible);
+
 }

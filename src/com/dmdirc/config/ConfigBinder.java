@@ -38,14 +38,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Facilitates automatically binding fields or methods annotated with a
- * {@link ConfigBinding} element to a configuration value.
+ * Facilitates automatically binding fields or methods annotated with a {@link ConfigBinding}
+ * element to a configuration value.
  */
 public class ConfigBinder {
 
     /** A map of instances to created listeners. */
     private final MapList<Object, ConfigChangeListener> listeners = new MapList<>();
-
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
 
@@ -54,11 +53,11 @@ public class ConfigBinder {
     }
 
     /**
-     * Binds all annotated methods and fields of the given instance to this
-     * binder's configuration manager.
+     * Binds all annotated methods and fields of the given instance to this binder's configuration
+     * manager.
      *
      * @param instance The instance to be bound
-     * @param clazz The class to read bindings from
+     * @param clazz    The class to read bindings from
      */
     @SuppressWarnings("unchecked")
     public void bind(final Object instance, final Class<?> clazz) {
@@ -77,7 +76,8 @@ public class ConfigBinder {
                 manager.addChangeListener(binding.domain(), binding.key(), listener);
 
                 for (int i = 0; i < binding.fallbacks().length - 1; i += 2) {
-                    manager.addChangeListener(binding.fallbacks()[i], binding.fallbacks()[i + 1], listener);
+                    manager.addChangeListener(binding.fallbacks()[i], binding.fallbacks()[i + 1],
+                            listener);
                 }
 
                 if (binding.applyInitially()) {
@@ -91,12 +91,12 @@ public class ConfigBinder {
 
     /**
      * Creates a new listener which will call
-     * {@link #updateBoundMember(Object, AccessibleObject, ConfigBinding)}
-     * with the given arguments.
+     * {@link #updateBoundMember(Object, AccessibleObject, ConfigBinding)} with the given arguments.
      *
      * @param instance The instance to create a listener for
-     * @param element The element to create a listener for
-     * @param binding The binding annotation on the above element
+     * @param element  The element to create a listener for
+     * @param binding  The binding annotation on the above element
+     *
      * @return An appropriate config change listener
      */
     private ConfigChangeListener getListener(final Object instance,
@@ -111,12 +111,12 @@ public class ConfigBinder {
     }
 
     /**
-     * Updates the specified element of the given instance with the current
-     * value of the configuration key(s) specified by its binding.
+     * Updates the specified element of the given instance with the current value of the
+     * configuration key(s) specified by its binding.
      *
      * @param instance The instance to be updated
-     * @param element The element to be updated
-     * @param binding The binding which defines the configuration properties
+     * @param element  The element to be updated
+     * @param binding  The binding which defines the configuration properties
      */
     private void updateBoundMember(final Object instance,
             final AccessibleObject element, final ConfigBinding binding) {
@@ -140,21 +140,22 @@ public class ConfigBinder {
             } catch (IllegalAccessException | IllegalArgumentException ex) {
                 // Ignore
             } catch (InvocationTargetException ex) {
-               Logger.appError(ErrorLevel.HIGH,
-                       "Exception when updating bound setting", ex);
+                Logger.appError(ErrorLevel.HIGH,
+                        "Exception when updating bound setting", ex);
             }
         }
     }
 
     /**
-     * Gets a value from the configuration manager for use with the given
-     * binding, and attempts to coerce it into the given class.
+     * Gets a value from the configuration manager for use with the given binding, and attempts to
+     * coerce it into the given class.
      *
-     * @param binding The binding defining configuration parameters
+     * @param binding     The binding defining configuration parameters
      * @param targetClass The desired class
-     * @return An object representing the current value of the configuration
-     * key(s) associated with the binding, of the desired target class, or null
-     * if the type conversion couldn't be performed.
+     *
+     * @return An object representing the current value of the configuration key(s) associated with
+     *         the binding, of the desired target class, or null if the type conversion couldn't be
+     *         performed.
      */
     private Object getValue(final ConfigBinding binding,
             final Class<?> targetClass) {
@@ -181,9 +182,9 @@ public class ConfigBinder {
      * Gets the type required for setting the given element.
      *
      * @param element The element to determine a type for
-     * @return If the given element is a field, then the type of that field;
-     * if the element is a method then the type of the first parameter;
-     * otherwise, <code>String.class</code>.
+     *
+     * @return If the given element is a field, then the type of that field; if the element is a
+     *         method then the type of the first parameter; otherwise, <code>String.class</code>.
      */
     private Class<?> getTargetClass(final AccessibleObject element) {
         if (element instanceof Field) {
@@ -200,7 +201,7 @@ public class ConfigBinder {
     /**
      * Adds the given listeners to the given instance's collection.
      *
-     * @param instance The instance to add listeners for
+     * @param instance     The instance to add listeners for
      * @param newListeners The listeners to be added
      */
     private void addListeners(final Object instance,
@@ -211,8 +212,7 @@ public class ConfigBinder {
     }
 
     /**
-     * Unbinds all elements of the given instance that have been bound using
-     * this ConfigBinder.
+     * Unbinds all elements of the given instance that have been bound using this ConfigBinder.
      *
      * @param instance The instance to be unbound
      */
@@ -225,4 +225,5 @@ public class ConfigBinder {
             listeners.remove(instance);
         }
     }
+
 }

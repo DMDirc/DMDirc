@@ -32,20 +32,19 @@ import java.util.List;
 public class MissingModeAliasException extends Exception {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
     /**
-     * Creates a new exception detailing the missing modes aliases and
-     * supporting information.
+     * Creates a new exception detailing the missing modes aliases and supporting information.
      *
-     * @param network Network
-     * @param parser Assocaited parser
+     * @param network            Network
+     * @param parser             Assocaited parser
      * @param modeAliasesVersion Current mode aliases version
-     * @param missingModes Missing modes
+     * @param missingModes       Missing modes
      */
     public MissingModeAliasException(final String network, final Parser parser,
             final String modeAliasesVersion, final String missingModes) {
@@ -68,4 +67,5 @@ public class MissingModeAliasException extends Exception {
 
         return sb.toString();
     }
+
 }

@@ -45,18 +45,18 @@ public final class SaveConfig extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("saveconfig",
             "saveconfig - force the client to save its configuration to disk",
             CommandType.TYPE_GLOBAL);
-
     /** Identity controller cause to save identities. */
     private final IdentityController identityController;
 
     /**
      * Creates a new instance of the {@link SaveConfig} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller         The controller to use for command information.
      * @param identityController The controller to save identities on.
      */
     @Inject
-    public SaveConfig(final CommandController controller, final IdentityController identityController) {
+    public SaveConfig(final CommandController controller,
+            final IdentityController identityController) {
         super(controller);
         this.identityController = identityController;
     }

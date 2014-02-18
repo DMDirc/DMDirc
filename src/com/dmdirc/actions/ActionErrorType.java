@@ -31,16 +31,12 @@ public enum ActionErrorType {
 
     /** A low-level problem occurred trying to read the action's file. */
     FILE,
-
     /** A problem with the action's triggers. */
     TRIGGERS,
-
     /** A problem with the action's response. */
     RESPONSE,
-
     /** A problem with the action's condition tree. */
     CONDITION_TREE,
-
     /** A problem with the action's conditions. */
     CONDITIONS;
 

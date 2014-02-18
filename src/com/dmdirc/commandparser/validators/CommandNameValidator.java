@@ -37,8 +37,8 @@ public class CommandNameValidator extends ValidatorChain<String> {
     /**
      * Instantiates a new command name validator using the given command char.
      *
-     * @param commandChar the character commands start with (which is therefore
-     * disallowed at the start of a command name).
+     * @param commandChar the character commands start with (which is therefore disallowed at the
+     *                    start of a command name).
      */
     @SuppressWarnings("unchecked")
     public CommandNameValidator(final char commandChar) {

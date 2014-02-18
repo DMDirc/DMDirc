@@ -31,7 +31,24 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.*; //NOPMD
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelListModeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelModeNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNickChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNonUserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
+import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 
 import java.util.Date;
 
@@ -76,6 +93,7 @@ public class ChannelEventHandler extends EventHandler implements
      * Determines if the specified client represents us.
      *
      * @param client The client to be tested
+     *
      * @return True if the client is ourself, false otherwise.
      */
     protected boolean isMyself(final ChannelClientInfo client) {
@@ -117,7 +135,9 @@ public class ChannelEventHandler extends EventHandler implements
             if (newTopic.getTopic().isEmpty()) {
                 owner.doNotification(date, "channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
             } else {
-                owner.doNotification(date, "channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC,
+                owner.
+                        doNotification(date, "channelTopicDiscovered",
+                        CoreActionType.CHANNEL_GOTTOPIC,
                         newTopic);
             }
         } else {
@@ -253,7 +273,7 @@ public class ChannelEventHandler extends EventHandler implements
     /** {@inheritDoc} */
     @Override
     public void onChannelCTCP(final Parser parser, final Date date,
-            final ChannelInfo channel,  final ChannelClientInfo client,
+            final ChannelInfo channel, final ChannelClientInfo client,
             final String type, final String message, final String host) {
         checkParser(parser);
 

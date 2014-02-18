@@ -23,8 +23,7 @@
 package com.dmdirc.lists;
 
 /**
- * Interface for objects interested in events raised by a
- * {@link GroupListManager}.
+ * Interface for objects interested in events raised by a {@link GroupListManager}.
  */
 public interface GroupListObserver {
 

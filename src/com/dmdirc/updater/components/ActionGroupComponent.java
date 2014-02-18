@@ -37,7 +37,6 @@ public class ActionGroupComponent implements UpdateComponent {
     public ActionGroupComponent(final ActionGroup group) {
         this.group = group;
     }
-
     /** The group that this component represents. */
     private final ActionGroup group;
 

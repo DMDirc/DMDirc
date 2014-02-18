@@ -36,6 +36,7 @@ public interface RemoteInterface extends Remote {
      * Connects to the specified list of addresses.
      *
      * @param addresses The addresses to connect to.
+     *
      * @throws java.rmi.RemoteException on problems communicating
      * @since 0.6.3
      */

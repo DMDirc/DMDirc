@@ -40,7 +40,6 @@ public class ClientComponent implements UpdateComponent {
 
     /** The controller to read settings from. */
     private final IdentityController identityController;
-
     /** The manager to add status bar messages to. */
     private final StatusBarManager statusBarManager;
 
@@ -48,7 +47,7 @@ public class ClientComponent implements UpdateComponent {
      * Creates a new instance of {@link ClientComponent}.
      *
      * @param identityController The controller to read settings from.
-     * @param statusBarManager The manager to add status bar messages to.
+     * @param statusBarManager   The manager to add status bar messages to.
      */
     @Inject
     public ClientComponent(
@@ -97,22 +96,22 @@ public class ClientComponent implements UpdateComponent {
         if (requiresManualInstall()) {
             if (DMDircResourceManager.isRunningFromJar()) {
                 return "A new version of DMDirc has been downloaded, but as you\n"
-                    + "do not seem to be using the DMDirc launcher, it will\n"
-                    + "not be installed automatically.\n\n"
-                    + "To install this update manually, please replace the\n"
-                    + "existing DMDirc.jar file, located at:\n"
-                    + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
-                    + "with the following file:\n"
-                    + "  " + targetFile.getAbsolutePath();
+                        + "do not seem to be using the DMDirc launcher, it will\n"
+                        + "not be installed automatically.\n\n"
+                        + "To install this update manually, please replace the\n"
+                        + "existing DMDirc.jar file, located at:\n"
+                        + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
+                        + "with the following file:\n"
+                        + "  " + targetFile.getAbsolutePath();
             } else {
                 return "A new version of DMDirc has been downloaded, but as you\n"
-                    + "do not seem to be using the DMDirc launcher, it will\n"
-                    + "not be installed automatically.\n\n"
-                    + "To install this update manually, please extract the\n"
-                    + "new DMDirc.jar file, located at:\n"
-                    + " " + targetFile.getAbsolutePath() + "\n"
-                    + "over your existing DMDirc install located in:\n"
-                    + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
+                        + "do not seem to be using the DMDirc launcher, it will\n"
+                        + "not be installed automatically.\n\n"
+                        + "To install this update manually, please extract the\n"
+                        + "new DMDirc.jar file, located at:\n"
+                        + " " + targetFile.getAbsolutePath() + "\n"
+                        + "over your existing DMDirc install located in:\n"
+                        + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
             }
         }
         return "";

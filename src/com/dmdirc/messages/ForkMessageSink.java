@@ -28,8 +28,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which allows the message to be forked into multiple other
- * sinks.
+ * A message sink which allows the message to be forked into multiple other sinks.
  */
 public class ForkMessageSink implements MessageSink {
 

@@ -48,7 +48,6 @@ public class ChangeServer extends Command {
     public static final CommandInfo INFO = new BaseCommandInfo("server",
             "server <host[:[+]port]> [password] - connect to a different server",
             CommandType.TYPE_SERVER);
-
     /** The parser to use for user input. */
     private final URIParser uriParser;
 
@@ -56,7 +55,7 @@ public class ChangeServer extends Command {
      * Creates a new instance of this command.
      *
      * @param controller The controller to use for command information.
-     * @param uriParser The parser to use for user input.
+     * @param uriParser  The parser to use for user input.
      */
     @Inject
     public ChangeServer(final CommandController controller, final URIParser uriParser) {

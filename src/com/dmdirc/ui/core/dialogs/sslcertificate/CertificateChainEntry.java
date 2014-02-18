@@ -31,17 +31,15 @@ public class CertificateChainEntry {
 
     /** The common name of the certificate's subject. */
     private final String name;
-
     /** Whether or not this certificate is trusted. */
     private final boolean trusted;
-
     /** Whether or not there are problems with this certificate. */
     private final boolean invalid;
 
     /**
      * Creates a new entry with the specified details.
      *
-     * @param name The common name of the certificate's subject
+     * @param name    The common name of the certificate's subject
      * @param trusted Whether or not this certificate is trusted
      * @param invalid Whether or not this certificate is invalid
      */
@@ -79,4 +77,5 @@ public class CertificateChainEntry {
     public String getName() {
         return name;
     }
+
 }

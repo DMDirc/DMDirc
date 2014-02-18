@@ -93,4 +93,5 @@ public class Ban extends Command implements IntelligentCommand {
 
         return res;
     }
+
 }

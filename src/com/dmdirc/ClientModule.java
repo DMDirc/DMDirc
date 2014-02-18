@@ -84,29 +84,30 @@ import dagger.Provides;
  * Provides dependencies for the client.
  */
 @Module(
-    injects = {Main.class, CommandLineParser.class},
-    includes = {CommandLineOptionsModule.class, CommandModule.class, UpdaterModule.class},
-    library = true
-)
+        injects = {Main.class, CommandLineParser.class},
+        includes = {CommandLineOptionsModule.class, CommandModule.class, UpdaterModule.class},
+        library = true)
 public class ClientModule {
 
     /** Qualifier that identities a global configuration source. */
     @Qualifier
-    public @interface GlobalConfig {}
+    public @interface GlobalConfig {
+    }
 
     /** Qualifier that identities the user settings config provider. */
     @Qualifier
-    public @interface UserConfig {}
-
+    public @interface UserConfig {
+    }
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
 
     /**
      * Provides an identity manager for the client.
      *
-     * @param baseDirectory The base directory to load settings from.
+     * @param baseDirectory       The base directory to load settings from.
      * @param identitiesDirectory The directory to store and read identities in.
-     * @param commandLineParser The CLI parser to read command line settings from.
+     * @param commandLineParser   The CLI parser to read command line settings from.
+     *
      * @return An initialised {@link IdentityManager}.
      */
     @Provides
@@ -138,6 +139,7 @@ public class ClientModule {
      * Provides an identity controller.
      *
      * @param manager The identity manager to use as a controller.
+     *
      * @return An identity controller to use.
      */
     @Provides
@@ -149,6 +151,7 @@ public class ClientModule {
      * Provides a global config provider.
      *
      * @param controller The controller to retrieve the config from.
+     *
      * @return A global configuration provider.
      */
     @Provides
@@ -161,7 +164,8 @@ public class ClientModule {
      * Provides an icon manager backed by the global configuration.
      *
      * @param globalConfig The global configuration provider.
-     * @param urlBuilder The builder to use to construct icon URLs.
+     * @param urlBuilder   The builder to use to construct icon URLs.
+     *
      * @return An icon manager backed by the global config.
      */
     @Provides
@@ -177,6 +181,7 @@ public class ClientModule {
      * Provides the user's configuration provider.
      *
      * @param controller The controller to retrieve the config from.
+     *
      * @return The user's configuration provider.
      */
     @Provides
@@ -188,12 +193,13 @@ public class ClientModule {
     /**
      * Provides an action manager.
      *
-     * @param serverManager The server manager to use to iterate servers.
-     * @param identityController The identity controller to use to look up settings.
-     * @param actionFactory The factory to use to create actions.
+     * @param serverManager          The server manager to use to iterate servers.
+     * @param identityController     The identity controller to use to look up settings.
+     * @param actionFactory          The factory to use to create actions.
      * @param actionWrappersProvider Provider of action wrappers.
-     * @param updateManagerProvider Provider of an update manager.
-     * @param directory The directory to read and write actions in.
+     * @param updateManagerProvider  Provider of an update manager.
+     * @param directory              The directory to read and write actions in.
+     *
      * @return An unitialised action manager.
      */
     @Provides
@@ -215,6 +221,7 @@ public class ClientModule {
      * Provides an action controller.
      *
      * @param actionManager The action manager to use as a controller.
+     *
      * @return An action controller to use.
      */
     @Provides
@@ -226,6 +233,7 @@ public class ClientModule {
      * Provides a lifecycle controller.
      *
      * @param controller The concrete implementation to use.
+     *
      * @return The lifecycle controller the app should use.
      */
     @Provides
@@ -237,8 +245,9 @@ public class ClientModule {
      * Gets the message sink manager for the client.
      *
      * @param statusBarManager The status bar manager to use for status bar sinks.
-     * @param windowManager The window manager to use for sinks that iterate windows.
-     * @param urlBuilder The URL Builder to use when creating new containers.
+     * @param windowManager    The window manager to use for sinks that iterate windows.
+     * @param urlBuilder       The URL Builder to use when creating new containers.
+     *
      * @return The message sink manager the client should use.
      */
     @Provides
@@ -256,7 +265,8 @@ public class ClientModule {
      * Gets the command manager the client should use.
      *
      * @param serverManager The manager to use to iterate servers.
-     * @param globalConfig The global configuration provider to read settings from.
+     * @param globalConfig  The global configuration provider to read settings from.
+     *
      * @return The command manager the client should use.
      */
     @Provides
@@ -273,6 +283,7 @@ public class ClientModule {
      * Gets a command controller for use in the client.
      *
      * @param commandManager The manager to use as a controller.
+     *
      * @return The command controller the client should use.
      */
     @Provides
@@ -283,12 +294,13 @@ public class ClientModule {
     /**
      * Gets an initialised plugin manager for the client.
      *
-     * @param identityController The controller to read settings from.
-     * @param actionController The action controller to use for events.
-     * @param updateManager The update manager to inform about plugins.
+     * @param identityController  The controller to read settings from.
+     * @param actionController    The action controller to use for events.
+     * @param updateManager       The update manager to inform about plugins.
      * @param initialiserProvider Provider to use to create plugin initialisers.
-     * @param objectGraph The graph to provide to plugins for DI purposes.
-     * @param directory The directory to load and save plugins in.
+     * @param objectGraph         The graph to provide to plugins for DI purposes.
+     * @param directory           The directory to load and save plugins in.
+     *
      * @return An initialised plugin manager for the client.
      */
     @Provides
@@ -321,6 +333,7 @@ public class ClientModule {
      * Provides a service manager.
      *
      * @param pluginManager The plugin manager to use as the service manager implementation.
+     *
      * @return A service manager.
      */
     @Provides
@@ -332,7 +345,8 @@ public class ClientModule {
      * Gets a core plugin extractor.
      *
      * @param pluginManager The plugin manager to notify about updates.
-     * @param directory The directory to extract plugins to.
+     * @param directory     The directory to extract plugins to.
+     *
      * @return A plugin extractor for the client to use.
      */
     @Provides
@@ -346,7 +360,8 @@ public class ClientModule {
      * Gets a theme manager for the client.
      *
      * @param controller The identity controller to use to access settings.
-     * @param directory The directory to load themes from.
+     * @param directory  The directory to load themes from.
+     *
      * @return An initialised theme manager instance.
      */
     @Provides
@@ -363,6 +378,7 @@ public class ClientModule {
      * Gets the alias actions wrapper entry for the actions wrapper set.
      *
      * @param aliasWrapper The wrapper to use in the set.
+     *
      * @return An alias wrapper to use in the client.
      */
     @Provides(type = Provides.Type.SET)
@@ -387,6 +403,7 @@ public class ClientModule {
      * Gets the colour manager.
      *
      * @param globalConfig A global configuration provider to read settings from.
+     *
      * @return A colour manager for the client.
      */
     @Provides
@@ -409,6 +426,7 @@ public class ClientModule {
      * Gets a server factory.
      *
      * @param serverManager The manager to use as a factory.
+     *
      * @return A server factory.
      */
     @Provides
@@ -419,7 +437,8 @@ public class ClientModule {
     /**
      * Gets an identity factory.
      *
-     * @param identityManager  The manager to use as a factory.
+     * @param identityManager The manager to use as a factory.
+     *
      * @return An identity factory.
      */
     @Provides
@@ -459,14 +478,14 @@ public class ClientModule {
     }
 
     /**
-     * Called when the global config cannot be loaded due to an error. This
-     * method informs the user of the problem and installs a new default config
-     * file, backing up the old one.
+     * Called when the global config cannot be loaded due to an error. This method informs the user
+     * of the problem and installs a new default config file, backing up the old one.
      *
      * @param identityManager The identity manager to re-initialise after installing defaults.
-     * @param configdir The directory to extract default settings into.
+     * @param configdir       The directory to extract default settings into.
      */
-    private void handleInvalidConfigFile(final IdentityManager identityManager, final String configdir) {
+    private void handleInvalidConfigFile(final IdentityManager identityManager,
+            final String configdir) {
         final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
 
         final String message = "DMDirc has detected that your config file "
@@ -504,14 +523,13 @@ public class ClientModule {
     }
 
     /**
-     * Ensures that there is at least one provider of the specified
-     * service type by extracting matching core plugins. Plugins must be named
-     * so that their file name starts with the service type, and then an
-     * underscore.
+     * Ensures that there is at least one provider of the specified service type by extracting
+     * matching core plugins. Plugins must be named so that their file name starts with the service
+     * type, and then an underscore.
      *
      * @param corePluginExtractor Extractor to use if the service doesn't exist
-     * @param pm The plugin manager to use to access services
-     * @param serviceType The type of service that should exist
+     * @param pm                  The plugin manager to use to access services
+     * @param serviceType         The type of service that should exist
      */
     public void ensureExists(
             final CorePluginExtractor corePluginExtractor,
@@ -524,13 +542,13 @@ public class ClientModule {
     }
 
     /**
-     * Checks whether the plugins bundled with this release of DMDirc are newer
-     * than the plugins known by the specified {@link PluginManager}. If the
-     * bundled plugins are newer, they are automatically extracted.
+     * Checks whether the plugins bundled with this release of DMDirc are newer than the plugins
+     * known by the specified {@link PluginManager}. If the bundled plugins are newer, they are
+     * automatically extracted.
      *
      * @param corePluginExtractor Extractor to use if plugins need updating.
-     * @param pm The plugin manager to use to check plugins
-     * @param config The configuration source for bundled versions
+     * @param pm                  The plugin manager to use to check plugins
+     * @param config              The configuration source for bundled versions
      */
     private void checkBundledPlugins(
             final CorePluginExtractor corePluginExtractor,

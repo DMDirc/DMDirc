@@ -30,18 +30,16 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An identity that only claims to know about settings under the UI domain,
- * for use with themes.
+ * An identity that only claims to know about settings under the UI domain, for use with themes.
  */
 public class ThemeIdentity extends ConfigFileBackedConfigProvider {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** The theme that owns this identity. */
     private final Theme theme;
 
@@ -49,9 +47,10 @@ public class ThemeIdentity extends ConfigFileBackedConfigProvider {
      * Creates a new instance of ThemeIdentity.
      *
      * @param stream The input stream to read the identity from.
-     * @param theme The theme that owns this identity
+     * @param theme  The theme that owns this identity
+     *
      * @throws InvalidIdentityFileException Missing required properties
-     * @throws IOException Input/output exception
+     * @throws IOException                  Input/output exception
      */
     public ThemeIdentity(final InputStream stream, final Theme theme) throws IOException,
             InvalidIdentityFileException {

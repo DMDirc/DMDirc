@@ -32,8 +32,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * An action component chain supports chaining of multiple action components
- * together.
+ * An action component chain supports chaining of multiple action components together.
  */
 public class ActionComponentChain implements ActionComponent {
 
@@ -43,11 +42,11 @@ public class ActionComponentChain implements ActionComponent {
     private final List<ActionComponent> components = new ArrayList<>();
 
     /**
-     * Creates a new component chain from the specified text representation.
-     * Chains are separated with full stops (.).
+     * Creates a new component chain from the specified text representation. Chains are separated
+     * with full stops (.).
      *
-     * @param source The class that this chain needs to start with
-     * @param chain The textual representation of the chain
+     * @param source  The class that this chain needs to start with
+     * @param chain   The textual representation of the chain
      * @param manager The action manager to use to look up components
      */
     public ActionComponentChain(final Class<?> source, final String chain,
@@ -143,8 +142,8 @@ public class ActionComponentChain implements ActionComponent {
     }
 
     /**
-     * Determines if any components in this chain require a server to have
-     * an established connection in order to function.
+     * Determines if any components in this chain require a server to have an established connection
+     * in order to function.
      *
      * @since 0.6.4
      * @return True iff at least one component requires a connection

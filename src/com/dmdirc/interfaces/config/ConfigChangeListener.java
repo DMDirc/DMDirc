@@ -28,14 +28,13 @@ package com.dmdirc.interfaces.config;
 public interface ConfigChangeListener {
 
     /**
-     * Called when a monitored config entry has been changed. Note that the
-     * values may be null if the setting wasn't, or is no longer, set. Also note
-     * that the new value may not be the same as you'd get returned from
-     * ConfigManager.getOption, as listeners are triggered for any change in any
-     * of the manager's identities.
+     * Called when a monitored config entry has been changed. Note that the values may be null if
+     * the setting wasn't, or is no longer, set. Also note that the new value may not be the same as
+     * you'd get returned from ConfigManager.getOption, as listeners are triggered for any change in
+     * any of the manager's identities.
      *
      * @param domain The domain that was altered
-     * @param key The key that was altered
+     * @param key    The key that was altered
      */
     void configChanged(String domain, String key);
 

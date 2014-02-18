@@ -46,7 +46,7 @@ public class CorePluginExtractor {
      * Creates a new instance of {@link CorePluginExtractor}.
      *
      * @param pluginManager The plugin manager to inform when plugins are updated.
-     * @param pluginDir The directory to extract plugins to.
+     * @param pluginDir     The directory to extract plugins to.
      */
     public CorePluginExtractor(final PluginManager pluginManager, final String pluginDir) {
         this.pluginManager = pluginManager;
@@ -54,11 +54,10 @@ public class CorePluginExtractor {
     }
 
     /**
-     * Extracts plugins bundled with DMDirc to the user's profile's plugin
-     * directory.
+     * Extracts plugins bundled with DMDirc to the user's profile's plugin directory.
      *
-     * @param prefix If non-null, only plugins whose file name starts with
-     * this prefix will be extracted.
+     * @param prefix If non-null, only plugins whose file name starts with this prefix will be
+     *               extracted.
      */
     public void extractCorePlugins(final String prefix) {
         final Map<String, byte[]> resources = ResourceManager.getResourceManager()

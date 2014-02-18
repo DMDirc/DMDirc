@@ -29,11 +29,10 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which adds the message to all channels the local user has
- * in common with a specified remote user. An optional fallback may be specified
- * for use if there are no common channels with the user. If no fallback is
- * specified and there are no common channels, the message is despatched to the
- * source.
+ * A message sink which adds the message to all channels the local user has in common with a
+ * specified remote user. An optional fallback may be specified for use if there are no common
+ * channels with the user. If no fallback is specified and there are no common channels, the message
+ * is despatched to the source.
  */
 public class CommonChanelsMessageSink implements MessageSink {
 

@@ -26,5 +26,4 @@ package com.dmdirc.events;
  * Fired when the client is first opened.
  */
 public class ClientOpenedEvent extends DMDircEvent {
-
 }

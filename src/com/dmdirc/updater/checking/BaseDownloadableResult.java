@@ -38,10 +38,10 @@ public class BaseDownloadableResult extends BaseCheckResult implements Downloada
     /**
      * Creates a new instance of {@link BaseDownloadableResult}.
      *
-     * @param component The component that this result is for
-     * @param url The URL the update may be downloaded from
+     * @param component          The component that this result is for
+     * @param url                The URL the update may be downloaded from
      * @param updatedVersionName The friendly name of the updated version
-     * @param updatedVersion The version of the file available at that URL
+     * @param updatedVersion     The version of the file available at that URL
      */
     public BaseDownloadableResult(final UpdateComponent component, final URL url,
             final String updatedVersionName, final Version updatedVersion) {

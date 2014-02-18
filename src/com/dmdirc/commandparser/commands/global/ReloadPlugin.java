@@ -46,14 +46,13 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("reloadplugin",
             "reloadplugin <plugin> - Reloads the specified plugin",
             CommandType.TYPE_GLOBAL);
-
     /** The plugin manager to use to reload plugins. */
     private final PluginManager pluginManager;
 
     /**
      * Creates a new instance of the {@link ReloadPlugin} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller    The controller to use for command information.
      * @param pluginManager The plugin manager to reload plugins with.
      */
     @Inject

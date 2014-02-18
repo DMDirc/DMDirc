@@ -57,6 +57,7 @@ public class UpdaterModule {
      * Provides a client component for the updater component set.
      *
      * @param component The client component to provide.
+     *
      * @return The component entry in the set.
      */
     @Provides(type = Provides.Type.SET)
@@ -68,6 +69,7 @@ public class UpdaterModule {
      * Provides a mode aliases component for the updater component set.
      *
      * @param component The mode aliases component to provide.
+     *
      * @return The component entry in the set.
      */
     @Provides(type = Provides.Type.SET)
@@ -79,6 +81,7 @@ public class UpdaterModule {
      * Provides a defaults component for the updater component set.
      *
      * @param component The defaults component to provide.
+     *
      * @return The component entry in the set.
      */
     @Provides(type = Provides.Type.SET)
@@ -89,9 +92,10 @@ public class UpdaterModule {
     /**
      * Gets an update manager for the client.
      *
-     * @param commandLineParser CLI parser to use to find launcher version.
-     * @param updateManager The underlying update manager.
+     * @param commandLineParser  CLI parser to use to find launcher version.
+     * @param updateManager      The underlying update manager.
      * @param identityController The controller to use to read and update settings.
+     *
      * @return The update manager to use.
      */
     @Provides
@@ -114,6 +118,7 @@ public class UpdaterModule {
      * Gets a caching update manager for the client.
      *
      * @param updateManager The underlying update manager.
+     *
      * @return The update manager to use.
      */
     @Provides
@@ -126,6 +131,7 @@ public class UpdaterModule {
      * Provides a {@link CheckResultConsolidator} that the client should use.
      *
      * @param consolidator The consolidator to provide.
+     *
      * @return The consolidator to use in the client.
      */
     @Provides
@@ -137,6 +143,7 @@ public class UpdaterModule {
      * Provides an {@link UpdateComponentPolicy} that the client should use.
      *
      * @param policy The policy to provide.
+     *
      * @return The policy to use in the client.
      */
     @Provides
@@ -148,6 +155,7 @@ public class UpdaterModule {
      * Provides an {@link UpdateRetrievalStategy} that the client should use.
      *
      * @param strategy The strategy to provide.
+     *
      * @return The strategy to use in the client.
      */
     @Provides(type = Provides.Type.SET)
@@ -159,6 +167,7 @@ public class UpdaterModule {
      * Provides an {@link UpdateInstallationStrategy} that the client should use.
      *
      * @param strategy The strategy to provide.
+     *
      * @return The strategy to use in the client.
      */
     @Provides(type = Provides.Type.SET)
@@ -170,6 +179,7 @@ public class UpdaterModule {
      * Provides an {@link UpdateCheckStrategy} that the client should use.
      *
      * @param strategy The strategy to provide.
+     *
      * @return The strategy to use in the client.
      */
     @Provides(type = Provides.Type.SET)

@@ -43,9 +43,10 @@ public class InvalidURIException extends Exception {
      * Creates a new instance of {@link InvalidURIException}.
      *
      * @param message The exception message.
-     * @param cause The underlying cause of the exception.
+     * @param cause   The underlying cause of the exception.
      */
     public InvalidURIException(final String message, final Throwable cause) {
         super(message, cause);
     }
+
 }

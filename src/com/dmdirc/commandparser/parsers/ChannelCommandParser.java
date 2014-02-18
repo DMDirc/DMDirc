@@ -39,12 +39,11 @@ import com.dmdirc.interfaces.CommandController;
 public class ChannelCommandParser extends ChatCommandParser {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /**
      * The channel instance that this parser is attached to.
      */
@@ -53,7 +52,7 @@ public class ChannelCommandParser extends ChatCommandParser {
     /**
      * Creates a new instance of ChannelCommandParser.
      *
-     * @param server The server this parser's query belongs to
+     * @param server            The server this parser's query belongs to
      * @param commandController The controller to load commands from.
      */
     public ChannelCommandParser(final Server server, final CommandController commandController) {

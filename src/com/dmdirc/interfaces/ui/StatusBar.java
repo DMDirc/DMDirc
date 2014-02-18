@@ -56,4 +56,5 @@ public interface StatusBar {
      * @param component component to add
      */
     void removeComponent(final StatusBarComponent component);
+
 }

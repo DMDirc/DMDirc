@@ -39,7 +39,7 @@ import javax.inject.Inject;
 /**
  * The part command parts the current channel with a specified part message.
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class Part extends Command {
 
     /** A command info object for this command. */

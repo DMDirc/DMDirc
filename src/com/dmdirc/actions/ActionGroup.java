@@ -41,30 +41,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ActionGroup implements Iterable<Action> {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** The actions in this group. */
     private final List<Action> actions = new ArrayList<>();
-
     /** The name of this action group. */
     private final String name;
-
     /** The description of this action group. */
     private String description;
-
     /** The author of this action group. */
     private String author;
-
     /** The component number of this action group (for updating). */
     private int component = -1;
-
     /** The version of this action group. */
     private Version version;
-
     /** A list of settings used by this action group. */
     private final Map<String, PreferencesSetting> settings = new HashMap<>();
 
@@ -137,6 +130,7 @@ public class ActionGroup implements Iterable<Action> {
      * Retrieves the version number of this action group.
      *
      * @return This action group's version number, or null if none is specified.
+     *
      * @since 0.6.4
      */
     public Version getVersion() {
@@ -147,6 +141,7 @@ public class ActionGroup implements Iterable<Action> {
      * Sets the version of this action group.
      *
      * @param version This action group's new version.
+     *
      * @since 0.6.4
      */
     public void setVersion(final Version version) {
@@ -156,8 +151,7 @@ public class ActionGroup implements Iterable<Action> {
     /**
      * Retrieves the addon site component number for this action group.
      *
-     * @return The component number for this action group, or -1 if none is
-     * specified.
+     * @return The component number for this action group, or -1 if none is specified.
      */
     public int getComponent() {
         return component;
@@ -224,6 +218,7 @@ public class ActionGroup implements Iterable<Action> {
      * Deletes an action from this group.
      *
      * @param action The action to be deleted
+     *
      * @since 0.6.3
      */
     @Precondition({

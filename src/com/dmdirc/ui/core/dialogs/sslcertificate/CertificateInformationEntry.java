@@ -31,21 +31,18 @@ public class CertificateInformationEntry {
 
     /** The title of the piece of information. */
     private final String title;
-
     /** The actual value. */
     private final String value;
-
     /** Whether this value is invalid. */
     private final boolean invalid;
-
     /** Whether this value is missing. */
     private final boolean missing;
 
     /**
      * Creates a new CertificateInformationEntry for the specified information.
      *
-     * @param title The title of the piece of information
-     * @param value The actual value
+     * @param title   The title of the piece of information
+     * @param value   The actual value
      * @param invalid Whether the value is invalid
      * @param missing Whether the value is missing
      */
@@ -93,4 +90,5 @@ public class CertificateInformationEntry {
     public String getValue() {
         return value;
     }
+
 }

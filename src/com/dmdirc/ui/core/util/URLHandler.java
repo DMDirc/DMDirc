@@ -57,9 +57,9 @@ public class URLHandler {
     /**
      * Instantiates a new URL Handler.
      *
-     * @param controller The UI controller to show dialogs etc on
-     * @param globalConfig Config to retrieve settings from
-     * @param serverManager Server manager to connect to servers
+     * @param controller       The UI controller to show dialogs etc on
+     * @param globalConfig     Config to retrieve settings from
+     * @param serverManager    Server manager to connect to servers
      * @param statusBarManager Status bar manager used to show messages
      */
     public URLHandler(
@@ -97,8 +97,8 @@ public class URLHandler {
     }
 
     /**
-     * Sanitises the specified string so that it may be used as a {@link URI}.
-     * Sanitisation consists of:
+     * Sanitises the specified string so that it may be used as a {@link URI}. Sanitisation consists
+     * of:
      * <ul>
      * <li>replacing any pipe character with its hex escape</li>
      * <li>replacing any hash character in the fragment with its hex escape</li>
@@ -106,6 +106,7 @@ public class URLHandler {
      *
      * @since 0.6.5
      * @param urlString The string to be sanitised
+     *
      * @return A sanitised version of the specified string.
      */
     protected static String getSanitisedString(final String urlString) {
@@ -167,13 +168,13 @@ public class URLHandler {
             case "DMDIRC":
                 statusBarManager.setMessage(
                         new StatusMessage("Connecting to: " + uri.toString(),
-                                config));
+                        config));
                 serverManager.connectToAddress(uri);
                 break;
             case "BROWSER":
                 statusBarManager.setMessage(
                         new StatusMessage("Opening: " + uri.toString(),
-                                config));
+                        config));
                 execBrowser(uri);
                 break;
             case "MAIL":
@@ -182,7 +183,7 @@ public class URLHandler {
             default:
                 statusBarManager.setMessage(
                         new StatusMessage("Opening: " + uri.toString(),
-                                config));
+                        config));
                 execApp(substituteParams(uri, command));
                 break;
         }
@@ -191,7 +192,7 @@ public class URLHandler {
     /**
      * Substitutes variables into a command.
      *
-     * @param url data url
+     * @param url     data url
      * @param command command to be substituted
      *
      * @return Substituted command
@@ -312,4 +313,5 @@ public class URLHandler {
                     + "manually");
         }
     }
+
 }

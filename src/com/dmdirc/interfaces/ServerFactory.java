@@ -33,11 +33,11 @@ import java.net.URI;
 public interface ServerFactory {
 
     /**
-     * Creates a new server which will connect to the specified URL with
-     * the specified profile.
+     * Creates a new server which will connect to the specified URL with the specified profile.
      *
-     * @param uri The address of the server to connect to
+     * @param uri     The address of the server to connect to
      * @param profile The profile to use
+     *
      * @return A new {@link Server} instance with the appropriate configuration
      */
     Server createServer(final URI uri, final ConfigProvider profile);

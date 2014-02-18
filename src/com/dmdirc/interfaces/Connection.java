@@ -45,17 +45,16 @@ import java.util.List;
 public interface Connection {
 
     /**
-     * Attempts to accept the specified invites, and join the corresponding
-     * channels.
+     * Attempts to accept the specified invites, and join the corresponding channels.
      *
      * @param invites The invites to process
+     *
      * @since 0.6.4
      */
     void acceptInvites(final Invite... invites);
 
     /**
-     * Attempts to accept all active invites for this server, and join the
-     * corresponding channels.
+     * Attempts to accept all active invites for this server, and join the corresponding channels.
      *
      * @since 0.6.4
      */
@@ -69,9 +68,9 @@ public interface Connection {
     void addAwayStateListener(final AwayStateListener listener);
 
     /**
-     * Adds a new certificate problem listener to this server. If there is
-     * currently an on-going problem with a certificate, the listener will
-     * be called immediately before this method returns.
+     * Adds a new certificate problem listener to this server. If there is currently an on-going
+     * problem with a certificate, the listener will be called immediately before this method
+     * returns.
      *
      * @param listener The listener to be added
      */
@@ -81,6 +80,7 @@ public interface Connection {
      * Adds a specific channel and window to this server.
      *
      * @param chan channel to add
+     *
      * @return The channel that was added (may be null if closing)
      */
     Channel addChannel(final ChannelInfo chan);
@@ -88,8 +88,9 @@ public interface Connection {
     /**
      * Adds a specific channel and window to this server.
      *
-     * @param chan channel to add
+     * @param chan  channel to add
      * @param focus Whether or not to focus the channel
+     *
      * @return The channel that was added (may be null if closing)
      */
     Channel addChannel(final ChannelInfo chan, final boolean focus);
@@ -112,8 +113,8 @@ public interface Connection {
      * Passes the arguments to all frames for this server.
      *
      * @param messageType The type of message to send
-     * @param date The date at which the event occurred
-     * @param args The arguments of the message
+     * @param date        The date at which the event occurred
+     * @param args        The arguments of the message
      */
     void addLineToAll(final String messageType, final Date date, final Object... args);
 
@@ -123,12 +124,13 @@ public interface Connection {
     void addRaw();
 
     /**
-     * Compare the given URI to the URI we are currently using to see if they
-     * would both result in the server connecting to the same place, even if the
-     * URIs do not match exactly.
+     * Compare the given URI to the URI we are currently using to see if they would both result in
+     * the server connecting to the same place, even if the URIs do not match exactly.
      *
      * @param uri URI to compare with the Servers own URI.
+     *
      * @return True if the Given URI is the "same" as the one we are using.
+     *
      * @since 0.6.3
      */
     boolean compareURI(final URI uri);
@@ -145,6 +147,7 @@ public interface Connection {
      *
      * @param address The address of the server to connect to
      * @param profile The profile to use
+     *
      * @since 0.6.3
      */
     void connect(final URI address, final ConfigProvider profile);
@@ -164,8 +167,7 @@ public interface Connection {
     void delQuery(final Query query);
 
     /**
-     * Removes our reference to the raw object (presumably after it has been
-     * closed).
+     * Removes our reference to the raw object (presumably after it has been closed).
      */
     void delRaw();
 
@@ -199,6 +201,7 @@ public interface Connection {
      * Retrieves the specified channel belonging to this server.
      *
      * @param channel The channel to be retrieved
+     *
      * @return The appropriate channel object
      */
     Channel getChannel(final String channel);
@@ -239,16 +242,14 @@ public interface Connection {
     String getIrcd();
 
     /**
-     * Retrieves the name of this server's network. The network name is
-     * determined using the following rules:
+     * Retrieves the name of this server's network. The network name is determined using the
+     * following rules:
      *
-     * 1. If the server includes its network name in the 005 information, we
-     * use that
-     * 2. If the server's name ends in biz, com, info, net or org, we use the
-     * second level domain (e.g., foo.com)
-     * 3. If the server's name contains more than two dots, we drop everything
-     * up to and including the first part, and use the remainder
-     * 4. In all other cases, we use the full server name
+     * 1. If the server includes its network name in the 005 information, we use that 2. If the
+     * server's name ends in biz, com, info, net or org, we use the second level domain (e.g.,
+     * foo.com) 3. If the server's name contains more than two dots, we drop everything up to and
+     * including the first part, and use the remainder 4. In all other cases, we use the full server
+     * name
      *
      * @return The name of this server's network
      */
@@ -279,6 +280,7 @@ public interface Connection {
      * Retrieves the protocol used by this server.
      *
      * @return This server's protocol
+     *
      * @since 0.6.3
      */
     String getProtocol();
@@ -291,20 +293,22 @@ public interface Connection {
     Collection<Query> getQueries();
 
     /**
-     * Retrieves the specified query belonging to this server. If the query
-     * does not yet exist, it is created automatically.
+     * Retrieves the specified query belonging to this server. If the query does not yet exist, it
+     * is created automatically.
      *
      * @param host The host of the query to look for
+     *
      * @return The appropriate query object
      */
     Query getQuery(final String host);
 
     /**
-     * Retrieves the specified query belonging to this server. If the query
-     * does not yet exist, it is created automatically.
+     * Retrieves the specified query belonging to this server. If the query does not yet exist, it
+     * is created automatically.
      *
-     * @param host The host of the query to look for
+     * @param host  The host of the query to look for
      * @param focus Should we focus the window on open?
+     *
      * @return The appropriate query object
      */
     Query getQuery(final String host, final boolean focus);
@@ -324,9 +328,8 @@ public interface Connection {
     ServerState getState();
 
     /**
-     * Retrieves the status object for this server. Effecting state transitions
-     * on the object returned by this method will almost certainly cause
-     * problems.
+     * Retrieves the status object for this server. Effecting state transitions on the object
+     * returned by this method will almost certainly cause problems.
      *
      * @since 0.6.3m1
      * @return This server's status object.
@@ -337,6 +340,7 @@ public interface Connection {
      * Determines whether the server knows of the specified channel.
      *
      * @param channel The channel to be checked
+     *
      * @return True iff the channel is known, false otherwise
      */
     boolean hasChannel(final String channel);
@@ -345,6 +349,7 @@ public interface Connection {
      * Determines whether the server knows of the specified query.
      *
      * @param host The host of the query to look for
+     *
      * @return True iff the query is known, false otherwise
      */
     boolean hasQuery(final String host);
@@ -357,51 +362,57 @@ public interface Connection {
     boolean isAway();
 
     /**
-     * Determines whether this server is currently connected to the specified
-     * network.
+     * Determines whether this server is currently connected to the specified network.
      *
      * @param target The network to check for
+     *
      * @return True if this server is connected to the network, false otherwise
+     *
      * @since 0.6.3m1rc3
      */
     boolean isNetwork(final String target);
 
     /**
-     * Determines if the specified channel name is valid. A channel name is
-     * valid if we already have an existing Channel with the same name, or
-     * we have a valid parser instance and the parser says it's valid.
+     * Determines if the specified channel name is valid. A channel name is valid if we already have
+     * an existing Channel with the same name, or we have a valid parser instance and the parser
+     * says it's valid.
      *
      * @param channelName The name of the channel to test
+     *
      * @return True if the channel name is valid, false otherwise
      */
     boolean isValidChannelName(final String channelName);
 
     /**
-     * Attempts to join the specified channels. If channels with the same name
-     * already exist, they are (re)joined and their windows activated.
+     * Attempts to join the specified channels. If channels with the same name already exist, they
+     * are (re)joined and their windows activated.
      *
      * @param requests The channel join requests to process
+     *
      * @since 0.6.4
      */
     void join(final ChannelJoinRequest... requests);
 
     /**
-     * Attempts to join the specified channels. If channels with the same name
-     * already exist, they are (re)joined.
+     * Attempts to join the specified channels. If channels with the same name already exist, they
+     * are (re)joined.
      *
-     * @param focus Whether or not to focus any new channels
+     * @param focus    Whether or not to focus any new channels
      * @param requests The channel join requests to process
+     *
      * @since 0.6.4
      */
     void join(final boolean focus, final ChannelJoinRequest... requests);
 
     /**
-     * Parses the specified hostmask in a manner prescribed by the protocol
-     * currently used by this server.
+     * Parses the specified hostmask in a manner prescribed by the protocol currently used by this
+     * server.
      *
      * @see com.dmdirc.parser.interfaces.ProtocolDescription#parseHostmask(java.lang.String)
      * @param hostmask The hostmask to be parsed
+     *
      * @return An array containing the nickname, username and hostname
+     *
      * @since 0.6.4
      */
     String[] parseHostmask(final String hostmask);
@@ -467,8 +478,8 @@ public interface Connection {
      * Replies to an incoming CTCP message.
      *
      * @param source The source of the message
-     * @param type The CTCP type
-     * @param args The CTCP arguments
+     * @param type   The CTCP type
+     * @param args   The CTCP arguments
      */
     void sendCTCPReply(final String source, final String type, final String args);
 
@@ -480,20 +491,19 @@ public interface Connection {
     void updateAwayState(final String message);
 
     /**
-     * Updates this server's ignore list to use the entries stored in the
-     * config manager.
+     * Updates this server's ignore list to use the entries stored in the config manager.
      */
     void updateIgnoreList();
 
     /**
-     * Updates the state of this server following a nick change of someone
-     * that the user has a query open with. Namely, this updates the
-     * tabcompleter with the new name, and ensures that the <code>queries</code>
-     * map uses the correct nickname.
+     * Updates the state of this server following a nick change of someone that the user has a query
+     * open with. Namely, this updates the tabcompleter with the new name, and ensures that the
+     * <code>queries</code> map uses the correct nickname.
      *
-     * @param query The query object being updated
+     * @param query   The query object being updated
      * @param oldNick The old nickname of the user
      * @param newNick The new nickname of the user
+     *
      * @since 0.6.4
      */
     void updateQuery(final Query query, final String oldNick, final String newNick);

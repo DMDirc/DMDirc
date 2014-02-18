@@ -39,9 +39,9 @@ public class ServerCommandContext extends CommandContext {
     /**
      * Creates a new server command context.
      *
-     * @param source The source of the command
+     * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
-     * @param server The server associated with the command
+     * @param server      The server associated with the command
      */
     public ServerCommandContext(final FrameContainer source, final CommandInfo commandInfo,
             final Server server) {

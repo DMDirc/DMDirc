@@ -45,6 +45,7 @@ public class Info {
      * Returns the DMDirc version info.
      *
      * @param globalConfig The config to read version information from.
+     *
      * @return DMDirc version string
      */
     public static String getDMDircVersion(final AggregateConfigProvider globalConfig) {
@@ -84,4 +85,5 @@ public class Info {
     public static long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
+
 }

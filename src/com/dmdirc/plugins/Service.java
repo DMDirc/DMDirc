@@ -32,10 +32,8 @@ public class Service {
 
     /** Service Type. */
     private final String type;
-
     /** Service Name. */
     private final String name;
-
     /** List of ServiceProviders that implement this service. */
     private final List<ServiceProvider> serviceproviders = new ArrayList<>();
 

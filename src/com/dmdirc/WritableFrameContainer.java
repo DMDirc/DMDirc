@@ -37,35 +37,32 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The writable frame container adds additional methods to the frame container
- * class that allow the sending of lines back to whatever the container's
- * data source is (e.g. an IRC channel or server).
+ * The writable frame container adds additional methods to the frame container class that allow the
+ * sending of lines back to whatever the container's data source is (e.g. an IRC channel or server).
  */
 public abstract class WritableFrameContainer extends FrameContainer {
 
     /** The name of the server notification target. */
     protected static final String NOTIFICATION_SERVER = "server";
-
     /** The name of the channel notification target. */
     protected static final String NOTIFICATION_CHANNEL = "channel";
-
     /** The command parser used for commands in this container. */
     protected final CommandParser commandParser;
-
     /** The manager to use to despatch messages to sinks. */
     private final MessageSinkManager messageSinkManager;
 
     /**
      * Creates a new WritableFrameContainer.
      *
-     * @param icon The icon to use for this container
-     * @param name The name of this container
-     * @param title The title of this container
-     * @param config The config manager for this container
-     * @param parser The command parser for this container
+     * @param icon               The icon to use for this container
+     * @param name               The name of this container
+     * @param title              The title of this container
+     * @param config             The config manager for this container
+     * @param parser             The command parser for this container
      * @param messageSinkManager The sink manager to use to despatch messages
-     * @param urlBuilder The URL builder to use when finding icons.
-     * @param components The UI components that this frame requires
+     * @param urlBuilder         The URL builder to use when finding icons.
+     * @param components         The UI components that this frame requires
+     *
      * @since 0.6.4
      */
     public WritableFrameContainer(
@@ -108,18 +105,19 @@ public abstract class WritableFrameContainer extends FrameContainer {
     public abstract TabCompleter getTabCompleter();
 
     /**
-     * Returns the maximum length that a line passed to sendLine() should be,
-     * in order to prevent it being truncated or causing protocol violations.
+     * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it
+     * being truncated or causing protocol violations.
      *
      * @return The maximum line length for this container
      */
     public abstract int getMaxLineLength();
 
     /**
-     * Splits the specified line into chunks that contain a number of bytes
-     * less than or equal to the value returned by {@link #getMaxLineLength()}.
+     * Splits the specified line into chunks that contain a number of bytes less than or equal to
+     * the value returned by {@link #getMaxLineLength()}.
      *
      * @param line The line to be split
+     *
      * @return An ordered list of chunks of the desired length
      */
     protected List<String> splitLine(final String line) {
@@ -154,6 +152,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * Returns the number of lines that the specified string would be sent as.
      *
      * @param line The string to be split and sent
+     *
      * @return The number of lines required to send the specified string
      */
     public final int getNumLines(final String line) {
@@ -176,8 +175,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * Processes and displays a notification.
      *
      * @param messageType The name of the formatter to be used for the message
-     * @param actionType The action type to be used
-     * @param args The arguments for the message
+     * @param actionType  The action type to be used
+     * @param args        The arguments for the message
+     *
      * @return True if any further behaviour should be executed, false otherwise
      */
     public boolean doNotification(final String messageType,
@@ -188,10 +188,11 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /**
      * Processes and displays a notification.
      *
-     * @param date The date/time at which the event occured
+     * @param date        The date/time at which the event occured
      * @param messageType The name of the formatter to be used for the message
-     * @param actionType The action type to be used
-     * @param args The arguments for the message
+     * @param actionType  The action type to be used
+     * @param args        The arguments for the message
+     *
      * @return True if any further behaviour should be executed, false otherwise
      */
     public boolean doNotification(final Date date, final String messageType,
@@ -223,7 +224,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /**
      * Allows subclasses to modify the lists of arguments for notifications.
      *
-     * @param actionArgs The list of arguments to be passed to the actions system
+     * @param actionArgs  The list of arguments to be passed to the actions system
      * @param messageArgs The list of arguments to be passed to the formatter
      */
     protected void modifyNotificationArgs(final List<Object> actionArgs,
@@ -234,8 +235,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /**
      * Allows subclasses to process specific types of notification arguments.
      *
-     * @param arg The argument to be processed
+     * @param arg  The argument to be processed
      * @param args The list of arguments that any data should be appended to
+     *
      * @return True if the arg has been processed, false otherwise
      */
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
@@ -243,25 +245,23 @@ public abstract class WritableFrameContainer extends FrameContainer {
     }
 
     /**
-     * Handles general server notifications (i.e., ones not tied to a
-     * specific window). The user can select where the notifications should
-     * go in their config.
+     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
+     * select where the notifications should go in their config.
      *
      * @param messageType The type of message that is being sent
-     * @param args The arguments for the message
+     * @param args        The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {
         handleNotification(new Date(), messageType, args);
     }
 
     /**
-     * Handles general server notifications (i.e., ones not tied to a
-     * specific window). The user can select where the notifications should
-     * go in their config.
+     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
+     * select where the notifications should go in their config.
      *
-     * @param date The date/time at which the event occured
+     * @param date        The date/time at which the event occured
      * @param messageType The type of message that is being sent
-     * @param args The arguments for the message
+     * @param args        The arguments for the message
      */
     public void handleNotification(final Date date, final String messageType, final Object... args) {
         messageSinkManager.despatchMessage(this, date, messageType, args);

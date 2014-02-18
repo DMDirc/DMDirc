@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Manages all known actions, action types, comparisons, components, etc, and
- * facilitates loading and triggering of actions.
+ * Manages all known actions, action types, comparisons, components, etc, and facilitates loading
+ * and triggering of actions.
  */
 public interface ActionController {
 
@@ -94,50 +94,52 @@ public interface ActionController {
     void deleteGroup(final String group);
 
     /**
-     * Returns a list of action comparisons that are compatible with the
-     * specified class.
+     * Returns a list of action comparisons that are compatible with the specified class.
      *
      * @param target The class to be tested
+     *
      * @return A list of compatible action comparisons
      */
     @Precondition(value = "The specified target is not null")
     List<ActionComparison> findCompatibleComparisons(final Class<?> target);
 
     /**
-     * Returns a list of action components that are compatible with the
-     * specified class.
+     * Returns a list of action components that are compatible with the specified class.
      *
      * @param target The class to be tested
+     *
      * @return A list of compatible action components
      */
     @Precondition(value = "The specified target is not null")
     List<ActionComponent> findCompatibleComponents(final Class<?> target);
 
     /**
-     * Returns a list of action types that are compatible with the one
-     * specified.
+     * Returns a list of action types that are compatible with the one specified.
      *
      * @param type The type to be checked against
+     *
      * @return A list of compatible action types
      */
     @Precondition(value = "The specified type is not null")
     List<ActionType> findCompatibleTypes(final ActionType type);
 
     /**
-     * Returns the action type specified by the given string, or null if it
-     * doesn't match a valid registered action type.
+     * Returns the action type specified by the given string, or null if it doesn't match a valid
+     * registered action type.
      *
      * @param type The name of the action type to try and find
+     *
      * @return The actiontype with the specified name, or null on failure
      */
     @Precondition(value = "The specified type is non-null and not empty")
     ActionComparison getComparison(final String type);
 
     /**
-     * Returns the action component specified by the given string, or null if it
-     * doesn't match a valid registered action component.
+     * Returns the action component specified by the given string, or null if it doesn't match a
+     * valid registered action component.
      *
      * @param type The name of the action component to try and find
+     *
      * @return The actioncomponent with the specified name, or null on failure
      */
     @Precondition(value = "The specified type is non-null and not empty")
@@ -158,19 +160,21 @@ public interface ActionController {
     Map<String, ActionGroup> getGroupsMap();
 
     /**
-     * Retrieves the action group with the specified name. A new group is
-     * created if it doesn't already exist.
+     * Retrieves the action group with the specified name. A new group is created if it doesn't
+     * already exist.
      *
      * @param name The name of the group to retrieve
+     *
      * @return The corresponding ActionGroup
      */
     ActionGroup getOrCreateGroup(final String name);
 
     /**
-     * Returns the action comparison specified by the given string, or null if it
-     * doesn't match a valid registered action comparison.
+     * Returns the action comparison specified by the given string, or null if it doesn't match a
+     * valid registered action comparison.
      *
      * @param type The name of the action comparison to try and find
+     *
      * @return The type with the specified name, or null on failure
      */
     ActionType getType(final String type);
@@ -199,7 +203,7 @@ public interface ActionController {
     /**
      * Adds a new listener for the specified action type.
      *
-     * @param types The action types that are to be listened for
+     * @param types    The action types that are to be listened for
      * @param listener The listener to be added
      */
     void registerListener(final ActionListener listener, final ActionType... types);
@@ -207,7 +211,7 @@ public interface ActionController {
     /**
      * Registers the specified default setting for actions.
      *
-     * @param name The name of the setting to be registered
+     * @param name  The name of the setting to be registered
      * @param value The default value for the setting
      */
     void registerSetting(final String name, final String value);
@@ -229,8 +233,7 @@ public interface ActionController {
     void removeAction(final Action action);
 
     /**
-     * Reregisters the specified action. Should be used when the action's
-     * triggers change.
+     * Reregisters the specified action. Should be used when the action's triggers change.
      *
      * @param action The action to be reregistered
      */
@@ -244,12 +247,13 @@ public interface ActionController {
     /**
      * Processes an event of the specified type.
      *
-     * @param type The type of the event to process
-     * @param format The format of the message that's going to be displayed for
-     * the event. Actions may change this format.
+     * @param type      The type of the event to process
+     * @param format    The format of the message that's going to be displayed for the event.
+     *                  Actions may change this format.
      * @param arguments The arguments for the event
-     * @return True if the event should be processed, or false if an action
-     * listener has requested the event be skipped.
+     *
+     * @return True if the event should be processed, or false if an action listener has requested
+     *         the event be skipped.
      */
     @Precondition(value = {
         "The specified ActionType is not null",
@@ -261,7 +265,7 @@ public interface ActionController {
     /**
      * Removes a listener for the specified action type.
      *
-     * @param types The action types that were being listened for
+     * @param types    The action types that were being listened for
      * @param listener The listener to be removed
      */
     void unregisterListener(final ActionListener listener, final ActionType... types);

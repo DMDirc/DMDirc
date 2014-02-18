@@ -25,15 +25,15 @@ package com.dmdirc.tls;
 import java.security.cert.CertificateException;
 
 /**
- * An exception to indicate that the host on a certificate doesn't match
- * the host we're trying to connect to.
+ * An exception to indicate that the host on a certificate doesn't match the host we're trying to
+ * connect to.
  */
 public class CertificateDoesntMatchHostException extends CertificateException {
 
     /**
-     * A version number for this class. It should be changed whenever the
-     * class structure is changed (or anything else that would prevent
-     * serialized objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
@@ -45,4 +45,5 @@ public class CertificateDoesntMatchHostException extends CertificateException {
     public CertificateDoesntMatchHostException(final String msg) {
         super(msg);
     }
+
 }

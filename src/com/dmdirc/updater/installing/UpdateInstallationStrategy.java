@@ -25,16 +25,17 @@ package com.dmdirc.updater.installing;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
 /**
- * Describes a strategy for installing updates which have been retrieved
- * by a {@link com.dmdirc.updater.retrieving.UpdateRetrievalStategy}.
+ * Describes a strategy for installing updates which have been retrieved by a
+ * {@link com.dmdirc.updater.retrieving.UpdateRetrievalStategy}.
  */
 public interface UpdateInstallationStrategy {
 
     /**
-     * Determines whether this strategy can handle the installation of
-     * the given retrieved update for the given component.
+     * Determines whether this strategy can handle the installation of the given retrieved update
+     * for the given component.
      *
      * @param retrievalResult The result of the retrieval operation
+     *
      * @return True if this strategy can perform installation; false otherwise
      */
     boolean canHandle(UpdateRetrievalResult retrievalResult);

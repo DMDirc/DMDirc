@@ -26,8 +26,8 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.input.InputHandler;
 
 /**
- * The Input Window interface specifies additional methods that windows should
- * implement if they have an input field.
+ * The Input Window interface specifies additional methods that windows should implement if they
+ * have an input field.
  */
 public interface InputWindow extends Window {
 

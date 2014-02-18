@@ -28,8 +28,8 @@ import com.dmdirc.Server;
 import java.net.URI;
 
 /**
- * Defines the methods that should be implemented by UI controllers. Controllers
- * handle the various aspects of a UI implementation.
+ * Defines the methods that should be implemented by UI controllers. Controllers handle the various
+ * aspects of a UI implementation.
  */
 public interface UIController {
 

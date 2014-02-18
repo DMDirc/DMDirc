@@ -58,7 +58,6 @@ public class SetCommand extends Command implements IntelligentCommand {
             + "\nset [--server|--channel] --append <domain> <option> <data> - appends data to the specified option"
             + "\nset [--server|--channel] --unset <domain> <option> - unsets the specified option",
             CommandType.TYPE_GLOBAL);
-
     /** The flag to indicate the set command should apply to a server's settings. */
     private final CommandFlag serverFlag = new CommandFlag("server");
     /** The flag to indicate the set command should apply to a channel's settings. */
@@ -69,7 +68,6 @@ public class SetCommand extends Command implements IntelligentCommand {
     private final CommandFlag appendFlag = new CommandFlag("append", true, 0, 2);
     /** The command flag handler for this command. */
     private final CommandFlagHandler handler;
-
     /** The controller to use to set settings. */
     private final IdentityController identityController;
     /** The factory to use to create new identities. */
@@ -78,9 +76,9 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of Set.
      *
-     * @param controller The controller to use for command information.
+     * @param controller         The controller to use for command information.
      * @param identityController The controller to use to set settings.
-     * @param identityFactory The factory to use to create new identities.
+     * @param identityFactory    The factory to use to create new identities.
      */
     @Inject
     public SetCommand(
@@ -154,29 +152,29 @@ public class SetCommand extends Command implements IntelligentCommand {
         final String[] arguments = res.getArguments();
 
         switch (arguments.length) {
-        case 0:
-            doDomainList(origin, args.isSilent(), manager);
-            break;
-        case 1:
-            doOptionsList(origin, args.isSilent(), manager, arguments[0]);
-            break;
-        case 2:
-            doShowOption(origin, args.isSilent(), manager, arguments[0],
-                    arguments[1]);
-            break;
-        default:
-            doSetOption(origin, args.isSilent(), identity, arguments[0],
-                    arguments[1], res.getArgumentsAsString(2));
-            break;
+            case 0:
+                doDomainList(origin, args.isSilent(), manager);
+                break;
+            case 1:
+                doOptionsList(origin, args.isSilent(), manager, arguments[0]);
+                break;
+            case 2:
+                doShowOption(origin, args.isSilent(), manager, arguments[0],
+                        arguments[1]);
+                break;
+            default:
+                doSetOption(origin, args.isSilent(), identity, arguments[0],
+                        arguments[1], res.getArgumentsAsString(2));
+                break;
         }
     }
 
     /**
      * Shows the user a list of valid domains.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
-     * @param manager The config manager to use to retrieve data
+     * @param manager  The config manager to use to retrieve data
      */
     private void doDomainList(final FrameContainer origin, final boolean isSilent,
             final AggregateConfigProvider manager) {
@@ -197,10 +195,10 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Shows the user a list of valid options within a domain.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
-     * @param manager The config manager to use to retrieve data
-     * @param domain The domain to be inspected
+     * @param manager  The config manager to use to retrieve data
+     * @param domain   The domain to be inspected
      */
     private void doOptionsList(final FrameContainer origin,
             final boolean isSilent, final AggregateConfigProvider manager, final String domain) {
@@ -229,11 +227,11 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Shows the user the current value of one option.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
-     * @param manager The config manager to use to retrieve data
-     * @param domain The domain of the option
-     * @param option The name of the option
+     * @param manager  The config manager to use to retrieve data
+     * @param domain   The domain of the option
+     * @param option   The name of the option
      */
     private void doShowOption(final FrameContainer origin,
             final boolean isSilent, final AggregateConfigProvider manager,
@@ -249,11 +247,11 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Sets the value of the specified option.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param identity The identity to use to set data
-     * @param domain The domain of the option
-     * @param option The name of the option
+     * @param domain   The domain of the option
+     * @param option   The name of the option
      * @param newvalue The value the option should be set to
      */
     private void doSetOption(final FrameContainer origin,
@@ -268,16 +266,17 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Appends data to the specified option.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param identity The identity to use to set data
-     * @param manager The config manager to use to retrieve data
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param data The data to be appended
+     * @param manager  The config manager to use to retrieve data
+     * @param domain   The domain of the option
+     * @param option   The name of the option
+     * @param data     The data to be appended
      */
     private void doAppendOption(final FrameContainer origin,
-            final boolean isSilent, final ConfigProvider identity, final AggregateConfigProvider manager,
+            final boolean isSilent, final ConfigProvider identity,
+            final AggregateConfigProvider manager,
             final String domain, final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
                 (manager.hasOptionString(domain, option)
@@ -287,11 +286,11 @@ public class SetCommand extends Command implements IntelligentCommand {
     /**
      * Unsets the specified option.
      *
-     * @param origin The window the command was issued from
+     * @param origin   The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param identity The identity to use to set data
-     * @param domain The domain of the option
-     * @param option The name of the option
+     * @param domain   The domain of the option
+     * @param option   The name of the option
      */
     private void doUnsetOption(final FrameContainer origin,
             final boolean isSilent, final ConfigProvider identity, final String domain,

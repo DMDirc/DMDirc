@@ -33,11 +33,11 @@ import dagger.ObjectGraph;
 public interface Plugin {
 
     /**
-     * Check any further Prerequisites for this plugin to load that can not be
-     * checked using metainfo.
+     * Check any further Prerequisites for this plugin to load that can not be checked using
+     * metainfo.
      *
-     * @return ValidationResponse detailign if the plugin passes any extra
-     * checks that plugin.info can't handle
+     * @return ValidationResponse detailign if the plugin passes any extra checks that plugin.info
+     *         can't handle
      */
     ValidationResponse checkPrerequisites();
 
@@ -62,8 +62,8 @@ public interface Plugin {
 
     /**
      * Loads the plugin. This method is called when the plugin has been activated by the client,
-     * either in response to a direct user request, or automatically as part of client startup
-     * or during the course of another plugin being loaded.
+     * either in response to a direct user request, or automatically as part of client startup or
+     * during the course of another plugin being loaded.
      *
      * <p>Plugins are provided with an {@link ObjectGraph} which they may extend and use to inflate
      * their classes. This is the only supported way of obtaining instances of core DMDirc classes,
@@ -73,10 +73,10 @@ public interface Plugin {
      * {@link dagger.Module} which specifies an {@link dagger.Module#addsTo()} argument of either:
      *
      * <ul>
-     *  <li>For plugins with no parents, or plugins which do not have a dependency on their parent,
-     *      {@link com.dmdirc.ClientModule}.</li>
-     *  <li>For plugins with dependencies on a parent plugin, that plugin's own
-     *      {@link dagger.Module} implementation.</li>
+     * <li>For plugins with no parents, or plugins which do not have a dependency on their parent,
+     * {@link com.dmdirc.ClientModule}.</li>
+     * <li>For plugins with dependencies on a parent plugin, that plugin's own {@link dagger.Module}
+     * implementation.</li>
      * </ul>
      *
      * <p>The implementation of this method should then call
@@ -85,23 +85,24 @@ public interface Plugin {
      * <p>To expose dependencies to child plugins, the relevant {@link ObjectGraph} should be
      * returned from the {@link #getObjectGraph()} method.
      *
-     * <p>While both this method and {@link #onLoad()} are defined, this method is guaranteed to
-     * be called first. Implementations that support this method of loading can simply treat
+     * <p>While both this method and {@link #onLoad()} are defined, this method is guaranteed to be
+     * called first. Implementations that support this method of loading can simply treat
      * {@link #onLoad()} as a no-op.
      *
      * @param pluginInfo The information object corresponding to this plugin.
-     * @param graph The dependency-injection graph that may be used to instantiate plugin classes.
+     * @param graph      The dependency-injection graph that may be used to instantiate plugin
+     *                   classes.
      */
     void load(PluginInfo pluginInfo, ObjectGraph graph);
 
     /**
-     * Returns an {@link ObjectGraph} that may be used by subplugins to inject dependencies
-     * provided by this class.
+     * Returns an {@link ObjectGraph} that may be used by subplugins to inject dependencies provided
+     * by this class.
      *
      * <p>This should always be an extension of the {@link ObjectGraph} provided to the
-     * {@link #load(com.dmdirc.plugins.PluginInfo, dagger.ObjectGraph)} method. If the plugin
-     * has no dependencies it wishes to expose, it may return {@code null} and any subplugins will
-     * be given the global {@link ObjectGraph}.
+     * {@link #load(com.dmdirc.plugins.PluginInfo, dagger.ObjectGraph)} method. If the plugin has no
+     * dependencies it wishes to expose, it may return {@code null} and any subplugins will be given
+     * the global {@link ObjectGraph}.
      *
      * <p>It is recommended that implementations separate their internal dependencies from those
      * that will be published. This can be accomplished by using two modules, e.g.:
@@ -119,8 +120,8 @@ public interface Plugin {
     ObjectGraph getObjectGraph();
 
     /**
-     * Called by PluginInfo to set the domain name.
-     * This can only be called once, all other attempts will be ignored.
+     * Called by PluginInfo to set the domain name. This can only be called once, all other attempts
+     * will be ignored.
      *
      * @deprecated Domain should be obtained from {@link PluginInfo}
      * @param newDomain Domain name for plugin settings
@@ -129,13 +130,12 @@ public interface Plugin {
     void setDomain(final String newDomain);
 
     /**
-     * Called to allow plugins to add their configuration options to the
-     * manager. PreferencesCategories added from this method should be of type
-     * {@link com.dmdirc.config.prefs.PluginPreferencesCategory} as this gives
-     * the user feedback on the status of your plugin.
+     * Called to allow plugins to add their configuration options to the manager.
+     * PreferencesCategories added from this method should be of type
+     * {@link com.dmdirc.config.prefs.PluginPreferencesCategory} as this gives the user feedback on
+     * the status of your plugin.
      *
-     * @param manager The preferences manager that configuration options
-     * need to be added to.
+     * @param manager The preferences manager that configuration options need to be added to.
      */
     void showConfig(final PreferencesDialogModel manager);
 

@@ -32,10 +32,9 @@ import com.dmdirc.util.validators.ColourValidator;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * The colour manager manages the colour scheme for the IRC client. It allows
- * other components to use IRC colour codes instead of absolute colours.
+ * The colour manager manages the colour scheme for the IRC client. It allows other components to
+ * use IRC colour codes instead of absolute colours.
  */
 public class ColourManager {
 
@@ -44,15 +43,11 @@ public class ColourManager {
         Colour.WHITE, Colour.BLACK, new Colour(0, 0, 127), new Colour(0, 141, 0),
         Colour.RED, new Colour(127, 0, 0), new Colour(160, 15, 160), new Colour(252, 127, 0),
         Colour.YELLOW, new Colour(0, 252, 0), new Colour(0, 128, 128), new Colour(0, 255, 255),
-        Colour.BLUE, new Colour(255, 0, 255), Colour.GRAY, Colour.LIGHT_GRAY,
-    };
-
+        Colour.BLUE, new Colour(255, 0, 255), Colour.GRAY, Colour.LIGHT_GRAY,};
     /** Colour cache. */
     private final Map<String, Colour> colourCache = new HashMap<>();
-
     /** Config manager to read settings from. */
     private final AggregateConfigProvider configManager;
-
     /** Actual colours we're using for the 16 IRC colours. */
     private Colour[] ircColours = DEFAULT_COLOURS.clone();
 
@@ -93,12 +88,13 @@ public class ColourManager {
     }
 
     /**
-     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
-     * target string, and returns the corresponding colour. Returns the
-     * specified fallback colour if the spec can't be parsed.
+     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the target string, and
+     * returns the corresponding colour. Returns the specified fallback colour if the spec can't be
+     * parsed.
      *
-     * @param spec The string to parse
+     * @param spec     The string to parse
      * @param fallback The colour to use if the spec isn't valid
+     *
      * @return A colour representation of the specified string
      */
     public Colour getColourFromString(final String spec, final Colour fallback) {
@@ -137,10 +133,11 @@ public class ColourManager {
     }
 
     /**
-     * Returns a Colour object that corresponds to the specified 6-digit hex
-     * string. If the string is invalid, logs a warning and returns white.
+     * Returns a Colour object that corresponds to the specified 6-digit hex string. If the string
+     * is invalid, logs a warning and returns white.
      *
      * @param hex The hex string to convert into a Colour
+     *
      * @return A Colour object corresponding to the hex input
      */
     public Colour getColourFromHex(final String hex) {
@@ -169,11 +166,12 @@ public class ColourManager {
     }
 
     /**
-     * Returns a Colour object that represents the colour associated with the
-     * specified IRC colour code. If the code is not found, a warning is logged
-     * with the client's Logger class, and white is returned.
+     * Returns a Colour object that represents the colour associated with the specified IRC colour
+     * code. If the code is not found, a warning is logged with the client's Logger class, and white
+     * is returned.
      *
      * @param number The IRC colour code to look up
+     *
      * @return The corresponding Colour object
      */
     public Colour getColourFromIrcCode(final int number) {
@@ -187,7 +185,9 @@ public class ColourManager {
 
     /**
      * Retrieves the hex representation of the specified colour.
+     *
      * @param colour The colour to be parsed
+     *
      * @return A 6-digit hex string representing the colour
      */
     public static String getHex(final Colour colour) {
@@ -200,7 +200,9 @@ public class ColourManager {
 
     /**
      * Converts the specified integer (in the range 0-255) into a hex string.
+     *
      * @param value The integer to convert
+     *
      * @return A 2 char hex string representing the specified integer
      */
     private static String toHex(final int value) {

@@ -25,8 +25,8 @@ package com.dmdirc.updater.retrieving;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
 /**
- * Base class for {@link UpdateRetrievalStategy} implementations that can
- * handle a single subclass of {@link UpdateCheckResult}.
+ * Base class for {@link UpdateRetrievalStategy} implementations that can handle a single subclass
+ * of {@link UpdateCheckResult}.
  *
  * @param <T> The type of result that this strategy can handle
  */
@@ -56,12 +56,13 @@ public abstract class TypeSensitiveRetrievalStrategy<T extends UpdateCheckResult
     /**
      * Retrieves the update associated with the given {@link UpdateCheckResult}.
      *
-     * @param checkResult The update check result describing the update
-     * requiring retrieval.
-     * @return An {@link UpdateRetrievalResult} which describes the result of
-     * the retrieval, providing information for an
-     * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy}
-     * to use to install the update.
+     * @param checkResult The update check result describing the update requiring retrieval.
+     *
+     * @return An {@link UpdateRetrievalResult} which describes the result of the retrieval,
+     *         providing information for an
+     *         {@link com.dmdirc.updater.installing.UpdateInstallationStrategy} to use to install
+     *         the update.
+     *
      * @see #retrieve(com.dmdirc.updater.checking.UpdateCheckResult)
      */
     protected abstract UpdateRetrievalResult retrieveImpl(T checkResult);

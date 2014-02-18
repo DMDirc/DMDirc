@@ -32,13 +32,10 @@ public class BaseCheckResult implements UpdateCheckResult {
 
     /** The component this result is for. */
     private final UpdateComponent component;
-
     /** Whether or not an update is available. */
     private final boolean updateAvailable;
-
     /** A user-friendly name of the updated version, if any. */
     private final String updatedVersionName;
-
     /** The version available to update to, if any. */
     private final Version updatedVersion;
 
@@ -51,8 +48,7 @@ public class BaseCheckResult implements UpdateCheckResult {
     }
 
     /**
-     * Creates a new {@link BaseCheckResult} which reports no update is
-     * available.
+     * Creates a new {@link BaseCheckResult} which reports no update is available.
      *
      * @param component The component this result is for
      */

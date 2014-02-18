@@ -25,18 +25,16 @@ package com.dmdirc.updater.manager;
 import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Defines a policy to determine whether certain {@link UpdateComponent}s can
- * be updated.
+ * Defines a policy to determine whether certain {@link UpdateComponent}s can be updated.
  */
 public interface UpdateComponentPolicy {
 
     /**
-     * Determines whether the manager can check for updates for the given
-     * component.
+     * Determines whether the manager can check for updates for the given component.
      *
      * @param component The component in question
-     * @return True if the manager is allowed to check this component, false
-     * otherwise
+     *
+     * @return True if the manager is allowed to check this component, false otherwise
      */
     boolean canCheck(UpdateComponent component);
 

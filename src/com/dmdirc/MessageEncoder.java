@@ -30,14 +30,13 @@ import com.dmdirc.parser.interfaces.Parser;
 import java.io.UnsupportedEncodingException;
 
 /**
- * An {@link Encoder} implementation that reads the desired encoding from
- * the relevant target's config file.
+ * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
+ * config file.
  */
 public class MessageEncoder implements Encoder {
 
     /** The server that owns this encoder. */
     private final Server server;
-
     /** The parser that this encoder will work for. */
     private final Parser parser;
 

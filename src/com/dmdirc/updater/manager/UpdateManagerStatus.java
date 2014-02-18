@@ -23,21 +23,17 @@
 package com.dmdirc.updater.manager;
 
 /**
- * Enumerates the possible states of a {@link CachingUpdateManager}. The
- * statuses are ordered according to priority, with the first being the
- * highest priority.
+ * Enumerates the possible states of a {@link CachingUpdateManager}. The statuses are ordered
+ * according to priority, with the first being the highest priority.
  */
 public enum UpdateManagerStatus {
 
     /** The manager is currently performing some task. */
     WORKING,
-
     /** The manager is {@link #IDLE} but there are updates available. */
     IDLE_UPDATE_AVAILABLE,
-
     /** The manager is {@link #IDLE} but a restart is needed. */
     IDLE_RESTART_NEEDED,
-
     /** The manager is idle and not performing any activity. */
     IDLE,
 

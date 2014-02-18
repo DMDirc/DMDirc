@@ -67,14 +67,14 @@ public class PreferencesDialogModel {
     /**
      * Creates a new instance of PreferencesDialogModel.
      *
-     * @param pluginPanel UI specific plugin panel
-     * @param themePanel UI specific theme panel
-     * @param updatesPanel UI specific updates panel
+     * @param pluginPanel     UI specific plugin panel
+     * @param themePanel      UI specific theme panel
+     * @param updatesPanel    UI specific updates panel
      * @param urlHandlerPanel UI specific URL panel
-     * @param configManager Config manager to read settings from
-     * @param identity Identity to write settings to
-     * @param actionManager Action manager to register and trigger actions with
-     * @param pluginManager Plugin manager to retrieve plugins from
+     * @param configManager   Config manager to read settings from
+     * @param identity        Identity to write settings to
+     * @param actionManager   Action manager to register and trigger actions with
+     * @param pluginManager   Plugin manager to retrieve plugins from
      */
     public PreferencesDialogModel(final PreferencesInterface pluginPanel,
             final PreferencesInterface themePanel,
@@ -129,6 +129,7 @@ public class PreferencesDialogModel {
      * Finds and retrieves the category with the specified name.
      *
      * @param name The name (title) of the category to find.
+     *
      * @return The appropriate category, or null if none was found
      */
     public PreferencesCategory getCategory(final String name) {
@@ -226,6 +227,7 @@ public class PreferencesDialogModel {
      * Creates and adds the "Tab Completion" category.
      *
      * @param parent Parent category to add this category to
+     *
      * @since 0.6.4
      */
     private void addTabCompletionCategory(final PreferencesCategory parent) {
@@ -546,6 +548,7 @@ public class PreferencesDialogModel {
 
         parent.addSubCategory(category.setInline());
     }
+
     /**
      * Creates and adds the "Themes" category.
      *

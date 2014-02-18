@@ -48,8 +48,7 @@ import javax.inject.Inject;
 /**
  * Utility class that can initialise a {@link SimpleInjector} for use by plugins.
  *
- * Eventually this should be replaced by using the same DI framework for plugins
- * as for the client.
+ * Eventually this should be replaced by using the same DI framework for plugins as for the client.
  */
 public class PluginInjectorInitialiser {
 
@@ -140,4 +139,5 @@ public class PluginInjectorInitialiser {
         injector.addParameter(actionSubstitutorFactory);
         injector.addParameter(eventBus);
     }
+
 }

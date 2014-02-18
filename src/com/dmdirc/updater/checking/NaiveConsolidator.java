@@ -31,8 +31,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * A simple {@link CheckResultConsolidator} that returns the first check result
- * for each component that has an update available.
+ * A simple {@link CheckResultConsolidator} that returns the first check result for each component
+ * that has an update available.
  */
 public class NaiveConsolidator implements CheckResultConsolidator {
 

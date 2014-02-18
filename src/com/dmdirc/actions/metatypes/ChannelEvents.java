@@ -41,18 +41,24 @@ public enum ChannelEvents implements ActionMetaType {
     /** Channel topic event type. */
     CHANNEL_TOPICEVENT(new String[]{"channel", "topic"}, Channel.class, Topic.class),
     /** Channel CTCP type. */
-    CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
+    CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class,
+    ChannelClientInfo.class, String.class, String.class),
     /** Channel event with source. */
     CHANNEL_SOURCED_EVENT(new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
     /** Chanel event with source and argument. */
-    CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class, ChannelClientInfo.class, String.class),
+    CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class,
+    ChannelClientInfo.class, String.class),
     /** Chanel event with source and nickname. */
-    CHANNEL_NICKEVENT(new String[]{"channel", "user", "old nickname"}, Channel.class, ChannelClientInfo.class, String.class),
-    /** Chanel event with source, message and mode character argument. @since 0.6.3m2 */
-    CHANNEL_SOURCED_EVENT_WITH_CHARARG(new String[]{"channel", "user", "mode", "message"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
+    CHANNEL_NICKEVENT(new String[]{"channel", "user", "old nickname"}, Channel.class,
+    ChannelClientInfo.class, String.class),
+    /** Chanel event with source, message and mode character argument.
+     *
+     * @since 0.6.3m2 */
+    CHANNEL_SOURCED_EVENT_WITH_CHARARG(new String[]{"channel", "user", "mode", "message"},
+    Channel.class, ChannelClientInfo.class, String.class, String.class),
     /** Channel event with source and victim. */
-    CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"}, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
-
+    CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"},
+    Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
@@ -64,7 +70,7 @@ public enum ChannelEvents implements ActionMetaType {
      * @param argNames The names of the meta-type's arguments
      * @param argTypes The types of the meta-type's arguments
      */
-    ChannelEvents(final String[] argNames, final Class ... argTypes) {
+    ChannelEvents(final String[] argNames, final Class... argTypes) {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }

@@ -28,8 +28,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which changes the format of the message and then redespatches
- * it.
+ * A message sink which changes the format of the message and then redespatches it.
  */
 public class FormatMessageSink implements MessageSink {
 

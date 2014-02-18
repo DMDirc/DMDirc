@@ -23,17 +23,15 @@
 package com.dmdirc.commandparser;
 
 /**
- * A basic {@link CommandInfo} implementation whose parameters can be
- * configured via the constructor.
+ * A basic {@link CommandInfo} implementation whose parameters can be configured via the
+ * constructor.
  */
 public class BaseCommandInfo implements CommandInfo {
 
     /** The name of the command. */
     private final String name;
-
     /** The help text for this command. */
     private final String help;
-
     /** The type of the command. */
     private final CommandType type;
 

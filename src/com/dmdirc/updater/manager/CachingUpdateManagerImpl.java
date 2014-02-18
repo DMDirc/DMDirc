@@ -32,27 +32,24 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 /**
- * An extension of {@link UpdateManagerImpl} which implements status caching
- * functionality.
+ * An extension of {@link UpdateManagerImpl} which implements status caching functionality.
  */
 public class CachingUpdateManagerImpl extends UpdateManagerImpl implements CachingUpdateManager {
 
     /** Map of component to their most recent status. */
-    private final Map<UpdateComponent, UpdateStatus> cachedStatuses
-            = new ConcurrentSkipListMap<>(new UpdateComponentComparator());
-
+    private final Map<UpdateComponent, UpdateStatus> cachedStatuses = new ConcurrentSkipListMap<>(
+            new UpdateComponentComparator());
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
-
     /** Our current status. */
     private UpdateManagerStatus managerStatus = UpdateManagerStatus.IDLE;
 
     /**
      * Creates a new instance of {@link CachingUpdateManagerImpl}.
      *
-     * @param executor The executor to use to schedule tasks
+     * @param executor     The executor to use to schedule tasks
      * @param consolidator The consolidator to use to merge check results
-     * @param policy The policy to apply to update components
+     * @param policy       The policy to apply to update components
      */
     public CachingUpdateManagerImpl(final Executor executor,
             final CheckResultConsolidator consolidator,
@@ -88,9 +85,9 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
     }
 
     /**
-     * Determines the current status of this manager, using the
-     * cached status of each update component. If the status has changed,
-     * fires the {@link UpdateManagerListener#updateManagerStatusChanged(com.dmdirc.updater.manager.UpdateManager, com.dmdirc.updater.manager.UpdateManagerStatus)}
+     * Determines the current status of this manager, using the cached status of each update
+     * component. If the status has changed, fires the
+     * {@link UpdateManagerListener#updateManagerStatusChanged(com.dmdirc.updater.manager.UpdateManager, com.dmdirc.updater.manager.UpdateManagerStatus)}
      * method on registered listeners.
      */
     private void checkStatus() {

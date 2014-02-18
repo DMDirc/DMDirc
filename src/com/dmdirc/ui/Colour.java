@@ -29,56 +29,41 @@ public class Colour {
 
     /** The colour white. */
     public final static Colour WHITE = new Colour(255, 255, 255);
-
     /** The colour light gray. */
     public final static Colour LIGHT_GRAY = new Colour(192, 192, 192);
-
     /** The colour gray. */
     public final static Colour GRAY = new Colour(128, 128, 128);
-
     /** The colour dark gray. */
     public final static Colour DARK_GRAY = new Colour(64, 64, 64);
-
     /** The colour black. */
     public static final Colour BLACK = new Colour(0, 0, 0);
-
     /** The colour red. */
     public static final Colour RED = new Colour(255, 0, 0);
-
     /** The colour pink. */
     public static final Colour PINK = new Colour(255, 175, 175);
-
     /** The colour orange. */
     public static final Colour ORANGE = new Colour(255, 200, 0);
-
     /** The colour yellow. */
     public static final Colour YELLOW = new Colour(255, 255, 0);
-
     /** The colour green. */
     public static final Colour GREEN = new Colour(0, 255, 0);
-
     /** The colour magenta. */
     public static final Colour MAGENTA = new Colour(255, 0, 255);
-
     /** The colour cyan. */
     public static final Colour CYAN = new Colour(0, 255, 255);
-
     /** The colour blue. */
     public static final Colour BLUE = new Colour(0, 0, 255);
-
     /** The intensity of the red component of this colour (0-255). */
     private final int red;
-
     /** The intensity of the green component of this colour (0-255). */
     private final int green;
-
     /** The intensity of the blue component of this colour (0-255). */
     private final int blue;
 
     /**
      * Creates a new Colour instance with the given RGB values.
      *
-     * @param red The intensity of the red component of the colour (0-255).
+     * @param red   The intensity of the red component of the colour (0-255).
      * @param green The intensity of the green component of the colour (0-255).
      * @param blue  The intensity of the blue component of the colour (0-255).
      */

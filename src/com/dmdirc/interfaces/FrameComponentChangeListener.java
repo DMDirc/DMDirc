@@ -25,8 +25,7 @@ package com.dmdirc.interfaces;
 import com.dmdirc.FrameContainer;
 
 /**
- * An interface for classes interested in changes made to a
- * {@link FrameContainer}'s components.
+ * An interface for classes interested in changes made to a {@link FrameContainer}'s components.
  *
  * @since 0.6.6
  */

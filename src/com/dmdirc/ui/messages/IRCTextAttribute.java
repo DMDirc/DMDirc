@@ -28,18 +28,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Defines attribute keys that can be used to identify text attributes. These
- * keys are used in AttributedCharacterIterator and AttributedString.
+ * Defines attribute keys that can be used to identify text attributes. These keys are used in
+ * AttributedCharacterIterator and AttributedString.
  */
 public final class IRCTextAttribute extends Attribute {
 
     /**
-     * A version number for this class. It should be changed whenever the
-     * class structure is changed (or anything else that would prevent
-     * serialized objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** table of all instances in this class, used by readResolve. */
     private static final Map<String, IRCTextAttribute> INSTANCE_MAP = new HashMap<>(1);
 
@@ -60,8 +59,8 @@ public final class IRCTextAttribute extends Attribute {
      *
      * @return IRCTextAttribute instance
      *
-     * @throws InvalidObjectException when the class being deserialized is not
-     * an instance of IRCTextAttribute
+     * @throws InvalidObjectException when the class being deserialized is not an instance of
+     *                                IRCTextAttribute
      */
     @Override
     protected Object readResolve() throws InvalidObjectException {
@@ -76,19 +75,15 @@ public final class IRCTextAttribute extends Attribute {
             return instance;
         }
     }
-
     /** Hyperlink attribute. */
     public static final IRCTextAttribute HYPERLINK = new IRCTextAttribute("hyperlink");
-
     /** Nickname attribute. */
     public static final IRCTextAttribute NICKNAME = new IRCTextAttribute("nickname");
-
     /** Channel attribute. */
     public static final IRCTextAttribute CHANNEL = new IRCTextAttribute("channel");
-
     /** Smiley attribute. */
     public static final IRCTextAttribute SMILEY = new IRCTextAttribute("smiley");
-
     /** Tooltip attribute. */
     public static final IRCTextAttribute TOOLTIP = new IRCTextAttribute("tooltip");
+
 }

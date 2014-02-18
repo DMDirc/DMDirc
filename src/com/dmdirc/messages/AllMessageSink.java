@@ -28,8 +28,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which adds the message to all of the container's server's
- * children.
+ * A message sink which adds the message to all of the container's server's children.
  */
 public class AllMessageSink implements MessageSink {
 

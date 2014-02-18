@@ -29,11 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Describes a flag that may be used in a command. Each flag may be enabled
- * or disabled initially, can specify a number of immediate arguments (which
- * must follow the flag directly), a number of delayed arguments (which
- * are specified after any other flags), and a list of other flags that
- * the use of this one causes to be enabled or disabled.
+ * Describes a flag that may be used in a command. Each flag may be enabled or disabled initially,
+ * can specify a number of immediate arguments (which must follow the flag directly), a number of
+ * delayed arguments (which are specified after any other flags), and a list of other flags that the
+ * use of this one causes to be enabled or disabled.
  *
  * @since 0.6.5
  * @see CommandFlagHandler
@@ -65,7 +64,7 @@ public class CommandFlag {
     /**
      * Creates a new flag with the specified name and no arguments.
      *
-     * @param name The name of this flag
+     * @param name    The name of this flag
      * @param enabled Whether or not this flag is initially enabled
      */
     public CommandFlag(final String name, final boolean enabled) {
@@ -73,14 +72,13 @@ public class CommandFlag {
     }
 
     /**
-     * Creates a new flag with the specified name and the specified number
-     * of arguments. Flags may only use immediate OR delayed arguments, not
-     * both.
+     * Creates a new flag with the specified name and the specified number of arguments. Flags may
+     * only use immediate OR delayed arguments, not both.
      *
-     * @param name The name of this flag
-     * @param enabled Whether or not this flag is initially enabled
+     * @param name          The name of this flag
+     * @param enabled       Whether or not this flag is initially enabled
      * @param immediateArgs The number of immediate arguments
-     * @param delayedArgs The number of delayed arguments
+     * @param delayedArgs   The number of delayed arguments
      */
     public CommandFlag(final String name, final boolean enabled,
             final int immediateArgs, final int delayedArgs) {
@@ -95,22 +93,20 @@ public class CommandFlag {
     }
 
     /**
-     * Indicates that the specified flags will be enabled if this flag
-     * is used.
+     * Indicates that the specified flags will be enabled if this flag is used.
      *
      * @param enabled The flags which will be enabled
      */
-    public void addEnabled(final CommandFlag ... enabled) {
+    public void addEnabled(final CommandFlag... enabled) {
         this.enables.addAll(Arrays.asList(enabled));
     }
 
     /**
-     * Indicates that the specified flags will be disabled if this flag
-     * is used.
+     * Indicates that the specified flags will be disabled if this flag is used.
      *
      * @param disabled The flags which will be disabled
      */
-    public void addDisabled(final CommandFlag ... disabled) {
+    public void addDisabled(final CommandFlag... disabled) {
         this.disables.addAll(Arrays.asList(disabled));
     }
 

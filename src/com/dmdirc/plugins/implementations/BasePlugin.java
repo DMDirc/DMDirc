@@ -93,9 +93,8 @@ public abstract class BasePlugin implements Plugin {
     }
 
     /**
-     * Called when the domain for plugin settings has been set.
-     * This will only be called once (either when the plugin is loading, or when
-     * its config is being shown).
+     * Called when the domain for plugin settings has been set. This will only be called once
+     * (either when the plugin is loading, or when its config is being shown).
      *
      * @deprecated Domain should be obtained from {@link PluginInfo}, and will never be updated.
      */
@@ -115,4 +114,5 @@ public abstract class BasePlugin implements Plugin {
     public void showConfig(final PreferencesDialogModel manager) {
         //Define this here so only implementations that care have to override
     }
+
 }

@@ -26,9 +26,9 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
 /**
- * Defines the result of an update check. Specifically, provides whether or
- * not the component in question is updatable, and to what version, and any
- * additional information needed in order to effect an update.
+ * Defines the result of an update check. Specifically, provides whether or not the component in
+ * question is updatable, and to what version, and any additional information needed in order to
+ * effect an update.
  */
 public interface UpdateCheckResult {
 
@@ -47,9 +47,8 @@ public interface UpdateCheckResult {
     boolean isUpdateAvailable();
 
     /**
-     * Returns the version that the component is updatable to. The behaviour
-     * of this method is not defined if {@link #isUpdateAvailable()} returns
-     * false.
+     * Returns the version that the component is updatable to. The behaviour of this method is not
+     * defined if {@link #isUpdateAvailable()} returns false.
      *
      * @return The version available for updating
      */
@@ -57,8 +56,8 @@ public interface UpdateCheckResult {
 
     /**
      * Returns a user-friendly version name of the version described by
-     * {@link #getUpdatedVersion()}. The behaviour of this method is not
-     * defined if {@link #isUpdateAvailable()} returns false.
+     * {@link #getUpdatedVersion()}. The behaviour of this method is not defined if
+     * {@link #isUpdateAvailable()} returns false.
      *
      * @return A user-friendly version name
      */

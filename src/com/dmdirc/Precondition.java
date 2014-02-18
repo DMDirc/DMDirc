@@ -25,9 +25,8 @@ package com.dmdirc;
 import java.lang.annotation.Documented;
 
 /**
- * The precondition annotation is used to indicate that a particular method
- * has one or more preconditions. The preconditions are specified in plain
- * English.
+ * The precondition annotation is used to indicate that a particular method has one or more
+ * preconditions. The preconditions are specified in plain English.
  */
 @Documented
 public @interface Precondition {

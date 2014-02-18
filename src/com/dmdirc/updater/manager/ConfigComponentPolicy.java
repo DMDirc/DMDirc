@@ -29,8 +29,8 @@ import com.dmdirc.updater.UpdateComponent;
 import javax.inject.Inject;
 
 /**
- * An {@link UpdateComponentPolicy} which checks if the component is enabled
- * in DMDirc's configuration.
+ * An {@link UpdateComponentPolicy} which checks if the component is enabled in DMDirc's
+ * configuration.
  */
 public class ConfigComponentPolicy implements UpdateComponentPolicy {
 

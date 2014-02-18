@@ -26,14 +26,12 @@ import com.dmdirc.updater.installing.UpdateInstallationStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
 /**
- * Task which installs an update using a given
- * {@link UpdateInstallationStrategy}.
+ * Task which installs an update using a given {@link UpdateInstallationStrategy}.
  */
 public class InstallationTask implements Runnable {
 
     /** The strategy to use to install the update. */
     private final UpdateInstallationStrategy strategy;
-
     /** The update which will be installed. */
     private final UpdateRetrievalResult result;
 

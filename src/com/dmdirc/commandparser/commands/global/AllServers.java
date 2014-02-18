@@ -47,14 +47,13 @@ public class AllServers extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("allservers",
             "allservers <command> - executes the command as though it had"
             + " been entered on all servers", CommandType.TYPE_GLOBAL);
-
     /** Server manager to use to iterate servers. */
     private final ServerManager serverManager;
 
     /**
      * Creates a new instance of the {@link AllServers} command.
      *
-     * @param controller The controller that owns this command.
+     * @param controller    The controller that owns this command.
      * @param serverManager The server manager to use to iterate servers.
      */
     @Inject

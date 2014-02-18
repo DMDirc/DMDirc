@@ -31,7 +31,6 @@ public class CertificateSummaryEntry {
 
     /** The text of the summary. */
     private final String text;
-
     /** Whether the summary is good or not. */
     private final boolean good;
 

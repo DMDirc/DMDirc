@@ -42,8 +42,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 /**
- * The if plugin command allows the user to execute commands based on whether
- * or not a plugin is loaded.
+ * The if plugin command allows the user to execute commands based on whether or not a plugin is
+ * loaded.
  */
 public class Ifplugin extends Command implements IntelligentCommand {
 
@@ -52,18 +52,16 @@ public class Ifplugin extends Command implements IntelligentCommand {
             "ifplugin <[!]plugin> <command> - executes a command if the "
             + "specified plugin is/isn't loaded",
             CommandType.TYPE_GLOBAL);
-
     /** The plugin manager to use to query plugins. */
     private final PluginManager pluginManager;
-
     /** Provider of global command parsers. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
 
     /**
      * Creates a new instance of the {@link Ifplugin} command.
      *
-     * @param controller The controller to use for command information.
-     * @param pluginManager The plugin manager to use to query plugins.
+     * @param controller                  The controller to use for command information.
+     * @param pluginManager               The plugin manager to use to query plugins.
      * @param globalCommandParserProvider Provider to use to retrieve a global command parser.
      */
     @Inject

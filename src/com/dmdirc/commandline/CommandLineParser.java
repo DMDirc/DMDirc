@@ -48,9 +48,8 @@ import javax.inject.Singleton;
 public class CommandLineParser {
 
     /**
-     * The arguments that the client supports, in groups of four, in the
-     * following order: short option, long option, description, whether or not
-     * the option takes an argument.
+     * The arguments that the client supports, in groups of four, in the following order: short
+     * option, long option, description, whether or not the option takes an argument.
      */
     private static final Object[][] ARGUMENTS = new Object[][]{
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
@@ -61,30 +60,21 @@ public class CommandLineParser {
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
-        {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE},
-    };
-
+        {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE},};
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<>();
-
     /** Provider to use to get server managers. */
     private final Provider<ServerManager> serverManagerProvider;
-
     /** Provider to use to get the global config. */
     private final Provider<AggregateConfigProvider> globalConfigProvider;
-
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
-
     /** The version string passed for the launcher. */
     private String launcherVersion;
-
     /** The configuration directory. */
     private String configDirectory;
-
     /** The RMI server we're using. */
     private RemoteInterface server;
-
     /** The parser to use for URIs. */
     private final URIParser uriParser;
 
@@ -92,8 +82,8 @@ public class CommandLineParser {
      * Creates a new instance of CommandLineParser.
      *
      * @param serverManagerProvider Provider to use to get server managers.
-     * @param globalConfigProvider Provider to use to get the global config.
-     * @param uriParser The parser to use for URIs.
+     * @param globalConfigProvider  Provider to use to get the global config.
+     * @param uriParser             The parser to use for URIs.
      */
     @Inject
     public CommandLineParser(
@@ -110,7 +100,7 @@ public class CommandLineParser {
      *
      * @param arguments The arguments to be parsed
      */
-    public void parse(final String ... arguments) {
+    public void parse(final String... arguments) {
         boolean inArg = false;
         char previousArg = '.';
 
@@ -149,11 +139,11 @@ public class CommandLineParser {
     }
 
     /**
-     * Checks whether the specified arg type takes an argument. If it does,
-     * this method returns true. If it doesn't, the method processes the
-     * argument and returns false.
+     * Checks whether the specified arg type takes an argument. If it does, this method returns
+     * true. If it doesn't, the method processes the argument and returns false.
      *
      * @param argument The short code of the argument
+     *
      * @return True if the arg requires an argument, false otherwise
      */
     private boolean checkArgument(final char argument) {
@@ -179,6 +169,7 @@ public class CommandLineParser {
      * Processes the specified string as a single long argument.
      *
      * @param arg The string entered
+     *
      * @return The short form of the corresponding argument
      */
     private char processLongArg(final String arg) {
@@ -198,6 +189,7 @@ public class CommandLineParser {
      * Processes the specified string as a single short argument.
      *
      * @param arg The string entered
+     *
      * @return The short form of the corresponding argument
      */
     private char processShortArg(final String arg) {
@@ -216,7 +208,7 @@ public class CommandLineParser {
     /**
      * Processes the specified command-line argument.
      *
-     * @param arg The short form of the argument used
+     * @param arg   The short form of the argument used
      * @param param The (optional) string parameter for the option
      */
     private void processArgument(final char arg, final String param) {
@@ -258,8 +250,7 @@ public class CommandLineParser {
     }
 
     /**
-     * Informs the user that they entered an unknown argument, prints the
-     * client help, and exits.
+     * Informs the user that they entered an unknown argument, prints the client help, and exits.
      *
      * @param message The message about the unknown argument to be displayed
      */
@@ -379,8 +370,7 @@ public class CommandLineParser {
     /**
      * Returns the user-supplied configuration directory.
      *
-     * @return The user-supplied config directory, or {@code null} if none
-     * was supplied.
+     * @return The user-supplied config directory, or {@code null} if none was supplied.
      */
     public String getConfigDirectory() {
         return configDirectory;
@@ -398,21 +388,20 @@ public class CommandLineParser {
     /**
      * Returns the provided launcher version, if any.
      *
-     * @return The version supplied by the launcher, or {@code null} if no
-     * launcher is identified.
+     * @return The version supplied by the launcher, or {@code null} if no launcher is identified.
      */
     public String getLauncherVersion() {
         return launcherVersion;
     }
 
     /**
-     * Processes arguments once the client has been loaded properly.
-     * This allows us to auto-connect to servers, etc.
+     * Processes arguments once the client has been loaded properly. This allows us to auto-connect
+     * to servers, etc.
      *
      * @param serverManager The server manager to use to connect servers.
      */
     public void processArguments(final ServerManager serverManager) {
-        for (URI address : addresses)  {
+        for (URI address : addresses) {
             serverManager.connectToAddress(address);
         }
     }

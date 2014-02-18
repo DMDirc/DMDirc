@@ -51,6 +51,7 @@ import java.util.Set;
 import javax.inject.Provider;
 
 import org.slf4j.LoggerFactory;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -59,66 +60,50 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ActionManager implements ActionController {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ActionManager.class);
-
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ActionManager.class);
     /** The ActionManager Instance. */
     private static ActionManager me;
-
     /** The identity manager to load configuration from. */
     private final IdentityController identityManager;
-
     /** The ServerManager currently in use. */
     private final ServerManager serverManager;
-
     /** The factory to use to create actions. */
     private final ActionFactory factory;
-
     /** Provider for action wrappers. */
     private final Provider<Set<ActionGroup>> actionWrappersProvider;
-
     /** Provider of an update manager. */
     private final Provider<UpdateManager> updateManagerProvider;
-
     /** A list of registered action types. */
     private final List<ActionType> types = new ArrayList<>();
-
     /** A list of registered action components. */
     private final List<ActionComponent> components = new ArrayList<>();
-
     /** A list of registered action comparisons. */
     private final List<ActionComparison> comparisons = new ArrayList<>();
-
     /** A map linking types and a list of actions that're registered for them. */
     private final MapList<ActionType, Action> actions = new MapList<>();
-
     /** A map linking groups and a list of actions that're in them. */
     private final Map<String, ActionGroup> groups = new HashMap<>();
-
     /** A map of objects to synchronise on for concurrency groups. */
     private final Map<String, Object> locks = new HashMap<>();
-
     /** A map of the action type groups to the action types within. */
     private final MapList<String, ActionType> typeGroups = new MapList<>();
-
     /** The listeners that we have registered. */
     private final MapList<ActionType, ActionListener> listeners = new MapList<>();
-
     /** The directory to load and save actions in. */
     private final String directory;
-
     /** Indicates whether or not user actions should be killed (not processed). */
-    @ConfigBinding(domain="actions", key="killswitch")
+    @ConfigBinding(domain = "actions", key = "killswitch")
     private boolean killSwitch;
 
     /**
      * Creates a new instance of ActionManager.
      *
-     * @param serverManager The ServerManager in use.
-     * @param identityManager The IdentityManager to load configuration from.
-     * @param factory The factory to use to create new actions.
+     * @param serverManager          The ServerManager in use.
+     * @param identityManager        The IdentityManager to load configuration from.
+     * @param factory                The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
-     * @param updateManagerProvider Provider of an update manager, to register components.
-     * @param directory The directory to load and save actions in.
+     * @param updateManagerProvider  Provider of an update manager, to register components.
+     * @param directory              The directory to load and save actions in.
      */
     public ActionManager(
             final ServerManager serverManager,
@@ -148,6 +133,8 @@ public class ActionManager implements ActionController {
      * Create the singleton instance of the Action Manager.
      *
      * @param actionManager The manager to return for calls to {@link #getActionManager()}.
+     *
+     * @deprecated Singleton use should be removed.
      */
     @Deprecated
     public static void setActionManager(final ActionManager actionManager) {
@@ -170,7 +157,7 @@ public class ActionManager implements ActionController {
      */
     // TODO: Refactor to take a list of comparisons/sources.
     public void initialise(final ColourActionComparison colourComparisons) {
-        log.info("Initialising the actions manager");
+        LOG.info("Initialising the actions manager");
 
         identityManager.getGlobalConfiguration().getBinder().bind(this, ActionManager.class);
 
@@ -209,7 +196,7 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public void registerSetting(final String name, final String value) {
-        log.debug("Registering new action setting: {} = {}", name, value);
+        LOG.debug("Registering new action setting: {} = {}", name, value);
         identityManager.getAddonSettings().setOption("actions", name, value);
     }
 
@@ -226,7 +213,7 @@ public class ActionManager implements ActionController {
             checkNotNull(type);
 
             if (!types.contains(type)) {
-                log.debug("Registering action type: {}", type);
+                LOG.debug("Registering action type: {}", type);
                 types.add(type);
                 typeGroups.add(type.getType().getGroup(), type);
             }
@@ -239,7 +226,7 @@ public class ActionManager implements ActionController {
         for (ActionComponent comp : comps) {
             checkNotNull(comp);
 
-            log.debug("Registering action component: {}", comp);
+            LOG.debug("Registering action component: {}", comp);
             components.add(comp);
         }
     }
@@ -250,7 +237,7 @@ public class ActionManager implements ActionController {
         for (ActionComparison comp : comps) {
             checkNotNull(comp);
 
-            log.debug("Registering action comparison: {}", comp);
+            LOG.debug("Registering action comparison: {}", comp);
             comparisons.add(comp);
         }
     }
@@ -324,7 +311,7 @@ public class ActionManager implements ActionController {
         checkNotNull(dir);
         checkArgument(dir.isDirectory());
 
-        log.debug("Loading actions from directory: {}", dir.getAbsolutePath());
+        LOG.debug("Loading actions from directory: {}", dir.getAbsolutePath());
 
         if (!groups.containsKey(dir.getName())) {
             groups.put(dir.getName(), new ActionGroup(dir.getName()));
@@ -340,12 +327,12 @@ public class ActionManager implements ActionController {
     public void addAction(final Action action) {
         checkNotNull(action);
 
-        log.debug("Registering action: {}/{} (status: {})",
-                new Object[] { action.getGroup(), action.getName(), action.getStatus() });
+        LOG.debug("Registering action: {}/{} (status: {})",
+                new Object[]{action.getGroup(), action.getName(), action.getStatus()});
 
         if (action.getStatus() != ActionStatus.FAILED) {
             for (ActionType trigger : action.getTriggers()) {
-                log.trace("Action has trigger {}", trigger);
+                LOG.trace("Action has trigger {}", trigger);
                 actions.add(trigger, action);
             }
         }
@@ -382,12 +369,12 @@ public class ActionManager implements ActionController {
     /** {@inheritDoc} */
     @Override
     public boolean triggerEvent(final ActionType type,
-            final StringBuffer format, final Object ... arguments) {
+            final StringBuffer format, final Object... arguments) {
         checkNotNull(type);
         checkNotNull(type.getType());
         checkArgument(type.getType().getArity() == arguments.length);
 
-        log.trace("Calling listeners for event of type {}", type);
+        LOG.trace("Calling listeners for event of type {}", type);
 
         boolean res = false;
 
@@ -412,20 +399,21 @@ public class ActionManager implements ActionController {
     /**
      * Triggers actions that respond to the specified type.
      *
-     * @param type The type of the event to process
-     * @param format The format of the message that's going to be displayed for
-     * the event. Actions may change this format.
+     * @param type      The type of the event to process
+     * @param format    The format of the message that's going to be displayed for the event.
+     *                  Actions may change this format.
      * @param arguments The arguments for the event
+     *
      * @return True if the event should be skipped, or false if it can continue
      */
     @Precondition("The specified ActionType is not null")
     private boolean triggerActions(final ActionType type,
-            final StringBuffer format, final Object ... arguments) {
+            final StringBuffer format, final Object... arguments) {
         checkNotNull(type);
 
         boolean res = false;
 
-        log.trace("Executing actions for event of type {}", type);
+        LOG.trace("Executing actions for event of type {}", type);
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<>(actions.get(type))) {
@@ -620,6 +608,7 @@ public class ActionManager implements ActionController {
      * Installs an action pack located at the specified path.
      *
      * @param path The full path of the action pack .zip.
+     *
      * @throws IOException If the zip cannot be extracted
      */
     public static void installActionPack(final String path) throws IOException {
@@ -634,7 +623,7 @@ public class ActionManager implements ActionController {
 
     /** {@inheritDoc} */
     @Override
-    public void registerListener(final ActionListener listener, final ActionType ... types) {
+    public void registerListener(final ActionListener listener, final ActionType... types) {
         for (ActionType type : types) {
             listeners.add(type, listener);
         }
@@ -642,7 +631,7 @@ public class ActionManager implements ActionController {
 
     /** {@inheritDoc} */
     @Override
-    public void unregisterListener(final ActionListener listener, final ActionType ... types) {
+    public void unregisterListener(final ActionListener listener, final ActionType... types) {
         for (ActionType type : types) {
             listeners.remove(type, listener);
         }
@@ -653,4 +642,5 @@ public class ActionManager implements ActionController {
     public void unregisterListener(final ActionListener listener) {
         listeners.removeFromAll(listener);
     }
+
 }

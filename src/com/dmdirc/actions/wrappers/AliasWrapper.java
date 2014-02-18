@@ -48,13 +48,10 @@ public class AliasWrapper extends ActionGroup {
 
     /** The name of the actions group we wrap. */
     protected static final String GROUP_NAME = "aliases";
-
     /** A list of registered alias names. */
     private final List<String> aliases = new ArrayList<>();
-
     /** Command controller to get command info from. */
     private final CommandController commandController;
-
     /** Server Manager. */
     private final WindowManager windowManager;
 
@@ -62,7 +59,7 @@ public class AliasWrapper extends ActionGroup {
      * Creates a new instance of AliasWrapper.
      *
      * @param commandController Command controller to get command info from.
-     * @param windowManager The window manager to use to find root windows.
+     * @param windowManager     The window manager to use to find root windows.
      */
     @Inject
     public AliasWrapper(
@@ -133,8 +130,9 @@ public class AliasWrapper extends ActionGroup {
      * Retrieves the command name of the specified alias action.
      *
      * @param action The action whose name is to be determined
-     * @return The command name for the specified alias, or null if it has
-     *         no appropriate conditions.
+     *
+     * @return The command name for the specified alias, or null if it has no appropriate
+     *         conditions.
      */
     public String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {

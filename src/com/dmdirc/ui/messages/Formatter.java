@@ -50,16 +50,17 @@ public final class Formatter {
     }
 
     /**
-     * Inserts the supplied arguments into a format string for the specified
-     * message type.
+     * Inserts the supplied arguments into a format string for the specified message type.
      *
      * @param messageType The message type that the arguments should be formatted as
-     * @param config The config manager to use to format the message
-     * @param arguments The arguments to this message type
+     * @param config      The config manager to use to format the message
+     * @param arguments   The arguments to this message type
+     *
      * @return A formatted string
      */
     @Precondition("The specified message type is not null")
-    public static String formatMessage(final AggregateConfigProvider config, final String messageType,
+    public static String formatMessage(final AggregateConfigProvider config,
+            final String messageType,
             final Object... arguments) {
         assert messageType != null;
 
@@ -90,11 +91,11 @@ public final class Formatter {
     }
 
     /**
-     * Casts the specified arguments to the relevant classes, based on the
-     * format type cache.
+     * Casts the specified arguments to the relevant classes, based on the format type cache.
      *
      * @param format The format to be used
-     * @param args The arguments to be casted
+     * @param args   The arguments to be casted
+     *
      * @return A new set of arguments of appropriate types
      */
     @Precondition("The specified format is not null")
@@ -114,38 +115,54 @@ public final class Formatter {
             }
 
             switch (chr) {
-            case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
-                // General (strings)
-                res[i] = String.valueOf(args[i]);
-                break;
-            case 'c': case 'C':
-                // Character
-                res[i] = String.valueOf(args[i]).charAt(0);
-                break;
-            case 'd': case 'o': case 'x': case 'X':
-                // Integers
-                res[i] = Integer.valueOf((String) args[i]);
-                break;
-            case 'e': case 'E': case 'f': case 'g': case 'G': case 'a': case 'A':
-                // Floating point
-                res[i] = Float.valueOf((String) args[i]);
-                break;
-            case 't': case 'T':
-                // Date
-                if (args[i] instanceof String) {
-                    // Assume it's a timestamp(?)
-                    res[i] = Long.valueOf(1000 * Long.valueOf((String) args[i]));
-                } else {
+                case 'b':
+                case 'B':
+                case 'h':
+                case 'H':
+                case 's':
+                case 'S':
+                    // General (strings)
+                    res[i] = String.valueOf(args[i]);
+                    break;
+                case 'c':
+                case 'C':
+                    // Character
+                    res[i] = String.valueOf(args[i]).charAt(0);
+                    break;
+                case 'd':
+                case 'o':
+                case 'x':
+                case 'X':
+                    // Integers
+                    res[i] = Integer.valueOf((String) args[i]);
+                    break;
+                case 'e':
+                case 'E':
+                case 'f':
+                case 'g':
+                case 'G':
+                case 'a':
+                case 'A':
+                    // Floating point
+                    res[i] = Float.valueOf((String) args[i]);
+                    break;
+                case 't':
+                case 'T':
+                    // Date
+                    if (args[i] instanceof String) {
+                        // Assume it's a timestamp(?)
+                        res[i] = Long.valueOf(1000 * Long.valueOf((String) args[i]));
+                    } else {
+                        res[i] = args[i];
+                    }
+                    break;
+                case 'u':
+                    // Duration hacks
+                    res[i] = DateUtils.formatDuration(Integer.valueOf(
+                            String.valueOf(args[i].toString())));
+                    break;
+                default:
                     res[i] = args[i];
-                }
-                break;
-            case 'u':
-                // Duration hacks
-                res[i] = DateUtils.formatDuration(Integer.valueOf(
-                        String.valueOf(args[i].toString())));
-                break;
-            default:
-                res[i] = args[i];
             }
 
             i++;
@@ -158,7 +175,7 @@ public final class Formatter {
      * Analyses the specified format string and fills in the format type cache.
      *
      * @param format The format to analyse
-     * @param args The raw arguments
+     * @param args   The raw arguments
      */
     private static void analyseFormat(final String format, final Object[] args) {
         final Character[] types = new Character[args.length];

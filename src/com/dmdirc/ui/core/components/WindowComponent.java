@@ -39,7 +39,6 @@ public enum WindowComponent {
     CERTIFICATE_VIEWER("com.dmdirc.ui.components.certificateviewer"),
     /** An indicator that a remote party is typing. */
     TYPING_INDICATOR("com.dmdirc.ui.components.typing");
-
     /** The identifier for this window component. */
     private final String identifier;
 

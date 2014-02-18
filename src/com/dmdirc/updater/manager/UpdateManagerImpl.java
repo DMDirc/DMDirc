@@ -50,43 +50,30 @@ import org.slf4j.LoggerFactory;
 public class UpdateManagerImpl implements UpdateManager {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(UpdateManagerImpl.class);
-
     /** Collection of known update checking strategies. */
     private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
-
     /** Collection of known update retrieval strategies. */
     private final List<UpdateRetrievalStategy> retrievers = new CopyOnWriteArrayList<>();
-
     /** Collection of known update installation strategies. */
     private final List<UpdateInstallationStrategy> installers = new CopyOnWriteArrayList<>();
-
     /** Map of known component names to their components. Guarded by {@link #componentsLock}. */
     private final Map<String, UpdateComponent> components = new HashMap<>();
-
     /** Listener used to proxy retrieval events. */
     private final UpdateRetrievalListener retrievalListener = new RetrievalListener();
-
     /** Listener used to proxy setRetrievalResult events. */
     private final UpdateInstallationListener installationListener = new InstallListener();
-
     /** Cache of update check results. */
     private final Map<UpdateComponent, UpdateCheckResult> checkResults = new HashMap<>();
-
     /** Cache of retrieval results. */
     private final Map<UpdateComponent, UpdateRetrievalResult> retrievalResults = new HashMap<>();
-
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
-
     /** Lock for accessing {@link #components}. */
     private final Object componentsLock = new Object();
-
     /** Executor to use to schedule retrieval and installation jobs. */
     private final Executor executor;
-
     /** Consolidator to use to merge multiple check results. */
     private final CheckResultConsolidator consolidator;
-
     /** The policy to use to determine whether updates are enabled. */
     private final UpdateComponentPolicy policy;
 
@@ -205,13 +192,14 @@ public class UpdateManagerImpl implements UpdateManager {
         checkResults.putAll(consolidator.consolidate(results));
 
         for (UpdateComponent component : enabledComponents) {
-            if (checkResults.containsKey(component) && checkResults.get(component).isUpdateAvailable()) {
+            if (checkResults.containsKey(component) && checkResults.get(component).
+                    isUpdateAvailable()) {
                 log.trace("Update is available for {}", component);
                 listenerList.getCallable(UpdateStatusListener.class)
-                    .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
+                        .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
             } else {
                 listenerList.getCallable(UpdateStatusListener.class)
-                    .updateStatusChanged(component, UpdateStatus.IDLE, 0);
+                        .updateStatusChanged(component, UpdateStatus.IDLE, 0);
             }
         }
     }
@@ -219,7 +207,8 @@ public class UpdateManagerImpl implements UpdateManager {
     /** {@inheritDoc} */
     @Override
     public void install(final UpdateComponent component) {
-        if (!retrievalResults.containsKey(component) || !retrievalResults.get(component).isSuccessful()) {
+        if (!retrievalResults.containsKey(component) || !retrievalResults.get(component).
+                isSuccessful()) {
             // Not downloaded yet - try retrieving first
             retrieve(component, true);
             return;
@@ -246,11 +235,10 @@ public class UpdateManagerImpl implements UpdateManager {
     }
 
     /**
-     * Retrieves updates for the given component, optionally installing if
-     * retrieval is successful.
+     * Retrieves updates for the given component, optionally installing if retrieval is successful.
      *
      * @param component The component to be retrieved
-     * @param install True to install automatically, false to just retrieve
+     * @param install   True to install automatically, false to just retrieve
      */
     public void retrieve(final UpdateComponent component, final boolean install) {
         if (!checkResults.containsKey(component) || !checkResults.get(component).isUpdateAvailable()) {
@@ -283,11 +271,11 @@ public class UpdateManagerImpl implements UpdateManager {
     }
 
     /**
-     * Gets an appropriate retrieval strategy for the given check result.
-     * Iterates over the set of known strategies and returns the first which
-     * claims to be able to handle the result.
+     * Gets an appropriate retrieval strategy for the given check result. Iterates over the set of
+     * known strategies and returns the first which claims to be able to handle the result.
      *
      * @param result The result to find a strategy for
+     *
      * @return A relevant strategy, or <code>null</code> if none are available
      */
     protected UpdateRetrievalStategy getStrategy(final UpdateCheckResult result) {
@@ -307,11 +295,11 @@ public class UpdateManagerImpl implements UpdateManager {
     }
 
     /**
-     * Gets an appropriate installation strategy for the given retrieval result.
-     * Iterates over the set of known strategies and returns the first which
-     * claims to be able to handle the result.
+     * Gets an appropriate installation strategy for the given retrieval result. Iterates over the
+     * set of known strategies and returns the first which claims to be able to handle the result.
      *
      * @param result The result to find a strategy for
+     *
      * @return A relevant strategy, or <code>null</code> if none are available
      */
     protected UpdateInstallationStrategy getStrategy(final UpdateRetrievalResult result) {
@@ -343,8 +331,8 @@ public class UpdateManagerImpl implements UpdateManager {
     }
 
     /**
-     * Listens for changes announced by {@link UpdateInstallationStrategy}s
-     * and proxies them on to the manager's own {@link UpdateStatusListener}s.
+     * Listens for changes announced by {@link UpdateInstallationStrategy}s and proxies them on to
+     * the manager's own {@link UpdateStatusListener}s.
      */
     private class InstallListener implements UpdateInstallationListener {
 
@@ -373,8 +361,8 @@ public class UpdateManagerImpl implements UpdateManager {
     }
 
     /**
-     * Listens for changes announced by {@link UpdateRetrievalStrategy}s
-     * and proxies them on to the manager's own {@link UpdateStatusListener}s.
+     * Listens for changes announced by {@link UpdateRetrievalStrategy}s and proxies them on to the
+     * manager's own {@link UpdateStatusListener}s.
      */
     private class RetrievalListener implements UpdateRetrievalListener {
 
@@ -400,4 +388,5 @@ public class UpdateManagerImpl implements UpdateManager {
         }
 
     }
+
 }

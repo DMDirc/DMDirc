@@ -57,24 +57,17 @@ public abstract class CipherUtils {
     /** Salt. */
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
-        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
-    };
-
+        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,};
     /** Iteration count. */
     private static final int ITERATIONS = 19;
-
     /** Number of auth attemps before failing the attempt. */
     private static final int AUTH_TRIES = 4;
-
     /** The identity controller to use for reading/writing settings. */
     private final IdentityController identityController;
-
     /** Encryption cipher. */
     private Cipher ecipher;
-
     /** Decryption cipher. */
     private Cipher dcipher;
-
     /** User password. */
     private String password;
 
@@ -88,9 +81,11 @@ public abstract class CipherUtils {
     }
 
     /**
-     * Encrypts a string using the stored settings. Will return null if the
-     * automatic user authentication fails - use checkauth and auth.
+     * Encrypts a string using the stored settings. Will return null if the automatic user
+     * authentication fails - use checkauth and auth.
+     *
      * @param str String to encrypt
+     *
      * @return Encrypted string
      */
     public String encrypt(final String str) {
@@ -111,9 +106,11 @@ public abstract class CipherUtils {
     }
 
     /**
-     * Encrypts a string using the stored settings. Will return null if the
-     * automatic user authentication fails - use checkauth and auth.
+     * Encrypts a string using the stored settings. Will return null if the automatic user
+     * authentication fails - use checkauth and auth.
+     *
      * @param str String to decrypt
+     *
      * @return Decrypted string
      */
     public String decrypt(final String str) {
@@ -134,13 +131,15 @@ public abstract class CipherUtils {
 
     /**
      * Performs a SHA-512 hash.
+     *
      * @param data String to hashed
+     *
      * @return hashed string
      */
     public String hash(final String data) {
         try {
             return new String(MessageDigest.getInstance("SHA-512")
-            .digest(data.getBytes("UTF8")), Charset.forName("UTF-8"));
+                    .digest(data.getBytes("UTF8")), Charset.forName("UTF-8"));
         } catch (NoSuchAlgorithmException | IOException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to hash string");
         }
@@ -222,7 +221,9 @@ public abstract class CipherUtils {
      * Requests the encryption password from the user.
      *
      * @param prompt The prompt to show
+     *
      * @return The user-specified password
      */
     protected abstract String getPassword(final String prompt);
+
 }

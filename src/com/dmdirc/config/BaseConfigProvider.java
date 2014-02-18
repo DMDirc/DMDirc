@@ -37,28 +37,26 @@ import java.util.List;
 /**
  * Defines methods to get options from a config provider in various forms.
  *
- * <p>This implementation supports the idea of optional/disabled settings.
- * This is where values may be prefixed with the strings <code>true:</code>
- * or <code>false:</code>, where the former has no effect on the value of
- * the setting, and the latter indicates that the user wishes to disable
- * the setting.
+ * <p>This implementation supports the idea of optional/disabled settings. This is where values may
+ * be prefixed with the strings
+ * <code>true:</code> or
+ * <code>false:</code>, where the former has no effect on the value of the setting, and the latter
+ * indicates that the user wishes to disable the setting.
  *
- * <p>Disabled settings allow for optional settings to have default values; a
- * value can be added with the <code>false:</code> prefix which effectively
- * disables the default value and makes the setting act as though it does not
- * have a value. Note that for this sort of behaviour to make sense, it requires
- * an implementation that takes values from multiple sources, such as a
+ * <p>Disabled settings allow for optional settings to have default values; a value can be added
+ * with the
+ * <code>false:</code> prefix which effectively disables the default value and makes the setting act
+ * as though it does not have a value. Note that for this sort of behaviour to make sense, it
+ * requires an implementation that takes values from multiple sources, such as a
  * {@link ConfigManager}.
  */
 public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
 
     /** A permissive validator to use when callers don't specify one. */
-    private static final Validator<String> PERMISSIVE_VALIDATOR
-            = new PermissiveValidator<>();
-
+    private static final Validator<String> PERMISSIVE_VALIDATOR = new PermissiveValidator<>();
     /** A validator for integer settings. */
-    private static final Validator<String> INT_VALIDATOR
-            = new OptionalValidator(new NumericalValidator(-1, -1));
+    private static final Validator<String> INT_VALIDATOR = new OptionalValidator(
+            new NumericalValidator(-1, -1));
 
     /** {@inheritDoc} */
     @Override
@@ -110,7 +108,7 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     @Override
     public String getOptionString(final String domain, final String option,
             final boolean required, final Validator<String> validator,
-            final String ... fallbacks) {
+            final String... fallbacks) {
         String value;
 
         @SuppressWarnings("unchecked")
@@ -133,7 +131,7 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     /** {@inheritDoc} */
     @Override
     public String getOptionString(final String domain, final String option,
-            final String ... fallbacks) {
+            final String... fallbacks) {
         return getOptionString(domain, option, true, PERMISSIVE_VALIDATOR, fallbacks);
     }
 
@@ -175,14 +173,14 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     /** {@inheritDoc} */
     @Override
     public Integer getOptionInt(final String domain, final String option,
-            final String ... fallbacks) {
+            final String... fallbacks) {
         return getOptionInt(domain, option, true, fallbacks);
     }
 
     /** {@inheritDoc} */
     @Override
     public Integer getOptionInt(final String domain, final String option,
-            final boolean required, final String ... fallbacks) {
+            final boolean required, final String... fallbacks) {
         final String value = getOptionString(domain, option, required, INT_VALIDATOR, fallbacks);
 
         return value == null ? null : Integer.parseInt(value.trim());

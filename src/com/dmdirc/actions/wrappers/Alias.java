@@ -42,22 +42,18 @@ import java.util.List;
 public class Alias implements Serializable {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** The factory to use to create actions. */
     // TODO: This should be injected.
     private final ActionFactory actionFactory;
-
     /** Alias command. */
     private String command;
-
     /** Alias arguments. */
     private List<ActionCondition> arguments;
-
     /** Alias response. */
     private String[] response;
 
@@ -65,7 +61,7 @@ public class Alias implements Serializable {
      * Creates a new Alias wrapper.
      *
      * @param actionFactory Factory to use to create alias actions.
-     * @param command Alias command
+     * @param command       Alias command
      */
     public Alias(final ActionFactory actionFactory, final String command) {
         this.actionFactory = actionFactory;
@@ -73,16 +69,16 @@ public class Alias implements Serializable {
         this.arguments = new ArrayList<>();
         this.arguments.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
                 CoreActionComparison.STRING_EQUALS, command));
-        this.response = new String[]{"", };
+        this.response = new String[]{"",};
     }
 
     /**
      * Wraps an existing Action in an Alias.
      *
      * @param actionFactory Factory to use to create alias actions.
-     * @param command Alias command
-     * @param arguments List of arguments for the alias
-     * @param response Response for the alias
+     * @param command       Alias command
+     * @param arguments     List of arguments for the alias
+     * @param response      Response for the alias
      */
     public Alias(final ActionFactory actionFactory, final String command,
             final List<ActionCondition> arguments, final String[] response) {
@@ -235,7 +231,7 @@ public class Alias implements Serializable {
         return actionFactory.getAction(
                 AliasWrapper.GROUP_NAME,
                 getName(),
-                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                new ActionType[]{CoreActionType.UNKNOWN_COMMAND,},
                 getResponse(),
                 getArguments(),
                 ConditionTree.createConjunction(getArguments().size()),
@@ -250,4 +246,5 @@ public class Alias implements Serializable {
                 + Arrays.toString(response) + ", "
                 + arguments + ", format='']";
     }
+
 }

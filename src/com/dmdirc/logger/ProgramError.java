@@ -60,59 +60,47 @@ import net.kencochrane.raven.event.interfaces.ExceptionInterface;
 public final class ProgramError implements Serializable {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 3;
-
     /** Directory used to store errors. */
     private static File errorDir;
-
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
-
-    public static final String SENTRY_DSN = "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2";
-
+    public static final String SENTRY_DSN =
+            "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2";
     /** Error ID. */
     private final long id;
-
     /** Error icon. */
     private final ErrorLevel level;
-
     /** Error message. */
     private final String message;
-
     /** Underlying exception. */
     private final Throwable exception;
-
     /** Underlying details message. */
     private final String details;
-
     /** Date/time error first occurred. */
     private final Date firstDate;
-
     /** Date/time error last occurred. */
     private Date lastDate;
-
     /** Number of occurrences. */
     private AtomicInteger count;
-
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
-
     /** Error fixed Status. */
     private ErrorFixedStatus fixedStatus;
 
     /**
      * Creates a new instance of ProgramError.
      *
-     * @param id error id
-     * @param level Error level
-     * @param message Error message
+     * @param id        error id
+     * @param level     Error level
+     * @param message   Error message
      * @param exception The exception that caused the error, if any.
-     * @param details The detailed cause of the error, if any.
-     * @param date Error time and date
+     * @param details   The detailed cause of the error, if any.
+     * @param date      Error time and date
      */
     public ProgramError(final long id, final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
@@ -171,9 +159,8 @@ public final class ProgramError implements Serializable {
      * @return Error trace
      */
     public String[] getTrace() {
-        return exception != null ? getTrace(exception) :
-                message != null ? new String[] { message } :
-                new String[0];
+        return exception != null ? getTrace(exception) : message != null ? new String[]{message}
+                : new String[0];
     }
 
     /**
@@ -288,7 +275,8 @@ public final class ProgramError implements Serializable {
         WRITING_SEM.acquireUninterruptibly();
 
         if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(IdentityManager.getIdentityManager().getConfigurationDirectory() + "errors");
+            errorDir = new File(IdentityManager.getIdentityManager().getConfigurationDirectory()
+                    + "errors");
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
             }
@@ -400,7 +388,7 @@ public final class ProgramError implements Serializable {
     /**
      * Checks the responses and sets status accordingly.
      *
-     * @param error Error to check response
+     * @param error    Error to check response
      * @param response Response to check
      */
     private void checkResponses(final List<String> response) {
@@ -432,9 +420,9 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Determines whether or not the stack trace associated with this error
-     * is from a valid source. A valid source is one that is within a DMDirc
-     * package (com.dmdirc), and is not the DMDirc event queue.
+     * Determines whether or not the stack trace associated with this error is from a valid source.
+     * A valid source is one that is within a DMDirc package (com.dmdirc), and is not the DMDirc
+     * event queue.
      *
      * @return True if the source is valid, false otherwise
      */
@@ -446,9 +434,9 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Returns the "source line" of this error, which is defined as the first
-     * line starting with a DMDirc package name (com.dmdirc). If no such line
-     * is found, returns the first line of the message.
+     * Returns the "source line" of this error, which is defined as the first line starting with a
+     * DMDirc package name (com.dmdirc). If no such line is found, returns the first line of the
+     * message.
      *
      * @return This error's source line
      */
@@ -487,8 +475,8 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Retruns a human readable string describing the number of times
-     * this error occurred and when these occurrences were.
+     * Retruns a human readable string describing the number of times this error occurred and when
+     * these occurrences were.
      *
      * @return Occurrences description
      */
@@ -506,7 +494,7 @@ public final class ProgramError implements Serializable {
     @Override
     public String toString() {
         return "ID" + id + " Level: " + getLevel() + " Status: " + getReportStatus()
-        + " Message: '" + getMessage() + "'";
+                + " Message: '" + getMessage() + "'";
     }
 
     /** {@inheritDoc} */
@@ -551,11 +539,11 @@ public final class ProgramError implements Serializable {
         return hash;
     }
 
-
     /**
      * Converts an exception into a string array.
      *
      * @param throwable Exception to convert
+     *
      * @since 0.6.3m1
      * @return Exception string array
      */

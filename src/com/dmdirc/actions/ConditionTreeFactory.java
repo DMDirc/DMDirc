@@ -23,8 +23,7 @@
 package com.dmdirc.actions;
 
 /**
- * Provides methods to automatically generated condition tree for a specified
- * number of arguments.
+ * Provides methods to automatically generated condition tree for a specified number of arguments.
  *
  * @since 0.6
  */
@@ -34,6 +33,7 @@ public abstract class ConditionTreeFactory {
      * Retrieves a condition tree for the specified number of arguments.
      *
      * @param args The number of arguments in the {@link Action}
+     *
      * @return A ConditionTree for the specified number of args
      */
     public abstract ConditionTree getConditionTree(final int args);
@@ -46,25 +46,27 @@ public abstract class ConditionTreeFactory {
     public abstract ConditionTreeFactoryType getType();
 
     /**
-     * The possible types of ConditionTreeFactories
+     * The possible types of ConditionTreeFactories.
      */
     public static enum ConditionTreeFactoryType {
+
         /** Factories that produce disjunction (OR) trees. */
         DISJUNCTION,
         /** Factories that produce conjunction (AND) trees. */
         CONJUNCTION,
         /** Factories that produce custom trees. */
         CUSTOM,
+
     }
 
     /**
-     * Retrieves a factory that will extrapolate the specified
-     * {@link ConditionTree} for different number of arguments, if applicable.
+     * Retrieves a factory that will extrapolate the specified {@link ConditionTree} for different
+     * number of arguments, if applicable.
      *
      * @param tree The {@link ConditionTree} that's in use
      * @param args The number of conditions currently in use
-     * @return A {@link ConditionTreeFactory} that will create relevant
-     * {@link ConditionTree}s
+     *
+     * @return A {@link ConditionTreeFactory} that will create relevant {@link ConditionTree}s
      */
     public static ConditionTreeFactory getFactory(final ConditionTree tree, final int args) {
         if (tree.equals(ConditionTree.createConjunction(args))) {
@@ -144,4 +146,5 @@ public abstract class ConditionTreeFactory {
         }
 
     }
+
 }

@@ -29,31 +29,25 @@ public enum UpdateStatus {
 
     /** There is no known update available, and the manager is not active checking. */
     IDLE("Idle"),
-
-    /** The update manager is not permitted to check for updates for this component. */
+    /** The update
+     * manager is not permitted to check for updates for this component. */
     CHECKING_NOT_PERMITTED("Not enabled"),
-
     /** The manager is currently checking for updates for the component. */
     CHECKING("Checking..."),
-
     /** An update is available but it is not currently being retrieved. */
     UPDATE_PENDING("Update available"),
-
     /** An update is currently being retrieved. */
     RETRIEVING("Retrieving..."),
-
-    /** An update has been retrieved but it is not currently being installed. */
+    /** An update has
+     * been retrieved but it is not currently being installed. */
     INSTALL_PENDING("Retrieved"),
-
     /** An update is currently being installed. */
     INSTALLING("Installing..."),
-
     /** An update has successfully been installed. */
     UPDATED("Updated"),
-
-    /** An update has been installed but will not take effect until after a restart. */
+    /** An update has been
+     * installed but will not take effect until after a restart. */
     RESTART_PENDING("Restart required");
-
     /** Textual description of the status. */
     private final String description;
 

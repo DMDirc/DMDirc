@@ -58,22 +58,21 @@ public class PreferencesSetting {
     /** The original value of this setting. */
     private String original;
     /** A list of change listeners. */
-    private final List<SettingChangeListener> listeners
-            = new ArrayList<>();
+    private final List<SettingChangeListener> listeners = new ArrayList<>();
     /** Identity to save settings to. */
     private final ConfigProvider identity;
 
     /**
      * Creates a new preferences setting for any type except multi-choice.
      *
-     * @param type The type of the setting to create
-     * @param validator A validator to validate the setting's value
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
+     * @param type          The type of the setting to create
+     * @param validator     A validator to validate the setting's value
+     * @param domain        The domain of the setting
+     * @param option        The option name of the setting
+     * @param title         The title of this setting
+     * @param helptext      Text to display to help the user
      * @param configManager Config Manager
-     * @param identity Identity to save setting to
+     * @param identity      Identity to save setting to
      */
     public PreferencesSetting(final PreferencesType type,
             final Validator<String> validator, final String domain,
@@ -98,16 +97,16 @@ public class PreferencesSetting {
     }
 
     /**
-     * Creates a new preferences setting for any type except multi-choice, with
-     * a default permissive validator.
+     * Creates a new preferences setting for any type except multi-choice, with a default permissive
+     * validator.
      *
-     * @param type The type of the setting to create
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
+     * @param type          The type of the setting to create
+     * @param domain        The domain of the setting
+     * @param option        The option name of the setting
+     * @param title         The title of this setting
+     * @param helptext      Text to display to help the user
      * @param configManager Config Manager
-     * @param identity Identity to save setting to
+     * @param identity      Identity to save setting to
      */
     public PreferencesSetting(final PreferencesType type, final String domain,
             final String option, final String title, final String helptext,
@@ -133,13 +132,13 @@ public class PreferencesSetting {
     /**
      * Creates a new preferences setting for multi-choice preferences.
      *
-     * @param domain The domain of the setting
-     * @param option The option name of the setting
-     * @param options A map of setting values to display names for this setting
-     * @param title The title of this setting
-     * @param helptext Text to display to help the user
+     * @param domain        The domain of the setting
+     * @param option        The option name of the setting
+     * @param options       A map of setting values to display names for this setting
+     * @param title         The title of this setting
+     * @param helptext      Text to display to help the user
      * @param configManager Config Manager
-     * @param identity Identity to save setting to
+     * @param identity      Identity to save setting to
      */
     public PreferencesSetting(final String domain, final String option,
             final String title, final String helptext,
@@ -187,8 +186,8 @@ public class PreferencesSetting {
     }
 
     /**
-     * Sets the current value of this setting. Note that the setting is not
-     * saved to the configuration file until the save method is called.
+     * Sets the current value of this setting. Note that the setting is not saved to the
+     * configuration file until the save method is called.
      *
      * @param newValue The new value of the setting
      */
@@ -210,8 +209,8 @@ public class PreferencesSetting {
     }
 
     /**
-     * Sets the "restart needed" flag for this setting, indicating a client
-     * restart is needed before the setting takes effect.
+     * Sets the "restart needed" flag for this setting, indicating a client restart is needed before
+     * the setting takes effect.
      *
      * @return A reference to this setting, for convenience
      */
@@ -224,6 +223,7 @@ public class PreferencesSetting {
      * Registers the specified setting change listener.
      *
      * @param listener The listener to be registered
+     *
      * @return A reference to this setting, for convenience
      */
     public PreferencesSetting registerChangeListener(final SettingChangeListener listener) {

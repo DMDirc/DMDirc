@@ -29,19 +29,21 @@ public interface ActionMetaType {
 
     /**
      * Retrieves the arity of this type.
+     *
      * @return The arity of this action type
      */
     int getArity();
 
     /**
      * Retrieves the type of arguments that actions of this type should expect.
+     *
      * @return The type of arguments expected
      */
     Class[] getArgTypes();
 
     /**
-     * Retrieves the names of the arguments that actions of this type should
-     * expect.
+     * Retrieves the names of the arguments that actions of this type should expect.
+     *
      * @return The names of the expected arguments
      */
     String[] getArgNames();

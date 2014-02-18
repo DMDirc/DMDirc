@@ -21,6 +21,6 @@
  */
 
 /**
- * Core classes for DMDirc.  Used to interact between the parser and UI.
+ * Core classes for DMDirc. Used to interact between the parser and UI.
  */
 package com.dmdirc;

@@ -32,27 +32,23 @@ public class ActionCondition {
 
     /** The argument number that this action condition applies to. */
     private int arg;
-
     /** The component that this action condition applies to. */
     private ActionComponent component;
-
     /** The comparison that should be used for this condition. */
     private ActionComparison comparison;
-
     /** The target of the comparison for this condition. */
     private String target = "";
-
     /** The source target for this comparison. */
     private String starget = "";
 
     /**
-     * Creates a new instance of ActionCondition that compares the output of
-     * a component to a string.
+     * Creates a new instance of ActionCondition that compares the output of a component to a
+     * string.
      *
-     * @param arg The argument number to be tested
-     * @param component The component to be tested
+     * @param arg        The argument number to be tested
+     * @param component  The component to be tested
      * @param comparison The comparison to be used
-     * @param target The target of the comparison
+     * @param target     The target of the comparison
      */
     public ActionCondition(final int arg, final ActionComponent component,
             final ActionComparison comparison, final String target) {
@@ -67,9 +63,9 @@ public class ActionCondition {
     /**
      * Creates a new instance of ActionCondition that compares two strings.
      *
-     * @param starget The first target for comparison.
+     * @param starget    The first target for comparison.
      * @param comparison The comparison to be used
-     * @param target The second target for the comparison
+     * @param target     The second target for the comparison
      */
     public ActionCondition(final String starget, final ActionComparison comparison,
             final String target) {
@@ -84,11 +80,12 @@ public class ActionCondition {
     /**
      * Tests to see if this condition holds.
      *
-     * @param sub The substitutor to use for this
+     * @param sub  The substitutor to use for this
      * @param args The event arguments to be tested
+     *
      * @return True if the condition holds, false otherwise
      */
-    public boolean test(final ActionSubstitutor sub, final Object ... args) {
+    public boolean test(final ActionSubstitutor sub, final Object... args) {
         final String thisTarget = sub.doSubstitution(getTarget(), args);
 
         if (arg == -1) {
@@ -164,6 +161,7 @@ public class ActionCondition {
 
     /**
      * Sets the target of the comparison for this condition.
+     *
      * @param target Target for comparison
      */
     public void setTarget(final String target) {

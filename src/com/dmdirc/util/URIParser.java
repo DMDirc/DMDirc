@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.util;
 
 import java.net.URI;
@@ -38,11 +39,13 @@ public class URIParser {
     /**
      * Pattern used to breakdown a URI authority.
      */
-    private final Pattern authorityBreakdown = Pattern.compile("(?:(?<auth>[^@]*)@)?(?<host>[^:]+)(?::(?<secure>\\+)?(?<port>[0-9]*))?");
+    private final Pattern authorityBreakdown = Pattern.compile(
+            "(?:(?<auth>[^@]*)@)?(?<host>[^:]+)(?::(?<secure>\\+)?(?<port>[0-9]*))?");
     /**
      * Pattern used to breakdown a URI. From RFC3986 appendix-B.
      */
-    private final Pattern uriBreadown = Pattern.compile("((?<scheme>[^:/?#]+):)?(//(?<authority>[^/?#]*))?(?<path>[^?#]*)(\\?(?<query>[^#]*))?(#(?<fragment>.*))?");
+    private final Pattern uriBreadown = Pattern.compile(
+            "((?<scheme>[^:/?#]+):)?(//(?<authority>[^/?#]*))?(?<path>[^?#]*)(\\?(?<query>[^#]*))?(#(?<fragment>.*))?");
 
     /**
      * Creates a new instance of {@link URIParser}.
@@ -56,7 +59,9 @@ public class URIParser {
      * indicate a secure connection.
      *
      * @param input The string to be parsed.
+     *
      * @return An equivalent URI, if one can be parsed.
+     *
      * @throws InvalidURIException If the string cannot be parsed as a URI.
      */
     public URI parseFromURI(final String input) throws InvalidURIException {
@@ -70,7 +75,8 @@ public class URIParser {
         final String query;
         final String fragment;
         final Matcher uriMatcher = uriBreadown.matcher(input);
-        if (!uriMatcher.matches() || uriMatcher.group("scheme") == null || uriMatcher.group("authority") == null) {
+        if (!uriMatcher.matches() || uriMatcher.group("scheme") == null || uriMatcher.group(
+                "authority") == null) {
             throw new InvalidURIException("Invalid address specified");
         }
         scheme = uriMatcher.group("scheme");
@@ -114,9 +120,11 @@ public class URIParser {
      * already, it is parsed by {@link #parseFromURI(java.lang.String)}.
      *
      * @param input The string to be parsed.
+     *
      * @return An equivalent URI, if one can be parsed.
+     *
      * @throws InvalidURIException If the string cannot be parsed as a URI, or an invalid component
-     * is specified.
+     *                             is specified.
      */
     public URI parseFromText(final String input) throws InvalidURIException {
         if (input.indexOf(' ') == -1 && input.contains("://")) {

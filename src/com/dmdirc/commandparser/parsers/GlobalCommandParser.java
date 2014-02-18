@@ -44,16 +44,16 @@ import javax.inject.Singleton;
 public class GlobalCommandParser extends CommandParser {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
     /**
      * Creates a new command parser for global commands.
      *
-     * @param configManager Config manager to read settings from
+     * @param configManager  Config manager to read settings from
      * @param commandManager Command manager to load commands from
      */
     @Inject
@@ -95,10 +95,11 @@ public class GlobalCommandParser extends CommandParser {
     }
 
     /**
-     * Called when the input was a line of text that was not a command. This normally
-     * means it is sent to the server/channel/user as-is, with no further processing.
+     * Called when the input was a line of text that was not a command. This normally means it is
+     * sent to the server/channel/user as-is, with no further processing.
+     *
      * @param origin The window in which the command was typed
-     * @param line The line input by the user
+     * @param line   The line input by the user
      */
     @Override
     protected void handleNonCommand(final FrameContainer origin, final String line) {

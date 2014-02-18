@@ -36,10 +36,9 @@ import java.util.Collection;
 public interface UpdateManager {
 
     /**
-     * Adds a new check strategy to this manager. {@link UpdateCheckStrategy}s
-     * are responsible for checking to see if an updated version of a set of
-     * components is available. If multiple strategies are configured, their
-     * results are merged using this manager's
+     * Adds a new check strategy to this manager. {@link UpdateCheckStrategy}s are responsible for
+     * checking to see if an updated version of a set of components is available. If multiple
+     * strategies are configured, their results are merged using this manager's
      * {@link com.dmdirc.updater.checking.CheckResultConsolidator}.
      *
      * @param strategy The strategy to be added.
@@ -47,37 +46,34 @@ public interface UpdateManager {
     void addCheckStrategy(final UpdateCheckStrategy strategy);
 
     /**
-     * Adds a new installation strategy to this manager.
-     * {@link UpdateInstallationStrategy}s are responsible for handling the
-     * installation of an update once it has been retrieved.
+     * Adds a new installation strategy to this manager. {@link UpdateInstallationStrategy}s are
+     * responsible for handling the installation of an update once it has been retrieved.
      *
      * @param strategy The strategy to be added.
      */
     void addInstallationStrategy(final UpdateInstallationStrategy strategy);
 
     /**
-     * Adds a new retrieval strategy to this manager.
-     * {@link UpdateRetrievalStategy}s are responsible for retrieving the
-     * updated version of a component after an update has been identified
-     * by a {@link UpdateCheckStrategy}.
+     * Adds a new retrieval strategy to this manager. {@link UpdateRetrievalStategy}s are
+     * responsible for retrieving the updated version of a component after an update has been
+     * identified by a {@link UpdateCheckStrategy}.
      *
      * @param strategy The strategy to be added.
      */
     void addRetrievalStrategy(final UpdateRetrievalStategy strategy);
 
     /**
-     * Adds a new component to this manager. Components will be checked for
-     * updates the next time {@link #checkForUpdates()} is called. If a
-     * component with the same name already exists, it will be removed.
+     * Adds a new component to this manager. Components will be checked for updates the next time
+     * {@link #checkForUpdates()} is called. If a component with the same name already exists, it
+     * will be removed.
      *
      * @param component The component to be added
      */
     void addComponent(final UpdateComponent component);
 
     /**
-     * Removes the specified component from this manager. If any operations
-     * are pending for the component they may complete after this method has
-     * been called.
+     * Removes the specified component from this manager. If any operations are pending for the
+     * component they may complete after this method has been called.
      *
      * @param component The component to be removed
      */
@@ -96,10 +92,9 @@ public interface UpdateManager {
     void checkForUpdates();
 
     /**
-     * Installs any updates for the specified component. If an update for the
-     * component is available but has not yet been retrieved, this method
-     * should perform in the same way to a synchronous call to
-     * {@link #retrieve(com.dmdirc.updater.UpdateComponent)} followed by
+     * Installs any updates for the specified component. If an update for the component is available
+     * but has not yet been retrieved, this method should perform in the same way to a synchronous
+     * call to {@link #retrieve(com.dmdirc.updater.UpdateComponent)} followed by
      * {@link #install(com.dmdirc.updater.UpdateComponent)}.
      *
      * @param component The component to be installed
@@ -107,9 +102,8 @@ public interface UpdateManager {
     void install(UpdateComponent component);
 
     /**
-     * Retrieves any update associated with the given component. The update
-     * will not be installed until the
-     * {@link #install(com.dmdirc.updater.UpdateComponent)} method is called.
+     * Retrieves any update associated with the given component. The update will not be installed
+     * until the {@link #install(com.dmdirc.updater.UpdateComponent)} method is called.
      *
      * @param component The component to retrieve updates for
      */
@@ -119,15 +113,15 @@ public interface UpdateManager {
      * Retrieves the last update check result for the given component.
      *
      * @param component The component to retrieve a check result for
-     * @return The component's most recent associated {@link UpdateCheckResult},
-     * or <code>null</code> if the component has not been checked or has since
-     * been updated.
+     *
+     * @return The component's most recent associated {@link UpdateCheckResult}, * * *
+     *         or <code>null</code> if the component has not been checked or has since been updated.
      */
     UpdateCheckResult getCheckResult(UpdateComponent component);
 
     /**
-     * Adds the given status listener to this manager. The listener will be
-     * called for any future status changes caused by this manager.
+     * Adds the given status listener to this manager. The listener will be called for any future
+     * status changes caused by this manager.
      *
      * @param listener The listener to be added
      */

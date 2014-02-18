@@ -23,5 +23,4 @@
 /**
  * Command parser, proceses and handles commands for the client.
  */
-
 package com.dmdirc.commandparser;

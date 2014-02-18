@@ -40,7 +40,7 @@ import javax.inject.Inject;
 /**
  * Allows the user to change user modes.
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class Umode extends Command {
 
     /** A command info object for this command. */

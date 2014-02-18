@@ -59,56 +59,46 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
- * The Channel class represents the client's view of the channel. It handles
- * callbacks for channel events from the parser, maintains the corresponding
- * ChannelWindow, and handles user input for the channel.
+ * The Channel class represents the client's view of the channel. It handles callbacks for channel
+ * events from the parser, maintains the corresponding ChannelWindow, and handles user input for the
+ * channel.
  */
 @Factory(inject = true, providers = true, singleton = true)
 public class Channel extends MessageTarget implements ConfigChangeListener {
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
-
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
-
     /** The server this channel is on. */
     private final Server server;
-
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
-
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
-
     /** Our event handler. */
     private final ChannelEventHandler eventHandler;
-
     /** The migrator to use to migrate our config provider. */
     private final ConfigProviderMigrator configMigrator;
-
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
-
     /** Whether we should send WHO requests for this channel. */
     private volatile boolean sendWho;
-
     /** Whether we should show mode prefixes in text. */
     private volatile boolean showModePrefix;
-
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
 
     /**
      * Creates a new instance of Channel.
      *
-     * @param newServer The server object that this channel belongs to
-     * @param newChannelInfo The parser's channel object that corresponds to this channel
-     * @param configMigrator The config migrator which provides the config for this channel.
+     * @param newServer           The server object that this channel belongs to
+     * @param newChannelInfo      The parser's channel object that corresponds to this channel
+     * @param configMigrator      The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param commandController The controller to load commands from.
-     * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param commandController   The controller to load commands from.
+     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param urlBuilder          The URL builder to use when finding icons.
      */
     public Channel(
             @Unbound final Server newServer,
@@ -125,9 +115,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                    WindowComponent.INPUTFIELD.getIdentifier(),
-                    WindowComponent.TOPICBAR.getIdentifier(),
-                    WindowComponent.USERLIST.getIdentifier()));
+                WindowComponent.INPUTFIELD.getIdentifier(),
+                WindowComponent.TOPICBAR.getIdentifier(),
+                WindowComponent.USERLIST.getIdentifier()));
 
         this.configMigrator = configMigrator;
         channelInfo = newChannelInfo;
@@ -241,9 +231,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Sets this object's ChannelInfo reference to the one supplied. This only
-     * needs to be done if the channel window (and hence this channel object)
-     * has stayed open while the user has been out of the channel.
+     * Sets this object's ChannelInfo reference to the one supplied. This only needs to be done if
+     * the channel window (and hence this channel object) has stayed open while the user has been
+     * out of the channel.
      *
      * @param newChannelInfo The new ChannelInfo object
      */
@@ -269,8 +259,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Updates the title of the channel window, and of the main window if
-     * appropriate.
+     * Updates the title of the channel window, and of the main window if appropriate.
      */
     private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
@@ -283,16 +272,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Joins the specified channel. This only makes sense if used after a call
-     * to part().
+     * Joins the specified channel. This only makes sense if used after a call to part().
      */
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
     }
 
     /**
-     * Parts this channel with the specified message. Parting does NOT close the
-     * channel window.
+     * Parts this channel with the specified message. Parting does NOT close the channel window.
      *
      * @param reason The reason for parting the channel
      */
@@ -349,8 +336,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Called every {general.whotime} seconds to check if the channel needs
-     * to send a who request.
+     * Called every {general.whotime} seconds to check if the channel needs to send a who request.
      */
     public void checkWho() {
         if (isOnChannel && sendWho) {
@@ -385,8 +371,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Replaces the list of known clients on this channel with the specified
-     * one.
+     * Replaces the list of known clients on this channel with the specified one.
      *
      * @param clients The list of clients to use
      */
@@ -413,8 +398,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Refreshes the list of clients stored by this channel. Should be called
-     * when (visible) user modes or nicknames change.
+     * Refreshes the list of clients stored by this channel. Should be called when (visible) user
+     * modes or nicknames change.
      */
     public void refreshClients() {
         if (!isOnChannel) {
@@ -425,12 +410,12 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Returns a string containing the most important mode for the specified
-     * client.
+     * Returns a string containing the most important mode for the specified client.
      *
      * @param channelClient The channel client to check.
-     * @return A string containing the most important mode, or an empty string
-     * if there are no (known) modes.
+     *
+     * @return A string containing the most important mode, or an empty string if there are no
+     *         (known) modes.
      */
     private String getModes(final ChannelClientInfo channelClient) {
         if (channelClient == null || !showModePrefix) {
@@ -457,25 +442,24 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     /**
-     * Returns a string[] containing the nickname/ident/host of a channel
-     * client.
+     * Returns a string[] containing the nickname/ident/host of a channel client.
      *
      * @param client The channel client to check
+     *
      * @return A string[] containing displayable components
      */
     private String[] getDetails(final ChannelClientInfo client) {
         if (client == null) {
             // WTF?
             throw new UnsupportedOperationException("getDetails called with"
-                     + " null ChannelClientInfo");
+                    + " null ChannelClientInfo");
         }
 
-        final String[] res = new String[] {
+        final String[] res = new String[]{
             getModes(client),
             Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME,
             client.getClient().getUsername(),
-            client.getClient().getHostname(),
-        };
+            client.getClient().getHostname(),};
 
         if (showColours) {
             final Map<?, ?> map = client.getMap();
@@ -484,11 +468,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 String prefix;
 
                 if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    prefix = "," + ColourManager.getHex((Colour)
-                            map.get(ChannelClientProperty.TEXT_BACKGROUND));
+                    prefix = "," + ColourManager.getHex((Colour) map.get(
+                            ChannelClientProperty.TEXT_BACKGROUND));
                 } else {
-                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Colour)
-                            map.get(ChannelClientProperty.TEXT_FOREGROUND));
+                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Colour) map.get(
+                            ChannelClientProperty.TEXT_FOREGROUND));
                 }
 
                 res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
@@ -541,7 +525,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     // ---------------------------------------------------- TOPIC HANDLING -----
-
     /**
      * Adds the specified topic to this channel's topic list.
      *
@@ -554,7 +537,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         updateTitle();
 
         new Thread(new Runnable() {
-
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -567,8 +549,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     /**
      * Retrieve the topics that have been seen on this channel.
      *
-     * @return A list of topics that have been seen on this channel, including
-     * the current one.
+     * @return A list of topics that have been seen on this channel, including the current one.
      */
     public List<Topic> getTopics() {
         synchronized (topics) {
@@ -592,12 +573,10 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     // ------------------------------------------ PARSER METHOD DELEGATION -----
-
     /**
      * Attempts to set the topic of this channel.
      *
-     * @param topic The new topic to be used. An empty string will clear the
-     * current topic
+     * @param topic The new topic to be used. An empty string will clear the current topic
      */
     public void setTopic(final String topic) {
         channelInfo.setTopic(topic);
@@ -607,6 +586,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * Retrieves the maximum length that a topic on this channel can be.
      *
      * @return The maximum length that this channel's topic may be
+     *
      * @since 0.6.3
      */
     public int getMaxTopicLength() {
@@ -655,4 +635,5 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     public Connection getConnection() {
         return server;
     }
+
 }

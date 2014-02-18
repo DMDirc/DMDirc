@@ -22,7 +22,6 @@
 
 package com.dmdirc.logger;
 
-
 import java.util.EventListener;
 
 /**
@@ -57,4 +56,5 @@ public interface ErrorListener extends EventListener {
      * @return true iif the error listener is ready for errors
      */
     boolean isReady();
+
 }

@@ -35,7 +35,6 @@ public class SystemLifecycleController implements LifecycleController {
 
     /** Controller to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
-
     /** Manager to use to disconnect servers. */
     private final ServerManager serverManager;
 

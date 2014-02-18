@@ -85,7 +85,8 @@ public class Ignore extends Command implements IntelligentCommand {
         final IgnoreList ignoreList = server.getIgnoreList();
 
         if (ignoreList.count() == 0) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "No ignore list entries for this network.");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                    "No ignore list entries for this network.");
             return;
         }
 
@@ -153,18 +154,21 @@ public class Ignore extends Command implements IntelligentCommand {
         if (ignoreList.canConvert() && ignoreList.getSimpleList().contains(host)) {
             ignoreList.remove(ignoreList.getSimpleList().indexOf(host));
             server.saveIgnoreList();
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
+                    + " from the ignore list.");
             return;
         }
 
         if (ignoreList.getRegexList().contains(host)) {
             ignoreList.remove(ignoreList.getRegexList().indexOf(host));
             server.saveIgnoreList();
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
+            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
+                    + " from the ignore list.");
             return;
         }
 
-        sendLine(origin, args.isSilent(), FORMAT_ERROR, "Ignore list doesn't contain '" + host + "'.");
+        sendLine(origin, args.isSilent(), FORMAT_ERROR, "Ignore list doesn't contain '" + host
+                + "'.");
     }
 
     /** {@inheritDoc} */
@@ -181,7 +185,7 @@ public class Ignore extends Command implements IntelligentCommand {
             targets.include(TabCompletionType.QUERY_NICK);
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             final IgnoreList ignoreList = context.getWindow().getConnection()
-                .getIgnoreList();
+                    .getIgnoreList();
             if (ignoreList.canConvert()) {
                 for (String entry : ignoreList.getSimpleList()) {
                     targets.add(entry);

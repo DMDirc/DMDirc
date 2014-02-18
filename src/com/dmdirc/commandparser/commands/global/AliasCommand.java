@@ -50,19 +50,17 @@ public class AliasCommand extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("alias",
             "alias [--remove] <name> [command] - creates or removes the specified alias",
             CommandType.TYPE_GLOBAL);
-
     /** Factory to use when creating aliases. */
     private final ActionFactory actionFactory;
-
     /** Wrapper to use to modify aliases. */
     private final AliasWrapper aliasWrapper;
 
     /**
      * Creates a new instance of {@link AliasCommand}.
      *
-     * @param controller The controller that owns this command.
+     * @param controller    The controller that owns this command.
      * @param actionFactory The factory to use when creating new aliases.
-     * @param aliasWrapper The wrapper to use to modify aliases.
+     * @param aliasWrapper  The wrapper to use to modify aliases.
      */
     @Inject
     public AliasCommand(
@@ -84,8 +82,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         }
 
         if (args.getArguments()[0].equalsIgnoreCase("--remove")) {
-            final String name
-                    = args.getArguments()[1].charAt(0)
+            final String name = args.getArguments()[1].charAt(0)
                     == getController().getCommandChar()
                     ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
@@ -124,6 +121,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
      * Removes the alias with the specified name.
      *
      * @param name The name of the alias to remove
+     *
      * @return True if the alias was deleted, false otherwise
      */
     private boolean doRemove(final String name) {

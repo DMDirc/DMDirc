@@ -54,9 +54,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The Query class represents the client's view of a query with another user.
- * It handles callbacks for query events from the parser, maintains the
- * corresponding QueryWindow, and handles user input for the query.
+ * The Query class represents the client's view of a query with another user. It handles callbacks
+ * for query events from the parser, maintains the corresponding QueryWindow, and handles user input
+ * for the query.
  */
 @Factory(inject = true, providers = true, singleton = true)
 public class Query extends MessageTarget implements PrivateActionListener,
@@ -65,25 +65,22 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     /** The Server this Query is on. */
     private final Server server;
-
     /** The full host of the client associated with this query. */
     private String host;
-
     /** The nickname of the client associated with this query. */
     private String nickname;
-
     /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;
 
     /**
      * Creates a new instance of Query.
      *
-     * @param newHost host of the remove client
-     * @param newServer The server object that this Query belongs to
+     * @param newHost             host of the remove client
+     * @param newServer           The server object that this Query belongs to
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param commandController The controller to load commands from.
-     * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param commandController   The controller to load commands from.
+     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param urlBuilder          The URL builder to use when finding icons.
      */
     public Query(
             @Unbound final Server newServer,
@@ -98,8 +95,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                        WindowComponent.TEXTAREA.getIdentifier(),
-                        WindowComponent.INPUTFIELD.getIdentifier()));
+                WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
         this.host = newHost;
@@ -128,16 +125,15 @@ public class Query extends MessageTarget implements PrivateActionListener,
     }
 
     /**
-     * Sends a line to the recipient of this query using the specified
-     * nickname or hostmask as a target. This allows for users to send
-     * messages with a server specified (e.g. <code>nick@server</code>)
-     * as though the query wasn't open.
+     * Sends a line to the recipient of this query using the specified nickname or hostmask as a
+     * target. This allows for users to send messages with a server specified (e.g.
+     * <code>nick@server</code>) as though the query wasn't open.
      * <p>
-     * The caller is responsible for ensuring that the <code>target</code>
-     * does actually correspond to this query.
+     * The caller is responsible for ensuring that the <code>target</code> does actually correspond
+     * to this query.
      *
      * @since 0.6.4
-     * @param line The line to be sent
+     * @param line   The line to be sent
      * @param target The target to send the line to
      */
     public void sendLine(final String line, final String target) {
@@ -271,8 +267,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             try {
                 callbackManager.addCallback(PrivateActionListener.class, this, client.getNickname());
-                callbackManager.addCallback(PrivateMessageListener.class, this, client.getNickname());
-                callbackManager.addCallback(CompositionStateChangeListener.class, this, client.getNickname());
+                callbackManager.
+                        addCallback(PrivateMessageListener.class, this, client.getNickname());
+                callbackManager.addCallback(CompositionStateChangeListener.class, this, client.
+                        getNickname());
             } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
@@ -300,7 +298,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final ClientInfo client, final String reason) {
         if (client.getNickname().equals(getNickname())) {
             final StringBuffer format = new StringBuffer(reason.isEmpty()
-                ? "queryQuit" : "queryQuitReason");
+                    ? "queryQuit" : "queryQuitReason");
 
             ActionManager.getActionManager().triggerEvent(
                     CoreActionType.QUERY_QUIT, format, this, reason);

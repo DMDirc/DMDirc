@@ -28,18 +28,19 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import java.util.List;
 
 /**
- * Intelligent commands implement a method that provides a list of possible
- * options for them, for use (for example) by table completers.
+ * Intelligent commands implement a method that provides a list of possible options for them, for
+ * use (for example) by table completers.
  */
 public interface IntelligentCommand {
 
     /**
-     * Returns a list of suggestions for the specified argument, given the
-     * specified context.
+     * Returns a list of suggestions for the specified argument, given the specified context.
      *
-     * @param arg The argument that is being completed
+     * @param arg     The argument that is being completed
      * @param context The context in which suggestions are being sought
+     *
      * @return A list of suggestions for the argument
+     *
      * @since 0.6.4
      */
     AdditionalTabTargets getSuggestions(int arg, IntelligentCommandContext context);
@@ -70,15 +71,13 @@ public interface IntelligentCommand {
         public String getPartial() {
             return partial;
         }
-
         /** The window the command is being entered in. */
         private final WritableFrameContainer window;
-
         /** The previously supplied arguments, if any. */
         private final List<String> previousArgs;
-
         /** The partially typed word, if any. */
         private final String partial;
 
     }
+
 }

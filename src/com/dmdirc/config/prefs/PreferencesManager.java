@@ -39,7 +39,6 @@ public class PreferencesManager {
 
     /** Singleton instance of the preferences manager. */
     private static PreferencesManager me;
-
     /** The action controller to fire events on. */
     private final ActionController actionController;
 
@@ -48,17 +47,17 @@ public class PreferencesManager {
     }
 
     /**
-     * Retrieves a category containing preferences settings which should be
-     * displayed in channel-specific contexts.
+     * Retrieves a category containing preferences settings which should be displayed in
+     * channel-specific contexts.
      *
-     * @param manager The config manager to load settings from
+     * @param manager  The config manager to load settings from
      * @param identity The identity to save settings to
+     *
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getServerSettings(final AggregateConfigProvider manager,
             final ConfigProvider identity) {
-        final PreferencesCategory category
-                = new PreferencesCategory("Server settings",
+        final PreferencesCategory category = new PreferencesCategory("Server settings",
                 "These settings are specific to this server on this network,"
                 + " any settings specified here will overwrite global settings");
 
@@ -133,17 +132,17 @@ public class PreferencesManager {
     }
 
     /**
-     * Retrieves a category containing preferences settings which should be
-     * displayed in channel-specific contexts.
+     * Retrieves a category containing preferences settings which should be displayed in
+     * channel-specific contexts.
      *
-     * @param manager The config manager to load settings from
+     * @param manager  The config manager to load settings from
      * @param identity The identity to save settings to
+     *
      * @return A preferences category populated with channel settings
      */
     public PreferencesCategory getChannelSettings(final AggregateConfigProvider manager,
             final ConfigProvider identity) {
-        final PreferencesCategory category
-                = new PreferencesCategory("Channel settings",
+        final PreferencesCategory category = new PreferencesCategory("Channel settings",
                 "These settings are specific to this channel on this network,"
                 + " any settings specified here will overwrite global settings");
 

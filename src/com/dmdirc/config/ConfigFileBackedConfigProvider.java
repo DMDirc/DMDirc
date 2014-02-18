@@ -49,39 +49,34 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigFileBackedConfigProvider.class);
-
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(
+            ConfigFileBackedConfigProvider.class);
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
-
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile";
-
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
-
     /** The configuration details for this identity. */
     protected final ConfigFile file;
-
     /** The global config manager. */
     protected ConfigManager globalConfig;
-
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners = new WeakList<>();
-
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
 
     /**
      * Creates a new instance of Identity.
      *
-     * @param file The file to load this identity from
-     * @param forceDefault Whether to force this identity to be loaded as default
-     * identity or not
+     * @param file         The file to load this identity from
+     * @param forceDefault Whether to force this identity to be loaded as default identity or not
+     *
      * @throws InvalidIdentityFileException Missing required properties
-     * @throws IOException Input/output exception
+     * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final File file, final boolean forceDefault) throws IOException,
+    public ConfigFileBackedConfigProvider(final File file, final boolean forceDefault) throws
+            IOException,
             InvalidIdentityFileException {
         super();
 
@@ -98,13 +93,14 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     /**
      * Creates a new read-only identity.
      *
-     * @param stream The input stream to read the identity from
-     * @param forceDefault Whether to force this identity to be loaded as default
-     * identity or not
+     * @param stream       The input stream to read the identity from
+     * @param forceDefault Whether to force this identity to be loaded as default identity or not
+     *
      * @throws InvalidIdentityFileException Missing required properties
-     * @throws IOException Input/output exception
+     * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final InputStream stream, final boolean forceDefault) throws IOException,
+    public ConfigFileBackedConfigProvider(final InputStream stream, final boolean forceDefault)
+            throws IOException,
             InvalidIdentityFileException {
         super();
 
@@ -122,7 +118,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * Creates a new identity from the specified config file.
      *
      * @param configFile The config file to use
-     * @param target The target of this identity
+     * @param target     The target of this identity
      */
     public ConfigFileBackedConfigProvider(final ConfigFile configFile, final ConfigTarget target) {
         super();
@@ -140,7 +136,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * Determines and returns the target for this identity from its contents.
      *
      * @param forceDefault Whether to force this to be a default identity
+     *
      * @return A ConfigTarget for this identity
+     *
      * @throws InvalidIdentityFileException If the identity isn't valid
      */
     private ConfigTarget getTarget(final boolean forceDefault)
@@ -181,8 +179,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      *
      * @since 0.6.3
      * @param forceDefault Whether to force this to be a default identity
+     *
      * @throws InvalidIdentityFileException if the identity file is invalid
-     * @throws IOException On I/O exception when reading the identity
+     * @throws IOException                  On I/O exception when reading the identity
      */
     private void initFile(final boolean forceDefault)
             throws InvalidIdentityFileException, IOException {
@@ -241,11 +240,11 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     }
 
     /**
-     * Fires the config changed listener for the specified option after this
-     * identity is reloaded.
+     * Fires the config changed listener for the specified option after this identity is reloaded.
      *
      * @param domain The domain of the option that's changed
-     * @param key The key of the option that's changed
+     * @param key    The key of the option that's changed
+     *
      * @since 0.6.3m1
      */
     private void fireSettingChange(final String domain, final String key) {
@@ -265,9 +264,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     }
 
     /**
-     * Checks if this profile needs migrating from the old method of
-     * storing nicknames (profile.nickname + profile.altnicks) to the new
-     * method (profile.nicknames), and performs the migration if needed.
+     * Checks if this profile needs migrating from the old method of storing nicknames
+     * (profile.nickname + profile.altnicks) to the new method (profile.nicknames), and performs the
+     * migration if needed.
      *
      * @since 0.6.3m1
      */
@@ -323,7 +322,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         synchronized (this) {
             oldValue = getOption(domain, option);
             log.trace("{}: setting {}.{} to {} (was: {})",
-                    new Object[] { getName(), domain, option, value, oldValue });
+                    new Object[]{getName(), domain, option, value, oldValue});
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, don't set useless settings that are
@@ -418,7 +417,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     /** {@inheritDoc} */
     @Override
     public synchronized void save() {
-        log.info("{}: saving. Needsave = {}", new Object[]{ getName(), needSave });
+        log.info("{}: saving. Needsave = {}", new Object[]{getName(), needSave});
 
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
@@ -443,12 +442,13 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 }
 
                 globalConfig.removeIdentity(this);
-                globalConfig.removeIdentity(IdentityManager.getIdentityManager().getVersionSettings());
+                globalConfig.removeIdentity(IdentityManager.getIdentityManager().
+                        getVersionSettings());
 
                 if (log.isTraceEnabled()) {
                     for (ConfigProvider source : globalConfig.getSources()) {
                         log.trace("{}: source: {}",
-                                new Object[]{ getName(), source.getName() });
+                                new Object[]{getName(), source.getName()});
                     }
                 }
 
@@ -456,14 +456,15 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
 
-                    for (Map.Entry<String, String> subentry : new HashSet<>(entry.getValue().entrySet())) {
+                    for (Map.Entry<String, String> subentry : new HashSet<>(entry.getValue().
+                            entrySet())) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
 
                         if (globalConfig.hasOptionString(domain, key)
                                 && globalConfig.getOption(domain, key).equals(value)) {
                             log.debug("{}: found superfluous setting: {}.{} (= {})",
-                                    new Object[]{ getName(), domain, key, value });
+                                    new Object[]{getName(), domain, key, value});
                             file.getKeyDomain(domain).remove(key);
                         }
                     }
@@ -505,7 +506,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * Determines if this identity is loaded from the specified File.
      *
      * @param target The file to be checked
+     *
      * @return True if this identity comes from the target file, false otherwise
+     *
      * @since 0.6.4
      */
     public boolean isFile(final File target) {

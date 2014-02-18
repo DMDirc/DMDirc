@@ -38,7 +38,7 @@ public final class Logger {
     /**
      * Called when a user correctable error occurs.
      *
-     * @param level Severity of the error
+     * @param level   Severity of the error
      * @param message Brief error description
      */
     public static void userError(final ErrorLevel level, final String message) {
@@ -48,7 +48,7 @@ public final class Logger {
     /**
      * Called when a user correctable error occurs.
      *
-     * @param level Severity of the error
+     * @param level   Severity of the error
      * @param message Brief error description
      * @param details Verbose description of the error
      */
@@ -60,8 +60,8 @@ public final class Logger {
     /**
      * Called when a user correctable error occurs.
      *
-     * @param level Severity of the error
-     * @param message Brief error description
+     * @param level     Severity of the error
+     * @param message   Brief error description
      * @param exception Throwable cause for the error
      */
     public static void userError(final ErrorLevel level,
@@ -70,11 +70,11 @@ public final class Logger {
     }
 
     /**
-     * Called when a non user correctable error occurs, the error will be
-     * logged and optionally sent to the developers.
+     * Called when a non user correctable error occurs, the error will be logged and optionally sent
+     * to the developers.
      *
-     * @param level Severity of the error
-     * @param message Brief error description
+     * @param level     Severity of the error
+     * @param message   Brief error description
      * @param exception Cause of error
      */
     public static void appError(final ErrorLevel level,

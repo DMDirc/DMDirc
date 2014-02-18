@@ -36,53 +36,39 @@ import java.util.List;
 import javax.inject.Provider;
 
 /**
- * Represents the basic model of an action, and its triggering mechanism.
- * Saving and loading are handled by the Action class.
+ * Represents the basic model of an action, and its triggering mechanism. Saving and loading are
+ * handled by the Action class.
  */
 public class ActionModel {
 
     /** Provider of global command parsers, for use when triggering window-less actions. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
-
     /** Factory to use to creator substitutors. */
     private final ActionSubstitutorFactory substitutorFactory;
-
     /** The group this action belongs to. */
     protected String group;
-
     /** The name of this action. */
     protected String name;
-
     /** The ActionTypes that trigger this action. */
     protected ActionType[] triggers;
-
     /** The commands to execute if this action is triggered. */
     protected String[] response;
-
     /** The change that should be made to the format string, if any. */
     protected String newFormat;
-
     /** The conditions for this action. */
     protected List<ActionCondition> conditions = new ArrayList<>();
-
     /** The condition tree used for evaluating conditions. */
     protected ConditionTree conditionTree;
-
     /** Whether this action has been modified or not. */
     protected boolean modified;
-
     /** Whether this action wishes the event to be stopped. */
     protected boolean stop;
-
     /** The concurrency group this action belongs to, if any. */
     protected String concurrencyGroup;
-
     /** The status of this action. */
     protected ActionStatus status = ActionStatus.ACTIVE;
-
     /** A description of any error that occurs while creating the action. */
     protected String error;
-
     /** The type of error that occurred, if any. */
     protected ActionErrorType errorType;
 
@@ -90,9 +76,9 @@ public class ActionModel {
      * Creates a new instance of ActionModel with the specified properties.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
-     * @param substitutorFactory Factory to use to create action substitutors.
-     * @param group The group the action belongs to
-     * @param name The name of the action
+     * @param substitutorFactory          Factory to use to create action substitutors.
+     * @param group                       The group the action belongs to
+     * @param name                        The name of the action
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
@@ -109,14 +95,14 @@ public class ActionModel {
      * Creates a new instance of ActionModel with the specified properties.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
-     * @param substitutorFactory Factory to use to create action substitutors.
-     * @param group The group the action belongs to
-     * @param name The name of the action
-     * @param triggers The triggers to use
-     * @param response The response to use
-     * @param conditions The conditions to use
-     * @param conditionTree The condition tree to use
-     * @param newFormat The new formatter to use
+     * @param substitutorFactory          Factory to use to create action substitutors.
+     * @param group                       The group the action belongs to
+     * @param name                        The name of the action
+     * @param triggers                    The triggers to use
+     * @param response                    The response to use
+     * @param conditions                  The conditions to use
+     * @param conditionTree               The condition tree to use
+     * @param newFormat                   The new formatter to use
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
@@ -138,10 +124,11 @@ public class ActionModel {
      * Triggers this action.
      *
      * @param serverManager The server manager used to iterate servers
-     * @param format The format of the message that's going to be displayed.
-     * @param arguments The arguments from the action that caused this trigger.
-     * @return True if the execution of the event should be stopped, or false
-     * if the event may continue
+     * @param format        The format of the message that's going to be displayed.
+     * @param arguments     The arguments from the action that caused this trigger.
+     *
+     * @return True if the execution of the event should be stopped, or false if the event may
+     *         continue
      */
     @Precondition({
         "This action has at least one trigger",
@@ -193,12 +180,13 @@ public class ActionModel {
     /**
      * Tests to see if this action should be triggered or not.
      *
-     * @param sub The ActionsSubstitutor to use to substitute args
+     * @param sub       The ActionsSubstitutor to use to substitute args
      * @param arguments The arguments for the action event
+     *
      * @return True if the action should be executed, false otherwise
      */
     public boolean test(final ActionSubstitutor sub,
-            final Object ... arguments) {
+            final Object... arguments) {
         final boolean[] results = new boolean[conditions.size()];
 
         int i = 0;
@@ -239,8 +227,7 @@ public class ActionModel {
     }
 
     /**
-     * Retrieves a plain text description of any error that occurred while
-     * loading this action.
+     * Retrieves a plain text description of any error that occurred while loading this action.
      *
      * @since 0.6.5
      * @return This action's error message, or null if no error was encountered
@@ -355,8 +342,8 @@ public class ActionModel {
     }
 
     /**
-     * Retrieves the condition tree used for this action. Condition trees may
-     * be null, in which case the arguments are conjoined together.
+     * Retrieves the condition tree used for this action. Condition trees may be null, in which case
+     * the arguments are conjoined together.
      *
      * @return This action's condition tree
      */
@@ -365,9 +352,8 @@ public class ActionModel {
     }
 
     /**
-     * Retrieves a concrete condition tree used for this action. If there is
-     * no condition tree defined for this action, returns a conjunction tree
-     * for the arguments.
+     * Retrieves a concrete condition tree used for this action. If there is no condition tree
+     * defined for this action, returns a conjunction tree for the arguments.
      *
      * @since 0.6
      * @return A {@link ConditionTree} object for this action
@@ -391,6 +377,7 @@ public class ActionModel {
      * Retrieves the concurrency group of this action.
      *
      * @return This action's concurrency group
+     *
      * @since 0.6.3
      */
     public String getConcurrencyGroup() {
@@ -401,6 +388,7 @@ public class ActionModel {
      * Sets the concurrency group of this action.
      *
      * @param concurrencyGroup This action's new concurrency group
+     *
      * @since 0.6.3
      */
     public void setConcurrencyGroup(final String concurrencyGroup) {
@@ -409,10 +397,10 @@ public class ActionModel {
     }
 
     /**
-     * Determines whether or not this action will stop the event execution
-     * if it is triggered.
+     * Determines whether or not this action will stop the event execution if it is triggered.
      *
      * @return The stopping preference of this action
+     *
      * @see #setStopping(boolean)
      * @since 0.6.4
      */
@@ -421,12 +409,12 @@ public class ActionModel {
     }
 
     /**
-     * Sets the stopping preference of this action. If the stopping preference
-     * is <code>true</code> then when this action is successfully triggered,
-     * it will request that execution of the event is stopped. This will
-     * prevent the default behaviour of the callee being executed.
+     * Sets the stopping preference of this action. If the stopping preference is {@code true} then
+     * when this action is successfully triggered,it will request that execution of the event is
+     * stopped. This will prevent the default behaviour of the callee being executed.
      *
      * @param stop The new stopping preference of this action
+     *
      * @see #isStopping()
      * @since 0.6.4
      */
@@ -435,8 +423,8 @@ public class ActionModel {
     }
 
     /**
-     * Determine if this model has been modified since it was constructed or
-     * its modified status was reset.
+     * Determine if this model has been modified since it was constructed or its modified status was
+     * reset.
      *
      * @return True if this model has been modified, false otherwise
      */
@@ -445,9 +433,8 @@ public class ActionModel {
     }
 
     /**
-     * Resets the modified status of this model. After a call to
-     * resetModified(), this model will report that it has not been modified,
-     * until one of the set* methods is used.
+     * Resets the modified status of this model. After a call to resetModified(), this model will
+     * report that it has not been modified, until one of the set* methods is used.
      */
     public void resetModified() {
         this.modified = false;
@@ -461,4 +448,5 @@ public class ActionModel {
                 + Arrays.toString(response) + ", "
                 + conditions + ", format='" + newFormat + "']";
     }
+
 }

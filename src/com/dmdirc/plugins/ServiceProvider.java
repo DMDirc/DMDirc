@@ -57,6 +57,7 @@ public interface ServiceProvider {
      * Get an ExportedService object from this provider.
      *
      * @param name Service name
+     *
      * @return ExportedService object or null if no such service exists.
      */
     ExportedService getExportedService(final String name);

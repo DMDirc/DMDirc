@@ -42,8 +42,7 @@ public interface InputValidationListener {
     void legalCommand();
 
     /**
-     * Called when the text or command that has been entered will be wrapped
-     * onto multiple lines.
+     * Called when the text or command that has been entered will be wrapped onto multiple lines.
      *
      * @param count The number of lines that the text will be sent as
      */

@@ -40,6 +40,7 @@ public class CommandLineOptionsModule {
      * Enumeration of directory types supported by the client.
      */
     public enum DirectoryType {
+
         /** The base directory, where everything else lives. */
         BASE,
         /** The directory that identities are stored in. */
@@ -50,23 +51,27 @@ public class CommandLineOptionsModule {
         THEMES,
         /** The directory that actions are stored in. */
         ACTIONS,
-        /** The directory to use for temporary files (downloads in flight, caches, etc). */
+        /** The
+         * directory to use for temporary files (downloads in flight, caches, etc). */
         TEMPORARY;
+
     }
 
     /**
-     * Provides a mean of identifying the type of directory a class wants
-     * injected.
+     * Provides a mean of identifying the type of directory a class wants injected.
      */
     @Qualifier
     public @interface Directory {
+
         DirectoryType value();
+
     }
 
     /**
      * Provides the base directory that all DMDirc user data is stored in.
      *
      * @param parser The parser to get the user-supplied directory from.
+     *
      * @return The base directory.
      */
     @Provides
@@ -84,6 +89,7 @@ public class CommandLineOptionsModule {
      * Provides the path to the plugins directory.
      *
      * @param baseDirectory The base DMDirc directory.
+     *
      * @return The plugin directory.
      */
     @Provides
@@ -97,6 +103,7 @@ public class CommandLineOptionsModule {
      * Provides the path to the actions directory.
      *
      * @param baseDirectory The base DMDirc directory.
+     *
      * @return The actions directory.
      */
     @Provides
@@ -110,6 +117,7 @@ public class CommandLineOptionsModule {
      * Provides the path to the identities directory.
      *
      * @param baseDirectory The base DMDirc directory.
+     *
      * @return The identities directory.
      */
     @Provides
@@ -123,6 +131,7 @@ public class CommandLineOptionsModule {
      * Provides the path to the themes directory.
      *
      * @param baseDirectory The base DMDirc directory.
+     *
      * @return The themes directory.
      */
     @Provides
@@ -139,6 +148,7 @@ public class CommandLineOptionsModule {
      * explicitly.
      *
      * @param baseDirectory The base DMDirc directory.
+     *
      * @return The temporary directory.
      */
     @Provides

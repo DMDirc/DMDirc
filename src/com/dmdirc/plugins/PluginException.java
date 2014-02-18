@@ -28,9 +28,9 @@ package com.dmdirc.plugins;
 public class PluginException extends Exception {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
@@ -47,7 +47,7 @@ public class PluginException extends Exception {
      * Create a new PluginException Exception.
      *
      * @param message Reason for exception
-     * @param cause Cause of Exception
+     * @param cause   Cause of Exception
      */
     public PluginException(final String message, final Throwable cause) {
         super(message, cause);

@@ -40,24 +40,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The command manager creates and manages a single instance of all commands,
- * and provides methods to load each group of commands into a parser instance.
+ * The command manager creates and manages a single instance of all commands, and provides methods
+ * to load each group of commands into a parser instance.
  */
 public class CommandManager implements CommandController {
 
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands = new HashMap<>();
-
     /** A list of command parsers that have been instantiated. */
     private final MapList<CommandType, CommandParser> parsers = new MapList<>();
-
     /** The manager to use to iterate servers. */
     private final ServerManager serverManager;
-
     /** The command char we're using. */
     @ConfigBinding(domain = "general", key = "commandchar")
     private char commandChar;
-
     /** The silence char we're using. */
     @ConfigBinding(domain = "general", key = "silencechar")
     private char silenceChar;
@@ -105,10 +101,10 @@ public class CommandManager implements CommandController {
     /**
      * Registers or unregisters a command.
      *
-     * @param info The information about the command
-     * @param command The command to be (un)registered
-     * @param register True if the command should be registered, false if it
-     * should be unregistered.
+     * @param info     The information about the command
+     * @param command  The command to be (un)registered
+     * @param register True if the command should be registered, false if it should be unregistered.
+     *
      * @since 0.6.3m1
      */
     private void registerCommand(final CommandInfo info, final Command command,
@@ -129,10 +125,11 @@ public class CommandManager implements CommandController {
     /**
      * Registers or unregisters the specified command with all of the specified parsers.
      *
-     * @param info The command information object
-     * @param command The command to be registered
+     * @param info      The command information object
+     * @param command   The command to be registered
      * @param myParsers The parsers to register the command with
-     * @param register Whether to register or unregister the commands
+     * @param register  Whether to register or unregister the commands
+     *
      * @since 0.6.3m1
      */
     private void registerCommand(final CommandInfo info, final Command command,
@@ -147,12 +144,11 @@ public class CommandManager implements CommandController {
     }
 
     /**
-     * Registers or unregisters the specified command's name with the relevant
-     * tab completers.
+     * Registers or unregisters the specified command's name with the relevant tab completers.
      *
-     * @param command The command to be registered
-     * @param register True if the command should be registered, false if it
-     * should be unregistered.
+     * @param command  The command to be registered
+     * @param register True if the command should be registered, false if it should be unregistered.
+     *
      * @since 0.6.3m1
      */
     private void registerCommandName(final CommandInfo command,
@@ -186,19 +182,18 @@ public class CommandManager implements CommandController {
     }
 
     /**
-     * Registers or unregisters the specified command with the specified tab-
-     * completer.
+     * Registers or unregisters the specified command with the specified tab- completer.
      *
      * @param completer The tab completer to be used
-     * @param name The command name to be registered
-     * @param register True if the command should be registered, false if it
-     * should be unregistered.
+     * @param name      The command name to be registered
+     * @param register  True if the command should be registered, false if it should be
+     *                  unregistered.
      */
     private void registerCommandName(final TabCompleter completer,
             final String name, final boolean register) {
         if (register) {
             completer.addEntry(TabCompletionType.COMMAND, name);
-        }  else {
+        } else {
             completer.removeEntry(TabCompletionType.COMMAND, name);
         }
     }
@@ -206,7 +201,7 @@ public class CommandManager implements CommandController {
     /** {@inheritDoc} */
     @Override
     public void loadCommands(final CommandParser parser,
-            final CommandType ... supertypes) {
+            final CommandType... supertypes) {
         for (CommandType supertype : supertypes) {
             for (CommandType type : supertype.getComponentTypes()) {
                 for (Map.Entry<CommandInfo, Command> pair : getCommands(type, null).entrySet()) {
@@ -259,12 +254,13 @@ public class CommandManager implements CommandController {
     }
 
     /**
-     * Retrieves a map of all commands of the specified type, with the
-     * specified name.
+     * Retrieves a map of all commands of the specified type, with the specified name.
      *
      * @param type The type of command to list, or null for all types
      * @param name The name of the command to look for, or null for any name
+     *
      * @return A map of {@link CommandInfo}s and their associated {@link Command}.
+     *
      * @since 0.6.3m1
      */
     private Map<CommandInfo, Command> getCommands(final CommandType type,

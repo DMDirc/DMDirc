@@ -39,7 +39,7 @@ public class BaseSingleFileResult extends BaseRetrievalResult
      * Creates a new instance of {@link BaseSingleFileResult}.
      *
      * @param checkResult The check result that triggered this retrieval
-     * @param file The file containing the update
+     * @param file        The file containing the update
      */
     public BaseSingleFileResult(final UpdateCheckResult checkResult, final File file) {
         super(checkResult, true);

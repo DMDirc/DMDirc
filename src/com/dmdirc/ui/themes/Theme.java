@@ -41,19 +41,14 @@ public class Theme implements Comparable<Theme> {
 
     /** The controller to add theme identities to. */
     private final IdentityController identityController;
-
     /** The file to load the theme from. */
     private final File file;
-
     /** The config file containing theme meta-data. */
     private ConfigFile metadata;
-
     /** The resource manager we're using for this theme. */
     private ZipResourceManager rm;
-
     /** Whether or not this theme is enabled. */
     private boolean enabled;
-
     /** The Identity we've registered. */
     private ThemeIdentity identity;
 
@@ -63,8 +58,8 @@ public class Theme implements Comparable<Theme> {
     }
 
     /**
-     * Determines if this theme is valid or not (i.e., it is a valid zip file,
-     * and it contains one file).
+     * Determines if this theme is valid or not (i.e., it is a valid zip file, and it contains one
+     * file).
      *
      * @return True if the theme is valid, false otherwise
      */
@@ -141,6 +136,7 @@ public class Theme implements Comparable<Theme> {
      * Retrieves the name of this theme.
      *
      * @param includeExtension Whether or not to include the file extension
+     *
      * @return This theme's name
      */
     public String getFileName(final boolean includeExtension) {
@@ -205,12 +201,11 @@ public class Theme implements Comparable<Theme> {
     }
 
     /**
-     * Attempts to read the specified key from the 'data' keysection of the
-     * theme's config file.
+     * Attempts to read the specified key from the 'data' keysection of the theme's config file.
      *
-     * @param key The key to be read
-     * @param fallback The value to use if the file, section or entry doesn't
-     * exist
+     * @param key      The key to be read
+     * @param fallback The value to use if the file, section or entry doesn't exist
+     *
      * @return The relevant meta-data, or the fallback value
      */
     private String getMetaData(final String key, final String fallback) {

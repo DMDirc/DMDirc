@@ -43,16 +43,13 @@ import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
 /**
- * A strategy which sends a request to the DMDirc update service for
- * information.
+ * A strategy which sends a request to the DMDirc update service for information.
  */
 public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(DMDircCheckStrategy.class);
-
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "http://updates.dmdirc.com/";
-
     /** The update channel to check for updates on. */
     private UpdateChannel channel;
 
@@ -71,7 +68,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
      *
      * @param channel The new channel to use
      */
-    @ConfigBinding(domain="updater", key="channel")
+    @ConfigBinding(domain = "updater", key = "channel")
     public void setChannel(final String channel) {
         log.info("Changing channel to {}", channel);
 
@@ -84,7 +81,8 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
     /** {@inheritDoc} */
     @Override
-    public Map<UpdateComponent, UpdateCheckResult> checkForUpdates(final Collection<UpdateComponent> components) {
+    public Map<UpdateComponent, UpdateCheckResult> checkForUpdates(
+            final Collection<UpdateComponent> components) {
         final Map<UpdateComponent, UpdateCheckResult> res = new HashMap<>();
         final Map<String, UpdateComponent> names = getComponentsByName(components);
 
@@ -114,11 +112,11 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     }
 
     /**
-     * Builds the data payload which will be sent to the update server.
-     * Specifically, iterates over each component and appends their name,
-     * the channel name, and the component's version number.
+     * Builds the data payload which will be sent to the update server. Specifically, iterates over
+     * each component and appends their name, the channel name, and the component's version number.
      *
      * @param components The components to be added to the payload
+     *
      * @return A string which can be posted to the DMDirc update server
      */
     private String getPayload(final Collection<UpdateComponent> components) {
@@ -145,6 +143,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
      * Extracts the name of the component a given response line contains.
      *
      * @param line The line to be parsed
+     *
      * @return The name of the component extracted from the given line
      */
     private String getComponent(final String line) {
@@ -161,7 +160,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
      * Checks the specified line to determine the message from the update server.
      *
      * @param component The component the line refers to
-     * @param line The line to be checked
+     * @param line      The line to be checked
      */
     private UpdateCheckResult parseResponse(final UpdateComponent component,
             final String line) {
@@ -183,11 +182,11 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     }
 
     /**
-     * Parses an "outofdate" response from the server. Extracts the URL,
-     * remote version and remote friendly version into a
-     * {@link BaseDownloadableResult}.
+     * Parses an "outofdate" response from the server. Extracts the URL, remote version and remote
+     * friendly version into a {@link BaseDownloadableResult}.
      *
      * @param parts The tokenised parts of the response line
+     *
      * @return A corresponding {@link UpdateCheckResult} or null on failure
      */
     private UpdateCheckResult parseOutOfDateResponse(
@@ -202,14 +201,15 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     }
 
     /**
-     * Builds a mapping of components' names to their actual component
-     * objects.
+     * Builds a mapping of components' names to their actual component objects.
      *
      * @param components A collection of components to be mapped
-     * @return A corresponding Map containing a single entry for each component,
-     * which the component's name as a key and the component itself as a value.
+     *
+     * @return A corresponding Map containing a single entry for each component, which the
+     *         component's name as a key and the component itself as a value.
      */
-    private Map<String, UpdateComponent> getComponentsByName(final Collection<UpdateComponent> components) {
+    private Map<String, UpdateComponent> getComponentsByName(
+            final Collection<UpdateComponent> components) {
         final Map<String, UpdateComponent> res = new HashMap<>();
 
         for (UpdateComponent component : components) {

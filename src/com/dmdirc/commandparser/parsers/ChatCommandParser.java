@@ -34,28 +34,25 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
 /**
- * A command parser which implements common functionality for chat windows
- * (queries and channels).
+ * A command parser which implements common functionality for chat windows (queries and channels).
  *
  * @since 0.6.4
  */
 public class ChatCommandParser extends ServerCommandParser {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** The container that owns this parser. */
     private MessageTarget owner;
 
     /**
-     * Creates a new chat command parser that belongs to a child of the
-     * specified server.
+     * Creates a new chat command parser that belongs to a child of the specified server.
      *
-     * @param server The server which owns this parser's container
+     * @param server            The server which owns this parser's container
      * @param commandController The controller to load commands from.
      */
     public ChatCommandParser(final Server server, final CommandController commandController) {

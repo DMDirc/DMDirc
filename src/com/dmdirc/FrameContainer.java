@@ -49,66 +49,52 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * The frame container implements basic methods that should be present in
- * all objects that handle a frame.
+ * The frame container implements basic methods that should be present in all objects that handle a
+ * frame.
  */
 public abstract class FrameContainer {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
-
     /** The colour of our frame's notifications. */
     private Colour notification = Colour.BLACK;
-
     /** The document used to store this container's content. */
     private IRCDocument document;
-
     /** The children of this frame. */
-    private final Collection<FrameContainer> children
-            = new CopyOnWriteArrayList<>();
-
+    private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
     private FrameContainer parent;
-
     /** The name of the icon being used for this container's frame. */
     private String icon;
-
     /** The name of this container. */
     private String name;
-
     /** The title of this container. */
     private String title;
-
     /** The config manager for this container. */
     private final AggregateConfigProvider configManager;
-
     /** The IconChanger for this container. */
     private final IconChanger changer = new IconChanger();
-
     /** The UI components that this frame requires. */
     private final Set<String> components;
-
     /** The styliser used by this container. */
     private Styliser styliser;
-
     /** Object used to synchronise styliser access. */
     private final Object styliserSync = new Object();
-
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
-
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
 
     /**
      * Instantiate new frame container.
      *
-     * @param icon The icon to use for this container
-     * @param name The name of this container
-     * @param title The title of this container
-     * @param config The config manager for this container
+     * @param icon       The icon to use for this container
+     * @param name       The name of this container
+     * @param title      The title of this container
+     * @param config     The config manager for this container
      * @param urlBuilder The URL builder to use when finding icons.
      * @param components The UI components that this frame requires
+     *
      * @since 0.6.4
      */
     protected FrameContainer(
@@ -155,6 +141,7 @@ public abstract class FrameContainer {
      * Returns a collection of direct children of this frame.
      *
      * @return This frame's children
+     *
      * @since 0.6.4
      */
     public Collection<FrameContainer> getChildren() {
@@ -162,10 +149,11 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Determines whether the specified target is a child of this container.
-     * Children may be indirect (i.e., a child of another child).
+     * Determines whether the specified target is a child of this container. Children may be
+     * indirect (i.e., a child of another child).
      *
      * @param target The window to be tested
+     *
      * @return True if the specified container is a child of this one
      */
     public boolean isChild(final FrameContainer target) {
@@ -186,6 +174,7 @@ public abstract class FrameContainer {
      * Adds a new child window to this frame.
      *
      * @param child The window to be added
+     *
      * @since 0.6.4
      */
     public void addChild(final FrameContainer child) {
@@ -197,6 +186,7 @@ public abstract class FrameContainer {
      * Removes a child window from this frame.
      *
      * @param child The window to be removed
+     *
      * @since 0.6.4
      */
     public void removeChild(final FrameContainer child) {
@@ -204,11 +194,11 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Sets the parent of this container to the one specified. If this
-     * container already had a parent, it will deregister itself with the
-     * old parent.
+     * Sets the parent of this container to the one specified. If this container already had a
+     * parent, it will deregister itself with the old parent.
      *
      * @param parent The new parent for this container
+     *
      * @since 0.6.4
      */
     public synchronized void setParent(final FrameContainer parent) {
@@ -232,7 +222,9 @@ public abstract class FrameContainer {
      * Gets an icon manager for this container.
      *
      * @param urlBuilder The builder to use to construct icon URLs.
+     *
      * @return An icon manager for this container.
+     *
      * @deprecated Don't bother passing in a URL builder. That was a bad idea.
      */
     @Deprecated
@@ -244,6 +236,7 @@ public abstract class FrameContainer {
      * Retrieves the {@link IRCDocument} used to store this frame's content.
      *
      * @return This frame's document
+     *
      * @since 0.6.4
      */
     public IRCDocument getDocument() {
@@ -256,8 +249,8 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Changes the name of this container, and notifies any
-     * {@link FrameInfoListener}s of the change.
+     * Changes the name of this container, and notifies any {@link FrameInfoListener}s of the
+     * change.
      *
      * @param name The new name for this frame.
      */
@@ -268,8 +261,8 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Changes the title of this container, and notifies any
-     * {@link FrameInfoListener}s of the change.
+     * Changes the title of this container, and notifies any {@link FrameInfoListener}s of the
+     * change.
      *
      * @param title The new title for this frame.
      */
@@ -280,8 +273,8 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Returns the collection of UI component identifiers that this frame
-     * container requires for its display.
+     * Returns the collection of UI component identifiers that this frame container requires for its
+     * display.
      *
      * @since 0.6.6
      * @return Collection of UI component identifiers
@@ -395,16 +388,17 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds a line to this container's window. If the window is null for some
-     * reason, the line is silently discarded.
+     * Adds a line to this container's window. If the window is null for some reason, the line is
+     * silently discarded.
      *
-     * @param type The message type to use
+     * @param type      The message type to use
      * @param timestamp The timestamp to use for this line
-     * @param args The message's arguments
+     * @param args      The message's arguments
+     *
      * @since 0.6.4
      */
     public void addLine(final String type, final Date timestamp,
-            final Object ... args) {
+            final Object... args) {
         if (type != null && !type.isEmpty()) {
             addLine(Formatter.formatMessage(getConfigManager(), type, args),
                     timestamp);
@@ -412,47 +406,48 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds a line to this container's window. If the window is null for some
-     * reason, the line is silently discarded.
+     * Adds a line to this container's window. If the window is null for some reason, the line is
+     * silently discarded.
      *
      * @param type The message type to use
      * @param args The message's arguments
      */
-    public void addLine(final String type, final Object ... args) {
+    public void addLine(final String type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
     /**
-     * Adds a line to this container's window. If the window is null for some
-     * reason, the line is silently discarded.
+     * Adds a line to this container's window. If the window is null for some reason, the line is
+     * silently discarded.
      *
-     * @param type The message type to use
+     * @param type      The message type to use
      * @param timestamp The timestamp to use for this line
-     * @param args The message's arguments
+     * @param args      The message's arguments
+     *
      * @since 0.6.4
      */
     public void addLine(final StringBuffer type, final Date timestamp,
-            final Object ... args) {
+            final Object... args) {
         if (type != null) {
             addLine(type.toString(), timestamp, args);
         }
     }
 
     /**
-     * Adds a line to this container's window. If the window is null for some
-     * reason, the line is silently discarded.
+     * Adds a line to this container's window. If the window is null for some reason, the line is
+     * silently discarded.
      *
      * @param type The message type to use
      * @param args The message's arguments
      */
-    public void addLine(final StringBuffer type, final Object ... args) {
+    public void addLine(final StringBuffer type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
     /**
      * Adds the specified raw line to the window, without using a formatter.
      *
-     * @param line The line to be added
+     * @param line      The line to be added
      * @param timestamp Whether or not to display the timestamp for this line
      */
     public void addLine(final String line, final boolean timestamp) {
@@ -460,12 +455,13 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds the specified raw line to the window, without using a formatter,
-     * and using the specified timestamp. If the timestamp is <code>null</code>,
-     * no timestamp is added.
+     * Adds the specified raw line to the window, without using a formatter, and using the specified
+     * timestamp. If the timestamp is
+     * <code>null</code>, no timestamp is added.
      *
-     * @param line The line to be added
+     * @param line      The line to be added
      * @param timestamp The timestamp to use for the line
+     *
      * @since 0.6.4
      */
     public void addLine(final String line, final Date timestamp) {
@@ -474,13 +470,11 @@ public abstract class FrameContainer {
             if (timestamp != null) {
                 lines.add(new String[]{
                     Formatter.formatMessage(getConfigManager(), "timestamp",
-                            timestamp),
-                    myLine,
-                });
+                    timestamp),
+                    myLine,});
             } else {
                 lines.add(new String[]{
-                    myLine,
-                });
+                    myLine,});
             }
 
             ActionManager.getActionManager().triggerEvent(
@@ -578,4 +572,5 @@ public abstract class FrameContainer {
         }
 
     }
+
 }

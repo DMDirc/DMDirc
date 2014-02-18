@@ -63,8 +63,7 @@ import javax.net.ssl.X509TrustManager;
 import net.miginfocom.Base64;
 
 /**
- * Manages storage and validation of certificates used when connecting to
- * SSL servers.
+ * Manages storage and validation of certificates used when connecting to SSL servers.
  *
  * @since 0.6.3m1
  */
@@ -72,46 +71,34 @@ public class CertificateManager implements X509TrustManager {
 
     /** List of listeners. */
     private final ListenerList listeners = new ListenerList();
-
     /** The server name the user is trying to connect to. */
     private final String serverName;
-
     /** The configuration manager to use for settings. */
     private final AggregateConfigProvider config;
-
     /** The set of CAs from the global cacert file. */
     private final Set<X509Certificate> globalTrustedCAs = new HashSet<>();
-
     /** Whether or not to the issue and expiry dates of the certificate. */
     private final boolean checkDate;
-
     /** Whether or not to the issuer of the certificate. */
     private final boolean checkIssuer;
-
     /** Whether or not to the hostname of the certificate. */
     private final boolean checkHost;
-
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
-
     /** The action to perform. */
     private CertificateAction action;
-
     /** A list of problems encountered most recently. */
     private final List<CertificateException> problems = new ArrayList<>();
-
     /** The chain of certificates currently being validated. */
     private X509Certificate[] chain;
-
     /** The user settings to write to. */
     private final ConfigProvider userSettings;
 
     /**
-     * Creates a new certificate manager for a client connecting to the
-     * specified server.
+     * Creates a new certificate manager for a client connecting to the specified server.
      *
-     * @param serverName The name the user used to connect to the server
-     * @param config The configuration manager to use
+     * @param serverName   The name the user used to connect to the server
+     * @param config       The configuration manager to use
      * @param userSettings The user settings to write to.
      */
     public CertificateManager(
@@ -136,7 +123,7 @@ public class CertificateManager implements X509TrustManager {
 
         try {
             final String filename = System.getProperty("java.home")
-                + "/lib/security/cacerts".replace('/', File.separatorChar);
+                    + "/lib/security/cacerts".replace('/', File.separatorChar);
             is = new FileInputStream(filename);
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, null);
@@ -154,8 +141,8 @@ public class CertificateManager implements X509TrustManager {
     }
 
     /**
-     * Retrieves a KeyManager[] for the client certificate specified in the
-     * configuration, if there is one.
+     * Retrieves a KeyManager[] for the client certificate specified in the configuration, if there
+     * is one.
      *
      * @return A KeyManager to use for the SSL connection
      */
@@ -203,9 +190,9 @@ public class CertificateManager implements X509TrustManager {
      * Determines if the specified certificate is trusted by the user.
      *
      * @param certificate The certificate to be checked
-     * @return True if the certificate matches one in the trusted certificate
-     * store, or if the certificate's details are marked as trusted in the
-     * DMDirc configuration file.
+     *
+     * @return True if the certificate matches one in the trusted certificate store, or if the
+     *         certificate's details are marked as trusted in the DMDirc configuration file.
      */
     public TrustResult isTrusted(final X509Certificate certificate) {
         try {
@@ -225,19 +212,19 @@ public class CertificateManager implements X509TrustManager {
                 }
             }
         } catch (GeneralSecurityException ex) {
-           return TrustResult.UNTRUSTED_EXCEPTION;
+            return TrustResult.UNTRUSTED_EXCEPTION;
         }
 
         return TrustResult.UNTRUSTED_GENERAL;
     }
 
     /**
-     * Determines whether the given certificate has a valid CN or alternate
-     * name for this server's hostname.
+     * Determines whether the given certificate has a valid CN or alternate name for this server's
+     * hostname.
      *
      * @param certificate The certificate to be validated
-     * @return True if the certificate is valid for this server's host, false
-     * otherwise
+     *
+     * @return True if the certificate is valid for this server's host, false otherwise
      */
     public boolean isValidHost(final X509Certificate certificate) {
         final Map<String, String> fields = getDNFieldsFromCert(certificate);
@@ -264,13 +251,14 @@ public class CertificateManager implements X509TrustManager {
     }
 
     /**
-     * Checks whether the specified target matches the server name this
-     * certificate manager was initialised with.
+     * Checks whether the specified target matches the server name this certificate manager was
+     * initialised with.
      *
      * Target names may contain wildcards per RFC2818.
      *
      * @since 0.6.5
      * @param target The target to compare to our server name
+     *
      * @return True if the target matches, false otherwise
      */
     protected boolean isMatchingServerName(final String target) {
@@ -341,7 +329,8 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty() && !manual) {
-            for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+            for (CertificateProblemListener listener : listeners.get(
+                    CertificateProblemListener.class)) {
                 listener.certificateProblemEncountered(chain, problems, this);
             }
 
@@ -352,7 +341,8 @@ public class CertificateManager implements X509TrustManager {
             } finally {
                 problems.clear();
 
-                for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
+                for (CertificateProblemListener listener : listeners.get(
+                        CertificateProblemListener.class)) {
                     listener.certificateProblemResolved(this);
                 }
             }
@@ -388,8 +378,8 @@ public class CertificateManager implements X509TrustManager {
     /**
      * Gets the set of problems that were encountered with the last certificate.
      *
-     * @return The set of problems encountered, or any empty collection if there
-     * is no current validation attempt ongoing.
+     * @return The set of problems encountered, or any empty collection if there is no current
+     *         validation attempt ongoing.
      */
     public Collection<CertificateException> getProblems() {
         return problems;
@@ -416,12 +406,11 @@ public class CertificateManager implements X509TrustManager {
     }
 
     /**
-     * Reads the fields from the subject's designated name in the specified
-     * certificate.
+     * Reads the fields from the subject's designated name in the specified certificate.
      *
      * @param cert The certificate to read
-     * @return A map of the fields in the certificate's subject's designated
-     * name
+     *
+     * @return A map of the fields in the certificate's subject's designated name
      */
     public static Map<String, String> getDNFieldsFromCert(final X509Certificate cert) {
         final Map<String, String> res = new HashMap<>();
@@ -444,7 +433,7 @@ public class CertificateManager implements X509TrustManager {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
     }
 
-   /**
+    /**
      * Adds a new certificate problem listener to this manager.
      *
      * @param listener The listener to be added

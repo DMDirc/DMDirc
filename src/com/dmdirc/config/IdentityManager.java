@@ -54,63 +54,50 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The identity manager manages all known identities, providing easy methods
- * to access them.
+ * The identity manager manages all known identities, providing easy methods to access them.
  */
 public class IdentityManager implements IdentityFactory, IdentityController {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(IdentityManager.class);
-
     /** A regular expression that will match all characters illegal in file names. */
     private static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
-
     /** The domain used for identity settings. */
     private static final String IDENTITY_DOMAIN = "identity";
-
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile";
-
     /** A singleton instance of IdentityManager. */
     private static IdentityManager instance;
-
     /** Base configuration directory where the main configuration file will be located. */
     private final String configDirectory;
-
     /** Directory to save and load identities in. */
     private final String identitiesDirectory;
-
     /**
      * The identities that have been loaded into this manager.
      *
-     * Standard identities are inserted with a <code>null</code> key, custom
-     * identities use their custom type as the key.
+     * Standard identities are inserted with a
+     * <code>null</code> key, custom identities use their custom type as the key.
      */
     private final MapList<String, ConfigProvider> identities = new MapList<>();
-
     /**
      * The {@link IdentityListener}s that have registered with this manager.
      *
-     * Listeners for standard identities are inserted with a <code>null</code>
-     * key, listeners for a specific custom type use their type as the key.
+     * Listeners for standard identities are inserted with a
+     * <code>null</code> key, listeners for a specific custom type use their type as the key.
      */
     private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
-
     /** The identity file used for the global config. */
     private ConfigProvider config;
-
     /** The identity file used for addon defaults. */
     private ConfigProvider addonConfig;
-
     /** The identity file bundled with the client containing version info. */
     private ConfigProvider versionConfig;
-
     /** The config manager used for global settings. */
     private AggregateConfigProvider globalconfig;
 
     /**
      * Creates a new instance of IdentityManager.
      *
-     * @param baseDirectory The BASE config directory.
+     * @param baseDirectory       The BASE config directory.
      * @param identitiesDirectory The directory to store identities in.
      */
     public IdentityManager(final String baseDirectory, final String identitiesDirectory) {
@@ -128,8 +115,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /**
      * Loads all identity files.
      *
-     * @throws InvalidIdentityFileException If there is an error with the config
-     * file.
+     * @throws InvalidIdentityFileException If there is an error with the config file.
      */
     public void initialise() throws InvalidIdentityFileException {
         identities.clear();
@@ -226,8 +212,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     /**
-     * Extracts the specific set of default identities to the user's identity
-     * folder.
+     * Extracts the specific set of default identities to the user's identity folder.
      *
      * @param target The target to be extracted
      */
@@ -288,15 +273,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     /**
-     * Loads an identity from the specified file. If the identity already
-     * exists, it is told to reload instead.
+     * Loads an identity from the specified file. If the identity already exists, it is told to
+     * reload instead.
      *
      * @param file The file to load the identity from.
      */
     private void loadIdentity(final File file) {
         synchronized (identities) {
             for (ConfigProvider identity : getAllIdentities()) {
-                if ((identity instanceof ConfigFileBackedConfigProvider) && ((ConfigFileBackedConfigProvider) identity).isFile(file)) {
+                if ((identity instanceof ConfigFileBackedConfigProvider)
+                        && ((ConfigFileBackedConfigProvider) identity).isFile(file)) {
                     // TODO: This manager should keep a list of files->identities instead of
                     //       relying on the identities remembering.
                     try {
@@ -331,6 +317,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Retrieves all known identities.
      *
      * @return A set of all known identities
+     *
      * @since 0.6.4
      */
     private Set<ConfigProvider> getAllIdentities() {
@@ -344,12 +331,14 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     /**
-     * Returns the "group" to which the specified identity belongs. For custom
-     * identities this is the custom identity type, otherwise this is
+     * Returns the "group" to which the specified identity belongs. For custom identities this is
+     * the custom identity type, otherwise this is
      * <code>null</code>.
      *
      * @param identity The identity whose group is being retrieved
+     *
      * @return The group of the specified identity
+     *
      * @since 0.6.4
      */
     private String getGroup(final ConfigProvider identity) {
@@ -361,7 +350,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new ConfigFileBackedConfigProvider(IdentityManager.class.getResourceAsStream("/com/dmdirc/version.config"), false);
+            versionConfig = new ConfigFileBackedConfigProvider(IdentityManager.class.
+                    getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
@@ -371,8 +361,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /**
      * Loads the config identity.
      *
-     * @throws InvalidIdentityFileException if there is a problem with the
-     * config file.
+     * @throws InvalidIdentityFileException if there is a problem with the config file.
      */
     private void loadConfig() throws InvalidIdentityFileException {
         try {
@@ -435,7 +424,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         log.debug("Adding identity: {} (group: {})",
-                new Object[]{ identity, target });
+                new Object[]{identity, target});
 
         synchronized (listeners) {
             for (ConfigProviderListener listener : listeners.safeGet(target)) {
@@ -493,10 +482,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     /**
-     * Retrieves a list of all config sources that should be applied to the
-     * specified config manager.
+     * Retrieves a list of all config sources that should be applied to the specified config
+     * manager.
      *
      * @param manager The manager requesting sources
+     *
      * @return A list of all matching config sources
      */
     List<ConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
@@ -668,12 +658,15 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Creates a new identity containing the specified properties.
      *
      * @param settings The settings to populate the identity with
+     *
      * @return A new identity containing the specified properties
-     * @throws IOException If the file cannot be created
+     *
+     * @throws IOException                  If the file cannot be created
      * @throws InvalidIdentityFileException If the settings are invalid
      * @since 0.6.3m1
      */
-    protected ConfigFileBackedConfigProvider createIdentity(final Map<String, Map<String, String>> settings)
+    protected ConfigFileBackedConfigProvider createIdentity(
+            final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {
         if (!settings.containsKey(IDENTITY_DOMAIN)
                 || !settings.get(IDENTITY_DOMAIN).containsKey("name")
@@ -699,7 +692,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         configFile.write();
 
-        final ConfigFileBackedConfigProvider identity = new ConfigFileBackedConfigProvider(file, false);
+        final ConfigFileBackedConfigProvider identity = new ConfigFileBackedConfigProvider(file,
+                false);
         addConfigProvider(identity);
 
         return identity;
@@ -709,6 +703,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Gets a singleton instance of the Identity Manager.
      *
      * @return A singleton instance of the IdentityManager.
+     *
      * @deprecated Shouldn't use global state.
      */
     @Deprecated
@@ -720,6 +715,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Sets the singleton instance of the Identity Manager.
      *
      * @param identityManager The identity manager to use.
+     *
      * @deprecated Shouldn't use global state.
      */
     @Deprecated
@@ -756,7 +752,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server,
+                channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -772,7 +769,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(protocol, ircd, network, server,
+                channel);
         setUpConfigManager(configManager);
         return configManager;
     }

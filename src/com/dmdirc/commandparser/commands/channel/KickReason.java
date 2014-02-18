@@ -41,8 +41,8 @@ import com.dmdirc.ui.input.TabCompletionType;
 import javax.inject.Inject;
 
 /**
- * The kick command kicks a specified user from the channel.
- * This version allows the user to specify a reason.
+ * The kick command kicks a specified user from the channel. This version allows the user to specify
+ * a reason.
  */
 @CommandOptions(allowOffline = false)
 public class KickReason extends Command implements IntelligentCommand {

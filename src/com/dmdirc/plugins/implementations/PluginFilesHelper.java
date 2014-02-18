@@ -57,9 +57,8 @@ public class PluginFilesHelper {
     }
 
     /**
-     * Initialises the files directory for this plugin. This will attempt to
-     * create the directory if it doesn't exist the first time the directory
-     * name is requested.
+     * Initialises the files directory for this plugin. This will attempt to create the directory if
+     * it doesn't exist the first time the directory name is requested.
      *
      * @return Files directory for this plugin.
      */
@@ -76,8 +75,7 @@ public class PluginFilesHelper {
     }
 
     /**
-     * Returns the path of the directory this plugin should use for files it
-     * requires extracted.
+     * Returns the path of the directory this plugin should use for files it requires extracted.
      *
      * @return File directory as a string
      */
@@ -118,4 +116,5 @@ public class PluginFilesHelper {
     public void extractResoucesEndingWith(final String suffix) throws IOException {
         pluginInfo.getResourceManager().extractResoucesEndingWith(filesDir, suffix);
     }
+
 }

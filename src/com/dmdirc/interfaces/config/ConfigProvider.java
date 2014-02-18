@@ -30,8 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Provides methods to read and write from a single configuration source, such
- * as a file on disk.
+ * Provides methods to read and write from a single configuration source, such as a file on disk.
  */
 public interface ConfigProvider extends ReadOnlyConfigProvider {
 
@@ -70,22 +69,20 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
     ConfigTarget getTarget();
 
     /**
-     * Determines whether this identity can be used as a profile when
-     * connecting to a server. Profiles are identities that can supply
-     * nick, ident, real name, etc.
+     * Determines whether this identity can be used as a profile when connecting to a server.
+     * Profiles are identities that can supply nick, ident, real name, etc.
      *
      * @return True iff this identity can be used as a profile
      */
     boolean isProfile();
 
     /**
-     * Attempts to reload this identity from disk. If this identity has been
-     * modified (i.e., {@code needSave} is true), then this method silently
-     * returns straight away. All relevant ConfigChangeListeners are fired for
-     * new, altered and deleted properties. The target of the identity will not
-     * be changed by this method, even if it has changed on disk.
+     * Attempts to reload this identity from disk. If this identity has been modified (i.e.,
+     * {@code needSave} is true), then this method silently returns straight away. All relevant
+     * ConfigChangeListeners are fired for new, altered and deleted properties. The target of the
+     * identity will not be changed by this method, even if it has changed on disk.
      *
-     * @throws java.io.IOException On I/O exception when reading the identity
+     * @throws java.io.IOException        On I/O exception when reading the identity
      * @throws InvalidConfigFileException if the config file is no longer valid
      */
     void reload() throws IOException, InvalidConfigFileException;
@@ -107,7 +104,7 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @param value The new value for the option
+     * @param value  The new value for the option
      */
     void setOption(String domain, String option, String value);
 
@@ -116,7 +113,7 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @param value The new value for the option
+     * @param value  The new value for the option
      */
     void setOption(String domain, String option, int value);
 
@@ -125,7 +122,7 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @param value The new value for the option
+     * @param value  The new value for the option
      */
     void setOption(String domain, String option, boolean value);
 
@@ -134,7 +131,7 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
      *
      * @param domain The domain of the option
      * @param option The name of the option
-     * @param value The new value for the option
+     * @param value  The new value for the option
      */
     void setOption(String domain, String option, List<String> value);
 

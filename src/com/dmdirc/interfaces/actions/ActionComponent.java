@@ -28,16 +28,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The ActionComponent interface describes the methods that action components
- * are required to implement. Components are objects that allow the user to
- * pull a specific piece of information from a certain type of argument.
+ * The ActionComponent interface describes the methods that action components are required to
+ * implement. Components are objects that allow the user to pull a specific piece of information
+ * from a certain type of argument.
  */
 public interface ActionComponent {
 
     /**
-     * An annotation which allows action components to specify options relating
-     * to their use. The annotation should be applied to the
-     * {@link #get(java.lang.Object)} method of implementing classes.
+     * An annotation which allows action components to specify options relating to their use. The
+     * annotation should be applied to the {@link #get(java.lang.Object)} method of implementing
+     * classes.
      *
      * @since 0.6.4
      */
@@ -55,22 +55,24 @@ public interface ActionComponent {
     }
 
     /**
-     * Retrieves the component of the specified argument that this component
-     * represents.
+     * Retrieves the component of the specified argument that this component represents.
      *
      * @param arg The object to retrieve the component from
+     *
      * @return The relevant component of the object
      */
     Object get(Object arg);
 
     /**
      * Retrieves the type of class that this component applies to.
+     *
      * @return The Class that this component can be applied to
      */
     Class<?> appliesTo();
 
     /**
      * Retrieves the type of this component.
+     *
      * @return The Class of this component.
      */
     Class<?> getType();

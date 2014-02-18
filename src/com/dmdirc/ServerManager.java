@@ -48,27 +48,22 @@ import javax.inject.Singleton;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * The ServerManager maintains a list of all servers, and provides methods to
- * search or iterate over them.
+ * The ServerManager maintains a list of all servers, and provides methods to search or iterate over
+ * them.
  */
 @Singleton
 public class ServerManager implements ServerFactory {
 
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
-
     /** The identity controller to use to find profiles. */
     private final IdentityController identityController;
-
     /** A provider of {@link CommandController}s to pass to servers. */
     private final Provider<CommandController> commandController;
-
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
-
     /** Window manager to add new servers to. */
     private final WindowManager windowManager;
-
     /** Concrete server factory to use. */
     private final ServerFactoryImpl serverFactoryImpl;
 
@@ -76,10 +71,10 @@ public class ServerManager implements ServerFactory {
      * Creates a new instance of ServerManager.
      *
      * @param identityController The identity controller to use to find profiles.
-     * @param identityFactory The factory to use to create new identities.
-     * @param commandController A provider of {@link CommandController}s to pass to servers.
-     * @param windowManager Window manager to add new servers to.
-     * @param serverFactory The factory to use to create servers.
+     * @param identityFactory    The factory to use to create new identities.
+     * @param commandController  A provider of {@link CommandController}s to pass to servers.
+     * @param windowManager      Window manager to add new servers to.
+     * @param serverFactory      The factory to use to create servers.
      */
     @Inject
     public ServerManager(
@@ -126,8 +121,8 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Unregisters a server from the manager. The request is ignored if the
-     * ServerManager is in the process of closing all servers.
+     * Unregisters a server from the manager. The request is ignored if the ServerManager is in the
+     * process of closing all servers.
      *
      * @param server The server to be unregistered
      */
@@ -180,6 +175,7 @@ public class ServerManager implements ServerFactory {
      * Retrieves a list of servers connected to the specified network.
      *
      * @param network The network to search for
+     *
      * @return A list of servers connected to the network
      */
     public List<Server> getServersByNetwork(final String network) {
@@ -195,11 +191,12 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Creates a new server which will connect to the specified URI with the
-     * default profile.
+     * Creates a new server which will connect to the specified URI with the default profile.
      *
      * @param uri The URI to connect to
+     *
      * @return The server which will be connecting
+     *
      * @since 0.6.3
      */
     public Server connectToAddress(final URI uri) {
@@ -208,12 +205,13 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Creates a new server which will connect to the specified URI with the
-     * specified profile.
+     * Creates a new server which will connect to the specified URI with the specified profile.
      *
-     * @param uri The URI to connect to
+     * @param uri     The URI to connect to
      * @param profile The profile to use
+     *
      * @return The server which will be connecting
+     *
      * @since 0.6.3
      */
     public Server connectToAddress(final URI uri, final ConfigProvider profile) {

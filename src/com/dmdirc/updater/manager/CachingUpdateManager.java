@@ -34,6 +34,7 @@ public interface CachingUpdateManager extends UpdateManager {
      * Gets the current status of the given component.
      *
      * @param component The component to get a status for
+     *
      * @return The current status of the component
      */
     UpdateStatus getStatus(UpdateComponent component);
@@ -46,8 +47,8 @@ public interface CachingUpdateManager extends UpdateManager {
     UpdateManagerStatus getManagerStatus();
 
     /**
-     * Adds a new {@link UpdateManagerListener} to this manager, which will
-     * be informed when the manager's status changes.
+     * Adds a new {@link UpdateManagerListener} to this manager, which will be informed when the
+     * manager's status changes.
      *
      * @param listener The listener to be added
      */

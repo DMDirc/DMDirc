@@ -35,20 +35,17 @@ import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 /**
- * The update checker contacts the DMDirc website to check to see if there
- * are any updates available.
+ * The update checker contacts the DMDirc website to check to see if there are any updates
+ * available.
  */
 public final class UpdateChecker implements Runnable {
 
     /** The domain to use for updater settings. */
     private static final String DOMAIN = "updater";
-
     /** Semaphore used to prevent multiple invocations. */
     private static final Semaphore MUTEX = new Semaphore(1);
-
     /** Our timer. */
     private static Timer timer = new Timer("Update Checker Timer");
-
     /** The update manager to use. */
     private final CachingUpdateManager updateManager;
     /** The controller to use to read and write settings. */
@@ -57,7 +54,7 @@ public final class UpdateChecker implements Runnable {
     /**
      * Creates a new instance of {@link UpdateChecker}.
      *
-     * @param updateManager The manager to use to perform updates.
+     * @param updateManager      The manager to use to perform updates.
      * @param identityController The controller to use to read and write settings.
      */
     public UpdateChecker(
@@ -111,10 +108,10 @@ public final class UpdateChecker implements Runnable {
     }
 
     /**
-     * Initialises the update checker. Sets a timer to check based on the
-     * frequency specified in the config.
+     * Initialises the update checker. Sets a timer to check based on the frequency specified in the
+     * config.
      *
-     * @param manager Manager to monitor updates
+     * @param manager    Manager to monitor updates
      * @param controller The controller to use to retrieve and update settings.
      */
     public static void init(
@@ -152,7 +149,7 @@ public final class UpdateChecker implements Runnable {
     /**
      * Checks for updates now.
      *
-     * @param updateManager The manager to use for checking.
+     * @param updateManager      The manager to use for checking.
      * @param identityController The controller to use to retrieve and update settings.
      */
     public static void checkNow(
@@ -164,9 +161,9 @@ public final class UpdateChecker implements Runnable {
     /**
      * Checks for updates now.
      *
-     * @param updateManager The manager to use for checking.
+     * @param updateManager      The manager to use for checking.
      * @param identityController The controller to use to retrieve and update settings.
-     * @param threadName The name of the thread to use to run the checker in.
+     * @param threadName         The name of the thread to use to run the checker in.
      */
     public static void checkNow(
             final CachingUpdateManager updateManager,

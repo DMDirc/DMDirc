@@ -42,8 +42,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- * The styliser applies IRC styles to text. Styles are indicated by various
- * control codes which are a de-facto IRC standard.
+ * The styliser applies IRC styles to text. Styles are indicated by various control codes which are
+ * a de-facto IRC standard.
  */
 public class Styliser implements ConfigChangeListener {
 
@@ -73,91 +73,71 @@ public class Styliser implements ConfigChangeListener {
     public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
     public static final char CODE_UNDERLINE = 31;
-
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
-
     /** Characters used for hyperlinks. */
     private static final String HYPERLINK_CHARS = Character.toString(CODE_HYPERLINK) + CODE_CHANNEL;
-
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
-
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
     private static final String URL_PUNCT_ILLEGAL = "\"";
-
     /** Defines all characters treated as trailing punctuation that're legal in URLs. */
     private static final String URL_PUNCT_LEGAL = "';:!,\\.\\?";
-
     /** Defines all trailing punctuation. */
     private static final String URL_PUNCT = URL_PUNCT_ILLEGAL + URL_PUNCT_LEGAL;
-
     /** Defines all characters allowed in URLs that aren't treated as trailing punct. */
     private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(\\)=/#%~\\|";
-
     /** Defines all characters allowed in URLs per W3C specs. */
     private static final String URL_CHARS = "[" + URL_PUNCT_LEGAL + URL_NOPUNCT
             + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT_LEGAL + URL_NOPUNCT + "]*";
-
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)((?>(?<!" + CODE_HEXCOLOUR
             + "[a-f0-9]{5})[a-f]|[g-z+])+://" + URL_CHARS
             + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
-
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)" + HYPERLINK_CHARS
             + "]*(?:[" + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "]*["
             + HYPERLINK_CHARS + "])?[^\\)" + HYPERLINK_CHARS + "]*[" + HYPERLINK_CHARS
             + "][^" + HYPERLINK_CHARS + "]+)(\\)['\";:!,\\.\\)]*)([" + HYPERLINK_CHARS + "])";
-
     /** Regular expression for intelligent handling of trailing single and double quotes. */
     private static final String URL_INT2 = "(^(?:[^" + HYPERLINK_CHARS + "]+|["
             + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "][" + HYPERLINK_CHARS
             + "]))(['\"])([^" + HYPERLINK_CHARS + "]*?[" + HYPERLINK_CHARS + "][^"
             + HYPERLINK_CHARS + "]+)(\\1[" + URL_PUNCT + "]*)([" + HYPERLINK_CHARS + "])";
-
     /** Regular expression for intelligent handling of surrounding quotes. */
     private static final String URL_INT3 = "(['\"])([" + HYPERLINK_CHARS
             + "][^" + HYPERLINK_CHARS + "]+?)(\\1[^" + HYPERLINK_CHARS + "]*)(["
             + HYPERLINK_CHARS + "])";
-
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "([" + HYPERLINK_CHARS + "][^"
             + HYPERLINK_CHARS + "]+?)([" + URL_PUNCT + "]?)([" + HYPERLINK_CHARS + "])";
-
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"',])([\\Q%s\\E]"
             + RESERVED_CHARS + "+)";
-
     /** Whether or not we should style links. */
     private boolean styleURIs;
-
     /** Whether or not we should style channel names. */
     private boolean styleChannels;
-
     /** Colour to use for URIs. */
     private Colour uriColour;
-
     /** Colour to use for channel names. */
     private Colour channelColour;
-
     /** Connection to get channel prefixes from, or null if not applicable. */
     private final Connection connection;
-
     /** Config manager to retrieve settings from. */
     private final AggregateConfigProvider configManager;
-
     /** Colour manager to use to parse colours. */
     private final ColourManager colourManager;
 
     /**
      * Creates a new instance of Styliser.
      *
-     * @param connection The {@link Connection} that this styliser is for. May be {@code null}.
+     * @param connection    The {@link Connection} that this styliser is for. May be {@code null}.
      * @param configManager the {@link AggregateConfigProvider} to get settings from.
+     *
      * @since 0.6.3
      */
     public Styliser(final Connection connection, final AggregateConfigProvider configManager) {
@@ -183,7 +163,7 @@ public class Styliser implements ConfigChangeListener {
      * Stylises the specified strings and adds them to the specified document.
      *
      * @param styledDoc Document to add the styled strings to
-     * @param strings The lines to be stylised
+     * @param strings   The lines to be stylised
      */
     public void addStyledString(final StyledDocument styledDoc, final String[] strings) {
         addStyledString(styledDoc, strings, new SimpleAttributeSet());
@@ -193,8 +173,8 @@ public class Styliser implements ConfigChangeListener {
      * Stylises the specified strings and adds them to the specified document.
      *
      * @param styledDoc Document to add the styled strings to
-     * @param strings The lines to be stylised
-     * @param attribs Base attribute set
+     * @param strings   The lines to be stylised
+     * @param attribs   Base attribute set
      */
     public void addStyledString(final StyledDocument styledDoc,
             final String[] strings, final SimpleAttributeSet attribs) {
@@ -254,24 +234,25 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Retrieves the styled String contained within the unstyled offsets
-     * specified. That is, the <code>from</code> and <code>to</code> arguments
-     * correspond to indexes in an unstyled version of the <code>styled</code>
-     * string. The unstyled indices are translated to offsets within the
-     * styled String, and the return value includes all text and control codes
-     * between those indices.
+     * Retrieves the styled String contained within the unstyled offsets specified. That is, the
+     * <code>from</code> and
+     * <code>to</code> arguments correspond to indexes in an unstyled version of the
+     * <code>styled</code> string. The unstyled indices are translated to offsets within the styled
+     * String, and the return value includes all text and control codes between those indices.
      * <p>
-     * The index translation is left-biased; that is, the indices are translated
-     * to be as far left as they possibly can be. This means that the start of
-     * the string will include any control codes immediately preceeding the
-     * desired text, and the end will not include any trailing codes.
+     * The index translation is left-biased; that is, the indices are translated to be as far left
+     * as they possibly can be. This means that the start of the string will include any control
+     * codes immediately preceeding the desired text, and the end will not include any trailing
+     * codes.
      * <p>
      * This method will NOT include "internal" control codes in the output.
      *
      * @param styled The styled String to be operated on
-     * @param from The starting index in the unstyled string
-     * @param to The ending index in the unstyled string
+     * @param from   The starting index in the unstyled string
+     * @param to     The ending index in the unstyled string
+     *
      * @return The corresponding text between the two indices
+     *
      * @since 0.6.3
      */
     public static String getStyledText(final String styled, final int from, final int to) {
@@ -295,10 +276,10 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Applies the hyperlink styles and intelligent linking regexps to the
-     * target.
+     * Applies the hyperlink styles and intelligent linking regexps to the target.
      *
      * @param string The string to be linked
+     *
      * @return A copy of the string with hyperlinks marked up
      */
     public String doLinks(final String string) {
@@ -311,7 +292,7 @@ public class Styliser implements ConfigChangeListener {
 
         if (prefixes != null) {
             target = target.replaceAll(String.format(URL_CHANNEL, prefixes),
-                CODE_CHANNEL + "$0" + CODE_CHANNEL);
+                    CODE_CHANNEL + "$0" + CODE_CHANNEL);
         }
 
         for (int j = 0; j < 5 && !target.equals(target2); j++) {
@@ -330,7 +311,9 @@ public class Styliser implements ConfigChangeListener {
      * Applies the smilie styles to the target.
      *
      * @param string The string to be smilified
+     *
      * @return A copy of the string with smilies marked up
+     *
      * @since 0.6.3m1
      */
     public String doSmilies(final String string) {
@@ -356,7 +339,9 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Strips all recognised control codes from the input string.
+     *
      * @param input the String to be stripped
+     *
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
@@ -373,7 +358,9 @@ public class Styliser implements ConfigChangeListener {
      * St(r)ips all recognised internal control codes from the input string.
      *
      * @param input the String to be stripped
+     *
      * @return a copy of the input with control codes removed
+     *
      * @since 0.6.5
      */
     public static String stipInternalControlCodes(final String input) {
@@ -384,10 +371,12 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Returns a substring of the input string such that no control codes are present
-     * in the output. If the returned value isn't the same as the input, then the
-     * character immediately after is a control character.
+     * Returns a substring of the input string such that no control codes are present in the output.
+     * If the returned value isn't the same as the input, then the character immediately after is a
+     * control character.
+     *
      * @param input The string to read from
+     *
      * @return A substring of the input containing no control characters
      */
     public static String readUntilControl(final String input) {
@@ -411,22 +400,28 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Helper function used in readUntilControl. Checks if i is a valid index of
-     * the string (i.e., it's not -1), and then returns the minimum of pos and i.
+     * Helper function used in readUntilControl. Checks if i is a valid index of the string (i.e.,
+     * it's not -1), and then returns the minimum of pos and i.
+     *
      * @param pos The current position in the string
-     * @param i The index of the first occurrence of some character
+     * @param i   The index of the first occurrence of some character
+     *
      * @return The new position (see implementation)
      */
     private static int checkChar(final int pos, final int i) {
-        if (i < pos && i != -1) { return i; }
+        if (i < pos && i != -1) {
+            return i;
+        }
         return pos;
     }
 
     /**
-     * Reads the first control character from the input string (and any arguments
-     * it takes), and applies it to the specified attribute set.
+     * Reads the first control character from the input string (and any arguments it takes), and
+     * applies it to the specified attribute set.
+     *
      * @return The number of characters read as control characters
-     * @param string The string to read from
+     *
+     * @param string  The string to read from
      * @param attribs The attribute set that new attributes will be applied to
      * @param isStart Whether this is at the start of the string or not
      */
@@ -654,7 +649,9 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Determines if the specified character represents a single integer (i.e. 0-9).
+     *
      * @param c The character to check
+     *
      * @return True iff the character is in the range [0-9], false otherwise
      */
     private static boolean isInt(final char c) {
@@ -662,9 +659,10 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Determines if the specified character represents a single hex digit
-     * (i.e., 0-F).
+     * Determines if the specified character represents a single hex digit (i.e., 0-F).
+     *
      * @param c The character to check
+     *
      * @return True iff the character is in the range [0-F], false otherwise
      */
     private static boolean isHex(final char c) {
@@ -672,10 +670,11 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Determines if the specified string has a 6-digit hex string starting at
-     * the specified offset.
-     * @param input The string to check
+     * Determines if the specified string has a 6-digit hex string starting at the specified offset.
+     *
+     * @param input  The string to check
      * @param offset The offset to start at
+     *
      * @return True iff there is a hex string preset at the offset
      */
     private static boolean hasHexString(final String input, final int offset) {
@@ -717,9 +716,9 @@ public class Styliser implements ConfigChangeListener {
      * Toggles the attributes for a link.
      *
      * @since 0.6.4
-     * @param attribs The attributes to modify
+     * @param attribs   The attributes to modify
      * @param attribute The attribute indicating whether the link is open or closed
-     * @param colour The colour to colour the link
+     * @param colour    The colour to colour the link
      */
     private void toggleLink(final SimpleAttributeSet attribs,
             final IRCTextAttribute attribute, final Colour colour) {
@@ -766,10 +765,11 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Toggles the specified attribute. If the attribute exists in the attribute
-     * set, it is removed. Otherwise, it is added with a value of Boolean.True.
+     * Toggles the specified attribute. If the attribute exists in the attribute set, it is removed.
+     * Otherwise, it is added with a value of Boolean.True.
+     *
      * @param attribs The attribute set to check
-     * @param attrib The attribute to toggle
+     * @param attrib  The attribute to toggle
      */
     private static void toggleAttribute(final SimpleAttributeSet attribs,
             final Object attrib) {
@@ -782,6 +782,7 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Resets all attributes in the specified attribute list.
+     *
      * @param attribs The attribute list whose attributes should be reset
      */
     private static void resetAttributes(final SimpleAttributeSet attribs) {
@@ -804,6 +805,7 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Resets the colour attributes in the specified attribute set.
+     *
      * @param attribs The attribute set whose colour attributes should be reset
      */
     private static void resetColour(final SimpleAttributeSet attribs) {
@@ -824,9 +826,10 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Sets the foreground colour in the specified attribute set to the colour
-     * corresponding to the specified colour code or hex.
-     * @param attribs The attribute set to modify
+     * Sets the foreground colour in the specified attribute set to the colour corresponding to the
+     * specified colour code or hex.
+     *
+     * @param attribs    The attribute set to modify
      * @param foreground The colour code/hex of the new foreground colour
      */
     private void setForeground(final SimpleAttributeSet attribs,
@@ -839,9 +842,10 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Sets the background colour in the specified attribute set to the colour
-     * corresponding to the specified colour code or hex.
-     * @param attribs The attribute set to modify
+     * Sets the background colour in the specified attribute set to the colour corresponding to the
+     * specified colour code or hex.
+     *
+     * @param attribs    The attribute set to modify
      * @param background The colour code/hex of the new background colour
      */
     private void setBackground(final SimpleAttributeSet attribs,
@@ -855,7 +859,8 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o).
-     * @param attribs The attribute set to apply this default on
+     *
+     * @param attribs    The attribute set to apply this default on
      * @param foreground The default foreground colour
      */
     private void setDefaultForeground(final SimpleAttributeSet attribs, final String foreground) {
@@ -865,7 +870,8 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Sets the default background colour (used after an empty ctrl+k or a ctrl+o).
-     * @param attribs The attribute set to apply this default on
+     *
+     * @param attribs    The attribute set to apply this default on
      * @param background The default background colour
      */
     private void setDefaultBackground(final SimpleAttributeSet attribs, final String background) {
@@ -895,10 +901,11 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Converts a DMDirc {@link Colour} into an AWT-specific {@link Color} by
-     * copying the values of the red, green and blue channels.
+     * Converts a DMDirc {@link Colour} into an AWT-specific {@link Color} by copying the values of
+     * the red, green and blue channels.
      *
      * @param colour The colour to be converted
+     *
      * @return A corresponding AWT colour
      */
     private static Color convertColour(final Colour colour) {

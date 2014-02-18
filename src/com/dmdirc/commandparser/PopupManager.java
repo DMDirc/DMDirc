@@ -48,11 +48,12 @@ public class PopupManager {
     }
 
     /**
-     * Returns the popup menu that should be used for the specified type.
-     * Configuration data is read from the specified config manager.
+     * Returns the popup menu that should be used for the specified type. Configuration data is read
+     * from the specified config manager.
      *
-     * @param menuType The type of the menu that is needed
+     * @param menuType      The type of the menu that is needed
      * @param configManager The config manager to be used for the menu
+     *
      * @return The PopupMenu that should be displayed
      */
     public PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
@@ -68,9 +69,10 @@ public class PopupManager {
     /**
      * Retrieves the menu with the specified name.
      *
-     * @param menuName The name of the menu to read
-     * @param type The type of the menu that is needed
+     * @param menuName      The name of the menu to read
+     * @param type          The type of the menu that is needed
      * @param configManager The config manager to be used for the menu
+     *
      * @return The PopupMenu with the specified name
      */
     private PopupMenu getMenu(final String menuName,
@@ -91,9 +93,10 @@ public class PopupManager {
     /**
      * Creates a PopupMenuItem for the specified item.
      *
-     * @param item The item to be turned into a PopupMenuItem
-     * @param type The type of popup item to create
+     * @param item          The item to be turned into a PopupMenuItem
+     * @param type          The type of popup item to create
      * @param configManager The config manager to beused for the menu
+     *
      * @return The corresponding PopupMenuItem
      */
     private PopupMenuItem getItem(final String item,

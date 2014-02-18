@@ -25,8 +25,7 @@ package com.dmdirc.interfaces.config;
 import java.util.List;
 
 /**
- * Defines the interface implemented by the object in charge of DMDirc's
- * identities.
+ * Defines the interface implemented by the object in charge of DMDirc's identities.
  */
 public interface IdentityController {
 
@@ -52,10 +51,10 @@ public interface IdentityController {
     AggregateConfigProvider getGlobalConfiguration();
 
     /**
-     * Retrieves the identity bundled with the DMDirc client containing
-     * version information.
+     * Retrieves the identity bundled with the DMDirc client containing version information.
      *
      * @return The version identity
+     *
      * @since 0.6.3m2
      */
     ReadOnlyConfigProvider getVersionSettings();
@@ -64,7 +63,9 @@ public interface IdentityController {
      * Retrieves a list of identities that belong to the specified custom type.
      *
      * @param type The type of identity to search for
+     *
      * @return A list of matching identities
+     *
      * @since 0.6.4
      */
     List<ConfigProvider> getProvidersByType(String type);
@@ -73,6 +74,7 @@ public interface IdentityController {
      * Get the config directory used by this identity controller.
      *
      * @return The config directory.
+     *
      * @deprecated Shouldn't be exposed through the controller.
      */
     @Deprecated
@@ -96,20 +98,22 @@ public interface IdentityController {
     void addConfigProvider(ConfigProvider identity);
 
     /**
-     * Adds a new identity listener which will be informed of all settings
-     * identities which are added to this manager.
+     * Adds a new identity listener which will be informed of all settings identities which are
+     * added to this manager.
      *
      * @param listener The listener to be added
+     *
      * @since 0.6.4
      */
     void registerIdentityListener(ConfigProviderListener listener);
 
     /**
-     * Adds a new identity listener which will be informed of all identities
-     * of the specified custom type which are added to this manager.
+     * Adds a new identity listener which will be informed of all identities of the specified custom
+     * type which are added to this manager.
      *
-     * @param type The type of identities to listen for
+     * @param type     The type of identities to listen for
      * @param listener The listener to be added
+     *
      * @since 0.6.4
      */
     void registerIdentityListener(String type, ConfigProviderListener listener);
@@ -128,6 +132,7 @@ public interface IdentityController {
 
     /**
      * Removes an identity from this manager.
+     *
      * @param identity The identity to be removed
      */
     void removeConfigProvider(ConfigProvider identity);

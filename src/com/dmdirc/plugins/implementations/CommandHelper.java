@@ -57,7 +57,6 @@ public class CommandHelper {
     /** Module that allows inflation of {@link CommandHelper}. */
     @Module(injects = CommandHelper.class, addsTo = ClientModule.class)
     public static class CommandHelperModule {
-
     }
 
 }

@@ -27,21 +27,17 @@ import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
 
 /**
- * Task which retrieves an available update using the given
- * {@link UpdateRetrievalStategy} and passes the result back to the
- * {@link UpdateManagerImpl}.
+ * Task which retrieves an available update using the given {@link UpdateRetrievalStategy} and
+ * passes the result back to the {@link UpdateManagerImpl}.
  */
 public class RetrievalTask implements Runnable {
 
     /** The update manager launching this task. */
     private final UpdateManagerImpl manager;
-
     /** The strategy to use to retrieve the update. */
     private final UpdateRetrievalStategy strategy;
-
     /** The update which will be downloaded. */
     private final UpdateCheckResult result;
-
     /** Whether to install afterwards or not. */
     private final boolean install;
 

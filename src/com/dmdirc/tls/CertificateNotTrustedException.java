@@ -25,15 +25,14 @@ package com.dmdirc.tls;
 import java.security.cert.CertificateException;
 
 /**
- * An exception to indicate that we do not trust the issuer of the
- * certificate (or the CA).
+ * An exception to indicate that we do not trust the issuer of the certificate (or the CA).
  */
 public class CertificateNotTrustedException extends CertificateException {
 
     /**
-     * A version number for this class. It should be changed whenever the
-     * class structure is changed (or anything else that would prevent
-     * serialized objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
 
@@ -45,4 +44,5 @@ public class CertificateNotTrustedException extends CertificateException {
     public CertificateNotTrustedException(final String msg) {
         super(msg);
     }
+
 }

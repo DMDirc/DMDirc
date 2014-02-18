@@ -37,7 +37,6 @@ public class TabCompleterResult {
      * The config provider to read settings from.
      */
     private final AggregateConfigProvider configProvider;
-
     /**
      * The result list for this tab completer.
      */
@@ -55,6 +54,7 @@ public class TabCompleterResult {
 
     /**
      * Adds a result to this result set.
+     *
      * @param result The result to be added
      */
     public void addResult(final String result) {
@@ -63,7 +63,9 @@ public class TabCompleterResult {
 
     /**
      * Determines if this result set contains the specified result.
+     *
      * @param result The result to be tested
+     *
      * @return True if this set contains the specified result, false otherwise
      */
     public boolean hasResult(final String result) {
@@ -72,6 +74,7 @@ public class TabCompleterResult {
 
     /**
      * Merges the specified additional results with this result set.
+     *
      * @param additional The results to merge
      */
     public void merge(final TabCompleterResult additional) {
@@ -84,6 +87,7 @@ public class TabCompleterResult {
 
     /**
      * Gets the total size of this result set.
+     *
      * @return the size of this result set
      */
     public int getResultCount() {
@@ -92,6 +96,7 @@ public class TabCompleterResult {
 
     /**
      * Returns the longest substring that matches all results.
+     *
      * @return longest possible substring matching all results
      */
     public String getBestSubstring() {
@@ -120,6 +125,7 @@ public class TabCompleterResult {
 
     /**
      * Retrieves the list of results that this set contains.
+     *
      * @return An arraylist containing the results
      */
     public List<String> getResults() {

@@ -47,14 +47,13 @@ public class LoadPlugin extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("loadplugin",
             "loadplugin <plugin> - loads the specified class as a plugin",
             CommandType.TYPE_GLOBAL);
-
     /** The plugin manager to use to load plugins. */
     private final PluginManager pluginManager;
 
     /**
      * Creates a new instance of the {@link LoadPlugin} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller    The controller to use for command information.
      * @param pluginManager The plugin manager to load plugins with.
      */
     @Inject

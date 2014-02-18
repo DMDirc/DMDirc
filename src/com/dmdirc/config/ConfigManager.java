@@ -47,22 +47,16 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         ConfigProviderListener, AggregateConfigProvider {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigManager.class);
-
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> STATS = new TreeMap<>();
-
     /** Magical domain to redirect to the version identity. */
     private static final String VERSION_DOMAIN = "version";
-
     /** A list of sources for this config manager. */
     private final List<ConfigProvider> sources = new ArrayList<>();
-
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
-
     /** The config binder to use for this manager. */
     private final ConfigBinder binder = new ConfigBinder(this);
-
     /** The protocol this manager is for. */
     private String protocol;
     /** The ircd this manager is for. */
@@ -78,9 +72,10 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * Creates a new instance of ConfigManager.
      *
      * @param protocol The protocol for this manager
-     * @param ircd The name of the ircd for this manager
-     * @param network The name of the network for this manager
-     * @param server The name of the server for this manager
+     * @param ircd     The name of the ircd for this manager
+     * @param network  The name of the network for this manager
+     * @param server   The name of the server for this manager
+     *
      * @since 0.6.3
      */
     ConfigManager(
@@ -93,10 +88,11 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * Creates a new instance of ConfigManager.
      *
      * @param protocol The protocol for this manager
-     * @param ircd The name of the ircd for this manager
-     * @param network The name of the network for this manager
-     * @param server The name of the server for this manager
-     * @param channel The name of the channel for this manager
+     * @param ircd     The name of the ircd for this manager
+     * @param network  The name of the network for this manager
+     * @param server   The name of the server for this manager
+     * @param channel  The name of the channel for this manager
+     *
      * @since 0.6.3
      */
     ConfigManager(final String protocol, final String ircd,
@@ -171,7 +167,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
 
         synchronized (sources) {
             for (int i = sources.size() - 1; i >= 0; i--) {
-               res.putAll(sources.get(i).getOptions(domain));
+                res.putAll(sources.get(i).getOptions(domain));
             }
         }
 
@@ -211,11 +207,11 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     }
 
     /**
-     * Retrieves the identity that currently defines the specified domain and
-     * option.
+     * Retrieves the identity that currently defines the specified domain and option.
      *
      * @param domain The domain to search for
      * @param option The option to search for
+     *
      * @return The identity that defines that setting, or null on failure
      */
     protected ConfigProvider getScope(final String domain, final String option) {
@@ -239,54 +235,56 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * Checks whether the specified identity applies to this config manager.
      *
      * @param identity The identity to test
+     *
      * @return True if the identity applies, false otherwise
      */
     public boolean identityApplies(final ConfigProvider identity) {
         String comp;
 
         switch (identity.getTarget().getType()) {
-        case PROTOCOL:
-            comp = protocol;
-            break;
-        case IRCD:
-            comp = ircd;
-            break;
-        case NETWORK:
-            comp = network;
-            break;
-        case SERVER:
-            comp = server;
-            break;
-        case CHANNEL:
-            comp = channel;
-            break;
-        case CUSTOM:
-            // We don't want custom identities
-            comp = null;
-            break;
-        default:
-            comp = "";
-            break;
+            case PROTOCOL:
+                comp = protocol;
+                break;
+            case IRCD:
+                comp = ircd;
+                break;
+            case NETWORK:
+                comp = network;
+                break;
+            case SERVER:
+                comp = server;
+                break;
+            case CHANNEL:
+                comp = channel;
+                break;
+            case CUSTOM:
+                // We don't want custom identities
+                comp = null;
+                break;
+            default:
+                comp = "";
+                break;
         }
 
         final boolean result = comp != null
                 && identityTargetMatches(identity.getTarget().getData(), comp);
 
         log.trace("Checking if identity {} applies. Comparison: {}, target: {}, result: {}",
-                new Object[] { identity, comp, identity.getTarget().getData(), result });
+                new Object[]{identity, comp, identity.getTarget().getData(), result});
 
         return result;
     }
 
     /**
-     * Determines whether the specified identity target matches the desired
-     * target. If the desired target is prefixed with "re:", it is treated
-     * as a regular expression; otherwise the strings are compared
-     * lexigraphically to determine a match.
+     * Determines whether the specified identity target matches the desired target. If the desired
+     * target is prefixed with "re:", it is treated as a regular expression; otherwise the strings
+     * are compared lexigraphically to determine a match.
      *
      * @param desired The target string required by this config manager
-     * @param actual The target string supplied by the identity
+     * @param actual  The target string supplied by the identity
+     *
      * @return True if the identity should be applied, false otherwise
+     *
      * @since 0.6.3m2
      */
     protected boolean identityTargetMatches(final String actual, final String desired) {
@@ -295,8 +293,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     }
 
     /**
-     * Called whenever there is a new identity available. Checks if the
-     * identity is relevant for this manager, and adds it if it is.
+     * Called whenever there is a new identity available. Checks if the identity is relevant for
+     * this manager, and adds it if it is.
      *
      * @param identity The identity to be checked
      */
@@ -340,27 +338,25 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     }
 
     /**
-     * Migrates this manager from its current configuration to the
-     * appropriate one for the specified new parameters, firing listeners where
-     * settings have changed.
+     * Migrates this manager from its current configuration to the appropriate one for the specified
+     * new parameters, firing listeners where settings have changed.
      *
      * <p>This is package private - only callers with access to a
-     * {@link com.dmdirc.interfaces.config.ConfigProviderMigrator}
-     * should be able to migrate managers.
+     * {@link com.dmdirc.interfaces.config.ConfigProviderMigrator} should be able to migrate
+     * managers.
      *
      * @param protocol The protocol for this manager
-     * @param ircd The new name of the ircd for this manager
-     * @param network The new name of the network for this manager
-     * @param server The new name of the server for this manager
-     * @param channel The new name of the channel for this manager
+     * @param ircd     The new name of the ircd for this manager
+     * @param network  The new name of the network for this manager
+     * @param server   The new name of the server for this manager
+     * @param channel  The new name of the channel for this manager
      */
     void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
-                new Object[] {
-                    this.protocol, this.ircd, this.network, this.server, this.channel,
-                    protocol, ircd, network, server, channel,
-                });
+                new Object[]{
+            this.protocol, this.ircd, this.network, this.server, this.channel,
+            protocol, ircd, network, server, channel,});
 
         this.protocol = protocol;
         this.ircd = ircd;
@@ -436,7 +432,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     /**
      * Adds the specified listener to the internal map/list.
      *
-     * @param key The key to use (domain or domain.key)
+     * @param key      The key to use (domain or domain.key)
      * @param listener The listener to register
      */
     private void addListener(final String key,

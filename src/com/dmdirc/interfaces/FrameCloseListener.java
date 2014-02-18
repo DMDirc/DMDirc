@@ -25,16 +25,15 @@ package com.dmdirc.interfaces;
 import com.dmdirc.FrameContainer;
 
 /**
- * Defines methods that should be implemented by objects interested in the
- * frame closing lifecycle of a {@link FrameContainer}.
+ * Defines methods that should be implemented by objects interested in the frame closing lifecycle
+ * of a {@link FrameContainer}.
  *
  * @since 0.6.5
  */
 public interface FrameCloseListener {
 
     /**
-     * Called when a window is starting the closing process and should be
-     * hidden from users.
+     * Called when a window is starting the closing process and should be hidden from users.
      *
      * @param window The window which is being closed
      */

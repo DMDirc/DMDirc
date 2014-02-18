@@ -41,18 +41,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The WindowManager maintains a list of all open windows, and their
- * parent/child relations.
+ * The WindowManager maintains a list of all open windows, and their parent/child relations.
  */
 @Singleton
 public class WindowManager {
 
     /** A list of root windows. */
     private final List<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
-
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
-
     /** Listener for frame close events. */
     private final FrameCloseListener closeListener = new CloseListener();
 
@@ -76,10 +73,11 @@ public class WindowManager {
     }
 
     /**
-     * Registers a FrameListener with the WindowManager, and then calls the
-     * relevant methods on it for all existing windows.
+     * Registers a FrameListener with the WindowManager, and then calls the relevant methods on it
+     * for all existing windows.
      *
      * @param frameListener The frame listener to be registered
+     *
      * @since 0.6.6
      */
     @Precondition("The specified FrameListener is not null")
@@ -96,12 +94,11 @@ public class WindowManager {
     }
 
     /**
-     * Recursively fires the addWindow callback for the specified windows and
-     * listener.
+     * Recursively fires the addWindow callback for the specified windows and listener.
      *
      * @param listener The listener to be fired
-     * @param parent The parent window
-     * @param child The new child window that was added
+     * @param parent   The parent window
+     * @param child    The new child window that was added
      *
      */
     private void fireAddWindow(final FrameListener listener,
@@ -126,6 +123,7 @@ public class WindowManager {
      * Adds a new root window to the Window Manager.
      *
      * @param window The window to be added
+     *
      * @since 0.6.4
      */
     @Precondition({
@@ -140,7 +138,8 @@ public class WindowManager {
      * Adds a new root window to the Window Manager.
      *
      * @param window The window to be added
-     * @param focus Should this window become focused
+     * @param focus  Should this window become focused
+     *
      * @since 0.6.4
      */
     @Precondition({
@@ -162,7 +161,8 @@ public class WindowManager {
      * Adds a new child window to the Window Manager.
      *
      * @param parent The parent window
-     * @param child The child window to be added
+     * @param child  The child window to be added
+     *
      * @since 0.6.4
      */
     @Precondition("The specified Windows are not null")
@@ -175,8 +175,9 @@ public class WindowManager {
      * Adds a new child window to the Window Manager.
      *
      * @param parent The parent window
-     * @param child The child window to be added
-     * @param focus Should this window become focused
+     * @param child  The child window to be added
+     * @param focus  Should this window become focused
+     *
      * @since 0.6.4
      */
     @Precondition({
@@ -199,12 +200,12 @@ public class WindowManager {
     }
 
     /**
-     * Recursively determines if the specified target is in the known
-     * hierarchy of containers. That is, whether or not the specified target
-     * or any of its parents are root windows.
+     * Recursively determines if the specified target is in the known hierarchy of containers. That
+     * is, whether or not the specified target or any of its parents are root windows.
      *
      * @since 0.6.4
      * @param target The container to be tested
+     *
      * @return True if the target is in the hierarchy, false otherise
      */
     protected boolean isInHierarchy(final FrameContainer target) {
@@ -213,12 +214,12 @@ public class WindowManager {
     }
 
     /**
-     * Removes a window from the Window Manager. If the specified window
-     * has child windows, they are recursively removed before the target window.
-     * If the window hasn't previously been added, the request to remove it is
-     * ignored.
+     * Removes a window from the Window Manager. If the specified window has child windows, they are
+     * recursively removed before the target window. If the window hasn't previously been added, the
+     * request to remove it is ignored.
      *
      * @param window The window to be removed
+     *
      * @since 0.6.4
      */
     @Precondition({
@@ -244,10 +245,11 @@ public class WindowManager {
     }
 
     /**
-     * Finds and returns a global custom window with the specified name.
-     * If a custom window with the specified name isn't found, null is returned.
+     * Finds and returns a global custom window with the specified name. If a custom window with the
+     * specified name isn't found, null is returned.
      *
      * @param name The name of the custom window to search for
+     *
      * @return The specified custom window, or null
      */
     @Precondition("The specified window name is not null")
@@ -258,11 +260,12 @@ public class WindowManager {
     }
 
     /**
-     * Finds and returns a non-global custom window with the specified name.
-     * If a custom window with the specified name isn't found, null is returned.
+     * Finds and returns a non-global custom window with the specified name. If a custom window with
+     * the specified name isn't found, null is returned.
      *
      * @param parent The parent whose children should be searched
-     * @param name The name of the custom window to search for
+     * @param name   The name of the custom window to search for
+     *
      * @return The specified custom window, or null
      */
     @Precondition({
@@ -278,11 +281,12 @@ public class WindowManager {
     }
 
     /**
-     * Finds a custom window with the specified name among the specified list
-     * of windows. If the custom window is not found, returns null.
+     * Finds a custom window with the specified name among the specified list of windows. If the
+     * custom window is not found, returns null.
      *
      * @param windows The list of windows to search
-     * @param name The name of the custom window to search for
+     * @param name    The name of the custom window to search for
+     *
      * @return The custom window if found, or null otherwise
      */
     private FrameContainer findCustomWindow(final Collection<FrameContainer> windows,
@@ -311,7 +315,7 @@ public class WindowManager {
      * Fires the addWindow(Window) callback.
      *
      * @param window The window that was added
-     * @param focus Should this window become focused
+     * @param focus  Should this window become focused
      */
     private void fireAddWindow(final FrameContainer window, final boolean focus) {
         for (FrameListener listener : listeners.get(FrameListener.class)) {
@@ -323,8 +327,8 @@ public class WindowManager {
      * Fires the addWindow(Window, Window) callback.
      *
      * @param parent The parent window
-     * @param child The new child window that was added
-     * @param focus Should this window become focused
+     * @param child  The new child window that was added
+     * @param focus  Should this window become focused
      *
      */
     private void fireAddWindow(final FrameContainer parent,
@@ -349,7 +353,7 @@ public class WindowManager {
      * Fires the delWindow(Window, Window) callback.
      *
      * @param parent The parent window
-     * @param child The child window that was removed
+     * @param child  The child window that was removed
      */
     private void fireDeleteWindow(final FrameContainer parent,
             final FrameContainer child) {

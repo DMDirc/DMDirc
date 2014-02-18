@@ -41,10 +41,8 @@ public class MessageSinkManager {
 
     /** The configuration domain to use for looking up default sinks. */
     public static final String CONFIG_DOMAIN = "notifications";
-
     /** The default sink to use if none is specified or in case of error. */
     public static final String DEFAULT_SINK = "self";
-
     /** A list of known sinks. */
     private final List<MessageSink> sinks = new ArrayList<>();
 
@@ -67,13 +65,13 @@ public class MessageSinkManager {
     }
 
     /**
-     * Despatches a message to the appropriate sink. This method will attempt
-     * to select an appropriate target sink from the user's configuration.
+     * Despatches a message to the appropriate sink. This method will attempt to select an
+     * appropriate target sink from the user's configuration.
      *
-     * @param source The source of the message
-     * @param date The date at which the message occurred
+     * @param source      The source of the message
+     * @param date        The date at which the message occurred
      * @param messageType The type (or 'format') of the message
-     * @param args The message arguments
+     * @param args        The message arguments
      */
     public void despatchMessage(final WritableFrameContainer source,
             final Date date, final String messageType, final Object... args) {
@@ -90,11 +88,11 @@ public class MessageSinkManager {
     /**
      * Despatches a message to the appropriate sink.
      *
-     * @param source The source of the message
-     * @param date The date at which the message occurred
+     * @param source      The source of the message
+     * @param date        The date at which the message occurred
      * @param messageType The type (or 'format') of the message
-     * @param targetSink The textual representation of the destination sink
-     * @param args The message arguments
+     * @param targetSink  The textual representation of the destination sink
+     * @param args        The message arguments
      */
     public void despatchMessage(final WritableFrameContainer source,
             final Date date, final String messageType, final String targetSink,
@@ -127,8 +125,8 @@ public class MessageSinkManager {
      * Loads the default message sinks into this manager.
      *
      * @param statusBarManager The status bar manager to give to status-bar related sinks.
-     * @param windowManager The window manager to give to sinks that iterate windows.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param windowManager    The window manager to give to sinks that iterate windows.
+     * @param urlBuilder       The URL builder to use when finding icons.
      */
     public void loadDefaultSinks(
             final StatusBarManager statusBarManager,

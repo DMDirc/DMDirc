@@ -48,7 +48,7 @@ public class ThemeManager {
      * Creates a new instance of the {@link ThemeManager}.
      *
      * @param identityController The identity controller to read settings from.
-     * @param themesDirectory The directory to load themes from.
+     * @param themesDirectory    The directory to load themes from.
      */
     public ThemeManager(
             final IdentityController identityController,
@@ -96,12 +96,11 @@ public class ThemeManager {
     }
 
     /**
-     * Attempts to load the theme from the specified file. If the enabled
-     * argument is true, the theme will be applied automatically. If it
-     * has been previously applied and is no longer enabled, it will be
-     * unapplied.
+     * Attempts to load the theme from the specified file. If the enabled argument is true, the
+     * theme will be applied automatically. If it has been previously applied and is no longer
+     * enabled, it will be unapplied.
      *
-     * @param file The file pointing to the theme to be loaded
+     * @param file    The file pointing to the theme to be loaded
      * @param enabled Whether this theme is enabled or not
      */
     private void loadTheme(final File file, final boolean enabled) {

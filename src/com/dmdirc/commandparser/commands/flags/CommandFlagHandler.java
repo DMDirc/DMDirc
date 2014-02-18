@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Utility class for commands which allow the user to specify shell-like
- * flags (<code>--foo</code>).
+ * Utility class for commands which allow the user to specify shell-like flags (
+ * <code>--foo</code>).
  *
  * @since 0.6.5
  */
@@ -49,27 +49,27 @@ public class CommandFlagHandler {
     private final Map<String, CommandFlag> disabledBy = new HashMap<>();
 
     /**
-     * Creates a new command flag handler which will handle all of the specified
-     * flags.
+     * Creates a new command flag handler which will handle all of the specified flags.
      *
      * @param flags The flags that will be handled
      */
-    public CommandFlagHandler(final CommandFlag ... flags) {
+    public CommandFlagHandler(final CommandFlag... flags) {
         for (CommandFlag flag : flags) {
             this.flags.put(flag.getName(), flag);
         }
     }
 
     /**
-     * Processes the specified arguments and parses out command flags. If
-     * the specified arguments aren't valid given the flags belonging to
-     * this command flag handler, an error message is sent to the origin and
+     * Processes the specified arguments and parses out command flags. If the specified arguments
+     * aren't valid given the flags belonging to this command flag handler, an error message is sent
+     * to the origin and
      * <code>null</code> is returned from this method.
      *
-     * @param origin The container where the command was entered
+     * @param origin    The container where the command was entered
      * @param arguments The arguments passed to the command
-     * @return A corresponding {@link CommandFlagResult} object, or null
-     * if some problem was encountered.
+     *
+     * @return A corresponding {@link CommandFlagResult} object, or null if some problem was
+     *         encountered.
      */
     public CommandFlagResult process(final FrameContainer origin,
             final CommandArguments arguments) {
@@ -79,14 +79,14 @@ public class CommandFlagHandler {
     }
 
     /**
-     * Parses the specified arguments and returns the offsets of the arguments
-     * for each found command flag.
+     * Parses the specified arguments and returns the offsets of the arguments for each found
+     * command flag.
      *
-     * @param origin The container where the command was entered
+     * @param origin    The container where the command was entered
      * @param arguments The arguments passed to the command
-     * @return A map of discovered command flags to the offset of the flag's
-     * first argument within the <code>arguments</code> object. If an error
-     * occurs, null is returned.
+     *
+     * @return A map of discovered command flags to the offset of the flag's first argument within
+     *         the <code>arguments</code> object. If an error occurs, null is returned.
      */
     protected Map<CommandFlag, Integer> parse(final FrameContainer origin,
             final CommandArguments arguments) {
@@ -160,14 +160,15 @@ public class CommandFlagHandler {
     /**
      * Reads the arguments for the specified flag.
      *
-     * @param flag The flag that is being read
+     * @param flag      The flag that is being read
      * @param arguments The raw arguments for the command
-     * @param offset The index that the first argument will be at
-     * @param argCount The number of arguments that need to be read
-     * @param origin The source of the command (for error messages)
-     * @param results The map to place results into
-     * @return The index of the last argument that was handled, or -1 if
-     * there were insufficient arguments for the flag
+     * @param offset    The index that the first argument will be at
+     * @param argCount  The number of arguments that need to be read
+     * @param origin    The source of the command (for error messages)
+     * @param results   The map to place results into
+     *
+     * @return The index of the last argument that was handled, or -1 if there were insufficient
+     *         arguments for the flag
      */
     protected int readArguments(final CommandFlag flag,
             final CommandArguments arguments, final int offset, final int argCount,
@@ -188,8 +189,8 @@ public class CommandFlagHandler {
     }
 
     /**
-     * Processes the enabled and disabled lists for the specified flag, and
-     * adds them to the relevant properties.
+     * Processes the enabled and disabled lists for the specified flag, and adds them to the
+     * relevant properties.
      *
      * @param flag The flag whose enables/disables lists should be processed
      */
@@ -212,13 +213,13 @@ public class CommandFlagHandler {
     }
 
     /**
-     * Constructs a user-friendly string describing the flag(s) which must
-     * be used in order to enable the specified flag. This is useful for
-     * error messages when the user tries to use a disabled flag.
+     * Constructs a user-friendly string describing the flag(s) which must be used in order to
+     * enable the specified flag. This is useful for error messages when the user tries to use a
+     * disabled flag.
      *
      * @param flag The flag to find enablers for
-     * @return A user-friendly string describing flags which enable the
-     * specified flag.
+     *
+     * @return A user-friendly string describing flags which enable the specified flag.
      */
     protected String getEnablers(final CommandFlag flag) {
         final List<CommandFlag> enablers = new LinkedList<>();
@@ -246,15 +247,16 @@ public class CommandFlagHandler {
     /**
      * Convenience method to send a line to the specified frame container.
      *
-     * @param origin The container to send the line to
-     * @param isSilent Whether the command is silenced or not
+     * @param origin      The container to send the line to
+     * @param isSilent    Whether the command is silenced or not
      * @param messageType The type of the line to be sent
-     * @param args The arguments for the specified messageType
+     * @param args        The arguments for the specified messageType
      */
     protected static void sendLine(final FrameContainer origin, final boolean isSilent,
-            final String messageType, final Object ... args) {
+            final String messageType, final Object... args) {
         if (origin != null && !isSilent) {
             origin.addLine(messageType, args);
         }
     }
+
 }

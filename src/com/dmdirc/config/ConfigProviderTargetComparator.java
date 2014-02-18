@@ -39,4 +39,5 @@ public class ConfigProviderTargetComparator implements Comparator<ConfigProvider
     public int compare(final ConfigProvider t, final ConfigProvider t1) {
         return t1.getTarget().compareTo(t.getTarget());
     }
+
 }

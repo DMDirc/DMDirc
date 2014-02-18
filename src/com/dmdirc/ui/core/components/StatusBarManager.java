@@ -51,9 +51,8 @@ public class StatusBarManager implements StatusBar {
     }
 
     /**
-     * Registers a new status bar with the manager. All requests to
-     * interact with status bars will be passed on to this status bar until
-     * it is unregistered.
+     * Registers a new status bar with the manager. All requests to interact with status bars will
+     * be passed on to this status bar until it is unregistered.
      *
      * @param statusBar The status bar to be added to the manager
      */

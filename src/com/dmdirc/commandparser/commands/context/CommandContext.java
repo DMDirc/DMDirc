@@ -34,14 +34,13 @@ public class CommandContext {
 
     /** The command info object which associated the command with the input. */
     protected final CommandInfo commandInfo;
-
     /** The source of this command. */
     protected final FrameContainer source;
 
     /**
      * Creates a new command context.
      *
-     * @param source The source of the command
+     * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
      */
     public CommandContext(final FrameContainer source, final CommandInfo commandInfo) {
@@ -50,8 +49,8 @@ public class CommandContext {
     }
 
     /**
-     * Retrieves the command information object which caused the command to
-     * be selected in response to the user's input.
+     * Retrieves the command information object which caused the command to be selected in response
+     * to the user's input.
      *
      * @return The relevant command info object
      */

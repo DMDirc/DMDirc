@@ -38,8 +38,7 @@ import com.dmdirc.ui.messages.ColourManager;
 import javax.inject.Inject;
 
 /**
- * The notify command allows the user to set the notification colour for a
- * window.
+ * The notify command allows the user to set the notification colour for a window.
  */
 public class Notify extends Command implements IntelligentCommand {
 
@@ -47,14 +46,13 @@ public class Notify extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("notify",
             "notify <colour> - sets the notification colour for this window",
             CommandType.TYPE_GLOBAL);
-
     /** Manager to use to convert colours. */
     private final ColourManager colourManager;
 
     /**
      * Creates a new instance of the {@link Notify} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller    The controller to use for command information.
      * @param colourManager The colour manager to use to convert colours.
      */
     @Inject

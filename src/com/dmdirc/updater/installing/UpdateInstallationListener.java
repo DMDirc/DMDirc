@@ -25,8 +25,8 @@ package com.dmdirc.updater.installing;
 import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Interface for objects interested in the progress of an installation attempt
- * performed by an {@link UpdateInstallationStrategy}.
+ * Interface for objects interested in the progress of an installation attempt performed by an
+ * {@link UpdateInstallationStrategy}.
  */
 public interface UpdateInstallationListener {
 
@@ -34,7 +34,7 @@ public interface UpdateInstallationListener {
      * Called when the progress of an install has changed.
      *
      * @param component The component being installed
-     * @param progress The percentage progress completed (0-100)
+     * @param progress  The percentage progress completed (0-100)
      */
     void installProgressChanged(UpdateComponent component, double progress);
 

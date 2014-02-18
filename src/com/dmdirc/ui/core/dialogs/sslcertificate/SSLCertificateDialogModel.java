@@ -46,22 +46,19 @@ public class SSLCertificateDialogModel {
 
     /** The text to use if a field isn't present on the certificate. */
     private static final String NOTPRESENT = "(not present on certificate)";
-
     /** The certificate chain that we're displaying information about. */
     private final X509Certificate[] chain;
-
     /** The certificate manager for the connection attempt. */
     private final CertificateManager manager;
-
     /** The list of problems found with the certs, if any. */
     private final Collection<CertificateException> problems;
 
     /**
      * Creates a new SSLCertificateDialogModel for the specified chain.
      *
-     * @param chain The chain of certificates to display info on
+     * @param chain    The chain of certificates to display info on
      * @param problems A list of problems with the certificates, if any
-     * @param manager The certificate manager responsible for the certs
+     * @param manager  The certificate manager responsible for the certs
      */
     public SSLCertificateDialogModel(final X509Certificate[] chain,
             final Collection<CertificateException> problems,
@@ -74,8 +71,8 @@ public class SSLCertificateDialogModel {
     /**
      * Retrieves the certificate chain that's under question.
      *
-     * @return A list of {@link CertificateChainEntry}s corresponding to the
-     * certificate chain being questioned.
+     * @return A list of {@link CertificateChainEntry}s corresponding to the certificate chain being
+     *         questioned.
      */
     public List<CertificateChainEntry> getCertificateChain() {
         final List<CertificateChainEntry> res = new ArrayList<>();
@@ -101,15 +98,15 @@ public class SSLCertificateDialogModel {
     }
 
     /**
-     * Retrieves displayable information about the certificate with the
-     * specified index in the chain.
+     * Retrieves displayable information about the certificate with the specified index in the
+     * chain.
      *
      * @param index The index of the certificate to request information on
+     *
      * @return A list of lists of {@link CertificateInformationEntry}s.
      */
     public List<List<CertificateInformationEntry>> getCertificateInfo(final int index) {
-        final List<List<CertificateInformationEntry>> res
-                = new ArrayList<>();
+        final List<List<CertificateInformationEntry>> res = new ArrayList<>();
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
@@ -161,10 +158,11 @@ public class SSLCertificateDialogModel {
     }
 
     /**
-     * Retrieves a list of all the alternate names of the specified certificates
-     * as a comma-separated string.
+     * Retrieves a list of all the alternate names of the specified certificates as a
+     * comma-separated string.
      *
      * @param cert The certificate to retrieve alternate names for
+     *
      * @return A comma-separated list of alternate names
      */
     protected String getAlternateNames(final X509Certificate cert) {
@@ -197,10 +195,10 @@ public class SSLCertificateDialogModel {
     /**
      * Adds a field to the specified group.
      *
-     * @param fields The fields extracted from the certiciate
-     * @param group The group to add an entry to
-     * @param title The user-friendly title of the field
-     * @param field The name of the field to look for
+     * @param fields  The fields extracted from the certiciate
+     * @param group   The group to add an entry to
+     * @param title   The user-friendly title of the field
+     * @param field   The name of the field to look for
      * @param invalid Whether or not the field is a cause for concern
      */
     protected void addCertField(final Map<String, String> fields,
@@ -212,8 +210,7 @@ public class SSLCertificateDialogModel {
     }
 
     /**
-     * Retrieves a list of summary elements to describe the overall status
-     * of the certificate chain.
+     * Retrieves a list of summary elements to describe the overall status of the certificate chain.
      *
      * @return A list of summary entries
      */
@@ -263,8 +260,7 @@ public class SSLCertificateDialogModel {
     }
 
     /**
-     * Determines whether or not a response is required from the user about
-     * this certificate chain.
+     * Determines whether or not a response is required from the user about this certificate chain.
      *
      * @return True if a response is required, false otherwise
      */
@@ -282,9 +278,8 @@ public class SSLCertificateDialogModel {
     }
 
     /**
-     * Performs the specified action on the certificate chain/connection.
-     * Should only be called once per instance, and only if
-     * {@link #needsResponse()} returns true.
+     * Performs the specified action on the certificate chain/connection. Should only be called once
+     * per instance, and only if {@link #needsResponse()} returns true.
      *
      * @param action The action to be performed
      */

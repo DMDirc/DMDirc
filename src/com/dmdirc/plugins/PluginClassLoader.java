@@ -35,21 +35,20 @@ public class PluginClassLoader extends ClassLoader {
 
     /** The plugin Info object for the plugin we are loading. */
     private final PluginInfo pluginInfo;
-
     /** Global Class Loader */
     private final GlobalClassLoader globalLoader;
-
     /** The parent class loaders. */
     private final PluginClassLoader[] parents;
 
     /**
      * Create a new PluginClassLoader.
      *
-     * @param info PluginInfo this classloader will be for
+     * @param info         PluginInfo this classloader will be for
      * @param globalLoader Global class loader to use where needed.
-     * @param parents Parent ClassLoaders
+     * @param parents      Parent ClassLoaders
      */
-    public PluginClassLoader(final PluginInfo info, final GlobalClassLoader globalLoader, final PluginClassLoader ... parents) {
+    public PluginClassLoader(final PluginInfo info, final GlobalClassLoader globalLoader,
+            final PluginClassLoader... parents) {
         this.pluginInfo = info;
         this.parents = parents;
         this.globalLoader = globalLoader;
@@ -59,6 +58,7 @@ public class PluginClassLoader extends ClassLoader {
      * Get a PluginClassLoader that is a subclassloader of this one.
      *
      * @param info PluginInfo the new classloader will be for
+     *
      * @return A classloader configured with this one as its parent
      */
     public PluginClassLoader getSubClassLoader(final PluginInfo info) {
@@ -69,7 +69,9 @@ public class PluginClassLoader extends ClassLoader {
      * Load the plugin with the given className.
      *
      * @param name Class Name of plugin
+     *
      * @return plugin class
+     *
      * @throws ClassNotFoundException if the class to be loaded could not be found.
      */
     @Override
@@ -80,8 +82,9 @@ public class PluginClassLoader extends ClassLoader {
     /**
      * Have we already loaded the given class name?
      *
-     * @param name Name to check.
+     * @param name        Name to check.
      * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     *
      * @return True if the specified class is loaded, false otherwise
      */
     public boolean isClassLoaded(final String name, final boolean checkGlobal) {
@@ -92,13 +95,16 @@ public class PluginClassLoader extends ClassLoader {
     /**
      * Load the plugin with the given className.
      *
-     * @param name Class Name of plugin
+     * @param name      Class Name of plugin
      * @param askGlobal Ask the gobal class loaded for this class if we can't find it?
+     *
      * @return plugin class
+     *
      * @throws ClassNotFoundException if the class to be loaded could not be found.
      */
     @Override
-    public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
+    public Class<?> loadClass(final String name, final boolean askGlobal) throws
+            ClassNotFoundException {
         Class<?> loadedClass = null;
         for (PluginClassLoader parent : parents) {
             try {
@@ -135,7 +141,8 @@ public class PluginClassLoader extends ClassLoader {
                 }
             }
         } catch (NoClassDefFoundError e) {
-            throw new ClassNotFoundException("Error loading '" + name + "' (wanted by " + pluginInfo.getMetaData().getName() + ") -> " + e.getMessage(), e);
+            throw new ClassNotFoundException("Error loading '" + name + "' (wanted by "
+                    + pluginInfo.getMetaData().getName() + ") -> " + e.getMessage(), e);
         }
 
 
@@ -150,7 +157,8 @@ public class PluginClassLoader extends ClassLoader {
         if (res.resourceExists(fileName)) {
             data = res.getResourceBytes(fileName);
         } else {
-            throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.getMetaData().getName() + ") does not exist.");
+            throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.
+                    getMetaData().getName() + ") does not exist.");
         }
 
         try {
@@ -217,7 +225,7 @@ public class PluginClassLoader extends ClassLoader {
             resources.add(resource);
         }
 
-        final Enumeration<URL> urls =  super.findResources(name);
+        final Enumeration<URL> urls = super.findResources(name);
 
         while (urls.hasMoreElements()) {
             resources.add(urls.nextElement());
@@ -225,4 +233,5 @@ public class PluginClassLoader extends ClassLoader {
 
         return Collections.enumeration(resources);
     }
+
 }

@@ -63,59 +63,49 @@ public class Main {
 
     /** Feedback nag delay. */
     private final int FEEDBACK_DELAY = 30 * 60 * 1000;
-
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
-
     /** The identity manager the client will use. */
     private final IdentityController identityManager;
-
     /** The server manager the client will use. */
     private final ServerManager serverManager;
-
     /** The action manager the client will use. */
     private final ActionManager actionManager;
-
     /** The command-line parser used for this instance. */
     private final CommandLineParser commandLineParser;
-
     /** The plugin manager the client will use. */
     private final PluginManager pluginManager;
-
     /** The extractor to use for core plugins. */
     private final CorePluginExtractor corePluginExtractor;
-
     /** The command manager to use. */
     private final CommandManager commandManager;
-
     /** The global window manager to use. */
     private final GlobalWindowManager globalWindowManager;
-
     /** The colour-based action comparisons. */
     private final ColourActionComparison colourActionComparison;
-
     /** The event bus to dispatch events on. */
     private final EventBus eventBus;
-
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
     /**
      * Creates a new instance of {@link Main}.
      *
-     * @param identityManager The identity manager the client will use.
-     * @param serverManager The server manager the client will use.
-     * @param actionManager The action manager the client will use.
-     * @param commandLineParser The command-line parser used for this instance.
-     * @param pluginManager The plugin manager the client will use.
-     * @param commandManager The command manager the client will use.
-     * @param messageSinkManager Unused for now - TODO: remove me when it's injected somewhere sensible.
-     * @param themeManager Unused for now - TODO: remove me when it's injected somewhere sensible.
-     * @param corePluginExtractor Extractor to use for core plugins.
-     * @param globalWindowManager Global window manager to use.
+     * @param identityManager        The identity manager the client will use.
+     * @param serverManager          The server manager the client will use.
+     * @param actionManager          The action manager the client will use.
+     * @param commandLineParser      The command-line parser used for this instance.
+     * @param pluginManager          The plugin manager the client will use.
+     * @param commandManager         The command manager the client will use.
+     * @param messageSinkManager     Unused for now - TODO: remove me when it's injected somewhere
+     *                               sensible.
+     * @param themeManager           Unused for now - TODO: remove me when it's injected somewhere
+     *                               sensible.
+     * @param corePluginExtractor    Extractor to use for core plugins.
+     * @param globalWindowManager    Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
-     * @param eventBus The event bus to dispatch events on.
-     * @param commands The commands to be loaded into the command manager.
+     * @param eventBus               The event bus to dispatch events on.
+     * @param commands               The commands to be loaded into the command manager.
      */
     @Inject
     public Main(
@@ -202,10 +192,9 @@ public class Main {
     }
 
     /**
-     * Called when the UI has failed to initialise correctly. This method
-     * attempts to extract any and all UI plugins bundled with the client, and
-     * requests a restart. If this has already been attempted, it shows an error
-     * and exits.
+     * Called when the UI has failed to initialise correctly. This method attempts to extract any
+     * and all UI plugins bundled with the client, and requests a restart. If this has already been
+     * attempted, it shows an error and exits.
      */
     private void handleMissingUI() {
         // Check to see if we have already tried this
@@ -237,8 +226,7 @@ public class Main {
     }
 
     /**
-     * Attempts to find and activate a service which provides a UI that we
-     * can use.
+     * Attempts to find and activate a service which provides a UI that we can use.
      *
      * @param pm The plugin manager to use to load plugins
      */
@@ -279,7 +267,6 @@ public class Main {
             }
 
             new Timer().schedule(new TimerTask() {
-
                 /** {@inheritDoc} */
                 @Override
                 public void run() {

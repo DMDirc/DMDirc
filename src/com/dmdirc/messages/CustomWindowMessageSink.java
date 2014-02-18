@@ -33,8 +33,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which adds the message to a custom window, creating it if
- * necessary.
+ * A message sink which adds the message to a custom window, creating it if necessary.
  */
 public class CustomWindowMessageSink implements MessageSink {
 
@@ -49,7 +48,7 @@ public class CustomWindowMessageSink implements MessageSink {
      * Creates a new custom window message sink.
      *
      * @param windowManager Window management
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param urlBuilder    The URL builder to use when finding icons.
      */
     public CustomWindowMessageSink(
             final WindowManager windowManager,

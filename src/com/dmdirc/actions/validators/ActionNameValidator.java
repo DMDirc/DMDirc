@@ -46,7 +46,7 @@ public class ActionNameValidator implements Validator<String> {
     /**
      * Instantiates a new action name validator for an existing action.
      *
-     * @param group Associated action group
+     * @param group        Associated action group
      * @param originalName Existing action name
      */
     public ActionNameValidator(final ActionGroup group,
@@ -66,4 +66,5 @@ public class ActionNameValidator implements Validator<String> {
         }
         return new ValidationResponse();
     }
+
 }

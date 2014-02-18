@@ -32,7 +32,6 @@ public enum PluginEvents implements ActionMetaType {
 
     /** Plugin event type. */
     PLUGIN_EVENT(new String[]{"plugin"}, PluginInfo.class);
-
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
@@ -44,7 +43,7 @@ public enum PluginEvents implements ActionMetaType {
      * @param argNames The names of the meta-type's arguments
      * @param argTypes The types of the meta-type's arguments
      */
-    PluginEvents(final String[] argNames, final Class ... argTypes) {
+    PluginEvents(final String[] argNames, final Class... argTypes) {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }

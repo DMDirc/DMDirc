@@ -75,4 +75,5 @@ public enum LinkEvents implements ActionMetaType {
     public String getGroup() {
         return "Link Events";
     }
+
 }

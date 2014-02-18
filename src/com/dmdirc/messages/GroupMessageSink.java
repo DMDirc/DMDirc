@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * A message sink which changes the sink to the value of a named configuration
- * setting to allow grouping of sinks.
+ * A message sink which changes the sink to the value of a named configuration setting to allow
+ * grouping of sinks.
  */
 public class GroupMessageSink implements MessageSink {
 

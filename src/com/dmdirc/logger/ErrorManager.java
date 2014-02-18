@@ -47,33 +47,24 @@ public class ErrorManager implements ConfigChangeListener {
 
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me;
-
     /** A list of exceptions which we don't consider bugs and thus don't report. */
     private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
         NoSuchMethodError.class, NoClassDefFoundError.class,
         UnsatisfiedLinkError.class, AbstractMethodError.class,
         IllegalAccessError.class, OutOfMemoryError.class,
-        NoSuchFieldError.class,
-    };
-
+        NoSuchFieldError.class,};
     /** Whether or not to send error reports. */
     private boolean sendReports;
-
     /** Whether or not to log error reports. */
     private boolean logReports;
-
     /** Queue of errors to be reported. */
     private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<>();
-
     /** Thread used for sending errors. */
     private volatile Thread reportThread;
-
     /** Error list. */
     private final List<ProgramError> errors;
-
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
-
     /** Next error ID. */
     private final AtomicLong nextErrorID;
 
@@ -125,12 +116,12 @@ public class ErrorManager implements ConfigChangeListener {
     }
 
     /**
-     * Adds a new error to the manager with the specified details. It is
-     * assumed that errors without exceptions or details are not application
-     * errors.
+     * Adds a new error to the manager with the specified details. It is assumed that errors without
+     * exceptions or details are not application errors.
      *
-     * @param level The severity of the error
+     * @param level   The severity of the error
      * @param message The error message
+     *
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message) {
@@ -140,10 +131,11 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Adds a new error to the manager with the specified details.
      *
-     * @param level The severity of the error
-     * @param message The error message
+     * @param level     The severity of the error
+     * @param message   The error message
      * @param exception The exception that caused this error
-     * @param appError Whether or not this is an application error
+     * @param appError  Whether or not this is an application error
+     *
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
@@ -154,10 +146,11 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Adds a new error to the manager with the specified details.
      *
-     * @param level The severity of the error
-     * @param message The error message
-     * @param details The details of the exception
+     * @param level    The severity of the error
+     * @param message  The error message
+     * @param details  The details of the exception
      * @param appError Whether or not this is an application error
+     *
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message, final String details,
@@ -168,11 +161,12 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Adds a new error to the manager with the specified details.
      *
-     * @param level The severity of the error
-     * @param message The error message
-     * @param details The details of the exception
-     * @param appError Whether or not this is an application error
+     * @param level     The severity of the error
+     * @param message   The error message
+     * @param details   The details of the exception
+     * @param appError  Whether or not this is an application error
      * @param canReport Whether or not this error can be reported
+     *
      * @since 0.6.3m1
      */
     protected void addError(final ErrorLevel level, final String message,
@@ -213,12 +207,12 @@ public class ErrorManager implements ConfigChangeListener {
     }
 
     /**
-     * Adds the specified error to the list of known errors and determines if
-     * it was previously added.
+     * Adds the specified error to the list of known errors and determines if it was previously
+     * added.
      *
      * @param error The error to be added
-     * @return True if a duplicate error has already been registered, false
-     * otherwise
+     *
+     * @return True if a duplicate error has already been registered, false otherwise
      */
     protected boolean addError(final ProgramError error) {
         int index;
@@ -238,10 +232,11 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Retrieves a {@link ProgramError} that represents the specified details.
      *
-     * @param level The severity of the error
-     * @param message The error message
-     * @param details The details of the exception
+     * @param level    The severity of the error
+     * @param message  The error message
+     * @param details  The details of the exception
      * @param appError Whether or not this is an application error
+     *
      * @since 0.6.3m1
      * @return A corresponding ProgramError
      */
@@ -252,10 +247,10 @@ public class ErrorManager implements ConfigChangeListener {
     }
 
     /**
-     * Determines whether or not the specified exception is one that we are
-     * willing to report.
+     * Determines whether or not the specified exception is one that we are willing to report.
      *
      * @param exception The exception to test
+     *
      * @since 0.6.3m1
      * @return True if the exception may be reported, false otherwise
      */
@@ -363,7 +358,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @param listener Listener to remove
      */
     public void removeErrorListener(final ErrorListener listener) {
-       errorListeners.remove(ErrorListener.class, listener);
+        errorListeners.remove(ErrorListener.class, listener);
     }
 
     /**
@@ -466,7 +461,8 @@ public class ErrorManager implements ConfigChangeListener {
 
     /** Updates the settings used by this error manager. */
     protected void updateSettings() {
-        final AggregateConfigProvider config = IdentityManager.getIdentityManager().getGlobalConfiguration();
+        final AggregateConfigProvider config = IdentityManager.getIdentityManager().
+                getGlobalConfiguration();
 
         try {
             sendReports = config.getOptionBool("general", "submitErrors")

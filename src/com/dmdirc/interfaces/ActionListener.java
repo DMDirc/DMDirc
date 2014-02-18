@@ -25,19 +25,17 @@ package com.dmdirc.interfaces;
 import com.dmdirc.interfaces.actions.ActionType;
 
 /**
- * Defines the method that has to be implemented by classes wanting to receive
- * action events.
+ * Defines the method that has to be implemented by classes wanting to receive action events.
  */
 public interface ActionListener {
 
     /**
      * Processes an action of the specified type.
      *
-     * @param type The type of the event to process
-     * @param format The format of the message that's going to be displayed for
-     * the event
+     * @param type      The type of the event to process
+     * @param format    The format of the message that's going to be displayed for the event
      * @param arguments The arguments for the event
      */
-    void processEvent(ActionType type, StringBuffer format, Object ... arguments);
+    void processEvent(ActionType type, StringBuffer format, Object... arguments);
 
 }

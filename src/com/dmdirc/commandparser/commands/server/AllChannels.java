@@ -39,14 +39,13 @@ import com.dmdirc.ui.input.TabCompleter;
 import javax.inject.Inject;
 
 /**
- * The AllChannels command allows the user to issue a command to all channels
- * on a server.
+ * The AllChannels command allows the user to issue a command to all channels on a server.
  */
 public class AllChannels extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("allchannels",
-           "allchannels <command> - executes the command as though it had"
+            "allchannels <command> - executes the command as though it had"
             + " been entered on all channels", CommandType.TYPE_SERVER);
 
     /**

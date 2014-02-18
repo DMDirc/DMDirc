@@ -28,21 +28,21 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- *A {@link CheckResultConsolidator} defines a strategy for consolidating
- * multiple sets of {@link UpdateCheckResult}s provided by different
- * {@link UpdateCheckStrategy}s.
+ * A {@link CheckResultConsolidator} defines a strategy for consolidating multiple sets of
+ * {@link UpdateCheckResult}s provided by different {@link UpdateCheckStrategy}s.
  */
 public interface CheckResultConsolidator {
 
     /**
-     * Consolidates the collection of results into a single mapping. The
-     * resulting map should contain one entry for each distinct component
-     * contained in any of the providing result sets, mapped to the best
-     * {@link UpdateCheckResult} according to this strategy.
+     * Consolidates the collection of results into a single mapping. The resulting map should
+     * contain one entry for each distinct component contained in any of the providing result sets,
+     * mapped to the best {@link UpdateCheckResult} according to this strategy.
      *
      * @param results The results to be consolidated
+     *
      * @return A map of {@link UpdateComponent}s to their consolidated result
      */
     Map<UpdateComponent, UpdateCheckResult> consolidate(
             Collection<Map<UpdateComponent, UpdateCheckResult>> results);
+
 }

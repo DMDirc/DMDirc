@@ -59,47 +59,66 @@ public class ColourActionComparison {
      * @return The available comparisons.
      */
     public ActionComparison[] getComparisons() {
-        return new ActionComparison[] { equalsComparison, notEqualsComparison };
+        return new ActionComparison[]{equalsComparison, notEqualsComparison};
     }
 
     /** Checks if the colour is the same as another colour. */
     private class Equals implements ActionComparison {
+
         /** {@inheritDoc} */
         @Override
         public boolean test(final Object arg1, final Object arg2) {
-            return ((Colour) arg1).equals(colourManager.get().getColourFromString((String) arg2, null));
+            return ((Colour) arg1).equals(colourManager.get().getColourFromString((String) arg2,
+                    null));
         }
+
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Colour.class; }
+        public Class<?> appliesTo() {
+            return Colour.class;
+        }
+
         /** {@inheritDoc} */
         @Override
-        public String getName() { return "equals"; }
+        public String getName() {
+            return "equals";
+        }
+
         /** {@inheritDoc} */
         @Override
         public String name() {
             return "COLOUR_EQUALS";
         }
+
     }
 
     /** Checks if the colour is not the same as another colour. */
     private class NotEquals implements ActionComparison {
+
         /** {@inheritDoc} */
         @Override
         public boolean test(final Object arg1, final Object arg2) {
             return !equalsComparison.test(arg1, arg2);
         }
+
         /** {@inheritDoc} */
         @Override
-        public Class<?> appliesTo() { return Colour.class; }
+        public Class<?> appliesTo() {
+            return Colour.class;
+        }
+
         /** {@inheritDoc} */
         @Override
-        public String getName() { return "does not equal"; }
+        public String getName() {
+            return "does not equal";
+        }
+
         /** {@inheritDoc} */
         @Override
         public String name() {
             return "COLOUR_NEQUALS";
         }
+
     }
 
 }

@@ -25,20 +25,19 @@ package com.dmdirc.updater.manager;
 import com.dmdirc.updater.UpdateComponent;
 
 /**
- * Interface for objects interested in updates to the status of an
- * {@link UpdateComponent}.
+ * Interface for objects interested in updates to the status of an {@link UpdateComponent}.
  */
 public interface UpdateStatusListener {
 
     /**
      * Called when the status of an update is changed. Note that the
-     * <code>progress</code> parameter may not be used for all statuses, and
-     * will generally only be implemented for those that involve lengthy I/O
-     * operations such as {@link UpdateStatus#RETRIEVING}.
+     * <code>progress</code> parameter may not be used for all statuses, and will generally only be
+     * implemented for those that involve lengthy I/O operations such as
+     * {@link UpdateStatus#RETRIEVING}.
      *
      * @param component The component whose status has changed
-     * @param status The current (new) status of the component
-     * @param progress The percentage progress through the current state
+     * @param status    The current (new) status of the component
+     * @param progress  The percentage progress through the current state
      */
     void updateStatusChanged(UpdateComponent component, UpdateStatus status, double progress);
 

@@ -25,8 +25,7 @@ package com.dmdirc.commandparser;
 import com.dmdirc.commandparser.commands.Command;
 
 /**
- * A combination of a {@link Command} and the {@link CommandInfo} which
- * triggered it.
+ * A combination of a {@link Command} and the {@link CommandInfo} which triggered it.
  *
  * @since 0.6.4
  */
@@ -34,7 +33,6 @@ public class CommandInfoPair {
 
     /** The command info which caused the command to be triggered. */
     private final CommandInfo commandInfo;
-
     /** The command in question. */
     private final Command command;
 

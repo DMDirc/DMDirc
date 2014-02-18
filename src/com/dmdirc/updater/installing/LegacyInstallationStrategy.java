@@ -32,13 +32,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An {@link UpdateInstallationStrategy} which uses the old
- * {@link UpdateComponent#doInstall(java.lang.String)} methods to perform
- * installation.
+ * {@link UpdateComponent#doInstall(java.lang.String)} methods to perform installation.
  */
 public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrategy<UpdateComponent, SingleFileRetrievalResult> {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LegacyInstallationStrategy.class);
-
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(
+            LegacyInstallationStrategy.class);
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
 
@@ -52,7 +51,8 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
 
     /** {@inheritDoc} */
     @Override
-    protected void installImpl(final UpdateComponent component, final SingleFileRetrievalResult retrievalResult) {
+    protected void installImpl(final UpdateComponent component,
+            final SingleFileRetrievalResult retrievalResult) {
         LOG.info("Installing file from {} for component {} using legacy strategy",
                 retrievalResult.getFile(), component.getName());
 

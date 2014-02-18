@@ -23,21 +23,20 @@
 package com.dmdirc.ui.input.tabstyles;
 
 /**
- * Details the proposed result of tab completion. Results consist of a
- * new string (to replace the current one), and a new caret position.
+ * Details the proposed result of tab completion. Results consist of a new string (to replace the
+ * current one), and a new caret position.
  */
 public class TabCompletionResult {
 
     /** The new string to use in the result. */
     private final String text;
-
     /** The new caret position to be used. */
     private final int position;
 
     /**
      * Creates a new instance of TabCompletionResult.
      *
-     * @param text The text for this result
+     * @param text     The text for this result
      * @param position The caret position for this result
      */
     public TabCompletionResult(final String text, final int position) {

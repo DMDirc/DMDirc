@@ -71,19 +71,19 @@ public abstract class ResourceManager {
     }
 
     /**
-     * Returns a resource manager for the specified URL. The following URL types
-     * are valid:
+     * Returns a resource manager for the specified URL. The following URL types are valid:
      *
      * <ul>
-     *  <li>file://path/</li>
-     *  <li>zip://path/filename.zip</li>
-     *  <li>jar://path/filename.jar</li>
+     * <li>file://path/</li>
+     * <li>zip://path/filename.zip</li>
+     * <li>jar://path/filename.jar</li>
      * </ul>
      *
      * @param url The URL for which a resource manager is required
+     *
      * @return A resource manager for the specified URL
      *
-     * @throws IOException if an IO Error occurs opening the file
+     * @throws IOException              if an IO Error occurs opening the file
      * @throws IllegalArgumentException if the URL type is not valid
      */
     public static ResourceManager getResourceManager(final String url)
@@ -101,7 +101,7 @@ public abstract class ResourceManager {
      * Writes a resource to a file.
      *
      * @param resource Resource to write
-     * @param file File to write to
+     * @param file     File to write to
      *
      * @throws IOException if the write operation fails
      */
@@ -122,9 +122,9 @@ public abstract class ResourceManager {
      * Extracts the specified resource to the specified directory.
      *
      * @param resourceName The name of the resource to extract
-     * @param directory The name of the directory to extract to
-     * @param usePath If true, append the path of the files in the resource
-     * to the extraction path
+     * @param directory    The name of the directory to extract to
+     * @param usePath      If true, append the path of the files in the resource to the extraction
+     *                     path
      *
      * @throws IOException if the write operation fails
      *
@@ -170,9 +170,9 @@ public abstract class ResourceManager {
      * Extracts the specified resources to the specified directory.
      *
      * @param resourcesPrefix The prefix of the resources to extract
-     * @param directory The name of the directory to extract to
-     * @param usePath If true, append the path of the files in the resource
-     * to the extraction path
+     * @param directory       The name of the directory to extract to
+     * @param usePath         If true, append the path of the files in the resource to the
+     *                        extraction path
      *
      * @throws IOException if the write operation fails
      */
@@ -189,7 +189,7 @@ public abstract class ResourceManager {
      * Extracts the specified resources to the specified directory.
      *
      * @param resourcesPrefix The prefix of the resources to extract
-     * @param directory The name of the directory to extract to
+     * @param directory       The name of the directory to extract to
      *
      * @throws IOException if the write operation fails
      */
@@ -258,17 +258,19 @@ public abstract class ResourceManager {
      * Gets an URL for the specified resource.
      *
      * @param resource Name of the resource to return
+     *
      * @return A URL for the resource, or null if not found
+     *
      * @throws MalformedURLException If the URL created is malformed
      * @since 0.6.3
      */
     public abstract URL getResourceURL(final String resource) throws MalformedURLException;
 
     /**
-     * Gets a Map of byte[]s of the resources ending with the specified
-     * suffix.
+     * Gets a Map of byte[]s of the resources ending with the specified suffix.
      *
      * @param resourcesSuffix Suffix of the resources to return
+     *
      * @since 0.6
      * @return Map of byte[]s of resources found
      */
@@ -276,8 +278,7 @@ public abstract class ResourceManager {
             final String resourcesSuffix);
 
     /**
-     * Gets a Map of byte[]s of the resources starting with the specified
-     * prefix.
+     * Gets a Map of byte[]s of the resources starting with the specified prefix.
      *
      * @param resourcesPrefix Prefix of the resources to return
      *
@@ -287,8 +288,7 @@ public abstract class ResourceManager {
             final String resourcesPrefix);
 
     /**
-     * Gets a Map of InputStreams of the resources starting with the specified
-     * prefix.
+     * Gets a Map of InputStreams of the resources starting with the specified prefix.
      *
      * @param resourcesPrefix Prefix of the resources to return
      *
@@ -298,12 +298,12 @@ public abstract class ResourceManager {
             final String resourcesPrefix);
 
     /**
-     * Gets a List of the resources starting with the specified
-     * prefix.
+     * Gets a List of the resources starting with the specified prefix.
      *
      * @param resourcesPrefix Prefix of the resources to return
      *
      * @return List of resources found
      */
     public abstract List<String> getResourcesStartingWith(final String resourcesPrefix);
+
 }

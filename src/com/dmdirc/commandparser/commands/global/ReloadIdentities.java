@@ -45,18 +45,18 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("reloadidentities",
             "reloadidentities - reloads user identities (configuration files)",
             CommandType.TYPE_GLOBAL);
-
     /** Identity controller cause to reload identities. */
     private final IdentityController identityController;
 
     /**
      * Creates a new instance of the {@link ReloadIdentities} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller         The controller to use for command information.
      * @param identityController The controller to reload identities on.
      */
     @Inject
-    public ReloadIdentities(final CommandController controller, final IdentityController identityController) {
+    public ReloadIdentities(final CommandController controller,
+            final IdentityController identityController) {
         super(controller);
         this.identityController = identityController;
     }

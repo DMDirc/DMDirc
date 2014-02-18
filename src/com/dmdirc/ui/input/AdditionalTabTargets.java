@@ -27,26 +27,26 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The AdditionalTabTargets class is a basic wrapper around an arraylist that
- * adds an additional property to determine what types of results to include.
+ * The AdditionalTabTargets class is a basic wrapper around an arraylist that adds an additional
+ * property to determine what types of results to include.
  */
 public final class AdditionalTabTargets extends ArrayList<String> {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /** Whether to include normal targets. */
-    private List<TabCompletionType> includes
-            = new ArrayList<>(Arrays.asList(TabCompletionType.values()));
+    private List<TabCompletionType> includes = new ArrayList<>(Arrays.asList(TabCompletionType.
+            values()));
 
     /**
      * Determines if the specified type of completion should be used.
      *
      * @param type The type to check for
+     *
      * @return True if the specified targets are included, false otherwise
      */
     public boolean shouldInclude(final TabCompletionType type) {

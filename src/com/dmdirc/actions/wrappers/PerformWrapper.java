@@ -52,7 +52,6 @@ public class PerformWrapper extends ActionGroup {
 
     /** The component name for per-profile perform conditions. */
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
-
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
 
@@ -102,13 +101,13 @@ public class PerformWrapper extends ActionGroup {
     }
 
     /**
-     * Sets the perform for the specified target of the specified type.
-     * If the specified perform is empty - that is, any non-null elements are
-     * empty Strings - then the perform is removed. If a profile is specified,
-     * the perform will only be executed for that profile.
+     * Sets the perform for the specified target of the specified type. If the specified perform is
+     * empty - that is, any non-null elements are empty Strings - then the perform is removed. If a
+     * profile is specified, the perform will only be executed for that profile.
      *
      * @param perform The perform to be set
      * @param content The new content of that perform
+     *
      * @since 0.6.4
      */
     public void setPerform(final PerformDescription perform, final String[] content) {
@@ -143,11 +142,13 @@ public class PerformWrapper extends ActionGroup {
     }
 
     /**
-     * Retrieves the perform for the relevant target. If no such perform exists,
-     * a zero-length array is returned.
+     * Retrieves the perform for the relevant target. If no such perform exists, a zero-length array
+     * is returned.
      *
      * @param perform The perform to be retrieved
+     *
      * @return The corresponding perform, or a zero-length array if none set
+     *
      * @since 0.6.4
      */
     public String[] getPerform(final PerformDescription perform) {
@@ -163,11 +164,13 @@ public class PerformWrapper extends ActionGroup {
     }
 
     /**
-     * Determines if the specified perform is "empty". An empty perform is one
-     * that does not contain any non-empty Strings.
+     * Determines if the specified perform is "empty". An empty perform is one that does not contain
+     * any non-empty Strings.
      *
      * @param perform The perform to test
+     *
      * @return True if the perform is empty, false otherwise
+     *
      * @since 0.6.4
      */
     private static boolean isEmpty(final String[] perform) {
@@ -184,6 +187,7 @@ public class PerformWrapper extends ActionGroup {
      * Checks that the specified conditions are valid for a perform action.
      *
      * @param conditions The conditions to be checked
+     *
      * @since 0.6.3m2
      * @return True if the conditions are valid, false otherwise
      */
@@ -209,13 +213,13 @@ public class PerformWrapper extends ActionGroup {
     }
 
     /**
-     * Creates a new, empty, perform wrapper for the specified server or
-     * network. Note that both server and network must be specified, and
-     * exactly one of them must be empty.
+     * Creates a new, empty, perform wrapper for the specified server or network. Note that both
+     * server and network must be specified, and exactly one of them must be empty.
      *
-     * @param server The server to create the action for
+     * @param server  The server to create the action for
      * @param network The network to create the action for
      * @param profile The profile the action is for (or null if "global")
+     *
      * @since 0.6.3
      * @return The new perform wrapper action
      */
@@ -231,7 +235,8 @@ public class PerformWrapper extends ActionGroup {
 
         if (profile != null) {
             conditions.add(new ActionCondition(0,
-                    new ActionComponentChain(Connection.class, PP_COMP_NAME, ActionManager.getActionManager()),
+                    new ActionComponentChain(Connection.class, PP_COMP_NAME, ActionManager.
+                    getActionManager()),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 
@@ -243,13 +248,14 @@ public class PerformWrapper extends ActionGroup {
     }
 
     /**
-     * Retrieve an action with a condition that checks the specified component,
-     * and matches it against the specified target.
+     * Retrieve an action with a condition that checks the specified component, and matches it
+     * against the specified target.
      *
      * @param component The action component to look for
-     * @param target The string the component is matched against
-     * @param profile The name of the profile that the action must target, or
-     * null for a non-profile specific action
+     * @param target    The string the component is matched against
+     * @param profile   The name of the profile that the action must target, or null for a
+     *                  non-profile specific action
+     *
      * @since 0.6.3
      * @return The matching action if one exists, or null
      */
@@ -310,8 +316,8 @@ public class PerformWrapper extends ActionGroup {
         /**
          * Creates a new perform description with the specified arguments.
          *
-         * @param type The type of the perform in question
-         * @param target The target of the perform
+         * @param type    The type of the perform in question
+         * @param target  The target of the perform
          * @param profile The profile of the perform (or null)
          */
         public PerformDescription(final PerformType type, final String target,
@@ -328,7 +334,7 @@ public class PerformWrapper extends ActionGroup {
         /**
          * Creates a new perform description with the specified arguments.
          *
-         * @param type The type of the perform in question
+         * @param type   The type of the perform in question
          * @param target The target of the perform
          */
         public PerformDescription(final PerformType type, final String target) {

@@ -39,7 +39,6 @@ public class PluginComponent implements UpdateComponent {
 
     /** The config to use. */
     private final AggregateConfigProvider globalConfig;
-
     /** The plugin this component is for. */
     private final PluginInfo plugin;
 
@@ -54,7 +53,8 @@ public class PluginComponent implements UpdateComponent {
         if (plugin.getMetaData().getUpdaterId() > 0) {
             return "addon-" + plugin.getMetaData().getUpdaterId();
         } else {
-            return "addon-" + globalConfig.getOption("plugin-addonid", plugin.getMetaData().getName());
+            return "addon-" + globalConfig.getOption("plugin-addonid", plugin.getMetaData().
+                    getName());
         }
     }
 
@@ -116,7 +116,8 @@ public class PluginComponent implements UpdateComponent {
         }
         if (requiresRestart() || !newPlugin.renameTo(target)) {
             // Windows rocks!
-            final File newTarget = new File(plugin.getMetaData().getPluginUrl().getPath() + ".update");
+            final File newTarget = new File(plugin.getMetaData().getPluginUrl().getPath()
+                    + ".update");
 
             if (newTarget.exists()) {
                 newTarget.delete();
@@ -157,4 +158,5 @@ public class PluginComponent implements UpdateComponent {
             }
         }
     }
+
 }

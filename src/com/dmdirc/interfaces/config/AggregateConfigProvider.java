@@ -28,18 +28,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A configuration provider which aggregates an ordered list of other
- * {@link ConfigProvider}s.
+ * A configuration provider which aggregates an ordered list of other {@link ConfigProvider}s.
  *
- * Because this provider exposes settings from multiple independent sources,
- * it cannot change any settings as the scope of such changes may be unclear.
+ * Because this provider exposes settings from multiple independent sources, it cannot change any
+ * settings as the scope of such changes may be unclear.
  */
 public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
 
     /**
      * Adds a change listener for the specified domain.
      *
-     * @param domain The domain to be monitored
+     * @param domain   The domain to be monitored
      * @param listener The listener to register
      */
     void addChangeListener(String domain, ConfigChangeListener listener);
@@ -47,8 +46,8 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
     /**
      * Adds a change listener for the specified domain and key.
      *
-     * @param domain The domain of the option
-     * @param key The option to be monitored
+     * @param domain   The domain of the option
+     * @param key      The option to be monitored
      * @param listener The listener to register
      */
     void addChangeListener(String domain, String key, ConfigChangeListener listener);
@@ -62,6 +61,7 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
 
     /**
      * Retrieves a list of sources for this config manager.
+     *
      * @return This config manager's sources.
      */
     List<ConfigProvider> getSources();
@@ -74,9 +74,9 @@ public interface AggregateConfigProvider extends ReadOnlyConfigProvider {
     void removeListener(ConfigChangeListener listener);
 
     /**
-     * Gets a binder that may be used to bind methods or fields in a class to configuration
-     * values known by this provider. Bound values update automatically whenever the value in
-     * this provider changes.
+     * Gets a binder that may be used to bind methods or fields in a class to configuration values
+     * known by this provider. Bound values update automatically whenever the value in this provider
+     * changes.
      *
      * @return A config binder for use with this provider.
      */

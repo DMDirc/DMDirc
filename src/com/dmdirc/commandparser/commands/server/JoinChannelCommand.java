@@ -60,18 +60,18 @@ public class JoinChannelCommand extends Command implements
     public static final CommandInfo INFO = new BaseCommandInfo("join",
             "join <channel [key]>[,channel [key]...] - joins the specified channel(s)",
             CommandType.TYPE_SERVER);
-
     /** A map of channel name mentions. */
     private final MapList<FrameContainer, String> mentions = new MapList<>();
 
     /**
      * Creates a new instance of the join channel command.
      *
-     * @param controller The controller to use to retrieve command information.
+     * @param controller       The controller to use to retrieve command information.
      * @param actionController The action controller to register listeners with.
      */
     @Inject
-    public JoinChannelCommand(final CommandController controller, final ActionController actionController) {
+    public JoinChannelCommand(final CommandController controller,
+            final ActionController actionController) {
         super(controller);
         actionController.registerListener(this, CoreActionType.CLIENT_LINE_ADDED);
     }
@@ -159,13 +159,14 @@ public class JoinChannelCommand extends Command implements
     }
 
     /**
-     * Checks a hierarchy of frame containers for channels which have been
-     * mentioned.
+     * Checks a hierarchy of frame containers for channels which have been mentioned.
      *
-     * @param source The base frame container to check
-     * @param checkParents Whether or not to check that frame's parents
+     * @param source        The base frame container to check
+     * @param checkParents  Whether or not to check that frame's parents
      * @param checkChildren Whether or not to check that frame's children
+     *
      * @return A list of channel names which have been mentioned in the hierarchy
+     *
      * @since 0.6.4
      */
     protected List<String> checkSource(final FrameContainer source,

@@ -92,142 +92,111 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The Server class represents the client's view of a server. It maintains
- * a list of all channels, queries, etc, and handles parser callbacks pertaining
- * to the server.
+ * The Server class represents the client's view of a server. It maintains a list of all channels,
+ * queries, etc, and handles parser callbacks pertaining to the server.
  */
 @Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
 public class Server extends WritableFrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
-
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
     /** The name of the profile domain. */
     private static final String DOMAIN_PROFILE = "profile";
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
-
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels = new ConcurrentSkipListMap<>();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
-
     /** The Parser instance handling this server. */
     private Parser parser;
     /** The Parser instance that used to be handling this server. */
     private Parser oldParser;
     /** The parser-supplied protocol description object. */
     private ProtocolDescription protocolDescription;
-
     /**
-     * Object used to synchronise access to parser. This object should be
-     * locked by anything requiring that the parser reference remains the same
-     * for a duration of time, or by anything which is updating the parser
-     * reference.
+     * Object used to synchronise access to parser. This object should be locked by anything
+     * requiring that the parser reference remains the same for a duration of time, or by anything
+     * which is updating the parser reference.
      *
-     * If used in conjunction with myStateLock, the parserLock must always be
-     * locked INSIDE the myStateLock to prevent deadlocks.
+     * If used in conjunction with myStateLock, the parserLock must always be locked INSIDE the
+     * myStateLock to prevent deadlocks.
      */
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
-
     /** The raw frame used for this server instance. */
     private Raw raw;
-
     /** The address of the server we're connecting to. */
     private URI address;
-
     /** The profile we're using. */
     private ConfigProvider profile;
-
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
-
     /** The current state of this server. */
     private final ServerStatus myState = new ServerStatus(this, myStateLock);
-
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
-
     /** The timer we're using to send WHO requests. */
     private final Timer whoTimer;
-
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter;
-
     /** Our reason for being away, if any. */
     private String awayMessage;
-
     /** Our event handler. */
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
-
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<>();
-
     /** A set of channels we want to join without focusing. */
     private final Set<String> backgroundChannels = new HashSet<>();
-
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
-
     /** Our string convertor. */
     private StringConverter converter = new DefaultStringConverter();
-
     /** The certificate manager in use, if any. */
     private CertificateManager certificateManager;
-
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
-
     /** ServerManager that created us. */
     private final ServerManager manager;
-
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
-
     /** Window manager to pas to children. */
     private final WindowManager windowManager;
-
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
-
     /** Factory to use for creating channels. */
     private final ChannelFactory channelFactory;
-
     /** Factory to use for creating queries. */
     private final QueryFactory queryFactory;
-
     /** Factory to use for creating raw windows. */
     private final RawFactory rawFactory;
-
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
-
     /** The manager to use to add status bar messages. */
     private final StatusBarManager statusBarManager;
 
     /**
-     * Creates a new server which will connect to the specified URL with
-     * the specified profile.
+     * Creates a new server which will connect to the specified URL with the specified profile.
      *
      * @since 0.6.3
-     * @param manager The server manager that owns this server.
-     * @param configMigrator The migrateable configuration manager to read config settings from.
-     * @param commandParser The parser to use for commands in this server's window.
-     * @param parserFactory The factory to use to generate parsers.
+     * @param manager             The server manager that owns this server.
+     * @param configMigrator      The migrateable configuration manager to read config settings
+     *                            from.
+     * @param commandParser       The parser to use for commands in this server's window.
+     * @param parserFactory       The factory to use to generate parsers.
      * @param tabCompleterFactory The factory to use for tab completers.
-     * @param identityFactory The factory to use to create identities.
-     * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param statusBarManager The manager to use to add status bar messages.
-     * @param windowManager Window Manager
-     * @param channelFactory The factory to use to create channels.
-     * @param queryFactory The factory to use to create queries.
-     * @param rawFactory The factory to use to create raw windows.
-     * @param urlBuilder The URL builder to use when finding icons.
-     * @param userSettings The config provider to write user settings to.
-     * @param uri The address of the server to connect to
-     * @param profile The profile to use
+     * @param identityFactory     The factory to use to create identities.
+     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param statusBarManager    The manager to use to add status bar messages.
+     * @param windowManager       Window Manager
+     * @param channelFactory      The factory to use to create channels.
+     * @param queryFactory        The factory to use to create queries.
+     * @param rawFactory          The factory to use to create raw windows.
+     * @param urlBuilder          The URL builder to use when finding icons.
+     * @param userSettings        The config provider to write user settings to.
+     * @param uri                 The address of the server to connect to
+     * @param profile             The profile to use
      */
     public Server(
             final ServerManager manager,
@@ -254,9 +223,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                    WindowComponent.TEXTAREA.getIdentifier(),
-                    WindowComponent.INPUTFIELD.getIdentifier(),
-                    WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+                WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier(),
+                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         this.manager = manager;
         this.parserFactory = parserFactory;
@@ -292,11 +261,10 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
-     * Updates the connection details for this server. If the specified URI
-     * does not define a port, the default port from the protocol description
-     * will be used.
+     * Updates the connection details for this server. If the specified URI does not define a port,
+     * the default port from the protocol description will be used.
      *
-     * @param uri The new URI that this server should connect to
+     * @param uri     The new URI that this server should connect to
      * @param profile The profile that this server should use
      */
     private void setConnectionDetails(final URI uri, final ConfigProvider profile) {
@@ -399,7 +367,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             parser.connect();
             if (parser instanceof ThreadedParser) {
-                ((ThreadedParser)parser).getControlThread().setName("Parser - " + connectAddress.getHost());
+                ((ThreadedParser) parser).getControlThread().setName("Parser - " + connectAddress.
+                        getHost());
             }
         }
 
@@ -440,17 +409,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             log.info("Disconnecting. Current state: {}", myState.getState());
 
             switch (myState.getState()) {
-            case CLOSING:
-            case DISCONNECTING:
-            case DISCONNECTED:
-            case TRANSIENTLY_DISCONNECTED:
-                return;
-            case RECONNECT_WAIT:
-                log.debug("Cancelling reconnection timer");
-                reconnectTimer.cancel();
-                break;
-            default:
-                break;
+                case CLOSING:
+                case DISCONNECTING:
+                case DISCONNECTED:
+                case TRANSIENTLY_DISCONNECTED:
+                    return;
+                case RECONNECT_WAIT:
+                    log.debug("Cancelling reconnection timer");
+                    reconnectTimer.cancel();
+                    break;
+                default:
+                    break;
             }
 
             clearChannels();
@@ -642,7 +611,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
                 || getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "hidechannels"));
+                "hidechannels"));
     }
 
     /** {@inheritDoc} */
@@ -704,12 +673,14 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
-     * Retrieves the host component of the specified URI, or throws a relevant
-     * exception if this is not possible.
+     * Retrieves the host component of the specified URI, or throws a relevant exception if this is
+     * not possible.
      *
      * @param uri The URI to be processed
+     *
      * @return The URI's host component, as returned by {@link URI#getHost()}.
-     * @throws NullPointerException If <code>uri</code> is null
+     *
+     * @throws NullPointerException     If <code>uri</code> is null
      * @throws IllegalArgumentException If the specified URI has no host
      * @since 0.6.4
      */
@@ -875,13 +846,13 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     /** {@inheritDoc} */
     @Override
-    public void join(final ChannelJoinRequest ... requests) {
+    public void join(final ChannelJoinRequest... requests) {
         join(true, requests);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void join(final boolean focus, final ChannelJoinRequest ... requests) {
+    public void join(final boolean focus, final ChannelJoinRequest... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
                 final List<ChannelJoinRequest> pending = new ArrayList<>();
@@ -1009,10 +980,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
-     * Calculates a network name from the specified server name. This method
-     * implements parts 2-4 of the procedure documented at getNetwork().
+     * Calculates a network name from the specified server name. This method implements parts 2-4 of
+     * the procedure documented at getNetwork().
      *
      * @param serverName The server name to parse
+     *
      * @return A network name for the specified server
      */
     protected static String getNetworkFromServerName(final String serverName) {
@@ -1191,8 +1163,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 final Object[] arguments = new Object[]{
                     address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
                     address.getPort(), parser == null ? "Unknown" : getNetwork(),
-                    parser == null ? "Unknown" : parser.getLocalClient().getNickname(),
-                };
+                    parser == null ? "Unknown" : parser.getLocalClient().getNickname(),};
 
                 setName(Formatter.formatMessage(getConfigManager(),
                         "serverName", arguments));
@@ -1213,8 +1184,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     }
 
     /**
-     * Called when the server says that the nickname we're trying to use is
-     * already in use.
+     * Called when the server says that the nickname we're trying to use is already in use.
      *
      * @param nickname The nickname that we were trying to use
      */
@@ -1250,7 +1220,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * Called when the server sends a numeric event.
      *
      * @param numeric The numeric code for the event
-     * @param tokens The (tokenised) arguments of the event
+     * @param tokens  The (tokenised) arguments of the event
      */
     public void onNumeric(final int numeric, final String[] tokens) {
         String snumeric = String.valueOf(numeric);
@@ -1433,7 +1403,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 Long.valueOf(parser.getPingTime()));
 
         if (parser.getPingTime()
-                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
+                >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
             log.warn("Server appears to be stoned, reconnecting");
             handleNotification("stonedServer", getAddress());
             reconnect();
@@ -1601,7 +1571,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     /** {@inheritDoc} */
     @Override
-    public void acceptInvites(final Invite ... invites) {
+    public void acceptInvites(final Invite... invites) {
         final ChannelJoinRequest[] requests = new ChannelJoinRequest[invites.length];
 
         for (int i = 0; i < invites.length; i++) {
@@ -1684,7 +1654,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         awayMessage = message;
 
         new Thread(new Runnable() {
-
             /** {@inheritDoc} */
             @Override
             public void run() {

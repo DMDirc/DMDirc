@@ -33,10 +33,9 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 
 /**
- * Represents a command and its arguments. In this class, input is split into
- * 'words' which are separated by any number of whitespace characters;
- * 'arguments' are the same but exclude the first word, which will normally be
- * the command name.
+ * Represents a command and its arguments. In this class, input is split into 'words' which are
+ * separated by any number of whitespace characters; 'arguments' are the same but exclude the first
+ * word, which will normally be the command name.
  *
  * @since 0.6.3m1
  */
@@ -44,19 +43,18 @@ public class CommandArguments {
 
     /** The raw line that was input. */
     private final String line;
-
     /** The line split into whitespace-delimited words. */
     private String[] words;
-
     /** Command controller to consult for command chars, etc. */
     private final CommandController controller;
 
     /**
      * Creates a new command arguments parser for the specified line.
      *
-     * @param controller The command controller to consult for information
-     * about command characters, etc.
-     * @param line The line to be parsed
+     * @param controller The command controller to consult for information about command characters,
+     *                   etc.
+     * @param line       The line to be parsed
+     *
      * @since 0.6.7
      */
     public CommandArguments(final CommandController controller, final String line) {
@@ -67,9 +65,10 @@ public class CommandArguments {
     /**
      * Creates a new command arguments parser for the specified words.
      *
-     * @param controller The command controller to consult for information
-     * about command characters, etc.
-     * @param words The words which form the line ot be parsed
+     * @param controller The command controller to consult for information about command characters,
+     *                   etc.
+     * @param words      The words which form the line ot be parsed
+     *
      * @since 0.6.7
      */
     public CommandArguments(final CommandController controller, final Collection<String> words) {
@@ -90,8 +89,7 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the raw line that was input, including any command character(s)
-     * and names.
+     * Retrieves the raw line that was input, including any command character(s) and names.
      *
      * @return The raw line entered
      */
@@ -100,8 +98,8 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the raw line that was input, including the command name but
-     * stripped of any command characters.
+     * Retrieves the raw line that was input, including the command name but stripped of any command
+     * characters.
      *
      * @return The raw line entered, without command chars
      */
@@ -112,9 +110,8 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the input split into distinct, whitespace-separated words. The
-     * first item in the array will be the command name complete with any
-     * command characters.
+     * Retrieves the input split into distinct, whitespace-separated words. The first item in the
+     * array will be the command name complete with any command characters.
      *
      * @return An array of 'words' that make up the input
      */
@@ -125,8 +122,7 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the arguments to the command split into disticnt,
-     * whitespace-separated words.
+     * Retrieves the arguments to the command split into disticnt, whitespace-separated words.
      *
      * @return An array of 'words' that make up the command's arguments
      */
@@ -137,8 +133,8 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves all the arguments to the command (i.e., not including the
-     * command name) with their original whitespace separation preserved.
+     * Retrieves all the arguments to the command (i.e., not including the command name) with their
+     * original whitespace separation preserved.
      *
      * @return A String representation of the command arguments
      */
@@ -147,11 +143,11 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves arguments to the command (i.e., not including the
-     * command name) starting with the specified argument, with their original
-     * whitespace separation preserved.
+     * Retrieves arguments to the command (i.e., not including the command name) starting with the
+     * specified argument, with their original whitespace separation preserved.
      *
      * @param start The index of the first argument to include
+     *
      * @return A String representation of the command arguments
      */
     public String getArgumentsAsString(final int start) {
@@ -161,12 +157,12 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves arguments to the command (i.e., not including the
-     * command name) starting with the specified argument, with their original
-     * whitespace separation preserved.
+     * Retrieves arguments to the command (i.e., not including the command name) starting with the
+     * specified argument, with their original whitespace separation preserved.
      *
      * @param start The index of the first argument to include
-     * @param end The index of the last argument to include
+     * @param end   The index of the last argument to include
+     *
      * @return A String representation of the command arguments
      */
     public String getArgumentsAsString(final int start, final int end) {
@@ -174,10 +170,10 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the specified words with their original whitespace separation
-     * preserved.
+     * Retrieves the specified words with their original whitespace separation preserved.
      *
      * @param start The index of the first word to include (starting at 0)
+     *
      * @return A String representation of the requested words
      */
     public String getWordsAsString(final int start) {
@@ -187,11 +183,11 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the specified words with their original whitespace separation
-     * preserved.
+     * Retrieves the specified words with their original whitespace separation preserved.
      *
      * @param start The index of the first word to include (starting at 0)
-     * @param end The index of the last word to include
+     * @param end   The index of the last word to include
+     *
      * @return A String representation of the requested words
      */
     @Precondition("Start index is less than or equal to end index")

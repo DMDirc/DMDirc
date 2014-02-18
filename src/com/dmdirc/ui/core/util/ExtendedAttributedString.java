@@ -35,7 +35,7 @@ public class ExtendedAttributedString {
     /**
      * Creates a new extended attributed string with the specified information.
      *
-     * @param string Attributed string
+     * @param string     Attributed string
      * @param lineHeight Line height
      */
     public ExtendedAttributedString(final AttributedString string, final int lineHeight) {
@@ -78,4 +78,5 @@ public class ExtendedAttributedString {
     public AttributedString getAttributedString() {
         return string;
     }
+
 }

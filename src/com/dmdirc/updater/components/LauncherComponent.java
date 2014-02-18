@@ -37,7 +37,6 @@ public class LauncherComponent implements UpdateComponent {
 
     /** The platform of our current launcher. */
     private static String platform = "";
-
     /** The version of our current launcher. */
     private static Version version = new Version();
 
@@ -45,7 +44,7 @@ public class LauncherComponent implements UpdateComponent {
      * Parses the specified launcher information.
      *
      * @param manager THe manager to update with the launcher component.
-     * @param info The platform and version of the launcher, separated by '-'.
+     * @param info    The platform and version of the launcher, separated by '-'.
      */
     public static void setLauncherInfo(final UpdateManager manager, final String info) {
         final int hpos = info.indexOf('-');

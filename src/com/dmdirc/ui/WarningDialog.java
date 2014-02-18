@@ -55,7 +55,6 @@ public class WarningDialog extends JDialog {
             + "plugins, which are required for you to use DMDirc.  You can "
             + "either download a UI plugin or extract one from the jar. DMDirc "
             + "will now exit";
-
     /** Alternative Dialog heading text. */
     public static final String NO_COMPAT_UIS_TITLE = "No compatible UIs Found";
     /** Alternative Dialog body text. */
@@ -66,18 +65,16 @@ public class WarningDialog extends JDialog {
             + "default swing UI. DMDirc will now attempt to restart. If you "
             + "are not using the launcher you will need to restart DMDirc "
             + "manually.";
-
     /** Another alternative Dialog body text! */
     public static final String NO_RECOV_UIS = "DMDirc did not find any "
             + "compatible UI plugins, which are required for you to use DMDirc."
             + "  The bundled UI plugins were automatically extracted from the "
             + "jar, but this did not fix the problem. DMDirc is unable to "
             + "continue and will now exit.";
-
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = -528603916540455179L;
 
@@ -90,7 +87,7 @@ public class WarningDialog extends JDialog {
      * Create a new NoUIDialog.
      *
      * @param title Title of dialog
-     * @param body Body of dialog
+     * @param body  Body of dialog
      */
     public WarningDialog(final String title, final String body) {
         super((Window) null);
@@ -105,7 +102,6 @@ public class WarningDialog extends JDialog {
 
         final JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
-
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -136,8 +132,7 @@ public class WarningDialog extends JDialog {
         panel.add(button, BorderLayout.SOUTH);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                panel.getBorder()
-                ));
+                panel.getBorder()));
         add(panel);
     }
 
@@ -146,7 +141,6 @@ public class WarningDialog extends JDialog {
      */
     public void display() {
         SwingUtilities.invokeLater(new Runnable() {
-
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -158,27 +152,24 @@ public class WarningDialog extends JDialog {
     }
 
     /**
-     * Static method to instantiate and display the dialog, blocking until it
-     * is closed.
+     * Static method to instantiate and display the dialog, blocking until it is closed.
      */
     public void displayBlocking() {
         final Semaphore semaphore = new Semaphore(0);
         SwingUtilities.invokeLater(new Runnable() {
-
             /** {@inheritDoc} */
             @Override
             public void run() {
                 addWindowListener(new WindowAdapter() {
-
                     @Override
                     public void windowClosed(final WindowEvent e) {
                         semaphore.release();
                     }
-
                 });
             }
         });
         display();
         semaphore.acquireUninterruptibly();
     }
+
 }

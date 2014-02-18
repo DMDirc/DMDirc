@@ -33,10 +33,9 @@ import java.util.regex.Pattern;
 public interface MessageSink {
 
     /**
-     * Returns a regular expression pattern that can be used to determine if
-     * this sink matches a given configuration entry. If the pattern contains
-     * groups, the values of the matched groups are passed into the
-     * handleMessage method.
+     * Returns a regular expression pattern that can be used to determine if this sink matches a
+     * given configuration entry. If the pattern contains groups, the values of the matched groups
+     * are passed into the handleMessage method.
      *
      * @return Pattern to matches a config entry
      */
@@ -45,12 +44,12 @@ public interface MessageSink {
     /**
      * Handles a message which has been directed to this sink.
      *
-     * @param despatcher The manager that is despatching the message
-     * @param source The original source of the message
+     * @param despatcher     The manager that is despatching the message
+     * @param source         The original source of the message
      * @param patternMatches An array of groups matched from this sink's pattern
-     * @param date The date at which the message occurred
-     * @param messageType The type of the message (used for formatting)
-     * @param args The message arguments
+     * @param date           The date at which the message occurred
+     * @param messageType    The type of the message (used for formatting)
+     * @param args           The message arguments
      */
     void handleMessage(final MessageSinkManager despatcher,
             final WritableFrameContainer source,

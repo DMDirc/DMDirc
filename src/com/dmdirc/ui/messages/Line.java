@@ -28,7 +28,6 @@ import com.dmdirc.ui.core.util.Utils;
 import java.text.AttributedString;
 import java.util.Arrays;
 
-
 /**
  * Represents a line of text in IRC.
  */
@@ -42,10 +41,10 @@ public class Line {
     /**
      * Creates a new line with a specified height.
      *
-     * @param styliser The styliser to use to style this line
+     * @param styliser  The styliser to use to style this line
      * @param lineParts Parts of the line
-     * @param fontSize The height for this line
-     * @param fontName The name of the font to use for this line
+     * @param fontSize  The height for this line
+     * @param fontName  The name of the font to use for this line
      */
     public Line(final Styliser styliser, final String[] lineParts,
             final int fontSize, final String fontName) {
@@ -158,4 +157,5 @@ public class Line {
     public int hashCode() {
         return Arrays.hashCode(getLineParts());
     }
+
 }

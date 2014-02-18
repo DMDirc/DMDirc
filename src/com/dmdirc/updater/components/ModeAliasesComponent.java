@@ -49,7 +49,7 @@ public class ModeAliasesComponent implements UpdateComponent {
      * Creates a new instance of {@link DefaultsComponent}.
      *
      * @param identityController The controller to read settings from.
-     * @param directory The directory to place mode aliases in.
+     * @param directory          The directory to place mode aliases in.
      */
     @Inject
     public ModeAliasesComponent(

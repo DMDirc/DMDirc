@@ -23,8 +23,7 @@
 package com.dmdirc.tls;
 
 /**
- * An enumeration of the possible trust states for an X509 cert chain received
- * from a remote server.
+ * An enumeration of the possible trust states for an X509 cert chain received from a remote server.
  */
 public enum TrustResult {
 
@@ -32,11 +31,12 @@ public enum TrustResult {
     TRUSTED_CA(true),
     /** There are no issues and the cert is manually trusted by the user. */
     TRUSTED_MANUALLY(true),
-    /** The certificate chain was untrusted because it failed validation. */
+    /** The certificate chain was untrusted because
+     * it failed validation. */
     UNTRUSTED_EXCEPTION(false),
-    /** The certificate chain validated but isn't explicitly trusted. */
+    /** The certificate chain validated but isn't
+     * explicitly trusted. */
     UNTRUSTED_GENERAL(false);
-
     /** Whether or not this result means the cert chain is trusted. */
     private final boolean trusted;
 
@@ -57,4 +57,5 @@ public enum TrustResult {
     public boolean isTrusted() {
         return trusted;
     }
+
 }

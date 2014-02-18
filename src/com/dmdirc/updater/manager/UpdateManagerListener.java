@@ -23,8 +23,7 @@
 package com.dmdirc.updater.manager;
 
 /**
- * Interface for objects interested in the status of a
- * {@link CachingUpdateManager}.
+ * Interface for objects interested in the status of a {@link CachingUpdateManager}.
  */
 public interface UpdateManagerListener {
 
@@ -32,7 +31,7 @@ public interface UpdateManagerListener {
      * Called when the status of the {@link UpdateManager} changes.
      *
      * @param manager The manager whose status has changed
-     * @param status The new status of the manager
+     * @param status  The new status of the manager
      */
     void updateManagerStatusChanged(UpdateManager manager, UpdateManagerStatus status);
 

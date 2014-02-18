@@ -44,9 +44,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * The help command shows the user a list of available commands, along with
- * their arguments, and a description. It is context-aware, so channel commands
- * are only displayed when in a channel window, for example.
+ * The help command shows the user a list of available commands, along with their arguments, and a
+ * description. It is context-aware, so channel commands are only displayed when in a channel
+ * window, for example.
  */
 public class Help extends Command implements IntelligentCommand {
 
@@ -79,7 +79,7 @@ public class Help extends Command implements IntelligentCommand {
     /**
      * Shows a list of all commands valid for the current window.
      *
-     * @param origin The window the command was executed in
+     * @param origin   The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
     private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
@@ -115,9 +115,9 @@ public class Help extends Command implements IntelligentCommand {
     /**
      * Shows information about the specified command.
      *
-     * @param origin The window the command was executed in
+     * @param origin   The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
-     * @param name The name of the command to display info for
+     * @param name     The name of the command to display info for
      */
     private void showCommand(final FrameContainer origin, final boolean isSilent,
             final String name) {

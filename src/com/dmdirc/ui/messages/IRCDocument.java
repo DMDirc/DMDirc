@@ -43,9 +43,9 @@ import javax.swing.UIManager;
 public class IRCDocument implements Serializable, ConfigChangeListener {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 4;
     /** List of lines of text. */
@@ -71,7 +71,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Creates a new instance of IRCDocument.
      *
      * @param configManager Config Manager for required settings.
-     * @param styliser Styliser to style text
+     * @param styliser      Styliser to style text
+     *
      * @since 0.6.3
      */
     public IRCDocument(final AggregateConfigProvider configManager,
@@ -117,21 +118,19 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         }
     }
 
-     /**
-     * Adds the stylised strings to the canvas.  Each part of the array is
-     * treated as a separate namespace for stylising but are all added on the
-     * same line.
+    /**
+     * Adds the stylised strings to the canvas. Each part of the array is treated as a separate
+     * namespace for stylising but are all added on the same line.
      *
      * @param text stylised string to add to the document
      */
     public void addText(final String[] text) {
-        addText(Arrays.asList(new String[][]{text, }));
+        addText(Arrays.asList(new String[][]{text,}));
     }
 
     /**
-     * Adds the stylised strings to the canvas.  Each part of the array is
-     * treated as a separate namespace for stylising but are all added on the
-     * same line.
+     * Adds the stylised strings to the canvas. Each part of the array is treated as a separate
+     * namespace for stylising but are all added on the same line.
      *
      * @param text stylised strings to add to the document
      */
@@ -147,11 +146,10 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Adds the stylised string to the canvas.  Each part of the array is
-     * treated as a separate namespace for stylising but are all added on the
-     * same line.
+     * Adds the stylised string to the canvas. Each part of the array is treated as a separate
+     * namespace for stylising but are all added on the same line.
      *
-     * @param text stylised string to add to the document
+     * @param text        stylised string to add to the document
      * @param lineHeights line heights for the new lines
      */
     public void addText(final List<String[]> text,
@@ -222,7 +220,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Fires the lines added method on all listeners.
      *
      * @param index Index of the added line
-     * @param size Number of lines added
+     * @param size  Number of lines added
      */
     protected void fireLinesAdded(final int index, final int size) {
         for (IRCDocumentListener listener
@@ -235,7 +233,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /**
      * Fires the trimmed method on all listeners.
      *
-     * @param newSize New document size
+     * @param newSize     New document size
      * @param trimedLines Number of trimmed lines
      */
     protected void fireTrimmed(final int newSize, final int trimedLines) {
@@ -266,8 +264,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Returns an attributed character iterator for a particular line,
-     * utilising the document cache where possible.
+     * Returns an attributed character iterator for a particular line, utilising the document cache
+     * where possible.
      *
      * @param line Line to be styled
      *
@@ -292,8 +290,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Returns an attributed string for a particular line, utilising the
-     * document cache where possible.
+     * Returns an attributed string for a particular line, utilising the document cache where
+     * possible.
      *
      * @param line Line number to be styled
      *
@@ -358,5 +356,5 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         }
         fireRepaintNeeded();
     }
-}
 
+}

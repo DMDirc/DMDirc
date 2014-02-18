@@ -35,8 +35,8 @@ public interface LifecycleController {
     /**
      * Quits the client nicely, with the default closing message.
      *
-     * @param exitCode This is the exit code that will be returned to the
-     *                  operating system when the client exits
+     * @param exitCode This is the exit code that will be returned to the operating system when the
+     *                 client exits
      */
     void quit(final int exitCode);
 
@@ -50,9 +50,9 @@ public interface LifecycleController {
     /**
      * Quits the client nicely.
      *
-     * @param reason The quit reason to send
-     * @param exitCode This is the exit code that will be returned to the
-     *                  operating system when the client exits
+     * @param reason   The quit reason to send
+     * @param exitCode This is the exit code that will be returned to the operating system when the
+     *                 client exits
      */
     void quit(final String reason, final int exitCode);
 

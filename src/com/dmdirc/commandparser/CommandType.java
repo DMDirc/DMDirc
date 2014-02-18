@@ -29,9 +29,11 @@ public enum CommandType {
 
     /** A global command, which may be executed anywhere. */
     TYPE_GLOBAL,
-    /** A server command, which only makes sense in the context of a connection. */
+    /** A server command, which only makes sense in the context of a
+     * connection. */
     TYPE_SERVER,
-    /** A chat command, which needs a MessageTarget to make sense. */
+    /** A chat command, which needs a MessageTarget to make
+     * sense. */
     TYPE_CHAT,
     /** A channel command. */
     TYPE_CHANNEL,
@@ -39,11 +41,10 @@ public enum CommandType {
     TYPE_QUERY;
 
     /**
-     * Retrieves an array of component types that make up this command type.
-     * Generally this will only contain the type itself, but some commands may
-     * be registered in multiple queues (such as CHANNEL commands going into
-     * both CHAT and CHANNEL queues). Note that for obvious reasons there is
-     * no recursion done on the values returned here.
+     * Retrieves an array of component types that make up this command type. Generally this will
+     * only contain the type itself, but some commands may be registered in multiple queues (such as
+     * CHANNEL commands going into both CHAT and CHANNEL queues). Note that for obvious reasons
+     * there is no recursion done on the values returned here.
      *
      * @since 0.6.3m1
      * @return An array of types which this type should be registered as.
@@ -74,4 +75,5 @@ public enum CommandType {
                 return "Unknown";
         }
     }
+
 }

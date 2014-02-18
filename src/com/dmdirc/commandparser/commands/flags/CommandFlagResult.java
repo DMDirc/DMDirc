@@ -27,14 +27,12 @@ import com.dmdirc.commandparser.CommandArguments;
 import java.util.Map;
 
 /**
- * Convenient wrapper around the results of a {@link CommandFlagHandler}'s
- * parsing routines.
+ * Convenient wrapper around the results of a {@link CommandFlagHandler}'s parsing routines.
  */
 public class CommandFlagResult {
 
     /** The original arguments for the command. */
     private final CommandArguments arguments;
-
     /** The offsets of the first argument for each flag. */
     private final Map<CommandFlag, Integer> offsets;
 
@@ -42,7 +40,7 @@ public class CommandFlagResult {
      * Creates a new CommandFlagResult with the specified results.
      *
      * @param arguments The original arguments for the command
-     * @param offsets The offsets for each flag's arguments
+     * @param offsets   The offsets for each flag's arguments
      */
     public CommandFlagResult(final CommandArguments arguments,
             final Map<CommandFlag, Integer> offsets) {
@@ -51,10 +49,10 @@ public class CommandFlagResult {
     }
 
     /**
-     * Determines if the specified command flag has been used when the command
-     * was executed.
+     * Determines if the specified command flag has been used when the command was executed.
      *
      * @param flag The flag to be checked
+     *
      * @return True iff the flag was specified legally, false otherwise
      */
     public boolean hasFlag(final CommandFlag flag) {
@@ -65,7 +63,9 @@ public class CommandFlagResult {
      * Retrieves all of the arguments passed for the specified flag as a string.
      *
      * @param flag The flag to retrieve arguments for
+     *
      * @return The arguments passed with the specified flag
+     *
      * @see #getArguments(com.dmdirc.commandparser.commands.flags.CommandFlag)
      */
     public String getArgumentsAsString(final CommandFlag flag) {
@@ -87,13 +87,14 @@ public class CommandFlagResult {
     }
 
     /**
-     * Retrieves a subset of the arguments not associated with any flags,
-     * starting at the specified offset.
+     * Retrieves a subset of the arguments not associated with any flags, starting at the specified
+     * offset.
      *
      * @see CommandArguments#getArgumentsAsString(int)
      * @param offset The offset of the argument to start at
-     * @return All arguments that aren't associated with a flag, as a string,
-     * starting with the argument at the specified offset
+     *
+     * @return All arguments that aren't associated with a flag, as a string, starting with the
+     *         argument at the specified offset
      */
     public String getArgumentsAsString(final int offset) {
         return arguments.getArgumentsAsString(offsets.get(null) + offset);
@@ -103,7 +104,9 @@ public class CommandFlagResult {
      * Retrieves the arguments passed with the specified flag as an array.
      *
      * @param flag The flag to be checked
+     *
      * @return The arguments passed with the specified flag
+     *
      * @see #getArgumentsAsString(com.dmdirc.commandparser.commands.flags.CommandFlag)
      */
     public String[] getArguments(final CommandFlag flag) {

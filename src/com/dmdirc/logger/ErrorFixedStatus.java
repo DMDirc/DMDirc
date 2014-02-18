@@ -26,6 +26,7 @@ package com.dmdirc.logger;
  * Error fixed status.
  */
 public enum ErrorFixedStatus {
+
     /** Not applicable. */
     NEW("New bug"),
     /** Finished state. */
@@ -38,11 +39,12 @@ public enum ErrorFixedStatus {
     UNREPORTED("Unreported"),
     /** Client too old. */
     TOOOLD("Client too old - please update"),
-    /** Duplicate bug exists in list. @since 0.6.3m2 */
+    /** Duplicate bug exists in list.
+     *
+     * @since 0.6.3m2 */
     DUPLICATE("Duplicate bug exists in list"),
     /** Unknown state. */
     UNKNOWN("Unknown status");
-
     /** toString value of the item. */
     private String value;
 
@@ -60,4 +62,5 @@ public enum ErrorFixedStatus {
     public String toString() {
         return value;
     }
+
 }

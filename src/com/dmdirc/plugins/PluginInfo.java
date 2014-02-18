@@ -50,6 +50,7 @@ import java.util.TreeMap;
 import javax.inject.Provider;
 
 import org.slf4j.LoggerFactory;
+
 import dagger.ObjectGraph;
 
 /**
@@ -58,7 +59,6 @@ import dagger.ObjectGraph;
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(PluginInfo.class);
-
     /** The metadata for this plugin. */
     private final PluginMetaData metaData;
     /** The initialiser to use for the injector. */
@@ -95,10 +95,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Create a new PluginInfo.
      *
-     * @param metadata The plugin's metadata information
+     * @param metadata            The plugin's metadata information
      * @param injectorInitialiser The initialiser to use for the plugin's injector.
-     * @param identityController The identity controller to add and remove settings from.
-     * @param objectGraph The object graph to give to plugins for DI purposes.
+     * @param identityController  The identity controller to add and remove settings from.
+     * @param objectGraph         The object graph to give to plugins for DI purposes.
+     *
      * @throws PluginException if there is an error loading the Plugin
      */
     public PluginInfo(
@@ -153,8 +154,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Updates the list of known classes within this plugin from the specified
-     * resource manager.
+     * Updates the list of known classes within this plugin from the specified resource manager.
      *
      * @param res Resource manager to use to read the plugin contents.
      */
@@ -170,8 +170,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Retrieves the injector used to inject parameters into this
-     * plugin's methods.
+     * Retrieves the injector used to inject parameters into this plugin's methods.
      *
      * @return The injector used for this plugin
      */
@@ -227,8 +226,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Get the licence for this plugin if it exists.
      *
-     * @return An InputStream for the licence of this plugin, or null if no
-     *         licence found.
+     * @return An InputStream for the licence of this plugin, or null if no licence found.
+     *
      * @throws IOException if there is an error with the ResourceManager.
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
@@ -270,8 +269,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Try get the identities for this plugin.
-     * This will unload any identities previously loaded by this plugin.
+     * Try get the identities for this plugin. This will unload any identities previously loaded by
+     * this plugin.
      */
     private void loadIdentities() {
         try {
@@ -291,7 +290,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 synchronized (configProviders) {
                     try {
-                        final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(stream, false);
+                        final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(
+                                stream, false);
                         identityController.addConfigProvider(configProvider);
                         configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {
@@ -354,8 +354,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Called when the plugin is updated using the updater.
-     * Reloads metaData and updates the list of files.
+     * Called when the plugin is updated using the updater. Reloads metaData and updates the list of
+     * files.
      */
     public void pluginUpdated() {
         try {
@@ -372,8 +372,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Try to reload the metaData from the plugin.config file.
-     * If this fails, the old data will be used still.
+     * Try to reload the metaData from the plugin.config file. If this fails, the old data will be
+     * used still.
      *
      * @return true if metaData was reloaded ok, else false.
      */
@@ -387,6 +387,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Gets a resource manager for this plugin
      *
      * @return The resource manager for this plugin
+     *
      * @throws IOException if there is any problem getting a ResourceManager for this plugin
      */
     public ResourceManager getResourceManager() throws IOException {
@@ -397,23 +398,25 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Get the resource manager for this plugin
      *
      * @return The resource manager for this plugin
+     *
      * @param forceNew Force a new resource manager rather than using the old one.
+     *
      * @throws IOException if there is any problem getting a ResourceManager for this plugin
      * @since 0.6
      */
-    public synchronized ResourceManager getResourceManager(final boolean forceNew) throws IOException {
+    public synchronized ResourceManager getResourceManager(final boolean forceNew) throws
+            IOException {
         if (resourceManager == null || forceNew) {
-            resourceManager = ResourceManager.getResourceManager("jar://" + metaData.getPluginUrl().getPath());
+            resourceManager = ResourceManager.getResourceManager("jar://" + metaData.getPluginUrl().
+                    getPath());
 
             // Clear the resourcemanager in 10 seconds to stop us holding the file open
             new Timer(filename + "-resourcemanagerTimer").schedule(new TimerTask() {
-
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
                     resourceManager = null;
                 }
-
             }, 10000);
         }
 
@@ -450,8 +453,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Is this plugin loaded?
      *
-     * @return True if the plugin is currently (non-temporarily) loaded, false
-     * otherwise
+     * @return True if the plugin is currently (non-temporarily) loaded, false otherwise
      */
     public boolean isLoaded() {
         return plugin != null && !tempLoaded;
@@ -460,8 +462,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Is this plugin temporarily loaded?
      *
-     * @return True if this plugin is currently temporarily loaded, false
-     * otherwise
+     * @return True if this plugin is currently temporarily loaded, false otherwise
      */
     public boolean isTempLoaded() {
         return plugin != null && tempLoaded;
@@ -560,11 +561,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Attempts to load the specified required plugin.
      *
      * @param name The name of the plugin to be loaded
+     *
      * @return True if the plugin was found and loaded, false otherwise
      */
     protected boolean loadRequiredPlugin(final String name) {
         log.info("Loading required plugin '{}' for plugin {}",
-                new Object[] { name, metaData.getName() });
+                new Object[]{name, metaData.getName()});
 
         final PluginInfo pi = metaData.getManager().getPluginInfoByName(name);
 
@@ -690,13 +692,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     loaders[0] = parent.getPluginClassLoader();
 
                     if (loaders[0] == null) {
-                        lastError = "Unable to get classloader from required parent '" + parentName + "' for " + metaData.getName();
+                        lastError = "Unable to get classloader from required parent '" + parentName
+                                + "' for " + metaData.getName();
                         return;
                     }
                 }
             }
 
-            pluginClassLoader = new PluginClassLoader(this, metaData.getManager().getGlobalClassLoader(), loaders);
+            pluginClassLoader = new PluginClassLoader(this, metaData.getManager().
+                    getGlobalClassLoader(), loaders);
         }
     }
 
@@ -799,11 +803,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
-     * Can this plugin be unloaded?
-     * Will return false if:
-     *   - The plugin is persistent (all its classes are loaded into the global class loader)
-     *   - The plugin isn't currently loaded
-     *   - The metadata key "unloadable" is set to false, no or 0
+     * Can this plugin be unloaded? Will return false if: - The plugin is persistent (all its
+     * classes are loaded into the global class loader) - The plugin isn't currently loaded - The
+     * metadata key "unloadable" is set to false, no or 0
      *
      * @return true if plugin can be unloaded
      */
@@ -905,6 +907,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Is this a persistent class?
      *
      * @param classname class to check persistence of
+     *
      * @return true if file (or whole plugin) is persistent, else false
      */
     public boolean isPersistent(final String classname) {
@@ -943,7 +946,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String serviceName = bits.length > 4 ? bits[4] : bits[0];
 
                 // Add a provides for this
-                final Service service = metaData.getManager().getService("export", serviceName, true);
+                final Service service = metaData.getManager().
+                        getService("export", serviceName, true);
                 synchronized (provides) {
                     service.addProvider(this);
                     provides.add(service);

@@ -19,11 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.config.prefs;
 
 /**
- * Defines methods that should be implemented by objects who wish to be
- * notified about category changes.
+ * Defines methods that should be implemented by objects who wish to be notified about category
+ * changes.
  */
 public interface CategoryChangeListener {
 
@@ -40,4 +41,5 @@ public interface CategoryChangeListener {
      * @param category The category that was deselected
      */
     void categoryDeselected(final PreferencesCategory category);
+
 }

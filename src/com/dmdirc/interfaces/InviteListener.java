@@ -28,8 +28,8 @@ import com.dmdirc.Server;
 import java.util.EventListener;
 
 /**
- * Defines the methods that should be implemented by classes which wish to
- * receive information about invites.
+ * Defines the methods that should be implemented by classes which wish to receive information about
+ * invites.
  */
 public interface InviteListener extends EventListener {
 
@@ -48,4 +48,5 @@ public interface InviteListener extends EventListener {
      * @param invite The invite that has expired
      */
     void inviteExpired(final Server server, final Invite invite);
+
 }

@@ -49,7 +49,7 @@ public class DefaultsComponent implements UpdateComponent {
      * Creates a new instance of {@link DefaultsComponent}.
      *
      * @param identityController The controller to read settings from.
-     * @param directory The directory to place default settings in.
+     * @param directory          The directory to place default settings in.
      */
     @Inject
     public DefaultsComponent(

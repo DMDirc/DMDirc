@@ -66,8 +66,7 @@ public class RemoteServer implements RemoteInterface {
     }
 
     /**
-     * Binds to the RMI registry so that other clients may find this remote
-     * server.
+     * Binds to the RMI registry so that other clients may find this remote server.
      */
     public void bind() {
         RemoteInterface stub;
@@ -91,9 +90,8 @@ public class RemoteServer implements RemoteInterface {
     }
 
     /**
-     * Retrieves a reference to an existing RemoteServer, if there is one.
-     * Note that this must be called before bind(), unless you want a reference
-     * to our own client for some reason.
+     * Retrieves a reference to an existing RemoteServer, if there is one. Note that this must be
+     * called before bind(), unless you want a reference to our own client for some reason.
      *
      * @return The RemoteServer instance, or null if none was available
      */

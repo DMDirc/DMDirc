@@ -42,7 +42,7 @@ import javax.inject.Inject;
 /**
  * The show topic command shows the user the current topic.
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class ShowTopic extends Command implements ExternalCommand {
 
     /** A command info object for this command. */
@@ -71,7 +71,8 @@ public class ShowTopic extends Command implements ExternalCommand {
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, args.isSilent(), "channelNoTopic", cChannel);
             } else {
-                final String[] parts = channel.getConnection().parseHostmask(cChannel.getTopicSetter());
+                final String[] parts = channel.getConnection().parseHostmask(cChannel.
+                        getTopicSetter());
 
                 sendLine(origin, args.isSilent(), "channelTopicDiscovered",
                         "", parts[0], parts[1], parts[2], cChannel.getTopic(),
@@ -89,7 +90,8 @@ public class ShowTopic extends Command implements ExternalCommand {
         if (args.getArguments().length == 0) {
             server.getParser().sendRawMessage("TOPIC " + channel);
         } else {
-            server.getParser().sendRawMessage("TOPIC " + channel + " :" + args.getArgumentsAsString());
+            server.getParser().sendRawMessage("TOPIC " + channel + " :" + args.
+                    getArgumentsAsString());
         }
     }
 

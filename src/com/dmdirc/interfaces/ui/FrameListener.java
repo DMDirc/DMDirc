@@ -25,8 +25,8 @@ package com.dmdirc.interfaces.ui;
 import com.dmdirc.FrameContainer;
 
 /**
- * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager}
- * to receive events pertaining to frames.
+ * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager} to receive events
+ * pertaining to frames.
  */
 public interface FrameListener {
 
@@ -34,7 +34,7 @@ public interface FrameListener {
      * Adds a window to this frame manager.
      *
      * @param window The server to be added
-     * @param focus Should this window become focused
+     * @param focus  Should this window become focused
      */
     void addWindow(FrameContainer window, final boolean focus);
 
@@ -50,7 +50,7 @@ public interface FrameListener {
      *
      * @param parent The parent to which the window belongs, or null
      * @param window The custom window to be added
-     * @param focus Should this window become focused
+     * @param focus  Should this window become focused
      */
     void addWindow(FrameContainer parent, FrameContainer window, final boolean focus);
 

@@ -25,8 +25,7 @@ package com.dmdirc.updater.checking;
 import java.net.URL;
 
 /**
- * A specialised {@link UpdateCheckResult} that specifies where the update
- * may be downloaded from.
+ * A specialised {@link UpdateCheckResult} that specifies where the update may be downloaded from.
  */
 public interface DownloadableUpdate extends UpdateCheckResult {
 

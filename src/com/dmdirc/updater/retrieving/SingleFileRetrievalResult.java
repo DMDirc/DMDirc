@@ -25,8 +25,8 @@ package com.dmdirc.updater.retrieving;
 import java.io.File;
 
 /**
- * A specialised {@link UpdateRetrievalResult} which specifies a single file
- * where the update is located.
+ * A specialised {@link UpdateRetrievalResult} which specifies a single file where the update is
+ * located.
  */
 public interface SingleFileRetrievalResult extends UpdateRetrievalResult {
 

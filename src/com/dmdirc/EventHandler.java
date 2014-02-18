@@ -38,8 +38,7 @@ import javax.annotation.Nonnull;
 public abstract class EventHandler implements CallbackInterface {
 
     /**
-     * Registers all callbacks that this event handler implements with the
-     * owner's parser.
+     * Registers all callbacks that this event handler implements with the owner's parser.
      */
     public void registerCallbacks() {
         final CallbackManager cbm = getConnection().getParser().getCallbackManager();
@@ -68,9 +67,10 @@ public abstract class EventHandler implements CallbackInterface {
     /**
      * Adds a callback to this event handler.
      *
-     * @param <T> The type of callback to be added
-     * @param cbm The callback manager to use
+     * @param <T>  The type of callback to be added
+     * @param cbm  The callback manager to use
      * @param type The type of the callback to be added
+     *
      * @throws CallbackNotFoundException if the specified callback isn't found
      */
     protected abstract <T extends CallbackInterface> void addCallback(
@@ -86,9 +86,8 @@ public abstract class EventHandler implements CallbackInterface {
     protected abstract Connection getConnection();
 
     /**
-     * Checks that the specified parser is the same as the one the server is
-     * currently claiming to be using. If it isn't, we raise an exception to
-     * prevent further (erroneous) processing.
+     * Checks that the specified parser is the same as the one the server is currently claiming to
+     * be using. If it isn't, we raise an exception to prevent further (erroneous) processing.
      *
      * @param parser The parser to check
      */

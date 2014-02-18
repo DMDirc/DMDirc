@@ -43,17 +43,16 @@ import org.slf4j.LoggerFactory;
  */
 public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<DownloadableUpdate> {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DownloadRetrievalStrategy.class);
-
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(
+            DownloadRetrievalStrategy.class);
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
-
     /** The directory to put temporary update files in. */
     private final String directory;
 
     /**
-     * Creates a new {@link DownloadRetrievalStrategy} which will place its
-     * temporary files in the given directory.
+     * Creates a new {@link DownloadRetrievalStrategy} which will place its temporary files in the
+     * given directory.
      *
      * @param directory The directory to use to download files to
      */
@@ -97,7 +96,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
      */
     private String getFileName() {
         return directory + File.separator + "update."
-                    + Math.round(10000 * Math.random()) + ".tmp";
+                + Math.round(10000 * Math.random()) + ".tmp";
     }
 
     /** {@inheritDoc} */
@@ -113,8 +112,8 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
     }
 
     /**
-     * A {@link DownloadListener} which proxies progress updates on to
-     * this strategy's {@link UpdateRetrievalListener}s.
+     * A {@link DownloadListener} which proxies progress updates on to this strategy's
+     * {@link UpdateRetrievalListener}s.
      */
     private class DownloadProgressListener implements DownloadListener {
 

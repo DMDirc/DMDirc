@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Describes the status of a server and manages transitions between different
- * states.
+ * Describes the status of a server and manages transitions between different states.
  *
  * @since 0.6.3m1
  */
@@ -38,24 +37,21 @@ public class ServerStatus {
 
     /** The server to which this status belongs. */
     private final Server server;
-
     /** Object to notify when the state of the server changes. */
     private final Object notifier;
-
     /** The current state of the server. */
     private ServerState state = ServerState.DISCONNECTED;
-
     /** A history of transactions for debugging purposes. */
     private RollingList<String> history = new RollingList<>(10);
-
     /** A list of known parser hashcodes. */
     private final List<Integer> parsers = new ArrayList<>();
 
     /**
      * Creates a new ServerStatus instance for the specified server.
      *
-     * @param server The server to which this status belongs
+     * @param server   The server to which this status belongs
      * @param notifier The object to notify when the state changes
+     *
      * @since 0.6.3
      */
     public ServerStatus(final Server server, final Object notifier) {
@@ -67,6 +63,7 @@ public class ServerStatus {
      * Transitions the status of this object to the specified state.
      *
      * @param newState The state to transition to
+     *
      * @throws IllegalArgumentException If the specified transition is invalid
      */
     public synchronized void transition(final ServerState newState) {
@@ -94,13 +91,12 @@ public class ServerStatus {
     }
 
     /**
-     * Adds a history entry to this status object. The history entry contains
-     * the name of the states being transitioned between, the details of the
-     * method (and class and line) which initiated the transition, and the
-     * name of the thread in which the transition is occuring.
+     * Adds a history entry to this status object. The history entry contains the name of the states
+     * being transitioned between, the details of the method (and class and line) which initiated
+     * the transition, and the name of the thread in which the transition is occuring.
      *
      * @param fromState The state which is being transitioned from
-     * @param toState The state which is being transitioned to
+     * @param toState   The state which is being transitioned to
      */
     protected void addHistoryEntry(final ServerState fromState, final ServerState toState) {
         final StringBuilder builder = new StringBuilder();
@@ -122,8 +118,8 @@ public class ServerStatus {
      * Retrieves the transition history of this status object as a string.
      *
      * @see #addHistoryEntry(com.dmdirc.ServerState, com.dmdirc.ServerState)
-     * @return A line feed ('\n') delimited string containing one entry for
-     * each of the entries in this status's transition history.
+     * @return A line feed ('\n') delimited string containing one entry for each of the entries in
+     *         this status's transition history.
      */
     public String getTransitionHistory() {
         final StringBuilder builder = new StringBuilder();
@@ -140,10 +136,11 @@ public class ServerStatus {
     }
 
     /**
-     * Returns a unique, ID for the specified parser. Each parser that has been
-     * seen to be used by this server is given a sequential id.
+     * Returns a unique, ID for the specified parser. Each parser that has been seen to be used by
+     * this server is given a sequential id.
      *
      * @param parser The parser whose ID is being requested
+     *
      * @return A unique ID for the specified parser, or 0 if the parser is null
      */
     public int getParserID(final Parser parser) {

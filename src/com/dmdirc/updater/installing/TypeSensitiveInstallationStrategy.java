@@ -26,19 +26,17 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
 /**
- * Base class for {@link UpdateInstallationStrategy} implementations that
- * can only handle a specific subclass of {@link UpdateComponent} or
- * {@link UpdateRetrievalResult}.
+ * Base class for {@link UpdateInstallationStrategy} implementations that can only handle a specific
+ * subclass of {@link UpdateComponent} or {@link UpdateRetrievalResult}.
  *
  * @param <S> The type of {@link UpdateComponent} that can be handled
  * @param <T> The type of {@link UpdateRetrievalResult} that can be handled
  */
-public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponent,T extends UpdateRetrievalResult>
+public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponent, T extends UpdateRetrievalResult>
         implements UpdateInstallationStrategy {
 
     /** The type of {@link UpdateComponent} that can be handled. */
     private final Class<S> updateComponentClass;
-
     /** The type of {@link UpdateRetrievalResult} that can be handled. */
     private final Class<T> updateRetrievalClass;
 
@@ -51,7 +49,8 @@ public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponen
     /** {@inheritDoc} */
     @Override
     public boolean canHandle(final UpdateRetrievalResult retrievalResult) {
-        return updateComponentClass.isAssignableFrom(retrievalResult.getCheckResult().getComponent().getClass())
+        return updateComponentClass.isAssignableFrom(
+                retrievalResult.getCheckResult().getComponent().getClass())
                 && updateRetrievalClass.isAssignableFrom(retrievalResult.getClass());
     }
 
@@ -65,7 +64,7 @@ public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponen
     /**
      * Installs the retrieved update for the given component.
      *
-     * @param component The component to be updated
+     * @param component       The component to be updated
      * @param retrievalResult The result of the retrieval operation
      */
     protected abstract void installImpl(S component, T retrievalResult);

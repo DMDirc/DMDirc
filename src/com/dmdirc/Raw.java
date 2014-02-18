@@ -42,8 +42,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * Handles the raw window (which shows the user raw data being sent and
- * received to/from the server).
+ * Handles the raw window (which shows the user raw data being sent and received to/from the
+ * server).
  */
 @Factory(inject = true, providers = true, singleton = true)
 public class Raw extends WritableFrameContainer
@@ -55,10 +55,10 @@ public class Raw extends WritableFrameContainer
     /**
      * Creates a new instance of Raw.
      *
-     * @param newServer the server to monitor
-     * @param commandController The controller to load commands from.
+     * @param newServer          the server to monitor
+     * @param commandController  The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param urlBuilder         The URL builder to use when finding icons.
      */
     public Raw(
             @Unbound final Server newServer,
@@ -70,8 +70,8 @@ public class Raw extends WritableFrameContainer
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                    WindowComponent.TEXTAREA.getIdentifier(),
-                    WindowComponent.INPUTFIELD.getIdentifier()));
+                WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
 

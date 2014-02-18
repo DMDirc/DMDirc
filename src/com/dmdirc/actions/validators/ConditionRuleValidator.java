@@ -37,8 +37,8 @@ public class ConditionRuleValidator implements Validator<String> {
     /**
      * Creates a new ConditionRuleValidator.
      *
-     * @param args The number of arguments allowed in the ConditionTree (i.e.,
-     * the number of ActionConditions)
+     * @param args The number of arguments allowed in the ConditionTree (i.e., the number of
+     *             ActionConditions)
      */
     public ConditionRuleValidator(final int args) {
         this.args = args;

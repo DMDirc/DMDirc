@@ -35,8 +35,7 @@ public class URLProtocolValidator implements Validator<String> {
     private final AggregateConfigProvider globalConfig;
 
     /**
-     * Creates a {@link URLProtocolValidator} that will read from the given
-     * config.
+     * Creates a {@link URLProtocolValidator} that will read from the given config.
      *
      * @param globalConfig The config manager to read protocol info from.
      */
@@ -55,4 +54,5 @@ public class URLProtocolValidator implements Validator<String> {
             return new ValidationResponse();
         }
     }
+
 }

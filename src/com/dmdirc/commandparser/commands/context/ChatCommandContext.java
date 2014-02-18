@@ -40,9 +40,9 @@ public class ChatCommandContext extends ServerCommandContext {
     /**
      * Creates a new chat command context.
      *
-     * @param source The source of the command
+     * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
-     * @param chat The chat container associated with the command
+     * @param chat        The chat container associated with the command
      */
     public ChatCommandContext(final FrameContainer source,
             final CommandInfo commandInfo, final MessageTarget chat) {
@@ -58,4 +58,5 @@ public class ChatCommandContext extends ServerCommandContext {
     public MessageTarget getChat() {
         return chat;
     }
+
 }

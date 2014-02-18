@@ -40,9 +40,9 @@ public class LinePosition {
      * Constructs a new line position.
      *
      * @param startLine Starting line
-     * @param endLine Ending line
-     * @param startPos Starting position
-     * @param endPos Ending position
+     * @param endLine   Ending line
+     * @param startPos  Starting position
+     * @param endPos    Ending position
      */
     public LinePosition(final int startLine, final int startPos,
             final int endLine, final int endPos) {
@@ -142,4 +142,5 @@ public class LinePosition {
         return "Position[" + startLine + ", " + startPos + ", " + endLine
                 + ", " + endPos + "]";
     }
+
 }

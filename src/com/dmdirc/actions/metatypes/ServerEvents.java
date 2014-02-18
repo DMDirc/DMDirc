@@ -34,22 +34,27 @@ public enum ServerEvents implements ActionMetaType {
     /** Server ping event type. */
     SERVER_PING(new String[]{"server", "ping"}, Connection.class, Long.class),
     /** Server numeric event type. */
-    SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Connection.class, Integer.class, String[].class),
+    SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Connection.class, Integer.class,
+    String[].class),
     /** Server event with argument. */
     SERVER_EVENT_WITH_ARG(new String[]{"server", "message"}, Connection.class, String.class),
     /** Server nick change. */
-    SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Connection.class, String.class, String.class),
+    SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Connection.class,
+    String.class, String.class),
     /** Server event, with source and argument. */
-    SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Connection.class, ClientInfo.class, String.class),
+    SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Connection.class,
+    ClientInfo.class, String.class),
     /** Server CTCP event. */
-    SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Connection.class, ClientInfo.class, String.class, String.class),
+    SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Connection.class,
+    ClientInfo.class, String.class, String.class),
     /** Server event with argument. */
-    SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Connection.class, String.class, String.class, String.class),
+    SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Connection.class,
+    String.class, String.class, String.class),
     /** Server invite event. */
-    SERVER_INVITE(new String[]{"server", "source", "channel"}, Connection.class, ClientInfo.class, String.class),
+    SERVER_INVITE(new String[]{"server", "source", "channel"}, Connection.class, ClientInfo.class,
+    String.class),
     /** Server event type. */
     SERVER_EVENT(new String[]{"server"}, Connection.class);
-
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
@@ -61,7 +66,7 @@ public enum ServerEvents implements ActionMetaType {
      * @param argNames The names of the meta-type's arguments
      * @param argTypes The types of the meta-type's arguments
      */
-    ServerEvents(final String[] argNames, final Class ... argTypes) {
+    ServerEvents(final String[] argNames, final Class... argTypes) {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }

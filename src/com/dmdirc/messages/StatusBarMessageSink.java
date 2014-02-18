@@ -37,7 +37,6 @@ public class StatusBarMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("statusbar");
-
     /** The status bar manager to add messages to. */
     private final StatusBarManager statusBarManager;
 

@@ -37,11 +37,13 @@ public interface ServiceManager {
     List<Service> getAllServices();
 
     /**
-     * Get an ExportedService object of the given name from any provider that provides it.
-     * This is the same as doing getServiceProvider("export", name).getExportedService(name)
+     * Get an ExportedService object of the given name from any provider that provides it. This is
+     * the same as doing getServiceProvider("export", name).getExportedService(name)
      *
      * @param name Name of this service
+     *
      * @return An ExportedService object.
+     *
      * @throws NoSuchProviderException If no provider exists for the requested service.
      */
     ExportedService getExportedService(final String name);
@@ -51,6 +53,7 @@ public interface ServiceManager {
      *
      * @param type Type of this service
      * @param name Name of this service
+     *
      * @return The service requested, or null if service wasn't found and create wasn't specifed
      */
     Service getService(final String type, final String name);
@@ -58,9 +61,10 @@ public interface ServiceManager {
     /**
      * Get a service object for the given name/type.
      *
-     * @param type Type of this service
-     * @param name Name of this service
+     * @param type   Type of this service
+     * @param name   Name of this service
      * @param create If the requested service doesn't exist, should it be created?
+     *
      * @return The service requested, or null if service wasn't found and create wasn't specifed
      */
     Service getService(final String type, final String name, final boolean create);
@@ -70,26 +74,35 @@ public interface ServiceManager {
      *
      * @param type Type of this service
      * @param name Name of this service
+     *
      * @return A ServiceProvider that provides the requested service.
+     *
      * @throws NoSuchProviderException If no provider exists for the requested service
      */
-    ServiceProvider getServiceProvider(final String type, final String name) throws NoSuchProviderException;
+    ServiceProvider getServiceProvider(final String type, final String name) throws
+            NoSuchProviderException;
 
     /**
      * Get a ServiceProvider object for the given tpye, prioritising those in the list of names.
      *
-     * @param type Type to look for
-     * @param names Names to look for
-     * @param fallback Fallback to the first provider of type that exists if one from the list is not found.
+     * @param type     Type to look for
+     * @param names    Names to look for
+     * @param fallback Fallback to the first provider of type that exists if one from the list is
+     *                 not found.
+     *
      * @return A ServiceProvider that provides the requested service.
-     * @throws NoSuchProviderException If no provider exists for the requested service and fallback is false, or no providers exist at all.
+     *
+     * @throws NoSuchProviderException If no provider exists for the requested service and fallback
+     *                                 is false, or no providers exist at all.
      */
-    ServiceProvider getServiceProvider(final String type, final List<String> names, final boolean fallback) throws NoSuchProviderException;
+    ServiceProvider getServiceProvider(final String type, final List<String> names,
+            final boolean fallback) throws NoSuchProviderException;
 
     /**
      * Get a List of all services of a specifed type.
      *
      * @param type Type of service
+     *
      * @return The list of services requested.
      */
     List<Service> getServicesByType(final String type);

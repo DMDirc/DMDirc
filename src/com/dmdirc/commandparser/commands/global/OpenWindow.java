@@ -51,21 +51,19 @@ public class OpenWindow extends Command implements IntelligentCommand {
             "openwindow [--server|--child] <name> [title] "
             + "- opens a window with the specified name and title",
             CommandType.TYPE_GLOBAL);
-
     /** Window management. */
     private final WindowManager windowManager;
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
-
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
 
     /**
      * Creates a new instance of this command.
      *
-     * @param controller The controller to use for command information.
-     * @param windowManager Window management
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param controller     The controller to use for command information.
+     * @param windowManager  Window management
+     * @param urlBuilder     The URL builder to use when finding icons.
      * @param configProvider The config provider to retrieve settings from.
      */
     @Inject
@@ -115,7 +113,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
             }
 
             final String title = args.getArguments().length > start + 1
-                ? args.getArgumentsAsString(start + 1) : args.getArguments()[start];
+                    ? args.getArgumentsAsString(start + 1) : args.getArguments()[start];
 
             if (window == null) {
                 CustomWindow newWindow;
@@ -130,7 +128,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 }
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                "A custom window by that name already exists.");
+                        "A custom window by that name already exists.");
             }
         }
     }

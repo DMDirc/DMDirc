@@ -46,18 +46,14 @@ import javax.annotation.Nullable;
 public class TabCompleter {
 
     /**
-     * The parent TabCompleter. Results from parents are merged with results
-     * from this completer.
+     * The parent TabCompleter. Results from parents are merged with results from this completer.
      */
     @Nullable
     private final TabCompleter parent;
-
     /** The config manager to use for reading settings. */
     private final AggregateConfigProvider configManager;
-
     /** The controller to use to retrieve command information. */
     private final CommandController commandController;
-
     /** The entries in this completer. */
     private final MapList<TabCompletionType, String> entries = new MapList<>();
 
@@ -65,7 +61,7 @@ public class TabCompleter {
      * Creates a new instance of {@link TabCompleter}.
      *
      * @param commandController The controller to use for command information.
-     * @param configManager The manager to read config settings from.
+     * @param configManager     The manager to read config settings from.
      */
     public TabCompleter(
             final CommandController commandController,
@@ -79,8 +75,8 @@ public class TabCompleter {
      * Creates a new instance of {@link TabCompleter}.
      *
      * @param commandController The controller to use for command information.
-     * @param configManager The manager to read config settings from.
-     * @param parent The parent tab completer to inherit completions from.
+     * @param configManager     The manager to read config settings from.
+     * @param parent            The parent tab completer to inherit completions from.
      */
     public TabCompleter(
             final CommandController commandController,
@@ -94,8 +90,9 @@ public class TabCompleter {
     /**
      * Attempts to complete the partial string.
      *
-     * @param partial The string to tab complete
+     * @param partial     The string to tab complete
      * @param additionals A list of additional strings to use
+     *
      * @return A TabCompleterResult containing any matches found
      */
     public TabCompleterResult complete(final String partial,
@@ -150,7 +147,7 @@ public class TabCompleter {
     /**
      * Adds a new entry to this tab completer's list.
      *
-     * @param type The type of the entry that's being added
+     * @param type  The type of the entry that's being added
      * @param entry The new entry to be added
      */
     public void addEntry(final TabCompletionType type, final String entry) {
@@ -169,7 +166,7 @@ public class TabCompleter {
     /**
      * Adds multiple new entries to this tab completer's list.
      *
-     * @param type The type of the entries that're being added
+     * @param type       The type of the entries that're being added
      * @param newEntries Entries to be added
      */
     public void addEntries(final TabCompletionType type, final List<String> newEntries) {
@@ -185,7 +182,7 @@ public class TabCompleter {
     /**
      * Removes a specified entry from this tab completer's list.
      *
-     * @param type The type of the entry that should be removed
+     * @param type  The type of the entry that should be removed
      * @param entry The entry to be removed
      */
     public void removeEntry(final TabCompletionType type, final String entry) {
@@ -195,7 +192,7 @@ public class TabCompleter {
     /**
      * Replaces the current entries with the new list.
      *
-     * @param type The type of entry which should be replaced
+     * @param type       The type of entry which should be replaced
      * @param newEntries the new entries to use
      */
     public void replaceEntries(final TabCompletionType type, final List<String> newEntries) {
@@ -222,10 +219,10 @@ public class TabCompleter {
     /**
      * Retrieves intelligent results for a deferred command.
      *
-     * @param arg The argument number that is being requested
+     * @param arg     The argument number that is being requested
      * @param context Intelligent tab completion context
-     * @param offset The number of arguments our command used before deferring
-     * to this method
+     * @param offset  The number of arguments our command used before deferring to this method
+     *
      * @return Additional tab targets for the text, or null if none are available
      */
     public static AdditionalTabTargets getIntelligentResults(final int arg,
@@ -243,13 +240,14 @@ public class TabCompleter {
     }
 
     /**
-     * Retrieves the intelligent results for the command and its arguments
-     * formed from args.
+     * Retrieves the intelligent results for the command and its arguments formed from args.
      *
-     * @param window The input window the results are required for
-     * @param args The input arguments
+     * @param window  The input window the results are required for
+     * @param args    The input arguments
      * @param partial The partially-typed word being completed (if any)
+     *
      * @return Additional tab targets for the text, or null if none are available
+     *
      * @since 0.6.4
      */
     private static AdditionalTabTargets getIntelligentResults(
@@ -259,8 +257,8 @@ public class TabCompleter {
             return null;
         }
 
-        final Map.Entry<CommandInfo, Command> command
-                = window.getCommandParser().getCommandManager().getCommand(args.getCommandName());
+        final Map.Entry<CommandInfo, Command> command = window.getCommandParser().
+                getCommandManager().getCommand(args.getCommandName());
 
         AdditionalTabTargets targets = null;
 
@@ -287,10 +285,12 @@ public class TabCompleter {
     /**
      * Handles potentially intelligent tab completion.
      *
-     * @param window The input window the results are required for
-     * @param text The text that is being completed
+     * @param window  The input window the results are required for
+     * @param text    The text that is being completed
      * @param partial The partially-typed word being completed (if any)
+     *
      * @return Additional tab targets for the text, or null if none are available
+     *
      * @since 0.6.4
      */
     public static AdditionalTabTargets getIntelligentResults(
@@ -299,4 +299,5 @@ public class TabCompleter {
         return getIntelligentResults(window,
                 new CommandArguments(window.getCommandParser().getCommandManager(), text), partial);
     }
+
 }

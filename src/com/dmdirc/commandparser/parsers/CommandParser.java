@@ -45,36 +45,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a generic command parser. A command parser takes a line of input
- * from the user, determines if it is an attempt at executing a command (based
- * on the character at the start of the string), and handles it appropriately.
+ * Represents a generic command parser. A command parser takes a line of input from the user,
+ * determines if it is an attempt at executing a command (based on the character at the start of the
+ * string), and handles it appropriately.
  */
 public abstract class CommandParser implements Serializable {
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 1;
-
     /**
      * Commands that are associated with this parser.
      */
     private final Map<String, CommandInfoPair> commands;
-
     /**
      * A history of commands that have been entered into this parser.
      */
     private final RollingList<PreviousCommand> history;
-
     /** Command manager to use. */
     protected final CommandController commandManager;
 
     /**
      * Creates a new instance of CommandParser.
      *
-     * @param configManager Config manager to read settings
+     * @param configManager  Config manager to read settings
      * @param commandManager Command manager to load plugins from
      */
     protected CommandParser(final AggregateConfigProvider configManager,
@@ -93,6 +90,7 @@ public abstract class CommandParser implements Serializable {
      * Sets the owner of this command parser.
      *
      * @param owner The container which owns this parser
+     *
      * @since 0.6.4
      */
     public abstract void setOwner(final FrameContainer owner);
@@ -105,7 +103,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.3m1
      * @param command Command to be registered
-     * @param info The information the command should be registered with
+     * @param info    The information the command should be registered with
      */
     public final void registerCommand(final Command command, final CommandInfo info) {
         commands.put(info.getName().toLowerCase(), new CommandInfoPair(info, command));
@@ -115,6 +113,7 @@ public abstract class CommandParser implements Serializable {
      * Unregisters the specified command with this parser.
      *
      * @param info Command information to be unregistered
+     *
      * @since 0.6.3m1
      */
     public final void unregisterCommand(final CommandInfo info) {
@@ -134,10 +133,10 @@ public abstract class CommandParser implements Serializable {
     /**
      * Parses the specified string as a command.
      *
-     * @param origin The container which received the command
-     * @param line The line to be parsed
-     * @param parseChannel Whether or not to try and parse the first argument
-     * as a channel name
+     * @param origin       The container which received the command
+     * @param line         The line to be parsed
+     * @param parseChannel Whether or not to try and parse the first argument as a channel name
+     *
      * @since 0.6.4
      */
     public final void parseCommand(final FrameContainer origin,
@@ -163,16 +162,16 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
-     * Checks to see whether the inputted command is a channel or external
-     * command, and if it is whether one or more channels have been specified
-     * for its execution. If it is a channel or external command, and channels
-     * are specified, this method invoke the appropriate command parser methods
-     * to handle the command, and will return true. If the command is not
-     * handled, the method returns false.
+     * Checks to see whether the inputted command is a channel or external command, and if it is
+     * whether one or more channels have been specified for its execution. If it is a channel or
+     * external command, and channels are specified, this method invoke the appropriate command
+     * parser methods to handle the command, and will return true. If the command is not handled,
+     * the method returns false.
      *
-     * @param origin The container which received the command
-     * @param args The command and its arguments
+     * @param origin       The container which received the command
+     * @param args         The command and its arguments
      * @param parseChannel Whether or not to try parsing channel names
+     *
      * @return True iff the command was handled, false otherwise
      */
     protected boolean handleChannelCommand(final FrameContainer origin,
@@ -206,8 +205,8 @@ public abstract class CommandParser implements Serializable {
                             .parseCommand(origin, commandManager.getCommandChar()
                             + args.getCommandName() + " " + args.getWordsAsString(2), false);
                 } else {
-                    final Map.Entry<CommandInfo, Command> actCommand
-                            = commandManager.getCommand(CommandType.TYPE_CHANNEL, command);
+                    final Map.Entry<CommandInfo, Command> actCommand = commandManager.getCommand(
+                            CommandType.TYPE_CHANNEL, command);
 
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
@@ -238,10 +237,11 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
-     * Retrieves the most recent time that the specified command was used.
-     * Commands should not include command or silence chars.
+     * Retrieves the most recent time that the specified command was used. Commands should not
+     * include command or silence chars.
      *
      * @param command The command to search for
+     *
      * @return The timestamp that the command was used, or 0 if it wasn't
      */
     public long getCommandTime(final String command) {
@@ -262,7 +262,8 @@ public abstract class CommandParser implements Serializable {
      * Parses the specified string as a command.
      *
      * @param origin The container which received the command
-     * @param line The line to be parsed
+     * @param line   The line to be parsed
+     *
      * @since 0.6.4
      */
     public void parseCommand(final FrameContainer origin, final String line) {
@@ -273,7 +274,7 @@ public abstract class CommandParser implements Serializable {
      * Handles the specified string as a non-command.
      *
      * @param origin The window in which the command was typed
-     * @param line The line to be parsed
+     * @param line   The line to be parsed
      */
     public void parseCommandCtrl(final FrameContainer origin, final String line) {
         handleNonCommand(origin, line);
@@ -282,10 +283,11 @@ public abstract class CommandParser implements Serializable {
     /**
      * Gets the context that the command will execute with.
      *
-     * @param origin The container which received the command
+     * @param origin      The container which received the command
      * @param commandInfo The command information object matched by the command
-     * @param command The command to be executed
-     * @param args The arguments to the command
+     * @param command     The command to be executed
+     * @param args        The arguments to the command
+     *
      * @return The context for the command.
      */
     protected abstract CommandContext getCommandContext(
@@ -297,23 +299,24 @@ public abstract class CommandParser implements Serializable {
     /**
      * Executes the specified command with the given arguments.
      *
-     * @param origin The container which received the command
+     * @param origin      The container which received the command
      * @param commandInfo The command information object matched by the command
-     * @param command The command to be executed
-     * @param args The arguments to the command
-     * @param context The context to use when executing the command
+     * @param command     The command to be executed
+     * @param args        The arguments to the command
+     * @param context     The context to use when executing the command
      */
     protected abstract void executeCommand(final FrameContainer origin,
             final CommandInfo commandInfo, final Command command,
             final CommandArguments args, final CommandContext context);
 
     /**
-     * Called when the user attempted to issue a command (i.e., used the command
-     * character) that wasn't found. It could be that the command has a different
-     * arity, or that it plain doesn't exist.
+     * Called when the user attempted to issue a command (i.e., used the command character) that
+     * wasn't found. It could be that the command has a different arity, or that it plain doesn't
+     * exist.
      *
      * @param origin The window in which the command was typed
-     * @param args The arguments passed to the command
+     * @param args   The arguments passed to the command
+     *
      * @since 0.6.3m1
      */
     protected void handleInvalidCommand(final FrameContainer origin,
@@ -334,11 +337,11 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
-     * Called when the input was a line of text that was not a command. This normally
-     * means it is sent to the server/channel/user as-is, with no further processing.
+     * Called when the input was a line of text that was not a command. This normally means it is
+     * sent to the server/channel/user as-is, with no further processing.
      *
      * @param origin The window in which the command was typed
-     * @param line The line input by the user
+     * @param line   The line input by the user
      */
     protected abstract void handleNonCommand(final FrameContainer origin,
             final String line);
@@ -347,6 +350,7 @@ public abstract class CommandParser implements Serializable {
      * Determines if the specified command has defined any command options.
      *
      * @param command The command to investigate
+     *
      * @return True if the command defines options, false otherwise
      */
     protected boolean hasCommandOptions(final Command command) {
@@ -354,13 +358,15 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
-     * Retrieves the command options for the specified command. If the command
-     * does not define options, this method will return null.
+     * Retrieves the command options for the specified command. If the command does not define
+     * options, this method will return null.
      *
      * @param command The command whose options should be retrieved
+     *
      * @return The command's options, or null if not available
      */
     protected CommandOptions getCommandOptions(final Command command) {
         return command.getClass().getAnnotation(CommandOptions.class);
     }
+
 }

@@ -29,10 +29,8 @@ public class GroupListEntry {
 
     /** The name of the group. */
     private final String name;
-
     /** The number of users in the group. */
     private final int users;
-
     /** The current topic of the group. */
     private final String topic;
 

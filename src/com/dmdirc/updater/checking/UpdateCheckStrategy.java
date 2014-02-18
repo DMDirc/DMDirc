@@ -28,19 +28,19 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Defines a strategy for checking for updates for one or more
- * {@link UpdateComponent}s.
+ * Defines a strategy for checking for updates for one or more {@link UpdateComponent}s.
  */
 public interface UpdateCheckStrategy {
 
     /**
-     * Checks the given collection of components to determine whether or
-     * not any updates are available.
+     * Checks the given collection of components to determine whether or not any updates are
+     * available.
      *
      * @param components The components to be checked for updates
-     * @return A map of each of the provided component to an
-     * {@link UpdateCheckResult} indicating the status of the component and
-     * any additional information concerning how it should be updated.
+     *
+     * @return A map of each of the provided component to an {@link UpdateCheckResult} indicating
+     *         the status of the component and any additional information concerning how it should
+     *         be updated.
      */
     Map<UpdateComponent, UpdateCheckResult> checkForUpdates(Collection<UpdateComponent> components);
 

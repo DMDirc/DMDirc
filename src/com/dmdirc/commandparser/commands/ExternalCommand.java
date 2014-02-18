@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.FrameContainer;
@@ -26,19 +27,19 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 
 /**
- * An external command is a channel command that can be executed from outside
- * of the channel.
+ * An external command is a channel command that can be executed from outside of the channel.
  */
 public interface ExternalCommand {
 
     /**
      * Executes the command externally.
      *
-     * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param channel The name of the channel the command is being executed for
+     * @param origin   The window in which the command was typed
+     * @param server   The server instance that this command is being executed on
+     * @param channel  The name of the channel the command is being executed for
      * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
+     * @param args     Arguments passed to this command
+     *
      * @since 0.6.3m1
      */
     void execute(FrameContainer origin, Server server, String channel,

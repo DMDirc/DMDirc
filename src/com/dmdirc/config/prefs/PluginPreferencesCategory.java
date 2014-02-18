@@ -25,8 +25,8 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.plugins.PluginInfo;
 
 /**
- * A specialised {@link PreferencesCategory} which warns the user if an
- * associated plugin is not loaded
+ * A specialised {@link PreferencesCategory} which warns the user if an associated plugin is not
+ * loaded
  *
  * @since 0.6.3
  */
@@ -35,11 +35,11 @@ public class PluginPreferencesCategory extends PreferencesCategory {
     /**
      * Creates a new preferences category that contains an object.
      *
-     * @param plugin The plugin which owns this category
-     * @param title The title of this preferences category
+     * @param plugin      The plugin which owns this category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param icon The icon to use for this category
-     * @param object The replacement object for this category
+     * @param icon        The icon to use for this category
+     * @param object      The replacement object for this category
      */
     public PluginPreferencesCategory(final PluginInfo plugin, final String title,
             final String description, final String icon, final PreferencesInterface object) {
@@ -50,10 +50,10 @@ public class PluginPreferencesCategory extends PreferencesCategory {
     /**
      * Creates a new preferences category that contains an object.
      *
-     * @param plugin The plugin which owns this category
-     * @param title The title of this preferences category
+     * @param plugin      The plugin which owns this category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param object The replacement object for this category
+     * @param object      The replacement object for this category
      */
     public PluginPreferencesCategory(final PluginInfo plugin, final String title,
             final String description, final PreferencesInterface object) {
@@ -64,10 +64,10 @@ public class PluginPreferencesCategory extends PreferencesCategory {
     /**
      * Creates a new preferences category that contains settings.
      *
-     * @param plugin The plugin which owns this category
-     * @param title The title of this preferences category
+     * @param plugin      The plugin which owns this category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param icon The icon to use for this category
+     * @param icon        The icon to use for this category
      */
     public PluginPreferencesCategory(final PluginInfo plugin, final String title,
             final String description, final String icon) {
@@ -78,8 +78,8 @@ public class PluginPreferencesCategory extends PreferencesCategory {
     /**
      * Creates a new preferences category that contains settings.
      *
-     * @param plugin The plugin which owns this category
-     * @param title The title of this preferences category
+     * @param plugin      The plugin which owns this category
+     * @param title       The title of this preferences category
      * @param description The description of this category
      */
     public PluginPreferencesCategory(final PluginInfo plugin, final String title,
@@ -89,9 +89,8 @@ public class PluginPreferencesCategory extends PreferencesCategory {
     }
 
     /**
-     * Declares that this category has been created by the specified plugin.
-     * If the plugin is not loaded, then the category's warning field is set
-     * to a message reflecting the fact.
+     * Declares that this category has been created by the specified plugin. If the plugin is not
+     * loaded, then the category's warning field is set to a message reflecting the fact.
      *
      * @param plugin The plugin that owns this category
      */

@@ -40,9 +40,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
- * The icon manager provides a standard way to access icons for use in DMDirc.
- * It allows the user to override the default actions using config settings
- * under the icons domain.
+ * The icon manager provides a standard way to access icons for use in DMDirc. It allows the user to
+ * override the default actions using config settings under the icons domain.
  */
 public class IconManager implements ConfigChangeListener {
 
@@ -59,7 +58,7 @@ public class IconManager implements ConfigChangeListener {
      * Creates a new instance of IconManager.
      *
      * @param configManager Config manager to retrieve settings from
-     * @param urlBuilder URL builder to use for icons.
+     * @param urlBuilder    URL builder to use for icons.
      */
     public IconManager(
             final AggregateConfigProvider configManager,
@@ -74,8 +73,7 @@ public class IconManager implements ConfigChangeListener {
     }
 
     /**
-     * Retrieves the icon with the specified type. Returns null if the icon
-     * wasn't found.
+     * Retrieves the icon with the specified type. Returns null if the icon wasn't found.
      *
      * @param type The name of the icon type to retrieve
      *
@@ -95,11 +93,10 @@ public class IconManager implements ConfigChangeListener {
     }
 
     /**
-     * Retrieves the icon with the specified type. Returns null if the icon
-     * wasn't found.
+     * Retrieves the icon with the specified type. Returns null if the icon wasn't found.
      *
-     * @param type The name of the icon type to retrieve
-     * @param width width of the image
+     * @param type   The name of the icon type to retrieve
+     * @param width  width of the image
      * @param height height of the image
      *
      * @return The icon that should be used for the specified type
@@ -112,8 +109,7 @@ public class IconManager implements ConfigChangeListener {
     }
 
     /**
-     * Retrieves the image with the specified type. Returns null if the icon
-     * wasn't found.
+     * Retrieves the image with the specified type. Returns null if the icon wasn't found.
      *
      * @param type The name of the icon type to retrieve
      *
@@ -129,15 +125,15 @@ public class IconManager implements ConfigChangeListener {
     /**
      * Returns a scaled image.
      *
-     * @param image Image to scale
-     * @param width Width of resulting image
+     * @param image  Image to scale
+     * @param width  Width of resulting image
      * @param height Height of resulting image
      *
      * @return Scaled Image
      */
     private Image getScaledImage(final Image image,
             final int width, final int height) {
-        return image.getScaledInstance(width , height, Image.SCALE_SMOOTH);
+        return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
 
     /**
@@ -161,7 +157,7 @@ public class IconManager implements ConfigChangeListener {
         URL imageURL = urlBuilder.getUrl(path);
 
         if (imageURL == null && defaultURL != null) {
-           imageURL = defaultURL;
+            imageURL = defaultURL;
         }
 
         if (imageURL == null && defaultURL == null) {

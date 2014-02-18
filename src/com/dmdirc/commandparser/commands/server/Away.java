@@ -44,7 +44,7 @@ public class Away extends Command {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("away",
-           "away <reason> - marks you as away", CommandType.TYPE_SERVER);
+            "away <reason> - marks you as away", CommandType.TYPE_SERVER);
 
     /**
      * Creates a new instance of this command.

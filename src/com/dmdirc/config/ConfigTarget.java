@@ -33,6 +33,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
 
     /** The possible target types. */
     public static enum TYPE {
+
         /** Client-wide default settings. */
         GLOBALDEFAULT,
         /** Client-wide settings. */
@@ -49,23 +50,21 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
         CHANNEL,
         /** Settings for a protocol (parser). */
         PROTOCOL,
-        /** A custom identity, which doesn't contain settings to be loaded. */
+        /** A custom identity, which
+         * doesn't contain settings to be loaded. */
         CUSTOM,
-    }
 
+    }
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * A version number for this class. It should be changed whenever the class structure is changed
+     * (or anything else that would prevent serialized objects being unserialized with the new
+     * class).
      */
     private static final long serialVersionUID = 2;
-
     /** The type of this target. */
     protected TYPE type = ConfigTarget.TYPE.GLOBAL;
-
     /** The data of this target. */
     protected String data;
-
     /** The user-defined ordering for this target. */
     protected int order = 50000;
 
@@ -109,6 +108,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      * Sets this target to be a custom identity.
      *
      * @param customType The type of custom identity
+     *
      * @since 0.6.4
      */
     public void setCustom(final String customType) {
@@ -120,7 +120,9 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      * Determines if this target is the specified custom type.
      *
      * @param customType The type of custom identity
+     *
      * @return True if this target is a CUSTOM type with the specified type.
+     *
      * @since 0.6.4
      */
     public boolean isCustom(final String customType) {
@@ -171,6 +173,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      * Sets this target to target a protocol.
      *
      * @param protocol The protocol to target
+     *
      * @since 0.6.3
      */
     public void setProtocol(final String protocol) {
@@ -223,8 +226,9 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      * Compares this target to another to determine which is more specific.
      *
      * @param target The target to compare to
-     * @return a negative integer if this config is less specific, 0 if they're
-     * equal, or a positive integer if this is more specific
+     *
+     * @return a negative integer if this config is less specific, 0 if they're equal, or a positive
+     *         integer if this is more specific
      */
     @Override
     public int compareTo(final ConfigTarget target) {
@@ -243,24 +247,24 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
     @Override
     public String toString() {
         switch (type) {
-        case GLOBALDEFAULT:
-            return "Global defaults";
-        case THEME:
-            return "Theme";
-        case CUSTOM:
-            return "Custom: " + data;
-        case IRCD:
-            return "Ircd specific: " + data;
-        case NETWORK:
-            return "Network specific: " + data;
-        case SERVER:
-            return "Server specific: " + data;
-        case CHANNEL:
-            return "Channel specific: " + data;
-        case PROTOCOL:
-            return "Protocol specific: " + data;
-        default:
-            return "Global config";
+            case GLOBALDEFAULT:
+                return "Global defaults";
+            case THEME:
+                return "Theme";
+            case CUSTOM:
+                return "Custom: " + data;
+            case IRCD:
+                return "Ircd specific: " + data;
+            case NETWORK:
+                return "Network specific: " + data;
+            case SERVER:
+                return "Server specific: " + data;
+            case CHANNEL:
+                return "Channel specific: " + data;
+            case PROTOCOL:
+                return "Protocol specific: " + data;
+            default:
+                return "Global config";
         }
     }
 

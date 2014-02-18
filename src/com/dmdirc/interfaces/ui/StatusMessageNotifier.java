@@ -23,8 +23,7 @@
 package com.dmdirc.interfaces.ui;
 
 /**
- * Methods required to be implemented by classes wanting to respond to statusbar
- * events.
+ * Methods required to be implemented by classes wanting to respond to statusbar events.
  */
 public interface StatusMessageNotifier {
 
@@ -32,7 +31,8 @@ public interface StatusMessageNotifier {
      * Called when a click event is received on the message component.
      *
      * @param mousebutton Mouse button clicked
-     * @param clickCount Click count
+     * @param clickCount  Click count
      */
     void clickReceived(final int mousebutton, final int clickCount);
+
 }

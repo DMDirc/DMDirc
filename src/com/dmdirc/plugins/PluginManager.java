@@ -58,43 +58,34 @@ public class PluginManager implements ActionListener, ServiceManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
-
     /** Set of known plugins' metadata. */
     private final Collection<PluginMetaData> plugins = new HashSet<>();
-
     /** Directory where plugins are stored. */
     private final String directory;
-
     /** The identity controller to use to find configuration options. */
     private final IdentityController identityController;
-
     /** The action controller to use for events. */
     private final ActionController actionController;
-
     /** The update manager to inform about plugins. */
     private final UpdateManager updateManager;
-
     /** A provider of initialisers for plugin injectors. */
     private final Provider<PluginInjectorInitialiser> initialiserProvider;
-
     /** Map of services. */
     private final Map<String, Map<String, Service>> services = new HashMap<>();
-
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
-
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
 
     /**
      * Creates a new instance of PluginManager.
      *
-     * @param identityController The identity controller to use for configuration options.
-     * @param actionController The action controller to use for events.
-     * @param updateManager The update manager to inform about plugins.
+     * @param identityController  The identity controller to use for configuration options.
+     * @param actionController    The action controller to use for events.
+     * @param updateManager       The update manager to inform about plugins.
      * @param initialiserProvider A provider of initialisers for plugin injectors.
-     * @param objectGraph The graph to pass to plugins for DI purposes.
-     * @param directory The directory to load plugins from.
+     * @param objectGraph         The graph to pass to plugins for DI purposes.
+     * @param directory           The directory to load plugins from.
      */
     public PluginManager(
             final IdentityController identityController,
@@ -158,7 +149,8 @@ public class PluginManager implements ActionListener, ServiceManager {
 
     /** {@inheritDoc} */
     @Override
-    public ServiceProvider getServiceProvider(final String type, final String name) throws NoSuchProviderException {
+    public ServiceProvider getServiceProvider(final String type, final String name) throws
+            NoSuchProviderException {
         final Service service = getService(type, name);
         if (service != null) {
             ServiceProvider provider = service.getActiveProvider();
@@ -179,7 +171,8 @@ public class PluginManager implements ActionListener, ServiceManager {
 
     /** {@inheritDoc} */
     @Override
-    public ServiceProvider getServiceProvider(final String type, final List<String> names, final boolean fallback) throws NoSuchProviderException {
+    public ServiceProvider getServiceProvider(final String type, final List<String> names,
+            final boolean fallback) throws NoSuchProviderException {
         for (final String name : names) {
             final ServiceProvider provider = getServiceProvider(type, name);
             if (provider != null) {
@@ -232,7 +225,8 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Autoloads plugins.
      */
     public void doAutoLoad() {
-        for (String plugin : identityController.getGlobalConfiguration().getOptionList("plugins", "autoload")) {
+        for (String plugin : identityController.getGlobalConfiguration().getOptionList("plugins",
+                "autoload")) {
             plugin = plugin.trim();
             if (!plugin.isEmpty() && plugin.charAt(0) != '#' && getPluginInfo(plugin) != null) {
                 getPluginInfo(plugin).loadPlugin();
@@ -241,15 +235,15 @@ public class PluginManager implements ActionListener, ServiceManager {
     }
 
     /**
-     * Tests and adds the specified plugin to the known plugins list. Plugins
-     * will only be added if: <ul><li>The file exists,<li>No other plugin with
-     * the same name is known,<li>All requirements are met for the plugin,
+     * Tests and adds the specified plugin to the known plugins list. Plugins will only be added if:
+     * <ul><li>The file exists,<li>No other plugin with the same name is known,<li>All requirements
+     * are met for the plugin,
      * <li>The plugin has a valid config file that can be read</ul>.
      *
      * @param filename Filename of Plugin jar
-     * @return True if the plugin is in the known plugins list (either before
-     * this invocation or as a result of it), false if it was not added for
-     * one of the reasons outlined above.
+     *
+     * @return True if the plugin is in the known plugins list (either before this invocation or as
+     *         a result of it), false if it was not added for one of the reasons outlined above.
      */
     public boolean addPlugin(final String filename) {
         if (knownPlugins.containsKey(filename.toLowerCase())) {
@@ -304,6 +298,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Remove a plugin.
      *
      * @param filename Filename of Plugin jar
+     *
      * @return True if removed.
      */
     public boolean delPlugin(final String filename) {
@@ -314,7 +309,9 @@ public class PluginManager implements ActionListener, ServiceManager {
         final PluginInfo pluginInfo = getPluginInfo(filename);
         final boolean wasLoaded = pluginInfo.isLoaded();
 
-        if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }
+        if (wasLoaded && !pluginInfo.isUnloadable()) {
+            return false;
+        }
 
         pluginInfo.unloadPlugin();
 
@@ -327,6 +324,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Reload a plugin.
      *
      * @param filename Filename of Plugin jar
+     *
      * @return True if reloaded.
      */
     public boolean reloadPlugin(final String filename) {
@@ -337,7 +335,9 @@ public class PluginManager implements ActionListener, ServiceManager {
         final PluginInfo pluginInfo = getPluginInfo(filename);
         final boolean wasLoaded = pluginInfo.isLoaded();
 
-        if (wasLoaded && !pluginInfo.isUnloadable()) { return false; }
+        if (wasLoaded && !pluginInfo.isUnloadable()) {
+            return false;
+        }
 
         delPlugin(filename);
         boolean result = addPlugin(filename);
@@ -363,6 +363,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Get a plugin instance.
      *
      * @param filename File name of plugin jar
+     *
      * @return PluginInfo instance, or null
      */
     public PluginInfo getPluginInfo(final String filename) {
@@ -373,6 +374,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * Get a plugin instance by plugin name.
      *
      * @param name Name of plugin to find.
+     *
      * @return PluginInfo instance, or null
      */
     public PluginInfo getPluginInfoByName(final String name) {
@@ -442,8 +444,7 @@ public class PluginManager implements ActionListener, ServiceManager {
     }
 
     /**
-     * Recursively scans the plugin directory and attempts to apply any
-     * available updates.
+     * Recursively scans the plugin directory and attempts to apply any available updates.
      */
     public void applyUpdates() {
         final Deque<File> dirs = new LinkedList<>();
@@ -465,9 +466,8 @@ public class PluginManager implements ActionListener, ServiceManager {
     }
 
     /**
-     * Retrieves a list of all installed plugins.
-     * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
-     * that matches *.jar is deemed to be a valid plugin.
+     * Retrieves a list of all installed plugins. Any file under the main plugin directory
+     * (~/.DMDirc/plugins or similar) that matches *.jar is deemed to be a valid plugin.
      *
      * @return A list of all installed or known plugins
      */
@@ -529,10 +529,8 @@ public class PluginManager implements ActionListener, ServiceManager {
 
         // Now validate all of the plugins
         for (Map.Entry<String, PluginMetaData> target : newPluginsByPath.entrySet()) {
-            final PluginMetaDataValidator validator
-                    = new PluginMetaDataValidator(target.getValue());
-            final Collection<String> results
-                    = validator.validate(newPluginsByName, newServices);
+            final PluginMetaDataValidator validator = new PluginMetaDataValidator(target.getValue());
+            final Collection<String> results = validator.validate(newPluginsByName, newServices);
 
             if (results.isEmpty()) {
                 res.add(target.getValue());
@@ -575,7 +573,8 @@ public class PluginManager implements ActionListener, ServiceManager {
 
     /** {@inheritDoc} */
     @Override
-    public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+    public void processEvent(final ActionType type, final StringBuffer format,
+            final Object... arguments) {
         if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
             for (PluginInfo pi : getPluginInfos()) {
                 if (!pi.isLoaded() && !pi.isTempLoaded()) {

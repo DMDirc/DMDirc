@@ -85,6 +85,7 @@ public class CommandModule {
      * Provides the /me command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -96,6 +97,7 @@ public class CommandModule {
      * Provides the /ban command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -107,6 +109,7 @@ public class CommandModule {
      * Provides the /cycle command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -118,6 +121,7 @@ public class CommandModule {
      * Provides the /invite command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -129,6 +133,7 @@ public class CommandModule {
      * Provides the /kick command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -140,6 +145,7 @@ public class CommandModule {
      * Provides the /mode command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -151,6 +157,7 @@ public class CommandModule {
      * Provides the /names command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -162,6 +169,7 @@ public class CommandModule {
      * Provides the /part command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -173,6 +181,7 @@ public class CommandModule {
      * Provides the /setnickcolour command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -184,6 +193,7 @@ public class CommandModule {
      * Provides the /topic command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -195,6 +205,7 @@ public class CommandModule {
      * Provides the /allchannels command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -206,6 +217,7 @@ public class CommandModule {
      * Provides the /away command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -217,6 +229,7 @@ public class CommandModule {
      * Provides the /back command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -228,6 +241,7 @@ public class CommandModule {
      * Provides the /server command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -239,6 +253,7 @@ public class CommandModule {
      * Provides the /ctcp command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -250,6 +265,7 @@ public class CommandModule {
      * Provides the /disconnect command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -261,6 +277,7 @@ public class CommandModule {
      * Provides the /ignore command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -272,6 +289,7 @@ public class CommandModule {
      * Provides the /join command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -283,6 +301,7 @@ public class CommandModule {
      * Provides the /msg command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -294,6 +313,7 @@ public class CommandModule {
      * Provides the /nick command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -305,6 +325,7 @@ public class CommandModule {
      * Provides the /notice command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -316,6 +337,7 @@ public class CommandModule {
      * Provides the /query command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -327,6 +349,7 @@ public class CommandModule {
      * Provides the /raw command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -338,6 +361,7 @@ public class CommandModule {
      * Provides the /reconnect command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -349,6 +373,7 @@ public class CommandModule {
      * Provides the /umode command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -360,12 +385,13 @@ public class CommandModule {
      * Provides a set of raw commands.
      *
      * @param controller The controller to use for command info.
+     *
      * @return A set of the commands' details.
      */
     @Provides(type = Provides.Type.SET_VALUES)
     public Set<CommandDetails> getRawCommands(final CommandController controller) {
         final Set<CommandDetails> results = new HashSet<>();
-        for (String name : new String[] { "lusers", "map", "motd", "oper", "whois", "who" }) {
+        for (String name : new String[]{"lusers", "map", "motd", "oper", "whois", "who"}) {
             final RawServerCommand rawCommand = new RawServerCommand(controller, name);
             results.add(new SimpleCommandDetails(rawCommand, rawCommand));
         }
@@ -376,6 +402,7 @@ public class CommandModule {
      * Provides the /alias command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -387,6 +414,7 @@ public class CommandModule {
      * Provides the /allservers command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -398,6 +426,7 @@ public class CommandModule {
      * Provides the /clear command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -409,6 +438,7 @@ public class CommandModule {
      * Provides the /echo command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -420,6 +450,7 @@ public class CommandModule {
      * Provides the /exit command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -431,6 +462,7 @@ public class CommandModule {
      * Provides the /Help command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -442,6 +474,7 @@ public class CommandModule {
      * Provides the /ifplugin command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -453,6 +486,7 @@ public class CommandModule {
      * Provides the /newserver command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -464,6 +498,7 @@ public class CommandModule {
      * Provides the /notify command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -475,6 +510,7 @@ public class CommandModule {
      * Provides the /loadplugin command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -486,6 +522,7 @@ public class CommandModule {
      * Provides the /unloadplugin command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -497,6 +534,7 @@ public class CommandModule {
      * Provides the /openwindow command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -508,6 +546,7 @@ public class CommandModule {
      * Provides the /reloadactions command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -519,6 +558,7 @@ public class CommandModule {
      * Provides the /reloadidentities command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -530,6 +570,7 @@ public class CommandModule {
      * Provides the /reloadplugin command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -541,6 +582,7 @@ public class CommandModule {
      * Provides the /saveconfig command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -552,6 +594,7 @@ public class CommandModule {
      * Provides the /set command.
      *
      * @param command The instantiated command.
+     *
      * @return The command's details.
      */
     @Provides(type = Provides.Type.SET)
@@ -578,10 +621,8 @@ public class CommandModule {
         public CommandInfo getInfo() {
             return info;
         }
-
         /** The command. */
         private final Command command;
-
         /** The command's info. */
         private final CommandInfo info;
 

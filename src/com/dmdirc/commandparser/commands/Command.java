@@ -35,10 +35,8 @@ public abstract class Command {
 
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
-
     /** The format name used for command errors. */
     protected static final String FORMAT_ERROR = "commandError";
-
     /** The controller this command is associated with. */
     private final CommandController controller;
 
@@ -52,13 +50,14 @@ public abstract class Command {
 
     /**
      * Sends a line, if appropriate, to the specified target.
-     * @param target The command window to send the line to
+     *
+     * @param target   The command window to send the line to
      * @param isSilent Whether this command is being silenced or not
-     * @param type The type of message to send
-     * @param args The arguments of the message
+     * @param type     The type of message to send
+     * @param args     The arguments of the message
      */
     protected final void sendLine(final FrameContainer target,
-            final boolean isSilent, final String type, final Object ... args) {
+            final boolean isSilent, final String type, final Object... args) {
         if (!isSilent && target != null) {
             target.addLine(type, args);
         }
@@ -67,10 +66,10 @@ public abstract class Command {
     /**
      * Sends a usage line, if appropriate, to the specified target.
      *
-     * @param target The command window to send the line to
+     * @param target   The command window to send the line to
      * @param isSilent Whether this command is being silenced or not
-     * @param name The name of the command that's raising the error
-     * @param args The arguments that the command accepts or expects
+     * @param name     The name of the command that's raising the error
+     * @param args     The arguments that the command accepts or expects
      */
     protected final void showUsage(final FrameContainer target,
             final boolean isSilent, final String name, final String args) {
@@ -80,12 +79,12 @@ public abstract class Command {
     }
 
     /**
-     * Formats the specified data into a table suitable for output in the
-     * textpane. It is expected that each String[] in data has the same number
-     * of elements as the headers array.
+     * Formats the specified data into a table suitable for output in the textpane. It is expected
+     * that each String[] in data has the same number of elements as the headers array.
      *
      * @param headers The headers of the table.
-     * @param data The contents of the table.
+     * @param data    The contents of the table.
+     *
      * @return A string containing an ASCII table
      */
     protected static String doTable(final String[] headers, final String[][] data) {
@@ -118,12 +117,11 @@ public abstract class Command {
     }
 
     /**
-     * Adds the specified data to the stringbuilder, padding with spaces to
-     * the specified size.
+     * Adds the specified data to the stringbuilder, padding with spaces to the specified size.
      *
      * @param builder The stringbuilder to append data to
-     * @param data The data to be added
-     * @param size The minimum size that should be used
+     * @param data    The data to be added
+     * @param size    The minimum size that should be used
      */
     private static void doPadding(final StringBuilder builder, final String data,
             final int size) {
@@ -137,9 +135,10 @@ public abstract class Command {
     /**
      * Executes this command.
      *
-     * @param origin The container which received the command
-     * @param args Arguments passed to this command
+     * @param origin  The container which received the command
+     * @param args    Arguments passed to this command
      * @param context The context the command was executed in
+     *
      * @since 0.6.4
      */
     public abstract void execute(FrameContainer origin,

@@ -56,7 +56,7 @@ public class PopupMenuItem {
      * Creates a new PopupMenuItem that is used as a submenu.
      *
      * @param manager The command manager to use to retrieve command information
-     * @param name The name of the menu item
+     * @param name    The name of the menu item
      * @param submenu The submenu of this item
      */
     public PopupMenuItem(final CommandController manager, final String name, final PopupMenu submenu) {
@@ -69,11 +69,12 @@ public class PopupMenuItem {
      * Creates a new PopupMenuItem that executes a command.
      *
      * @param manager The command manager to use to retrieve command information
-     * @param name The name of the menu item
-     * @param arity The arity of the command this item will execute
+     * @param name    The name of the menu item
+     * @param arity   The arity of the command this item will execute
      * @param command The command to be executed
      */
-    public PopupMenuItem(final CommandController manager, final String name, final int arity, final String command) {
+    public PopupMenuItem(final CommandController manager, final String name, final int arity,
+            final String command) {
         this.name = name;
         this.arity = arity;
         this.command = command;
@@ -117,12 +118,12 @@ public class PopupMenuItem {
     }
 
     /**
-     * Retrieves the command for this menu item, with the specified arguments
-     * substituted in. Note that the result may actually consist of multiple
-     * commands on separate lines.
+     * Retrieves the command for this menu item, with the specified arguments substituted in. Note
+     * that the result may actually consist of multiple commands on separate lines.
      *
-     * @param arguments A two dimensional array containing one array of
-     * arguments for each subject of the command.
+     * @param arguments A two dimensional array containing one array of arguments for each subject
+     *                  of the command.
+     *
      * @return The command to be passed to a command parser
      */
     public String getCommand(final Object[][] arguments) {

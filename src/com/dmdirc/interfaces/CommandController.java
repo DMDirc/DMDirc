@@ -36,10 +36,10 @@ import java.util.Map;
 public interface CommandController {
 
     /**
-     * Retrieves the command identified by the specified name, regardless of
-     * type.
+     * Retrieves the command identified by the specified name, regardless of type.
      *
      * @param name The name to look for
+     *
      * @return A command with a matching signature, or null if none were found
      */
     Map.Entry<CommandInfo, Command> getCommand(final String name);
@@ -49,6 +49,7 @@ public interface CommandController {
      *
      * @param type The type of the command to look for
      * @param name The name to look for
+     *
      * @return A command with a matching signature, or null if none were found
      */
     Map.Entry<CommandInfo, Command> getCommand(final CommandType type, final String name);
@@ -64,16 +65,19 @@ public interface CommandController {
      * Retrieves a list of the names of all commands of the specified type.
      *
      * @param type The type of command to list
+     *
      * @return A list of command names
      */
     List<String> getCommandNames(final CommandType type);
 
     /**
-     * Retrieves a map of all {@link CommandInfo}s and their associated
-     * {@link Command}s of the specified type.
+     * Retrieves a map of all {@link CommandInfo}s and their associated {@link Command}s of the
+     * specified type.
      *
      * @param type The type of command to list
+     *
      * @return A map of commands
+     *
      * @since 0.6.3m1
      */
     Map<CommandInfo, Command> getCommands(final CommandType type);
@@ -89,6 +93,7 @@ public interface CommandController {
      * Determines if the specified command is a valid channel command.
      *
      * @param command The name of the command to test
+     *
      * @return True iff the command is a channel command, false otherwise
      */
     boolean isChannelCommand(final String command);
@@ -98,7 +103,7 @@ public interface CommandController {
      *
      * @see CommandType#getComponentTypes()
      * @since 0.6.3m1
-     * @param parser The {@link CommandParser} to load commands in to
+     * @param parser     The {@link CommandParser} to load commands in to
      * @param supertypes The types of commands that should be loaded
      */
     void loadCommands(final CommandParser parser, final CommandType... supertypes);
@@ -107,7 +112,8 @@ public interface CommandController {
      * Registers a command with the command manager.
      *
      * @param command The command to be registered
-     * @param info The information about the command
+     * @param info    The information about the command
+     *
      * @since 0.6.3m1
      */
     void registerCommand(final Command command, final CommandInfo info);
@@ -116,6 +122,7 @@ public interface CommandController {
      * Unregisters a command with the command manager.
      *
      * @param info The information object for the command that should be unregistered
+     *
      * @since 0.6.3m1
      */
     void unregisterCommand(final CommandInfo info);

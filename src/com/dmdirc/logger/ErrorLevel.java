@@ -24,6 +24,7 @@ package com.dmdirc.logger;
 
 /** Specific error levels allowed by Logger. */
 public enum ErrorLevel {
+
     /** Fatal error. */
     FATAL("Fatal", "error"),
     /** High priority error. */
@@ -34,7 +35,6 @@ public enum ErrorLevel {
     LOW("Low", "info"),
     /** Unknown priority error. */
     UNKNOWN("Unknown", "info");
-
     /** Error level string. */
     private String value;
     /** Error level icon. */
@@ -44,7 +44,7 @@ public enum ErrorLevel {
      * Instantiates the enum.
      *
      * @param value toString value
-     * @param icon Error level icon
+     * @param icon  Error level icon
      */
     ErrorLevel(final String value, final String icon) {
         this.value = value;
@@ -80,4 +80,5 @@ public enum ErrorLevel {
 
         return ordinal() > level.ordinal();
     }
+
 }

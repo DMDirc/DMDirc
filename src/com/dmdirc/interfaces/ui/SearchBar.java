@@ -34,6 +34,7 @@ public interface SearchBar {
         UP,
         /** Move down through the document. */
         DOWN,
+
     }
 
     /**
@@ -63,7 +64,7 @@ public interface SearchBar {
     /**
      * Searches the textpane for text.
      *
-     * @param text the text to search for
+     * @param text          the text to search for
      * @param caseSensitive whether the search is case sensitive
      */
     void search(final String text, final boolean caseSensitive);
@@ -71,10 +72,11 @@ public interface SearchBar {
     /**
      * Searches the textpane for text.
      *
-     * @param direction the direction to search from
-     * @param text the text to search for
+     * @param direction     the direction to search from
+     * @param text          the text to search for
      * @param caseSensitive whether the search is case sensitive
      */
     void search(final Direction direction, final String text,
             final boolean caseSensitive);
+
 }

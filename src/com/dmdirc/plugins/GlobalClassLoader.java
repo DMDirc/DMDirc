@@ -36,7 +36,6 @@ public final class GlobalClassLoader extends ClassLoader {
 
     /** HashMap containing sources of Global class files. */
     private final Map<String, String> resourcesList = new HashMap<>();
-
     /** Plugin Manager that owns this GlobalClassLoader. */
     private final PluginManager manager;
 
@@ -54,6 +53,7 @@ public final class GlobalClassLoader extends ClassLoader {
      * Have we already loaded the given class name?
      *
      * @param name Name to check.
+     *
      * @return True if the class is loaded, false otherwise
      */
     public boolean isClassLoaded(final String name) {
@@ -64,8 +64,10 @@ public final class GlobalClassLoader extends ClassLoader {
      * Load the plugin with the given className.
      *
      * @param name Class Name of plugin
-     * @param pi The PluginInfo that contains this class
+     * @param pi   The PluginInfo that contains this class
+     *
      * @return plugin class
+     *
      * @throws ClassNotFoundException if the class to be loaded could not be found.
      */
     public Class<?> loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
@@ -104,7 +106,7 @@ public final class GlobalClassLoader extends ClassLoader {
      * Look in all known sources of persistent classes for file asked for.
      *
      * @param classname Class name to define.
-     * @param data Data to define class with.
+     * @param data      Data to define class with.
      *
      * @return The resulting {@link Class} object
      */

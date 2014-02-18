@@ -66,31 +66,28 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private static final String DOMAIN_CONCURRENCY = "concurrency";
     /** The domain name for misc settings. */
     private static final String DOMAIN_MISC = "misc";
-
     /** The base directory to save actions in. */
     private final String actionsDirectory;
     /** The controller to use to read and update settings. */
     private final IdentityController identityController;
     /** The controller to use to retrieve components, comparisons, etc. */
     private final ActionController actionController;
-
     /** The config file we're using. */
     protected ConfigFile config;
-
     /** The location of the file we're reading/saving. */
     private String location;
 
     /**
-     * Creates a new instance of Action. The group and name specified must
-     * be the group and name of a valid action already saved to disk.
+     * Creates a new instance of Action. The group and name specified must be the group and name of
+     * a valid action already saved to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
-     * @param substitutorFactory Factory to use to create action substitutors.
-     * @param actionController The controller that owns this action.
-     * @param identityController The controller to use to retrieve and update settings.
-     * @param actionsDirectory The base directory to store actions in.
-     * @param group The group the action belongs to
-     * @param name The name of the action
+     * @param substitutorFactory          Factory to use to create action substitutors.
+     * @param actionController            The controller that owns this action.
+     * @param identityController          The controller to use to retrieve and update settings.
+     * @param actionsDirectory            The base directory to store actions in.
+     * @param group                       The group the action belongs to
+     * @param name                        The name of the action
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
@@ -124,21 +121,20 @@ public class Action extends ActionModel implements ConfigChangeListener {
     }
 
     /**
-     * Creates a new instance of Action with the specified properties and saves
-     * it to disk.
+     * Creates a new instance of Action with the specified properties and saves it to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
-     * @param substitutorFactory Factory to use to create action substitutors.
-     * @param actionController The controller that owns this action.
-     * @param identityController The controller to use to retrieve and update settings.
-     * @param actionsDirectory The base directory to store actions in.
-     * @param group The group the action belongs to
-     * @param name The name of the action
-     * @param triggers The triggers to use
-     * @param response The response to use
-     * @param conditions The conditions to use
-     * @param conditionTree The condition tree to use
-     * @param newFormat The new formatter to use
+     * @param substitutorFactory          Factory to use to create action substitutors.
+     * @param actionController            The controller that owns this action.
+     * @param identityController          The controller to use to retrieve and update settings.
+     * @param actionsDirectory            The base directory to store actions in.
+     * @param group                       The group the action belongs to
+     * @param name                        The name of the action
+     * @param triggers                    The triggers to use
+     * @param response                    The response to use
+     * @param conditions                  The conditions to use
+     * @param conditionTree               The condition tree to use
+     * @param newFormat                   The new formatter to use
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
@@ -159,7 +155,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
-        this.location = actionsDirectory + group + File.separator + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
+        this.location = actionsDirectory + group + File.separator
+                + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
         new File(actionsDirectory + group).mkdirs();
 
@@ -246,8 +243,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
     }
 
     /**
-     * Checks to see if this action contains group meta-data, and adds it to
-     * the group as appropriate.
+     * Checks to see if this action contains group meta-data, and adds it to the group as
+     * appropriate.
      */
     private void checkMetaData() {
         if (config.isKeyDomain(DOMAIN_METADATA)) {
@@ -296,6 +293,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Loads a list of triggers with the specified names.
      *
      * @param newTriggers A list of trigger names
+     *
      * @return True if all triggers are valid and compatible, false otherwise.
      */
     private boolean loadTriggers(final List<String> newTriggers) {
@@ -410,6 +408,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Reads a condition from the specified configuration section.
      *
      * @param data The relevant section of the action configuration
+     *
      * @return True if the condition is valid, false otherwise
      */
     private boolean readCondition(final Map<String, String> data) {
@@ -460,7 +459,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         if ((arg != -1 && !comparison.appliesTo().equals(component.getType()))
-            || (arg == -1 && !comparison.appliesTo().equals(String.class))) {
+                || (arg == -1 && !comparison.appliesTo().equals(String.class))) {
             error(ActionErrorType.CONDITIONS,
                     "Comparison cannot be applied to specified component: " + data.get("comparison"));
             return false;
@@ -488,9 +487,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Reads a component from the specified data section for the specified argument.
      *
      * @param data The relevant section of the action configuration
-     * @param arg The argument number that the component should apply to
-     * @return The corresponding ActionComponent, or null if the specified
-     * component is invalid.
+     * @param arg  The argument number that the component should apply to
+     *
+     * @return The corresponding ActionComponent, or null if the specified component is invalid.
      */
     private ActionComponent readComponent(final Map<String, String> data, final int arg) {
         final String componentName = data.get("component");
@@ -525,7 +524,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /**
      * Raises a trivial error, informing the user of the problem.
      *
-     * @param type The type of error that occurred.
+     * @param type    The type of error that occurred.
      * @param message The message to be raised
      */
     private void error(final ActionErrorType type, final String message) {

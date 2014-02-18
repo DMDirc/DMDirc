@@ -58,28 +58,23 @@ public class NewServer extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("newserver",
             "newserver <host[:[+]port]> [password] - connect to a new server",
             CommandType.TYPE_GLOBAL);
-
     /** The factory to use to construct servers. */
     private final ServerFactory serverFactory;
-
     /** Plugin manager to query for available services. */
     private final PluginManager pluginManager;
-
     /** Identity controller to use to find profiles. */
     private final IdentityController identityController;
-
     /** The parser to use for user input. */
     private final URIParser uriParser;
 
     /**
-     * Creates a new newserver command which will use the specified factory
-     * to construct servers.
+     * Creates a new newserver command which will use the specified factory to construct servers.
      *
-     * @param controller The controller to use for command information.
-     * @param serverFactory The factory to use to construct servers.
-     * @param pluginManager The plugin manager to use to query available services.
+     * @param controller         The controller to use for command information.
+     * @param serverFactory      The factory to use to construct servers.
+     * @param pluginManager      The plugin manager to use to query available services.
      * @param identityController Identity controller to use to find profiles.
-     * @param uriParser The parser to use for user input.
+     * @param uriParser          The parser to use for user input.
      */
     @Inject
     public NewServer(
@@ -120,11 +115,13 @@ public class NewServer extends Command implements IntelligentCommand {
     }
 
     /**
-     * Get a URI from the given string.
-     * This method allows for +port in the uri (eg irc://server.host:+6668/)
+     * Get a URI from the given string. This method allows for +port in the uri (eg
+     * irc://server.host:+6668/)
      *
      * @param address Address to parse
+     *
      * @return URI from address.
+     *
      * @throws URISyntaxException If the string is not parseable.
      * @deprecated Use a {@link URIParser}.
      */
@@ -144,14 +141,16 @@ public class NewServer extends Command implements IntelligentCommand {
                 int newPort = -1;
                 try {
                     newPort = Integer.parseInt(m.group(2));
-                } catch (final NumberFormatException nfe) { }
+                } catch (final NumberFormatException nfe) {
+                }
 
                 // Add 's' to scheme if not already there.
                 String scheme = uri.getScheme();
                 if (scheme.charAt(scheme.length() - 1) != 's') {
                     scheme += "s";
                 }
-                return new URI(scheme, uri.getUserInfo(), uri.getHost(), newPort, uri.getPath(), uri.getQuery(), uri.getFragment());
+                return new URI(scheme, uri.getUserInfo(), uri.getHost(), newPort, uri.getPath(),
+                        uri.getQuery(), uri.getFragment());
             }
         }
 
@@ -168,10 +167,11 @@ public class NewServer extends Command implements IntelligentCommand {
 
         if (arg == 0) {
             for (Service parserType : pluginManager.getServicesByType("parser")) {
-                res.add(parserType.getName()+"://");
+                res.add(parserType.getName() + "://");
             }
         }
         res.excludeAll();
         return res;
     }
+
 }

@@ -33,4 +33,5 @@ public interface FirstRunWizard {
 
     /** Displays the First run wizard. */
     void display();
+
 }

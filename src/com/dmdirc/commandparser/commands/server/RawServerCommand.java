@@ -34,10 +34,9 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
 /**
- * Implements a raw server command (i.e., a command that is sent to the server
- * as-is.
+ * Implements a raw server command (i.e., a command that is sent to the server as-is.
  */
-@CommandOptions(allowOffline=false)
+@CommandOptions(allowOffline = false)
 public class RawServerCommand extends Command implements CommandInfo {
 
     /** The name of this raw command. */
@@ -47,7 +46,7 @@ public class RawServerCommand extends Command implements CommandInfo {
      * Creates a new instance of RawServerCommand.
      *
      * @param controller The controller to use for command info.
-     * @param command The command name for this raw command
+     * @param command    The command name for this raw command
      */
     public RawServerCommand(final CommandController controller, final String command) {
         super(controller);

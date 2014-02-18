@@ -52,14 +52,13 @@ public class SetNickColour extends Command implements IntelligentCommand {
             "setnickcolour [--nicklist|--text] <nick> [colour] - "
             + "set the specified person's display colour",
             CommandType.TYPE_CHANNEL);
-
     /** Manager to use to convert colours. */
     private final ColourManager colourManager;
 
     /**
      * Creates a new instance of the {@link SetNickColour} command.
      *
-     * @param controller The command controller that owns this command.
+     * @param controller    The command controller that owns this command.
      * @param colourManager The colour manager to use to convert colours.
      */
     @Inject
@@ -89,7 +88,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
         }
 
         if (args.getArguments().length <= offset) {
-            showUsage(origin, args.isSilent(), "setnickcolour", "[--nicklist|--text] <nick> [colour]");
+            showUsage(origin, args.isSilent(), "setnickcolour",
+                    "[--nicklist|--text] <nick> [colour]");
             return;
         }
 
@@ -112,7 +112,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
             channel.refreshClients();
         } else {
             // We're setting the colour
-            final Colour newColour = colourManager.getColourFromString(args.getArguments()[offset], null);
+            final Colour newColour = colourManager.getColourFromString(args.getArguments()[offset],
+                    null);
             if (newColour == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
                 return;

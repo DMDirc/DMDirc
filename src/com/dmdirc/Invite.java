@@ -33,13 +33,10 @@ public class Invite {
 
     /** The connection this invite was on. */
     private final Connection connection;
-
     /** The channel this invite is for. */
     private final String channel;
-
     /** The time this invite was created. */
     private final long timestamp;
-
     /** The source of this invite. */
     private final String source;
 
@@ -47,8 +44,8 @@ public class Invite {
      * Creates a new instance of Invite.
      *
      * @param connection The connection that this invite was received on
-     * @param channel The channel that this invite is for
-     * @param source The source of this invite
+     * @param channel    The channel that this invite is for
+     * @param source     The source of this invite
      */
     public Invite(final Connection connection, final String channel, final String source) {
         this.connection = connection;
@@ -69,6 +66,7 @@ public class Invite {
      * Retrieves the source of this invite.
      *
      * @return This invite's source
+     *
      * @see Server#parseHostmask(java.lang.String)
      */
     public String[] getSource() {
@@ -88,4 +86,5 @@ public class Invite {
     public void decline() {
         connection.removeInvite(this);
     }
+
 }

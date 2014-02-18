@@ -34,21 +34,18 @@ public class IRCDocumentSearcher {
 
     /** Document to search. */
     private final IRCDocument document;
-
     /** Phrase to search for. */
     private final String phrase;
-
     /** Textpane position. */
     private LinePosition position;
-
     /** Case sensitive? */
     private final boolean caseSensitive;
 
     /**
      * Constructs a new IRC Document searcher.
      *
-     * @param phrase Phrase to search for
-     * @param document Document to search
+     * @param phrase        Phrase to search for
+     * @param document      Document to search
      * @param caseSensitive Whether or not this searcher is case sensitive
      */
     public IRCDocumentSearcher(final String phrase, final IRCDocument document,
@@ -101,22 +98,22 @@ public class IRCDocumentSearcher {
             if (line < 0) {
                 line = 0;
             }
-              final String lineText = document.getLine(line).getText();
+            final String lineText = document.getLine(line).getText();
 
-              final List<LinePosition> matches = searchLine(line, lineText);
+            final List<LinePosition> matches = searchLine(line, lineText);
 
-             for (int i = matches.size() - 1; i >= 0; i--) {
-                 if (position.getEndLine() != line
-                         || matches.get(i).getEndPos() < position.getEndPos()) {
-                     return matches.get(i);
-                 }
-             }
+            for (int i = matches.size() - 1; i >= 0; i--) {
+                if (position.getEndLine() != line
+                        || matches.get(i).getEndPos() < position.getEndPos()) {
+                    return matches.get(i);
+                }
+            }
 
-             line--;
+            line--;
 
-             if (line < 0) {
-                 line += document.getNumLines();
-              }
+            if (line < 0) {
+                line += document.getNumLines();
+            }
 
         }
 
@@ -138,22 +135,22 @@ public class IRCDocumentSearcher {
             if (line < 0) {
                 line = 0;
             }
-             final String lineText = document.getLine(line).getText();
+            final String lineText = document.getLine(line).getText();
 
-             final List<LinePosition> matches = searchLine(line, lineText);
+            final List<LinePosition> matches = searchLine(line, lineText);
 
-             for (LinePosition match : matches) {
-                 if (position.getStartLine() != line
-                         || match.getStartPos() > position.getStartPos()) {
-                     return match;
-                 }
-             }
+            for (LinePosition match : matches) {
+                if (position.getStartLine() != line
+                        || match.getStartPos() > position.getStartPos()) {
+                    return match;
+                }
+            }
 
-             line++;
+            line++;
 
-             if (line >= document.getNumLines()) {
-                 line -= document.getNumLines();
-                 }
+            if (line >= document.getNumLines()) {
+                line -= document.getNumLines();
+            }
         }
 
         return null;
@@ -163,7 +160,8 @@ public class IRCDocumentSearcher {
      * Searches a line and returns all matches on a line.
      *
      * @param lineNum the line number of the line we're searching
-     * @param line Line to search
+     * @param line    Line to search
+     *
      * @return List of matches
      */
     private List<LinePosition> searchLine(final int lineNum, final String line) {

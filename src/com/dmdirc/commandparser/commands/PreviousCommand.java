@@ -32,7 +32,6 @@ public final class PreviousCommand {
 
     /** The full command that was executed. */
     private final String line;
-
     /** The timestamp of its execution. */
     private final long time = new Date().getTime();
 

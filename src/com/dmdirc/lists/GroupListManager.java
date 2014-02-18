@@ -43,13 +43,11 @@ public class GroupListManager implements GroupListStartListener,
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
-
     /** The connection to request group information from. */
     private final Connection connection;
-
     /** The cached groups. */
-    private final ObservableList<GroupListEntry> groups
-            = new ObservableListDecorator<>(new LinkedList<GroupListEntry>());
+    private final ObservableList<GroupListEntry> groups = new ObservableListDecorator<>(
+            new LinkedList<GroupListEntry>());
 
     public GroupListManager(final Connection connection) {
         this.connection = connection;
@@ -63,6 +61,7 @@ public class GroupListManager implements GroupListStartListener,
      * Starts a search with the given search terms.
      *
      * @param searchTerm The term to search for
+     *
      * @see Parser#requestGroupList(java.lang.String)
      */
     public void startSearch(final String searchTerm) {

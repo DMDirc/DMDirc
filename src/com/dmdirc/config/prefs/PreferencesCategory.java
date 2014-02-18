@@ -30,51 +30,39 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents one category of preferences. Categories can contain 0 or more
- * subcategories, and either 0 or more PreferencesSettings or exactly 1
- * PreferencesInterface object.
+ * Represents one category of preferences. Categories can contain 0 or more subcategories, and
+ * either 0 or more PreferencesSettings or exactly 1 PreferencesInterface object.
  */
 public class PreferencesCategory {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(PreferencesCategory.class);
-
     /** The title (name) of this category. */
     private final String title;
-
     /** A description of this category. */
     private final String description;
-
     /** The icon to use for this category. */
     private final String icon;
-
     /** The warning displayed for this category, if any. */
     private String warning;
-
     /** Whether or not this category is inline. */
     private boolean isInline;
-
     /** Whether or not to show inline categories before settings. */
     private boolean inlineBefore = true;
-
     /** Our parent category, if known. */
     private PreferencesCategory parent;
-
     /** A list of settings in this category. */
     private final List<PreferencesSetting> settings = new ArrayList<>();
-
     /** A list of subcategories of this category. */
     private final List<PreferencesCategory> subcats = new ArrayList<>();
-
     /** The replacement object to use for this category. */
     private final PreferencesInterface object;
-
     /** A list of listeners who are interested in this category. */
     private final ListenerList listeners = new ListenerList();
 
     /**
      * Creates a new preferences category that contains settings.
      *
-     * @param title The title of this preferences category
+     * @param title       The title of this preferences category
      * @param description The description of this category
      */
     public PreferencesCategory(final String title, final String description) {
@@ -85,9 +73,9 @@ public class PreferencesCategory {
      * Creates a new preferences category that contains settings.
      *
      * @since 0.6.3m1
-     * @param title The title of this preferences category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param icon The icon to use for this category
+     * @param icon        The icon to use for this category
      */
     public PreferencesCategory(final String title, final String description,
             final String icon) {
@@ -97,9 +85,9 @@ public class PreferencesCategory {
     /**
      * Creates a new preferences category that contains an object.
      *
-     * @param title The title of this preferences category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param object The replacement object for this category
+     * @param object      The replacement object for this category
      */
     public PreferencesCategory(final String title, final String description,
             final PreferencesInterface object) {
@@ -110,10 +98,10 @@ public class PreferencesCategory {
      * Creates a new preferences category that contains an object.
      *
      * @since 0.6.3m1
-     * @param title The title of this preferences category
+     * @param title       The title of this preferences category
      * @param description The description of this category
-     * @param icon The icon to use for this category
-     * @param object The replacement object for this category
+     * @param icon        The icon to use for this category
+     * @param object      The replacement object for this category
      */
     public PreferencesCategory(final String title, final String description,
             final String icon, final PreferencesInterface object) {
@@ -182,8 +170,7 @@ public class PreferencesCategory {
     }
 
     /**
-     * Sets this category to show inline categories after settings, rather than
-     * before.
+     * Sets this category to show inline categories after settings, rather than before.
      *
      * @return A reference to this category, for convenience
      */
@@ -231,11 +218,11 @@ public class PreferencesCategory {
     }
 
     /**
-     * Retrieves the full path of this category. A category's path is the name
-     * of each of its parent categories, starting with the furthest up the
-     * hierarchy, separated by '→' characters.
+     * Retrieves the full path of this category. A category's path is the name of each of its parent
+     * categories, starting with the furthest up the hierarchy, separated by '→' characters.
      *
      * @return This category's path
+     *
      * @since 0.6.3m1
      */
     public String getPath() {

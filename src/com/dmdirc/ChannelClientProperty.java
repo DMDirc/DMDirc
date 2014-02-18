@@ -29,13 +29,10 @@ public enum ChannelClientProperty {
 
     /** Nicklist client foreground colour. */
     NICKLIST_FOREGROUND,
-
     /** Nicklist client background colour. */
     NICKLIST_BACKGROUND,
-
     /** Textpane client foreground colour. */
     TEXT_FOREGROUND,
-
     /** Textpane client background colour. */
     TEXT_BACKGROUND;
 

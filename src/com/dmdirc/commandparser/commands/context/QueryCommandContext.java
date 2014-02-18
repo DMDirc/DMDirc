@@ -39,10 +39,9 @@ public class QueryCommandContext extends ChatCommandContext {
     /**
      * Creates a new query command context.
      *
-     * @param source The source of the command
-     * @param commandInfo The command info object which associated the command
-     * with the input
-     * @param query The query associated with the command
+     * @param source      The source of the command
+     * @param commandInfo The command info object which associated the command with the input
+     * @param query       The query associated with the command
      */
     public QueryCommandContext(final FrameContainer source,
             final CommandInfo commandInfo, final Query query) {

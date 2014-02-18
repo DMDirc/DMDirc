@@ -55,7 +55,6 @@ public class Echo extends Command implements IntelligentCommand {
             "echo [--ts <timestamp>] [--target <window>] <line> "
             + "- echos the specified line to the window",
             CommandType.TYPE_GLOBAL);
-
     /** The flag used to specify a timestamp for the echo command. */
     private final CommandFlag timeStampFlag = new CommandFlag("ts", true, 1, 0);
     /** The flag used to specify a target for the echo command. */
@@ -68,7 +67,7 @@ public class Echo extends Command implements IntelligentCommand {
     /**
      * Creates a new instance of Echo.
      *
-     * @param controller Command controller
+     * @param controller    Command controller
      * @param windowManager Window management
      */
     @Inject

@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.ui;
 
 import java.awt.GraphicsConfiguration;
@@ -70,4 +71,5 @@ public class CoreUIUtils {
         // Set the location of the window
         window.setLocation(xPos, yPos);
     }
+
 }

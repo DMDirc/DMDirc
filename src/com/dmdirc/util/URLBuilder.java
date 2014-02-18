@@ -42,7 +42,6 @@ public class URLBuilder {
 
     /** Provider to retrieve a plugin manager instance when needed. */
     private final Provider<PluginManager> pluginManagerProvider;
-
     /** Provider to retrieve a theme manager instance when needed. */
     private final Provider<ThemeManager> themeManagerProvider;
 
@@ -50,7 +49,7 @@ public class URLBuilder {
      * Creates a new instance of URLBuilder.
      *
      * @param pluginManagerProvider Provider to retrieve a plugin manager instance when needed.
-     * @param themeManagerProvider Provider to retrieve a theme manager instance when needed.
+     * @param themeManagerProvider  Provider to retrieve a theme manager instance when needed.
      */
     @Inject
     public URLBuilder(
@@ -64,6 +63,7 @@ public class URLBuilder {
      * Constructs an URL pointing to the specified resource on the file system.
      *
      * @param path The path that the URL is for
+     *
      * @return An URL corresponding to the specified path, or null on failure
      */
     public URL getUrlForFile(final String path) {
@@ -81,7 +81,8 @@ public class URLBuilder {
      * Constructs an URL pointing to the specified resource within a jar file.
      *
      * @param jarFile Path to the jar file (including scheme)
-     * @param path Path to the resource within the jar file
+     * @param path    Path to the resource within the jar file
+     *
      * @return An URL corresponding to the specified resource, or null on failure
      */
     public URL getUrlForJarFile(final String jarFile, final String path) {
@@ -98,10 +99,10 @@ public class URLBuilder {
     }
 
     /**
-     * Constructs an URL pointing to the specified resource within the DMDirc
-     * project.
+     * Constructs an URL pointing to the specified resource within the DMDirc project.
      *
      * @param resource The path to the resource
+     *
      * @return An URL corresponding to the specified resource
      */
     public URL getUrlForDMDircResource(final String resource) {
@@ -112,7 +113,8 @@ public class URLBuilder {
      * Builds an URL pointing to a resource within a DMDirc theme.
      *
      * @param theme The theme which the resource is located in
-     * @param path The path within the theme of the resource
+     * @param path  The path within the theme of the resource
+     *
      * @return An URL corresponding to the specified resource, or null on failure
      */
     public URL getUrlForThemeResource(final String theme, final String path) {
@@ -124,7 +126,8 @@ public class URLBuilder {
      * Builds an URL pointing to a resource within a DMDirc plugin.
      *
      * @param plugin The plugin which the resource is located in
-     * @param path The path within the theme of the resource
+     * @param path   The path within the theme of the resource
+     *
      * @return An URL corresponding to the specified resource, or null on failure
      */
     public URL getUrlForPluginResource(final String plugin, final String path) {

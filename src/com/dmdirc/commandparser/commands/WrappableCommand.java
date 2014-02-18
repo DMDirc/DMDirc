@@ -26,18 +26,18 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 
 /**
- * Wrapping commands are commands whose arguments may be wrapped into multiple
- * lines when sending.
+ * Wrapping commands are commands whose arguments may be wrapped into multiple lines when sending.
  */
 public interface WrappableCommand {
 
     /**
-     * Determines the number of lines that the specified arguments will be
-     * wrapped as.
+     * Determines the number of lines that the specified arguments will be wrapped as.
      *
-     * @param origin The window the command is being executed in
+     * @param origin    The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
+     *
      * @return The number of lines that the arguments will result in
+     *
      * @since 0.6.3m1
      */
     int getLineCount(WritableFrameContainer origin, CommandArguments arguments);

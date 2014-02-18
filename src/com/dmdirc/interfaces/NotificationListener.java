@@ -28,8 +28,8 @@ import com.dmdirc.ui.Colour;
 import java.util.EventListener;
 
 /**
- * Defines the methods that should be implemented by classes which wish to
- * receive information about notification changes.
+ * Defines the methods that should be implemented by classes which wish to receive information about
+ * notification changes.
  */
 public interface NotificationListener extends EventListener {
 
@@ -47,4 +47,5 @@ public interface NotificationListener extends EventListener {
      * @param window The window whose notification has been cleared
      */
     void notificationCleared(final FrameContainer window);
+
 }

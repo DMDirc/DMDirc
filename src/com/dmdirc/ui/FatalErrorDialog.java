@@ -53,8 +53,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- * The fatal error dialog is used to inform the user that a fatal error has
- * occured and to give them a chance to quit or restart the client.
+ * The fatal error dialog is used to inform the user that a fatal error has occured and to give them
+ * a chance to quit or restart the client.
  */
 public final class FatalErrorDialog extends JDialog implements ActionListener,
         ErrorListener {
@@ -215,7 +215,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             restartButton.setEnabled(false);
             sendButton.setEnabled(false);
             new SwingWorker<Void, Void>() {
-
                 /** {@inheritDoc} */
                 @Override
                 protected Void doInBackground() {
@@ -234,8 +233,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     }
 
     /**
-     * Returns the restart response of this dialog.  This will default to true
-     * if the user is yet to make a choice.
+     * Returns the restart response of this dialog. This will default to true if the user is yet to
+     * make a choice.
      *
      * @return Whether to restart after this error
      */
@@ -299,7 +298,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
             SwingUtilities.invokeLater(new Runnable() {
-
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
@@ -318,12 +316,12 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     }
 
     /**
-     * Are we waiting for user input.  This will be true until the dialog has
-     * been disposed of.
+     * Are we waiting for user input. This will be true until the dialog has been disposed of.
      *
      * @return true if user has made no input
      */
     public boolean isWaiting() {
         return waiting;
     }
+
 }

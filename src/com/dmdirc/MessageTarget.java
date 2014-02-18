@@ -30,22 +30,22 @@ import com.dmdirc.util.URLBuilder;
 import java.util.Collection;
 
 /**
- * Defines common methods for objects that you can send messages to (such as
- * channels and queries).
+ * Defines common methods for objects that you can send messages to (such as channels and queries).
  */
 public abstract class MessageTarget extends WritableFrameContainer {
 
     /**
      * Creates a new MessageTarget.
      *
-     * @param icon The icon to use for this target
-     * @param name The name of this target
-     * @param title The title of this target
-     * @param config The config manager to use for this target
-     * @param parser The command parser for this container
+     * @param icon               The icon to use for this target
+     * @param name               The name of this target
+     * @param title              The title of this target
+     * @param config             The config manager to use for this target
+     * @param parser             The command parser for this container
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param urlBuilder The URL builder to use when finding icons.
-     * @param components The UI components that this frame requires
+     * @param urlBuilder         The URL builder to use when finding icons.
+     * @param components         The UI components that this frame requires
+     *
      * @since 0.6.4
      */
     public MessageTarget(
@@ -61,8 +61,7 @@ public abstract class MessageTarget extends WritableFrameContainer {
     }
 
     /**
-     * Sends the specified string as an action (CTCP) to the target that this
-     * object represents.
+     * Sends the specified string as an action (CTCP) to the target that this object represents.
      *
      * @param action The action to send
      */

@@ -25,9 +25,9 @@ package com.dmdirc.updater.retrieving;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
 /**
- * Defines a strategy for retrieving updated files that have been identified by
- * an {@link com.dmdirc.updater.checking.UpdateCheckStrategy}. Retrieval strategies will place
- * updates in a temporary location on disk for use by an
+ * Defines a strategy for retrieving updated files that have been identified by an
+ * {@link com.dmdirc.updater.checking.UpdateCheckStrategy}. Retrieval strategies will place updates
+ * in a temporary location on disk for use by an
  * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy}.
  */
 public interface UpdateRetrievalStategy {
@@ -35,8 +35,8 @@ public interface UpdateRetrievalStategy {
     /**
      * Determines whether this strategy can handle retrieving the given update.
      *
-     * @param checkResult The update check result describing the update
-     * requiring retrieval.
+     * @param checkResult The update check result describing the update requiring retrieval.
+     *
      * @return True if this strategy can handle the update; false otherwise
      */
     boolean canHandle(UpdateCheckResult checkResult);
@@ -44,12 +44,12 @@ public interface UpdateRetrievalStategy {
     /**
      * Retrieves the update associated with the given {@link UpdateCheckResult}.
      *
-     * @param checkResult The update check result describing the update
-     * requiring retrieval.
-     * @return An {@link UpdateRetrievalResult} which describes the result of
-     * the retrieval, providing information for an
-     * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy} to use to install the
-     * update.
+     * @param checkResult The update check result describing the update requiring retrieval.
+     *
+     * @return An {@link UpdateRetrievalResult} which describes the result of the retrieval,
+     *         providing information for an
+     *         {@link com.dmdirc.updater.installing.UpdateInstallationStrategy} to use to install
+     *         the update.
      */
     UpdateRetrievalResult retrieve(UpdateCheckResult checkResult);
 

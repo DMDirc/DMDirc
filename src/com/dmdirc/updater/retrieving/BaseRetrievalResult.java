@@ -31,7 +31,6 @@ public class BaseRetrievalResult implements UpdateRetrievalResult {
 
     /** The check result that triggered this retrieval. */
     private final UpdateCheckResult checkResult;
-
     /** Whether or not the retrieval was successful. */
     private final boolean successful;
 

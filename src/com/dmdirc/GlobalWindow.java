@@ -54,11 +54,11 @@ public class GlobalWindow extends WritableFrameContainer {
     /**
      * Creates a new instance of GlobalWindow.
      *
-     * @param config The ConfigManager to retrieve settings from.
-     * @param parser The command parser to use to parse input.
+     * @param config              The ConfigManager to retrieve settings from.
+     * @param parser              The command parser to use to parse input.
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param urlBuilder The URL builder to use when finding icons.
+     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param urlBuilder          The URL builder to use when finding icons.
      */
     public GlobalWindow(
             final AggregateConfigProvider config,
@@ -68,8 +68,8 @@ public class GlobalWindow extends WritableFrameContainer {
             final URLBuilder urlBuilder) {
         super("icon", "Global", "(Global)", config, parser, messageSinkManager, urlBuilder,
                 Arrays.asList(
-                        WindowComponent.TEXTAREA.getIdentifier(),
-                        WindowComponent.INPUTFIELD.getIdentifier()));
+                WindowComponent.TEXTAREA.getIdentifier(),
+                WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
     }
@@ -112,19 +112,19 @@ public class GlobalWindow extends WritableFrameContainer {
         private final Provider<GlobalCommandParser> globalCommandParserProvider;
         /** The URL builder to use when finding icons. */
         private final URLBuilder urlBuilder;
-
         /** The global window that's in use, if any. */
         private GlobalWindow globalWindow;
 
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
          *
-         * @param globalConfig Configuration provider to read settings from.
-         * @param tabCompleterFactory Factory to use to create tab completers.
-         * @param windowManagerProvider The provider to use to retrieve a window manager.
-         * @param messageSinkManagerProvider The provider to use to retrieve a sink manager.
-         * @param globalCommandParserProvider The provider to use to retrieve a global command parser.
-         * @param urlBuilder The URL builder to use when finding icons.
+         * @param globalConfig                Configuration provider to read settings from.
+         * @param tabCompleterFactory         Factory to use to create tab completers.
+         * @param windowManagerProvider       The provider to use to retrieve a window manager.
+         * @param messageSinkManagerProvider  The provider to use to retrieve a sink manager.
+         * @param globalCommandParserProvider The provider to use to retrieve a global command
+         *                                    parser.
+         * @param urlBuilder                  The URL builder to use when finding icons.
          */
         @Inject
         public GlobalWindowManager(
@@ -157,8 +157,8 @@ public class GlobalWindow extends WritableFrameContainer {
         }
 
         /**
-         * Updates the state of the global window in line with the
-         * general.showglobalwindow config setting.
+         * Updates the state of the global window in line with the general.showglobalwindow config
+         * setting.
          */
         protected void updateWindowState() {
             synchronized (GlobalWindow.class) {

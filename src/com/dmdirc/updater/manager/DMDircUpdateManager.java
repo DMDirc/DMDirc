@@ -49,12 +49,13 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
     /**
      * Creates a new instance of the update manager.
      *
-     * @param updatePolicy The policy to use to decide if components should be updated.
-     * @param checkStrategies The strategies to use to actually perform checks.
-     * @param consolidator The consolidator to use to pick from multiple available updates.
-     * @param retrievalStategies The strategies to use to retrieve updates.
+     * @param updatePolicy           The policy to use to decide if components should be updated.
+     * @param checkStrategies        The strategies to use to actually perform checks.
+     * @param consolidator           The consolidator to use to pick from multiple available
+     *                               updates.
+     * @param retrievalStategies     The strategies to use to retrieve updates.
      * @param installationStrategies The strategies to use to install updates.
-     * @param components The default components to add to the manager.
+     * @param components             The default components to add to the manager.
      */
     @Inject
     public DMDircUpdateManager(

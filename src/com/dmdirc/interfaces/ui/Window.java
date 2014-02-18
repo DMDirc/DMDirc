@@ -25,8 +25,8 @@ package com.dmdirc.interfaces.ui;
 import com.dmdirc.FrameContainer;
 
 /**
- * The Window interface specifies common methods that should be implemented
- * by all windows. It is assumed that all windows have a main text area.
+ * The Window interface specifies common methods that should be implemented by all windows. It is
+ * assumed that all windows have a main text area.
  */
 public interface Window {
 
@@ -41,6 +41,7 @@ public interface Window {
      * Retrieves the UI controller this window is associated with.
      *
      * @return This window's UI controller
+     *
      * @since 0.6.4
      */
     UIController getController();

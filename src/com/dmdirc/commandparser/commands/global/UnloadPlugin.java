@@ -46,14 +46,13 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("unloadplugin",
             "unloadplugin <plugin> - Unloads the specified plugin",
             CommandType.TYPE_GLOBAL);
-
     /** The plugin manager to use to unload plugins. */
     private final PluginManager pluginManager;
 
     /**
      * Creates a new instance of the {@link UnloadPlugin} command.
      *
-     * @param controller The controller to use for command information.
+     * @param controller    The controller to use for command information.
      * @param pluginManager The plugin manager to unload plugins with.
      */
     @Inject
@@ -73,7 +72,8 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
 
         final PluginInfo plugin = pluginManager.getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin unloading failed - Plugin not loaded");
+            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                    "Plugin unloading failed - Plugin not loaded");
         } else if (pluginManager.delPlugin(plugin.getMetaData().getRelativeFilename())) {
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin Unloaded.");
             pluginManager.updateAutoLoad(plugin);

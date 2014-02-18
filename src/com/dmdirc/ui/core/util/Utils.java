@@ -46,15 +46,16 @@ import javax.swing.text.StyledDocument;
 public class Utils {
 
     /** Prevent instantiation. */
-    private Utils() {}
+    private Utils() {
+    }
 
     /**
      * Converts a StyledDocument into an AttributedString.
      *
-     * @param styliser The styliser to use to style the string
+     * @param styliser  The styliser to use to style the string
      * @param lineParts Parts of a line comprising the whole
-     * @param fontName Default font name to use
-     * @param fontSize Default font size to use
+     * @param fontName  Default font name to use
+     * @param fontSize  Default font size to use
      *
      * @return AttributedString representing the specified StyledDocument
      */
@@ -138,16 +139,14 @@ public class Utils {
                     attString.addAttribute(TextAttribute.UNDERLINE,
                             TextAttribute.UNDERLINE_ON, element.getStartOffset(),
                             element.getEndOffset());
-                } /* else if (attrib == IRCTextAttribute.SMILEY) {
-                    Lets avoid showing broken smileys shall we!
-                    final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
-                    getScaledInstance(14, 14, Image.SCALE_DEFAULT);
-                    ImageGraphicAttribute iga = new ImageGraphicAttribute(image,
-                    (int) BOTTOM_ALIGNMENT, 5, 5);
-                    attString.addAttribute(TextAttribute.CHAR_REPLACEMENT, iga,
-                    element.getStartOffset(), element.getEndOffset());
-
-                }*/
+                } /* else if (attrib == IRCTextAttribute.SMILEY) { Lets avoid showing broken smileys
+                 * shall we! final Image image = IconManager.getIconManager().getImage((String)
+                 * as.getAttribute(attrib)). getScaledInstance(14, 14, Image.SCALE_DEFAULT);
+                 * ImageGraphicAttribute iga = new ImageGraphicAttribute(image, (int)
+                 * BOTTOM_ALIGNMENT, 5, 5); attString.addAttribute(TextAttribute.CHAR_REPLACEMENT,
+                 * iga, element.getStartOffset(), element.getEndOffset());
+                 *
+                 * } */
             }
         }
 
@@ -157,4 +156,5 @@ public class Utils {
 
         return new ExtendedAttributedString(attString, fontSize);
     }
+
 }

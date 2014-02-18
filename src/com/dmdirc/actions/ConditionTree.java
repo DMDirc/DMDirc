@@ -26,13 +26,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * A condition tree specifies in which order a group of conditions will be
- * executed.
+ * A condition tree specifies in which order a group of conditions will be executed.
  */
-public class ConditionTree {
+public final class ConditionTree {
 
     /** The possible operations on a condition tree. */
     public static enum OPERATION {
+
         /** Only passes if both subtrees are true. */
         AND,
         /** Passes if either of the subtrees are true. */
@@ -43,25 +43,22 @@ public class ConditionTree {
         NOT,
         /** Doesn't do anything (an empty tree). */
         NOOP
+
     }
-
     /** The left subtree of this tree. */
-    private ConditionTree leftArg = null;
-
+    private ConditionTree leftArg;
     /** The right subtree of this tree. */
-    private ConditionTree rightArg = null;
-
+    private ConditionTree rightArg;
     /** The argument of this tree (only used for VAR ops). */
     private int argument = -1;
-
     /** The operation that this tree performs. */
     private final OPERATION op;
 
     /**
      * Creates a new ConditionTree for a binary operation.
      *
-     * @param op The binary operation to perform
-     * @param leftArg The left argument/subtree
+     * @param op       The binary operation to perform
+     * @param leftArg  The left argument/subtree
      * @param rightArg The right argument/subtree
      */
     private ConditionTree(final OPERATION op, final ConditionTree leftArg,
@@ -74,8 +71,8 @@ public class ConditionTree {
     /**
      * Creates a new ConditionTree for a unary operation.
      *
-     * @param op
-     * @param argument
+     * @param op       The unary operation to perform.
+     * @param argument The argument/subtree to perform it on.
      */
     private ConditionTree(final OPERATION op, final ConditionTree argument) {
         this.op = op;
@@ -83,8 +80,7 @@ public class ConditionTree {
     }
 
     /**
-     * Creates a new ConditionTree for a VAR operation with the specified
-     * argument number.
+     * Creates a new ConditionTree for a VAR operation with the specified argument number.
      *
      * @param argument The number of the argument that's to be tested.
      */
@@ -118,11 +114,10 @@ public class ConditionTree {
     }
 
     /**
-     * Evaluates this tree with the specified conditions. Returns the result
-     * of the evaluation.
+     * Evaluates this tree with the specified conditions. Returns the result of the evaluation.
      *
-     * @param conditions The binary values of each of the conditions used in
-     * this three
+     * @param conditions The binary values of each of the conditions used in this three
+     *
      * @return The result of the evaluation of this tree
      */
     public boolean evaluate(final boolean[] conditions) {
@@ -154,26 +149,25 @@ public class ConditionTree {
     }
 
     /**
-     * Retrieves a String representation of this ConditionTree. The string
-     * representation is a normalised formula describing this tree and all of
-     * its children. The output of this method will generate an identical tree
-     * if passed to parseString.
+     * Retrieves a String representation of this ConditionTree. The string representation is a
+     * normalised formula describing this tree and all of its children. The output of this method
+     * will generate an identical tree if passed to parseString.
      *
      * @return A string representation of this tree
      */
     @Override
     public String toString() {
         switch (op) {
-        case VAR:
-            return String.valueOf(argument);
-        case NOT:
-            return "!" + leftArg;
-        case AND:
-            return "(" + leftArg + "&" + rightArg + ")";
-        case OR:
-            return "(" + leftArg + "|" + rightArg + ")";
-        default:
-            return "";
+            case VAR:
+                return String.valueOf(argument);
+            case NOT:
+                return "!" + leftArg;
+            case AND:
+                return "(" + leftArg + "&" + rightArg + ")";
+            case OR:
+                return "(" + leftArg + "|" + rightArg + ")";
+            default:
+                return "";
         }
     }
 
@@ -181,8 +175,9 @@ public class ConditionTree {
      * Parses the specified string into a condition tree.
      *
      * @param string The string to be parsed
-     * @return The corresponding condition tree, or null if there was an error
-     * while parsing the data
+     *
+     * @return The corresponding condition tree, or null if there was an error while parsing the
+     *         data
      */
     public static ConditionTree parseString(final String string) {
         final Deque<Object> stack = new ArrayDeque<>();
@@ -212,12 +207,12 @@ public class ConditionTree {
     }
 
     /**
-     * Parses the specified stack of elements, and returns a corresponding
-     * ConditionTree.
+     * Parses the specified stack of elements, and returns a corresponding ConditionTree.
      *
      * @param stack The stack to be read.
-     * @return The corresponding condition tree, or null if there was an error
-     * while parsing the data.
+     *
+     * @return The corresponding condition tree, or null if there was an error while parsing the
+     *         data.
      */
     private static ConditionTree parseStack(final Deque<Object> stack) {
         final Deque<Object> myStack = new ArrayDeque<>();
@@ -288,8 +283,9 @@ public class ConditionTree {
      * Reads and returns a single term from the specified stack.
      *
      * @param stack The stack to be read
-     * @return The ConditionTree representing the last element on the stack,
-     * or null if it was not possible to create one.
+     *
+     * @return The ConditionTree representing the last element on the stack, or null if it was not
+     *         possible to create one.
      */
     private static ConditionTree readTerm(final Deque<Object> stack) {
         final Object first = stack.pollFirst();
@@ -310,12 +306,12 @@ public class ConditionTree {
     }
 
     /**
-     * Pops elements off of the end of the specified stack until an opening
-     * bracket is reached, and then returns the parsed content of the bracket.
+     * Pops elements off of the end of the specified stack until an opening bracket is reached, and
+     * then returns the parsed content of the bracket.
      *
      * @param stack The stack to be read for the bracket
-     * @return The parsed contents of the bracket, or null if the brackets were
-     * mismatched.
+     *
+     * @return The parsed contents of the bracket, or null if the brackets were mismatched.
      */
     private static ConditionTree readBracket(final Deque<Object> stack) {
         final Deque<Object> tempStack = new ArrayDeque<>();
@@ -342,6 +338,7 @@ public class ConditionTree {
      * Determines if the specified character represents a single digit.
      *
      * @param target The character to be tested
+     *
      * @return True if the character is a digit, false otherwise
      */
     private static boolean isInt(final char target) {
@@ -349,10 +346,10 @@ public class ConditionTree {
     }
 
     /**
-     * Creates a condition tree by disjoining the specified number of arguments
-     * together.
+     * Creates a condition tree by disjoining the specified number of arguments together.
      *
      * @param numArgs The number of arguments to be disjoined
+     *
      * @return The corresponding condition tree
      */
     public static ConditionTree createDisjunction(final int numArgs) {
@@ -370,10 +367,10 @@ public class ConditionTree {
     }
 
     /**
-     * Creates a condition tree by conjoining the specified number of arguments
-     * together.
+     * Creates a condition tree by conjoining the specified number of arguments together.
      *
      * @param numArgs The number of arguments to be conjoined
+     *
      * @return The corresponding condition tree
      */
     public static ConditionTree createConjunction(final int numArgs) {

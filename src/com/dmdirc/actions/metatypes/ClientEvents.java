@@ -45,20 +45,25 @@ public enum ClientEvents implements ActionMetaType {
     /** Client event with frame and message. */
     WINDOW_EVENT_WITH_MESSAGE(new String[]{"window", "message"}, FrameContainer.class, String.class),
     /** A popup-related event. */
-    POPUP_EVENT(new String[]{"popup type", "popup", "configuration provider"}, PopupType.class, PopupMenu.class, AggregateConfigProvider.class),
+    POPUP_EVENT(new String[]{"popup type", "popup", "configuration provider"}, PopupType.class,
+    PopupMenu.class, AggregateConfigProvider.class),
     /** Client event type, with a key argument. */
     CLIENT_EVENT_WITH_KEY(new String[]{"key event"}, KeyStroke.class),
-    /** Client event with an origin and editable buffer. */
-    CLIENT_EVENT_WITH_BUFFER(new String[]{"origin", "buffer"}, FrameContainer.class, StringBuffer.class),
+    /** Client event with an origin and
+     * editable buffer. */
+    CLIENT_EVENT_WITH_BUFFER(new String[]{"origin", "buffer"}, FrameContainer.class,
+    StringBuffer.class),
     /** Client event with preferences manager. */
     CLIENT_EVENT_WITH_PREFS(new String[]{"preferences manager"}, PreferencesDialogModel.class),
     /** Client event with preferences category. */
-    CLIENT_EVENT_WITH_PREFS_CAT(new String[]{"preferences category", "is server"}, PreferencesCategory.class, Boolean.class),
+    CLIENT_EVENT_WITH_PREFS_CAT(new String[]{"preferences category", "is server"},
+    PreferencesCategory.class, Boolean.class),
     /** Client event with a styled doc. */
-    CLIENT_EVENT_WITH_STYLE(new String[]{"styled document", "start offset", "length"}, StyledDocument.class, Integer.class, Integer.class),
+    CLIENT_EVENT_WITH_STYLE(new String[]{"styled document", "start offset", "length"},
+    StyledDocument.class, Integer.class, Integer.class),
     /** Unknown command event type. */
-    UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class);
-
+    UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class,
+    String.class, String[].class);
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
@@ -70,7 +75,7 @@ public enum ClientEvents implements ActionMetaType {
      * @param argNames The names of the meta-type's arguments
      * @param argTypes The types of the meta-type's arguments
      */
-    ClientEvents(final String[] argNames, final Class ... argTypes) {
+    ClientEvents(final String[] argNames, final Class... argTypes) {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }

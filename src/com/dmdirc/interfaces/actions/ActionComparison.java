@@ -23,23 +23,24 @@
 package com.dmdirc.interfaces.actions;
 
 /**
- * Describes the methods that must be implemented by an action comparison.
- * Action comparisons allow the user to compare an action component to a
- * string they entered.
+ * Describes the methods that must be implemented by an action comparison. Action comparisons allow
+ * the user to compare an action component to a string they entered.
  */
 public interface ActionComparison {
 
     /**
      * Tests the specified arguments against each other.
+     *
      * @param arg1 The first argument
      * @param arg2 The second argument
-     * @return True iff the comparison between the args succeeds, false
-     * otherwise
+     *
+     * @return True iff the comparison between the args succeeds, false otherwise
      */
     boolean test(final Object arg1, final Object arg2);
 
     /**
      * Returns the class that this comparison deals with.
+     *
      * @return The Class that this comparison can compare
      */
     Class<?> appliesTo();

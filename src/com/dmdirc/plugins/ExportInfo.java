@@ -35,7 +35,7 @@ public class ExportInfo {
      * Create a new ExportInfo.
      *
      * @param methodName Name of method the export is in.
-     * @param className Name of class the export is in.
+     * @param className  Name of class the export is in.
      * @param pluginInfo The PluginInfo that defined this export.
      */
     public ExportInfo(final String methodName, final String className, final PluginInfo pluginInfo) {
@@ -52,7 +52,8 @@ public class ExportInfo {
     public ExportedService getExportedService() {
         try {
             final Class<?> c = pluginInfo.getPluginClassLoader().loadClass(className, false);
-            final Plugin p = className.equals(pluginInfo.getMetaData().getMainClass()) ? pluginInfo.getPlugin() : null;
+            final Plugin p = className.equals(pluginInfo.getMetaData().getMainClass()) ? pluginInfo.
+                    getPlugin() : null;
             return new ExportedService(c, methodName, p);
         } catch (ClassNotFoundException | IllegalArgumentException cnfe) {
             return null;
