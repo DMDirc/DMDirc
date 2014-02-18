@@ -23,7 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.core.util.Info;
+import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.io.Downloader;
 
 import java.io.File;
@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
@@ -335,17 +334,17 @@ public final class ProgramError implements Serializable {
                 .setLevel(getSentryLevel())
                 .setServerName("")
                 .setTimestamp(firstDate)
-                .addTag("version", getVersion())
-                .addTag("version.major", getVersion().replaceAll("-.*", ""))
-                .addTag("os.name", System.getProperty("os.name", "unknown"))
-                .addTag("os.version", System.getProperty("os.version", "unknown"))
-                .addTag("os.arch", System.getProperty("os.arch", "unknown"))
-                .addTag("encoding", System.getProperty("file.encoding", "unknown"))
-                .addTag("locale", Locale.getDefault().toString())
-                .addTag("jvm.name", System.getProperty("java.vm.name", "unknown"))
-                .addTag("jvm.vendor", System.getProperty("java.vm.vendor", "unknown"))
-                .addTag("jvm.version", System.getProperty("java.version", "unknown"))
-                .addTag("jvm.version.major", System.getProperty("java.version", "unknown").replaceAll("_.*", ""));
+                .addTag("version", ClientInfo.getVersion())
+                .addTag("version.major", ClientInfo.getMajorVersion())
+                .addTag("os.name", ClientInfo.getOperatingSystemName())
+                .addTag("os.version", ClientInfo.getOperatingSystemVersion())
+                .addTag("os.arch", ClientInfo.getOperatingSystemArchitecture())
+                .addTag("encoding", ClientInfo.getSystemFileEncoding())
+                .addTag("locale", ClientInfo.getSystemDefaultLocale())
+                .addTag("jvm.name", ClientInfo.getJavaName())
+                .addTag("jvm.vendor", ClientInfo.getJavaVendor())
+                .addTag("jvm.version", ClientInfo.getJavaVersion())
+                .addTag("jvm.version.major", ClientInfo.getJavaMajorVersion());
 
         if (exception != null) {
             eventBuilder.addSentryInterface(new ExceptionInterface(exception));
@@ -603,11 +602,6 @@ public final class ProgramError implements Serializable {
             default:
                 return Event.Level.INFO;
         }
-    }
-
-    private String getVersion() {
-        return IdentityManager.getIdentityManager().getGlobalConfiguration()
-                .getOption("version", "version");
     }
 
 }

@@ -23,13 +23,17 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.util.ClientInfo;
 
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
 
 /**
  * Retrives various pieces of information about DMDirc.
+ *
+ * @deprecated Use methods in {@link ClientInfo} instead.
  */
+@Deprecated
 public class Info {
 
     /** Not intended to be instantiated. */
