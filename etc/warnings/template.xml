@@ -2,5 +2,5 @@
     <statusInfo>
         <text action="append"> warnings: @COUNT@</text>
     </statusInfo>
-    <statisicValue key="warnings" value="@COUNT@"/>
+    <statisticValue key="warnings" value="@COUNT@"/>
 </build>
