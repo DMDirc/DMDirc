@@ -33,8 +33,11 @@ __history
 /reports/report-pmd.*
 /reports/checkstyle.*
 /reports/deadcode.txt
+/reports/warnings.txt
+/reports/build-log.txt
 /etc/clover.license
 /etc/clover/clover.license
 /.clover
 /test_profile
 /*.key
+/teamcity-info.xml

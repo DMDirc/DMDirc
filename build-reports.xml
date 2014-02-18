@@ -203,4 +203,44 @@
             -keep class dagger.** { *; }
         </proguard>
     </target>
+
+    <target name="with.warnings">
+        <record name="reports/build-log.txt" action="start"/>
+    </target>
+
+    <target name="warnings-report">
+        <record name="reports/build-log.txt" action="stop"/>
+
+        <copy file="reports/build-log.txt" tofile="reports/warnings.txt">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="java:[0-9]+: warning: .*"/>
+                </linecontainsregexp>
+                <trim/>
+                <replacestring from="[javac] ${basedir}${file.separator}" to=""/>
+                <sortfilter/>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="teamcity-warnings-report">
+        <resourcecount property="warnings.count">
+            <tokens>
+                <concat>
+                    <filterchain>
+                        <tokenfilter>
+                           <linetokenizer/>
+                        </tokenfilter>
+                    </filterchain>
+                    <fileset file="reports/warnings.txt"/>
+                </concat>
+            </tokens>
+        </resourcecount>
+
+        <copy file="etc/warnings/template.xml" tofile="teamcity-info.xml">
+            <filterset>
+                <filter token="COUNT" value="${warnings.count}"/>
+            </filterset>
+        </copy>
+    </target>
 </project>
