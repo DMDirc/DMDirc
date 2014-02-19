@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
+import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
@@ -118,8 +119,11 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getIdentityManager()
-                    .getVersionSettings().getOption(domain, option, validator);
+            final String response = ClientInfo.getVersionConfigSetting(VERSION_DOMAIN, option);
+            if (response == null || validator.validate(response).isFailure()) {
+                return null;
+            }
+            return response;
         }
 
         synchronized (sources) {
@@ -140,8 +144,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getIdentityManager()
-                    .getVersionSettings().hasOption(domain, option, validator);
+            final String response = ClientInfo.getVersionConfigSetting(VERSION_DOMAIN, option);
+            return response != null && !validator.validate(response).isFailure();
         }
 
         synchronized (sources) {
