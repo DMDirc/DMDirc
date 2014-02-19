@@ -117,21 +117,21 @@ public final class ClientInfo {
      * @return The name of the JVM running the client.
      */
     public static String getJavaName() {
-        return System.getProperty("jvm.name", PROPERTY_FALLBACK);
+        return System.getProperty("java.vm.name", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The name of the vendor of the JVM running the client.
      */
     public static String getJavaVendor() {
-        return System.getProperty("jvm.vendor", PROPERTY_FALLBACK);
+        return System.getProperty("java.vm.vendor", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The version of the JVM running the client.
      */
     public static String getJavaVersion() {
-        return System.getProperty("jvm.version", PROPERTY_FALLBACK);
+        return System.getProperty("java.version", PROPERTY_FALLBACK);
     }
 
     /**
