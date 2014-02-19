@@ -22,7 +22,6 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.io.Downloader;
 
@@ -251,9 +250,11 @@ public final class ProgramError implements Serializable {
 
     /**
      * Saves this error to disk.
+     *
+     * @param directory The directory to save the error in.
      */
-    public void save() {
-        try (PrintWriter out = new PrintWriter(getErrorFile(), true)) {
+    public void save(final String directory) {
+        try (PrintWriter out = new PrintWriter(getErrorFile(directory), true)) {
             out.println("Date:" + getDate());
             out.println("Level: " + getLevel());
             out.println("Description: " + getMessage());
@@ -268,15 +269,16 @@ public final class ProgramError implements Serializable {
     /**
      * Creates a new file for an error and returns the output stream.
      *
+     * @param directory The directory to save the error in.
+     *
      * @return BufferedOutputStream to write to the error file
      */
     @SuppressWarnings("PMD.SystemPrintln")
-    private OutputStream getErrorFile() {
+    private OutputStream getErrorFile(final String directory) {
         WRITING_SEM.acquireUninterruptibly();
 
         if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(IdentityManager.getIdentityManager().getConfigurationDirectory()
-                    + "errors");
+            errorDir = new File(directory);
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
             }
@@ -356,8 +358,7 @@ public final class ProgramError implements Serializable {
         }
         postData.put("message", getMessage());
         postData.put("trace", traceString);
-        postData.put("version", IdentityManager.getIdentityManager()
-                .getGlobalConfiguration().getOption("version", "version"));
+        postData.put("version", ClientInfo.getVersion());
 
         setReportStatus(ErrorReportStatus.SENDING);
 
@@ -388,7 +389,6 @@ public final class ProgramError implements Serializable {
     /**
      * Checks the responses and sets status accordingly.
      *
-     * @param error    Error to check response
      * @param response Response to check
      */
     private void checkResponses(final List<String> response) {

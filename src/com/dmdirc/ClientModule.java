@@ -45,6 +45,7 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginInfo;
@@ -118,6 +119,7 @@ public class ClientModule {
             final CommandLineParser commandLineParser) {
         final IdentityManager identityManager =
                 new IdentityManager(baseDirectory, identitiesDirectory);
+        ErrorManager.getErrorManager().initialise(identityManager);
         IdentityManager.setIdentityManager(identityManager);
         identityManager.loadVersionIdentity();
 

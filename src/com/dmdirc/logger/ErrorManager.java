@@ -22,7 +22,6 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -67,6 +66,10 @@ public class ErrorManager implements ConfigChangeListener {
     private final ListenerList errorListeners = new ListenerList();
     /** Next error ID. */
     private final AtomicLong nextErrorID;
+    /** Config to read settings from. */
+    private AggregateConfigProvider config;
+    /** Directory to store errors in. */
+    private String errorsDirectory;
 
     /** Creates a new instance of ErrorListDialog. */
     public ErrorManager() {
@@ -82,13 +85,24 @@ public class ErrorManager implements ConfigChangeListener {
     public void initialise(final IdentityController controller) {
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
-        final AggregateConfigProvider config = controller.getGlobalConfiguration();
-
+        config = controller.getGlobalConfiguration();
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
         config.addChangeListener("temp", "noerrorreporting", this);
-
         updateSettings();
+
+        errorsDirectory = controller.getConfigurationDirectory() + "errors";
+
+        // Loop through any existing errors and send/save them per the config.
+        for (ProgramError error : errors) {
+            if (sendReports && error.getReportStatus() == ErrorReportStatus.WAITING) {
+                sendError(error);
+            }
+
+            if (logReports) {
+                error.save(errorsDirectory);
+            }
+        }
     }
 
     /**
@@ -99,9 +113,6 @@ public class ErrorManager implements ConfigChangeListener {
     public static synchronized ErrorManager getErrorManager() {
         if (me == null) {
             me = new ErrorManager();
-            if (IdentityManager.getIdentityManager() != null) {
-                me.initialise(IdentityManager.getIdentityManager());
-            }
         }
         return me;
     }
@@ -163,7 +174,8 @@ public class ErrorManager implements ConfigChangeListener {
      *
      * @param level     The severity of the error
      * @param message   The error message
-     * @param details   The details of the exception
+     * @param exception The exception that caused the error, if any.
+     * @param details   The details of the exception, if any.
      * @param appError  Whether or not this is an application error
      * @param canReport Whether or not this error can be reported
      *
@@ -172,10 +184,15 @@ public class ErrorManager implements ConfigChangeListener {
     protected void addError(final ErrorLevel level, final String message,
             final Throwable exception, final String details, final boolean appError,
             final boolean canReport) {
-        final ProgramError error = getError(level, message, exception, details, appError);
+        addError(getError(level, message, exception, details), appError, canReport);
+    }
 
+    protected void addError(
+            final ProgramError error,
+            final boolean appError,
+            final boolean canReport) {
         final boolean dupe = addError(error);
-        if (level.equals(ErrorLevel.FATAL)) {
+        if (error.getLevel().equals(ErrorLevel.FATAL)) {
             if (dupe) {
                 error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
                 error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
@@ -194,11 +211,11 @@ public class ErrorManager implements ConfigChangeListener {
         }
 
         if (logReports) {
-            error.save();
+            error.save(errorsDirectory);
         }
 
         if (!dupe) {
-            if (level == ErrorLevel.FATAL) {
+            if (error.getLevel() == ErrorLevel.FATAL) {
                 fireFatalError(error);
             } else {
                 fireErrorAdded(error);
@@ -232,16 +249,16 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Retrieves a {@link ProgramError} that represents the specified details.
      *
-     * @param level    The severity of the error
-     * @param message  The error message
-     * @param details  The details of the exception
-     * @param appError Whether or not this is an application error
+     * @param level     The severity of the error
+     * @param message   The error message
+     * @param exception The exception that caused the error.
+     * @param details   The details of the exception
      *
      * @since 0.6.3m1
      * @return A corresponding ProgramError
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
-            final Throwable exception, final String details, final boolean appError) {
+            final Throwable exception, final String details) {
         return new ProgramError(nextErrorID.getAndIncrement(), level, message, exception,
                 details, new Date());
     }
@@ -461,9 +478,6 @@ public class ErrorManager implements ConfigChangeListener {
 
     /** Updates the settings used by this error manager. */
     protected void updateSettings() {
-        final AggregateConfigProvider config = IdentityManager.getIdentityManager().
-                getGlobalConfiguration();
-
         try {
             sendReports = config.getOptionBool("general", "submitErrors")
                     && !config.getOptionBool("temp", "noerrorreporting");
