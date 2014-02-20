@@ -32,12 +32,17 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IdentityTest {
 
+    @Mock private IdentityManager identityManager;
     private ConfigFileBackedConfigProvider myIdent;
     private ConfigTarget target;
 
@@ -46,7 +51,8 @@ public class IdentityTest {
         target = new ConfigTarget();
         target.setChannel("#unittest@unittest");
 
-        myIdent = new ConfigFileBackedConfigProvider(new ConfigFile(getClass().getResourceAsStream("identity2")), target);
+        myIdent = new ConfigFileBackedConfigProvider(identityManager,
+                new ConfigFile(getClass().getResourceAsStream("identity2")), target);
     }
 
     @Test
@@ -134,7 +140,8 @@ public class IdentityTest {
 
         myIdent.save();
 
-        myIdent = new ConfigFileBackedConfigProvider(myIdent.file.getFile(), false);
+        myIdent = new ConfigFileBackedConfigProvider(identityManager,
+                myIdent.file.getFile(), false);
 
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
     }
@@ -145,19 +152,20 @@ public class IdentityTest {
         assertEquals(target.getType(), myIdent.getTarget().getType());
     }
 
-    @Test(expected=InvalidIdentityFileException.class)
+    @Test(expected = InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
         new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity1"), false);
     }
 
-    @Test(expected=InvalidIdentityFileException.class)
+    @Test(expected = InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
         new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity2"), false);
     }
 
     @Test
     public void testMigrate() throws IOException, InvalidIdentityFileException {
-        final ConfigFileBackedConfigProvider id = new ConfigFileBackedConfigProvider(getClass().getResourceAsStream("identity3"), false);
+        final ConfigFileBackedConfigProvider id = new ConfigFileBackedConfigProvider(getClass().
+                getResourceAsStream("identity3"), false);
 
         assertTrue(id.file.isKeyDomain("identity"));
         assertTrue(id.file.isKeyDomain("meep"));

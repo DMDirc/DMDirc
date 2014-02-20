@@ -58,6 +58,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
     /** The config binder to use for this manager. */
     private final ConfigBinder binder = new ConfigBinder(this);
+    /** The manager to use to fetch global state. */
+    private final IdentityManager manager;
     /** The protocol this manager is for. */
     private String protocol;
     /** The ircd this manager is for. */
@@ -72,6 +74,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     /**
      * Creates a new instance of ConfigManager.
      *
+     * @param manager  The manager to use to retrieve global state horribly.
      * @param protocol The protocol for this manager
      * @param ircd     The name of the ircd for this manager
      * @param network  The name of the network for this manager
@@ -80,14 +83,16 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * @since 0.6.3
      */
     ConfigManager(
+            final IdentityManager manager,
             final String protocol, final String ircd,
             final String network, final String server) {
-        this(protocol, ircd, network, server, "<Unknown>");
+        this(manager, protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
      * Creates a new instance of ConfigManager.
      *
+     * @param manager  The manager to use to retrieve global state horribly.
      * @param protocol The protocol for this manager
      * @param ircd     The name of the ircd for this manager
      * @param network  The name of the network for this manager
@@ -96,10 +101,13 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      *
      * @since 0.6.3
      */
-    ConfigManager(final String protocol, final String ircd,
+    ConfigManager(
+            final IdentityManager manager,
+            final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         final String chanName = channel + "@" + network;
 
+        this.manager = manager;
         this.protocol = protocol;
         this.ircd = ircd;
         this.network = network;
@@ -163,8 +171,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     @Override
     public Map<String, String> getOptions(final String domain) {
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getIdentityManager()
-                    .getVersionSettings().getOptions(domain);
+            return manager.getVersionSettings().getOptions(domain);
         }
 
         final Map<String, String> res = new HashMap<>();
@@ -220,8 +227,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      */
     protected ConfigProvider getScope(final String domain, final String option) {
         if (VERSION_DOMAIN.equals(domain)) {
-            return IdentityManager.getIdentityManager()
-                    .getVersionSettings();
+            return manager.getVersionSettings();
         }
 
         synchronized (sources) {
@@ -375,8 +381,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
             }
         }
 
-        final List<ConfigProvider> newSources = IdentityManager.getIdentityManager()
-                .getIdentitiesForManager(this);
+        final List<ConfigProvider> newSources = manager.getIdentitiesForManager(this);
         for (ConfigProvider identity : newSources) {
             log.trace("Testing new identity: {}", identity);
             checkIdentity(identity);

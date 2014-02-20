@@ -120,7 +120,6 @@ public class ClientModule {
         final IdentityManager identityManager =
                 new IdentityManager(baseDirectory, identitiesDirectory);
         ErrorManager.getErrorManager().initialise(identityManager);
-        IdentityManager.setIdentityManager(identityManager);
         identityManager.loadVersionIdentity();
 
         try {

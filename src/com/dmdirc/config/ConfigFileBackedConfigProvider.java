@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -57,6 +59,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     private static final String PROFILE_DOMAIN = "profile";
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
+    /** The identity manager to use for writable configs. */
+    @Nullable
+    private final IdentityManager identityManager;
     /** The configuration details for this identity. */
     protected final ConfigFile file;
     /** The global config manager. */
@@ -69,17 +74,16 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     /**
      * Creates a new instance of Identity.
      *
-     * @param file         The file to load this identity from
-     * @param forceDefault Whether to force this identity to be loaded as default identity or not
+     * @param identityManager The manager to use for hackily reading global state.
+     * @param file            The file to load this identity from
+     * @param forceDefault    Whether to force this identity to be loaded as default identity or not
      *
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final File file, final boolean forceDefault) throws
-            IOException,
-            InvalidIdentityFileException {
-        super();
-
+    public ConfigFileBackedConfigProvider(final IdentityManager identityManager, final File file,
+            final boolean forceDefault) throws IOException, InvalidIdentityFileException {
+        this.identityManager = identityManager;
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
         initFile(forceDefault);
@@ -100,10 +104,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @throws IOException                  Input/output exception
      */
     public ConfigFileBackedConfigProvider(final InputStream stream, final boolean forceDefault)
-            throws IOException,
-            InvalidIdentityFileException {
-        super();
-
+            throws IOException, InvalidIdentityFileException {
+        this.identityManager = null;
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
         initFile(forceDefault);
@@ -117,12 +119,13 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     /**
      * Creates a new identity from the specified config file.
      *
-     * @param configFile The config file to use
-     * @param target     The target of this identity
+     * @param identityManager The manager to use for hackily reading global state.
+     * @param configFile      The config file to use
+     * @param target          The target of this identity
      */
-    public ConfigFileBackedConfigProvider(final ConfigFile configFile, final ConfigTarget target) {
-        super();
-
+    public ConfigFileBackedConfigProvider(final IdentityManager identityManager,
+            final ConfigFile configFile, final ConfigTarget target) {
+        this.identityManager = identityManager;
         this.file = configFile;
         this.file.setAutomake(true);
         this.myTarget = target;
@@ -329,7 +332,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 // covered by global defaults.
 
                 if (globalConfig == null) {
-                    globalConfig = new ConfigManager("", "", "", "");
+                    // TODO: This is horrible. Filtering of saves should be abstracted.
+                    globalConfig = (ConfigManager) identityManager
+                            .createAggregateConfig("", "", "", "");
                 }
 
                 globalConfig.removeIdentity(this);
@@ -436,14 +441,15 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 // like that until you manually change it again, as opposed
                 // to being removed as soon as you use a build from that
                 // channel.
+                // TODO: This behaviour should be managed by something else.
 
                 if (globalConfig == null) {
-                    globalConfig = new ConfigManager("", "", "", "");
+                    globalConfig = (ConfigManager) identityManager
+                            .createAggregateConfig("", "", "", "");
                 }
 
                 globalConfig.removeIdentity(this);
-                globalConfig.removeIdentity(IdentityManager.getIdentityManager().
-                        getVersionSettings());
+                globalConfig.removeIdentity(identityManager.getVersionSettings());
 
                 if (log.isTraceEnabled()) {
                     for (ConfigProvider source : globalConfig.getSources()) {
@@ -493,7 +499,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
             file.delete();
         }
 
-        IdentityManager.getIdentityManager().removeConfigProvider(this);
+        identityManager.removeConfigProvider(this);
     }
 
     /** {@inheritDoc} */
