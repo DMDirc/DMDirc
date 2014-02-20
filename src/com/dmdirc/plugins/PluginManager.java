@@ -584,9 +584,9 @@ public class PluginManager implements ActionListener, ServiceManager {
                     try {
                         pi.getPlugin().showConfig((PreferencesDialogModel) arguments[0]);
                     } catch (LinkageError | Exception le) {
-                        Logger.userError(ErrorLevel.MEDIUM,
-                                "Error with plugin (" + pi.getMetaData().getFriendlyName()
-                                + "), unable to show config (" + le + ")", le);
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to show plugin configuration for "
+                                + pi.getMetaData().getFriendlyName(), le);
                     }
                 }
             }
