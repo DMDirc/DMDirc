@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.CorePluginExtractor;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
@@ -34,6 +35,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.ColourManager;
@@ -71,6 +73,7 @@ public class PluginInjectorInitialiser {
     private final ColourManager colourManager;
     private final ActionSubstitutorFactory actionSubstitutorFactory;
     private final EventBus eventBus;
+    private final IconManager iconManager;
 
     @Inject
     public PluginInjectorInitialiser(final ActionManager actionManager,
@@ -91,7 +94,8 @@ public class PluginInjectorInitialiser {
             final URLBuilder urlBuilder,
             final ColourManager colourManager,
             final ActionSubstitutorFactory actionSubstitutorFactory,
-            final EventBus eventBus) {
+            final EventBus eventBus,
+            @GlobalConfig final IconManager iconManager) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;
         this.aliasWrapper = aliasWrapper;
@@ -111,6 +115,7 @@ public class PluginInjectorInitialiser {
         this.colourManager = colourManager;
         this.actionSubstitutorFactory = actionSubstitutorFactory;
         this.eventBus = eventBus;
+        this.iconManager = iconManager;
     }
 
     /**
@@ -138,6 +143,7 @@ public class PluginInjectorInitialiser {
         injector.addParameter(colourManager);
         injector.addParameter(actionSubstitutorFactory);
         injector.addParameter(eventBus);
+        injector.addParameter(iconManager);
     }
 
 }

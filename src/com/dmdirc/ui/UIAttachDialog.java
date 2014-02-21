@@ -47,8 +47,7 @@ import javax.swing.event.ListSelectionListener;
 /**
  * Simple dialog to pick and load a UI in an existing client.
  */
-public class UIAttachDialog extends JDialog implements ActionListener,
-        ListSelectionListener {
+public class UIAttachDialog extends JDialog implements ActionListener, ListSelectionListener {
 
     /** Java Serialisation version ID. */
     private static final long serialVersionUID = 1;
@@ -121,19 +120,17 @@ public class UIAttachDialog extends JDialog implements ActionListener,
         setVisible(true);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if ("OK".equals(e.getActionCommand())) {
             if (list.getSelectedValue() == null) {
                 return;
             }
-            ((Service) list.getSelectedValue()).activate();
+            list.getSelectedValue().activate();
         }
         dispose();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
@@ -149,7 +146,6 @@ public class UIAttachDialog extends JDialog implements ActionListener,
         /** Java Serialisation version ID. */
         private static final long serialVersionUID = 1;
 
-        /** {@inheritDoc} */
         @Override
         public Component getListCellRendererComponent(final JList<?> list,
                 final Object value, final int index, final boolean isSelected,
