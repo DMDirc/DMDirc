@@ -213,13 +213,36 @@
 
         <copy file="reports/build-log.txt" tofile="reports/warnings.txt">
             <filterchain>
+                <!-- Pick out the warnings generated for source files -->
                 <linecontainsregexp>
                     <regexp pattern="java:[0-9]+: warning: .*"/>
                 </linecontainsregexp>
+                <!-- Trim whitespace and boilerplate -->
                 <trim/>
                 <replacestring from="[javac] ${basedir}${file.separator}" to=""/>
+                <!-- Ignore anything that's not from a source directory (e.g. dagger generated code) -->
+                <linecontainsregexp>
+                    <regexp pattern="^(modules${file.separator}[a-z]+${file.separator})?src.*"/>
+                </linecontainsregexp>
+                <!-- Sort the results in file order -->
                 <sortfilter/>
             </filterchain>
+        </copy>
+
+        <copy file="reports/warnings.txt" tofile="reports/warnings-deprecations.txt">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern=".*: warning: \[deprecation\] .*"/>
+                </linecontainsregexp>
+           </filterchain>
+        </copy>
+
+        <copy file="reports/warnings.txt" tofile="reports/warnings-other.txt">
+            <filterchain>
+                <linecontainsregexp negate="true">
+                    <regexp pattern=".*: warning: \[deprecation\] .*"/>
+                </linecontainsregexp>
+           </filterchain>
         </copy>
     </target>
 
