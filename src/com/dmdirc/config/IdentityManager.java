@@ -72,15 +72,15 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /**
      * The identities that have been loaded into this manager.
      *
-     * Standard identities are inserted with a
-     * <code>null</code> key, custom identities use their custom type as the key.
+     * Standard identities are inserted with a <code>null</code> key, custom identities use their
+     * custom type as the key.
      */
     private final MapList<String, ConfigProvider> identities = new MapList<>();
     /**
      * The {@link IdentityListener}s that have registered with this manager.
      *
-     * Listeners for standard identities are inserted with a
-     * <code>null</code> key, listeners for a specific custom type use their type as the key.
+     * Listeners for standard identities are inserted with a <code>null</code> key, listeners for a
+     * specific custom type use their type as the key.
      */
     private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
     /** The identity file used for the global config. */
@@ -101,12 +101,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     public IdentityManager(final String baseDirectory, final String identitiesDirectory) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
-    }
-
-    @Override
-    @Deprecated
-    public String getConfigurationDirectory() {
-        return configDirectory;
     }
 
     /**
@@ -329,8 +323,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     /**
      * Returns the "group" to which the specified identity belongs. For custom identities this is
-     * the custom identity type, otherwise this is
-     * <code>null</code>.
+     * the custom identity type, otherwise this is <code>null</code>.
      *
      * @param identity The identity whose group is being retrieved
      *
@@ -716,8 +709,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager =
-                new ConfigManager(this, protocol, ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -726,8 +718,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager =
-                new ConfigManager(this, protocol, ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server,
+                channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -735,8 +727,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager =
-                new ConfigManager(this, protocol, ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
         setUpConfigManager(configManager);
         return configManager;
     }
@@ -744,8 +735,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager =
-                new ConfigManager(this, protocol, ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server,
+                channel);
         setUpConfigManager(configManager);
         return configManager;
     }

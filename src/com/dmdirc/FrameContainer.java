@@ -149,28 +149,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Determines whether the specified target is a child of this container. Children may be
-     * indirect (i.e., a child of another child).
-     *
-     * @param target The window to be tested
-     *
-     * @return True if the specified container is a child of this one
-     */
-    public boolean isChild(final FrameContainer target) {
-        if (children.contains(target)) {
-            return true;
-        }
-
-        for (FrameContainer child : children) {
-            if (child.isChild(target)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Adds a new child window to this frame.
      *
      * @param child The window to be added
@@ -215,20 +193,6 @@ public abstract class FrameContainer {
      * @return An icon manager for this container.
      */
     public IconManager getIconManager() {
-        return iconManager;
-    }
-
-    /**
-     * Gets an icon manager for this container.
-     *
-     * @param urlBuilder The builder to use to construct icon URLs.
-     *
-     * @return An icon manager for this container.
-     *
-     * @deprecated Don't bother passing in a URL builder. That was a bad idea.
-     */
-    @Deprecated
-    public IconManager getIconManager(final URLBuilder urlBuilder) {
         return iconManager;
     }
 
@@ -456,8 +420,7 @@ public abstract class FrameContainer {
 
     /**
      * Adds the specified raw line to the window, without using a formatter, and using the specified
-     * timestamp. If the timestamp is
-     * <code>null</code>, no timestamp is added.
+     * timestamp. If the timestamp is <code>null</code>, no timestamp is added.
      *
      * @param line      The line to be added
      * @param timestamp The timestamp to use for the line

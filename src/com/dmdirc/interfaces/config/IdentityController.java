@@ -71,16 +71,6 @@ public interface IdentityController {
     List<ConfigProvider> getProvidersByType(String type);
 
     /**
-     * Get the config directory used by this identity controller.
-     *
-     * @return The config directory.
-     *
-     * @deprecated Shouldn't be exposed through the controller.
-     */
-    @Deprecated
-    String getConfigurationDirectory();
-
-    /**
      * Loads user-defined identity files.
      */
     void loadUserIdentities();

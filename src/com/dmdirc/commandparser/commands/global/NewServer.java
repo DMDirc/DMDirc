@@ -43,9 +43,6 @@ import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -112,51 +109,6 @@ public class NewServer extends Command implements IntelligentCommand {
                         + (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage()));
             }
         }
-    }
-
-    /**
-     * Get a URI from the given string. This method allows for +port in the uri (eg
-     * irc://server.host:+6668/)
-     *
-     * @param address Address to parse
-     *
-     * @return URI from address.
-     *
-     * @throws URISyntaxException If the string is not parseable.
-     * @deprecated Use a {@link URIParser}.
-     */
-    @Deprecated
-    public static URI getURI(final String address) throws URISyntaxException {
-        final URI uri = new URI(address);
-        final int port = uri.getPort();
-
-        // Either no port specified, or a +port was used, lets try to find one.
-        // Otherwise just return the URI.
-        if (port == -1) {
-            final Matcher m = Pattern.compile(".*://[^/:]+:\\+([0-9]+).*").matcher(address);
-            // If no port is found, then again just return the uri above, the
-            // Parser can use its default.
-            if (m.matches()) {
-                m.find();
-                int newPort = -1;
-                try {
-                    newPort = Integer.parseInt(m.group(2));
-                } catch (final NumberFormatException nfe) {
-                }
-
-                // Add 's' to scheme if not already there.
-                String scheme = uri.getScheme();
-                if (scheme.charAt(scheme.length() - 1) != 's') {
-                    scheme += "s";
-                }
-                return new URI(scheme, uri.getUserInfo(), uri.getHost(), newPort, uri.getPath(),
-                        uri.getQuery(), uri.getFragment());
-            }
-        }
-
-        // If a port already existed, or we were unable to find a port, just
-        // use the default one we had to start with.
-        return uri;
     }
 
     /** {@inheritDoc} */
