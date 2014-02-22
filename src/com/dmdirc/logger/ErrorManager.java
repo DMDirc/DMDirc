@@ -24,7 +24,6 @@ package com.dmdirc.logger;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -80,18 +79,19 @@ public class ErrorManager implements ConfigChangeListener {
     /**
      * Initialiases the error manager.
      *
-     * @param controller The controller to use to read/write settings.
+     * @param globalConfig The configuration to read settings from.
+     * @param directory    The directory to store errors in, if enabled.
      */
-    public void initialise(final IdentityController controller) {
+    public void initialise(final AggregateConfigProvider globalConfig, final String directory) {
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
-        config = controller.getGlobalConfiguration();
+        config = globalConfig;
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
         config.addChangeListener("temp", "noerrorreporting", this);
         updateSettings();
 
-        errorsDirectory = controller.getConfigurationDirectory() + "errors";
+        errorsDirectory = directory;
 
         // Loop through any existing errors and send/save them per the config.
         for (ProgramError error : errors) {

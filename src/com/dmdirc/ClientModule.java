@@ -103,10 +103,11 @@ public class ClientModule {
     private ObjectGraph objectGraph;
 
     /**
-     * Provides an identity manager for the client.
+     * Provides an identity manager for the client, and initialises the error manager with it.
      *
      * @param baseDirectory       The base directory to load settings from.
      * @param identitiesDirectory The directory to store and read identities in.
+     * @param errorsDirectory     The directory to store errors in.
      * @param commandLineParser   The CLI parser to read command line settings from.
      *
      * @return An initialised {@link IdentityManager}.
@@ -116,10 +117,12 @@ public class ClientModule {
     public IdentityManager getIdentityManager(
             @Directory(DirectoryType.BASE) final String baseDirectory,
             @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
+            @Directory(DirectoryType.ERRORS) final String errorsDirectory,
             final CommandLineParser commandLineParser) {
-        final IdentityManager identityManager =
-                new IdentityManager(baseDirectory, identitiesDirectory);
-        ErrorManager.getErrorManager().initialise(identityManager);
+        final IdentityManager identityManager = new IdentityManager(baseDirectory,
+                identitiesDirectory);
+        ErrorManager.getErrorManager()
+                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory);
         identityManager.loadVersionIdentity();
 
         try {

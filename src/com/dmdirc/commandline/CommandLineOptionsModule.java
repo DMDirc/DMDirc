@@ -41,18 +41,33 @@ public class CommandLineOptionsModule {
      */
     public enum DirectoryType {
 
-        /** The base directory, where everything else lives. */
+        /**
+         * The base directory, where everything else lives.
+         */
         BASE,
-        /** The directory that identities are stored in. */
+        /**
+         * The directory that identities are stored in.
+         */
         IDENTITIES,
-        /** The directory that plugins are stored in. */
+        /**
+         * The directory that plugins are stored in.
+         */
         PLUGINS,
-        /** The directory that themes are stored in. */
+        /**
+         * The directory that themes are stored in.
+         */
         THEMES,
-        /** The directory that actions are stored in. */
+        /**
+         * The directory that actions are stored in.
+         */
         ACTIONS,
-        /** The
-         * directory to use for temporary files (downloads in flight, caches, etc). */
+        /**
+         * The directory that error reports are stored in.
+         */
+        ERRORS,
+        /**
+         * The directory to use for temporary files (downloads in flight, caches, etc).
+         */
         TEMPORARY;
 
     }
@@ -125,6 +140,20 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.IDENTITIES)
     public String getIdentitiesDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory + "identities" + File.separator;
+    }
+
+    /**
+     * Provides the path to the errors directory.
+     *
+     * @param baseDirectory The base DMDirc directory.
+     *
+     * @return The identities directory.
+     */
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.ERRORS)
+    public String getErrorsDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
+        return baseDirectory + "errors" + File.separator;
     }
 
     /**
