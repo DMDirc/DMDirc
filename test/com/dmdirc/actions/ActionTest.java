@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.actions;
 
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -43,19 +44,28 @@ import java.util.Map;
 
 import javax.inject.Provider;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTest {
+
+    @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
     @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;
@@ -65,19 +75,10 @@ public class ActionTest {
     @Mock private ConfigProvider configProvider;
     @Mock private AggregateConfigProvider aggregateConfigProvider;
     private Map<String, PreferencesSetting> prefs;
-    private String testDirectory;
 
     @BeforeClass
     public static void stubLogger() {
         Logger.setErrorManager(mock(ErrorManager.class));
-    }
-
-    @Before
-    public void makeTestDirectory() throws IOException {
-        File tempFile = File.createTempFile("dmdirc", "test");
-        tempFile.delete();
-        tempFile.mkdir();
-        testDirectory = tempFile.getAbsolutePath() + File.separator;
     }
 
     @Before
@@ -86,9 +87,12 @@ public class ActionTest {
         when(actionController.getOrCreateGroup(anyString())).thenReturn(actionGroup);
         when(actionGroup.getSettings()).thenReturn(prefs);
         when(actionController.getType("SERVER_AWAY")).thenReturn(CoreActionType.SERVER_AWAY);
-        when(actionController.getComponent("STRING_LENGTH")).thenReturn(CoreActionComponent.STRING_LENGTH);
-        when(actionController.getComparison("STRING_CONTAINS")).thenReturn(CoreActionComparison.STRING_CONTAINS);
-        when(actionController.getComparison("INT_EQUALS")).thenReturn(CoreActionComparison.INT_EQUALS);
+        when(actionController.getComponent("STRING_LENGTH")).thenReturn(
+                CoreActionComponent.STRING_LENGTH);
+        when(actionController.getComparison("STRING_CONTAINS")).thenReturn(
+                CoreActionComparison.STRING_CONTAINS);
+        when(actionController.getComparison("INT_EQUALS")).thenReturn(
+                CoreActionComparison.INT_EQUALS);
     }
 
     @Before
@@ -97,71 +101,69 @@ public class ActionTest {
         when(identityController.getUserSettings()).thenReturn(configProvider);
     }
 
-    @After
-    public void killTestDirectory() {
-        // TODO: This probably won't work - need to recursively delete files etc.
-        new File(testDirectory).delete();
-    }
-
     @Test
     public void testSave() {
         new Action(gcpProvider, substitutorFactory, actionController, identityController,
-                testDirectory, "unit-test", "test1", new ActionType[0],
+                getTempDirectory(), "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         assertTrue("Action constructor must create new file",
-                new File(testDirectory + "unit-test"
-                + File.separator + "test1").isFile());
+                new File(getTempDirectory(), "unit-test"
+                        + File.separator + "test1").isFile());
     }
 
     @Test
     public void testSetGroup() {
         Action action = new Action(gcpProvider, substitutorFactory, actionController,
-                identityController, testDirectory,
+                identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         action.setGroup("unit-test-two");
 
         assertFalse("setGroup must remove old file",
-                new File(testDirectory + "unit-test" + File.separator + "test1").isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test1").
+                isFile());
         assertTrue("setGroup must create new file",
-                new File(testDirectory + "unit-test-two" + File.separator + "test1").isFile());
+                new File(getTempDirectory(), "unit-test-two" + File.separator + "test1").
+                isFile());
     }
 
     @Test
     public void testSetName() {
         Action action = new Action(gcpProvider, substitutorFactory, actionController,
-                identityController, testDirectory,
+                identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         action.setName("test2");
 
         assertFalse("setName must remove old file",
-                new File(testDirectory + "unit-test" + File.separator + "test1").isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test1").
+                isFile());
         assertTrue("setName must create new file",
-                new File(testDirectory + "unit-test" + File.separator + "test2").isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test2").
+                isFile());
     }
 
     @Test
     public void testDelete() {
         Action action = new Action(gcpProvider, substitutorFactory, actionController,
-                identityController, testDirectory,
+                identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         action.delete();
 
         assertFalse("delete must remove file",
-                new File(testDirectory + "unit-test"
-                + File.separator + "test1").isFile());
+                new File(getTempDirectory(), "unit-test"
+                        + File.separator + "test1").isFile());
     }
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
         Action action = new Action(gcpProvider, substitutorFactory, actionController,
-                identityController, testDirectory,
+                identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
@@ -180,7 +182,7 @@ public class ActionTest {
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
         Action action = new Action(gcpProvider, substitutorFactory, actionController,
-                identityController, testDirectory,
+                identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
         action.config.read();
@@ -195,6 +197,10 @@ public class ActionTest {
 
         verify(actionController, atLeast(1)).registerSetting("highlightregex",
                 "(?i).*(shane|dataforce|Q${SERVER_MYNICKNAME}E|(?<![#A-Z])DF).*");
+    }
+
+    private String getTempDirectory() {
+        return folder.getRoot().toString() + File.separator;
     }
 
 }
