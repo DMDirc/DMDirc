@@ -23,16 +23,18 @@
 package com.dmdirc.commandparser.validators;
 
 import com.dmdirc.util.validators.RegexStringValidator;
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
 import com.dmdirc.util.validators.ValidatorChain;
 
 import java.util.regex.Pattern;
 
 /**
  * Validates command names.
- *
- * @since 0.6.3m1rc3
  */
-public class CommandNameValidator extends ValidatorChain<String> {
+public class CommandNameValidator implements Validator<String> {
+
+    private final ValidatorChain<String> validator;
 
     /**
      * Instantiates a new command name validator using the given command char.
@@ -40,12 +42,18 @@ public class CommandNameValidator extends ValidatorChain<String> {
      * @param commandChar the character commands start with (which is therefore disallowed at the
      *                    start of a command name).
      */
-    @SuppressWarnings("unchecked")
     public CommandNameValidator(final char commandChar) {
-        super(new RegexStringValidator("^[^\\s]*$", "Cannot contain spaces"),
-                new RegexStringValidator("^[^"
-                + Pattern.quote(String.valueOf(commandChar))
-                + "].*$", "Cannot start with a " + commandChar));
+        validator = ValidatorChain.<String>builder().addValidator(
+                new RegexStringValidator("^[^\\s]*$", "Cannot contain spaces"))
+                .addValidator(new RegexStringValidator("^[^"
+                                + Pattern.quote(String.valueOf(commandChar))
+                                + "].*$", "Cannot start with a " + commandChar))
+                .build();
+    }
+
+    @Override
+    public ValidationResponse validate(final String object) {
+        return validator.validate(object);
     }
 
 }

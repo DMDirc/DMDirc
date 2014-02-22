@@ -111,9 +111,9 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
             final String... fallbacks) {
         String value;
 
-        @SuppressWarnings("unchecked")
         final Validator<String> newValidator = required && fallbacks.length == 0
-                ? new ValidatorChain<>(new DisabledOptionValidator(), validator)
+                ? ValidatorChain.<String>builder().addValidator(
+                        new DisabledOptionValidator()).addValidator(validator).build()
                 : validator;
 
         if (!hasOption(domain, option, newValidator)
