@@ -16,7 +16,7 @@
         <subant buildpath="modules/plugins" target="${plugins.build.target}">
             <property name="plugins.dmdirc.build.dir" value="../../${build.classes.dir}"/>
             <property name="clover.search.path" value="../../lib/test"/>
-            <property name="clover.license.path" location="etc/clover.license"/>
+            <property name="clover.license.path" location="etc/clover/clover.license"/>
             <property name="clover.init.string" location=".clover/clover.db"/>
         </subant>
     </target>
