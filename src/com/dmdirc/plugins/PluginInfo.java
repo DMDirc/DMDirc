@@ -203,7 +203,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Gets the {@link ObjectGraph} that should be used when loading this plugin.
      *
-     * <p>Where this plugin has a parent which returns a non-null graph from
+     * <p>
+     * Where this plugin has a parent which returns a non-null graph from
      * {@link Plugin#getObjectGraph()} that object graph will be used unmodified. Otherwise, the
      * global object graph will be used.
      *
@@ -675,8 +676,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void initialiseClassLoader() {
         if (pluginClassLoader == null) {
-            final PluginClassLoader[] loaders =
-                    new PluginClassLoader[metaData.getParent() == null ? 0 : 1];
+            final PluginClassLoader[] loaders = new PluginClassLoader[metaData.getParent() == null
+                    ? 0 : 1];
 
             if (metaData.getParent() != null) {
                 final String parentName = metaData.getParent();
@@ -778,11 +779,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     + "') - Incompatible: " + ve.getMessage();
             Logger.userError(ErrorLevel.LOW, lastError, ve);
         } catch (IllegalArgumentException ex) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":"
-                    + classname + ":"
-                    + classname.equals(metaData.getMainClass())
-                    + "') - Unable to construct: " + ex.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, ex);
+            lastError = "Unable to instantiate class for plugin " + metaData.getName()
+                    + ": " + classname;
+            Logger.appError(ErrorLevel.LOW, lastError, ex);
         }
     }
 
