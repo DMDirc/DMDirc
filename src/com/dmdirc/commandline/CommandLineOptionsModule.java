@@ -39,36 +39,39 @@ public class CommandLineOptionsModule {
     /**
      * Enumeration of directory types supported by the client.
      */
-    public enum DirectoryType {
+    public static final class DirectoryType {
 
         /**
          * The base directory, where everything else lives.
          */
-        BASE,
+        public static final String BASE = "base";
         /**
          * The directory that identities are stored in.
          */
-        IDENTITIES,
+        public static final String IDENTITIES = "identities";
         /**
          * The directory that plugins are stored in.
          */
-        PLUGINS,
+        public static final String PLUGINS = "plugins";
         /**
          * The directory that themes are stored in.
          */
-        THEMES,
+        public static final String THEMES = "themes";
         /**
          * The directory that actions are stored in.
          */
-        ACTIONS,
+        public static final String ACTIONS = "actions";
         /**
          * The directory that error reports are stored in.
          */
-        ERRORS,
+        public static final String ERRORS = "errors";
         /**
          * The directory to use for temporary files (downloads in flight, caches, etc).
          */
-        TEMPORARY;
+        public static final String TEMPORARY = "temp";
+
+        private DirectoryType() {
+        }
 
     }
 
@@ -78,7 +81,7 @@ public class CommandLineOptionsModule {
     @Qualifier
     public @interface Directory {
 
-        DirectoryType value();
+        String value();
 
     }
 
