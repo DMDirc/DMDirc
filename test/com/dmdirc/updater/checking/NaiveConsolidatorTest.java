@@ -31,103 +31,89 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NaiveConsolidatorTest {
 
     private NaiveConsolidator consolidator;
-    private List<UpdateComponent> components;
-    private List<UpdateCheckResult> positiveResults;
-    private List<UpdateCheckResult> negativeResults;
+
+    @Mock private UpdateComponent component1;
+    @Mock private UpdateComponent component2;
+    @Mock private UpdateComponent component3;
+    @Mock private UpdateCheckResult availableResult;
+    @Mock private UpdateCheckResult unavailableResult;
 
     @Before
     public void setUp() {
+        when(availableResult.isUpdateAvailable()).thenReturn(true);
+        when(unavailableResult.isUpdateAvailable()).thenReturn(false);
         consolidator = new NaiveConsolidator();
-        components = new ArrayList<>();
-        positiveResults = new ArrayList<>();
-        negativeResults = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            final UpdateComponent component = mock(UpdateComponent.class);
-            final UpdateCheckResult negative = mock(UpdateCheckResult.class);
-            final UpdateCheckResult positive = mock(UpdateCheckResult.class);
-            when(negative.getComponent()).thenReturn(component);
-            when(negative.isUpdateAvailable()).thenReturn(false);
-            when(positive.getComponent()).thenReturn(component);
-            when(positive.isUpdateAvailable()).thenReturn(true);
-
-            components.add(component);
-            negativeResults.add(negative);
-            positiveResults.add(negative);
-        }
     }
 
     @Test
     public void testIncludesAllComponentsFromAllMaps() {
-        final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<>();
-        final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<>();
-        final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<>();
+        final Map<UpdateComponent, UpdateCheckResult> map1 = new HashMap<>();
+        map1.put(component1, unavailableResult);
+        map1.put(component2, unavailableResult);
 
-        map1.put(components.get(0), negativeResults.get(0));
-        map1.put(components.get(1), negativeResults.get(1));
-        map2.put(components.get(2), negativeResults.get(2));
+        final Map<UpdateComponent, UpdateCheckResult> map2 = new HashMap<>();
+        map2.put(component3, unavailableResult);
 
+        final List<Map<UpdateComponent, UpdateCheckResult>> maps = new ArrayList<>();
         maps.add(map1);
         maps.add(map2);
 
         final Map<UpdateComponent, UpdateCheckResult> res = consolidator.consolidate(maps);
         assertEquals(3, res.size());
-        assertTrue(res.containsKey(components.get(0)));
-        assertTrue(res.containsKey(components.get(1)));
-        assertTrue(res.containsKey(components.get(2)));
+        assertTrue(res.containsKey(component1));
+        assertTrue(res.containsKey(component2));
+        assertTrue(res.containsKey(component3));
     }
 
     @Test
     public void testIncludesPositiveResultsForKnownNegativeComponents() {
-        final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<>();
-        final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<>();
-        final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<>();
+        final Map<UpdateComponent, UpdateCheckResult> map1 = new HashMap<>();
+        map1.put(component2, unavailableResult);
+        map1.put(component1, unavailableResult);
 
-        map1.put(components.get(0), negativeResults.get(0));
-        map1.put(components.get(1), negativeResults.get(1));
-        map2.put(components.get(1), positiveResults.get(1));
-        map2.put(components.get(2), negativeResults.get(2));
+        final Map<UpdateComponent, UpdateCheckResult> map2 = new HashMap<>();
+        map2.put(component2, availableResult);
+        map2.put(component3, unavailableResult);
 
+        final List<Map<UpdateComponent, UpdateCheckResult>> maps = new ArrayList<>();
         maps.add(map1);
         maps.add(map2);
 
         final Map<UpdateComponent, UpdateCheckResult> res = consolidator.consolidate(maps);
-        assertTrue(res.containsKey(components.get(1)));
-        assertSame(positiveResults.get(1), res.get(components.get(1)));
+        assertTrue(res.containsKey(component2));
+        assertSame(availableResult, res.get(component2));
     }
 
     @Test
     public void testIgnoresNegativeResultsForKnownPositiveComponents() {
-        final Map<UpdateComponent, UpdateCheckResult> map1
-                = new HashMap<>();
-        final Map<UpdateComponent, UpdateCheckResult> map2
-                = new HashMap<>();
-        final List<Map<UpdateComponent, UpdateCheckResult>> maps
-                = new ArrayList<>();
+        final Map<UpdateComponent, UpdateCheckResult> map1 = new HashMap<>();
+        map1.put(component1, unavailableResult);
+        map1.put(component2, availableResult);
 
-        map1.put(components.get(0), negativeResults.get(0));
-        map1.put(components.get(1), positiveResults.get(1));
-        map2.put(components.get(1), negativeResults.get(1));
-        map2.put(components.get(2), negativeResults.get(2));
+        final Map<UpdateComponent, UpdateCheckResult> map2 = new HashMap<>();
+        map2.put(component2, unavailableResult);
+        map2.put(component3, unavailableResult);
 
+        final List<Map<UpdateComponent, UpdateCheckResult>> maps = new ArrayList<>();
         maps.add(map1);
         maps.add(map2);
 
         final Map<UpdateComponent, UpdateCheckResult> res = consolidator.consolidate(maps);
-        assertTrue(res.containsKey(components.get(1)));
-        assertSame(positiveResults.get(1), res.get(components.get(1)));
+        assertTrue(res.containsKey(component2));
+        assertSame(availableResult, res.get(component2));
     }
+
 }
