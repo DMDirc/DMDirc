@@ -35,12 +35,10 @@ import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
-import com.dmdirc.ui.themes.ThemeManager;
 
 import com.google.common.eventbus.EventBus;
 
@@ -97,10 +95,6 @@ public class Main {
      * @param commandLineParser      The command-line parser used for this instance.
      * @param pluginManager          The plugin manager the client will use.
      * @param commandManager         The command manager the client will use.
-     * @param messageSinkManager     Unused for now - TODO: remove me when it's injected somewhere
-     *                               sensible.
-     * @param themeManager           Unused for now - TODO: remove me when it's injected somewhere
-     *                               sensible.
      * @param corePluginExtractor    Extractor to use for core plugins.
      * @param globalWindowManager    Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
@@ -115,8 +109,6 @@ public class Main {
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
             final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager,
-            final ThemeManager themeManager,
             final CorePluginExtractor corePluginExtractor,
             final GlobalWindowManager globalWindowManager,
             final ColourActionComparison colourActionComparison,
@@ -153,8 +145,7 @@ public class Main {
             parser.parse(args);
             graph.get(Main.class).init();
         } catch (Throwable ex) {
-            Logger.appError(ErrorLevel.FATAL, "Exception while initialising",
-                    ex);
+            Logger.appError(ErrorLevel.FATAL, "Exception while initialising", ex);
         }
     }
 

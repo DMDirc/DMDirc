@@ -41,14 +41,9 @@ import java.util.List;
  */
 public class Alias implements Serializable {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The factory to use to create actions. */
-    // TODO: This should be injected.
     private final ActionFactory actionFactory;
     /** Alias command. */
     private String command;
@@ -238,7 +233,6 @@ public class Alias implements Serializable {
                 "");
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "[name=aliases/" + getName() + ", triggers="
