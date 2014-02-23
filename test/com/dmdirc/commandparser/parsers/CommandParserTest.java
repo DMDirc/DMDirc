@@ -19,155 +19,218 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.ServerManager;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.global.Echo;
-import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.harness.TestCommandParser;
+import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.WindowManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CommandParserTest {
 
-    @Mock private ServerManager serverManager;
-    @Mock private AggregateConfigProvider cm;
-    @Mock private WindowManager windowManager;
-    private CommandManager commands;
+    @Mock private AggregateConfigProvider configProvider;
+    @Mock private CommandController commandController;
+    @Mock private CommandInfo commandInfo;
+    @Mock private CommandInfo channelCommandInfo;
+    @Mock private Command command;
+    @Mock private Command channelCommand;
+    @Mock private FrameContainer container;
+    @Mock private Channel channel;
+    @Mock private Connection connection;
+    private TestCommandParser commandParser;
+    private TestCommandParser channelCommandParser;
 
     @Before
-    public void setup() throws InvalidIdentityFileException {
-        MockitoAnnotations.initMocks(this);
-        when(cm.getOptionChar("general", "silencechar")).thenReturn('.');
-        when(cm.getOptionInt("general", "commandhistory")).thenReturn(10);
-        when(cm.getOptionChar("general", "commandchar")).thenReturn('/');
-        final ConfigBinder binder = new ConfigBinder(cm);
-        when(cm.getBinder()).thenReturn(binder);
-        commands = new CommandManager(serverManager);
-        commands.initialise(cm);
-        commands.registerCommand(new Echo(commands, windowManager), Echo.INFO);
+    public void setup() {
+        when(commandController.getCommandChar()).thenReturn('/');
+        when(commandController.getSilenceChar()).thenReturn('.');
+        when(commandController.isChannelCommand("channel")).thenReturn(true);
+
+        when(commandInfo.getName()).thenReturn("command");
+        when(channelCommandInfo.getName()).thenReturn("channel");
+
+        when(configProvider.getOptionInt("general", "commandhistory")).thenReturn(10);
+
+        when(container.getConnection()).thenReturn(connection);
+        when(connection.isValidChannelName("#channel1")).thenReturn(true);
+        when(connection.isValidChannelName("#channel2")).thenReturn(true);
+        when(connection.hasChannel("#channel1")).thenReturn(true);
+        when(connection.getChannel("#channel1")).thenReturn(channel);
+
+        commandParser = new TestCommandParser(configProvider, commandController);
+        commandParser.registerCommand(command, commandInfo);
+        commandParser.registerCommand(channelCommand, channelCommandInfo);
+
+        channelCommandParser = new TestCommandParser(configProvider, commandController);
+        channelCommandParser.registerCommand(channelCommand, channelCommandInfo);
+
+        when(channel.getCommandParser()).thenReturn(channelCommandParser);
     }
 
     @Test
-    public void testBasicCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/echo this is a test");
+    public void testParseCommandWithArguments() {
+        commandParser.parseCommand(null, "/command this is a test");
 
-        assertNull(tcp.nonCommandLine);
-        assertNull(tcp.invalidCommand);
-        assertNotNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
-        assertTrue(tcp.executedCommand instanceof Echo);
+        assertNull(commandParser.nonCommandLine);
+        assertNull(commandParser.invalidCommand);
+        assertFalse(commandParser.wasSilent);
+        assertSame(command, commandParser.executedCommand);
+        assertEquals("this is a test", commandParser.commandArgs.getArgumentsAsString());
     }
 
     @Test
-    public void testBasicNoArgs() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/echo");
+    public void testParseCommandWithoutArguments() {
+        commandParser.parseCommand(null, "/command");
 
-        assertNull(tcp.nonCommandLine);
-        assertNull(tcp.invalidCommand);
-        assertNotNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
-        assertTrue(tcp.executedCommand instanceof Echo);
+        assertNull(commandParser.nonCommandLine);
+        assertNull(commandParser.invalidCommand);
+        assertFalse(commandParser.wasSilent);
+        assertSame(command, commandParser.executedCommand);
+        assertEquals("", commandParser.commandArgs.getArgumentsAsString());
     }
 
     @Test
-    public void testSilentNoArgs() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/.echo");
+    public void testParseSilentCommandWithoutArguments() {
+        commandParser.parseCommand(null, "/.command");
 
-        assertNull(tcp.nonCommandLine);
-        assertNull(tcp.invalidCommand);
-        assertNotNull(tcp.executedCommand);
-        assertTrue(tcp.wasSilent);
-        assertTrue(tcp.executedCommand instanceof Echo);
+        assertNull(commandParser.nonCommandLine);
+        assertNull(commandParser.invalidCommand);
+        assertTrue(commandParser.wasSilent);
+        assertSame(command, commandParser.executedCommand);
+        assertEquals("", commandParser.commandArgs.getArgumentsAsString());
     }
 
     @Test
-    public void testSilentCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/.echo this is a test");
+    public void testParseSilentCommandWithArguments() {
+        commandParser.parseCommand(null, "/.command this is a test");
 
-        assertNull(tcp.nonCommandLine);
-        assertNull(tcp.invalidCommand);
-        assertNotNull(tcp.executedCommand);
-        assertTrue(tcp.wasSilent);
-        assertTrue(tcp.executedCommand instanceof Echo);
+        assertNull(commandParser.nonCommandLine);
+        assertNull(commandParser.invalidCommand);
+        assertTrue(commandParser.wasSilent);
+        assertSame(command, commandParser.executedCommand);
+        assertEquals("this is a test", commandParser.commandArgs.getArgumentsAsString());
     }
 
     @Test
-    public void testNonExistantCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/foobar moo bar");
+    public void testParseUnknownCommand() {
+        commandParser.parseCommand(null, "/foobar moo bar");
 
-        assertNull(tcp.nonCommandLine);
-        assertEquals("foobar", tcp.invalidCommand);
-        assertNotNull(tcp.invalidCommand);
-        assertNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
+        assertNull(commandParser.nonCommandLine);
+        assertEquals("foobar", commandParser.invalidCommand);
+        assertNull(commandParser.executedCommand);
+        assertFalse(commandParser.wasSilent);
     }
 
     @Test
-    public void testEmptyCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/ moo bar");
+    public void testParseEmptyCommand() {
+        commandParser.parseCommand(null, "/ moo bar");
 
-        assertNull(tcp.nonCommandLine);
-        assertEquals("", tcp.invalidCommand);
-        assertNotNull(tcp.invalidCommand);
-        assertNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
+        assertNull(commandParser.nonCommandLine);
+        assertEquals("", commandParser.invalidCommand);
+        assertNull(commandParser.executedCommand);
+        assertFalse(commandParser.wasSilent);
     }
 
     @Test
-    public void testEmptySilentCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/. moo bar");
+    public void testParseEmptySilenceCommand() {
+        commandParser.parseCommand(null, "/. moo bar");
 
-        assertNull(tcp.nonCommandLine);
-        assertEquals("", tcp.invalidCommand);
-        assertNotNull(tcp.invalidCommand);
-        assertNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
+        assertNull(commandParser.nonCommandLine);
+        assertEquals("", commandParser.invalidCommand);
+        assertNull(commandParser.executedCommand);
+        assertFalse(commandParser.wasSilent);
     }
 
     @Test
-    public void testNonCommand() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "Foobar baz");
+    public void testParseNonCommand() {
+        commandParser.parseCommand(null, "Foobar baz");
 
-        assertNotNull(tcp.nonCommandLine);
-        assertEquals("Foobar baz", tcp.nonCommandLine);
-        assertNull(tcp.invalidCommand);
-        assertNull(tcp.executedCommand);
-        assertFalse(tcp.wasSilent);
+        assertEquals("Foobar baz", commandParser.nonCommandLine);
+        assertNull(commandParser.invalidCommand);
+        assertNull(commandParser.executedCommand);
+        assertFalse(commandParser.wasSilent);
     }
 
     @Test
-    public void testCommandHistory() {
-        final TestCommandParser tcp = new TestCommandParser(cm, commands);
-        tcp.parseCommand(null, "/echo this is a test");
+    public void testGetCommandTime() {
+        commandParser.parseCommand(null, "/command this is a test");
 
-        final long time1 = tcp.getCommandTime("echo this is a test");
+        final long time1 = commandParser.getCommandTime("command this is a test");
         assertTrue(time1 > 0);
 
-        tcp.parseCommand( null, "/echo this is a test");
-        final long time2 = tcp.getCommandTime("echo this is a test");
+        commandParser.parseCommand(null, "/command this is a test");
+        final long time2 = commandParser.getCommandTime("command this is a test");
         assertTrue(time2 > 0);
         assertTrue(time2 >= time1);
 
-        assertEquals(0L, tcp.getCommandTime("echo"));
+        assertEquals(0L, commandParser.getCommandTime("command"));
+    }
+
+    @Test
+    public void testParseChannelCommandWithArguments() {
+        when(container.getConnection()).thenReturn(connection);
+        commandParser.parseCommand(container, "/channel #channel1 this is a test");
+
+        assertNull(channelCommandParser.nonCommandLine);
+        assertNull(channelCommandParser.invalidCommand);
+        assertFalse(channelCommandParser.wasSilent);
+        assertSame(channelCommand, channelCommandParser.executedCommand);
+        assertEquals("this is a test", channelCommandParser.commandArgs.getArgumentsAsString());
+    }
+
+    @Test
+    public void testParseChannelCommandWithoutArguments() {
+        when(container.getConnection()).thenReturn(connection);
+        commandParser.parseCommand(container, "/channel #channel1");
+
+        assertNull(channelCommandParser.nonCommandLine);
+        assertNull(channelCommandParser.invalidCommand);
+        assertFalse(channelCommandParser.wasSilent);
+        assertSame(channelCommand, channelCommandParser.executedCommand);
+        assertEquals("", channelCommandParser.commandArgs.getArgumentsAsString());
+    }
+
+    @Test
+    public void testParseSilencedChannelCommandWithArguments() {
+        when(container.getConnection()).thenReturn(connection);
+        commandParser.parseCommand(container, "/.channel #channel1 this is a test");
+
+        assertNull(channelCommandParser.nonCommandLine);
+        assertNull(channelCommandParser.invalidCommand);
+        assertTrue(channelCommandParser.wasSilent);
+        assertSame(channelCommand, channelCommandParser.executedCommand);
+        assertEquals("this is a test", channelCommandParser.commandArgs.getArgumentsAsString());
+    }
+
+    @Test
+    public void testParseSilencedChannelCommandWithoutArguments() {
+        when(container.getConnection()).thenReturn(connection);
+        commandParser.parseCommand(container, "/.channel #channel1");
+
+        assertNull(channelCommandParser.nonCommandLine);
+        assertNull(channelCommandParser.invalidCommand);
+        assertTrue(channelCommandParser.wasSilent);
+        assertSame(channelCommand, channelCommandParser.executedCommand);
+        assertEquals("", channelCommandParser.commandArgs.getArgumentsAsString());
     }
 
 }

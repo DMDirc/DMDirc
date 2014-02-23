@@ -51,19 +51,11 @@ import java.util.Map;
  */
 public abstract class CommandParser implements Serializable {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
-    /**
-     * Commands that are associated with this parser.
-     */
+    /** Commands that are associated with this parser. */
     private final Map<String, CommandInfoPair> commands;
-    /**
-     * A history of commands that have been entered into this parser.
-     */
+    /** A history of commands that have been entered into this parser. */
     private final RollingList<PreviousCommand> history;
     /** Command manager to use. */
     protected final CommandController commandManager;
@@ -82,6 +74,10 @@ public abstract class CommandParser implements Serializable {
         loadCommands();
     }
 
+    /**
+     * @deprecated Callers should obtain their own instance of command controller.
+     */
+    @Deprecated
     public CommandController getCommandManager() {
         return commandManager;
     }
@@ -141,7 +137,7 @@ public abstract class CommandParser implements Serializable {
      */
     public final void parseCommand(final FrameContainer origin,
             final String line, final boolean parseChannel) {
-        final CommandArguments args = new CommandArguments(getCommandManager(), line);
+        final CommandArguments args = new CommandArguments(commandManager, line);
 
         if (args.isCommand()) {
             if (handleChannelCommand(origin, args, parseChannel)) {
@@ -200,10 +196,14 @@ public abstract class CommandParser implements Serializable {
                     continue;
                 }
 
+                final String newCommandString = commandManager.getCommandChar()
+                        + (silent ? String.valueOf(commandManager.getSilenceChar()) : "")
+                        + args.getCommandName()
+                        + (cargs.length > 1 ? " " + args.getArgumentsAsString(1) : "");
+
                 if (server.hasChannel(channel)) {
-                    server.getChannel(channel).getCommandParser()
-                            .parseCommand(origin, commandManager.getCommandChar()
-                            + args.getCommandName() + " " + args.getWordsAsString(2), false);
+                    server.getChannel(channel).getCommandParser().parseCommand(origin,
+                            newCommandString, false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand = commandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);
@@ -211,8 +211,7 @@ public abstract class CommandParser implements Serializable {
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
                                 origin, (Server) server, channel, silent,
-                                new CommandArguments(commandManager, args.getCommandName()
-                                + " " + args.getWordsAsString(2)));
+                                new CommandArguments(commandManager, newCommandString));
                     }
                 }
             }
