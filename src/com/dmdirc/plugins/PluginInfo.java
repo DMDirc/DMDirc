@@ -610,7 +610,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             } catch (LinkageError | Exception e) {
                 lastError = "Error in onLoad for " + metaData.getName() + ":"
                         + e.getMessage();
-                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+                Logger.appError(ErrorLevel.MEDIUM, lastError, e);
                 unloadPlugin();
             }
         } else {
