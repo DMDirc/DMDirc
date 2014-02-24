@@ -164,7 +164,6 @@ public class Main {
         actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
-        actionManager.triggerEvent(CoreActionType.CLIENT_OPENED, null);
         eventBus.post(new ClientOpenedEvent());
 
         commandLineParser.processArguments(serverManager);

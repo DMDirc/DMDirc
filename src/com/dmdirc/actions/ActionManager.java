@@ -26,6 +26,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionComparison;
@@ -39,8 +40,12 @@ import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,6 +94,8 @@ public class ActionManager implements ActionController {
     private final MapList<String, ActionType> typeGroups = new MapList<>();
     /** The listeners that we have registered. */
     private final MapList<ActionType, ActionListener> listeners = new MapList<>();
+    /** The global event bus to monitor. */
+    private final EventBus eventBus;
     /** The directory to load and save actions in. */
     private final String directory;
     /** Indicates whether or not user actions should be killed (not processed). */
@@ -103,6 +110,7 @@ public class ActionManager implements ActionController {
      * @param factory                The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
      * @param updateManagerProvider  Provider of an update manager, to register components.
+     * @param eventBus               The global event bus to monitor.
      * @param directory              The directory to load and save actions in.
      */
     public ActionManager(
@@ -111,12 +119,14 @@ public class ActionManager implements ActionController {
             final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
+            final EventBus eventBus,
             final String directory) {
         this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.factory = factory;
         this.actionWrappersProvider = actionWrappersProvider;
         this.updateManagerProvider = updateManagerProvider;
+        this.eventBus = eventBus;
         this.directory = directory;
     }
 
@@ -181,6 +191,8 @@ public class ActionManager implements ActionController {
                 saveAllActions();
             }
         }, CoreActionType.CLIENT_CLOSED);
+
+        eventBus.register(this);
     }
 
     /** {@inheritDoc} */
@@ -439,6 +451,86 @@ public class ActionManager implements ActionController {
         }
 
         return res;
+    }
+
+    /**
+     * Processes an event from the event bus.
+     *
+     * @param event The event that was raised.
+     */
+    @Subscribe
+    public void processEvent(final DMDircEvent event) {
+        final ActionType type = getType(getLegacyActionTypeName(event));
+        if (type == null) {
+            LOG.warn("Unable to locate legacy type for event {}", event.getClass().getName());
+            return;
+        }
+
+        final Class[] argTypes = type.getType().getArgTypes();
+        final Object[] arguments = getLegacyArguments(event, argTypes);
+
+        triggerEvent(type, null, arguments);
+    }
+
+    /**
+     * Gets the name of the legacy {@link ActionType} to which the given event corresponds.
+     *
+     * @param event The event to obtain the name of.
+     *
+     * @return The legacy action type name.
+     */
+    private static String getLegacyActionTypeName(final DMDircEvent event) {
+        return event.getClass().getSimpleName()
+                .replaceAll("Event$", "")
+                .replaceAll("(.)([A-Z])", "$1_$2")
+                .toUpperCase();
+    }
+
+    /**
+     * Attempts to obtain a legacy arguments array from the given event. Arguments will be matched
+     * based on their expected classes. Where an event provides multiple getters of the same type,
+     * the one closest in index to the argument index will be used.
+     *
+     * @param event    The event to get legacy arguments for.
+     * @param argTypes The type of arguments expected for the action type.
+     *
+     * @return An array of objects containing the legacy arguments.
+     */
+    private static Object[] getLegacyArguments(final DMDircEvent event, final Class[] argTypes) {
+        final Object[] arguments = new Object[argTypes.length];
+        final Method[] methods = event.getClass().getMethods();
+
+        for (int i = 0; i < argTypes.length; i++) {
+            final Class<?> target = argTypes[i];
+            Method best = null;
+            int bestDistance = Integer.MAX_VALUE;
+
+            for (int j = 0; j < methods.length; j++) {
+                final Method method = methods[j];
+                if (method.getParameterTypes().length == 0
+                        && method.getName().startsWith("get")
+                        && method.getReturnType().equals(target)
+                        && Math.abs(j - i) < bestDistance) {
+                    bestDistance = Math.abs(j - i);
+                    best = method;
+                }
+            }
+
+            if (best == null) {
+                LOG.error("Unable to find method on event {} to satisfy argument #{} of class {}",
+                        event.getClass().getName(), i, target.getName());
+                arguments[i] = null;
+            } else {
+                try {
+                    arguments[i] = best.invoke(i, arguments);
+                } catch (ReflectiveOperationException ex) {
+                    LOG.error("Unable to invoke method {} on {} to get action argument",
+                            best.getName(), event.getClass().getName(), ex);
+                }
+            }
+        }
+
+        return arguments;
     }
 
     /** {@inheritDoc} */

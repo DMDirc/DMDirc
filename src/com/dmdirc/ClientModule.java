@@ -202,6 +202,7 @@ public class ClientModule {
      * @param actionFactory          The factory to use to create actions.
      * @param actionWrappersProvider Provider of action wrappers.
      * @param updateManagerProvider  Provider of an update manager.
+     * @param eventBus               The global event bus to listen to events on.
      * @param directory              The directory to read and write actions in.
      *
      * @return An unitialised action manager.
@@ -214,9 +215,10 @@ public class ClientModule {
             final ActionFactory actionFactory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
+            final EventBus eventBus,
             @Directory(DirectoryType.ACTIONS) final String directory) {
         final ActionManager actionManager = new ActionManager(serverManager, identityController,
-                actionFactory, actionWrappersProvider, updateManagerProvider, directory);
+                actionFactory, actionWrappersProvider, updateManagerProvider, eventBus, directory);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
