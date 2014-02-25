@@ -754,7 +754,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                             } catch (LinkageError | Exception e) {
                                 lastError = "Error in onLoad for "
                                         + metaData.getName() + ":" + e.getMessage();
-                                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+                                Logger.appError(ErrorLevel.MEDIUM, lastError, e);
                                 unloadPlugin();
                             }
                         }
@@ -843,7 +843,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 } catch (Exception | LinkageError e) {
                     lastError = "Error in onUnload for " + metaData.getName()
                             + ":" + e + " - " + e.getMessage();
-                    Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+                    Logger.appError(ErrorLevel.MEDIUM, lastError, e);
                 }
 
                 ActionManager.getActionManager().triggerEvent(
