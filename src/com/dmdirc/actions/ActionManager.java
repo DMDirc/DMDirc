@@ -26,6 +26,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
@@ -182,16 +183,6 @@ public class ActionManager implements ActionController {
 
         new WhoisNumericFormatter(identityManager.getAddonSettings()).register();
 
-        // Register a listener for the closing event, so we can save actions
-        registerListener(new ActionListener() {
-            /** {@inheritDoc} */
-            @Override
-            public void processEvent(final ActionType type, final StringBuffer format,
-                    final Object... arguments) {
-                saveAllActions();
-            }
-        }, CoreActionType.CLIENT_CLOSED);
-
         eventBus.register(this);
     }
 
@@ -203,6 +194,17 @@ public class ActionManager implements ActionController {
                 action.save();
             }
         }
+    }
+
+    /**
+     * Saves all actions when the client is being closed.
+     *
+     * @param event The event that was raised.
+     */
+    @Subscribe
+    public void handleClientClosed(final ClientClosedEvent event) {
+        LOG.debug("Client closed - saving all actions");
+        saveAllActions();
     }
 
     /** {@inheritDoc} */

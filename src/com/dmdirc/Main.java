@@ -25,9 +25,9 @@ package com.dmdirc;
 import com.dmdirc.GlobalWindow.GlobalWindowManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ColourActionComparison;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -174,7 +174,7 @@ public class Main {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                actionManager.triggerEvent(CoreActionType.CLIENT_CLOSED, null);
+                eventBus.post(new ClientClosedEvent());
                 serverManager.disconnectAll("Unexpected shutdown");
                 identityManager.saveAll();
             }

@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.NicklistListener;
@@ -48,6 +49,8 @@ import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
+
+import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +91,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private volatile boolean showModePrefix;
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of Channel.
@@ -99,6 +103,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
      * @param commandController   The controller to load commands from.
      * @param messageSinkManager  The sink manager to use to despatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
+     * @param eventBus            The bus to despatch events onto.
      */
     public Channel(
             @Unbound final Server newServer,
@@ -107,7 +112,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
         super("channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
@@ -115,13 +121,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier(),
-                WindowComponent.TOPICBAR.getIdentifier(),
-                WindowComponent.USERLIST.getIdentifier()));
+                        WindowComponent.INPUTFIELD.getIdentifier(),
+                        WindowComponent.TOPICBAR.getIdentifier(),
+                        WindowComponent.USERLIST.getIdentifier()));
 
         this.configMigrator = configMigrator;
-        channelInfo = newChannelInfo;
-        server = newServer;
+        this.channelInfo = newChannelInfo;
+        this.server = newServer;
+        this.eventBus = eventBus;
 
         getConfigManager().addChangeListener("channel", this);
         getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
@@ -328,8 +335,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }
 
         // Trigger action for the window closing
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CHANNEL_CLOSED, null, this);
+        eventBus.post(new ChannelClosedEvent(this));
 
         // Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());

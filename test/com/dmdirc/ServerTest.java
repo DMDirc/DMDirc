@@ -33,6 +33,8 @@ import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.net.URI;
 
 import org.junit.Before;
@@ -62,6 +64,7 @@ public class ServerTest {
     @Mock private RawFactory rawFactory;
     @Mock private StatusBarManager statusBarManager;
     @Mock private URLBuilder urlBuilder;
+    @Mock private EventBus eventBus;
 
     private Server server;
 
@@ -85,6 +88,7 @@ public class ServerTest {
                 queryFactory,
                 rawFactory,
                 urlBuilder,
+                eventBus,
                 userConfig,
                 new URI("irc-test://255.255.255.255"),
                 profile);

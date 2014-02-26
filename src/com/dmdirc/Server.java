@@ -27,6 +27,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
@@ -63,6 +64,8 @@ import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
+
+import com.google.common.eventbus.EventBus;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -171,6 +174,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     private final QueryFactory queryFactory;
     /** Factory to use for creating raw windows. */
     private final RawFactory rawFactory;
+    /** The event bus to despatch events onto. */
+    private final EventBus eventBus;
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
     /** The manager to use to add status bar messages. */
@@ -194,6 +199,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param queryFactory        The factory to use to create queries.
      * @param rawFactory          The factory to use to create raw windows.
      * @param urlBuilder          The URL builder to use when finding icons.
+     * @param eventBus            The event bus to despatch events onto.
      * @param userSettings        The config provider to write user settings to.
      * @param uri                 The address of the server to connect to
      * @param profile             The profile to use
@@ -212,6 +218,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
             final URLBuilder urlBuilder,
+            final EventBus eventBus,
             @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
             @Unbound final URI uri,
             @Unbound final ConfigProvider profile) {
@@ -223,9 +230,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier(),
-                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier(),
+                        WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
         this.manager = manager;
         this.parserFactory = parserFactory;
@@ -235,6 +242,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.rawFactory = rawFactory;
+        this.eventBus = eventBus;
         this.userSettings = userSettings;
         this.statusBarManager = statusBarManager;
 
@@ -611,7 +619,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
                 || getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                "hidechannels"));
+                        "hidechannels"));
     }
 
     /** {@inheritDoc} */
@@ -635,8 +643,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
 
             windowManager.addWindow(this, newChan, focus);
-            ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_OPENED, null,
-                    newChan);
+            eventBus.post(new ChannelOpenedEvent(newChan));
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
@@ -1497,8 +1504,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
                     + parser.getServerSoftwareType() + "]",
                     new MissingModeAliasException(getNetwork(), parser,
-                    getConfigManager().getOption("identity",
-                    "modealiasversion"), missing.toString()));
+                            getConfigManager().getOption("identity",
+                                    "modealiasversion"), missing.toString()));
         }
     }
 
