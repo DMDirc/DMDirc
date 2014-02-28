@@ -101,19 +101,10 @@ public class ClientModule {
     @Qualifier
     public @interface UserConfig {
     }
+
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
 
-    /**
-     * Provides an identity manager for the client, and initialises the error manager with it.
-     *
-     * @param baseDirectory       The base directory to load settings from.
-     * @param identitiesDirectory The directory to store and read identities in.
-     * @param errorsDirectory     The directory to store errors in.
-     * @param commandLineParser   The CLI parser to read command line settings from.
-     *
-     * @return An initialised {@link IdentityManager}.
-     */
     @Provides
     @Singleton
     public IdentityManager getIdentityManager(
@@ -141,39 +132,17 @@ public class ClientModule {
         return identityManager;
     }
 
-    /**
-     * Provides an identity controller.
-     *
-     * @param manager The identity manager to use as a controller.
-     *
-     * @return An identity controller to use.
-     */
     @Provides
     public IdentityController getIdentityController(final IdentityManager manager) {
         return manager;
     }
 
-    /**
-     * Provides a global config provider.
-     *
-     * @param controller The controller to retrieve the config from.
-     *
-     * @return A global configuration provider.
-     */
     @Provides
     @GlobalConfig
     public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
         return controller.getGlobalConfiguration();
     }
 
-    /**
-     * Provides an icon manager backed by the global configuration.
-     *
-     * @param globalConfig The global configuration provider.
-     * @param urlBuilder   The builder to use to construct icon URLs.
-     *
-     * @return An icon manager backed by the global config.
-     */
     @Provides
     @GlobalConfig
     @Singleton
@@ -183,32 +152,12 @@ public class ClientModule {
         return new IconManager(globalConfig, urlBuilder);
     }
 
-    /**
-     * Provides the user's configuration provider.
-     *
-     * @param controller The controller to retrieve the config from.
-     *
-     * @return The user's configuration provider.
-     */
     @Provides
     @UserConfig
     public ConfigProvider getUserConfig(final IdentityController controller) {
         return controller.getUserSettings();
     }
 
-    /**
-     * Provides an action manager.
-     *
-     * @param serverManager          The server manager to use to iterate servers.
-     * @param identityController     The identity controller to use to look up settings.
-     * @param actionFactory          The factory to use to create actions.
-     * @param actionWrappersProvider Provider of action wrappers.
-     * @param updateManagerProvider  Provider of an update manager.
-     * @param eventBus               The global event bus to listen to events on.
-     * @param directory              The directory to read and write actions in.
-     *
-     * @return An unitialised action manager.
-     */
     @Provides
     @Singleton
     public ActionManager getActionManager(
@@ -225,39 +174,16 @@ public class ClientModule {
         return actionManager;
     }
 
-    /**
-     * Provides an action controller.
-     *
-     * @param actionManager The action manager to use as a controller.
-     *
-     * @return An action controller to use.
-     */
     @Provides
     public ActionController getActionController(final ActionManager actionManager) {
         return actionManager;
     }
 
-    /**
-     * Provides a lifecycle controller.
-     *
-     * @param controller The concrete implementation to use.
-     *
-     * @return The lifecycle controller the app should use.
-     */
     @Provides
     public LifecycleController getLifecycleController(final SystemLifecycleController controller) {
         return controller;
     }
 
-    /**
-     * Gets the message sink manager for the client.
-     *
-     * @param statusBarManager The status bar manager to use for status bar sinks.
-     * @param windowManager    The window manager to use for sinks that iterate windows.
-     * @param urlBuilder       The URL Builder to use when creating new containers.
-     *
-     * @return The message sink manager the client should use.
-     */
     @Provides
     @Singleton
     public MessageSinkManager getMessageSinkManager(
@@ -269,14 +195,6 @@ public class ClientModule {
         return messageSinkManager;
     }
 
-    /**
-     * Gets the command manager the client should use.
-     *
-     * @param serverManager The manager to use to iterate servers.
-     * @param globalConfig  The global configuration provider to read settings from.
-     *
-     * @return The command manager the client should use.
-     */
     @Provides
     @Singleton
     public CommandManager getCommandManager(
@@ -287,30 +205,11 @@ public class ClientModule {
         return manager;
     }
 
-    /**
-     * Gets a command controller for use in the client.
-     *
-     * @param commandManager The manager to use as a controller.
-     *
-     * @return The command controller the client should use.
-     */
     @Provides
     public CommandController getCommandController(final CommandManager commandManager) {
         return commandManager;
     }
 
-    /**
-     * Gets an initialised plugin manager for the client.
-     *
-     * @param identityController  The controller to read settings from.
-     * @param actionController    The action controller to use for events.
-     * @param updateManager       The update manager to inform about plugins.
-     * @param initialiserProvider Provider to use to create plugin initialisers.
-     * @param objectGraph         The graph to provide to plugins for DI purposes.
-     * @param directory           The directory to load and save plugins in.
-     *
-     * @return An initialised plugin manager for the client.
-     */
     @Provides
     @Singleton
     public PluginManager getPluginManager(
@@ -337,26 +236,11 @@ public class ClientModule {
         return manager;
     }
 
-    /**
-     * Provides a service manager.
-     *
-     * @param pluginManager The plugin manager to use as the service manager implementation.
-     *
-     * @return A service manager.
-     */
     @Provides
     public ServiceManager getServiceManager(final PluginManager pluginManager) {
         return pluginManager;
     }
 
-    /**
-     * Gets a core plugin extractor.
-     *
-     * @param pluginManager The plugin manager to notify about updates.
-     * @param directory     The directory to extract plugins to.
-     *
-     * @return A plugin extractor for the client to use.
-     */
     @Provides
     public CorePluginExtractor getCorePluginExtractor(
             final PluginManager pluginManager,
@@ -364,14 +248,6 @@ public class ClientModule {
         return new CorePluginExtractor(pluginManager, directory);
     }
 
-    /**
-     * Gets a theme manager for the client.
-     *
-     * @param controller The identity controller to use to access settings.
-     * @param directory  The directory to load themes from.
-     *
-     * @return An initialised theme manager instance.
-     */
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
@@ -382,73 +258,33 @@ public class ClientModule {
         return manager;
     }
 
-    /**
-     * Gets the alias actions wrapper entry for the actions wrapper set.
-     *
-     * @param aliasWrapper The wrapper to use in the set.
-     *
-     * @return An alias wrapper to use in the client.
-     */
     @Provides(type = Provides.Type.SET)
     public ActionGroup getAliasWrapper(final AliasWrapper aliasWrapper) {
         return aliasWrapper;
     }
 
-    /**
-     * Gets the performs actions wrapper.
-     *
-     * @param wrapper Wrapper to return
-     *
-     * @return An performs wrapper to use in the client.
-     */
     @Provides(type = Provides.Type.SET)
     @Singleton
     public ActionGroup getPerformWrapper(final PerformWrapper wrapper) {
         return wrapper;
     }
 
-    /**
-     * Gets the colour manager.
-     *
-     * @param globalConfig A global configuration provider to read settings from.
-     *
-     * @return A colour manager for the client.
-     */
     @Provides
     @Singleton
     public ColourManager getColourManager(@GlobalConfig final AggregateConfigProvider globalConfig) {
         return new ColourManager(globalConfig);
     }
 
-    /**
-     * Gets a preferences manager.
-     *
-     * @return A singleton preferences manager.
-     */
     @Provides
     public PreferencesManager getPreferencesManager() {
         return PreferencesManager.getPreferencesManager();
     }
 
-    /**
-     * Gets a server factory.
-     *
-     * @param serverManager The manager to use as a factory.
-     *
-     * @return A server factory.
-     */
     @Provides
     public ServerFactory getServerFactory(final ServerManager serverManager) {
         return serverManager;
     }
 
-    /**
-     * Gets an identity factory.
-     *
-     * @param identityManager The manager to use as a factory.
-     *
-     * @return An identity factory.
-     */
     @Provides
     public IdentityFactory getIdentityFactory(final IdentityManager identityManager) {
         return identityManager;
@@ -459,11 +295,6 @@ public class ClientModule {
         return locator;
     }
 
-    /**
-     * Provides the event bus the client will use for dispatching events.
-     *
-     * @return An event bus for the client to use.
-     */
     @Provides
     @Singleton
     public EventBus getEventBus() {
@@ -479,11 +310,6 @@ public class ClientModule {
         this.objectGraph = objectGraph;
     }
 
-    /**
-     * Provides an object graph for future dependency injection.
-     *
-     * @return An object graph to use.
-     */
     @Provides
     @Singleton
     public ObjectGraph getObjectGraph() {
