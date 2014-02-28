@@ -47,8 +47,10 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     CLIENT_CLOSING(ClientEvents.CLIENT_EVENT, "Client closing"),
     /** Client minimised. */
+    @Deprecated
     CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
+    @Deprecated
     CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),
     /** Client lost focus. */
     @Deprecated
