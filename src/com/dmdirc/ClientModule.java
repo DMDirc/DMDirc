@@ -48,9 +48,11 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.plugins.LegacyServiceLocator;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.ServiceLocator;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WarningDialog;
@@ -450,6 +452,11 @@ public class ClientModule {
     @Provides
     public IdentityFactory getIdentityFactory(final IdentityManager identityManager) {
         return identityManager;
+    }
+
+    @Provides
+    public ServiceLocator getServiceLocator(final LegacyServiceLocator locator) {
+        return locator;
     }
 
     /**
