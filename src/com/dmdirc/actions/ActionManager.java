@@ -524,7 +524,7 @@ public class ActionManager implements ActionController {
                 arguments[i] = null;
             } else {
                 try {
-                    arguments[i] = best.invoke(i, arguments);
+                    arguments[i] = best.invoke(event);
                 } catch (ReflectiveOperationException ex) {
                     LOG.error("Unable to invoke method {} on {} to get action argument",
                             best.getName(), event.getClass().getName(), ex);
