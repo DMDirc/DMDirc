@@ -38,18 +38,23 @@ import com.dmdirc.interfaces.actions.ActionType;
 public enum CoreActionType implements ActionType {
 
     /** Client opened. */
+    @Deprecated
     CLIENT_OPENED(ClientEvents.CLIENT_EVENT, "Client opened"),
     /** Client closed. */
+    @Deprecated
     CLIENT_CLOSED(ClientEvents.CLIENT_EVENT, "Client closed"),
     /** Client closing. */
+    @Deprecated
     CLIENT_CLOSING(ClientEvents.CLIENT_EVENT, "Client closing"),
     /** Client minimised. */
     CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
     CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),
     /** Client lost focus. */
+    @Deprecated
     CLIENT_FOCUS_LOST(ClientEvents.CLIENT_EVENT, "Client lost focus"),
     /** Client gained focus. */
+    @Deprecated
     CLIENT_FOCUS_GAINED(ClientEvents.CLIENT_EVENT, "Client gained focus"),
     /** Function key pressed. */
     CLIENT_KEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
@@ -149,7 +154,7 @@ public enum CoreActionType implements ActionType {
      *
      * @since 0.6.3m2 */
     CHANNEL_MODE_NOTICE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_CHARARG,
-    "Channel mode notice received"),
+            "Channel mode notice received"),
     /** Channel CTCP received. */
     CHANNEL_CTCP(ChannelEvents.CHANNEL_CTCP, "Channel CTCP received"),
     /** Someone joined a channel. */
@@ -168,19 +173,19 @@ public enum CoreActionType implements ActionType {
      *
      * @since 0.6.3 */
     CHANNEL_LISTMODERETRIEVED(ChannelEvents.CHANNEL_LISTMODEEVENT,
-    "Channel list mode value retrieved"),
+            "Channel list mode value retrieved"),
     /** Channel mode discovered. */
     CHANNEL_MODESDISCOVERED(ChannelEvents.CHANNEL_MODEEVENT, "Channel modes discovered"),
     /** Channel mode changes. */
     CHANNEL_MODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
     /** Someone changed someone else's user modes. */
     CHANNEL_USERMODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM,
-    "Someone changed someone else's modes"),
+            "Someone changed someone else's modes"),
     /** Someone changed nickname. */
     CHANNEL_NICKCHANGE(ChannelEvents.CHANNEL_NICKEVENT, "Someone changed nicknames"),
     /** Someone changed a topic. */
     CHANNEL_TOPICCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG,
-    "Someone changed channel topic"),
+            "Someone changed channel topic"),
     /** Query opened. */
     QUERY_OPENED(QueryEvents.QUERY_EVENT, "Query window opened"),
     /** Query closed. */
