@@ -68,7 +68,10 @@ import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
 import com.dmdirc.parser.interfaces.callbacks.WallopListener;
 import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Handles parser events for a Server object.
@@ -512,7 +515,10 @@ public class ServerEventHandler extends EventHandler implements
     private boolean triggerAction(final String messageType, final ActionType actionType,
             final Object... args) {
         final StringBuffer buffer = new StringBuffer(messageType);
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
+        final List<Object> actionArgs = new ArrayList<>();
+        actionArgs.add(owner);
+        actionArgs.addAll(Arrays.asList(args));
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.toArray());
     }
 
 }

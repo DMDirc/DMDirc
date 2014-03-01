@@ -55,7 +55,10 @@ import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 
 import com.google.common.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Handles events for channel objects.
@@ -127,7 +130,7 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.setClients(channel.getChannelClients());
-        triggerAction(null, CoreActionType.CHANNEL_GOTNAMES, owner);
+        ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_GOTNAMES, null, owner);
     }
 
     /** {@inheritDoc} */
@@ -406,8 +409,11 @@ public class ChannelEventHandler extends EventHandler implements
 
     private boolean triggerAction(final String messageType, final ActionType actionType,
             final Object... args) {
-        final StringBuffer buffer = new StringBuffer(messageType);
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
+        final List<Object> actionArgs = new ArrayList<>();
+        actionArgs.add(owner);
+        actionArgs.addAll(Arrays.asList(args));
+        return ActionManager.getActionManager().triggerEvent(actionType, new StringBuffer(
+                messageType), actionArgs.toArray());
     }
 
 }

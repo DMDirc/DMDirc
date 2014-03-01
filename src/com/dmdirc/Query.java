@@ -50,6 +50,7 @@ import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -376,7 +377,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
     private boolean triggerAction(final String messageType, final ActionType actionType,
             final Object... args) {
         final StringBuffer buffer = new StringBuffer(messageType);
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
+        final List<Object> actionArgs = new ArrayList<>();
+        actionArgs.add(this);
+        actionArgs.addAll(Arrays.asList(args));
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.toArray());
     }
 
 }
