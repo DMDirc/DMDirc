@@ -65,7 +65,6 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 
 import java.awt.GraphicsEnvironment;
@@ -73,7 +72,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import javax.inject.Provider;
 import javax.inject.Qualifier;
@@ -298,7 +296,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public EventBus getEventBus() {
-        return new AsyncEventBus(Executors.newFixedThreadPool(1));
+        return new EventBus();
     }
 
     /**
