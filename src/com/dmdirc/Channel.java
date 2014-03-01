@@ -44,6 +44,7 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
@@ -91,6 +92,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     private volatile boolean showModePrefix;
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
+    private final ChildEventBusManager eventBusManager;
     private final EventBus eventBus;
 
     /**
@@ -128,7 +130,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         this.configMigrator = configMigrator;
         this.channelInfo = newChannelInfo;
         this.server = newServer;
-        this.eventBus = eventBus;
+        this.eventBusManager = new ChildEventBusManager(eventBus);
+        this.eventBusManager.connect();
+        this.eventBus = eventBusManager.getChildBus();
 
         getConfigManager().addChangeListener("channel", this);
         getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
@@ -151,10 +155,20 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         selfJoin();
     }
 
+    /**
+     * Gets an event bus which will only contain events generated in relation to this channel.
+     *
+     * @return An event bus scoped to this channel.
+     */
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
     public ChannelInfo getChannelInfo() {
         return channelInfo;
     }
 
+    @Override
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
@@ -339,6 +353,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
 
         // Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());
+
+        eventBusManager.disconnect();
     }
 
     /**
