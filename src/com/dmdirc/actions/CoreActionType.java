@@ -59,12 +59,16 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     CLIENT_FOCUS_GAINED(ClientEvents.CLIENT_EVENT, "Client gained focus"),
     /** Function key pressed. */
+    @Deprecated
     CLIENT_KEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     /** Frame changed. */
+    @Deprecated
     CLIENT_FRAME_CHANGED(ClientEvents.WINDOW_EVENT, "Frame changed"),
     /** User input. */
+    @Deprecated
     CLIENT_USER_INPUT(ClientEvents.CLIENT_EVENT_WITH_BUFFER, "User input"),
     /** Line added. */
+    @Deprecated
     CLIENT_LINE_ADDED(ClientEvents.WINDOW_EVENT_WITH_MESSAGE, "Line added to a window"),
     /** Popup generated. */
     CLIENT_POPUP_GENERATED(ClientEvents.POPUP_EVENT, "Popup menu generated"),
