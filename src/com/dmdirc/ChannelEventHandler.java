@@ -24,7 +24,10 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.ChannelUserAwayEvent;
+import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -50,6 +53,8 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Date;
 
 /**
@@ -66,9 +71,12 @@ public class ChannelEventHandler extends EventHandler implements
 
     /** The channel that owns this event handler. */
     private final Channel owner;
+    /** Event bus to send events on. */
+    private final EventBus eventBus;
 
-    public ChannelEventHandler(final Channel owner) {
+    public ChannelEventHandler(final Channel owner, final EventBus eventBus) {
         this.owner = owner;
+        this.eventBus = eventBus;
     }
 
     /** {@inheritDoc} */
@@ -110,6 +118,7 @@ public class ChannelEventHandler extends EventHandler implements
         owner.doNotification(date,
                 isMyself(client) ? "channelSelfExternalMessage" : "channelMessage",
                 CoreActionType.CHANNEL_MESSAGE, client, message);
+        triggerAction(message, CoreActionType.CHANNEL_MESSAGE, client, message);
     }
 
     /** {@inheritDoc} */
@@ -118,8 +127,7 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.setClients(channel.getChannelClients());
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CHANNEL_GOTNAMES, null, owner);
+        triggerAction(null, CoreActionType.CHANNEL_GOTNAMES, owner);
     }
 
     /** {@inheritDoc} */
@@ -134,17 +142,21 @@ public class ChannelEventHandler extends EventHandler implements
         if (isJoinTopic) {
             if (newTopic.getTopic().isEmpty()) {
                 owner.doNotification(date, "channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
+                triggerAction("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
             } else {
                 owner.
                         doNotification(date, "channelTopicDiscovered",
-                        CoreActionType.CHANNEL_GOTTOPIC,
-                        newTopic);
+                                CoreActionType.CHANNEL_GOTTOPIC,
+                                newTopic);
+                triggerAction("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC, newTopic);
             }
         } else {
             owner.doNotification(date, channel.getTopic().isEmpty()
                     ? "channelTopicRemoved" : "channelTopicChanged",
                     CoreActionType.CHANNEL_TOPICCHANGE,
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
+            triggerAction(channel.getTopic().isEmpty() ? "channelTopicRemoved"
+                    : "channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE, channel.getTopic());
         }
 
         if (!isJoinTopic
@@ -165,6 +177,7 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification(date, "channelJoin", CoreActionType.CHANNEL_JOIN, client);
+        triggerAction("channelJoin", CoreActionType.CHANNEL_JOIN, client);
         owner.addClient(client);
     }
 
@@ -178,6 +191,9 @@ public class ChannelEventHandler extends EventHandler implements
                 + (isMyself(client) ? "Self" : "") + "Part"
                 + (reason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
                 client, reason);
+        triggerAction("channel"
+                + (isMyself(client) ? "Self" : "") + "Part"
+                + (reason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART, client, reason);
         owner.removeClient(client);
     }
 
@@ -190,6 +206,8 @@ public class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification(date, "channelKick" + (reason.isEmpty() ? "" : "Reason"),
                 CoreActionType.CHANNEL_KICK, client, kickedClient, reason);
+        triggerAction("channelKick" + (reason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_KICK, client, kickedClient, reason);
         owner.removeClient(kickedClient);
     }
 
@@ -200,6 +218,8 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification(date, "channelQuit" + (reason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_QUIT, client, reason);
+        triggerAction("channelQuit" + (reason.isEmpty() ? "" : "Reason"),
                 CoreActionType.CHANNEL_QUIT, client, reason);
         owner.removeClient(client);
     }
@@ -214,6 +234,8 @@ public class ChannelEventHandler extends EventHandler implements
         owner.doNotification(date,
                 isMyself(client) ? "channelSelfExternalAction" : "channelAction",
                 CoreActionType.CHANNEL_ACTION, client, message);
+        triggerAction(isMyself(client) ? "channelSelfExternalAction" : "channelAction",
+                CoreActionType.CHANNEL_ACTION, client, message);
     }
 
     /** {@inheritDoc} */
@@ -224,6 +246,8 @@ public class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification(date,
                 isMyself(client) ? "channelSelfNickChange" : "channelNickChange",
+                CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
+        triggerAction(isMyself(client) ? "channelSelfNickChange" : "channelNickChange",
                 CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
         owner.renameClient(oldNick, client.getClient().getNickname());
     }
@@ -241,10 +265,15 @@ public class ChannelEventHandler extends EventHandler implements
                 owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
                         : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
                         modes.length() <= 1 ? "" : modes);
+                triggerAction(modes.length() <= 1 ? "channelNoModes"
+                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED, modes.
+                        length() <= 1 ? "" : modes);
             } else {
                 owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
                         : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
                         client, modes);
+                triggerAction(isMyself(client) ? "channelSelfModeChanged"
+                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE, client, modes);
             }
         }
 
@@ -267,6 +296,7 @@ public class ChannelEventHandler extends EventHandler implements
 
             owner.doNotification(date, format, CoreActionType.CHANNEL_USERMODECHANGE,
                     client, targetClient, mode);
+            triggerAction(format, CoreActionType.CHANNEL_USERMODECHANGE, client, targetClient, mode);
         }
     }
 
@@ -276,9 +306,9 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client,
             final String type, final String message, final String host) {
         checkParser(parser);
-
-        if (owner.doNotification(date, "channelCTCP", CoreActionType.CHANNEL_CTCP,
-                client, type, message)) {
+        owner.doNotification(date, "channelCTCP", CoreActionType.CHANNEL_CTCP,
+                client, type, message);
+        if (triggerAction("channelCTCP", CoreActionType.CHANNEL_CTCP, client, type, message)) {
             owner.getConnection().sendCTCPReply(client.getClient().getNickname(),
                     type, message);
         }
@@ -300,6 +330,11 @@ public class ChannelEventHandler extends EventHandler implements
                     + (discovered ? "Discovered" : ""),
                     away ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
                     channelClient);
+            if (away) {
+                eventBus.post(new ChannelUserAwayEvent(owner, channelClient));
+            } else {
+                eventBus.post(new ChannelUserBackEvent(owner, channelClient));
+            }
         }
     }
 
@@ -312,6 +347,7 @@ public class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification(date, "channelNotice", CoreActionType.CHANNEL_NOTICE,
                 client, message);
+        triggerAction("channelNotice", CoreActionType.CHANNEL_NOTICE, client, message);
     }
 
     /** {@inheritDoc} */
@@ -327,10 +363,15 @@ public class ChannelEventHandler extends EventHandler implements
                 owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
                         : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
                         modes.length() <= 1 ? "" : modes);
+                triggerAction(modes.length() <= 1 ? "channelNoModes"
+                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED, modes.
+                        length() <= 1 ? "" : modes);
             } else {
                 owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
                         : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
                         client, modes);
+                triggerAction(isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged",
+                        CoreActionType.CHANNEL_MODECHANGE, client, modes);
             }
         }
 
@@ -347,6 +388,8 @@ public class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification(date, "channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
                 client, String.valueOf(prefix), message);
+        triggerAction("channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE, client, String.
+                valueOf(prefix), message);
     }
 
     /** {@inheritDoc} */
@@ -357,6 +400,14 @@ public class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification(date, "channelListModeRetrieved",
                 CoreActionType.CHANNEL_LISTMODERETRIEVED, Character.valueOf(mode));
+        triggerAction("channelListModeRetrieved", CoreActionType.CHANNEL_LISTMODERETRIEVED,
+                Character.valueOf(mode));
+    }
+
+    private boolean triggerAction(final String messageType, final ActionType actionType,
+            final Object... args) {
+        final StringBuffer buffer = new StringBuffer(messageType);
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
     }
 
 }

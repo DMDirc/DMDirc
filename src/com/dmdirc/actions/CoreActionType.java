@@ -172,8 +172,10 @@ public enum CoreActionType implements ActionType {
     /** Someone was kicked. */
     CHANNEL_KICK(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone kicked someone"),
     /** Someone marked as away. */
+    @Deprecated
     CHANNEL_USERAWAY(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'away'"),
     /** Someone marked as back. */
+    @Deprecated
     CHANNEL_USERBACK(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
     /** Channel list mode retrieved.
      *

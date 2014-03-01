@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.AwayState;
@@ -33,7 +34,39 @@ import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.*; //NOPMD
+import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
+import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.interfaces.callbacks.InviteListener;
+import com.dmdirc.parser.interfaces.callbacks.MotdEndListener;
+import com.dmdirc.parser.interfaces.callbacks.MotdLineListener;
+import com.dmdirc.parser.interfaces.callbacks.MotdStartListener;
+import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.NickInUseListener;
+import com.dmdirc.parser.interfaces.callbacks.NumericListener;
+import com.dmdirc.parser.interfaces.callbacks.PingFailureListener;
+import com.dmdirc.parser.interfaces.callbacks.PingSentListener;
+import com.dmdirc.parser.interfaces.callbacks.PingSuccessListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpReplyListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
+import com.dmdirc.parser.interfaces.callbacks.ServerNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.ServerReadyListener;
+import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownActionListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownMessageListener;
+import com.dmdirc.parser.interfaces.callbacks.UnknownNoticeListener;
+import com.dmdirc.parser.interfaces.callbacks.UserModeChangeListener;
+import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
+import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
+import com.dmdirc.parser.interfaces.callbacks.WallopListener;
+import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 
 import java.util.Date;
 
@@ -145,8 +178,10 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        if (owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
-                owner.getParser().getClient(host), type, message)) {
+        owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
+                owner.getParser().getClient(host), type, message);
+        if (triggerAction("privateCTCP", CoreActionType.SERVER_CTCP, owner.getParser().getClient(
+                host), type, message)) {
             owner.sendCTCPReply(owner.parseHostmask(host)[0], type, message);
         }
     }
@@ -159,6 +194,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
                 owner.getParser().getClient(host), type, message);
+        triggerAction("privateCTCPreply", CoreActionType.SERVER_CTCPR, owner.getParser().getClient(
+                host), type, message);
     }
 
     /** {@inheritDoc} */
@@ -177,6 +214,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
                 owner.getParser().getClient(host), message);
+        triggerAction("privateNotice", CoreActionType.SERVER_NOTICE, owner.getParser().getClient(
+                host), message);
     }
 
     /** {@inheritDoc} */
@@ -187,6 +226,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("serverNotice", CoreActionType.SERVER_SERVERNOTICE,
                 owner.getParser().getClient(host), message);
+        triggerAction("serverNotice", CoreActionType.SERVER_SERVERNOTICE, owner.getParser().
+                getClient(host), message);
     }
 
     /** {@inheritDoc} */
@@ -195,6 +236,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, data);
+        triggerAction("motdStart", CoreActionType.SERVER_MOTDSTART, data);
     }
 
     /** {@inheritDoc} */
@@ -203,6 +245,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, data);
+        triggerAction("motdLine", CoreActionType.SERVER_MOTDLINE, data);
     }
 
     /** {@inheritDoc} */
@@ -212,6 +255,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, data);
+        triggerAction("motdEnd", CoreActionType.SERVER_MOTDEND, data);
     }
 
     /** {@inheritDoc} */
@@ -263,8 +307,10 @@ public class ServerEventHandler extends EventHandler implements
 
         if (currentState == AwayState.AWAY) {
             owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
+            triggerAction("away", CoreActionType.SERVER_AWAY, reason);
         } else {
             owner.doNotification("back", CoreActionType.SERVER_BACK);
+            triggerAction("back", CoreActionType.SERVER_BACK);
         }
     }
 
@@ -295,6 +341,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
+        triggerAction("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
     }
 
     /** {@inheritDoc} */
@@ -305,6 +352,7 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE,
                 host, target, message);
+        triggerAction("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE, host, target, message);
     }
 
     /** {@inheritDoc} */
@@ -317,9 +365,13 @@ public class ServerEventHandler extends EventHandler implements
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalMessage",
                     CoreActionType.QUERY_SELF_MESSAGE, parser.getLocalClient(), message);
+            triggerAction("querySelfExternalMessage", CoreActionType.QUERY_SELF_MESSAGE, parser.
+                    getLocalClient(), message);
         } else {
             owner.doNotification("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE,
                     host, target, message);
+            triggerAction("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE, host, target,
+                    message);
         }
     }
 
@@ -333,9 +385,12 @@ public class ServerEventHandler extends EventHandler implements
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalAction",
                     CoreActionType.QUERY_SELF_ACTION, parser.getLocalClient(), message);
+            triggerAction("querySelfExternalAction", CoreActionType.QUERY_SELF_ACTION, message);
         } else {
             owner.doNotification("unknownAction", CoreActionType.SERVER_UNKNOWNACTION,
                     host, target, message);
+            triggerAction("unknownAction", CoreActionType.SERVER_UNKNOWNACTION, host, target,
+                    message);
         }
     }
 
@@ -347,6 +402,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
                 owner.getParser().getClient(host), modes);
+        triggerAction("userModeChanged", CoreActionType.SERVER_USERMODES, owner.getParser().
+                getClient(host), modes);
     }
 
     /** {@inheritDoc} */
@@ -357,6 +414,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification(modes.isEmpty() || "+".equals(modes)
                 ? "userNoModes" : "userModeDiscovered",
+                CoreActionType.SERVER_USERMODES, client, modes);
+        triggerAction(modes.isEmpty() || "+".equals(modes) ? "userNoModes" : "userModeDiscovered",
                 CoreActionType.SERVER_USERMODES, client, modes);
     }
 
@@ -370,6 +429,8 @@ public class ServerEventHandler extends EventHandler implements
         owner.doNotification("inviteReceived",
                 CoreActionType.SERVER_INVITERECEIVED,
                 owner.getParser().getClient(userHost), channel);
+        triggerAction("inviteReceived", CoreActionType.SERVER_INVITERECEIVED, owner.getParser().
+                getClient(userHost), channel);
     }
 
     /** {@inheritDoc} */
@@ -380,6 +441,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS,
                 owner.getParser().getClient(host), message);
+        triggerAction("wallop", CoreActionType.SERVER_WALLOPS, owner.getParser().getClient(host),
+                message);
 
     }
 
@@ -391,6 +454,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS,
                 owner.getParser().getClient(host), message);
+        triggerAction("walluser", CoreActionType.SERVER_WALLUSERS, owner.getParser().getClient(host),
+                message);
     }
 
     /** {@inheritDoc} */
@@ -401,6 +466,8 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC,
                 owner.getParser().getClient(host), message);
+        triggerAction("walldesync", CoreActionType.SERVER_WALLDESYNC, owner.getParser().getClient(
+                host), message);
     }
 
     /** {@inheritDoc} */
@@ -412,6 +479,8 @@ public class ServerEventHandler extends EventHandler implements
         if (client.equals(owner.getParser().getLocalClient())) {
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
                     oldNick, client.getNickname());
+            triggerAction("selfNickChange", CoreActionType.SERVER_NICKCHANGE, oldNick, client.
+                    getNickname());
             owner.updateTitle();
         }
     }
@@ -422,6 +491,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification("serverError", CoreActionType.SERVER_ERROR, message);
+        triggerAction("serverError", CoreActionType.SERVER_ERROR, message);
     }
 
     /** {@inheritDoc} */
@@ -437,6 +507,12 @@ public class ServerEventHandler extends EventHandler implements
                     + "shouldn't be in use.\nState history:\n"
                     + owner.getStatus().getTransitionHistory());
         }
+    }
+
+    private boolean triggerAction(final String messageType, final ActionType actionType,
+            final Object... args) {
+        final StringBuffer buffer = new StringBuffer(messageType);
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
     }
 
 }

@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -213,12 +212,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
 
         modifyNotificationArgs(actionArgs, messageArgs);
 
-        final boolean res = ActionManager.getActionManager().triggerEvent(
-                actionType, buffer, actionArgs.toArray());
-
         handleNotification(date, buffer.toString(), messageArgs.toArray());
 
-        return res;
+        return true;
     }
 
     /**

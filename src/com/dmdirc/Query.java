@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -95,8 +96,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
         this.host = newHost;
@@ -149,6 +150,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 doNotification("querySelfMessage",
                         CoreActionType.QUERY_SELF_MESSAGE,
                         server.getParser().getLocalClient(), part);
+                triggerAction("querySelfMessage", CoreActionType.QUERY_SELF_MESSAGE, server.
+                        getParser().getLocalClient(), part);
             }
         }
     }
@@ -194,6 +197,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
                     client, action);
+            triggerAction("querySelfAction", CoreActionType.QUERY_SELF_ACTION, client, action);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -367,6 +371,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void setCompositionState(final CompositionState state) {
         getConnection().getParser().setCompositionState(host, state);
+    }
+
+    private boolean triggerAction(final String messageType, final ActionType actionType,
+            final Object... args) {
+        final StringBuffer buffer = new StringBuffer(messageType);
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, args);
     }
 
 }

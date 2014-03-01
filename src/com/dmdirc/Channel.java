@@ -143,7 +143,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
                 getConfigManager(), CommandType.TYPE_CHANNEL, CommandType.TYPE_CHAT);
 
-        eventHandler = new ChannelEventHandler(this);
+        eventHandler = new ChannelEventHandler(this, eventBus);
 
         registerCallbacks();
 
