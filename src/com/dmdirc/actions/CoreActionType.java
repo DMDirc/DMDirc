@@ -71,8 +71,10 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     CLIENT_LINE_ADDED(ClientEvents.WINDOW_EVENT_WITH_MESSAGE, "Line added to a window"),
     /** Popup generated. */
+    @Deprecated
     CLIENT_POPUP_GENERATED(ClientEvents.POPUP_EVENT, "Popup menu generated"),
     /** Prefs dialog opened. */
+    @Deprecated
     CLIENT_PREFS_OPENED(ClientEvents.CLIENT_EVENT_WITH_PREFS, "Preferences dialog opened"),
     /** Context-specific prefs requested. */
     CLIENT_PREFS_REQUESTED(ClientEvents.CLIENT_EVENT_WITH_PREFS_CAT, "Preferences requested"),

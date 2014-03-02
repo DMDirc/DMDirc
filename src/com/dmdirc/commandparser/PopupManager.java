@@ -22,10 +22,11 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.ClientPopupGeneratedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+
+import com.google.common.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -36,15 +37,19 @@ public class PopupManager {
 
     /** The command controller to use for items. */
     private final CommandController commandController;
+    /** The bus to despatch events on. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PopupManager.
      *
      * @param commandController The controller to use for commands.
+     * @param eventBus          The bus to despatch events on.
      */
     @Inject
-    public PopupManager(final CommandController commandController) {
+    public PopupManager(final CommandController commandController, final EventBus eventBus) {
         this.commandController = commandController;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -59,9 +64,7 @@ public class PopupManager {
     public PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
         final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.CLIENT_POPUP_GENERATED, null, menuType, menu,
-                configManager);
+        eventBus.post(new ClientPopupGeneratedEvent(menuType, menu, configManager));
 
         return menu;
     }
@@ -119,7 +122,7 @@ public class PopupManager {
             if (command.length() > 0 && command.charAt(0) == '<') {
                 res = new PopupMenuItem(commandController,
                         name, getMenu(command.substring(1),
-                        type, configManager));
+                                type, configManager));
             } else {
                 res = new PopupMenuItem(commandController,
                         name, type.getArity(), command);
