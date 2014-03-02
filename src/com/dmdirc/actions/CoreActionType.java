@@ -225,10 +225,13 @@ public enum CoreActionType implements ActionType {
     /** Action deleted. */
     ACTION_DELETED(ActionEvents.ACTION_DELETED, "Action deleted"),
     /** Channel clicked. */
+    @Deprecated
     LINK_CHANNEL_CLICKED(LinkEvents.CHANNEL_CLICKED, "A channel link was clicked"),
     /** Channel clicked. */
+    @Deprecated
     LINK_NICKNAME_CLICKED(LinkEvents.NICKNAME_CLICKED, "A nickname link was clicked"),
     /** Link clicked. */
+    @Deprecated
     LINK_URL_CLICKED(LinkEvents.LINK_CLICKED, "A Link was clicked");
     /** The type of this action. */
     private final ActionMetaType type;
