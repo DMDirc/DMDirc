@@ -32,8 +32,7 @@ public enum CommandType {
     /** A server command, which only makes sense in the context of a
      * connection. */
     TYPE_SERVER,
-    /** A chat command, which needs a MessageTarget to make
-     * sense. */
+    /** A chat command, which needs a MessageTarget to make sense. */
     TYPE_CHAT,
     /** A channel command. */
     TYPE_CHANNEL,
@@ -57,7 +56,6 @@ public enum CommandType {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         switch (this) {

@@ -35,13 +35,11 @@ public class AllMessageSink implements MessageSink {
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("all");
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
             final WritableFrameContainer source,

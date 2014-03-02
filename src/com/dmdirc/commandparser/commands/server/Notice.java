@@ -60,7 +60,6 @@ public class Notice extends Command implements IntelligentCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -75,7 +74,6 @@ public class Notice extends Command implements IntelligentCommand {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

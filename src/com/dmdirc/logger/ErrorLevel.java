@@ -51,7 +51,6 @@ public enum ErrorLevel {
         this.icon = icon;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;

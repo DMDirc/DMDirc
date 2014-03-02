@@ -67,7 +67,6 @@ public class PerformWrapper extends ActionGroup {
         this.actionFactory = actionFactory;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void add(final Action action) {
         if (action.getTriggers().length != 1) {
@@ -92,7 +91,6 @@ public class PerformWrapper extends ActionGroup {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void deleteAction(final Action action) {
         synchronized (this) {
@@ -226,8 +224,7 @@ public class PerformWrapper extends ActionGroup {
     private Action createAction(final String server, final String network,
             final String profile) {
         final List<ActionCondition> conditions = new ArrayList<>();
-        final CoreActionComponent component =
-                server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
+        final CoreActionComponent component = server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
                 : CoreActionComponent.SERVER_NAME;
 
         conditions.add(new ActionCondition(0, component,
@@ -236,7 +233,7 @@ public class PerformWrapper extends ActionGroup {
         if (profile != null) {
             conditions.add(new ActionCondition(0,
                     new ActionComponentChain(Connection.class, PP_COMP_NAME, ActionManager.
-                    getActionManager()),
+                            getActionManager()),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 
@@ -283,13 +280,11 @@ public class PerformWrapper extends ActionGroup {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isDelible() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Performs allow you to automatically execute commands when"
@@ -374,7 +369,6 @@ public class PerformWrapper extends ActionGroup {
             return type;
         }
 
-        /** {@inheritDoc} */
         @Override
         public boolean equals(final Object obj) {
             if (obj == null || getClass() != obj.getClass()) {
@@ -395,7 +389,6 @@ public class PerformWrapper extends ActionGroup {
             return true;
         }
 
-        /** {@inheritDoc} */
         @Override
         public int hashCode() {
             int hash = 7;

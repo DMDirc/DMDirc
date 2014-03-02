@@ -38,8 +38,8 @@ public enum UpdateStatus {
     UPDATE_PENDING("Update available"),
     /** An update is currently being retrieved. */
     RETRIEVING("Retrieving..."),
-    /** An update has
-     * been retrieved but it is not currently being installed. */
+    /** An update has been retrieved but it is not currently
+     * being installed. */
     INSTALL_PENDING("Retrieved"),
     /** An update is currently being installed. */
     INSTALLING("Installing..."),

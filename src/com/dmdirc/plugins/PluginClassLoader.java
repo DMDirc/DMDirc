@@ -145,7 +145,6 @@ public class PluginClassLoader extends ClassLoader {
                     + pluginInfo.getMetaData().getName() + ") -> " + e.getMessage(), e);
         }
 
-
         // Don't duplicate a class
         if (isClassLoaded(name, false)) {
             return findLoadedClass(name);

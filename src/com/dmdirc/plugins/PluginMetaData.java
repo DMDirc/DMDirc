@@ -41,8 +41,8 @@ import java.util.Map;
 
 /**
  * Reads metadata for a plugin. Plugin metadata is defined in a DMDirc {@link ConfigFile} which is
- * typically found inside plugin jars as
- * <code>META-INF/plugin.config</code>. The following sections are read from the config file:
+ * typically found inside plugin jars as <code>META-INF/plugin.config</code>. The following sections
+ * are read from the config file:
  * <ul>
  * <li><code>metadata</code> - generic plugin information. See {@link #readMetaData(java.util.Map)}.
  * <li><code>version</code> - versioning information. See {@link #readVersion(java.util.Map)}.
@@ -212,8 +212,7 @@ public class PluginMetaData {
      * <li><code>unloadable</code> - boolean indicating if the plugin can be unloaded. Defaults to
      * true if not specified.
      * </ul>
-     * It is recommended that the
-     * <code>author</code> field should take the form of "
+     * It is recommended that the <code>author</code> field should take the form of "
      * <code>name &lt;email@address&gt;</code>", although this is not enforced.
      * <p>
      * The short name must be a single word (i.e., no spaces) that uniquely identifies the plugin.
@@ -312,8 +311,8 @@ public class PluginMetaData {
      * </ul>
      * The required-services section is a flat domain which lists services that the plugin requires.
      * No validation is performed on these values, but each service should consist of a name and a
-     * type. The magic string
-     * <code>any</code> may be specified in place of a name (e.g. 'any ui' instead of 'swing ui').
+     * type. The magic string <code>any</code> may be specified in place of a name (e.g. 'any ui'
+     * instead of 'swing ui').
      *
      * @param data             The specified requirements
      * @param requiredServices The specified required services

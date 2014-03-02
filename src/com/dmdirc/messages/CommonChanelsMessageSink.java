@@ -39,13 +39,11 @@ public class CommonChanelsMessageSink implements MessageSink {
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("comchans:(.*?)(?:\\s(.*))?");
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
             final WritableFrameContainer source,

@@ -63,7 +63,6 @@ public class OpenQuery extends Command implements IntelligentCommand,
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -97,7 +96,6 @@ public class OpenQuery extends Command implements IntelligentCommand,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
@@ -111,7 +109,6 @@ public class OpenQuery extends Command implements IntelligentCommand,
         return targets;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getLineCount(final WritableFrameContainer origin,
             final CommandArguments arguments) {

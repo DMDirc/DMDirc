@@ -34,7 +34,6 @@ import java.util.Comparator;
  */
 public class ConfigProviderTargetComparator implements Comparator<ConfigProvider> {
 
-    /** {@inheritDoc} */
     @Override
     public int compare(final ConfigProvider t, final ConfigProvider t1) {
         return t1.getTarget().compareTo(t.getTarget());

@@ -120,7 +120,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         return binder;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getOption(final String domain, final String option,
             final Validator<String> validator) {
@@ -145,7 +144,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOption(final String domain, final String option,
             final Validator<String> validator) {
@@ -167,7 +165,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, String> getOptions(final String domain) {
         if (VERSION_DOMAIN.equals(domain)) {
@@ -327,7 +324,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Set<String> getDomains() {
         final Set<String> res = new HashSet<>();
@@ -341,7 +337,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ConfigProvider> getSources() {
         return new ArrayList<>(sources);
@@ -351,7 +346,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * Migrates this manager from its current configuration to the appropriate one for the specified
      * new parameters, firing listeners where settings have changed.
      *
-     * <p>This is package private - only callers with access to a
+     * <p>
+     * This is package private - only callers with access to a
      * {@link com.dmdirc.interfaces.config.ConfigProviderMigrator} should be able to migrate
      * managers.
      *
@@ -365,8 +361,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
             final String network, final String server, final String channel) {
         log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
                 new Object[]{
-            this.protocol, this.ircd, this.network, this.server, this.channel,
-            protocol, ircd, network, server, channel,});
+                    this.protocol, this.ircd, this.network, this.server, this.channel,
+                    protocol, ircd, network, server, channel,});
 
         this.protocol = protocol;
         this.ircd = ircd;
@@ -416,21 +412,18 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         return STATS;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addChangeListener(final String domain,
             final ConfigChangeListener listener) {
         addListener(domain, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addChangeListener(final String domain, final String key,
             final ConfigChangeListener listener) {
         addListener(domain + "." + key, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeListener(final ConfigChangeListener listener) {
         synchronized (listeners) {
@@ -451,7 +444,6 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         final List<ConfigChangeListener> targets = new ArrayList<>();
@@ -469,13 +461,11 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configProviderAdded(final ConfigProvider configProvider) {
         checkIdentity(configProvider);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configProviderRemoved(final ConfigProvider configProvider) {
         removeIdentity(configProvider);

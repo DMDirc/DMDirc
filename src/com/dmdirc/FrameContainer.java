@@ -528,7 +528,6 @@ public abstract class FrameContainer {
      */
     private class IconChanger implements ConfigChangeListener {
 
-        /** {@inheritDoc} */
         @Override
         public void configChanged(final String domain, final String key) {
             iconUpdated();

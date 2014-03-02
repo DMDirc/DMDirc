@@ -60,7 +60,6 @@ public class QueryCommandParser extends ChatCommandParser {
         super(server, commandController);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         if (query == null) {

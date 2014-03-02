@@ -171,7 +171,7 @@ public class Main {
         globalWindowManager.init();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            /** {@inheritDoc} */
+
             @Override
             public void run() {
                 eventBus.post(new ClientClosedEvent());
@@ -257,7 +257,7 @@ public class Main {
             }
 
             new Timer().schedule(new TimerTask() {
-                /** {@inheritDoc} */
+
                 @Override
                 public void run() {
                     for (UIController controller : CONTROLLERS) {

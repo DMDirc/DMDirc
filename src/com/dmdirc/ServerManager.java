@@ -90,11 +90,10 @@ public class ServerManager implements ServerFactory {
         this.serverFactoryImpl = serverFactory;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Server createServer(final URI uri, final ConfigProvider profile) {
-        final ConfigProviderMigrator configProvider =
-                identityFactory.createMigratableConfig(uri.getScheme(), "", "", uri.getHost());
+        final ConfigProviderMigrator configProvider = identityFactory.createMigratableConfig(uri.
+                getScheme(), "", "", uri.getHost());
 
         final Server server = serverFactoryImpl.getServer(
                 configProvider,

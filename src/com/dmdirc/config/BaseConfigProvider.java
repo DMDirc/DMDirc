@@ -37,16 +37,16 @@ import java.util.List;
 /**
  * Defines methods to get options from a config provider in various forms.
  *
- * <p>This implementation supports the idea of optional/disabled settings. This is where values may
- * be prefixed with the strings
- * <code>true:</code> or
- * <code>false:</code>, where the former has no effect on the value of the setting, and the latter
- * indicates that the user wishes to disable the setting.
+ * <p>
+ * This implementation supports the idea of optional/disabled settings. This is where values may be
+ * prefixed with the strings <code>true:</code> or <code>false:</code>, where the former has no
+ * effect on the value of the setting, and the latter indicates that the user wishes to disable the
+ * setting.
  *
- * <p>Disabled settings allow for optional settings to have default values; a value can be added
- * with the
- * <code>false:</code> prefix which effectively disables the default value and makes the setting act
- * as though it does not have a value. Note that for this sort of behaviour to make sense, it
+ * <p>
+ * Disabled settings allow for optional settings to have default values; a value can be added with
+ * the <code>false:</code> prefix which effectively disables the default value and makes the setting
+ * act as though it does not have a value. Note that for this sort of behaviour to make sense, it
  * requires an implementation that takes values from multiple sources, such as a
  * {@link ConfigManager}.
  */
@@ -58,24 +58,20 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     private static final Validator<String> INT_VALIDATOR = new OptionalValidator(
             new NumericalValidator(-1, -1));
 
-    /** {@inheritDoc} */
     @Override
     public String getOption(final String domain, final String option) {
         return getOption(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /** {@inheritDoc} */
     @Override
     public abstract String getOption(final String domain,
             final String option, final Validator<String> validator);
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOptionString(final String domain, final String option) {
         return hasOptionString(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOptionString(final String domain, final String option,
             final Validator<String> validator) {
@@ -86,25 +82,21 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
                 && !value.startsWith("false:");
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOptionInt(final String domain, final String option) {
         return hasOptionString(domain, option, INT_VALIDATOR);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOptionChar(final String domain, final String option) {
         return hasOptionString(domain, option);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOptionBool(final String domain, final String option) {
         return hasOption(domain, option, PERMISSIVE_VALIDATOR);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getOptionString(final String domain, final String option,
             final boolean required, final Validator<String> validator,
@@ -128,26 +120,22 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getOptionString(final String domain, final String option,
             final String... fallbacks) {
         return getOptionString(domain, option, true, PERMISSIVE_VALIDATOR, fallbacks);
     }
 
-    /** {@inheritDoc} */
     @Override
     public char getOptionChar(final String domain, final String option) {
         return getOption(domain, option).charAt(0);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean getOptionBool(final String domain, final String option) {
         return Boolean.parseBoolean(getOption(domain, option));
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getOptionList(final String domain, final String option,
             final boolean trimEmpty) {
@@ -164,20 +152,17 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getOptionList(final String domain, final String option) {
         return getOptionList(domain, option, true);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Integer getOptionInt(final String domain, final String option,
             final String... fallbacks) {
         return getOptionInt(domain, option, true, fallbacks);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Integer getOptionInt(final String domain, final String option,
             final boolean required, final String... fallbacks) {

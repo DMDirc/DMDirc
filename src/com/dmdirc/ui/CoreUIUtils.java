@@ -55,8 +55,7 @@ public class CoreUIUtils {
             return;
         }
         // Get the configuration for the device
-        final GraphicsConfiguration myGraphicsConfig =
-                myDevice.getDefaultConfiguration();
+        final GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
         if (myGraphicsConfig == null) {
             return;
         }

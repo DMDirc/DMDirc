@@ -32,7 +32,8 @@ import dagger.Module;
 /**
  * Helper class for {@link BaseCommandPlugin} to facilitate retrieving a {@link CommandController}.
  *
- * <p>Because the plugins themselves aren't dependency injected, but require a command controller
+ * <p>
+ * Because the plugins themselves aren't dependency injected, but require a command controller
  * themselves to sensibly register commands, we use this helper and module to obtain a reference.
  */
 public class CommandHelper {

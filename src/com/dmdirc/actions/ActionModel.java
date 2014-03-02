@@ -440,7 +440,6 @@ public class ActionModel {
         this.modified = false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "[name=" + group + "/" + name + ", triggers="

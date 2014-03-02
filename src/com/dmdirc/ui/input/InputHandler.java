@@ -188,9 +188,9 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void setStyle() {
         style = (TabCompletionStyle) serviceManager
                 .getServiceProvider("tabcompletion", parentWindow
-                .getConfigManager().getOption("tabcompletion", "style"))
+                        .getConfigManager().getOption("tabcompletion", "style"))
                 .getExportedService("getCompletionStyle").execute(tabCompleter,
-                parentWindow);
+                        parentWindow);
     }
 
     /**
@@ -536,7 +536,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final int end, final boolean shiftPressed) {
         doNormalTabCompletion(text, start, end, shiftPressed,
                 TabCompleter.getIntelligentResults(parentWindow,
-                text.substring(0, start), text.substring(start, end)));
+                        text.substring(0, start), text.substring(start, end)));
     }
 
     /**
@@ -600,8 +600,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final String source = target.getText();
             final String before = source.substring(0, selectionStart);
             final String selected = target.getSelectedText();
-            final String after =
-                    source.substring(selectionEnd, source.length());
+            final String after = source.substring(selectionEnd, source.length());
             target.setText(before + insert + selected + insert + after);
             if (position == POSITION_START) {
                 target.setCaretPosition(selectionStart + 1);

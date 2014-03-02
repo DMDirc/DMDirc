@@ -70,8 +70,7 @@ public class ActionSubstitutor {
     /** Pattern to determine if a substitution is a word number type. */
     private static final Pattern NUMBER_PATTERN = Pattern.compile("([0-9]+)(-([0-9]+)?)?");
     /** Pattern to determine if a substitution is an argument+component type. */
-    private static final Pattern COMP_PATTERN =
-            Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
+    private static final Pattern COMP_PATTERN = Pattern.compile("([0-9]+)\\.([A-Z_]+(\\.[A-Z_]+)*)");
     /** Pattern to determine if a substitution is a server component type. */
     private static final Pattern SERVER_PATTERN = Pattern.compile("[A-Z_]+(\\.[A-Z_]+)*");
     /** The action controller to use to find components. */

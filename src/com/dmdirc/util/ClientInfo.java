@@ -189,7 +189,8 @@ public final class ClientInfo {
     /**
      * Utility method to get the config containing the client's version information.
      *
-     * <p>This will be cached where possible.
+     * <p>
+     * This will be cached where possible.
      *
      * @return The client's bundled version config file.
      */

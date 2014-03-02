@@ -45,7 +45,6 @@ public enum PerformType {
         friendlyName = name;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return friendlyName;

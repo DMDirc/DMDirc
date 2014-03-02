@@ -61,7 +61,6 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
         this.identityController = identityController;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -70,7 +69,6 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Identities reloaded.");
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

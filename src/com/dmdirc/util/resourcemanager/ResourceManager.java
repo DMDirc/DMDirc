@@ -157,7 +157,7 @@ public abstract class ResourceManager {
 
         final File newFile = new File(newDir,
                 resourceName.substring(resourceName.lastIndexOf('/') + 1,
-                resourceName.length()));
+                        resourceName.length()));
 
         if (!newFile.isDirectory()) {
             resourceToFile(resource, newFile);
@@ -178,8 +178,7 @@ public abstract class ResourceManager {
      */
     public final void extractResources(final String resourcesPrefix,
             final String directory, final boolean usePath) throws IOException {
-        final Map<String, byte[]> resourcesBytes =
-                getResourcesStartingWithAsBytes(resourcesPrefix);
+        final Map<String, byte[]> resourcesBytes = getResourcesStartingWithAsBytes(resourcesPrefix);
         for (Entry<String, byte[]> entry : resourcesBytes.entrySet()) {
             extractResource(entry.getKey(), directory, usePath);
         }

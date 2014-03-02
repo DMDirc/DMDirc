@@ -64,7 +64,6 @@ public class Mode extends Command implements IntelligentCommand,
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -79,7 +78,6 @@ public class Mode extends Command implements IntelligentCommand,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
@@ -90,7 +88,6 @@ public class Mode extends Command implements IntelligentCommand,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

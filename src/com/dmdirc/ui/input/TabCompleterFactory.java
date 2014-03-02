@@ -63,7 +63,8 @@ public class TabCompleterFactory {
     /**
      * Gets a new root tab completer with the specified command types added as completion targets.
      *
-     * <p>Root tab completers automatically get aliases (from the {@link AliasWrapper}) added as
+     * <p>
+     * Root tab completers automatically get aliases (from the {@link AliasWrapper}) added as
      * command completion targets.
      *
      * @param configProvider The configuration provider to use for completion settings.

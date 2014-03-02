@@ -57,7 +57,6 @@ public enum ErrorFixedStatus {
         this.value = value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;

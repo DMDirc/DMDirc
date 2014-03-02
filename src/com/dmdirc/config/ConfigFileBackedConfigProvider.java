@@ -199,7 +199,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void reload() throws IOException, InvalidConfigFileException {
         if (needSave) {
@@ -256,7 +255,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         if (hasOptionString(DOMAIN, "name")) {
@@ -285,7 +283,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isProfile() {
         return (hasOptionString(PROFILE_DOMAIN, "nicknames")
@@ -293,7 +290,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 && hasOptionString(PROFILE_DOMAIN, "realname");
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasOption(final String domain, final String option,
             final Validator<String> validator) {
@@ -302,7 +298,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 && !validator.validate(file.getKeyDomain(domain).get(option)).isFailure();
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized String getOption(final String domain,
             final String option, final Validator<String> validator) {
@@ -315,7 +310,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         return value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOption(final String domain, final String option,
             final String value) {
@@ -370,21 +364,18 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOption(final String domain, final String option,
             final int value) {
         setOption(domain, option, String.valueOf(value));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOption(final String domain, final String option,
             final boolean value) {
         setOption(domain, option, String.valueOf(value));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOption(final String domain, final String option,
             final List<String> value) {
@@ -396,7 +387,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         setOption(domain, option, temp.length() > 0 ? temp.substring(1) : temp.toString());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void unsetOption(final String domain, final String option) {
         synchronized (this) {
@@ -407,19 +397,16 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         fireSettingChange(domain, option);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Set<String> getDomains() {
         return new HashSet<>(file.getKeyDomains().keySet());
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized Map<String, String> getOptions(final String domain) {
         return new HashMap<>(file.getKeyDomain(domain));
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void save() {
         log.info("{}: saving. Needsave = {}", new Object[]{getName(), needSave});
@@ -442,7 +429,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 // to being removed as soon as you use a build from that
                 // channel.
                 // TODO: This behaviour should be managed by something else.
-
                 if (globalConfig == null) {
                     globalConfig = (ConfigManager) identityManager
                             .createAggregateConfig("", "", "", "");
@@ -492,7 +478,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void delete() {
         if (file != null) {
@@ -502,7 +487,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         identityManager.removeConfigProvider(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigTarget getTarget() {
         return myTarget;
@@ -521,13 +505,11 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         return file != null && file.getFile() != null && file.getFile().equals(target);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addListener(final ConfigChangeListener listener) {
         listeners.add(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeListener(final ConfigChangeListener listener) {
         listeners.remove(listener);
@@ -543,13 +525,11 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         return getName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return getName().hashCode() + getTarget().hashCode();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof ConfigFileBackedConfigProvider

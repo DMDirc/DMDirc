@@ -168,13 +168,13 @@ public class URLHandler {
             case "DMDIRC":
                 statusBarManager.setMessage(
                         new StatusMessage("Connecting to: " + uri.toString(),
-                        config));
+                                config));
                 serverManager.connectToAddress(uri);
                 break;
             case "BROWSER":
                 statusBarManager.setMessage(
                         new StatusMessage("Opening: " + uri.toString(),
-                        config));
+                                config));
                 execBrowser(uri);
                 break;
             case "MAIL":
@@ -183,7 +183,7 @@ public class URLHandler {
             default:
                 statusBarManager.setMessage(
                         new StatusMessage("Opening: " + uri.toString(),
-                        config));
+                                config));
                 execApp(substituteParams(uri, command));
                 break;
         }

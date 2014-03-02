@@ -83,13 +83,11 @@ public abstract class ConditionTreeFactory {
      */
     public static class ConjunctionFactory extends ConditionTreeFactory {
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTree getConditionTree(final int args) {
             return ConditionTree.createConjunction(args);
         }
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.CONJUNCTION;
@@ -102,13 +100,11 @@ public abstract class ConditionTreeFactory {
      */
     public static class DisjunctionFactory extends ConditionTreeFactory {
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTree getConditionTree(final int args) {
             return ConditionTree.createDisjunction(args);
         }
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.DISJUNCTION;
@@ -133,13 +129,11 @@ public abstract class ConditionTreeFactory {
             this.tree = tree;
         }
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTree getConditionTree(final int args) {
             return tree;
         }
 
-        /** {@inheritDoc} */
         @Override
         public ConditionTreeFactoryType getType() {
             return ConditionTreeFactoryType.CUSTOM;

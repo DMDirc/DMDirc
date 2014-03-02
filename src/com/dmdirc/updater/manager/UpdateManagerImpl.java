@@ -341,7 +341,7 @@ public class UpdateManagerImpl implements UpdateManager {
         public void installCompleted(final UpdateComponent component) {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, component.requiresRestart()
-                    ? UpdateStatus.RESTART_PENDING : UpdateStatus.UPDATED, 0);
+                            ? UpdateStatus.RESTART_PENDING : UpdateStatus.UPDATED, 0);
         }
 
         /** {@inheritDoc} */

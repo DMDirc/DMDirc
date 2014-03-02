@@ -31,11 +31,10 @@ public enum TrustResult {
     TRUSTED_CA(true),
     /** There are no issues and the cert is manually trusted by the user. */
     TRUSTED_MANUALLY(true),
-    /** The certificate chain was untrusted because
-     * it failed validation. */
+    /** The certificate chain was
+     * untrusted because it failed validation. */
     UNTRUSTED_EXCEPTION(false),
-    /** The certificate chain validated but isn't
-     * explicitly trusted. */
+    /** The certificate chain validated but isn't explicitly trusted. */
     UNTRUSTED_GENERAL(false);
     /** Whether or not this result means the cert chain is trusted. */
     private final boolean trusted;

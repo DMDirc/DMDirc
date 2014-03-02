@@ -57,7 +57,6 @@ public class RemoteServer implements RemoteInterface {
         this.serverManager = serverManager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void connect(final List<URI> addresses) throws RemoteException {
         for (URI address : addresses) {

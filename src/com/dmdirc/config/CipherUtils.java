@@ -166,8 +166,7 @@ public abstract class CipherUtils {
                     getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
             ecipher = Cipher.getInstance(key.getAlgorithm());
             dcipher = Cipher.getInstance(key.getAlgorithm());
-            final AlgorithmParameterSpec paramSpec =
-                    new PBEParameterSpec(SALT, ITERATIONS);
+            final AlgorithmParameterSpec paramSpec = new PBEParameterSpec(SALT, ITERATIONS);
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         } catch (InvalidAlgorithmParameterException | InvalidKeySpecException |

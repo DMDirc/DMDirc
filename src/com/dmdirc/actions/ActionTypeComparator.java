@@ -39,7 +39,6 @@ public final class ActionTypeComparator implements Comparator<ActionType>, Seria
      */
     private static final long serialVersionUID = 1;
 
-    /** {@inheritDoc} */
     @Override
     public int compare(final ActionType o1, final ActionType o2) {
         return o1.getName().compareTo(o2.getName());

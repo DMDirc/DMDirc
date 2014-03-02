@@ -74,7 +74,6 @@ public class Topic {
         return topic;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return topic;

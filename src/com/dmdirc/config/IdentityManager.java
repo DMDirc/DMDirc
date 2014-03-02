@@ -218,7 +218,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void loadUserIdentities() {
         final File dir = new File(identitiesDirectory);
@@ -336,7 +335,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 ? identity.getTarget().getData() : null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void loadVersionIdentity() {
         try {
@@ -370,25 +368,21 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getUserSettings() {
         return config;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getAddonSettings() {
         return addonConfig;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getVersionSettings() {
         return versionConfig;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void saveAll() {
         synchronized (identities) {
@@ -398,7 +392,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addConfigProvider(final ConfigProvider identity) {
         checkNotNull(identity);
@@ -423,7 +416,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeConfigProvider(final ConfigProvider identity) {
         checkNotNull(identity);
@@ -443,19 +435,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerIdentityListener(final ConfigProviderListener listener) {
         registerIdentityListener(null, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void unregisterIdentityListener(final ConfigProviderListener listener) {
         listeners.removeFromAll(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerIdentityListener(final String type, final ConfigProviderListener listener) {
         checkNotNull(listener);
@@ -465,7 +454,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ConfigProvider> getProvidersByType(final String type) {
         return Collections.unmodifiableList(identities.safeGet(type));
@@ -497,7 +485,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return sources;
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized AggregateConfigProvider getGlobalConfiguration() {
         if (globalconfig == null) {
@@ -507,7 +494,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return globalconfig;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createChannelConfig(final String network, final String channel) {
         if (network == null || network.isEmpty()) {
@@ -538,7 +524,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return createConfig(target);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createNetworkConfig(final String network) {
         if (network == null || network.isEmpty()) {
@@ -564,7 +549,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return createConfig(target);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createServerConfig(final String server) {
         if (server == null || server.isEmpty()) {
@@ -590,7 +574,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return createConfig(target);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createCustomConfig(final String name, final String type) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
@@ -607,7 +590,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createProfileConfig(final String name) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
@@ -628,7 +610,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider createConfig(final ConfigTarget target) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
@@ -705,7 +686,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         registerIdentityListener(configManager);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
@@ -714,7 +694,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         return new ConfigManagerMigrator(configManager);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {

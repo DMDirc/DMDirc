@@ -37,7 +37,7 @@ public enum QueryEvents implements ActionMetaType {
     QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class),
     /** Query event with argument and source. */
     QUERY_SOURCED_EVENT_WITH_ARG(new String[]{"query", "source", "message"}, Query.class,
-    ClientInfo.class, String.class);
+            ClientInfo.class, String.class);
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
@@ -54,25 +54,21 @@ public enum QueryEvents implements ActionMetaType {
         this.argTypes = argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Query Events";

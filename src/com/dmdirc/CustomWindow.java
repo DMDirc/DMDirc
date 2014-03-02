@@ -68,7 +68,6 @@ public class CustomWindow extends FrameContainer {
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() {
         return getParent() == null ? null : getParent().getConnection();

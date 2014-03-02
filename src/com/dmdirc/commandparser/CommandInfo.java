@@ -38,13 +38,11 @@ public interface CommandInfo {
      * Returns a string representing the help message for this command.
      * <p>
      * The help text should generally be one line, and must start with the name of the command. It
-     * should then summarise the arguments of that command, using
-     * <code>&lt;angled&gt;</code> brackets for required arguments, and
-     * <code>[square]</code> brackets for optional arguments. Where multiple possibilities exist,
-     * they are typically separated by a pipe (
-     * <code>|</code>), for example:
-     * <code>command [--arg1|--arg2]</code>. The usage summary should then be followed by a dash and
-     * a brief summary of the purpose of the command.
+     * should then summarise the arguments of that command, using <code>&lt;angled&gt;</code>
+     * brackets for required arguments, and <code>[square]</code> brackets for optional arguments.
+     * Where multiple possibilities exist, they are typically separated by a pipe ( <code>|</code>),
+     * for example: <code>command [--arg1|--arg2]</code>. The usage summary should then be followed
+     * by a dash and a brief summary of the purpose of the command.
      * <p>
      * A typical help message would look similar to:
      * <p>

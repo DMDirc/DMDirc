@@ -82,7 +82,6 @@ public class ChannelEventHandler extends EventHandler implements
         this.eventBus = eventBus;
     }
 
-    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     protected <T extends CallbackInterface> void addCallback(final CallbackManager cbm,
@@ -94,7 +93,6 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Connection getConnection() {
         return owner.getConnection();
@@ -111,7 +109,6 @@ public class ChannelEventHandler extends EventHandler implements
         return client.getClient().equals(owner.getConnection().getParser().getLocalClient());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelMessage(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client,
@@ -124,7 +121,6 @@ public class ChannelEventHandler extends EventHandler implements
         triggerAction(message, CoreActionType.CHANNEL_MESSAGE, client, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelGotNames(final Parser parser, final Date date, final ChannelInfo channel) {
         checkParser(parser);
@@ -133,7 +129,6 @@ public class ChannelEventHandler extends EventHandler implements
         ActionManager.getActionManager().triggerEvent(CoreActionType.CHANNEL_GOTNAMES, null, owner);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelTopic(final Parser parser, final Date date,
             final ChannelInfo channel, final boolean isJoinTopic) {
@@ -173,7 +168,6 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelJoin(final Parser parser, final Date date, final ChannelInfo channel,
             final ChannelClientInfo client) {
@@ -184,7 +178,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.addClient(client);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelPart(final Parser parser, final Date date, final ChannelInfo channel,
             final ChannelClientInfo client, final String reason) {
@@ -200,7 +193,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.removeClient(client);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelKick(final Parser parser, final Date date, final ChannelInfo channel,
             final ChannelClientInfo kickedClient, final ChannelClientInfo client,
@@ -214,7 +206,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.removeClient(kickedClient);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelQuit(final Parser parser, final Date date, final ChannelInfo channel,
             final ChannelClientInfo client, final String reason) {
@@ -227,7 +218,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.removeClient(client);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelAction(final Parser parser, final Date date, final ChannelInfo channel,
             final ChannelClientInfo client, final String message,
@@ -241,7 +231,6 @@ public class ChannelEventHandler extends EventHandler implements
                 CoreActionType.CHANNEL_ACTION, client, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelNickChanged(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
@@ -255,7 +244,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.renameClient(oldNick, client.getClient().getNickname());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelModeChanged(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client, final String host,
@@ -283,7 +271,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.refreshClients();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelUserModeChanged(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo targetClient,
@@ -303,7 +290,6 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelCTCP(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client,
@@ -317,7 +303,6 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onAwayStateOther(final Parser parser, final Date date,
             final ClientInfo client, final AwayState oldState, final AwayState state) {
@@ -341,7 +326,6 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelNotice(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client,
@@ -353,7 +337,6 @@ public class ChannelEventHandler extends EventHandler implements
         triggerAction("channelNotice", CoreActionType.CHANNEL_NOTICE, client, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelNonUserModeChanged(final Parser parser, final Date date,
             final ChannelInfo channel, final ChannelClientInfo client,
@@ -381,7 +364,6 @@ public class ChannelEventHandler extends EventHandler implements
         owner.refreshClients();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelModeNotice(final Parser parser, final Date date,
             final ChannelInfo channel, final char prefix,
@@ -395,7 +377,6 @@ public class ChannelEventHandler extends EventHandler implements
                 valueOf(prefix), message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelGotListModes(final Parser parser, final Date date,
             final ChannelInfo channel, final char mode) {

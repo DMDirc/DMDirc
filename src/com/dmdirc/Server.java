@@ -291,13 +291,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void connect() {
         connect(address, profile);
     }
 
-    /** {@inheritDoc} */
     @Override
     @Precondition({
         "The current parser is null or not connected",
@@ -384,7 +382,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 CoreActionType.SERVER_CONNECTING, null, this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void reconnect(final String reason) {
         synchronized (myStateLock) {
@@ -398,19 +395,16 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void reconnect() {
         reconnect(getConfigManager().getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void disconnect() {
         disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void disconnect(final String reason) {
         synchronized (myStateLock) {
@@ -503,37 +497,31 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasChannel(final String channel) {
         return channels.containsKey(converter.toLowerCase(channel));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Channel getChannel(final String channel) {
         return channels.get(converter.toLowerCase(channel));
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getChannels() {
         return new ArrayList<>(channels.keySet());
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasQuery(final String host) {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Query getQuery(final String host) {
         return getQuery(host, false);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Query getQuery(final String host, final boolean focus) {
         synchronized (myStateLock) {
@@ -560,7 +548,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return queries.get(lnick);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void updateQuery(final Query query, final String oldNick, final String newNick) {
         tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, oldNick);
@@ -570,20 +557,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         queries.remove(converter.toLowerCase(oldNick));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Collection<Query> getQueries() {
         return Collections.unmodifiableCollection(queries.values());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void delQuery(final Query query) {
         tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addRaw() {
         if (raw == null) {
@@ -601,20 +585,17 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void delRaw() {
         raw = null; //NOPMD
     }
 
-    /** {@inheritDoc} */
     @Override
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(TabCompletionType.CHANNEL, chan);
         channels.remove(converter.toLowerCase(chan));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
@@ -622,7 +603,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                         "hidechannels"));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Channel addChannel(final ChannelInfo chan, final boolean focus) {
         synchronized (myStateLock) {
@@ -782,7 +762,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean compareURI(final URI uri) {
         if (parser != null) {
@@ -796,7 +775,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String[] parseHostmask(final String hostmask) {
         return protocolDescription.parseHostmask(hostmask);
@@ -851,13 +829,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void join(final ChannelJoinRequest... requests) {
         join(true, requests);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void join(final boolean focus, final ChannelJoinRequest... requests) {
         synchronized (myStateLock) {
@@ -890,7 +866,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         synchronized (myStateLock) {
@@ -906,7 +881,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         try {
@@ -917,19 +891,16 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Parser getParser() {
         return parser;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getProfile() {
         return profile;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getChannelPrefixes() {
         try {
@@ -940,7 +911,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getAddress() {
         try {
@@ -951,7 +921,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getNetwork() {
         try {
@@ -969,7 +938,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isNetwork(final String target) {
         synchronized (myStateLock) {
@@ -1025,49 +993,41 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getIrcd() {
         return parser.getServerSoftwareType();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getProtocol() {
         return address.getScheme();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isAway() {
         return awayMessage != null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getAwayMessage() {
         return awayMessage;
     }
 
-    /** {@inheritDoc} */
     @Override
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ServerState getState() {
         return myState.getState();
     }
 
-    /** {@inheritDoc} */
     @Override
     public ServerStatus getStatus() {
         return myState;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void close() {
         super.close();
@@ -1096,7 +1056,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         manager.unregisterServer(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
@@ -1111,7 +1070,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         addLine(messageType, date, args);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendCTCPReply(final String source, final String type, final String args) {
         if (type.equalsIgnoreCase("VERSION")) {
@@ -1125,7 +1083,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isValidChannelName(final String channelName) {
         try {
@@ -1137,13 +1094,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() {
         return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         if (arg instanceof ClientInfo) {
@@ -1157,7 +1112,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void updateTitle() {
         synchronized (myStateLock) {
@@ -1182,7 +1136,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         if ("formatter".equals(domain)) {
@@ -1264,7 +1217,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             log.info("State lock contended: rerunning on a new thread");
 
             new Thread(new Runnable() {
-                /** {@inheritDoc} */
+
                 @Override
                 public void run() {
                     onSocketClosed();
@@ -1509,38 +1462,32 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public IgnoreList getIgnoreList() {
         return ignoreList;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void updateIgnoreList() {
         ignoreList.clear();
         ignoreList.addAll(getConfigManager().getOptionList("network", "ignorelist"));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void saveIgnoreList() {
         getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getServerIdentity() {
         return identityFactory.createServerConfig(parser.getServerName());
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConfigProvider getNetworkIdentity() {
         return identityFactory.createNetworkConfig(getNetwork());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addInviteListener(final InviteListener listener) {
         synchronized (listeners) {
@@ -1548,7 +1495,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeInviteListener(final InviteListener listener) {
         synchronized (listeners) {
@@ -1556,7 +1502,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addInvite(final Invite invite) {
         synchronized (invites) {
@@ -1576,7 +1521,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void acceptInvites(final Invite... invites) {
         final ChannelJoinRequest[] requests = new ChannelJoinRequest[invites.length];
@@ -1588,7 +1532,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         join(requests);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void acceptInvites() {
         synchronized (invites) {
@@ -1596,7 +1539,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeInvites(final String channel) {
         for (Invite invite : new ArrayList<>(invites)) {
@@ -1606,7 +1548,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeInvites() {
         for (Invite invite : new ArrayList<>(invites)) {
@@ -1614,7 +1555,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeInvite(final Invite invite) {
         synchronized (invites) {
@@ -1628,13 +1568,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Invite> getInvites() {
         return invites;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addAwayStateListener(final AwayStateListener listener) {
         synchronized (listeners) {
@@ -1642,7 +1580,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeAwayStateListener(final AwayStateListener listener) {
         synchronized (listeners) {
@@ -1650,7 +1587,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void updateAwayState(final String message) {
         if ((awayMessage != null && awayMessage.equals(message))
@@ -1661,7 +1597,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         awayMessage = message;
 
         new Thread(new Runnable() {
-            /** {@inheritDoc} */
+
             @Override
             public void run() {
                 synchronized (listeners) {
@@ -1679,7 +1615,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }, "Away state listener runner").start();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addCertificateProblemListener(final CertificateProblemListener listener) {
         listeners.add(CertificateProblemListener.class, listener);
@@ -1690,13 +1625,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeCertificateProblemListener(final CertificateProblemListener listener) {
         listeners.remove(CertificateProblemListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void certificateProblemEncountered(final X509Certificate[] chain,
             final Collection<CertificateException> problems,
@@ -1706,7 +1639,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void certificateProblemResolved(final CertificateManager manager) {
         for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {

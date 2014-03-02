@@ -46,7 +46,6 @@ public class ErrorReportingThread extends Thread {
         this.queue = queue;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         try {

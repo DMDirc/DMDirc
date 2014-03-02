@@ -80,7 +80,6 @@ public class AliasWrapper extends ActionGroup {
         return new ArrayList<>(aliases);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void add(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
@@ -107,7 +106,6 @@ public class AliasWrapper extends ActionGroup {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void remove(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
@@ -146,13 +144,11 @@ public class AliasWrapper extends ActionGroup {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isDelible() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Aliases allow you to create new commands that invoke one or "

@@ -67,7 +67,6 @@ public enum ErrorReportStatus {
         return terminal;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;

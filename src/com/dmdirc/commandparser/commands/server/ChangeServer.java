@@ -64,7 +64,6 @@ public class ChangeServer extends Command {
         this.uriParser = uriParser;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {

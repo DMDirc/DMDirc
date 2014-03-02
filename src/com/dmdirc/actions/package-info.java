@@ -29,9 +29,10 @@
  * {@link com.dmdirc.interfaces.actions.ActionType}, which has both a user-friendly name and an
  * internal name, as well as a meta-type which describes the arguments it takes.
  *
- * <p>For example, when a message on a channel is received, the client looks for actions that
- * respond to the {@link com.dmdirc.actions.CoreActionType#CHANNEL_MESSAGE} action type. The channel
- * message type has a meta-type of
+ * <p>
+ * For example, when a message on a channel is received, the client looks for actions that respond
+ * to the {@link com.dmdirc.actions.CoreActionType#CHANNEL_MESSAGE} action type. The channel message
+ * type has a meta-type of
  * {@link com.dmdirc.actions.metatypes.ChannelEvents#CHANNEL_SOURCED_EVENT_WITH_ARG} which says that
  * the event will come with three arguments: a channel, a user, and a message. It also defines the
  * types of those arguments ({@link com.dmdirc.Channel},
@@ -44,7 +45,8 @@
  * rules concerning the state of the client, or the event's arguments. There are two types of
  * condition: component-based and string-based.
  *
- * <p>Component-based conditions start off with one of the action's arguments, and then apply one or
+ * <p>
+ * Component-based conditions start off with one of the action's arguments, and then apply one or
  * more components to it to get some useful property. Components all implement
  * {@link com.dmdirc.interfaces.actions.ActionComponent} and essentially transform one object into
  * another, somehow. A component may take a {@link com.dmdirc.Channel} object and return that
@@ -52,22 +54,26 @@
  * (these components are implemented in {@link com.dmdirc.actions.CoreActionComponent#CHANNEL_NAME}
  * and {@link com.dmdirc.actions.CoreActionComponent#STRING_LENGTH}).
  *
- * <p>A component based action could be as simple as "the message's content", or as complicated as
- * "the channel's server's network name's length". These chains of components are handled by an
+ * <p>
+ * A component based action could be as simple as "the message's content", or as complicated as "the
+ * channel's server's network name's length". These chains of components are handled by an
  * {@link ActionComponentChain}.
  *
- * <p>String-based conditions simply start off with a plain string, which is subject to substitution
- * as described below.
+ * <p>
+ * String-based conditions simply start off with a plain string, which is subject to substitution as
+ * described below.
  *
- * <p>Action conditions also specify a comparison. These define various methods of comparing
- * objects, such as checking two strings are equal
+ * <p>
+ * Action conditions also specify a comparison. These define various methods of comparing objects,
+ * such as checking two strings are equal
  * ({@link com.dmdirc.actions.CoreActionComparison#STRING_EQUALS}) or that an integer is greater
  * than a pre-defined value ({@link com.dmdirc.actions.CoreActionComparison#INT_GREATER}). All
  * comparisons implement {@link com.dmdirc.interfaces.actions.ActionComparison}. The second argument
  * is always a string provided by the user.
  *
- * <p>Finally, if more than one condition is present the user can decide how they are matched. The
- * two most common and straight-forward options are a conjunction (where all the conditions must be
+ * <p>
+ * Finally, if more than one condition is present the user can decide how they are matched. The two
+ * most common and straight-forward options are a conjunction (where all the conditions must be
  * true) and a disjunction (where one of the conditions must be true). Users can also specify their
  * own, more complicated, rules such as "condition 1 AND (condition 2 OR condition 3)". These are
  * all expressed as a {@link ConditionTree}.
@@ -81,7 +87,8 @@
  * message the user had entered the command {@code /part}, then the client would part the channel
  * where the message was received.
  *
- * <p>Commands and condition arguments are subject to action substitutions. This allows users to
+ * <p>
+ * Commands and condition arguments are subject to action substitutions. This allows users to
  * include various dynamic properties in their responses or conditions. Substitutions are prefixed
  * with a {@code $} character, and come in several varieties:
  *

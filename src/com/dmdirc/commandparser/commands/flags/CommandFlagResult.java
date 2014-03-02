@@ -72,7 +72,7 @@ public class CommandFlagResult {
         return flag == null ? (offsets.get(flag) > arguments.getArguments().length
                 ? "" : arguments.getArgumentsAsString(offsets.get(flag)))
                 : arguments.getArgumentsAsString(offsets.get(flag),
-                offsets.get(flag) + flag.getDelayedArgs() + flag.getImmediateArgs() - 1);
+                        offsets.get(flag) + flag.getDelayedArgs() + flag.getImmediateArgs() - 1);
     }
 
     /**

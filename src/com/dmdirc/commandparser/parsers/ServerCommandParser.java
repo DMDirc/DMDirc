@@ -62,7 +62,6 @@ public class ServerCommandParser extends GlobalCommandParser {
      */
     private Server server;
 
-    /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         if (server == null && owner instanceof Server) {

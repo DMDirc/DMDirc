@@ -186,14 +186,12 @@ public class ActionCondition {
         this.starget = starget;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "[ arg=" + arg + ", component=" + component + ", comparison="
                 + comparison + ", target=" + target + ", starget=" + starget + " ]";
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof ActionCondition)) {
@@ -207,7 +205,6 @@ public class ActionCondition {
                 && starget.equals(o.getStarget());
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return arg + 100 * (arg == -1 ? starget.hashCode() : component.hashCode())

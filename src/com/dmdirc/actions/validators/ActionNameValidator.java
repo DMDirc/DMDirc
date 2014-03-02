@@ -55,7 +55,6 @@ public class ActionNameValidator implements Validator<String> {
         this.originalName = originalName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
         final List<Action> actions = group.getActions();

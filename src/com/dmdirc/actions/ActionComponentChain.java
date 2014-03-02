@@ -69,7 +69,6 @@ public class ActionComponentChain implements ActionComponent {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object get(final Object arg) {
         Object res = arg;
@@ -85,7 +84,6 @@ public class ActionComponentChain implements ActionComponent {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> appliesTo() {
@@ -94,7 +92,6 @@ public class ActionComponentChain implements ActionComponent {
         return components.get(0).appliesTo();
     }
 
-    /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public Class<?> getType() {
@@ -103,7 +100,6 @@ public class ActionComponentChain implements ActionComponent {
         return components.get(components.size() - 1).getType();
     }
 
-    /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
     @Override
     public String getName() {
@@ -119,7 +115,6 @@ public class ActionComponentChain implements ActionComponent {
         return name.substring(3);
     }
 
-    /** {@inheritDoc} */
     @Override
     @Precondition("This component chain has one or more components")
     public String toString() {
@@ -135,7 +130,6 @@ public class ActionComponentChain implements ActionComponent {
         return name.substring(1);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String name() {
         return toString();

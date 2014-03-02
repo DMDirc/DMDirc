@@ -86,13 +86,11 @@ public class CommandManager implements CommandController {
         configManager.getBinder().bind(this, CommandManager.class);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerCommand(final Command command, final CommandInfo info) {
         registerCommand(info, command, true);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void unregisterCommand(final CommandInfo info) {
         registerCommand(info, commands.get(info), false);
@@ -198,7 +196,6 @@ public class CommandManager implements CommandController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void loadCommands(final CommandParser parser,
             final CommandType... supertypes) {
@@ -213,13 +210,11 @@ public class CommandManager implements CommandController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map.Entry<CommandInfo, Command> getCommand(final String name) {
         return getCommand(null, name);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
             final String name) {
@@ -228,14 +223,12 @@ public class CommandManager implements CommandController {
         return res.isEmpty() ? null : res.entrySet().iterator().next();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isChannelCommand(final String command) {
         return getCommand(CommandType.TYPE_CHANNEL, command) != null
                 || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<>();
@@ -247,7 +240,6 @@ public class CommandManager implements CommandController {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);

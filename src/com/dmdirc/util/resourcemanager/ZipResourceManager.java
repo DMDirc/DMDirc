@@ -112,7 +112,6 @@ public final class ZipResourceManager extends ResourceManager {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
         BufferedInputStream inputStream = null;
 
-
         if (zipEntry == null) {
             return new byte[0];
         }
@@ -200,8 +199,7 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
-        final Map<String, InputStream> resources =
-                new HashMap<>();
+        final Map<String, InputStream> resources = new HashMap<>();
 
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {

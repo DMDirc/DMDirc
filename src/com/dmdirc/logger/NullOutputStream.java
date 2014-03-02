@@ -30,7 +30,6 @@ import java.io.OutputStream;
  */
 public class NullOutputStream extends OutputStream {
 
-    /** {@inheritDoc} */
     @Override
     public void write(final int b) throws IOException {
         //Ignore data.

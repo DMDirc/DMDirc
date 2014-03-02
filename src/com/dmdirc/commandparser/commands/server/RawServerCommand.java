@@ -53,7 +53,6 @@ public class RawServerCommand extends Command implements CommandInfo {
         myName = command;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -61,19 +60,16 @@ public class RawServerCommand extends Command implements CommandInfo {
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return myName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public CommandType getType() {
         return CommandType.TYPE_SERVER;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getHelp() {
         return myName + " [arguments] - sends a " + myName + " command to the server";

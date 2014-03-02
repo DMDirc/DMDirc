@@ -470,7 +470,6 @@ public class ErrorManager implements ConfigChangeListener {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         updateSettings();

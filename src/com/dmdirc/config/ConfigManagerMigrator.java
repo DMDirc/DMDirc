@@ -37,7 +37,8 @@ public class ConfigManagerMigrator implements ConfigProviderMigrator {
      * Creates a new instance of {@link ConfigManagerMigrator} that will act on the specified
      * manager.
      *
-     * <p>Package private - should only be created in specific circumstances by a
+     * <p>
+     * Package private - should only be created in specific circumstances by a
      * {@link IdentityManager}, and only with newly created {@link ConfigManager}s.
      *
      * @param configManager The config manager to migrate.
@@ -46,21 +47,18 @@ public class ConfigManagerMigrator implements ConfigProviderMigrator {
         this.configManager = configManager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void migrate(final String protocol, final String ircd, final String network,
             final String server) {
         migrate(protocol, ircd, network, server, "<Unknown>");
     }
 
-    /** {@inheritDoc} */
     @Override
     public void migrate(final String protocol, final String ircd, final String network,
             final String server, final String channel) {
         configManager.migrate(protocol, ircd, network, server, channel);
     }
 
-    /** {@inheritDoc} */
     @Override
     public AggregateConfigProvider getConfigProvider() {
         return configManager;

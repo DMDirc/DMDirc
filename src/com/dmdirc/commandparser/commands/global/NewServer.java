@@ -87,7 +87,6 @@ public class NewServer extends Command implements IntelligentCommand {
         this.uriParser = uriParser;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -111,7 +110,6 @@ public class NewServer extends Command implements IntelligentCommand {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

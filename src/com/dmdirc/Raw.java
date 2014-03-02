@@ -70,8 +70,8 @@ public class Raw extends WritableFrameContainer
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
-                WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
 
@@ -90,7 +90,6 @@ public class Raw extends WritableFrameContainer
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void close() {
         super.close();
@@ -104,38 +103,32 @@ public class Raw extends WritableFrameContainer
         server.delRaw();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onDataIn(final Parser parser, final Date date, final String data) {
         addLine("rawIn", data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onDataOut(final Parser parser, final Date date, final String data,
             final boolean fromParser) {
         addLine("rawOut", data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() {
         return server;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         server.sendLine(line);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         return server.getMaxLineLength();
     }
 
-    /** {@inheritDoc} */
     @Override
     public TabCompleter getTabCompleter() {
         return server.getTabCompleter();

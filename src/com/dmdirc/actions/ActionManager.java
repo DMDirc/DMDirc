@@ -186,7 +186,6 @@ public class ActionManager implements ActionController {
         eventBus.register(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void saveAllActions() {
         for (ActionGroup group : groups.values()) {
@@ -207,20 +206,17 @@ public class ActionManager implements ActionController {
         saveAllActions();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerSetting(final String name, final String value) {
         LOG.debug("Registering new action setting: {} = {}", name, value);
         identityManager.getAddonSettings().setOption("actions", name, value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addGroup(final ActionGroup group) {
         groups.put(group.getName(), group);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerTypes(final ActionType[] newTypes) {
         for (ActionType type : newTypes) {
@@ -234,7 +230,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
@@ -245,7 +240,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
@@ -256,19 +250,16 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, ActionGroup> getGroupsMap() {
         return Collections.unmodifiableMap(groups);
     }
 
-    /** {@inheritDoc} */
     @Override
     public MapList<String, ActionType> getGroupedTypes() {
         return new MapList<>(typeGroups);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void loadUserActions() {
         actions.clear();
@@ -336,7 +327,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addAction(final Action action) {
         checkNotNull(action);
@@ -354,7 +344,6 @@ public class ActionManager implements ActionController {
         getOrCreateGroup(action.getGroup()).add(action);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ActionGroup getOrCreateGroup(final String name) {
         if (!groups.containsKey(name)) {
@@ -364,7 +353,6 @@ public class ActionManager implements ActionController {
         return groups.get(name);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeAction(final Action action) {
         checkNotNull(action);
@@ -373,14 +361,12 @@ public class ActionManager implements ActionController {
         getOrCreateGroup(action.getGroup()).remove(action);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void reregisterAction(final Action action) {
         removeAction(action);
         addAction(action);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean triggerEvent(final ActionType type,
             final StringBuffer format, final Object... arguments) {
@@ -535,7 +521,6 @@ public class ActionManager implements ActionController {
         return arguments;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ActionGroup createGroup(final String group) {
         checkNotNull(group);
@@ -553,7 +538,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void deleteGroup(final String group) {
         checkNotNull(group);
@@ -585,7 +569,6 @@ public class ActionManager implements ActionController {
         groups.remove(group);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void changeGroupName(final String oldName, final String newName) {
         checkNotNull(oldName);
@@ -607,7 +590,6 @@ public class ActionManager implements ActionController {
         deleteGroup(oldName);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ActionType getType(final String type) {
         if (type == null || type.isEmpty()) {
@@ -623,7 +605,6 @@ public class ActionManager implements ActionController {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ActionType> findCompatibleTypes(final ActionType type) {
         checkNotNull(type);
@@ -638,7 +619,6 @@ public class ActionManager implements ActionController {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
         checkNotNull(target);
@@ -653,7 +633,6 @@ public class ActionManager implements ActionController {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
         checkNotNull(target);
@@ -668,7 +647,6 @@ public class ActionManager implements ActionController {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ActionComponent getComponent(final String type) {
         checkNotNull(type);
@@ -683,7 +661,6 @@ public class ActionManager implements ActionController {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ActionComparison getComparison(final String type) {
         checkNotNull(type);
@@ -715,7 +692,6 @@ public class ActionManager implements ActionController {
         new File(path).delete();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void registerListener(final ActionListener listener, final ActionType... types) {
         for (ActionType type : types) {
@@ -723,7 +699,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void unregisterListener(final ActionListener listener, final ActionType... types) {
         for (ActionType type : types) {
@@ -731,7 +706,6 @@ public class ActionManager implements ActionController {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void unregisterListener(final ActionListener listener) {
         listeners.removeFromAll(listener);

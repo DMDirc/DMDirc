@@ -103,7 +103,6 @@ public class ServerEventHandler extends EventHandler implements
         this.owner = owner;
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     protected <T extends CallbackInterface> void addCallback(
@@ -111,20 +110,17 @@ public class ServerEventHandler extends EventHandler implements
         cbm.addCallback(type, (T) this);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Connection getConnection() {
         return owner;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onChannelSelfJoin(final Parser parser, final Date date, final ChannelInfo channel) {
         checkParser(parser);
         owner.addChannel(channel);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateMessage(final Parser parser, final Date date, final String message,
             final String host) {
@@ -135,7 +131,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateAction(final Parser parser, final Date date, final String message,
             final String host) {
@@ -146,7 +141,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onErrorInfo(final Parser parser, final Date date, final ParserError errorInfo) {
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
@@ -175,7 +169,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateCTCP(final Parser parser, final Date date, final String type,
             final String message, final String host) {
@@ -189,7 +182,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateCTCPReply(final Parser parser, final Date date, final String type,
             final String message, final String host) {
@@ -201,7 +193,6 @@ public class ServerEventHandler extends EventHandler implements
                 host), type, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onSocketClosed(final Parser parser, final Date date) {
         if (owner.getParser() == parser) {
@@ -209,7 +200,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateNotice(final Parser parser, final Date date,
             final String message, final String host) {
@@ -221,7 +211,6 @@ public class ServerEventHandler extends EventHandler implements
                 host), message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onServerNotice(final Parser parser, final Date date,
             final String message, final String host) {
@@ -233,7 +222,6 @@ public class ServerEventHandler extends EventHandler implements
                 getClient(host), message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onMOTDStart(final Parser parser, final Date date, final String data) {
         checkParser(parser);
@@ -242,7 +230,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("motdStart", CoreActionType.SERVER_MOTDSTART, data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onMOTDLine(final Parser parser, final Date date, final String data) {
         checkParser(parser);
@@ -251,7 +238,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("motdLine", CoreActionType.SERVER_MOTDLINE, data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onMOTDEnd(final Parser parser, final Date date,
             final boolean noMOTD, final String data) {
@@ -261,7 +247,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("motdEnd", CoreActionType.SERVER_MOTDEND, data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onNumeric(final Parser parser, final Date date, final int numeric,
             final String[] token) {
@@ -269,14 +254,12 @@ public class ServerEventHandler extends EventHandler implements
         owner.onNumeric(numeric, token);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPingFailed(final Parser parser, final Date date) {
         checkParser(parser);
         owner.onPingFailed();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPingSent(final Parser parser, final Date date) {
         checkParser(parser);
@@ -285,7 +268,6 @@ public class ServerEventHandler extends EventHandler implements
                 CoreActionType.SERVER_PINGSENT, null, owner);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPingSuccess(final Parser parser, final Date date) {
         checkParser(parser);
@@ -295,7 +277,6 @@ public class ServerEventHandler extends EventHandler implements
                 Long.valueOf(owner.getParser().getServerLatency()));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onAwayState(final Parser parser, final Date date, final AwayState oldState,
             final AwayState currentState, final String reason) {
@@ -317,28 +298,24 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onConnectError(final Parser parser, final Date date, final ParserError errorInfo) {
         checkParser(parser);
         owner.onConnectError(errorInfo);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onNickInUse(final Parser parser, final Date date, final String nickname) {
         owner.onNickInUse(nickname);
         checkParser(parser);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onServerReady(final Parser parser, final Date date) {
         checkParser(parser);
         owner.onPost005();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onNoticeAuth(final Parser parser, final Date date, final String data) {
         checkParser(parser);
@@ -347,7 +324,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUnknownNotice(final Parser parser, final Date date, final String message,
             final String target, final String host) {
@@ -358,7 +334,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE, host, target, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUnknownMessage(final Parser parser, final Date date, final String message,
             final String target, final String host) {
@@ -378,7 +353,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUnknownAction(final Parser parser, final Date date, final String message,
             final String target, final String host) {
@@ -397,7 +371,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUserModeChanged(final Parser parser, final Date date,
             final ClientInfo client, final String host, final String modes) {
@@ -409,7 +382,6 @@ public class ServerEventHandler extends EventHandler implements
                 getClient(host), modes);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUserModeDiscovered(final Parser parser, final Date date,
             final ClientInfo client, final String modes) {
@@ -422,7 +394,6 @@ public class ServerEventHandler extends EventHandler implements
                 CoreActionType.SERVER_USERMODES, client, modes);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onInvite(final Parser parser, final Date date, final String userHost,
             final String channel) {
@@ -436,7 +407,6 @@ public class ServerEventHandler extends EventHandler implements
                 getClient(userHost), channel);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onWallop(final Parser parser, final Date date, final String message,
             final String host) {
@@ -449,7 +419,6 @@ public class ServerEventHandler extends EventHandler implements
 
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onWalluser(final Parser parser, final Date date, final String message,
             final String host) {
@@ -461,7 +430,6 @@ public class ServerEventHandler extends EventHandler implements
                 message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onWallDesync(final Parser parser, final Date date, final String message,
             final String host) {
@@ -473,7 +441,6 @@ public class ServerEventHandler extends EventHandler implements
                 host), message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onNickChanged(final Parser parser, final Date date, final ClientInfo client,
             final String oldNick) {
@@ -488,7 +455,6 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onServerError(final Parser parser, final Date date, final String message) {
         checkParser(parser);
@@ -497,7 +463,6 @@ public class ServerEventHandler extends EventHandler implements
         triggerAction("serverError", CoreActionType.SERVER_ERROR, message);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void checkParser(final Parser parser) {
         super.checkParser(parser);
@@ -518,7 +483,8 @@ public class ServerEventHandler extends EventHandler implements
         final List<Object> actionArgs = new ArrayList<>();
         actionArgs.add(owner);
         actionArgs.addAll(Arrays.asList(args));
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.toArray());
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.
+                toArray());
     }
 
 }

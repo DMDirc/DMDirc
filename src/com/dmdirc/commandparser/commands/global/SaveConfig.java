@@ -61,7 +61,6 @@ public final class SaveConfig extends Command implements IntelligentCommand {
         this.identityController = identityController;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -70,7 +69,6 @@ public final class SaveConfig extends Command implements IntelligentCommand {
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

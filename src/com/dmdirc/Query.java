@@ -114,13 +114,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
         updateTitle();
     }
 
-    /** {@inheritDoc} */
     @Override
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         sendLine(line, getNickname());
@@ -157,7 +155,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         if (arg instanceof ClientInfo) {
@@ -171,7 +168,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         return server.getState() == ServerState.CONNECTED ? server.getParser()
@@ -204,7 +200,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateMessage(final Parser parser, final Date date,
             final String message, final String host) {
@@ -219,7 +214,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onPrivateAction(final Parser parser, final Date date,
             final String message, final String host) {
@@ -259,7 +253,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
@@ -297,7 +290,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onQuit(final Parser parser, final Date date,
             final ClientInfo client, final String reason) {
@@ -313,7 +305,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onCompositionStateCanged(final Parser parser, final Date date,
             final CompositionState state, final String host) {
@@ -324,13 +315,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() {
         return server;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void close() {
         super.close();
@@ -368,7 +357,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         return nickname;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setCompositionState(final CompositionState state) {
         getConnection().getParser().setCompositionState(host, state);
@@ -380,7 +368,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final List<Object> actionArgs = new ArrayList<>();
         actionArgs.add(this);
         actionArgs.addAll(Arrays.asList(args));
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.toArray());
+        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.
+                toArray());
     }
 
 }

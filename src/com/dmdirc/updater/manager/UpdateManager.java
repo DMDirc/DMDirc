@@ -114,8 +114,8 @@ public interface UpdateManager {
      *
      * @param component The component to retrieve a check result for
      *
-     * @return The component's most recent associated {@link UpdateCheckResult}, * * *
-     *         or <code>null</code> if the component has not been checked or has since been updated.
+     * @return The component's most recent associated {@link UpdateCheckResult}, * * * or
+     *         <code>null</code> if the component has not been checked or has since been updated.
      */
     UpdateCheckResult getCheckResult(UpdateComponent component);
 

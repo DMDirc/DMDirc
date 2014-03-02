@@ -235,10 +235,10 @@ public class Styliser implements ConfigChangeListener {
 
     /**
      * Retrieves the styled String contained within the unstyled offsets specified. That is, the
-     * <code>from</code> and
-     * <code>to</code> arguments correspond to indexes in an unstyled version of the
-     * <code>styled</code> string. The unstyled indices are translated to offsets within the styled
-     * String, and the return value includes all text and control codes between those indices.
+     * <code>from</code> and <code>to</code> arguments correspond to indexes in an unstyled version
+     * of the <code>styled</code> string. The unstyled indices are translated to offsets within the
+     * styled String, and the return value includes all text and control codes between those
+     * indices.
      * <p>
      * The index translation is left-biased; that is, the indices are translated to be as far left
      * as they possibly can be. This means that the start of the string will include any control
@@ -351,7 +351,7 @@ public class Styliser implements ConfigChangeListener {
                 + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
                 + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
-                + CODE_TOOLTIP, "$1");
+                        + CODE_TOOLTIP, "$1");
     }
 
     /**
@@ -367,7 +367,7 @@ public class Styliser implements ConfigChangeListener {
         return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
                 + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]", "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
-                + CODE_TOOLTIP, "$1");
+                        + CODE_TOOLTIP, "$1");
     }
 
     /**

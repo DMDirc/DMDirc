@@ -234,8 +234,8 @@ public class TabCompleter {
         } else {
             return getIntelligentResults(context.getWindow(),
                     new CommandArguments(context.getWindow().getCommandParser().getCommandManager(),
-                    context.getPreviousArgs().subList(offset,
-                    context.getPreviousArgs().size())), context.getPartial());
+                            context.getPreviousArgs().subList(offset,
+                                    context.getPreviousArgs().size())), context.getPartial());
         }
     }
 
@@ -266,8 +266,8 @@ public class TabCompleter {
             if (command.getValue() instanceof IntelligentCommand) {
                 targets = ((IntelligentCommand) command.getValue())
                         .getSuggestions(args.getArguments().length,
-                        new IntelligentCommandContext(window,
-                        Arrays.asList(args.getArguments()), partial));
+                                new IntelligentCommandContext(window,
+                                        Arrays.asList(args.getArguments()), partial));
             }
 
             if (command.getKey().getType().equals(CommandType.TYPE_CHANNEL)) {

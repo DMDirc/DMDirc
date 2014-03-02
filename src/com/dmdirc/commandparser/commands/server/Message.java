@@ -64,7 +64,6 @@ public class Message extends Command implements IntelligentCommand,
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -98,7 +97,6 @@ public class Message extends Command implements IntelligentCommand,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
@@ -114,7 +112,6 @@ public class Message extends Command implements IntelligentCommand,
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getLineCount(final WritableFrameContainer origin,
             final CommandArguments arguments) {

@@ -74,7 +74,6 @@ public class Ifplugin extends Command implements IntelligentCommand {
         this.globalCommandParserProvider = globalCommandParserProvider;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -106,7 +105,6 @@ public class Ifplugin extends Command implements IntelligentCommand {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

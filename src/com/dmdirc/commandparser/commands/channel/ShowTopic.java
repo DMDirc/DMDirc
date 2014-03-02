@@ -60,7 +60,6 @@ public class ShowTopic extends Command implements ExternalCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -83,7 +82,6 @@ public class ShowTopic extends Command implements ExternalCommand {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {

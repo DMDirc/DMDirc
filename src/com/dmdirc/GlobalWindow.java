@@ -68,8 +68,8 @@ public class GlobalWindow extends WritableFrameContainer {
             final URLBuilder urlBuilder) {
         super("icon", "Global", "(Global)", config, parser, messageSinkManager, urlBuilder,
                 Arrays.asList(
-                WindowComponent.TEXTAREA.getIdentifier(),
-                WindowComponent.INPUTFIELD.getIdentifier()));
+                        WindowComponent.TEXTAREA.getIdentifier(),
+                        WindowComponent.INPUTFIELD.getIdentifier()));
 
         tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
     }
@@ -78,19 +78,16 @@ public class GlobalWindow extends WritableFrameContainer {
         return tabCompleter;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         addLine("commandError", "You may only enter commands in the global window.");
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         return -1;
@@ -142,7 +139,6 @@ public class GlobalWindow extends WritableFrameContainer {
             this.urlBuilder = urlBuilder;
         }
 
-        /** {@inheritDoc} */
         @Override
         public void configChanged(final String domain, final String key) {
             updateWindowState();

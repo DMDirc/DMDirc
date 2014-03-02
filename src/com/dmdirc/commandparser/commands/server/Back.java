@@ -58,7 +58,6 @@ public class Back extends Command implements IntelligentCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -66,7 +65,6 @@ public class Back extends Command implements IntelligentCommand {
         server.getParser().getLocalClient().setBack();
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

@@ -57,13 +57,13 @@ public class ThemeManager {
         this.themeDirectory = themesDirectory;
         identityController.getGlobalConfiguration()
                 .addChangeListener("themes", "enabled",
-                new ConfigChangeListener() {
-            /** {@inheritDoc} */
-            @Override
-            public void configChanged(final String domain, final String key) {
-                refreshAndLoadThemes();
-            }
-        });
+                        new ConfigChangeListener() {
+                            /** {@inheritDoc} */
+                            @Override
+                            public void configChanged(final String domain, final String key) {
+                                refreshAndLoadThemes();
+                            }
+                        });
     }
 
     /**

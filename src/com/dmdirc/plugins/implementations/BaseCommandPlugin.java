@@ -104,7 +104,8 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     /**
      * Registers a command from this plugin.
      *
-     * <p>This method will create a new instance of the specified command class using the
+     * <p>
+     * This method will create a new instance of the specified command class using the
      * dependency-injection framework. It must only be called after
      * {@link #setObjectGraph(dagger.ObjectGraph)}, and any command must be injectable using that
      * object graph.

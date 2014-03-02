@@ -46,25 +46,21 @@ public class SystemLifecycleController implements LifecycleController {
         this.serverManager = serverManager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void quit() {
         quit(0);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void quit(final int exitCode) {
         quit(configProvider.getOption("general", "closemessage"), exitCode);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void quit(final String reason) {
         quit(reason, 0);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void quit(final String reason, final int exitCode) {
         serverManager.disconnectAll(reason);

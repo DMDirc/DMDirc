@@ -59,7 +59,6 @@ public class Exit extends Command {
         this.controller = lifecycleController;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {

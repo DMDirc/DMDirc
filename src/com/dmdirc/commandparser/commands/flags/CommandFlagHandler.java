@@ -62,8 +62,7 @@ public class CommandFlagHandler {
     /**
      * Processes the specified arguments and parses out command flags. If the specified arguments
      * aren't valid given the flags belonging to this command flag handler, an error message is sent
-     * to the origin and
-     * <code>null</code> is returned from this method.
+     * to the origin and <code>null</code> is returned from this method.
      *
      * @param origin    The container where the command was entered
      * @param arguments The arguments passed to the command

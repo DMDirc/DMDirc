@@ -76,7 +76,6 @@ public class JoinChannelCommand extends Command implements
         actionController.registerListener(this, CoreActionType.CLIENT_LINE_ADDED);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -102,7 +101,6 @@ public class JoinChannelCommand extends Command implements
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
@@ -118,7 +116,6 @@ public class JoinChannelCommand extends Command implements
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

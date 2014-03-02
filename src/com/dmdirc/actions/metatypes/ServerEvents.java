@@ -35,24 +35,24 @@ public enum ServerEvents implements ActionMetaType {
     SERVER_PING(new String[]{"server", "ping"}, Connection.class, Long.class),
     /** Server numeric event type. */
     SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Connection.class, Integer.class,
-    String[].class),
+            String[].class),
     /** Server event with argument. */
     SERVER_EVENT_WITH_ARG(new String[]{"server", "message"}, Connection.class, String.class),
     /** Server nick change. */
     SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Connection.class,
-    String.class, String.class),
+            String.class, String.class),
     /** Server event, with source and argument. */
     SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Connection.class,
-    ClientInfo.class, String.class),
+            ClientInfo.class, String.class),
     /** Server CTCP event. */
     SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Connection.class,
-    ClientInfo.class, String.class, String.class),
+            ClientInfo.class, String.class, String.class),
     /** Server event with argument. */
     SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Connection.class,
-    String.class, String.class, String.class),
+            String.class, String.class, String.class),
     /** Server invite event. */
     SERVER_INVITE(new String[]{"server", "source", "channel"}, Connection.class, ClientInfo.class,
-    String.class),
+            String.class),
     /** Server event type. */
     SERVER_EVENT(new String[]{"server"}, Connection.class);
     /** The names of the arguments for this meta type. */
@@ -71,25 +71,21 @@ public enum ServerEvents implements ActionMetaType {
         this.argTypes = argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Server/Private Events";

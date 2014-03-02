@@ -50,25 +50,21 @@ public enum ActionEvents implements ActionMetaType {
         this.argTypes = argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getArity() {
         return argNames.length;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String[] getArgNames() {
         return argNames;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Action Events";

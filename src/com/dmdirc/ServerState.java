@@ -32,42 +32,41 @@ public enum ServerState {
 
     /** Indicates the client is in the process of connecting. */
     CONNECTING(
-    "CONNECTED", // Connection attempt succeeded
-    "TRANSIENTLY_DISCONNECTED", // Connection attempt failed
-    "DISCONNECTING", // User ordered a disconnection
-    "CLOSING" // DMDirc is closing
+            "CONNECTED", // Connection attempt succeeded
+            "TRANSIENTLY_DISCONNECTED", // Connection attempt failed
+            "DISCONNECTING", // User ordered a disconnection
+            "CLOSING" // DMDirc is closing
     ),
     /** Indicates the client has connected to the server. */
     CONNECTED(
-    "DISCONNECTING", // User ordered a disconnection
-    "TRANSIENTLY_DISCONNECTED", // Server caused a disconnection
-    "CLOSING" // DMDirc is closing
+            "DISCONNECTING", // User ordered a disconnection
+            "TRANSIENTLY_DISCONNECTED", // Server caused a disconnection
+            "CLOSING" // DMDirc is closing
     ),
     /** Indicates that we've been temporarily disconnected. */
     TRANSIENTLY_DISCONNECTED(
-    "CONNECTING", // User forced a connect attempt
-    "RECONNECT_WAIT", // Waiting for auto-reconnect
-    "CLOSING" // DMDirc is closing
+            "CONNECTING", // User forced a connect attempt
+            "RECONNECT_WAIT", // Waiting for auto-reconnect
+            "CLOSING" // DMDirc is closing
     ),
     /** Indicates that the user has told us to disconnect. */
     DISCONNECTED(
-    "CONNECTING", // User forced a connect attempt
-    "CLOSING" // DMDirc is closing
+            "CONNECTING", // User forced a connect attempt
+            "CLOSING" // DMDirc is closing
     ),
     /** In the process of disconnecting. */
     DISCONNECTING(
-    "DISCONNECTED", // Socket closed
-    "CLOSING" // DMDirc is closing
+            "DISCONNECTED", // Socket closed
+            "CLOSING" // DMDirc is closing
     ),
     /** Indicates we're waiting for the auto-reconnect timer to fire. */
     RECONNECT_WAIT(
-    "CONNECTING", // User forced a connect attempt
-    "TRANSIENTLY_DISCONNECTED", // Reconnect timer expired
-    "DISCONNECTED", // User forced a disconnect
-    "CLOSING" // DMDirc is closing
+            "CONNECTING", // User forced a connect attempt
+            "TRANSIENTLY_DISCONNECTED", // Reconnect timer expired
+            "DISCONNECTED", // User forced a disconnect
+            "CLOSING" // DMDirc is closing
     ),
-    /** Indicates that the server frame and its
-     * children are closing. */
+    /** Indicates that the server frame and its children are closing. */
     CLOSING;
     /** The allowed transitions from this state. */
     private final List<String> transitions;

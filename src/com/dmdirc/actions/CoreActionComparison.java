@@ -34,220 +34,201 @@ public enum CoreActionComparison implements ActionComparison {
 
     /** Compares a string to another using a regular expression. */
     STRING_REGEX {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            try {
-                return ((String) arg1).matches((String) arg2);
-            } catch (PatternSyntaxException pse) {
-                return false;
-            }
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    try {
+                        return ((String) arg1).matches((String) arg2);
+                    } catch (PatternSyntaxException pse) {
+                        return false;
+                    }
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "matches regex";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "matches regex";
+                }
+            },
     /** Compares if two strings content are
      * the same, case insensitive. */
     STRING_EQUALS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((String) arg1).equalsIgnoreCase((String) arg2);
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return ((String) arg1).equalsIgnoreCase((String) arg2);
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "equals";
-        }
-    },
-    /** Compares if two strings content aren't the same, case insensitive. */
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "equals";
+                }
+            },
+    /** Compares if two strings content aren't the same, case
+     * insensitive. */
     STRING_NEQUALS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return !STRING_EQUALS.test(arg1, arg2);
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return !STRING_EQUALS.test(arg1, arg2);
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "does not equal";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "does not equal";
+                }
+            },
     /** Checks if the string starts with another strings. */
     STRING_STARTSWITH {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((String) arg1).startsWith((String) arg2);
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return ((String) arg1).startsWith((String) arg2);
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "starts with";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "starts with";
+                }
+            },
     /** Checks if the string containts another string. */
     STRING_CONTAINS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((String) arg1).indexOf((String) arg2) != -1;
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return ((String) arg1).indexOf((String) arg2) != -1;
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "contains";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "contains";
+                }
+            },
     /** Checks if the string doesn't containt another string. */
     STRING_NCONTAINS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((String) arg1).indexOf((String) arg2) == -1;
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return String.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return ((String) arg1).indexOf((String) arg2) == -1;
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "doesn't contain";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return String.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "doesn't contain";
+                }
+            },
     /** Checks if two boolean values are equal. */
     BOOL_IS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            return ((Boolean) arg1).equals(Boolean.valueOf((String) arg2));
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return Boolean.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    return ((Boolean) arg1).equals(Boolean.valueOf((String) arg2));
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "is";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return Boolean.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "is";
+                }
+            },
     /** Checks if the int is equals to another int. */
     INT_EQUALS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            try {
-                return 0 == ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return Integer.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    try {
+                        return 0 == ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+                    } catch (NumberFormatException ex) {
+                        return false;
+                    }
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "equals";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return Integer.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "equals";
+                }
+            },
     /** Checks if the int is larger than another int. */
     INT_GREATER {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            try {
-                return 0 < ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return Integer.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    try {
+                        return 0 < ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+                    } catch (NumberFormatException ex) {
+                        return false;
+                    }
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "is greater than";
-        }
-    },
+                @Override
+                public Class<?> appliesTo() {
+                    return Integer.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "is greater than";
+                }
+            },
     /** Checks if the int is smaller than another int. */
     INT_LESS {
-        /** {@inheritDoc} */
-        @Override
-        public boolean test(final Object arg1, final Object arg2) {
-            try {
-                return 0 > ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
 
-        /** {@inheritDoc} */
-        @Override
-        public Class<?> appliesTo() {
-            return Integer.class;
-        }
+                @Override
+                public boolean test(final Object arg1, final Object arg2) {
+                    try {
+                        return 0 > ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+                    } catch (NumberFormatException ex) {
+                        return false;
+                    }
+                }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getName() {
-            return "is less than";
-        }
-    };
+                @Override
+                public Class<?> appliesTo() {
+                    return Integer.class;
+                }
+
+                @Override
+                public String getName() {
+                    return "is less than";
+                }
+            };
 
 }

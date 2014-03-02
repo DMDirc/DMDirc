@@ -79,7 +79,7 @@ public class CorePluginExtractor {
 
                 final File newFile = new File(newDir,
                         resourceName.substring(resourceName.lastIndexOf('/') + 1,
-                        resourceName.length()));
+                                resourceName.length()));
 
                 if (!newFile.isDirectory()) {
                     ResourceManager.getResourceManager().

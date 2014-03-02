@@ -59,7 +59,6 @@ public class Me extends Command implements ValidatingCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -71,7 +70,6 @@ public class Me extends Command implements ValidatingCommand {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ValidationResponse validateArguments(
             final WritableFrameContainer origin,

@@ -72,7 +72,6 @@ public class AliasCommand extends Command implements IntelligentCommand {
         this.aliasWrapper = aliasWrapper;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -137,7 +136,6 @@ public class AliasCommand extends Command implements IntelligentCommand {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

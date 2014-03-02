@@ -259,7 +259,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         try {
             final PluginMetaData metadata = new PluginMetaData(this,
                     new URL("jar:file:" + getDirectory() + filename
-                    + "!/META-INF/plugin.config"),
+                            + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
             final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider,
@@ -497,7 +497,7 @@ public class PluginManager implements ActionListener, ServiceManager {
             try {
                 final PluginMetaData targetMetaData = new PluginMetaData(this,
                         new URL("jar:file:" + getDirectory() + target
-                        + "!/META-INF/plugin.config"),
+                                + "!/META-INF/plugin.config"),
                         new URL("file:" + getDirectory() + target));
                 targetMetaData.load();
 

@@ -56,7 +56,6 @@ public final class ReloadActions extends Command implements IntelligentCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -64,7 +63,6 @@ public final class ReloadActions extends Command implements IntelligentCommand {
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

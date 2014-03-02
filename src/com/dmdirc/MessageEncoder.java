@@ -51,7 +51,6 @@ public class MessageEncoder implements Encoder {
         this.parser = parser;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String encode(final String source, final String target,
             final byte[] message, final int offset, final int length) {

@@ -50,8 +50,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
         CHANNEL,
         /** Settings for a protocol (parser). */
         PROTOCOL,
-        /** A custom identity, which
-         * doesn't contain settings to be loaded. */
+        /** A custom identity, which doesn't contain settings to be loaded. */
         CUSTOM,
 
     }
@@ -208,13 +207,11 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
         return data;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return type.ordinal() + data.hashCode();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof ConfigTarget

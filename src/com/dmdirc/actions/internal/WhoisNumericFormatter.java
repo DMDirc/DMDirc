@@ -63,7 +63,6 @@ public class WhoisNumericFormatter implements ActionListener {
                 CoreActionType.SERVER_DISCONNECTED);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {

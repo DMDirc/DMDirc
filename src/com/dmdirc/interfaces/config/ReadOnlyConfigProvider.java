@@ -140,8 +140,8 @@ public interface ReadOnlyConfigProvider {
      * <p>
      * If no fallback settings are supplied (or if fallback settings are supplied and execution
      * reaches the last fallback setting) AND if the 'required' parameter is true, then all disabled
-     * values (i.e., those starting with
-     * <code>false:</code>) will be ignored. To check if a valid non-disabled value exists, call
+     * values (i.e., those starting with <code>false:</code>) will be ignored. To check if a valid
+     * non-disabled value exists, call
      * {@link #hasOptionString(java.lang.String, java.lang.String, com.dmdirc.util.validators.Validator)}.
      *
      * @param domain    The domain of the option

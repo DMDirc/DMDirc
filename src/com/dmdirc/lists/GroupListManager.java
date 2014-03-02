@@ -73,20 +73,17 @@ public class GroupListManager implements GroupListStartListener,
         connection.getParser().requestGroupList(searchTerm);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onGroupListStart(final Parser parser, final Date date) {
         listenerList.getCallable(GroupListObserver.class).onGroupListStarted();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onGroupListEntry(final Parser parser, final Date date,
             final String name, final int users, final String topic) {
         groups.add(new GroupListEntry(name, users, topic));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onGroupListEnd(final Parser parser, final Date date) {
         parser.getCallbackManager().delAllCallback(this);

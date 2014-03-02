@@ -57,13 +57,11 @@ public class CustomWindowMessageSink implements MessageSink {
         this.urlBuilder = urlBuilder;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
             final WritableFrameContainer source,

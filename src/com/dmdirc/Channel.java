@@ -186,7 +186,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 server.getNetwork(), server.getAddress(), channelInfo.getName());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         if (server.getState() != ServerState.CONNECTED
@@ -214,7 +213,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         return server.getState() == ServerState.CONNECTED
@@ -222,7 +220,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 : -1;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void sendAction(final String action) {
         if (server.getState() != ServerState.CONNECTED
@@ -331,7 +328,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
                 .clientListUpdated(Collections.<ChannelClientInfo>emptyList());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void close() {
         super.close();
@@ -447,7 +443,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         switch (key) {
@@ -504,7 +499,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         if (arg instanceof ClientInfo) {
@@ -539,7 +533,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void modifyNotificationArgs(final List<Object> actionArgs,
             final List<Object> messageArgs) {
@@ -559,7 +552,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         updateTitle();
 
         new Thread(new Runnable() {
-            /** {@inheritDoc} */
+
             @Override
             public void run() {
                 listenerList.getCallable(TopicChangeListener.class)
@@ -651,7 +644,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         listenerList.remove(TopicChangeListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     @Nonnull
     public Connection getConnection() {

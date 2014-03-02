@@ -38,13 +38,11 @@ public class ChannelMessageSink implements MessageSink {
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("channel:(.*?)(?:\\s(.*))?");
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
             final WritableFrameContainer source,

@@ -30,10 +30,9 @@ import com.dmdirc.updater.UpdateComponent;
 public interface UpdateStatusListener {
 
     /**
-     * Called when the status of an update is changed. Note that the
-     * <code>progress</code> parameter may not be used for all statuses, and will generally only be
-     * implemented for those that involve lengthy I/O operations such as
-     * {@link UpdateStatus#RETRIEVING}.
+     * Called when the status of an update is changed. Note that the <code>progress</code> parameter
+     * may not be used for all statuses, and will generally only be implemented for those that
+     * involve lengthy I/O operations such as {@link UpdateStatus#RETRIEVING}.
      *
      * @param component The component whose status has changed
      * @param status    The current (new) status of the component

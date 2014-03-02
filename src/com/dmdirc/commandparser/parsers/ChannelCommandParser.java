@@ -59,7 +59,6 @@ public class ChannelCommandParser extends ChatCommandParser {
         super(server, commandController);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         if (channel == null) {
@@ -69,7 +68,6 @@ public class ChannelCommandParser extends ChatCommandParser {
         super.setOwner(owner);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void loadCommands() {
         commandManager.loadCommands(this, CommandType.TYPE_GLOBAL,

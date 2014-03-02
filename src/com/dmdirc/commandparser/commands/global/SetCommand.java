@@ -99,7 +99,6 @@ public class SetCommand extends Command implements IntelligentCommand {
         handler = new CommandFlagHandler(serverFlag, channelFlag, unsetFlag, appendFlag);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -300,7 +299,6 @@ public class SetCommand extends Command implements IntelligentCommand {
         sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been unset.");
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

@@ -93,7 +93,6 @@ public class PreferencesDialogModel {
         this.actionManager = actionManager;
         this.pluginManager = pluginManager;
 
-
         addDefaultCategories();
 
         actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);

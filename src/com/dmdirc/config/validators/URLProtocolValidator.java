@@ -43,7 +43,6 @@ public class URLProtocolValidator implements Validator<String> {
         this.globalConfig = globalConfig;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
         if (object == null || object.isEmpty()) {

@@ -102,7 +102,7 @@ public class ConfigBinder {
     private ConfigChangeListener getListener(final Object instance,
             final AccessibleObject element, final ConfigBinding binding) {
         return new ConfigChangeListener() {
-            /** {@inheritDoc} */
+
             @Override
             public void configChanged(final String domain, final String key) {
                 updateBoundMember(instance, element, binding);

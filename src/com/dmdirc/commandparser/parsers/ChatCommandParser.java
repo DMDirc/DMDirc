@@ -60,7 +60,6 @@ public class ChatCommandParser extends ServerCommandParser {
         super.setOwner(server);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         if (this.owner == null) {
@@ -91,7 +90,6 @@ public class ChatCommandParser extends ServerCommandParser {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void handleNonCommand(final FrameContainer origin,
             final String line) {

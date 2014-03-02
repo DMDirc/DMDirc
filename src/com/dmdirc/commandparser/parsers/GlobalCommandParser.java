@@ -63,7 +63,6 @@ public class GlobalCommandParser extends CommandParser {
         super(configManager, commandManager);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setOwner(final FrameContainer owner) {
         // Don't care

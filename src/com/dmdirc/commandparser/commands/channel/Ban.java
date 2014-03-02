@@ -59,7 +59,6 @@ public class Ban extends Command implements IntelligentCommand {
         super(controller);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
@@ -81,7 +80,6 @@ public class Ban extends Command implements IntelligentCommand {
         channel.getChannelInfo().flushModes();
     }
 
-    /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {

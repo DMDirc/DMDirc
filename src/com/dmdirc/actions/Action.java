@@ -332,7 +332,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             if (trigger == null) {
                 Logger.appError(ErrorLevel.LOW, "ActionType was null",
                         new IllegalArgumentException("Triggers: "
-                        + Arrays.toString(triggers)));
+                                + Arrays.toString(triggers)));
                 continue;
             }
 
@@ -419,7 +419,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         String starget = null;
 
         // ------ Read the argument
-
         try {
             arg = Integer.parseInt(data.get("argument"));
         } catch (NumberFormatException ex) {
@@ -434,7 +433,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         // ------ Read the component or the source
-
         if (arg == -1) {
             starget = data.get("starget");
 
@@ -450,7 +448,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         // ------ Read the comparison
-
         comparison = actionController.getComparison(data.get("comparison"));
         if (comparison == null) {
             error(ActionErrorType.CONDITIONS, "Invalid comparison specified: "
@@ -466,7 +463,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         }
 
         // ------ Read the target
-
         target = data.get("target");
 
         if (target == null) {
@@ -536,7 +532,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 + group + "/" + name + ": " + message);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setName(final String newName) {
         super.setName(newName);
@@ -547,7 +542,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         save();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setGroup(final String newGroup) {
         super.setGroup(newGroup);
@@ -570,7 +564,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         new File(location).delete();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         final String parent = super.toString();
@@ -579,7 +572,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
                 + ",location=" + location + "]";
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         checkDisabled();
@@ -592,8 +584,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     protected void checkDisabled() {
         final String key = (group + "/" + name).replace(' ', '.');
-        final boolean disabled =
-                identityController.getGlobalConfiguration().hasOptionBool("disable_action", key)
+        final boolean disabled = identityController.getGlobalConfiguration().hasOptionBool(
+                "disable_action", key)
                 && identityController.getGlobalConfiguration().getOptionBool("disable_action", key);
 
         if (disabled && status == ActionStatus.ACTIVE) {
