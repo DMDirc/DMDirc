@@ -37,13 +37,4 @@ public interface Window {
      */
     FrameContainer getContainer();
 
-    /**
-     * Retrieves the UI controller this window is associated with.
-     *
-     * @return This window's UI controller
-     *
-     * @since 0.6.4
-     */
-    UIController getController();
-
 }
