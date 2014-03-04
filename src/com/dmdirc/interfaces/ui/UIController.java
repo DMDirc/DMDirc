@@ -22,8 +22,6 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.Channel;
-import com.dmdirc.Server;
 
 import java.net.URI;
 
@@ -44,20 +42,6 @@ public interface UIController {
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
-
-    /**
-     * Shows a channel settigns dialog for specified channel.
-     *
-     * @param channel Channel to show the dialog for
-     */
-    void showChannelSettingsDialog(Channel channel);
-
-    /**
-     * Shows a server settigns dialog for specified server.
-     *
-     * @param server Server to show the dialog for
-     */
-    void showServerSettingsDialog(Server server);
 
     /**
      * Shows the unknown URL protocol handling dialog for a URL.
