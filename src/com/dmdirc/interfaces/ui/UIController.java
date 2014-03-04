@@ -32,13 +32,6 @@ import java.net.URI;
 public interface UIController {
 
     /**
-     * Requests that the specified window be bought to focus in this UI.
-     *
-     * @param window The window to be focused
-     */
-    void requestWindowFocus(Window window);
-
-    /**
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
