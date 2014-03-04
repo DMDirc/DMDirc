@@ -20,12 +20,33 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.ui;
+package com.dmdirc.events;
+
+import java.net.URI;
 
 /**
- * Defines the methods that should be implemented by UI controllers. Controllers handle the various
- * aspects of a UI implementation.
+ * Fired when the URL handler encounters an unknown URL protocol.  The handled boolean should be
+ * checked, if it is true the event should be disregarded.
  */
-public interface UIController {
+public class UnknownURLEvent extends DMDircEvent {
+
+    private boolean handled;
+    private final URI uri;
+
+    public UnknownURLEvent(final URI uri) {
+        this.uri = uri;
+    }
+
+    public void setHandled(final boolean handled) {
+        this.handled = handled;
+    }
+
+    public boolean isHandled() {
+        return handled;
+    }
+
+    public URI getURI() {
+        return uri;
+    }
 
 }

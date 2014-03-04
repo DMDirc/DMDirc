@@ -29,6 +29,8 @@ import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.ClientOpenedEvent;
+import com.dmdirc.events.FeedbackNagEvent;
+import com.dmdirc.events.FirstRunEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
@@ -252,17 +254,13 @@ public class Main {
     private void doFirstRun() {
         if (identityManager.getGlobalConfiguration().getOptionBool("general", "firstRun")) {
             identityManager.getUserSettings().setOption("general", "firstRun", "false");
-            for (UIController controller : CONTROLLERS) {
-                controller.showFirstRunWizard();
-            }
+            eventBus.post(new FirstRunEvent());
 
             new Timer().schedule(new TimerTask() {
 
                 @Override
                 public void run() {
-                    for (UIController controller : CONTROLLERS) {
-                        controller.showFeedbackNag();
-                    }
+                    eventBus.post(new FeedbackNagEvent());
                 }
             }, FEEDBACK_DELAY);
         }

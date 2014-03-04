@@ -20,12 +20,22 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.ui;
+package com.dmdirc.events;
 
 /**
- * Defines the methods that should be implemented by UI controllers. Controllers handle the various
- * aspects of a UI implementation.
+ * Fired when the client is first run.  Handled should be checked and set appropriately, only core
+ * first run events should occur if unhandled.
  */
-public interface UIController {
+public class FirstRunEvent extends DMDircEvent {
+
+    private boolean handled;
+
+    public boolean isHandled() {
+        return handled;
+    }
+
+    public void setHandled(final boolean handled) {
+        this.handled = handled;
+    }
 
 }

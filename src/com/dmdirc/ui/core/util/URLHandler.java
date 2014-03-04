@@ -23,13 +23,15 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.ServerManager;
+import com.dmdirc.events.UnknownURLEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.CommandUtils;
+
+import com.google.common.eventbus.EventBus;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -38,13 +40,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 /** Handles URLs. */
 public class URLHandler {
 
     /** The time a browser was last launched. */
     private static Date lastLaunch;
-    /** The UI Controller that owns this handler. */
-    private final UIController controller;
+    /** Event bus to fire unknown protocol errors on. */
+    private final EventBus eventBus;
     /** Config manager. */
     private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
@@ -57,17 +61,18 @@ public class URLHandler {
     /**
      * Instantiates a new URL Handler.
      *
-     * @param controller       The UI controller to show dialogs etc on
+     * @param eventBus         Event bus to fire unknown protocol errors on.
      * @param globalConfig     Config to retrieve settings from
      * @param serverManager    Server manager to connect to servers
      * @param statusBarManager Status bar manager used to show messages
      */
+    @Inject
     public URLHandler(
-            final UIController controller,
+            final EventBus eventBus,
             final AggregateConfigProvider globalConfig,
             final ServerManager serverManager,
             final StatusBarManager statusBarManager) {
-        this.controller = controller;
+        this.eventBus = eventBus;
         this.config = globalConfig;
         this.serverManager = serverManager;
         this.statusBarManager = statusBarManager;
@@ -159,7 +164,7 @@ public class URLHandler {
         }
 
         if (!config.hasOptionString("protocol", uri.getScheme().toLowerCase())) {
-            controller.showURLDialog(uri);
+            eventBus.post(new UnknownURLEvent(uri));
             return;
         }
 

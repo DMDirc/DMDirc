@@ -20,12 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.ui;
+package com.dmdirc.events;
 
 /**
- * Defines the methods that should be implemented by UI controllers. Controllers handle the various
- * aspects of a UI implementation.
+ * Fired when its time to nag for feedback.
  */
-public interface UIController {
+public class FeedbackNagEvent extends DMDircEvent {
 
 }
