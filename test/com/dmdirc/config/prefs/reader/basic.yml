@@ -1,0 +1,13 @@
+---
+categories:
+    - name: Foo
+      description: bar
+      parent: GUI
+      icon: something
+      items:
+
+      - type: boolean
+        domain: domain
+        key: key
+        title: Some title
+        help: Some help text
