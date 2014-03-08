@@ -100,6 +100,11 @@ public class ClientModule {
     public @interface UserConfig {
     }
 
+    /** Qualifier that identities the addon defaults config provider. */
+    @Qualifier
+    public @interface AddonConfig {
+    }
+
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
 
@@ -154,6 +159,12 @@ public class ClientModule {
     @UserConfig
     public ConfigProvider getUserConfig(final IdentityController controller) {
         return controller.getUserSettings();
+    }
+
+    @Provides
+    @AddonConfig
+    public ConfigProvider getAddonConfig(final IdentityController controller) {
+        return controller.getAddonSettings();
     }
 
     @Provides
