@@ -162,8 +162,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 }
             }
 
-            if (!file.exists() || file.listFiles() == null || file.listFiles().length == 0) {
-                file.mkdirs();
+            if (!file.exists() && !file.mkdirs()) {
+                Logger.userError(ErrorLevel.FATAL, "Unable to create required directory '"
+                        + file.getAbsolutePath() + "'. Please check file permissions or specify "
+                        + "a different configuration directory.");
+            }
+
+            if (file.listFiles() == null || file.listFiles().length == 0) {
                 extractIdentities(target);
             }
 
