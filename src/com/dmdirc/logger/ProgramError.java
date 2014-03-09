@@ -69,7 +69,7 @@ public final class ProgramError implements Serializable {
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
     public static final String SENTRY_DSN
-            = "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2";
+            = "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2?raven.async=false";
     /** Error ID. */
     private final long id;
     /** Error icon. */
