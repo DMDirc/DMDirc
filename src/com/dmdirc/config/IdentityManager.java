@@ -166,6 +166,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 Logger.userError(ErrorLevel.FATAL, "Unable to create required directory '"
                         + file.getAbsolutePath() + "'. Please check file permissions or specify "
                         + "a different configuration directory.");
+                return;
             }
 
             if (file.listFiles() == null || file.listFiles().length == 0) {
