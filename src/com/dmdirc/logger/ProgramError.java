@@ -23,7 +23,6 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.util.ClientInfo;
-import com.dmdirc.util.io.Downloader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,15 +30,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -311,11 +304,8 @@ public final class ProgramError implements Serializable {
      * Sends this error report to the DMDirc developers.
      */
     public void send() {
-        sendToSentry();
-        sendToLegacy();
-    }
+        setReportStatus(ErrorReportStatus.SENDING);
 
-    private void sendToSentry() {
         final Raven raven = RavenFactory.ravenInstance(new Dsn(SENTRY_DSN));
 
         // record a simple message
@@ -345,78 +335,9 @@ public final class ProgramError implements Serializable {
         }
 
         raven.sendEvent(eventBuilder.build());
-    }
 
-    private void sendToLegacy() {
-        final Map<String, String> postData = new HashMap<>();
-        List<String> response = new ArrayList<>();
-        int tries = 0;
-
-        String traceString = Arrays.toString(getTrace());
-        if (traceString.isEmpty() || traceString.equals("[]")) {
-            traceString = "[No Trace]";
-        }
-        postData.put("message", getMessage());
-        postData.put("trace", traceString);
-        postData.put("version", ClientInfo.getVersion());
-
-        setReportStatus(ErrorReportStatus.SENDING);
-
-        do {
-            if (tries != 0) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                    //Ignore
-                }
-            }
-            try {
-                response = Downloader.getPage("http://www.dmdirc.com/error.php", postData);
-            } catch (MalformedURLException ex) {
-                //Ignore, wont happen
-            } catch (IOException ex) {
-                //Ignore being handled
-            }
-
-            tries++;
-        } while ((response.isEmpty() || !response.get(response.size() - 1).
-                equalsIgnoreCase("Error report submitted. Thank you."))
-                && tries <= 5);
-
-        checkResponses(response);
-    }
-
-    /**
-     * Checks the responses and sets status accordingly.
-     *
-     * @param response Response to check
-     */
-    private void checkResponses(final List<String> response) {
-        if (!response.isEmpty() && response.get(response.size() - 1).
-                equalsIgnoreCase("Error report submitted. Thank you.")) {
-            setReportStatus(ErrorReportStatus.FINISHED);
-        } else {
-            setReportStatus(ErrorReportStatus.ERROR);
-            return;
-        }
-
-        if (response.size() == 1) {
-            setFixedStatus(ErrorFixedStatus.NEW);
-            return;
-        }
-
-        final String responseToCheck = response.get(0);
-        if (responseToCheck.matches(".*fixed.*")) {
-            setFixedStatus(ErrorFixedStatus.FIXED);
-        } else if (responseToCheck.matches(".*more recent version.*")) {
-            setFixedStatus(ErrorFixedStatus.TOOOLD);
-        } else if (responseToCheck.matches(".*invalid.*")) {
-            setFixedStatus(ErrorFixedStatus.INVALID);
-        } else if (responseToCheck.matches(".*previously.*")) {
-            setFixedStatus(ErrorFixedStatus.KNOWN);
-        } else {
-            setFixedStatus(ErrorFixedStatus.NEW);
-        }
+        setReportStatus(ErrorReportStatus.FINISHED);
+        setFixedStatus(ErrorFixedStatus.NEW);
     }
 
     /**
