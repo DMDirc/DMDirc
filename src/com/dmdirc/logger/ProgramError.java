@@ -81,8 +81,6 @@ public final class ProgramError implements Serializable {
     private AtomicInteger count;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
-    /** Error fixed Status. */
-    private ErrorFixedStatus fixedStatus;
 
     /**
      * Creates a new instance of ProgramError.
@@ -124,7 +122,6 @@ public final class ProgramError implements Serializable {
         this.lastDate = (Date) date.clone();
         this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
-        this.fixedStatus = ErrorFixedStatus.UNKNOWN;
     }
 
     /**
@@ -192,15 +189,6 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Returns the fixed status of this error.
-     *
-     * @return Error fixed status
-     */
-    public ErrorFixedStatus getFixedStatus() {
-        return fixedStatus;
-    }
-
-    /**
      * Sets the report Status of this error.
      *
      * @param newStatus new ErrorReportStatus for the error
@@ -208,22 +196,6 @@ public final class ProgramError implements Serializable {
     public void setReportStatus(final ErrorReportStatus newStatus) {
         if (newStatus != null && !reportStatus.equals(newStatus)) {
             reportStatus = newStatus;
-            ErrorManager.getErrorManager().fireErrorStatusChanged(this);
-
-            synchronized (this) {
-                notifyAll();
-            }
-        }
-    }
-
-    /**
-     * Sets the fixed status of this error.
-     *
-     * @param newStatus new ErrorFixedStatus for the error
-     */
-    public void setFixedStatus(final ErrorFixedStatus newStatus) {
-        if (newStatus != null && !fixedStatus.equals(newStatus)) {
-            fixedStatus = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
 
             synchronized (this) {
@@ -337,7 +309,6 @@ public final class ProgramError implements Serializable {
         raven.sendEvent(eventBuilder.build());
 
         setReportStatus(ErrorReportStatus.FINISHED);
-        setFixedStatus(ErrorFixedStatus.NEW);
     }
 
     /**

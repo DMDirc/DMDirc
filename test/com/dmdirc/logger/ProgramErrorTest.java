@@ -19,10 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.logger;
 
-
-import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Before;
@@ -31,7 +30,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramErrorTest {
@@ -106,19 +107,6 @@ public class ProgramErrorTest {
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(ErrorReportStatus.ERROR);
         assertEquals(ErrorReportStatus.ERROR, pe.getReportStatus());
-    }
-
-    @Test
-    public void testFixedStatus() {
-        final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, new Date());
-        assertEquals(ErrorFixedStatus.UNKNOWN, pe.getFixedStatus());
-        pe.setFixedStatus(null);
-        assertEquals(ErrorFixedStatus.UNKNOWN, pe.getFixedStatus());
-        pe.setFixedStatus(ErrorFixedStatus.UNKNOWN);
-        assertEquals(ErrorFixedStatus.UNKNOWN, pe.getFixedStatus());
-        pe.setFixedStatus(ErrorFixedStatus.INVALID);
-        assertEquals(ErrorFixedStatus.INVALID, pe.getFixedStatus());
     }
 
     @Test

@@ -195,17 +195,13 @@ public class ErrorManager implements ConfigChangeListener {
         if (error.getLevel().equals(ErrorLevel.FATAL)) {
             if (dupe) {
                 error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-                error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
             }
         } else if (!canReport || (appError && !error.isValidSource())) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.INVALID);
         } else if (!appError) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
         } else if (dupe) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.DUPLICATE);
         } else if (sendReports) {
             sendError(error);
         }
