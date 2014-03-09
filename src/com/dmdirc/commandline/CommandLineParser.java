@@ -32,6 +32,7 @@ import com.dmdirc.util.URIParser;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -310,10 +311,17 @@ public class CommandLineParser {
      * @param dir The new config directory
      */
     private void doDirectory(final String dir) {
-        if (dir.endsWith(File.separator)) {
-            configDirectory = dir;
-        } else {
-            configDirectory = dir + File.separator;
+        try {
+            final File file = new File(dir);
+            if (!file.exists() && !file.mkdirs()) {
+                System.err.println("Unable to create directory " + dir);
+                System.exit(1);
+            }
+            configDirectory = file.getCanonicalPath() + File.separator;
+        } catch (IOException ex) {
+            System.err.println("Unable to resolve directory " + dir + ": ");
+            System.err.println("\t" + ex.getMessage());
+            System.exit(1);
         }
     }
 
