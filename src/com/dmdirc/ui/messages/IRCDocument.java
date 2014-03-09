@@ -338,7 +338,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         } else {
             fontSize = defaultFont.getSize();
         }
-        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", false);
+        frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", true);
         trim(frameBufferSize);
     }
 
