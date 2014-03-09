@@ -22,8 +22,6 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.util.ClientInfo;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,13 +36,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nullable;
-
-import net.kencochrane.raven.Raven;
-import net.kencochrane.raven.RavenFactory;
-import net.kencochrane.raven.dsn.Dsn;
-import net.kencochrane.raven.event.Event;
-import net.kencochrane.raven.event.EventBuilder;
-import net.kencochrane.raven.event.interfaces.ExceptionInterface;
 
 /**
  * Stores a program error.
@@ -61,8 +52,8 @@ public final class ProgramError implements Serializable {
     private static File errorDir;
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
-    public static final String SENTRY_DSN
-            = "http://d53a31a3c53c4a4f91c5ff503e612677:e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2?raven.async=false";
+    /** The reporter to use to send this error. */
+    private final ErrorReporter reporter;
     /** Error ID. */
     private final long id;
     /** Error icon. */
@@ -122,6 +113,7 @@ public final class ProgramError implements Serializable {
         this.lastDate = (Date) date.clone();
         this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
+        this.reporter = new ErrorReporter();
     }
 
     /**
@@ -277,37 +269,7 @@ public final class ProgramError implements Serializable {
      */
     public void send() {
         setReportStatus(ErrorReportStatus.SENDING);
-
-        final Raven raven = RavenFactory.ravenInstance(new Dsn(SENTRY_DSN));
-
-        // record a simple message
-        final EventBuilder eventBuilder = new EventBuilder()
-                .setMessage(message)
-                .setLevel(getSentryLevel())
-                .setServerName("")
-                .setTimestamp(firstDate)
-                .addTag("version", ClientInfo.getVersion())
-                .addTag("version.major", ClientInfo.getMajorVersion())
-                .addTag("os.name", ClientInfo.getOperatingSystemName())
-                .addTag("os.version", ClientInfo.getOperatingSystemVersion())
-                .addTag("os.arch", ClientInfo.getOperatingSystemArchitecture())
-                .addTag("encoding", ClientInfo.getSystemFileEncoding())
-                .addTag("locale", ClientInfo.getSystemDefaultLocale())
-                .addTag("jvm.name", ClientInfo.getJavaName())
-                .addTag("jvm.vendor", ClientInfo.getJavaVendor())
-                .addTag("jvm.version", ClientInfo.getJavaVersion())
-                .addTag("jvm.version.major", ClientInfo.getJavaMajorVersion());
-
-        if (exception != null) {
-            eventBuilder.addSentryInterface(new ExceptionInterface(exception));
-        }
-
-        if (details != null) {
-            eventBuilder.addExtra("details", details);
-        }
-
-        raven.sendEvent(eventBuilder.build());
-
+        reporter.sendException(message, level, firstDate, exception, details);
         setReportStatus(ErrorReportStatus.FINISHED);
     }
 
@@ -464,21 +426,6 @@ public final class ProgramError implements Serializable {
         }
 
         return trace;
-    }
-
-    private Event.Level getSentryLevel() {
-        switch (level) {
-            case FATAL:
-                return Event.Level.FATAL;
-            case HIGH:
-                return Event.Level.ERROR;
-            case MEDIUM:
-                return Event.Level.WARNING;
-            case LOW:
-                return Event.Level.INFO;
-            default:
-                return Event.Level.INFO;
-        }
     }
 
 }
