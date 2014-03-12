@@ -48,9 +48,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
-import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WarningDialog;
@@ -558,15 +558,14 @@ public class ClientModule {
             final CorePluginExtractor corePluginExtractor,
             final PluginManager pm,
             final AggregateConfigProvider config) {
-        for (PluginInfo plugin : pm.getPluginInfos()) {
-            if (config.hasOptionString("bundledplugins_versions", plugin.getMetaData().getName())) {
+        for (PluginMetaData plugin : pm.getAllPlugins()) {
+            if (config.hasOptionString("bundledplugins_versions", plugin.getName())) {
                 final Version bundled = new Version(config.getOption("bundledplugins_versions",
-                        plugin.getMetaData().getName()));
-                final Version installed = plugin.getMetaData().getVersion();
+                        plugin.getName()));
+                final Version installed = plugin.getVersion();
 
                 if (installed.compareTo(bundled) < 0) {
-                    corePluginExtractor.extractCorePlugins(plugin.getMetaData().getName());
-                    pm.reloadPlugin(plugin.getFilename());
+                    corePluginExtractor.extractCorePlugins(plugin.getName());
                 }
             }
         }
