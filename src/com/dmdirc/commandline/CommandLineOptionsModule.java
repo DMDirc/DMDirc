@@ -89,15 +89,17 @@ public class CommandLineOptionsModule {
      * Provides the base directory that all DMDirc user data is stored in.
      *
      * @param parser The parser to get the user-supplied directory from.
+     * @param locator Base directory locator to find default config directory.
      *
      * @return The base directory.
      */
     @Provides
     @Singleton
     @Directory(DirectoryType.BASE)
-    public String getBaseDirectory(final CommandLineParser parser) {
+    public String getBaseDirectory(final CommandLineParser parser,
+            final BaseDirectoryLocator locator) {
         if (parser.getConfigDirectory() == null) {
-            return getDefaultBaseDirectory();
+            return locator.getDefaultBaseDirectory();
         } else {
             return parser.getConfigDirectory();
         }
@@ -188,40 +190,6 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.TEMPORARY)
     public String getTempDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory;
-    }
-
-    /**
-     * Initialises the location of the configuration directory.
-     */
-    private String getDefaultBaseDirectory() {
-        final String fs = System.getProperty("file.separator");
-        final String osName = System.getProperty("os.name");
-        String configdir;
-
-        if (System.getenv("DMDIRC_HOME") != null) {
-            configdir = System.getenv("DMDIRC_HOME");
-        } else if (osName.startsWith("Mac OS")) {
-            configdir = System.getProperty("user.home") + fs + "Library"
-                    + fs + "Preferences" + fs + "DMDirc" + fs;
-        } else if (osName.startsWith("Windows")) {
-            if (System.getenv("APPDATA") == null) {
-                configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
-            } else {
-                configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-            }
-        } else {
-            configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
-            final File testFile = new File(configdir);
-            if (!testFile.exists()) {
-                final String configHome = System.getenv("XDG_CONFIG_HOME");
-                configdir = (configHome == null || configHome.isEmpty())
-                        ? System.getProperty("user.home") + fs + ".config" + fs
-                        : configHome;
-                configdir += fs + "DMDirc" + fs;
-            }
-        }
-
-        return new File(configdir).getAbsolutePath() + fs;
     }
 
 }

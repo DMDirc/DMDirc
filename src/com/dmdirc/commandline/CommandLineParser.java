@@ -38,6 +38,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -65,9 +66,11 @@ public class CommandLineParser {
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<>();
     /** Provider to use to get server managers. */
-    private final Provider<ServerManager> serverManagerProvider;
+    @Nullable private final Provider<ServerManager> serverManagerProvider;
     /** Provider to use to get the global config. */
-    private final Provider<AggregateConfigProvider> globalConfigProvider;
+    @Nullable private final Provider<AggregateConfigProvider> globalConfigProvider;
+    /** The parser to use for URIs. */
+    @Nullable private final URIParser uriParser;
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
     /** The version string passed for the launcher. */
@@ -76,8 +79,6 @@ public class CommandLineParser {
     private String configDirectory;
     /** The RMI server we're using. */
     private RemoteInterface server;
-    /** The parser to use for URIs. */
-    private final URIParser uriParser;
 
     /**
      * Creates a new instance of CommandLineParser.
@@ -88,9 +89,9 @@ public class CommandLineParser {
      */
     @Inject
     public CommandLineParser(
-            final Provider<ServerManager> serverManagerProvider,
-            @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider,
-            final URIParser uriParser) {
+            @Nullable final Provider<ServerManager> serverManagerProvider,
+            @Nullable @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider,
+            @Nullable final URIParser uriParser) {
         this.serverManagerProvider = serverManagerProvider;
         this.globalConfigProvider = globalConfigProvider;
         this.uriParser = uriParser;
@@ -136,7 +137,9 @@ public class CommandLineParser {
             }
         }
 
-        new RemoteServer(serverManagerProvider).bind();
+        if (serverManagerProvider != null) {
+            new RemoteServer(serverManagerProvider).bind();
+        }
     }
 
     /**
@@ -274,10 +277,15 @@ public class CommandLineParser {
      * @param address The address the user told us to connect to
      */
     private void doConnect(final String address) {
-        try {
-            addresses.add(uriParser.parseFromText(address));
-        } catch (InvalidURIException ex) {
-            doUnknownArg("Invalid address specified: " + ex.getMessage());
+        if (uriParser != null) {
+            try {
+                addresses.add(uriParser.parseFromText(address));
+            } catch (InvalidURIException ex) {
+                doUnknownArg("Invalid address specified: " + ex.getMessage());
+            }
+        } else {
+            System.out.println("Unable to connect to address.");
+            exit();
         }
     }
 
@@ -329,10 +337,13 @@ public class CommandLineParser {
      * Prints out the client version and exits.
      */
     private void doVersion() {
-        final AggregateConfigProvider globalConfig = globalConfigProvider.get();
-
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
+        if (globalConfigProvider == null) {
+            System.out.println("Version: Unknown");
+            exit();
+        }
+        final AggregateConfigProvider globalConfig = globalConfigProvider.get();
         System.out.println("        Version: " + globalConfig.getOption("version", "version"));
         System.out.println(" Update channel: " + globalConfig.getOption("updater", "channel"));
         exit();
