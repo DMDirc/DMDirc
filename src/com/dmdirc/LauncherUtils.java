@@ -42,7 +42,7 @@ public class LauncherUtils {
         final BaseDirectoryLocator locator = new BaseDirectoryLocator();
         cliParser.parse(args);
         final String configDirectory = cliParser.getConfigDirectory();
-        setDirectory(configDirectory == null ? configDirectory : locator.getDefaultBaseDirectory());
+        setDirectory(configDirectory == null ? locator.getDefaultBaseDirectory() : configDirectory);
     }
 
 }
