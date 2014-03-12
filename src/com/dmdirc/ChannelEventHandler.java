@@ -140,13 +140,13 @@ public class ChannelEventHandler extends EventHandler implements
         if (isJoinTopic) {
             if (newTopic.getTopic().isEmpty()) {
                 owner.doNotification(date, "channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
-                triggerAction("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
+                triggerAction("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC, channel);
             } else {
                 owner.
                         doNotification(date, "channelTopicDiscovered",
                                 CoreActionType.CHANNEL_GOTTOPIC,
                                 newTopic);
-                triggerAction("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC, newTopic);
+                triggerAction("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC, channel, newTopic);
             }
         } else {
             owner.doNotification(date, channel.getTopic().isEmpty()
@@ -154,7 +154,7 @@ public class ChannelEventHandler extends EventHandler implements
                     CoreActionType.CHANNEL_TOPICCHANGE,
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
             triggerAction(channel.getTopic().isEmpty() ? "channelTopicRemoved"
-                    : "channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE, channel.getTopic());
+                    : "channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE, channel, channel.getTopic());
         }
 
         if (!isJoinTopic
