@@ -99,13 +99,6 @@ else
 	# Re-add all plugins to the jar so that the nightly .jar has everything.
 	# $JAR -uvf "${OUTPUTDIR}/${PACKAGENAME}-${FILEDATA}.jar" plugins
 
-	# Submit plugins to addons site
-	if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
-		for plugin in `ls modules/plugins/dist/*.jar`; do
-			$PHP ${HOME}/www/addons/submitplugin.php $plugin
-		done;
-	fi;
-
 	function handleNightly() {
 		PACKAGENAME="${1}"
 		FILEDATA="${2}"
