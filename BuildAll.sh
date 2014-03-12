@@ -138,8 +138,4 @@ else
 	# cd ${MYDIR}/launcher
 	# sh ${MYDIR}/launcher/createUpdate.sh
 
-	# Do normal reports
-	if [ "${IS_BAMBOO}" == "" ]; then
-		/bin/sh $MYDIR/DoReports.sh
-	fi;
 fi
