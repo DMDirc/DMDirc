@@ -233,4 +233,27 @@ public class CommandParserTest {
         assertEquals("", channelCommandParser.commandArgs.getArgumentsAsString());
     }
 
+    @Test
+    public void testParseUnregisterCommand() {
+        commandParser.unregisterCommand(commandInfo);
+        commandParser.parseCommand(null, "/command test 123");
+
+        assertNull(commandParser.nonCommandLine);
+        assertEquals("command", commandParser.invalidCommand);
+        assertNull(commandParser.executedCommand);
+        assertFalse(commandParser.wasSilent);
+    }
+
+    @Test
+    public void testGetCommands() {
+        assertEquals(2, commandParser.getCommands().size());
+        assertTrue(commandParser.getCommands().containsKey("command"));
+        assertTrue(commandParser.getCommands().containsKey("channel"));
+
+        commandParser.unregisterCommand(commandInfo);
+        assertEquals(1, commandParser.getCommands().size());
+        assertFalse(commandParser.getCommands().containsKey("command"));
+        assertTrue(commandParser.getCommands().containsKey("channel"));
+    }
+
 }
