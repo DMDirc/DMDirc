@@ -115,10 +115,11 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification(date,
-                isMyself(client) ? "channelSelfExternalMessage" : "channelMessage",
-                CoreActionType.CHANNEL_MESSAGE, client, message);
-        triggerAction(message, CoreActionType.CHANNEL_MESSAGE, client, message);
+        final StringBuffer messageType = new StringBuffer(
+                isMyself(client) ? "channelSelfExternalMessage" : "channelMessage");
+        triggerAction(messageType, CoreActionType.CHANNEL_MESSAGE, client, message);
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_MESSAGE,
+                client, message);
     }
 
     @Override
@@ -139,22 +140,22 @@ public class ChannelEventHandler extends EventHandler implements
 
         if (isJoinTopic) {
             if (newTopic.getTopic().isEmpty()) {
-                owner.doNotification(date, "channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
-                triggerAction("channelNoTopic", CoreActionType.CHANNEL_NOTOPIC);
+                final StringBuffer messageType = new StringBuffer("channelNoTopic");
+                triggerAction(messageType, CoreActionType.CHANNEL_NOTOPIC);
+                owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_NOTOPIC);
             } else {
-                owner.
-                        doNotification(date, "channelTopicDiscovered",
-                                CoreActionType.CHANNEL_GOTTOPIC,
-                                newTopic);
-                triggerAction("channelTopicDiscovered", CoreActionType.CHANNEL_GOTTOPIC, newTopic);
+                final StringBuffer messageType = new StringBuffer("channelTopicDiscovered");
+                triggerAction(messageType, CoreActionType.CHANNEL_GOTTOPIC, newTopic);
+                owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_GOTTOPIC,
+                        newTopic);
             }
         } else {
-            owner.doNotification(date, channel.getTopic().isEmpty()
-                    ? "channelTopicRemoved" : "channelTopicChanged",
-                    CoreActionType.CHANNEL_TOPICCHANGE,
+            final StringBuffer messageType = new StringBuffer(
+                    channel.getTopic().isEmpty() ? "channelTopicRemoved" : "channelTopicChanged");
+            triggerAction(messageType, CoreActionType.CHANNEL_TOPICCHANGE,
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
-            triggerAction(channel.getTopic().isEmpty() ? "channelTopicRemoved"
-                    : "channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
+            owner.doNotification(date, messageType.toString(),
+                    CoreActionType.CHANNEL_TOPICCHANGE,
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
         }
 
@@ -174,8 +175,9 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelJoin", CoreActionType.CHANNEL_JOIN, client);
-        triggerAction("channelJoin", CoreActionType.CHANNEL_JOIN, client);
+        final StringBuffer messageType = new StringBuffer("channelJoin");
+        triggerAction(messageType, CoreActionType.CHANNEL_JOIN, client);
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_JOIN, client);
         owner.addClient(client);
     }
 
@@ -184,13 +186,14 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        owner.doNotification(date, "channel"
+        final StringBuffer messageType = new StringBuffer(
+                "channel"
                 + (isMyself(client) ? "Self" : "") + "Part"
-                + (reason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
-                client, reason);
-        triggerAction("channel"
-                + (isMyself(client) ? "Self" : "") + "Part"
-                + (reason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART, client, reason);
+                + (reason.isEmpty() ? "" : "Reason"));
+
+        triggerAction(messageType, CoreActionType.CHANNEL_PART, client, reason);
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_PART, client,
+                reason);
         owner.removeClient(client);
     }
 
@@ -200,9 +203,11 @@ public class ChannelEventHandler extends EventHandler implements
             final String reason, final String host) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelKick" + (reason.isEmpty() ? "" : "Reason"),
+        final StringBuffer messageType = new StringBuffer(
+                "channelKick" + (reason.isEmpty() ? "" : "Reason"));
+        triggerAction(messageType,
                 CoreActionType.CHANNEL_KICK, client, kickedClient, reason);
-        triggerAction("channelKick" + (reason.isEmpty() ? "" : "Reason"),
+        owner.doNotification(date, messageType.toString(),
                 CoreActionType.CHANNEL_KICK, client, kickedClient, reason);
         owner.removeClient(kickedClient);
     }
@@ -212,9 +217,10 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelQuit" + (reason.isEmpty() ? "" : "Reason"),
-                CoreActionType.CHANNEL_QUIT, client, reason);
-        triggerAction("channelQuit" + (reason.isEmpty() ? "" : "Reason"),
+        final StringBuffer messageType = new StringBuffer(
+                "channelQuit" + (reason.isEmpty() ? "" : "Reason"));
+        triggerAction(messageType, CoreActionType.CHANNEL_QUIT, client, reason);
+        owner.doNotification(date, messageType.toString(),
                 CoreActionType.CHANNEL_QUIT, client, reason);
         owner.removeClient(client);
     }
@@ -225,10 +231,10 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        owner.doNotification(date,
-                isMyself(client) ? "channelSelfExternalAction" : "channelAction",
-                CoreActionType.CHANNEL_ACTION, client, message);
-        triggerAction(isMyself(client) ? "channelSelfExternalAction" : "channelAction",
+        final StringBuffer messageType = new StringBuffer(
+                isMyself(client) ? "channelSelfExternalAction" : "channelAction");
+        triggerAction(messageType, CoreActionType.CHANNEL_ACTION, client, message);
+        owner.doNotification(date, messageType.toString(),
                 CoreActionType.CHANNEL_ACTION, client, message);
     }
 
@@ -237,10 +243,11 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
         checkParser(parser);
 
-        owner.doNotification(date,
-                isMyself(client) ? "channelSelfNickChange" : "channelNickChange",
-                CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
-        triggerAction(isMyself(client) ? "channelSelfNickChange" : "channelNickChange",
+        final StringBuffer messageType = new StringBuffer(
+                isMyself(client) ? "channelSelfNickChange" : "channelNickChange");
+
+        triggerAction(messageType, CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
+        owner.doNotification(date, messageType.toString(),
                 CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
         owner.renameClient(oldNick, client.getClient().getNickname());
     }
@@ -254,18 +261,18 @@ public class ChannelEventHandler extends EventHandler implements
         if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 || !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
             if (host.isEmpty()) {
-                owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
-                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
+                final StringBuffer messageType = new StringBuffer(
+                        modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
+                triggerAction(messageType, CoreActionType.CHANNEL_MODESDISCOVERED,
                         modes.length() <= 1 ? "" : modes);
-                triggerAction(modes.length() <= 1 ? "channelNoModes"
-                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED, modes.
-                        length() <= 1 ? "" : modes);
+                owner.doNotification(date, messageType.toString(),
+                        CoreActionType.CHANNEL_MODESDISCOVERED, modes.length() <= 1 ? "" : modes);
             } else {
-                owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
-                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
-                        client, modes);
-                triggerAction(isMyself(client) ? "channelSelfModeChanged"
-                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE, client, modes);
+                final StringBuffer messageType = new StringBuffer(
+                        isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
+                triggerAction(messageType, CoreActionType.CHANNEL_MODECHANGE, client, modes);
+                owner.doNotification(date, messageType.toString(),
+                        CoreActionType.CHANNEL_MODECHANGE, client, modes);
             }
         }
 
@@ -285,9 +292,12 @@ public class ChannelEventHandler extends EventHandler implements
                 format = "channelSplitUserMode_default";
             }
 
-            owner.doNotification(date, format, CoreActionType.CHANNEL_USERMODECHANGE,
+            final StringBuffer messageType = new StringBuffer(format);
+            triggerAction(messageType, CoreActionType.CHANNEL_USERMODECHANGE, client,
+                    targetClient, mode);
+            owner.doNotification(date, messageType.toString(),
+                    CoreActionType.CHANNEL_USERMODECHANGE,
                     client, targetClient, mode);
-            triggerAction(format, CoreActionType.CHANNEL_USERMODECHANGE, client, targetClient, mode);
         }
     }
 
@@ -296,12 +306,14 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client,
             final String type, final String message, final String host) {
         checkParser(parser);
-        owner.doNotification(date, "channelCTCP", CoreActionType.CHANNEL_CTCP,
-                client, type, message);
-        if (triggerAction("channelCTCP", CoreActionType.CHANNEL_CTCP, client, type, message)) {
+
+        final StringBuffer messageType = new StringBuffer("channelCTCP");
+        if (triggerAction(messageType, CoreActionType.CHANNEL_CTCP, client, type, message)) {
             owner.getConnection().sendCTCPReply(client.getClient().getNickname(),
                     type, message);
         }
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_CTCP,
+                client, type, message);
     }
 
     @Override
@@ -315,6 +327,7 @@ public class ChannelEventHandler extends EventHandler implements
             final boolean away = state == AwayState.AWAY;
             final boolean discovered = oldState == AwayState.UNKNOWN;
 
+            // TODO: The events should take a formatter.
             owner.doNotification(date, (away ? "channelUserAway" : "channelUserBack")
                     + (discovered ? "Discovered" : ""),
                     away ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
@@ -333,9 +346,10 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelNotice", CoreActionType.CHANNEL_NOTICE,
+        final StringBuffer messageType = new StringBuffer("channelNotice");
+        triggerAction(messageType, CoreActionType.CHANNEL_NOTICE, client, message);
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_NOTICE,
                 client, message);
-        triggerAction("channelNotice", CoreActionType.CHANNEL_NOTICE, client, message);
     }
 
     @Override
@@ -347,17 +361,18 @@ public class ChannelEventHandler extends EventHandler implements
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 && owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
             if (host.isEmpty()) {
-                owner.doNotification(date, modes.length() <= 1 ? "channelNoModes"
-                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
+                final StringBuffer messageType = new StringBuffer(
+                        modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
+                triggerAction(messageType, CoreActionType.CHANNEL_MODESDISCOVERED,
                         modes.length() <= 1 ? "" : modes);
-                triggerAction(modes.length() <= 1 ? "channelNoModes"
-                        : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED, modes.
-                        length() <= 1 ? "" : modes);
+                owner.doNotification(date, messageType.toString(),
+                        CoreActionType.CHANNEL_MODESDISCOVERED,
+                        modes.length() <= 1 ? "" : modes);
             } else {
-                owner.doNotification(date, isMyself(client) ? "channelSelfModeChanged"
-                        : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
-                        client, modes);
-                triggerAction(isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged",
+                final StringBuffer messageType = new StringBuffer(
+                        isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
+                triggerAction(messageType, CoreActionType.CHANNEL_MODECHANGE, client, modes);
+                owner.doNotification(date, messageType.toString(),
                         CoreActionType.CHANNEL_MODECHANGE, client, modes);
             }
         }
@@ -372,10 +387,11 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE,
-                client, String.valueOf(prefix), message);
-        triggerAction("channelModeNotice", CoreActionType.CHANNEL_MODE_NOTICE, client, String.
+        final StringBuffer messageType = new StringBuffer("channelModeNotice");
+        triggerAction(messageType, CoreActionType.CHANNEL_MODE_NOTICE, client, String.
                 valueOf(prefix), message);
+        owner.doNotification(date, messageType.toString(), CoreActionType.CHANNEL_MODE_NOTICE,
+                client, String.valueOf(prefix), message);
     }
 
     @Override
@@ -383,19 +399,20 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final char mode) {
         checkParser(parser);
 
-        owner.doNotification(date, "channelListModeRetrieved",
-                CoreActionType.CHANNEL_LISTMODERETRIEVED, Character.valueOf(mode));
-        triggerAction("channelListModeRetrieved", CoreActionType.CHANNEL_LISTMODERETRIEVED,
+        final StringBuffer messageType = new StringBuffer("channelListModeRetrieved");
+        triggerAction(messageType, CoreActionType.CHANNEL_LISTMODERETRIEVED,
                 Character.valueOf(mode));
+        owner.doNotification(date, messageType.toString(),
+                CoreActionType.CHANNEL_LISTMODERETRIEVED, Character.valueOf(mode));
     }
 
-    private boolean triggerAction(final String messageType, final ActionType actionType,
+    private boolean triggerAction(final StringBuffer messageType, final ActionType actionType,
             final Object... args) {
         final List<Object> actionArgs = new ArrayList<>();
         actionArgs.add(owner);
         actionArgs.addAll(Arrays.asList(args));
-        return ActionManager.getActionManager().triggerEvent(actionType, new StringBuffer(
-                messageType), actionArgs.toArray());
+        return ActionManager.getActionManager().triggerEvent(actionType, messageType,
+                actionArgs.toArray());
     }
 
 }
