@@ -174,8 +174,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
-                owner.getParser().getClient(host), type, message);
+        owner.doNotification("privateCTCP", owner.getParser().getClient(host), type, message);
         if (triggerAction("privateCTCP", CoreActionType.SERVER_CTCP, owner.getParser().getClient(
                 host), type, message)) {
             owner.sendCTCPReply(owner.parseHostmask(host)[0], type, message);
@@ -187,8 +186,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
-                owner.getParser().getClient(host), type, message);
+        owner.doNotification("privateCTCPreply", owner.getParser().getClient(host), type, message);
         triggerAction("privateCTCPreply", CoreActionType.SERVER_CTCPR, owner.getParser().getClient(
                 host), type, message);
     }
@@ -205,8 +203,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
-                owner.getParser().getClient(host), message);
+        owner.doNotification("privateNotice", owner.getParser().getClient(host), message);
         triggerAction("privateNotice", CoreActionType.SERVER_NOTICE, owner.getParser().getClient(
                 host), message);
     }
@@ -216,8 +213,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        owner.doNotification("serverNotice", CoreActionType.SERVER_SERVERNOTICE,
-                owner.getParser().getClient(host), message);
+        owner.doNotification("serverNotice", owner.getParser().getClient(host), message);
         triggerAction("serverNotice", CoreActionType.SERVER_SERVERNOTICE, owner.getParser().
                 getClient(host), message);
     }
@@ -226,7 +222,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onMOTDStart(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, data);
+        owner.doNotification("motdStart", data);
         triggerAction("motdStart", CoreActionType.SERVER_MOTDSTART, data);
     }
 
@@ -234,7 +230,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onMOTDLine(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, data);
+        owner.doNotification("motdLine", data);
         triggerAction("motdLine", CoreActionType.SERVER_MOTDLINE, data);
     }
 
@@ -243,7 +239,7 @@ public class ServerEventHandler extends EventHandler implements
             final boolean noMOTD, final String data) {
         checkParser(parser);
 
-        owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, data);
+        owner.doNotification("motdEnd", data);
         triggerAction("motdEnd", CoreActionType.SERVER_MOTDEND, data);
     }
 
@@ -290,10 +286,10 @@ public class ServerEventHandler extends EventHandler implements
         }
 
         if (currentState == AwayState.AWAY) {
-            owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
+            owner.doNotification("away", reason);
             triggerAction("away", CoreActionType.SERVER_AWAY, reason);
         } else {
-            owner.doNotification("back", CoreActionType.SERVER_BACK);
+            owner.doNotification("back");
             triggerAction("back", CoreActionType.SERVER_BACK);
         }
     }
@@ -320,7 +316,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onNoticeAuth(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
+        owner.doNotification("authNotice", data);
         triggerAction("authNotice", CoreActionType.SERVER_AUTHNOTICE, data);
     }
 
@@ -329,8 +325,7 @@ public class ServerEventHandler extends EventHandler implements
             final String target, final String host) {
         checkParser(parser);
 
-        owner.doNotification("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE,
-                host, target, message);
+        owner.doNotification("unknownNotice", host, target, message);
         triggerAction("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE, host, target, message);
     }
 
@@ -342,12 +337,11 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalMessage",
-                    CoreActionType.QUERY_SELF_MESSAGE, parser.getLocalClient(), message);
+                    parser.getLocalClient(), message);
             triggerAction("querySelfExternalMessage", CoreActionType.QUERY_SELF_MESSAGE, parser.
                     getLocalClient(), message);
         } else {
-            owner.doNotification("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE,
-                    host, target, message);
+            owner.doNotification("unknownMessage", host, target, message);
             triggerAction("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE, host, target,
                     message);
         }
@@ -361,11 +355,10 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalAction",
-                    CoreActionType.QUERY_SELF_ACTION, parser.getLocalClient(), message);
+                    parser.getLocalClient(), message);
             triggerAction("querySelfExternalAction", CoreActionType.QUERY_SELF_ACTION, message);
         } else {
-            owner.doNotification("unknownAction", CoreActionType.SERVER_UNKNOWNACTION,
-                    host, target, message);
+            owner.doNotification("unknownAction", host, target, message);
             triggerAction("unknownAction", CoreActionType.SERVER_UNKNOWNACTION, host, target,
                     message);
         }
@@ -376,8 +369,7 @@ public class ServerEventHandler extends EventHandler implements
             final ClientInfo client, final String host, final String modes) {
         checkParser(parser);
 
-        owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
-                owner.getParser().getClient(host), modes);
+        owner.doNotification("userModeChanged", owner.getParser().getClient(host), modes);
         triggerAction("userModeChanged", CoreActionType.SERVER_USERMODES, owner.getParser().
                 getClient(host), modes);
     }
@@ -388,8 +380,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.doNotification(modes.isEmpty() || "+".equals(modes)
-                ? "userNoModes" : "userModeDiscovered",
-                CoreActionType.SERVER_USERMODES, client, modes);
+                ? "userNoModes" : "userModeDiscovered", client, modes);
         triggerAction(modes.isEmpty() || "+".equals(modes) ? "userNoModes" : "userModeDiscovered",
                 CoreActionType.SERVER_USERMODES, client, modes);
     }
@@ -401,7 +392,6 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.addInvite(new Invite(owner, channel, userHost));
         owner.doNotification("inviteReceived",
-                CoreActionType.SERVER_INVITERECEIVED,
                 owner.getParser().getClient(userHost), channel);
         triggerAction("inviteReceived", CoreActionType.SERVER_INVITERECEIVED, owner.getParser().
                 getClient(userHost), channel);
@@ -412,8 +402,7 @@ public class ServerEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS,
-                owner.getParser().getClient(host), message);
+        owner.doNotification("wallop", owner.getParser().getClient(host), message);
         triggerAction("wallop", CoreActionType.SERVER_WALLOPS, owner.getParser().getClient(host),
                 message);
 
@@ -424,8 +413,7 @@ public class ServerEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS,
-                owner.getParser().getClient(host), message);
+        owner.doNotification("walluser", owner.getParser().getClient(host), message);
         triggerAction("walluser", CoreActionType.SERVER_WALLUSERS, owner.getParser().getClient(host),
                 message);
     }
@@ -435,8 +423,7 @@ public class ServerEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC,
-                owner.getParser().getClient(host), message);
+        owner.doNotification("walldesync", owner.getParser().getClient(host), message);
         triggerAction("walldesync", CoreActionType.SERVER_WALLDESYNC, owner.getParser().getClient(
                 host), message);
     }
@@ -447,8 +434,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         if (client.equals(owner.getParser().getLocalClient())) {
-            owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
-                    oldNick, client.getNickname());
+            owner.doNotification("selfNickChange", oldNick, client.getNickname());
             triggerAction("selfNickChange", CoreActionType.SERVER_NICKCHANGE, oldNick, client.
                     getNickname());
             owner.updateTitle();
@@ -459,7 +445,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onServerError(final Parser parser, final Date date, final String message) {
         checkParser(parser);
 
-        owner.doNotification("serverError", CoreActionType.SERVER_ERROR, message);
+        owner.doNotification("serverError", message);
         triggerAction("serverError", CoreActionType.SERVER_ERROR, message);
     }
 

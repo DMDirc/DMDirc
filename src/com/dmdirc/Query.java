@@ -146,11 +146,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
             if (!part.isEmpty()) {
                 server.getParser().sendMessage(target, part);
 
-                doNotification("querySelfMessage",
-                        CoreActionType.QUERY_SELF_MESSAGE,
+                doNotification("querySelfMessage", server.getParser().getLocalClient(), part);
+                triggerAction("querySelfMessage", CoreActionType.QUERY_SELF_MESSAGE,
                         server.getParser().getLocalClient(), part);
-                triggerAction("querySelfMessage", CoreActionType.QUERY_SELF_MESSAGE, server.
-                        getParser().getLocalClient(), part);
             }
         }
     }
@@ -192,8 +190,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         if (maxLineLength >= action.length() + 2) {
             server.getParser().sendAction(getNickname(), action);
 
-            doNotification("querySelfAction", CoreActionType.QUERY_SELF_ACTION,
-                    client, action);
+            doNotification("querySelfAction", client, action);
             triggerAction("querySelfAction", CoreActionType.QUERY_SELF_ACTION, client, action);
         } else {
             addLine("actionTooLong", action.length());

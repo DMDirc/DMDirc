@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
@@ -174,14 +173,12 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * Processes and displays a notification.
      *
      * @param messageType The name of the formatter to be used for the message
-     * @param actionType  The action type to be used
      * @param args        The arguments for the message
      *
      * @return True if any further behaviour should be executed, false otherwise
      */
-    public boolean doNotification(final String messageType,
-            final ActionType actionType, final Object... args) {
-        return doNotification(new Date(), messageType, actionType, args);
+    public boolean doNotification(final String messageType, final Object... args) {
+        return doNotification(new Date(), messageType, args);
     }
 
     /**
@@ -189,13 +186,11 @@ public abstract class WritableFrameContainer extends FrameContainer {
      *
      * @param date        The date/time at which the event occured
      * @param messageType The name of the formatter to be used for the message
-     * @param actionType  The action type to be used
      * @param args        The arguments for the message
      *
      * @return True if any further behaviour should be executed, false otherwise
      */
-    public boolean doNotification(final Date date, final String messageType,
-            final ActionType actionType, final Object... args) {
+    public boolean doNotification(final Date date, final String messageType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<>();
         final List<Object> actionArgs = new ArrayList<>();
         final StringBuffer buffer = new StringBuffer(messageType);
