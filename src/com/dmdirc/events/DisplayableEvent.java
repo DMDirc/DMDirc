@@ -22,43 +22,23 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
-
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * Base type for events that occur in channels.
+ * Describes an event which is rendered in the client to the user.
  */
-public abstract class ChannelEvent extends DMDircEvent implements DisplayableEvent {
+public interface DisplayableEvent {
 
-    /** The channel that this event occurred on. */
-    private final Channel channel;
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
+    /**
+     * Gets the format name that will be used to display the event.
+     *
+     * @return The format name to use for the event.
+     */
+    String getDisplayFormat();
 
-    public ChannelEvent(final long timestamp, final Channel channel) {
-        super(timestamp);
-        this.channel = checkNotNull(channel);
-    }
-
-    public ChannelEvent(final Channel channel) {
-        this.channel = checkNotNull(channel);
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(String format) {
-        this.displayFormatRef.set(format);
-    }
+    /**
+     * Sets the format name that should be used to display the event.
+     *
+     * @param format The format name to use for the event.
+     */
+    void setDisplayFormat(String format);
 
 }

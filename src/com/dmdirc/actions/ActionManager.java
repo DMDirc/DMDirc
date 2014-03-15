@@ -28,6 +28,7 @@ import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.DMDircEvent;
+import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionComparison;
@@ -457,7 +458,18 @@ public class ActionManager implements ActionController {
         final Class[] argTypes = type.getType().getArgTypes();
         final Object[] arguments = getLegacyArguments(event, argTypes);
 
-        triggerEvent(type, null, arguments);
+        final StringBuffer buffer;
+        if (event instanceof DisplayableEvent) {
+            buffer = new StringBuffer(((DisplayableEvent) event).getDisplayFormat());
+        } else {
+            buffer = null;
+        }
+
+        triggerEvent(type, buffer, arguments);
+
+        if (event instanceof DisplayableEvent) {
+            ((DisplayableEvent) event).setDisplayFormat(buffer.toString());
+        }
     }
 
     /**
