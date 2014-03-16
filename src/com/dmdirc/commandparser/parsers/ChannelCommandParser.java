@@ -38,11 +38,7 @@ import com.dmdirc.interfaces.CommandController;
  */
 public class ChannelCommandParser extends ChatCommandParser {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /**
      * The channel instance that this parser is attached to.

@@ -33,11 +33,7 @@ import java.util.Map;
  */
 public final class IRCTextAttribute extends Attribute {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** table of all instances in this class, used by readResolve. */
     private static final Map<String, IRCTextAttribute> INSTANCE_MAP = new HashMap<>(1);

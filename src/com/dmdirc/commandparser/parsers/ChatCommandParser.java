@@ -40,11 +40,7 @@ import com.dmdirc.interfaces.CommandController;
  */
 public class ChatCommandParser extends ServerCommandParser {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The container that owns this parser. */
     private MessageTarget owner;

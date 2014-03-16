@@ -40,11 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ActionGroup implements Iterable<Action> {
 
-    /**
-     * A version number for this class. It should be changed whenever the class structure is changed
-     * (or anything else that would prevent serialized objects being unserialized with the new
-     * class).
-     */
+    /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The actions in this group. */
     private final List<Action> actions = new ArrayList<>();
