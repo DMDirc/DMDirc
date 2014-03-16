@@ -236,7 +236,7 @@ public class CommandLineParser {
                 launcherVersion = param;
                 break;
             case 'p':
-                doDirectory(DMDircResourceManager.getCurrentWorkingDirectory());
+                doDirectory(DMDircResourceManager.getWorkingDirectory());
                 break;
             case 'r':
                 disablereporting = true;
