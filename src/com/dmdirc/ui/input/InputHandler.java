@@ -23,14 +23,14 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.events.ClientUserInputEvent;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
@@ -42,6 +42,8 @@ import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.validators.ValidationResponse;
+
+import com.google.common.eventbus.EventBus;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -106,27 +108,37 @@ public abstract class InputHandler implements ConfigChangeListener {
     private Timer compositionTimer;
     /** Manager to use to look up tab completion services. */
     private final ServiceManager serviceManager;
+    /** The controller to use to retrieve command information. */
+    private final CommandController commandController;
+    /** The event bus to use to despatch input events. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target that we need to operate.
      *
      * @param serviceManager    Manager to use to look up tab completion services.
-     * @param thisTarget        The text field this input handler is dealing with.
-     * @param thisCommandParser The command parser to use for this text field.
-     * @param thisParentWindow  The window that owns this input handler
+     * @param target            The text field this input handler is dealing with.
+     * @param commandController The controller to use to retrieve command information.
+     * @param commandParser     The command parser to use for this text field.
+     * @param parentWindow      The window that owns this input handler
+     * @param eventBus          The event bus to use to despatch input events.
      */
     public InputHandler(
             final ServiceManager serviceManager,
-            final InputField thisTarget,
-            final CommandParser thisCommandParser,
-            final WritableFrameContainer thisParentWindow) {
-        buffer = new RollingList<>(thisParentWindow.getConfigManager()
+            final InputField target,
+            final CommandController commandController,
+            final CommandParser commandParser,
+            final WritableFrameContainer parentWindow,
+            final EventBus eventBus) {
+        buffer = new RollingList<>(parentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
 
         this.serviceManager = serviceManager;
-        this.commandParser = thisCommandParser;
-        this.parentWindow = thisParentWindow;
-        this.target = thisTarget;
+        this.target = target;
+        this.commandController = commandController;
+        this.commandParser = commandParser;
+        this.parentWindow = parentWindow;
+        this.eventBus = eventBus;
 
         setStyle();
 
@@ -248,12 +260,11 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected void validateText() {
         final String text = target.getText();
 
-        final CommandArguments args = new CommandArguments(
-                parentWindow.getCommandParser().getCommandManager(), text);
+        final CommandArguments args = new CommandArguments(commandController, text);
 
         if (args.isCommand()) {
-            final Map.Entry<CommandInfo, Command> command = parentWindow.getCommandParser().
-                    getCommandManager().getCommand(args.getCommandName());
+            final Map.Entry<CommandInfo, Command> command = commandController
+                    .getCommand(args.getCommandName());
 
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
@@ -516,8 +527,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         log.trace("Offsets: start: {}, end: {}",
                 new Object[]{start, end});
 
-        if (start > 0 && text.charAt(0) == parentWindow.getCommandParser().getCommandManager().
-                getCommandChar()) {
+        if (start > 0 && text.charAt(0) == commandController.getCommandChar()) {
             doCommandTabCompletion(text, start, end, shiftPressed);
         } else {
             doNormalTabCompletion(text, start, end, shiftPressed, null);
@@ -568,15 +578,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     public void enterPressed(final String line) {
         if (!line.isEmpty()) {
-            final StringBuffer thisBuffer = new StringBuffer(line);
-
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.CLIENT_USER_INPUT, null,
-                    parentWindow, thisBuffer);
-
-            addToBuffer(thisBuffer.toString());
-
-            commandParser.parseCommand(parentWindow, thisBuffer.toString());
+            final StringBuffer bufferedLine = new StringBuffer(line);
+            eventBus.post(new ClientUserInputEvent(parentWindow, bufferedLine));
+            addToBuffer(bufferedLine.toString());
+            commandParser.parseCommand(parentWindow, bufferedLine.toString());
         }
 
         cancelTypingNotification();
