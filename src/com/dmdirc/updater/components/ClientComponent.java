@@ -100,7 +100,7 @@ public class ClientComponent implements UpdateComponent {
                         + "not be installed automatically.\n\n"
                         + "To install this update manually, please replace the\n"
                         + "existing DMDirc.jar file, located at:\n"
-                        + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
+                        + " " + DMDircResourceManager.getApplicationDirectory() + "\n"
                         + "with the following file:\n"
                         + "  " + targetFile.getAbsolutePath();
             } else {
@@ -111,7 +111,7 @@ public class ClientComponent implements UpdateComponent {
                         + "new DMDirc.jar file, located at:\n"
                         + " " + targetFile.getAbsolutePath() + "\n"
                         + "over your existing DMDirc install located in:\n"
-                        + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
+                        + "  " + DMDircResourceManager.getApplicationDirectory();
             }
         }
         return "";

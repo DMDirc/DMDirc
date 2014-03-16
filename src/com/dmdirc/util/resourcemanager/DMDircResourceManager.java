@@ -22,15 +22,18 @@
 
 package com.dmdirc.util.resourcemanager;
 
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.CodeSource;
 
 /**
  * Provides utility methods for working with resources from the DMDirc distribution.
@@ -46,7 +49,29 @@ public class DMDircResourceManager {
      *
      * @return Current working directory
      */
-    public static synchronized String getCurrentWorkingDirectory() {
+    public static synchronized String getWorkingDirectory() {
+        final CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+        try {
+            final File jarFile = new File(codeSource.getLocation().toURI().getPath());
+            String jarDir;
+            if (isRunningFromJar()) {
+                jarDir = jarFile.getParentFile().getPath();
+            } else {
+                jarDir = jarFile.getPath();
+            }
+            return URLDecoder.decode(jarDir, "UTF-8");
+        } catch (URISyntaxException | UnsupportedEncodingException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to find working directory", ex);
+            return null;
+        }
+    }
+
+    /**
+     * Returns the working directory for the application or the jar name.
+     *
+     * @return Current working directory
+     */
+    public static synchronized String getApplicationDirectory() {
         return getWorkingDirectoryString(Thread.currentThread()
                 .getContextClassLoader().getResource("com/dmdirc/Main.class"));
     }
@@ -58,7 +83,7 @@ public class DMDircResourceManager {
      *
      * @return location or null
      */
-    public static String getWorkingDirectoryString(final URL mainClassURL) {
+    static String getWorkingDirectoryString(final URL mainClassURL) {
         try {
             return URLDecoder.decode(getWorkingDirectoryURL(mainClassURL).getPath(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
@@ -74,7 +99,7 @@ public class DMDircResourceManager {
      *
      * @return URL location or null
      */
-    public static URL getWorkingDirectoryURL(final URL mainClassURL) {
+    static URL getWorkingDirectoryURL(final URL mainClassURL) {
         if (isRunningFromJar(mainClassURL)) {
             return getJarURL(mainClassURL);
         } else {
