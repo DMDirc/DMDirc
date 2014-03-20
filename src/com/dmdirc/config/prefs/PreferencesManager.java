@@ -22,12 +22,14 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.events.ConnectionPrefsRequestedEvent;
+import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
+
+import com.google.common.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -38,12 +40,12 @@ import javax.inject.Inject;
  */
 public class PreferencesManager {
 
-    /** The action controller to fire events on. */
-    private final ActionController actionController;
+    /** Event bus to public events on. */
+    private final EventBus eventBus;
 
     @Inject
-    public PreferencesManager(final ActionController actionController) {
-        this.actionController = actionController;
+    public PreferencesManager(final EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     /**
@@ -125,8 +127,7 @@ public class PreferencesManager {
                 "Reconnect message", "Default quit message to use when reconnecting",
                 manager, identity));
 
-        actionController.triggerEvent(CoreActionType.CLIENT_PREFS_REQUESTED,
-                null, category, Boolean.TRUE);
+        eventBus.post(new ConnectionPrefsRequestedEvent(category));
 
         return category;
     }
@@ -239,8 +240,7 @@ public class PreferencesManager {
                 "Number of items of input history to keep",
                 manager, identity));
 
-        actionController.triggerEvent(CoreActionType.CLIENT_PREFS_REQUESTED,
-                null, category, Boolean.FALSE);
+        eventBus.post(new GroupChatPrefsRequestedEvent(category));
 
         return category;
     }

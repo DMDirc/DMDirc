@@ -22,48 +22,38 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.ActionController;
+import com.dmdirc.events.ConnectionPrefsRequestedEvent;
+import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import org.junit.Before;
+import com.google.common.eventbus.EventBus;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PreferencesManagerTest {
 
-    private ActionController actionController;
-    private AggregateConfigProvider configManager;
-    private PreferencesManager manager;
-
-    @Before
-    public void setup() {
-        this.actionController = mock(ActionController.class);
-        this.configManager = mock(AggregateConfigProvider.class);
-        this.manager = new PreferencesManager(actionController);
-    }
+    @Mock private EventBus eventBus;
+    @Mock private AggregateConfigProvider configManager;
 
     @Test
     public void testGettingChannelPrefsRaisesAction() {
-        this.manager.getChannelSettings(this.configManager, null);
-
-        verify(this.actionController).triggerEvent(
-                eq(CoreActionType.CLIENT_PREFS_REQUESTED),
-                (StringBuffer) isNull(),
-                any(PreferencesCategory.class),
-                eq(Boolean.FALSE));
+        new PreferencesManager(eventBus).getChannelSettings(this.configManager, null);
+        verify(eventBus).post(isA(GroupChatPrefsRequestedEvent.class));
     }
 
     @Test
     public void testGettingServerPrefsRaisesAction() {
-        this.manager.getServerSettings(this.configManager, null);
+        new PreferencesManager(eventBus).getServerSettings(this.configManager, null);
 
-        verify(this.actionController).triggerEvent(
-                eq(CoreActionType.CLIENT_PREFS_REQUESTED),
-                (StringBuffer) isNull(),
-                any(PreferencesCategory.class),
-                eq(Boolean.TRUE));
+        verify(eventBus).post(isA(GroupChatPrefsRequestedEvent.class));
+        verify(eventBus).post(isA(ConnectionPrefsRequestedEvent.class));
     }
 
 }

@@ -22,8 +22,8 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.ClientPrefsClosedEvent;
+import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.plugins.PluginManager;
@@ -32,11 +32,15 @@ import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -61,8 +65,8 @@ public class PreferencesDialogModel {
     private final ConfigProvider identity;
     /** Plugin manager. */
     private final PluginManager pluginManager;
-    /** Action Manager. */
-    private final ActionManager actionManager;
+    /** Event bus to post events on. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -73,29 +77,30 @@ public class PreferencesDialogModel {
      * @param urlHandlerPanel UI specific URL panel
      * @param configManager   Config manager to read settings from
      * @param identity        Identity to write settings to
-     * @param actionManager   Action manager to register and trigger actions with
      * @param pluginManager   Plugin manager to retrieve plugins from
+     * @param eventBus        Event bus to post events on
      */
+    @Inject
     public PreferencesDialogModel(final PreferencesInterface pluginPanel,
             final PreferencesInterface themePanel,
             final PreferencesInterface updatesPanel,
             final PreferencesInterface urlHandlerPanel,
             final AggregateConfigProvider configManager,
             final ConfigProvider identity,
-            final ActionManager actionManager,
-            final PluginManager pluginManager) {
+            final PluginManager pluginManager,
+            final EventBus eventBus) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;
         this.urlHandlerPanel = urlHandlerPanel;
         this.configManager = configManager;
         this.identity = identity;
-        this.actionManager = actionManager;
         this.pluginManager = pluginManager;
+        this.eventBus = eventBus;
 
         addDefaultCategories();
 
-        actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
+        eventBus.post(new ClientPrefsOpenedEvent(this));
     }
 
     public AggregateConfigProvider getConfigManager() {
@@ -626,7 +631,7 @@ public class PreferencesDialogModel {
      * @since 0.6
      */
     public void close() {
-        actionManager.triggerEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);
+        eventBus.post(new ClientPrefsClosedEvent());
     }
 
 }

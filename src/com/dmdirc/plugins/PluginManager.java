@@ -23,16 +23,18 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.prefs.PreferencesDialogModel;
+import com.dmdirc.events.ClientPrefsClosedEvent;
+import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.interfaces.ActionController;
-import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -54,7 +56,7 @@ import dagger.ObjectGraph;
 /**
  * Searches for and manages plugins and services.
  */
-public class PluginManager implements ActionListener, ServiceManager {
+public class PluginManager implements ServiceManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
@@ -80,6 +82,7 @@ public class PluginManager implements ActionListener, ServiceManager {
     /**
      * Creates a new instance of PluginManager.
      *
+     * @param eventBus            The event bus to subscribe to events on
      * @param identityController  The identity controller to use for configuration options.
      * @param actionController    The action controller to use for events.
      * @param updateManager       The update manager to inform about plugins.
@@ -88,6 +91,7 @@ public class PluginManager implements ActionListener, ServiceManager {
      * @param directory           The directory to load plugins from.
      */
     public PluginManager(
+            final EventBus eventBus,
             final IdentityController identityController,
             final ActionController actionController,
             final UpdateManager updateManager,
@@ -102,9 +106,7 @@ public class PluginManager implements ActionListener, ServiceManager {
         this.globalClassLoader = new GlobalClassLoader(this);
         this.objectGraph = objectGraph;
 
-        actionController.registerListener(this,
-                CoreActionType.CLIENT_PREFS_OPENED,
-                CoreActionType.CLIENT_PREFS_CLOSED);
+        eventBus.register(this);
     }
 
     /**
@@ -571,30 +573,29 @@ public class PluginManager implements ActionListener, ServiceManager {
         return new ArrayList<>(knownPlugins.values());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
-        if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
-            for (PluginInfo pi : getPluginInfos()) {
-                if (!pi.isLoaded() && !pi.isTempLoaded()) {
-                    pi.loadPluginTemp();
-                }
-                if (pi.isLoaded() || pi.isTempLoaded()) {
-                    try {
-                        pi.getPlugin().showConfig((PreferencesDialogModel) arguments[0]);
-                    } catch (LinkageError | Exception le) {
-                        Logger.appError(ErrorLevel.MEDIUM,
-                                "Unable to show plugin configuration for "
-                                + pi.getMetaData().getFriendlyName(), le);
-                    }
+    @Subscribe
+    public void handlePrefsOpened(final ClientPrefsOpenedEvent event) {
+        for (PluginInfo pi : getPluginInfos()) {
+            if (!pi.isLoaded() && !pi.isTempLoaded()) {
+                pi.loadPluginTemp();
+            }
+            if (pi.isLoaded() || pi.isTempLoaded()) {
+                try {
+                    pi.getPlugin().showConfig(event.getModel());
+                } catch (LinkageError | Exception le) {
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "Unable to show plugin configuration for "
+                            + pi.getMetaData().getFriendlyName(), le);
                 }
             }
-        } else if (type.equals(CoreActionType.CLIENT_PREFS_CLOSED)) {
-            for (PluginInfo pi : getPluginInfos()) {
-                if (pi.isTempLoaded()) {
-                    pi.unloadPlugin();
-                }
+        }
+    }
+
+    @Subscribe
+    public void handlePrefsClosed(final ClientPrefsClosedEvent event) {
+        for (PluginInfo pi : getPluginInfos()) {
+            if (pi.isTempLoaded()) {
+                pi.unloadPlugin();
             }
         }
     }
