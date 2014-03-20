@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -68,7 +69,7 @@ import javax.annotation.Nonnull;
  * channel.
  */
 @Factory(inject = true, providers = true, singleton = true)
-public class Channel extends MessageTarget implements ConfigChangeListener {
+public class Channel extends MessageTarget implements ConfigChangeListener, GroupChat {
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -155,11 +156,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         selfJoin();
     }
 
-    /**
-     * Gets an event bus which will only contain events generated in relation to this channel.
-     *
-     * @return An event bus scoped to this channel.
-     */
+    @Override
     public EventBus getEventBus() {
         return eventBus;
     }
@@ -173,6 +170,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         return tabCompleter;
     }
 
+    @Override
     public boolean isOnChannel() {
         return isOnChannel;
     }
@@ -289,29 +287,19 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         setTitle(temp);
     }
 
-    /**
-     * Joins the specified channel. This only makes sense if used after a call to part().
-     */
+    @Override
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
     }
 
-    /**
-     * Parts this channel with the specified message. Parting does NOT close the channel window.
-     *
-     * @param reason The reason for parting the channel
-     */
+    @Override
     public void part(final String reason) {
         channelInfo.part(reason);
 
         resetWindow();
     }
 
-    /**
-     * Requests all available list modes for this channel.
-     *
-     * @since 0.6.3
-     */
+    @Override
     public void retrieveListModes() {
         channelInfo.requestListModes();
     }
@@ -561,22 +549,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
         }, "Topic change listener runner").start();
     }
 
-    /**
-     * Retrieve the topics that have been seen on this channel.
-     *
-     * @return A list of topics that have been seen on this channel, including the current one.
-     */
+    @Override
     public List<Topic> getTopics() {
         synchronized (topics) {
             return new ArrayList<>(topics.getList());
         }
     }
 
-    /**
-     * Returns the current topic for this channel.
-     *
-     * @return Current channel topic
-     */
+    @Override
     public Topic getCurrentTopic() {
         synchronized (topics) {
             if (topics.getList().isEmpty()) {
@@ -588,58 +568,32 @@ public class Channel extends MessageTarget implements ConfigChangeListener {
     }
 
     // ------------------------------------------ PARSER METHOD DELEGATION -----
-    /**
-     * Attempts to set the topic of this channel.
-     *
-     * @param topic The new topic to be used. An empty string will clear the current topic
-     */
+    @Override
     public void setTopic(final String topic) {
         channelInfo.setTopic(topic);
     }
 
-    /**
-     * Retrieves the maximum length that a topic on this channel can be.
-     *
-     * @return The maximum length that this channel's topic may be
-     *
-     * @since 0.6.3
-     */
+    @Override
     public int getMaxTopicLength() {
         return server.getParser().getMaxTopicLength();
     }
 
-    /**
-     * Adds a nicklist listener to this channel.
-     *
-     * @param listener The listener to notify about nicklist changes.
-     */
+    @Override
     public void addNicklistListener(final NicklistListener listener) {
         listenerList.add(NicklistListener.class, listener);
     }
 
-    /**
-     * Removes a nicklist listener from this channel.
-     *
-     * @param listener The listener to be removed.
-     */
+    @Override
     public void removeNicklistListener(final NicklistListener listener) {
         listenerList.remove(NicklistListener.class, listener);
     }
 
-    /**
-     * Adds a topic change listener to this channel.
-     *
-     * @param listener The listener to notify about topic changes.
-     */
+    @Override
     public void addTopicChangeListener(final TopicChangeListener listener) {
         listenerList.add(TopicChangeListener.class, listener);
     }
 
-    /**
-     * Removes a topic change listener from this channel.
-     *
-     * @param listener The listener to be removed.
-     */
+    @Override
     public void removeTopicChangeListener(final TopicChangeListener listener) {
         listenerList.remove(TopicChangeListener.class, listener);
     }
