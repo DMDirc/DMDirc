@@ -35,6 +35,7 @@ __history
 /reports/deadcode.txt
 /reports/warnings*.txt
 /reports/build-log.txt
+/reports/tattletale/
 /etc/clover.license
 /etc/clover/clover.license
 /.clover

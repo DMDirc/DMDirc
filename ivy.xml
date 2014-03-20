@@ -38,6 +38,7 @@
         <dependency org="pmd" name="pmd" rev="4.+" conf="analyse->default" />
         <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="analyse->default" />
         <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.+" conf="analyse->default" />
+        <dependency org="org.jboss.tattletale" name="tattletale-ant" rev="1.2.0.Beta2" conf="analyse->default" />
 
         <dependency org="net.sf.proguard" name="proguard-anttask" rev="4.+" conf="analyse->default" />
 

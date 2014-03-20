@@ -7,10 +7,10 @@
     <target name="domostreports" depends="test-both,-mostreports,javadoc"
             description="Run all reports except Findbugs." />
 
-    <target name="checkstyle" depends="checkstyle-all, -move-index" description="Run checkstyle." /> 
+    <target name="checkstyle" depends="checkstyle-all, -move-index" description="Run checkstyle." />
 
-    <target name="-allreports" depends="findbugs, cpd, pmd, checkstyle" /> 
-    <target name="-mostreports" depends="cpd, pmd, checkstyle" /> 
+    <target name="-allreports" depends="findbugs, cpd, pmd, checkstyle" />
+    <target name="-mostreports" depends="cpd, pmd, checkstyle" />
 
     <target name="-init-checkstyle" depends="-init-dependencies">
         <taskdef resource="checkstyletask.properties" classpathref="analyse-classpath"/>
@@ -27,7 +27,7 @@
     <target name="-init-findbugs" depends="-init-dependencies">
         <taskdef name="findbugs" classpathref="analyse-classpath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
     </target>
-    
+
     <target name="checkstyle-all" depends="-init-checkstyle">
         <checkstyle config="etc/checkstyle/dmdirc.xml" failureProperty="checkstyle.failure" failOnViolation="false">
             <fileset dir="src/" includes="**/*.java" excludes="net/miginfocom/**"/>
@@ -38,11 +38,11 @@
         </checkstyle>
         <xslt in="reports/checkstyle.xml" out="reports/checkstyle.html" style="etc/checkstyle/checkstyle.xsl"/>
     </target>
-    
+
     <target name="-move-index">
         <copy file="etc/reports/sorttable.js" tofile="reports/sorttable.js"/>
     </target>
-    
+
     <target name="pmd" description="Run PMD." depends="-init-pmd">
         <pmd shortFilenames="true">
             <ruleset>etc/pmd/full.xml</ruleset>
@@ -75,7 +75,7 @@
         </cpd>
         <xslt in="reports/report-cpd.xml" style="etc/cpd/cpd.xslt" out="reports/report-cpd.html" />
     </target>
-    
+
     <target name="findbugs" depends="-init-findbugs,jar" description="Run Findbugs.">
         <mkdir dir="reports/findbugs" />
         <findbugs home="/usr/share/java/findbugs/" effort="max"
@@ -265,5 +265,15 @@
                 <filter token="COUNT" value="${warnings.count}"/>
             </filterset>
         </copy>
+    </target>
+
+    <target name="-init-tattletale">
+        <taskdef name="report"
+           classname="org.jboss.tattletale.ant.ReportTask"
+           classpathref="analyse-classpath"/>
+    </target>
+
+    <target name="tattletale" depends="-init-tattletale">
+        <report source="modules/plugins/dist/" destination="reports/tattletale/"/>
     </target>
 </project>
