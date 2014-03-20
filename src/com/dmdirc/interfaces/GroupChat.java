@@ -24,6 +24,7 @@ package com.dmdirc.interfaces;
 
 import com.dmdirc.Topic;
 
+import com.google.common.base.Optional;
 import com.google.common.eventbus.EventBus;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public interface GroupChat {
      *
      * @return Current channel topic
      */
-    Topic getCurrentTopic();
+    Optional<Topic> getCurrentTopic();
 
     /**
      * Gets an event bus which will only contain events generated in relation to this channel.

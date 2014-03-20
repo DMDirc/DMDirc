@@ -54,6 +54,8 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -135,36 +137,40 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final boolean isJoinTopic) {
         checkParser(parser);
 
-        final Topic newTopic = new Topic(channel.getTopic(),
-                channel.getTopicSetter(), channel.getTopicTime());
-
         if (isJoinTopic) {
-            if (newTopic.getTopic().isEmpty()) {
+            if (Strings.isNullOrEmpty(channel.getTopic())) {
                 final StringBuffer messageType = new StringBuffer("channelNoTopic");
                 triggerAction(messageType, CoreActionType.CHANNEL_NOTOPIC);
                 owner.doNotification(date, messageType.toString());
             } else {
+                final Topic newTopic = new Topic(channel.getTopic(), channel.getTopicSetter(),
+                        channel.getTopicTime());
                 final StringBuffer messageType = new StringBuffer("channelTopicDiscovered");
                 triggerAction(messageType, CoreActionType.CHANNEL_GOTTOPIC, newTopic);
                 owner.doNotification(date, messageType.toString(), newTopic);
             }
         } else {
             final StringBuffer messageType = new StringBuffer(
-                    channel.getTopic().isEmpty() ? "channelTopicRemoved" : "channelTopicChanged");
+                    Strings.isNullOrEmpty(channel.getTopic())
+                    ? "channelTopicRemoved" : "channelTopicChanged");
             triggerAction(messageType, CoreActionType.CHANNEL_TOPICCHANGE,
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
             owner.doNotification(date, messageType.toString(),
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
         }
 
+        final Optional<Topic> currentTopic = owner.getCurrentTopic();
+        final boolean hasNewTopic = !Strings.isNullOrEmpty(channel.getTopic());
         if (!isJoinTopic
-                || (owner.getCurrentTopic() == null && !newTopic.getTopic().isEmpty())
-                || (owner.getCurrentTopic() != null
-                && !newTopic.getTopic().equals(owner.getCurrentTopic().getTopic()))) {
-            // Only add the topic if it's being changed when we're on the
-            // channel (i.e., not a "joinTopic"), or if it's different to the
-            // one we're expecting
-            owner.addTopic(newTopic);
+                || (!currentTopic.isPresent() && hasNewTopic)
+                || (currentTopic.isPresent() && !channel.getTopic().equals(
+                        owner.getCurrentTopic().get().getTopic()))) {
+            // Only add the topic if:
+            //  - It's being set while we're in the channel (rather than discovered on join), or
+            //  - We think the current topic is empty and are discovering a new one, or
+            //  - The newly discovered topic is different to what we thought the current topic was.
+            owner.addTopic(new Topic(channel.getTopic(), channel.getTopicSetter(),
+                    channel.getTopicTime()));
         }
     }
 
@@ -384,9 +390,8 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         final StringBuffer messageType = new StringBuffer("channelListModeRetrieved");
-        triggerAction(messageType, CoreActionType.CHANNEL_LISTMODERETRIEVED,
-                Character.valueOf(mode));
-        owner.doNotification(date, messageType.toString(), Character.valueOf(mode));
+        triggerAction(messageType, CoreActionType.CHANNEL_LISTMODERETRIEVED, mode);
+        owner.doNotification(date, messageType.toString(), mode);
     }
 
     private boolean triggerAction(final StringBuffer messageType, final ActionType actionType,

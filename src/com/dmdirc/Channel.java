@@ -52,6 +52,7 @@ import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
+import com.google.common.base.Optional;
 import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -557,12 +558,12 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     }
 
     @Override
-    public Topic getCurrentTopic() {
+    public Optional<Topic> getCurrentTopic() {
         synchronized (topics) {
             if (topics.getList().isEmpty()) {
-                return null;
+                return Optional.absent();
             } else {
-                return topics.get(topics.getList().size() - 1);
+                return Optional.of(topics.get(topics.getList().size() - 1));
             }
         }
     }
