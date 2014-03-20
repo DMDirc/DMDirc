@@ -22,13 +22,14 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
+
+import javax.inject.Inject;
 
 /**
  * Manages preferences for the client.
@@ -37,11 +38,10 @@ import com.dmdirc.util.validators.OptionalValidator;
  */
 public class PreferencesManager {
 
-    /** Singleton instance of the preferences manager. */
-    private static PreferencesManager me;
     /** The action controller to fire events on. */
     private final ActionController actionController;
 
+    @Inject
     public PreferencesManager(final ActionController actionController) {
         this.actionController = actionController;
     }
@@ -243,19 +243,6 @@ public class PreferencesManager {
                 null, category, Boolean.FALSE);
 
         return category;
-    }
-
-    /**
-     * Retrieves a singleton instance of the PreferencesManager.
-     *
-     * @return The global PreferencesManager instance.
-     */
-    public static synchronized PreferencesManager getPreferencesManager() {
-        if (me == null) {
-            me = new PreferencesManager(ActionManager.getActionManager());
-        }
-
-        return me;
     }
 
 }

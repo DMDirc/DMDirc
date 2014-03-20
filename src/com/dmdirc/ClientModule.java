@@ -35,7 +35,6 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.LifecycleController;
@@ -282,11 +281,6 @@ public class ClientModule {
     @Singleton
     public ColourManager getColourManager(@GlobalConfig final AggregateConfigProvider globalConfig) {
         return new ColourManager(globalConfig);
-    }
-
-    @Provides
-    public PreferencesManager getPreferencesManager() {
-        return PreferencesManager.getPreferencesManager();
     }
 
     @Provides
