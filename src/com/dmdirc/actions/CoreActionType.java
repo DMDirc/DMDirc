@@ -77,8 +77,10 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     CLIENT_PREFS_OPENED(ClientEvents.CLIENT_EVENT_WITH_PREFS, "Preferences dialog opened"),
     /** Context-specific prefs requested. */
+    @Deprecated
     CLIENT_PREFS_REQUESTED(ClientEvents.CLIENT_EVENT_WITH_PREFS_CAT, "Preferences requested"),
     /** Prefs dialog closed. */
+    @Deprecated
     CLIENT_PREFS_CLOSED(ClientEvents.CLIENT_EVENT, "Preferences dialog opened"),
     /** Unknown command. */
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),

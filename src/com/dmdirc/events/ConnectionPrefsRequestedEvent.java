@@ -22,21 +22,21 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.config.prefs.PreferencesDialogModel;
+import com.dmdirc.config.prefs.PreferencesCategory;
 
 /**
- * Raised when the preferences dialog is opened.
+ * Raised when the connection preferences are requested.
  */
-public class ClientPrefsOpenedEvent extends PreferencesEvent {
+public class ConnectionPrefsRequestedEvent extends PreferencesEvent {
 
-    private final PreferencesDialogModel model;
+    private final PreferencesCategory category;
 
-    public ClientPrefsOpenedEvent(final PreferencesDialogModel model) {
-        this.model = model;
+    public ConnectionPrefsRequestedEvent(final PreferencesCategory category) {
+        this.category = category;
     }
 
-    public PreferencesDialogModel getModel() {
-        return model;
+    public PreferencesCategory getCategory() {
+        return category;
     }
 
 }

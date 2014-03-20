@@ -22,21 +22,9 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.config.prefs.PreferencesDialogModel;
-
 /**
- * Raised when the preferences dialog is opened.
+ * Grouped preferences events.
  */
-public class ClientPrefsOpenedEvent extends PreferencesEvent {
-
-    private final PreferencesDialogModel model;
-
-    public ClientPrefsOpenedEvent(final PreferencesDialogModel model) {
-        this.model = model;
-    }
-
-    public PreferencesDialogModel getModel() {
-        return model;
-    }
+public abstract class PreferencesEvent extends DMDircEvent {
 
 }
