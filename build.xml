@@ -74,30 +74,9 @@
         </jar>
     </target>
 
-    <target name="-bundle-guava" depends="-init-proguard">
-        <proguard>
-            -libraryjars ${java.home}/lib/rt.jar
-
-            -injars lib/main/guava.jar
-            -outjars build/guava.jar
-
-            -dontoptimize
-            -dontobfuscate
-            -dontpreverify
-            -dontwarn
-            -dontnote
-
-            -keep public class com.google.common.eventbus.* { *; }
-            -keep public class com.google.common.base.Charsets { *; }
-            -keep public class com.google.common.base.Joiner { *; }
-            -keep public class com.google.common.base.Preconditions { *; }
-            -keep public class com.google.common.base.Splitter { *; }
-            -keep public class com.google.common.collect.Iterables { *; }
-            -keep public class com.google.common.io.BaseEncoding { *; }
-      </proguard>
-
+    <target name="-bundle-guava">
       <jar destfile="${dist.jar}" update="true">
-          <zipfileset src="build/guava.jar" includes="com/google/**"/>
+          <zipfileset src="lib/main/guava.jar" includes="com/google/**"/>
       </jar>
     </target>
 
