@@ -36,6 +36,7 @@ import com.dmdirc.util.URLBuilder;
 import com.google.common.eventbus.EventBus;
 
 import java.net.URI;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,6 +66,7 @@ public class ServerTest {
     @Mock private StatusBarManager statusBarManager;
     @Mock private URLBuilder urlBuilder;
     @Mock private EventBus eventBus;
+    @Mock private ScheduledExecutorService executorService;
 
     private Server server;
 
@@ -90,6 +92,7 @@ public class ServerTest {
                 urlBuilder,
                 eventBus,
                 userConfig,
+                executorService,
                 new URI("irc-test://255.255.255.255"),
                 profile);
     }

@@ -34,12 +34,15 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -98,6 +101,8 @@ public class ServerManager implements ServerFactory {
         final Server server = serverFactoryImpl.getServer(
                 configProvider,
                 new ServerCommandParser(configProvider.getConfigProvider(), commandController.get()),
+                Executors.newScheduledThreadPool(1,
+                        new ThreadFactoryBuilder().setNameFormat("server-timer-%d").build()),
                 uri,
                 profile);
         registerServer(server);

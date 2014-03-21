@@ -81,9 +81,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -138,10 +139,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     private final Object myStateLock = new Object();
     /** The current state of this server. */
     private final ServerStatus myState = new ServerStatus(this, myStateLock);
-    /** The timer we're using to delay reconnects. */
-    private Timer reconnectTimer;
-    /** The timer we're using to send WHO requests. */
-    private final Timer whoTimer;
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter;
     /** Our reason for being away, if any. */
@@ -180,6 +177,12 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     private final ConfigProvider userSettings;
     /** The manager to use to add status bar messages. */
     private final StatusBarManager statusBarManager;
+    /** Executor service to use to schedule repeated events. */
+    private final ScheduledExecutorService executorService;
+    /** The future used when a who timer is scheduled. */
+    private ScheduledFuture<?> whoTimerFuture;
+    /** The future used when a reconnect timer is scheduled. */
+    private ScheduledFuture<?> reconnectTimerFuture;
 
     /**
      * Creates a new server which will connect to the specified URL with the specified profile.
@@ -201,6 +204,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
      * @param urlBuilder          The URL builder to use when finding icons.
      * @param eventBus            The event bus to despatch events onto.
      * @param userSettings        The config provider to write user settings to.
+     * @param executorService     The service to use to schedule events.
      * @param uri                 The address of the server to connect to
      * @param profile             The profile to use
      */
@@ -220,6 +224,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             final URLBuilder urlBuilder,
             final EventBus eventBus,
             @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
+            @Unbound final ScheduledExecutorService executorService,
             @Unbound final URI uri,
             @Unbound final ConfigProvider profile) {
         super("server-disconnected",
@@ -242,6 +247,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.rawFactory = rawFactory;
+        this.executorService = executorService;
         this.eventBus = eventBus;
         this.userSettings = userSettings;
         this.statusBarManager = statusBarManager;
@@ -252,17 +258,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL);
 
         updateIcon();
-
-        // TODO: Don't start timers in the constructor!
-        whoTimer = new Timer("Server Who Timer");
-        whoTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                for (Channel channel : channels.values()) {
-                    channel.checkWho();
-                }
-            }
-        }, 0, getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime"));
 
         getConfigManager().addChangeListener("formatter", "serverName", this);
         getConfigManager().addChangeListener("formatter", "serverTitle", this);
@@ -312,7 +307,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             switch (myState.getState()) {
                 case RECONNECT_WAIT:
                     log.debug("Cancelling reconnection timer");
-                    reconnectTimer.cancel();
+                    if (reconnectTimerFuture != null) {
+                        reconnectTimerFuture.cancel(false);
+                    }
                     break;
                 case CLOSING:
                     // Ignore the connection attempt
@@ -418,7 +415,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                     return;
                 case RECONNECT_WAIT:
                     log.debug("Cancelling reconnection timer");
-                    reconnectTimer.cancel();
+                    if (reconnectTimerFuture != null) {
+                        reconnectTimerFuture.cancel(false);
+                    }
                     break;
                 default:
                     break;
@@ -473,12 +472,9 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
             handleNotification("connectRetry", getAddress(), delay / 1000);
 
-            reconnectTimer = new Timer("Server Reconnect Timer");
-            reconnectTimer.schedule(new TimerTask() {
+            reconnectTimerFuture = executorService.schedule(new Runnable() {
                 @Override
                 public void run() {
-                    reconnectTimer.cancel();
-
                     synchronized (myStateLock) {
                         log.debug("Reconnect task executing, state: {}",
                                 myState.getState());
@@ -488,7 +484,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                         }
                     }
                 }
-            }, delay);
+            }, delay, TimeUnit.MILLISECONDS);
 
             log.info("Scheduling reconnect task for delay of {}", delay);
 
@@ -1036,7 +1032,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             // Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
             getConfigManager().removeListener(this);
-            whoTimer.cancel();
+            executorService.shutdown();
 
             // Trigger any actions neccessary
             disconnect();
@@ -1201,8 +1197,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         }
 
         ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_NUMERIC, target, this,
-                Integer.valueOf(numeric), tokens);
+                CoreActionType.SERVER_NUMERIC, target, this, numeric, tokens);
 
         handleNotification(target.toString(), (Object[]) tokens);
     }
@@ -1213,16 +1208,19 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     public void onSocketClosed() {
         log.info("Received socket closed event, state: {}", myState.getState());
 
+        if (whoTimerFuture != null) {
+            whoTimerFuture.cancel(false);
+        }
+
         if (Thread.holdsLock(myStateLock)) {
             log.info("State lock contended: rerunning on a new thread");
 
-            new Thread(new Runnable() {
-
+            executorService.schedule(new Runnable() {
                 @Override
                 public void run() {
                     onSocketClosed();
                 }
-            }, "Socket closed deferred thread").start();
+            }, 0, TimeUnit.SECONDS);
             return;
         }
 
@@ -1360,7 +1358,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
         ActionManager.getActionManager().triggerEvent(
                 CoreActionType.SERVER_NOPING, null, this,
-                Long.valueOf(parser.getPingTime()));
+                parser.getPingTime());
 
         if (parser.getPingTime()
                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
@@ -1407,6 +1405,16 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             join(requests.toArray(new ChannelJoinRequest[requests.size()]));
 
             checkModeAliases();
+
+            final int whoTime = getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime");
+            whoTimerFuture = executorService.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    for (Channel channel : channels.values()) {
+                        channel.checkWho();
+                    }
+                }
+            }, whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
         ActionManager.getActionManager().triggerEvent(

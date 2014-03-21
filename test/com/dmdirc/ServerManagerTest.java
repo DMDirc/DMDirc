@@ -34,10 +34,10 @@ import com.dmdirc.ui.WindowManager;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Provider;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +46,14 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagerTest {
@@ -81,7 +87,8 @@ public class ServerManagerTest {
         when(profile.isProfile()).thenReturn(true);
 
         when(serverFactoryImpl.getServer(eq(configProviderMigrator), any(CommandParser.class),
-                uriCaptor.capture(), eq(profile))).thenReturn(server);
+                any(ScheduledExecutorService.class), uriCaptor.capture(), eq(profile)))
+                .thenReturn(server);
     }
 
     @Test
