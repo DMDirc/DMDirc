@@ -24,25 +24,40 @@ package com.dmdirc;
 
 import com.dmdirc.commandline.BaseDirectoryLocator;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.updater.Version;
 
 /**
  * Utility class to help launcher interface with client.
  */
 public class LauncherUtils {
 
-    public native static void setDirectory(final String directory);
-
     /**
      * Retrieves the config directory from the CLI arguments.
      *
      * @param args CLI arguments
+     *
+     * @return Returns the config directory to use
      */
-    public static void getDirectory(final String... args) {
+    public static String getDirectory(final String... args) {
         final CommandLineParser cliParser = new CommandLineParser(null, null, null);
         final BaseDirectoryLocator locator = new BaseDirectoryLocator();
         cliParser.parse(args);
         final String configDirectory = cliParser.getConfigDirectory();
-        setDirectory(configDirectory == null ? locator.getDefaultBaseDirectory() : configDirectory);
+        return (configDirectory == null ? locator.getDefaultBaseDirectory() : configDirectory);
+    }
+
+    /**
+     * Compares the first version to the second version to check which is newer.
+     *
+     * @param version1 First version to compare
+     * @param version2 Second version to compare
+     *
+     * @return negative if older, 0 is equal, positive if newer.
+     */
+    public static int getIsNewer(final String version1, final String version2) {
+        final Version versionOne = new Version(version1);
+        final Version versionTwo = new Version(version2);
+        return versionOne.compareTo(versionTwo);
     }
 
 }
