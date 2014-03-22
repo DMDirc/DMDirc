@@ -29,12 +29,10 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 /**
  * A chat containing multiple participants.
  */
-public interface GroupChat {
+public interface GroupChat extends Chat {
 
     /**
      * Adds a nicklist listener to this channel.
@@ -51,14 +49,6 @@ public interface GroupChat {
     void addTopicChangeListener(final TopicChangeListener listener);
 
     /**
-     * Gets the connection that this chat is happening on.
-     *
-     * @return This chat's connection.
-     */
-    @Nonnull
-    Connection getConnection();
-
-    /**
      * Returns the current topic for this channel.
      *
      * @return Current channel topic
@@ -71,13 +61,6 @@ public interface GroupChat {
      * @return An event bus scoped to this channel.
      */
     EventBus getEventBus();
-
-    /**
-     * Gets the maximum length of a line that may be sent to this chat.
-     *
-     * @return The maximum line length that may be sent.
-     */
-    int getMaxLineLength();
 
     /**
      * Retrieves the maximum length that a topic on this channel can be.
@@ -130,21 +113,6 @@ public interface GroupChat {
      * Requests all available list modes for this channel.
      */
     void retrieveListModes();
-
-    /**
-     * Sends an action to the chat. If an action is too long to be sent, an error will be displayed.
-     *
-     * @param action The action to be sent.
-     */
-    void sendAction(final String action);
-
-    /**
-     * Sends a line of text to the chat. If a line is too long to be sent, it will be split and sent
-     * as multiple lines.
-     *
-     * @param line The line to be sent.
-     */
-    void sendLine(final String line);
 
     /**
      * Attempts to set the topic of this channel.

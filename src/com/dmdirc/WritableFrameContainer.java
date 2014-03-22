@@ -45,7 +45,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /** The name of the channel notification target. */
     protected static final String NOTIFICATION_CHANNEL = "channel";
     /** The command parser used for commands in this container. */
-    protected final CommandParser commandParser;
+    private final CommandParser commandParser;
     /** The manager to use to despatch messages to sinks. */
     private final MessageSinkManager messageSinkManager;
     /** The tab completer to use. */

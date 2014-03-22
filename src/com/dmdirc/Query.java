@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -62,7 +63,7 @@ import java.util.List;
 @Factory(inject = true, providers = true, singleton = true)
 public class Query extends MessageTarget implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener,
-        CompositionStateChangeListener {
+        CompositionStateChangeListener, PrivateChat {
 
     /** The Server this Query is on. */
     private final Server server;
@@ -117,18 +118,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         sendLine(line, getNickname());
     }
 
-    /**
-     * Sends a line to the recipient of this query using the specified nickname or hostmask as a
-     * target. This allows for users to send messages with a server specified (e.g.
-     * <code>nick@server</code>) as though the query wasn't open.
-     * <p>
-     * The caller is responsible for ensuring that the <code>target</code> does actually correspond
-     * to this query.
-     *
-     * @since 0.6.4
-     * @param line   The line to be sent
-     * @param target The target to send the line to
-     */
+    @Override
     public void sendLine(final String line, final String target) {
         if (server.getState() != ServerState.CONNECTED) {
             Toolkit.getDefaultToolkit().beep();
@@ -165,11 +155,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 .getMaxLength("PRIVMSG", host) : -1;
     }
 
-    /**
-     * Sends a private action to the remote user.
-     *
-     * @param action action text to send
-     */
     @Override
     public void sendAction(final String action) {
         if (server.getState() != ServerState.CONNECTED) {
@@ -329,20 +314,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
-    /**
-     * Returns the host that this query is with.
-     *
-     * @return The full host that this query is with
-     */
+    @Override
     public String getHost() {
         return host;
     }
 
-    /**
-     * Returns the current nickname of the user that this query is with.
-     *
-     * @return The nickname of this query's user
-     */
+    @Override
     public String getNickname() {
         return nickname;
     }
