@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Collection;
@@ -42,6 +43,7 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * @param title              The title of this target
      * @param config             The config manager to use for this target
      * @param parser             The command parser for this container
+     * @param tabCompleter       The tab completer to use
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param urlBuilder         The URL builder to use when finding icons.
      * @param components         The UI components that this frame requires
@@ -54,10 +56,12 @@ public abstract class MessageTarget extends WritableFrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final CommandParser parser,
+            final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final Collection<String> components) {
-        super(icon, name, title, config, parser, messageSinkManager, urlBuilder, components);
+        super(icon, name, title, config, parser, tabCompleter, messageSinkManager, urlBuilder,
+                components);
     }
 
     /**

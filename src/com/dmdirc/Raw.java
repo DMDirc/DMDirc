@@ -33,7 +33,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
@@ -67,6 +66,7 @@ public class Raw extends WritableFrameContainer
             final URLBuilder urlBuilder) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
                 new ServerCommandParser(newServer.getConfigManager(), commandController),
+                newServer.getTabCompleter(),
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
@@ -127,11 +127,6 @@ public class Raw extends WritableFrameContainer
     @Override
     public int getMaxLineLength() {
         return server.getMaxLineLength();
-    }
-
-    @Override
-    public TabCompleter getTabCompleter() {
-        return server.getTabCompleter();
     }
 
 }

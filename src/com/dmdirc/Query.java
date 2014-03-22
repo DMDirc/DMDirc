@@ -43,7 +43,6 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
@@ -71,8 +70,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
     private String host;
     /** The nickname of the client associated with this query. */
     private String nickname;
-    /** The tab completer for the query window. */
-    private final TabCompleter tabCompleter;
 
     /**
      * Creates a new instance of Query.
@@ -93,7 +90,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final URLBuilder urlBuilder) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
-                newServer.getConfigManager(), new QueryCommandParser(newServer, commandController),
+                newServer.getConfigManager(),
+                new QueryCommandParser(newServer, commandController),
+                tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
+                        newServer.getConfigManager(),
+                        CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
@@ -104,19 +105,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
 
-        tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
-                getConfigManager(), CommandType.TYPE_QUERY, CommandType.TYPE_CHAT);
-
         if (!server.getState().isDisconnected()) {
             reregister();
         }
 
         updateTitle();
-    }
-
-    @Override
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
     }
 
     @Override

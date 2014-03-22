@@ -33,7 +33,6 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
@@ -47,9 +46,6 @@ import javax.inject.Singleton;
  * A window which can be used to execute global commands.
  */
 public class GlobalWindow extends WritableFrameContainer {
-
-    /** The tab completer we use. */
-    private final TabCompleter tabCompleter;
 
     /**
      * Creates a new instance of GlobalWindow.
@@ -66,16 +62,13 @@ public class GlobalWindow extends WritableFrameContainer {
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder) {
-        super("icon", "Global", "(Global)", config, parser, messageSinkManager, urlBuilder,
+        super("icon", "Global", "(Global)", config, parser,
+                tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
+                messageSinkManager,
+                urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
-
-        tabCompleter = tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL);
-    }
-
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
     }
 
     @Override

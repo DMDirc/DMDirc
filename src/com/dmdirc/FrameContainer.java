@@ -436,8 +436,7 @@ public abstract class FrameContainer {
                     timestamp),
                     myLine,});
             } else {
-                lines.add(new String[]{
-                    myLine,});
+                lines.add(new String[]{myLine});
             }
 
             ActionManager.getActionManager().triggerEvent(

@@ -48,6 +48,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
     protected final CommandParser commandParser;
     /** The manager to use to despatch messages to sinks. */
     private final MessageSinkManager messageSinkManager;
+    /** The tab completer to use. */
+    private final TabCompleter tabCompleter;
 
     /**
      * Creates a new WritableFrameContainer.
@@ -57,6 +59,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param title              The title of this container
      * @param config             The config manager for this container
      * @param parser             The command parser for this container
+     * @param tabCompleter       The tab completer to use.
      * @param messageSinkManager The sink manager to use to despatch messages
      * @param urlBuilder         The URL builder to use when finding icons.
      * @param components         The UI components that this frame requires
@@ -69,12 +72,14 @@ public abstract class WritableFrameContainer extends FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final CommandParser parser,
+            final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final Collection<String> components) {
         super(icon, name, title, config, urlBuilder, components);
 
         this.commandParser = parser;
+        this.tabCompleter = tabCompleter;
         this.messageSinkManager = messageSinkManager;
         parser.setOwner(this);
     }
@@ -100,7 +105,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
      *
      * @return This container's tab completer
      */
-    public abstract TabCompleter getTabCompleter();
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
+    }
 
     /**
      * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it

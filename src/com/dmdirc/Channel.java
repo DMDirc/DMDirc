@@ -40,7 +40,6 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
@@ -78,8 +77,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     private ChannelInfo channelInfo;
     /** The server this channel is on. */
     private final Server server;
-    /** The tabcompleter used for this channel. */
-    private final TabCompleter tabCompleter;
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
     /** Our event handler. */
@@ -122,6 +119,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 new ChannelCommandParser(newServer, commandController),
+                tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
+                        configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
+                        CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
@@ -146,9 +146,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
         showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
         showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
 
-        tabCompleter = tabCompleterFactory.getTabCompleter(server.getTabCompleter(),
-                getConfigManager(), CommandType.TYPE_CHANNEL, CommandType.TYPE_CHAT);
-
         eventHandler = new ChannelEventHandler(this, eventBus);
 
         registerCallbacks();
@@ -164,11 +161,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
 
     public ChannelInfo getChannelInfo() {
         return channelInfo;
-    }
-
-    @Override
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
     }
 
     @Override
@@ -359,7 +351,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     public void addClient(final ChannelClientInfo client) {
         listenerList.getCallable(NicklistListener.class).clientAdded(client);
 
-        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
+        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK,
+                client.getClient().getNickname());
     }
 
     /**
@@ -370,7 +363,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     public void removeClient(final ChannelClientInfo client) {
         listenerList.getCallable(NicklistListener.class).clientRemoved(client);
 
-        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
+        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
+                client.getClient().getNickname());
 
         if (client.getClient().equals(server.getParser().getLocalClient())) {
             resetWindow();
@@ -385,10 +379,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     public void setClients(final Collection<ChannelClientInfo> clients) {
         listenerList.getCallable(NicklistListener.class).clientListUpdated(clients);
 
-        tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
+        getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
         for (ChannelClientInfo client : clients) {
-            tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getClient().getNickname());
+            getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK,
+                    client.getClient().getNickname());
         }
     }
 
@@ -399,8 +394,8 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
      * @param newName The new nickname of the client
      */
     public void renameClient(final String oldName, final String newName) {
-        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, oldName);
-        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, newName);
+        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, oldName);
+        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, newName);
         refreshClients();
     }
 

@@ -57,7 +57,6 @@ import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
@@ -139,8 +138,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     private final Object myStateLock = new Object();
     /** The current state of this server. */
     private final ServerStatus myState = new ServerStatus(this, myStateLock);
-    /** The tabcompleter used for this server. */
-    private final TabCompleter tabCompleter;
     /** Our reason for being away, if any. */
     private String awayMessage;
     /** Our event handler. */
@@ -232,6 +229,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 getHost(uri),
                 configMigrator.getConfigProvider(),
                 commandParser,
+                tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
+                        CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
                 messageSinkManager,
                 urlBuilder,
                 Arrays.asList(
@@ -253,9 +252,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
         this.statusBarManager = statusBarManager;
 
         setConnectionDetails(uri, profile);
-
-        tabCompleter = tabCompleterFactory.getTabCompleter(getConfigManager(),
-                CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL);
 
         updateIcon();
 
@@ -537,7 +533,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             ActionManager.getActionManager().triggerEvent(
                     CoreActionType.QUERY_OPENED, null, newQuery);
 
-            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, nick);
+            getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
         }
 
@@ -546,8 +542,8 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     @Override
     public void updateQuery(final Query query, final String oldNick, final String newNick) {
-        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, oldNick);
-        tabCompleter.addEntry(TabCompletionType.QUERY_NICK, newNick);
+        getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, oldNick);
+        getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, newNick);
 
         queries.put(converter.toLowerCase(newNick), query);
         queries.remove(converter.toLowerCase(oldNick));
@@ -560,7 +556,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     @Override
     public void delQuery(final Query query) {
-        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
+        getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
     }
 
@@ -588,7 +584,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
 
     @Override
     public void delChannel(final String chan) {
-        tabCompleter.removeEntry(TabCompletionType.CHANNEL, chan);
+        getTabCompleter().removeEntry(TabCompletionType.CHANNEL, chan);
         channels.remove(converter.toLowerCase(chan));
     }
 
@@ -621,7 +617,7 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
             windowManager.addWindow(this, newChan, focus);
             eventBus.post(new ChannelOpenedEvent(newChan));
 
-            tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
+            getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
         }
 
@@ -1007,11 +1003,6 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
     @Override
     public String getAwayMessage() {
         return awayMessage;
-    }
-
-    @Override
-    public TabCompleter getTabCompleter() {
-        return tabCompleter;
     }
 
     @Override

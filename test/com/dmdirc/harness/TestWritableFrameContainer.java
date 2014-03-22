@@ -34,7 +34,7 @@ import com.dmdirc.util.URLBuilder;
 
 import java.util.Collections;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class TestWritableFrameContainer extends WritableFrameContainer {
 
@@ -44,7 +44,9 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder) {
         super("raw", "Raw", "(Raw)", cm,
-                new GlobalCommandParser(cm, commandManager), messageSinkManager, urlBuilder,
+                new GlobalCommandParser(cm, commandManager),
+                new TabCompleter(mock(CommandController.class), cm),
+                messageSinkManager, urlBuilder,
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;
@@ -65,8 +67,4 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
         return null;
     }
 
-    @Override
-    public TabCompleter getTabCompleter() {
-        return new TabCompleter(mock(CommandController.class), getConfigManager());
-    }
 }
