@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.input.InputHandler;
 
 /**
@@ -37,13 +36,5 @@ public interface InputWindow extends Window {
      * @return This window's input handler
      */
     InputHandler getInputHandler();
-
-    /**
-     * Retrieves the container that owns this command window.
-     *
-     * @return The container that owns this command window.
-     */
-    @Override
-    WritableFrameContainer getContainer();
 
 }

@@ -99,7 +99,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
 @Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
-public class Server extends WritableFrameContainer implements ConfigChangeListener,
+public class Server extends FrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
@@ -228,11 +228,11 @@ public class Server extends WritableFrameContainer implements ConfigChangeListen
                 getHost(uri),
                 getHost(uri),
                 configMigrator.getConfigProvider(),
+                urlBuilder,
                 commandParser,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
                         CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
                 messageSinkManager,
-                urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),

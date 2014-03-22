@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 
 /**
@@ -40,6 +40,6 @@ public interface WrappableCommand {
      *
      * @since 0.6.3m1
      */
-    int getLineCount(WritableFrameContainer origin, CommandArguments arguments);
+    int getLineCount(FrameContainer origin, CommandArguments arguments);
 
 }

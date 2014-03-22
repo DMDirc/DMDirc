@@ -22,7 +22,7 @@
 
 package com.dmdirc.messages;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.Formatter;
@@ -58,7 +58,7 @@ public class StatusBarMessageSink implements MessageSink {
     /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
-            final WritableFrameContainer source,
+            final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         final String message = Formatter.formatMessage(source.getConfigManager(),

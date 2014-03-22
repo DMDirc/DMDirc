@@ -22,9 +22,9 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -149,12 +149,12 @@ public class ActionModel {
             return false;
         }
 
-        WritableFrameContainer container = null;
+        FrameContainer container = null;
         CommandParser cp;
 
-        if (arguments.length > 0
-                && arguments[0] instanceof WritableFrameContainer) {
-            container = (WritableFrameContainer) arguments[0];
+        if (arguments.length > 0 && arguments[0] instanceof FrameContainer
+                && ((FrameContainer) arguments[0]).isWritable()) {
+            container = (FrameContainer) arguments[0];
         } else if (serverManager.numServers() > 0) {
             container = serverManager.getServers().get(0);
         }

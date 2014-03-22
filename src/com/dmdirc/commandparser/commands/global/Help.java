@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -82,8 +81,8 @@ public class Help extends Command implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
-        final List<String> commands = new ArrayList<>(((WritableFrameContainer) origin)
-                .getCommandParser().getCommands().keySet());
+        final List<String> commands = new ArrayList<>(origin.getCommandParser()
+                .getCommands().keySet());
 
         Collections.sort(commands);
 

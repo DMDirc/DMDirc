@@ -22,7 +22,7 @@
 
 package com.dmdirc.messages;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
@@ -73,8 +73,8 @@ public class MessageSinkManager {
      * @param messageType The type (or 'format') of the message
      * @param args        The message arguments
      */
-    public void despatchMessage(final WritableFrameContainer source,
-            final Date date, final String messageType, final Object... args) {
+    public void despatchMessage(final FrameContainer source, final Date date,
+            final String messageType, final Object... args) {
         final String target;
         if (source.getConfigManager().hasOptionString(CONFIG_DOMAIN, messageType)) {
             target = source.getConfigManager().getOption(CONFIG_DOMAIN, messageType);
@@ -94,7 +94,7 @@ public class MessageSinkManager {
      * @param targetSink  The textual representation of the destination sink
      * @param args        The message arguments
      */
-    public void despatchMessage(final WritableFrameContainer source,
+    public void despatchMessage(final FrameContainer source,
             final Date date, final String messageType, final String targetSink,
             final Object... args) {
         for (MessageSink sink : sinks) {

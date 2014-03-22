@@ -22,7 +22,7 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
@@ -36,17 +36,17 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.mock;
 
-public class TestWritableFrameContainer extends WritableFrameContainer {
+public class TestWritableFrameContainer extends FrameContainer {
 
     private final int lineLength;
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder) {
-        super("raw", "Raw", "(Raw)", cm,
+        super("raw", "Raw", "(Raw)", cm, urlBuilder,
                 new GlobalCommandParser(cm, commandManager),
                 new TabCompleter(mock(CommandController.class), cm),
-                messageSinkManager, urlBuilder,
+                messageSinkManager,
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;

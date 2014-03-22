@@ -45,8 +45,7 @@ import java.util.Date;
  * server).
  */
 @Factory(inject = true, providers = true, singleton = true)
-public class Raw extends WritableFrameContainer
-        implements DataInListener, DataOutListener {
+public class Raw extends FrameContainer implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
     private final Server server;
@@ -64,11 +63,10 @@ public class Raw extends WritableFrameContainer
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder) {
-        super("raw", "Raw", "(Raw log)", newServer.getConfigManager(),
+        super("raw", "Raw", "(Raw log)", newServer.getConfigManager(), urlBuilder,
                 new ServerCommandParser(newServer.getConfigManager(), commandController),
                 newServer.getTabCompleter(),
                 messageSinkManager,
-                urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

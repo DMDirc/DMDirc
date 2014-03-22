@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.chat;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -72,7 +71,7 @@ public class Me extends Command implements ValidatingCommand {
 
     @Override
     public ValidationResponse validateArguments(
-            final WritableFrameContainer origin,
+            final FrameContainer origin,
             final CommandArguments arguments) {
         if (origin.getConnection() == null
                 || origin.getConnection().getParser() == null) {

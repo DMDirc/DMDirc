@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -251,7 +251,7 @@ public class TabCompleter {
      * @since 0.6.4
      */
     private static AdditionalTabTargets getIntelligentResults(
-            final WritableFrameContainer window,
+            final FrameContainer window,
             final CommandArguments args, final String partial) {
         if (!args.isCommand()) {
             return null;
@@ -294,7 +294,7 @@ public class TabCompleter {
      * @since 0.6.4
      */
     public static AdditionalTabTargets getIntelligentResults(
-            final WritableFrameContainer window, final String text,
+            final FrameContainer window, final String text,
             final String partial) {
         return getIntelligentResults(window,
                 new CommandArguments(window.getCommandParser().getCommandManager(), text), partial);

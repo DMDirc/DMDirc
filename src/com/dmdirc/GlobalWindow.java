@@ -45,7 +45,7 @@ import javax.inject.Singleton;
 /**
  * A window which can be used to execute global commands.
  */
-public class GlobalWindow extends WritableFrameContainer {
+public class GlobalWindow extends FrameContainer {
 
     /**
      * Creates a new instance of GlobalWindow.
@@ -62,10 +62,9 @@ public class GlobalWindow extends WritableFrameContainer {
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder) {
-        super("icon", "Global", "(Global)", config, parser,
+        super("icon", "Global", "(Global)", config, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager,
-                urlBuilder,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

@@ -36,8 +36,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class WritableFrameContainerTest {
 
@@ -60,7 +61,7 @@ public class WritableFrameContainerTest {
 
     @Test
     public void testGetNumLines() {
-        final WritableFrameContainer container10
+        final FrameContainer container10
                 = new TestWritableFrameContainer(10, acp, commands, messageSinkManager, urlBuilder);
 
         final int res0a = container10.getNumLines("");
@@ -90,7 +91,7 @@ public class WritableFrameContainerTest {
 
     @Test
     public void testSplitLine() {
-        final WritableFrameContainer container10
+        final FrameContainer container10
                 = new TestWritableFrameContainer(10, acp, commands, messageSinkManager, urlBuilder);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},

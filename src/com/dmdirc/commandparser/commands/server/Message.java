@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -113,8 +112,7 @@ public class Message extends Command implements IntelligentCommand,
     }
 
     @Override
-    public int getLineCount(final WritableFrameContainer origin,
-            final CommandArguments arguments) {
+    public int getLineCount(final FrameContainer origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
             return ((Server) origin.getConnection()).getNumLines("PRIVMSG "

@@ -25,7 +25,6 @@ package com.dmdirc.messages;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -64,7 +63,7 @@ public class CustomWindowMessageSink implements MessageSink {
 
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
-            final WritableFrameContainer source,
+            final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         FrameContainer targetWindow = windowManager

@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
@@ -31,14 +32,20 @@ import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.base.Optional;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -47,6 +54,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * The frame container implements basic methods that should be present in all objects that handle a
@@ -84,6 +93,26 @@ public abstract class FrameContainer {
     private final Object documentSync = new Object();
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
+    /** Whether or not this container is writable. */
+    private final boolean writable;
+    /**
+     * The command parser used for commands in this container.
+     * <p>
+     * Only defined if this container is {@link #writable}.
+     */
+    private final Optional<CommandParser> commandParser;
+    /**
+     * The manager to use to despatch messages to sinks.
+     * <p>
+     * Only defined if this container is {@link #writable}.
+     */
+    private final Optional<MessageSinkManager> messageSinkManager;
+    /**
+     * The tab completer to use.
+     * <p>
+     * Only defined if this container is {@link #writable}.
+     */
+    private final Optional<TabCompleter> tabCompleter;
 
     /**
      * Instantiate new frame container.
@@ -109,6 +138,49 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
+        this.writable = false;
+        this.commandParser = Optional.absent();
+        this.tabCompleter = Optional.absent();
+        this.messageSinkManager = Optional.absent();
+
+        setIcon(icon);
+    }
+
+    /**
+     * Instantiate new frame container that accepts user input.
+     *
+     * @param icon               The icon to use for this container
+     * @param name               The name of this container
+     * @param title              The title of this container
+     * @param config             The config manager for this container
+     * @param urlBuilder         The URL builder to use when finding icons.
+     * @param commandParser      The command parser to use for input.
+     * @param tabCompleter       The tab completer to use.
+     * @param messageSinkManager The manager to use to despatch notifications.
+     * @param components         The UI components that this frame requires
+     *
+     * @since 0.6.4
+     */
+    protected FrameContainer(
+            final String icon,
+            final String name,
+            final String title,
+            final AggregateConfigProvider config,
+            final URLBuilder urlBuilder,
+            final CommandParser commandParser,
+            final TabCompleter tabCompleter,
+            final MessageSinkManager messageSinkManager,
+            final Collection<String> components) {
+        this.configManager = config;
+        this.name = name;
+        this.title = title;
+        this.components = new HashSet<>(components);
+        this.iconManager = new IconManager(configManager, urlBuilder);
+        this.writable = true;
+        this.commandParser = Optional.of(commandParser);
+        this.tabCompleter = Optional.of(tabCompleter);
+        this.messageSinkManager = Optional.of(messageSinkManager);
+        commandParser.setOwner(this);
 
         setIcon(icon);
     }
@@ -135,6 +207,10 @@ public abstract class FrameContainer {
 
     public AggregateConfigProvider getConfigManager() {
         return configManager;
+    }
+
+    public boolean isWritable() {
+        return writable;
     }
 
     /**
@@ -520,6 +596,204 @@ public abstract class FrameContainer {
      */
     public void removeFrameInfoListener(final FrameInfoListener listener) {
         listeners.remove(FrameInfoListener.class, listener);
+    }
+
+    /**
+     * Sends a line of text to this container's source.
+     *
+     * @param line The line to be sent
+     */
+    public void sendLine(final String line) {
+        throw new UnsupportedOperationException("Container doesn't override sendLine");
+    }
+
+    /**
+     * Retrieves the command parser to be used for this container.
+     *
+     * @return This container's command parser
+     */
+    public CommandParser getCommandParser() {
+        checkState(writable);
+        return commandParser.get();
+    }
+
+    /**
+     * Retrieves the tab completer which should be used for this cotnainer.
+     *
+     * @return This container's tab completer
+     */
+    public TabCompleter getTabCompleter() {
+        checkState(writable);
+        return tabCompleter.get();
+    }
+
+    /**
+     * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it
+     * being truncated or causing protocol violations.
+     *
+     * @return The maximum line length for this container
+     */
+    public int getMaxLineLength() {
+        throw new UnsupportedOperationException("Container doesn't override getMaxLineLength");
+    }
+
+    /**
+     * Splits the specified line into chunks that contain a number of bytes less than or equal to
+     * the value returned by {@link #getMaxLineLength()}.
+     *
+     * @param line The line to be split
+     *
+     * @return An ordered list of chunks of the desired length
+     */
+    protected List<String> splitLine(final String line) {
+        final List<String> result = new ArrayList<>();
+
+        if (line.indexOf('\n') > -1) {
+            for (String part : line.split("\n")) {
+                result.addAll(splitLine(part));
+            }
+        } else {
+            final StringBuilder remaining = new StringBuilder(line);
+
+            while (getMaxLineLength() > -1 && remaining.toString().getBytes().length
+                    > getMaxLineLength()) {
+                int number = Math.min(remaining.length(), getMaxLineLength());
+
+                while (remaining.substring(0, number).getBytes().length > getMaxLineLength()) {
+                    number--;
+                }
+
+                result.add(remaining.substring(0, number));
+                remaining.delete(0, number);
+            }
+
+            result.add(remaining.toString());
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the number of lines that the specified string would be sent as.
+     *
+     * @param line The string to be split and sent
+     *
+     * @return The number of lines required to send the specified string
+     */
+    public final int getNumLines(final String line) {
+        final String[] splitLines = line.split("(\n|\r\n|\r)", Integer.MAX_VALUE);
+        int lines = 0;
+
+        for (String splitLine : splitLines) {
+            if (getMaxLineLength() <= 0) {
+                lines++;
+            } else {
+                lines += (int) Math.ceil(splitLine.getBytes().length
+                        / (double) getMaxLineLength());
+            }
+        }
+
+        return lines;
+    }
+
+    /**
+     * Processes and displays a notification.
+     *
+     * @param messageType The name of the formatter to be used for the message
+     * @param args        The arguments for the message
+     *
+     * @return True if any further behaviour should be executed, false otherwise
+     */
+    public boolean doNotification(final String messageType, final Object... args) {
+        return doNotification(new Date(), messageType, args);
+    }
+
+    /**
+     * Processes and displays a notification.
+     *
+     * @param date        The date/time at which the event occured
+     * @param messageType The name of the formatter to be used for the message
+     * @param args        The arguments for the message
+     *
+     * @return True if any further behaviour should be executed, false otherwise
+     */
+    public boolean doNotification(final Date date, final String messageType, final Object... args) {
+        final List<Object> messageArgs = new ArrayList<>();
+        final List<Object> actionArgs = new ArrayList<>();
+        final StringBuffer buffer = new StringBuffer(messageType);
+
+        actionArgs.add(this);
+
+        for (Object arg : args) {
+            actionArgs.add(arg);
+
+            if (!processNotificationArg(arg, messageArgs)) {
+                messageArgs.add(arg);
+            }
+        }
+
+        modifyNotificationArgs(actionArgs, messageArgs);
+
+        handleNotification(date, buffer.toString(), messageArgs.toArray());
+
+        return true;
+    }
+
+    /**
+     * Allows subclasses to modify the lists of arguments for notifications.
+     *
+     * @param actionArgs  The list of arguments to be passed to the actions system
+     * @param messageArgs The list of arguments to be passed to the formatter
+     */
+    protected void modifyNotificationArgs(final List<Object> actionArgs,
+            final List<Object> messageArgs) {
+        // Do nothing
+    }
+
+    /**
+     * Allows subclasses to process specific types of notification arguments.
+     *
+     * @param arg  The argument to be processed
+     * @param args The list of arguments that any data should be appended to
+     *
+     * @return True if the arg has been processed, false otherwise
+     */
+    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
+        return false;
+    }
+
+    /**
+     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
+     * select where the notifications should go in their config.
+     *
+     * @param messageType The type of message that is being sent
+     * @param args        The arguments for the message
+     */
+    public void handleNotification(final String messageType, final Object... args) {
+        handleNotification(new Date(), messageType, args);
+    }
+
+    /**
+     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
+     * select where the notifications should go in their config.
+     *
+     * @param date        The date/time at which the event occured
+     * @param messageType The type of message that is being sent
+     * @param args        The arguments for the message
+     */
+    public void handleNotification(final Date date, final String messageType, final Object... args) {
+        checkState(writable);
+        messageSinkManager.get().despatchMessage(this, date, messageType, args);
+    }
+
+    /**
+     * Sets the composition state for the local user for this chat.
+     *
+     * @param state The new composition state
+     */
+    public void setCompositionState(final CompositionState state) {
+        // Default implementation does nothing. Subclasses that support
+        // composition should override this.
     }
 
     /**

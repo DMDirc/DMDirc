@@ -33,7 +33,7 @@ import java.util.Collection;
 /**
  * Defines common methods for objects that you can send messages to (such as channels and queries).
  */
-public abstract class MessageTarget extends WritableFrameContainer {
+public abstract class MessageTarget extends FrameContainer {
 
     /**
      * Creates a new MessageTarget.
@@ -60,7 +60,7 @@ public abstract class MessageTarget extends WritableFrameContainer {
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final Collection<String> components) {
-        super(icon, name, title, config, parser, tabCompleter, messageSinkManager, urlBuilder,
+        super(icon, name, title, config, urlBuilder, parser, tabCompleter, messageSinkManager,
                 components);
     }
 

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -30,6 +31,7 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
@@ -40,11 +42,13 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public class ServerTest {
@@ -58,6 +62,7 @@ public class ServerTest {
     @Mock private ParserFactory parserFactory;
     @Mock private IdentityFactory identityFactory;
     @Mock private TabCompleterFactory tabCompleterFactory;
+    @Mock private TabCompleter tabCompleter;
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private WindowManager windowManager;
     @Mock private ChannelFactory channelFactory;
@@ -75,6 +80,8 @@ public class ServerTest {
         MockitoAnnotations.initMocks(this);
         when(configManager.getOptionInt(anyString(), anyString())).thenReturn(Integer.MAX_VALUE);
         when(configMigrator.getConfigProvider()).thenReturn(configManager);
+        when(tabCompleterFactory.getTabCompleter(eq(configManager),
+                Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
 
         server = new Server(
                 serverManager,

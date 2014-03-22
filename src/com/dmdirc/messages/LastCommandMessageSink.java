@@ -24,7 +24,6 @@ package com.dmdirc.messages;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.WritableFrameContainer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +48,7 @@ public class LastCommandMessageSink implements MessageSink {
     /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager despatcher,
-            final WritableFrameContainer source,
+            final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         final Object[] escapedargs = new Object[args.length];
@@ -60,7 +59,7 @@ public class LastCommandMessageSink implements MessageSink {
 
         final String command = String.format(patternMatches[0], escapedargs);
 
-        WritableFrameContainer best = source;
+        FrameContainer best = source;
         long besttime = 0;
 
         final List<FrameContainer> containers = new ArrayList<>();
@@ -69,15 +68,14 @@ public class LastCommandMessageSink implements MessageSink {
         containers.addAll(((Server) source.getConnection()).getChildren());
 
         for (FrameContainer container : containers) {
-            if (!(container instanceof WritableFrameContainer)) {
+            if (!container.isWritable()) {
                 continue;
             }
 
-            final long time = ((WritableFrameContainer) container)
-                    .getCommandParser().getCommandTime(command);
+            final long time = container.getCommandParser().getCommandTime(command);
             if (time > besttime) {
                 besttime = time;
-                best = (WritableFrameContainer) container;
+                best = container;
             }
         }
 

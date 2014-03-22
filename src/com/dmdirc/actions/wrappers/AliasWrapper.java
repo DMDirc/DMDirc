@@ -23,7 +23,6 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
@@ -91,9 +90,8 @@ public class AliasWrapper extends ActionGroup {
                 aliases.add(commandName);
 
                 for (FrameContainer root : windowManager.getRootWindows()) {
-                    if (root instanceof WritableFrameContainer) {
-                        ((WritableFrameContainer) root).getTabCompleter()
-                                .addEntry(TabCompletionType.COMMAND, commandName);
+                    if (root.isWritable()) {
+                        root.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
                     }
                 }
             } else {
@@ -116,9 +114,8 @@ public class AliasWrapper extends ActionGroup {
             aliases.remove(commandName);
 
             for (FrameContainer root : windowManager.getRootWindows()) {
-                if (root instanceof WritableFrameContainer) {
-                    ((WritableFrameContainer) root).getTabCompleter()
-                            .removeEntry(TabCompletionType.COMMAND, commandName);
+                if (root.isWritable()) {
+                    root.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
                 }
             }
         }

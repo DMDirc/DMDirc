@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.util.validators.ValidationResponse;
 
@@ -42,7 +42,6 @@ public interface ValidatingCommand {
      *
      * @since 0.6.3m1
      */
-    ValidationResponse validateArguments(WritableFrameContainer origin,
-            CommandArguments arguments);
+    ValidationResponse validateArguments(FrameContainer origin, CommandArguments arguments);
 
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
@@ -97,7 +97,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The CommandParser to use for our input. */
     protected final CommandParser commandParser;
     /** The frame that we belong to. */
-    protected final WritableFrameContainer parentWindow;
+    protected final FrameContainer parentWindow;
     /** The tab completion style. */
     protected TabCompletionStyle style;
     /** Our listener list. */
@@ -128,7 +128,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final InputField target,
             final CommandController commandController,
             final CommandParser commandParser,
-            final WritableFrameContainer parentWindow,
+            final FrameContainer parentWindow,
             final EventBus eventBus) {
         buffer = new RollingList<>(parentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
