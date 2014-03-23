@@ -190,17 +190,6 @@ public class TabCompleter {
     }
 
     /**
-     * Replaces the current entries with the new list.
-     *
-     * @param type       The type of entry which should be replaced
-     * @param newEntries the new entries to use
-     */
-    public void replaceEntries(final TabCompletionType type, final List<String> newEntries) {
-        entries.clear(type);
-        entries.add(type, newEntries);
-    }
-
-    /**
      * Clears all entries in this tab completer.
      */
     public void clear() {
