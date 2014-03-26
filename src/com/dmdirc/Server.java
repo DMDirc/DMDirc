@@ -1044,6 +1044,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     }
 
     @Override
+    public FrameContainer getWindowModel() {
+        return this;
+    }
+
+    @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
         for (Channel channel : channels.values()) {

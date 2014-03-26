@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Invite;
 import com.dmdirc.Query;
 import com.dmdirc.ServerState;
@@ -512,5 +513,12 @@ public interface Connection {
      * Updates the name and title of this window.
      */
     void updateTitle();
+
+    /**
+     * Gets the core model for the input/output window for this connection.
+     *
+     * @return A model for windows based on this connection.
+     */
+    FrameContainer getWindowModel();
 
 }
