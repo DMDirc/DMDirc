@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.Invite;
-import com.dmdirc.Server;
 
 import java.util.EventListener;
 
@@ -36,17 +35,17 @@ public interface InviteListener extends EventListener {
     /**
      * Called when a new invite has been received.
      *
-     * @param server The server the invite was received by
+     * @param connection The connection the invite was received on
      * @param invite The invite that was received
      */
-    void inviteReceived(final Server server, final Invite invite);
+    void inviteReceived(final Connection connection, final Invite invite);
 
     /**
      * Called when an invite has expired or has been used.
      *
-     * @param server The server the invite was initially received by
+     * @param connection The connection the invite was initially received on
      * @param invite The invite that has expired
      */
-    void inviteExpired(final Server server, final Invite invite);
+    void inviteExpired(final Connection connection, final Invite invite);
 
 }
