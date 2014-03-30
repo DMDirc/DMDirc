@@ -182,7 +182,7 @@ public class ActionManager implements ActionController {
             addGroup(wrapper);
         }
 
-        new WhoisNumericFormatter(identityManager.getAddonSettings()).register();
+        new WhoisNumericFormatter(identityManager.getAddonSettings(), eventBus).register();
 
         eventBus.register(this);
     }

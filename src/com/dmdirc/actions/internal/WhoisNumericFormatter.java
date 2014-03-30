@@ -22,12 +22,13 @@
 
 package com.dmdirc.actions.internal;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.ConfigProvider;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,51 +38,44 @@ import java.util.Map;
  *
  * @since 0.6.3
  */
-public class WhoisNumericFormatter implements ActionListener {
+public class WhoisNumericFormatter {
 
     /** The name of the target of any current whois requests. */
     private final Map<Connection, String> targets = new HashMap<>();
     /** The identity to add formatters to. */
     private final ConfigProvider identity;
+    /** Event bus to subscribe to events on. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new whois numeric formatter that will add automatic formats to the specified
      * identity. This will normally be a temporary global identity.
      *
      * @param identity The identity to write formatters to
+     * @param eventBus The event bus to subscribe to events on
      */
-    public WhoisNumericFormatter(final ConfigProvider identity) {
+    public WhoisNumericFormatter(final ConfigProvider identity,
+            final EventBus eventBus) {
         this.identity = identity;
+        this.eventBus = eventBus;
     }
 
     /**
      * Registers this this whois numeric formatter with the global actions manager.
      */
     public void register() {
-        ActionManager.getActionManager().registerListener(this,
-                CoreActionType.SERVER_NUMERIC,
-                CoreActionType.SERVER_DISCONNECTED);
-    }
-
-    @Override
-    public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
-        if (CoreActionType.SERVER_DISCONNECTED == type) {
-            handleServerDisconnected((Connection) arguments[0]);
-        } else {
-            handleNumeric((Connection) arguments[0], (Integer) arguments[1],
-                    (String[]) arguments[2], format);
-        }
+        eventBus.register(this);
     }
 
     /**
      * Handles a server disconnected event. This clears any entry for that server in the
      * {@link #targets} map.
      *
-     * @param server The server that was disconnected
+     * @param event The server disconnected event to process
      */
-    private void handleServerDisconnected(final Connection server) {
-        targets.remove(server);
+    @Subscribe
+    public void handleServerDisconnected(final ServerDisconnectedEvent event) {
+        targets.remove(event.getConnection());
     }
 
     /**
@@ -90,13 +84,13 @@ public class WhoisNumericFormatter implements ActionListener {
      * without formatters for events which look like WHOIS information, and formats them
      * automatically.
      *
-     * @param server    The server on which the event was received
-     * @param numeric   The numeric code of the event
-     * @param arguments The arguments to the numeric event
-     * @param format    The format that should be used to display the event
+     * @param event The server numeric event to process
      */
-    private void handleNumeric(final Connection server, final int numeric,
-            final String[] arguments, final StringBuffer format) {
+    @Subscribe
+    public void handleNumeric(final ServerNumericEvent event) {
+        final Connection server = event.getConnection();
+        final int numeric = event.getNumeric();
+        final String[] arguments = event.getArgs();
         switch (numeric) {
             case 311: // RPL_WHOISUSER
                 targets.put(server, arguments[3]);
@@ -110,17 +104,17 @@ public class WhoisNumericFormatter implements ActionListener {
                         && arguments[3].equals(targets.get(server))) {
                     // This numeric should be automatically formatted.
 
-                    if (format.length() > 0) {
+                    if (!event.getDisplayFormat().isEmpty()) {
                         // There's a custom format. We'll see if we need to
                         // add a formatter or notification settings for it
                         // anyway.
-                        ensureExists(format.toString(), arguments.length);
+                        ensureExists(event.getDisplayFormat(), arguments.length);
                     } else {
                         // No custom formatter, switch it to an auto whois
                         // format and target.
                         final String target = "numeric_autowhois_" + (arguments.length - 4);
                         ensureExists(target, arguments.length);
-                        format.replace(0, format.length(), target);
+                        event.setDisplayFormat(target);
                     }
                 }
                 break;

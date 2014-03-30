@@ -85,14 +85,19 @@ public enum CoreActionType implements ActionType {
     /** Unknown command. */
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
     /** Server numeric received. */
+    @Deprecated
     SERVER_NUMERIC(ServerEvents.SERVER_NUMERIC, "Numeric event received"),
     /** Server connected. */
+    @Deprecated
     SERVER_CONNECTED(ServerEvents.SERVER_EVENT, "Server connected"),
     /** Server connecting. */
+    @Deprecated
     SERVER_CONNECTING(ServerEvents.SERVER_EVENT, "Server connecting"),
     /** Server connection error. */
+    @Deprecated
     SERVER_CONNECTERROR(ServerEvents.SERVER_EVENT_WITH_ARG, "Server connection error"),
     /** Server disconnected. */
+    @Deprecated
     SERVER_DISCONNECTED(ServerEvents.SERVER_EVENT, "Server disconnected"),
     /** Marked as away. */
     SERVER_BACK(ServerEvents.SERVER_EVENT, "Marked as 'back'"),

@@ -28,6 +28,11 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
+import com.dmdirc.events.ServerConnectErrorEvent;
+import com.dmdirc.events.ServerConnectedEvent;
+import com.dmdirc.events.ServerConnectingEvent;
+import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
@@ -371,8 +376,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }
         }
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_CONNECTING, null, this);
+        eventBus.post(new ServerConnectingEvent(this));
     }
 
     @Override
@@ -1192,10 +1196,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             target = new StringBuffer("numeric_unknown");
         }
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_NUMERIC, target, this, numeric, tokens);
+        final ServerNumericEvent event = new ServerNumericEvent(this, numeric, tokens);
+        event.setDisplayFormat(target.toString());
+        eventBus.post(event);
 
-        handleNotification(target.toString(), (Object[]) tokens);
+        handleNotification(event.getDisplayFormat(), (Object[]) tokens);
     }
 
     /**
@@ -1222,8 +1227,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         handleNotification("socketClosed", getAddress());
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_DISCONNECTED, null, this);
+        eventBus.post(new ServerDisconnectedEvent(this));
 
         eventHandler.unregisterCallbacks();
 
@@ -1330,9 +1334,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 }
             }
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.SERVER_CONNECTERROR, null, this,
-                    description);
+            eventBus.post(new ServerConnectErrorEvent(this, description));
 
             handleNotification("connectError", getAddress(), description);
 
@@ -1413,8 +1415,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }, whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_CONNECTED, null, this);
+        eventBus.post(new ServerConnectedEvent(this));
     }
 
     /**
