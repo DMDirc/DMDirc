@@ -52,7 +52,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     items:
  *       - [item]
  *       - [item]
- * </pre></code>
+ * </code></pre>
  */
 public class CategoryReader {
 
