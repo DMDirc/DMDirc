@@ -29,6 +29,8 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -46,6 +48,7 @@ public class WritableFrameContainerTest {
     @Mock private ServerManager serverManager;
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private URLBuilder urlBuilder;
+    @Mock private EventBus eventBus;
     private CommandManager commands;
 
     @Before
@@ -61,8 +64,8 @@ public class WritableFrameContainerTest {
 
     @Test
     public void testGetNumLines() {
-        final FrameContainer container10
-                = new TestWritableFrameContainer(10, acp, commands, messageSinkManager, urlBuilder);
+        final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
+                messageSinkManager, urlBuilder, eventBus);
 
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -91,8 +94,8 @@ public class WritableFrameContainerTest {
 
     @Test
     public void testSplitLine() {
-        final FrameContainer container10
-                = new TestWritableFrameContainer(10, acp, commands, messageSinkManager, urlBuilder);
+        final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
+                messageSinkManager, urlBuilder, eventBus);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

@@ -27,6 +27,8 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Arrays;
 
 /**
@@ -41,13 +43,15 @@ public class CustomWindow extends FrameContainer {
      * @param title      The title of this custom window
      * @param parent     The parent of this custom window
      * @param urlBuilder The URL builder to use when finding icons.
+     * @param eventBus   The bus to despatch events on.
      */
     public CustomWindow(
             final String name,
             final String title,
             final FrameContainer parent,
-            final URLBuilder urlBuilder) {
-        super("custom", name, title, parent.getConfigManager(), urlBuilder,
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
+        super("custom", name, title, parent.getConfigManager(), urlBuilder, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
@@ -58,13 +62,15 @@ public class CustomWindow extends FrameContainer {
      * @param title          The parent of this custom window
      * @param configProvider The config provider to read settings from.
      * @param urlBuilder     The URL builder to use when finding icons.
+     * @param eventBus       The bus to despatch events on.
      */
     public CustomWindow(
             final String name,
             final String title,
             final AggregateConfigProvider configProvider,
-            final URLBuilder urlBuilder) {
-        super("custom", name, title, configProvider, urlBuilder,
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
+        super("custom", name, title, configProvider, urlBuilder, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

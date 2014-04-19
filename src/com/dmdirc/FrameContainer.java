@@ -44,6 +44,7 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.base.Optional;
+import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,6 +92,8 @@ public abstract class FrameContainer {
     private final Object styliserSync = new Object();
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
+    /** Event bus to despatch events to. */
+    private final EventBus eventbus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
@@ -122,6 +125,7 @@ public abstract class FrameContainer {
      * @param title      The title of this container
      * @param config     The config manager for this container
      * @param urlBuilder The URL builder to use when finding icons.
+     * @param eventBus   The bus to despatch events on.
      * @param components The UI components that this frame requires
      *
      * @since 0.6.4
@@ -132,12 +136,14 @@ public abstract class FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final URLBuilder urlBuilder,
+            final EventBus eventBus,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
+        this.eventbus = eventBus;
         this.writable = false;
         this.commandParser = Optional.absent();
         this.tabCompleter = Optional.absent();
@@ -157,6 +163,7 @@ public abstract class FrameContainer {
      * @param commandParser      The command parser to use for input.
      * @param tabCompleter       The tab completer to use.
      * @param messageSinkManager The manager to use to despatch notifications.
+     * @param eventbus           The bus to despatch events on.
      * @param components         The UI components that this frame requires
      *
      * @since 0.6.4
@@ -170,12 +177,14 @@ public abstract class FrameContainer {
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
+            final EventBus eventbus,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
+        this.eventbus = eventbus;
         this.writable = true;
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);

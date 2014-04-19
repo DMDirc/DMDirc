@@ -32,6 +32,8 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Collections;
 
 import static org.mockito.Mockito.mock;
@@ -42,11 +44,13 @@ public class TestWritableFrameContainer extends FrameContainer {
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder) {
+            final MessageSinkManager messageSinkManager,
+            final URLBuilder urlBuilder, final EventBus eventBus) {
         super("raw", "Raw", "(Raw)", cm, urlBuilder,
                 new GlobalCommandParser(cm, commandManager),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,
+                eventBus,
                 Collections.<String>emptySet());
 
         this.lineLength = lineLength;

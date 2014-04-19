@@ -91,7 +91,9 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     private volatile boolean showModePrefix;
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
+    /** The manager to use to manage our event bus. */
     private final ChildEventBusManager eventBusManager;
+    /** The bus to despatch events on. */
     private final EventBus eventBus;
 
     /**
@@ -124,6 +126,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
                         CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
+                eventBus, // TODO: This should be the channel's own event bus.
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
                         WindowComponent.TOPICBAR.getIdentifier(),

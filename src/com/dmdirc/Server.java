@@ -238,6 +238,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
                         CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
                 messageSinkManager,
+                eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),

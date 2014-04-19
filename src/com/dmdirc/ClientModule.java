@@ -197,9 +197,10 @@ public class ClientModule {
     public MessageSinkManager getMessageSinkManager(
             final StatusBarManager statusBarManager,
             final WindowManager windowManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
         final MessageSinkManager messageSinkManager = new MessageSinkManager();
-        messageSinkManager.loadDefaultSinks(statusBarManager, windowManager, urlBuilder);
+        messageSinkManager.loadDefaultSinks(statusBarManager, windowManager, urlBuilder, eventBus);
         return messageSinkManager;
     }
 

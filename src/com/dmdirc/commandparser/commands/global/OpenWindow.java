@@ -39,6 +39,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 /**
@@ -55,6 +57,8 @@ public class OpenWindow extends Command implements IntelligentCommand {
     private final WindowManager windowManager;
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
+    /** The bus to despatch events on. */
+    private final EventBus eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
 
@@ -64,6 +68,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
      * @param controller     The controller to use for command information.
      * @param windowManager  Window management
      * @param urlBuilder     The URL builder to use when finding icons.
+     * @param eventBus       The bus to despatch events on.
      * @param configProvider The config provider to retrieve settings from.
      */
     @Inject
@@ -71,11 +76,13 @@ public class OpenWindow extends Command implements IntelligentCommand {
             final CommandController controller,
             final WindowManager windowManager,
             final URLBuilder urlBuilder,
+            final EventBus eventBus,
             @GlobalConfig final AggregateConfigProvider configProvider) {
         super(controller);
 
         this.windowManager = windowManager;
         this.urlBuilder = urlBuilder;
+        this.eventBus = eventBus;
         this.configProvider = configProvider;
     }
 
@@ -118,11 +125,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 CustomWindow newWindow;
                 if (parent == null) {
                     newWindow = new CustomWindow(args.getArguments()[start], title,
-                            configProvider, urlBuilder);
+                            configProvider, urlBuilder, eventBus);
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            urlBuilder);
+                            urlBuilder, eventBus);
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {

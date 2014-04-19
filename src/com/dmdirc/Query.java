@@ -49,6 +49,8 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
+import com.google.common.eventbus.EventBus;
+
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +83,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param commandController   The controller to load commands from.
      * @param messageSinkManager  The sink manager to use to despatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
+     * @param eventBus            The bus to despatch events on.
      */
     public Query(
             @Unbound final Server newServer,
@@ -88,7 +91,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
         super("query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(),
@@ -98,6 +102,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
+                eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

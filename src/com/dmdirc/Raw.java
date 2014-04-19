@@ -37,6 +37,8 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Arrays;
 import java.util.Date;
 
@@ -56,17 +58,20 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
      * @param newServer          the server to monitor
      * @param commandController  The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param eventBus           The bus to despatch events on.
      * @param urlBuilder         The URL builder to use when finding icons.
      */
     public Raw(
             @Unbound final Server newServer,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
+            final EventBus eventBus,
             final URLBuilder urlBuilder) {
         super("raw", "Raw", "(Raw log)", newServer.getConfigManager(), urlBuilder,
                 new ServerCommandParser(newServer.getConfigManager(), commandController),
                 newServer.getTabCompleter(),
                 messageSinkManager,
+                eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

@@ -36,6 +36,8 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Arrays;
 
 import javax.inject.Inject;
@@ -55,16 +57,18 @@ public class GlobalWindow extends FrameContainer {
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param messageSinkManager  The sink manager to use to despatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
+     * @param eventBus            The bus to despatch events on.
      */
     public GlobalWindow(
             final AggregateConfigProvider config,
             final CommandParser parser,
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final EventBus eventBus) {
         super("icon", "Global", "(Global)", config, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
-                messageSinkManager,
+                messageSinkManager, eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
@@ -101,6 +105,8 @@ public class GlobalWindow extends FrameContainer {
         private final Provider<GlobalCommandParser> globalCommandParserProvider;
         /** The URL builder to use when finding icons. */
         private final URLBuilder urlBuilder;
+        /** The bus to despatch events on. */
+        private final EventBus eventBus;
         /** The global window that's in use, if any. */
         private GlobalWindow globalWindow;
 
@@ -114,6 +120,7 @@ public class GlobalWindow extends FrameContainer {
          * @param globalCommandParserProvider The provider to use to retrieve a global command
          *                                    parser.
          * @param urlBuilder                  The URL builder to use when finding icons.
+         * @param eventBus                    The bus to despatch events on.
          */
         @Inject
         public GlobalWindowManager(
@@ -122,13 +129,15 @@ public class GlobalWindow extends FrameContainer {
                 final Provider<WindowManager> windowManagerProvider,
                 final Provider<MessageSinkManager> messageSinkManagerProvider,
                 final Provider<GlobalCommandParser> globalCommandParserProvider,
-                final URLBuilder urlBuilder) {
+                final URLBuilder urlBuilder,
+                final EventBus eventBus) {
             this.globalConfig = globalConfig;
             this.tabCompleterFactory = tabCompleterFactory;
             this.windowManagerProvider = windowManagerProvider;
             this.messageSinkManagerProvider = messageSinkManagerProvider;
             this.globalCommandParserProvider = globalCommandParserProvider;
             this.urlBuilder = urlBuilder;
+            this.eventBus = eventBus;
         }
 
         @Override
@@ -156,7 +165,8 @@ public class GlobalWindow extends FrameContainer {
                                 globalCommandParserProvider.get(),
                                 tabCompleterFactory,
                                 messageSinkManagerProvider.get(),
-                                urlBuilder);
+                                urlBuilder,
+                                eventBus);
                         addCloseListener(globalWindow);
                         windowManagerProvider.get().addWindow(globalWindow);
                     }

@@ -28,6 +28,8 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.Collection;
 
 /**
@@ -46,6 +48,7 @@ public abstract class MessageTarget extends FrameContainer {
      * @param tabCompleter       The tab completer to use
      * @param messageSinkManager The sink manager to use to despatch messages.
      * @param urlBuilder         The URL builder to use when finding icons.
+     * @param eventBus           The bus to despatch events on.
      * @param components         The UI components that this frame requires
      *
      * @since 0.6.4
@@ -59,9 +62,10 @@ public abstract class MessageTarget extends FrameContainer {
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
+            final EventBus eventBus,
             final Collection<String> components) {
         super(icon, name, title, config, urlBuilder, parser, tabCompleter, messageSinkManager,
-                components);
+                eventBus, components);
     }
 
     /**
