@@ -309,7 +309,8 @@ public abstract class CommandParser implements Serializable {
      * @param args        The arguments to the command
      * @param context     The context to use when executing the command
      */
-    protected abstract void executeCommand(final FrameContainer origin,
+    protected abstract void executeCommand(
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo, final Command command,
             final CommandArguments args, final CommandContext context);
 

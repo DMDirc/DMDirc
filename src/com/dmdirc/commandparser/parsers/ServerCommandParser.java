@@ -34,6 +34,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import javax.annotation.Nonnull;
+
 /**
  * A command parser used in the context of a server.
  */
@@ -84,7 +86,7 @@ public class ServerCommandParser extends GlobalCommandParser {
 
     @Override
     protected void executeCommand(
-            final FrameContainer origin,
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

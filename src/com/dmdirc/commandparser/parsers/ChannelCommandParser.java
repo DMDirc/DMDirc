@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
+
 /**
  * A command parser that is tailored for use in a channel environment.
  */
@@ -81,7 +83,7 @@ public class ChannelCommandParser extends ChatCommandParser {
 
     @Override
     protected void executeCommand(
-            final FrameContainer origin,
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

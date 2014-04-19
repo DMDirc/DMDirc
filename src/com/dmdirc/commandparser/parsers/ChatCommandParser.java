@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
+
 /**
  * A command parser which implements common functionality for chat windows (queries and channels).
  *
@@ -74,7 +76,7 @@ public class ChatCommandParser extends ServerCommandParser {
 
     @Override
     protected void executeCommand(
-            final FrameContainer origin,
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

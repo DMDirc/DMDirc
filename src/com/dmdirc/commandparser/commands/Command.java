@@ -28,6 +28,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.messages.Styliser;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents a generic command.
  */
@@ -141,7 +143,7 @@ public abstract class Command {
      *
      * @since 0.6.4
      */
-    public abstract void execute(FrameContainer origin,
-            CommandArguments args, CommandContext context);
+    public abstract void execute(@Nonnull FrameContainer origin, CommandArguments args,
+            CommandContext context);
 
 }

@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
+
 /**
  * A command parser that is tailored for use in a query environment. Handles both query and server
  * commands.
@@ -83,7 +85,7 @@ public class QueryCommandParser extends ChatCommandParser {
 
     @Override
     protected void executeCommand(
-            final FrameContainer origin,
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

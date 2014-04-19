@@ -34,6 +34,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -81,7 +82,7 @@ public class GlobalCommandParser extends CommandParser {
 
     @Override
     protected void executeCommand(
-            final FrameContainer origin,
+            @Nonnull final FrameContainer origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,
