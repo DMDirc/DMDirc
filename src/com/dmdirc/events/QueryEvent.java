@@ -22,29 +22,29 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.Query;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Base type for events that occur in channels.
+ * Base type for events that occur in queries.
  */
-public abstract class ChannelEvent extends DMDircEvent {
+public abstract class QueryEvent extends DMDircEvent {
 
-    /** The channel that this event occurred on. */
-    private final Channel channel;
+    /** The query that this event occurred on. */
+    private final Query query;
 
-    public ChannelEvent(final long timestamp, final Channel channel) {
+    public QueryEvent(final long timestamp, final Query query) {
         super(timestamp);
-        this.channel = checkNotNull(channel);
+        this.query = checkNotNull(query);
     }
 
-    public ChannelEvent(final Channel channel) {
-        this.channel = checkNotNull(channel);
+    public QueryEvent(final Query query) {
+        this.query = checkNotNull(query);
     }
 
-    public Channel getChannel() {
-        return channel;
+    public Query getQuery() {
+        return query;
     }
 
 }

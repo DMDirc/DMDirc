@@ -22,29 +22,35 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.Query;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Base type for events that occur in channels.
+ * Base type for displayable events that occur in queries.
  */
-public abstract class ChannelEvent extends DMDircEvent {
+public abstract class QueryDisplayableEvent extends QueryEvent implements
+        DisplayableEvent {
 
-    /** The channel that this event occurred on. */
-    private final Channel channel;
+    /** The display format to use for this event. */
+    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
 
-    public ChannelEvent(final long timestamp, final Channel channel) {
-        super(timestamp);
-        this.channel = checkNotNull(channel);
+    public QueryDisplayableEvent(final long timestamp, final Query query) {
+        super(timestamp, query);
     }
 
-    public ChannelEvent(final Channel channel) {
-        this.channel = checkNotNull(channel);
+    public QueryDisplayableEvent(final Query query) {
+        super(query);
     }
 
-    public Channel getChannel() {
-        return channel;
+    @Override
+    public String getDisplayFormat() {
+        return displayFormatRef.get();
+    }
+
+    @Override
+    public void setDisplayFormat(String format) {
+        this.displayFormatRef.set(format);
     }
 
 }

@@ -23,28 +23,36 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Base type for events that occur in channels.
+ * Base type for displayable events that occur in channels against users.
  */
-public abstract class ChannelEvent extends DMDircEvent {
+public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent implements
+        DisplayableEvent {
 
-    /** The channel that this event occurred on. */
-    private final Channel channel;
+    /** The display format to use for this event. */
+    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
 
-    public ChannelEvent(final long timestamp, final Channel channel) {
-        super(timestamp);
-        this.channel = checkNotNull(channel);
+    public ChannelDisplayableUserEvent(final long timestamp, final Channel channel,
+            final ChannelClientInfo user) {
+        super(timestamp, channel, user);
     }
 
-    public ChannelEvent(final Channel channel) {
-        this.channel = checkNotNull(channel);
+    public ChannelDisplayableUserEvent(final Channel channel, final ChannelClientInfo user) {
+        super(channel, user);
     }
 
-    public Channel getChannel() {
-        return channel;
+    @Override
+    public String getDisplayFormat() {
+        return displayFormatRef.get();
+    }
+
+    @Override
+    public void setDisplayFormat(String format) {
+        this.displayFormatRef.set(format);
     }
 
 }
