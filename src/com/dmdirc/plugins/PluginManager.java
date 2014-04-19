@@ -22,9 +22,9 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
+import com.dmdirc.events.PluginRefreshEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
@@ -286,7 +286,7 @@ public class PluginManager implements ServiceManager {
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
-            actionController.triggerEvent(CoreActionType.PLUGIN_REFRESH, null, this);
+            eventBus.post(new PluginRefreshEvent());
             return true;
         } catch (MalformedURLException mue) {
             Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin "
@@ -445,7 +445,7 @@ public class PluginManager implements ServiceManager {
             plugins.addAll(newPlugins);
         }
 
-        actionController.triggerEvent(CoreActionType.PLUGIN_REFRESH, null, this);
+        eventBus.post(new PluginRefreshEvent());
     }
 
     /**

@@ -226,6 +226,7 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded"),
     /** Plugins have been refreshed. */
+    @Deprecated
     PLUGIN_REFRESH(PluginEvents.PLUGIN_EVENT, "Plugins refreshed"),
     /** Action created. */
     ACTION_CREATED(ActionEvents.ACTION_EVENT, "Action created"),
