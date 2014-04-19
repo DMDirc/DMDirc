@@ -22,6 +22,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -29,17 +30,22 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
 
 import javax.inject.Provider;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyChar;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IfpluginTest {
 
+    @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
@@ -48,7 +54,7 @@ public class IfpluginTest {
 
     @Before
     public void setUp() {
-        command = new Ifplugin(controller, pluginManager, gcpProvider);
+        command = new Ifplugin(controller, pluginManager, gcpProvider, gwProvider);
     }
 
     @Test

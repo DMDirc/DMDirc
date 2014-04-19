@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -41,8 +42,12 @@ import javax.inject.Provider;
  */
 public class ActionModel {
 
+    // TODO: Sort out the mess of protected fields here.
+
     /** Provider of global command parsers, for use when triggering window-less actions. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
+    /** Provider of global windows for global actions. */
+    private final Provider<GlobalWindow> globalWindowProvider;
     /** Factory to use to creator substitutors. */
     private final ActionSubstitutorFactory substitutorFactory;
     /** The group this action belongs to. */
@@ -75,17 +80,20 @@ public class ActionModel {
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
-     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param globalCommandParserProvider Provider of global command parsers for global actions.
+     * @param globalWindowProvider        Provider of global windows for global actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final String group,
             final String name) {
         this.globalCommandParserProvider = globalCommandParserProvider;
+        this.globalWindowProvider = globalWindowProvider;
         this.substitutorFactory = substitutorFactory;
         this.group = group;
         this.name = name;
@@ -95,6 +103,7 @@ public class ActionModel {
      * Creates a new instance of ActionModel with the specified properties.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param globalWindowProvider        Provider of global windows for global actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
@@ -106,12 +115,13 @@ public class ActionModel {
      */
     public ActionModel(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        this(globalCommandParserProvider, substitutorFactory, group, name);
+        this(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;
@@ -149,22 +159,15 @@ public class ActionModel {
             return false;
         }
 
-        FrameContainer container = null;
-        CommandParser cp;
-
+        final FrameContainer container;
         if (arguments.length > 0 && arguments[0] instanceof FrameContainer
                 && ((FrameContainer) arguments[0]).isWritable()) {
             container = (FrameContainer) arguments[0];
-        } else if (serverManager.numServers() > 0) {
-            container = serverManager.getServers().get(0);
-        }
-
-        if (container == null) {
-            cp = globalCommandParserProvider.get();
         } else {
-            cp = container.getCommandParser();
+            container = globalWindowProvider.get();
         }
 
+        final CommandParser cp = container.getCommandParser();
         for (String command : response) {
             cp.parseCommand(container, sub.doSubstitution(command, arguments));
         }

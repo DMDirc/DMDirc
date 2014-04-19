@@ -44,6 +44,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Represents a generic command parser. A command parser takes a line of input from the user,
  * determines if it is an attempt at executing a command (based on the character at the start of the
@@ -135,10 +139,11 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.4
      */
-    public final void parseCommand(final FrameContainer origin,
-            final String line, final boolean parseChannel) {
-        final CommandArguments args = new CommandArguments(commandManager, line);
+    public final void parseCommand(@Nonnull final FrameContainer origin, final String line,
+            final boolean parseChannel) {
+        checkNotNull(origin);
 
+        final CommandArguments args = new CommandArguments(commandManager, line);
         if (args.isCommand()) {
             if (handleChannelCommand(origin, args, parseChannel)) {
                 return;
@@ -170,13 +175,13 @@ public abstract class CommandParser implements Serializable {
      *
      * @return True iff the command was handled, false otherwise
      */
-    protected boolean handleChannelCommand(final FrameContainer origin,
+    protected boolean handleChannelCommand(@Nonnull final FrameContainer origin,
             final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
 
-        if (cargs.length == 0 || !parseChannel || origin == null
+        if (cargs.length == 0 || !parseChannel
                 || origin.getConnection() == null
                 || !commandManager.isChannelCommand(command)) {
             return false;
@@ -265,7 +270,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.4
      */
-    public void parseCommand(final FrameContainer origin, final String line) {
+    public void parseCommand(@Nonnull final FrameContainer origin, final String line) {
         parseCommand(origin, line, true);
     }
 

@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -55,6 +56,8 @@ public class Ifplugin extends Command implements IntelligentCommand {
     private final PluginManager pluginManager;
     /** Provider of global command parsers. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
+    /** Proivder of global windows. */
+    private final Provider<GlobalWindow> globalWindowProvider;
 
     /**
      * Creates a new instance of the {@link Ifplugin} command.
@@ -62,15 +65,18 @@ public class Ifplugin extends Command implements IntelligentCommand {
      * @param controller                  The controller to use for command information.
      * @param pluginManager               The plugin manager to use to query plugins.
      * @param globalCommandParserProvider Provider to use to retrieve a global command parser.
+     * @param globalWindowProvider        Provider to use to retrieve a global window.
      */
     @Inject
     public Ifplugin(
             final CommandController controller,
             final PluginManager pluginManager,
-            final Provider<GlobalCommandParser> globalCommandParserProvider) {
+            final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider) {
         super(controller);
         this.pluginManager = pluginManager;
         this.globalCommandParserProvider = globalCommandParserProvider;
+        this.globalWindowProvider = globalWindowProvider;
     }
 
     @Override
@@ -96,7 +102,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
         if (result != negative) {
             if (origin == null || !origin.isWritable()) {
                 globalCommandParserProvider.get()
-                        .parseCommand(null, args.getArgumentsAsString(1));
+                        .parseCommand(globalWindowProvider.get(), args.getArgumentsAsString(1));
             } else {
                 origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
             }

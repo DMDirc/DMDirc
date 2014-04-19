@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -47,6 +48,8 @@ public class ActionFactory {
     private final Provider<ActionController> actionController;
     /** The controller to use to retrieve and update settings. */
     private final Provider<IdentityController> identityController;
+    /** The global window to use for actions without windows. */
+    private final Provider<GlobalWindow> globalWindowProvider;
     /** The factory to use to create substitutors. */
     private final ActionSubstitutorFactory substitutorFactory;
     /** The base directory to store actions in. */
@@ -59,6 +62,7 @@ public class ActionFactory {
      * @param identityController          The controller to use to retrieve and update settings.
      * @param globalCommandParserProvider The global command parser to use for actions without
      *                                    windows.
+     * @param globalWindowProvider        The global window to use for actions without windows.
      * @param substitutorFactory          The factory to use to create substitutors.
      * @param actionsDirectory            The base directory to store actions in.
      */
@@ -67,11 +71,13 @@ public class ActionFactory {
             final Provider<ActionController> actionController,
             final Provider<IdentityController> identityController,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
         this.actionController = actionController;
         this.identityController = identityController;
         this.globalCommandParserProvider = globalCommandParserProvider;
+        this.globalWindowProvider = globalWindowProvider;
         this.substitutorFactory = substitutorFactory;
         this.actionsDirectory = actionsDirectory;
     }
@@ -86,8 +92,15 @@ public class ActionFactory {
      * @return A relevant action.
      */
     public Action getAction(final String group, final String name) {
-        return new Action(globalCommandParserProvider, substitutorFactory, actionController.get(),
-                identityController.get(), actionsDirectory, group, name);
+        return new Action(
+                globalCommandParserProvider,
+                globalWindowProvider,
+                substitutorFactory,
+                actionController.get(),
+                identityController.get(),
+                actionsDirectory,
+                group,
+                name);
     }
 
     /**
@@ -107,9 +120,20 @@ public class ActionFactory {
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        return new Action(globalCommandParserProvider, substitutorFactory, actionController.get(),
-                identityController.get(), actionsDirectory, group,
-                name, triggers, response, conditions, conditionTree, newFormat);
+        return new Action(
+                globalCommandParserProvider,
+                globalWindowProvider,
+                substitutorFactory,
+                actionController.get(),
+                identityController.get(),
+                actionsDirectory,
+                group,
+                name,
+                triggers,
+                response,
+                conditions,
+                conditionTree,
+                newFormat);
     }
 
 }

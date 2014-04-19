@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
@@ -82,6 +83,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * a valid action already saved to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param actionController            The controller that owns this action.
      * @param identityController          The controller to use to retrieve and update settings.
@@ -91,13 +93,14 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController,
             final IdentityController identityController,
             final String actionsDirectory,
             final String group,
             final String name) {
-        super(globalCommandParserProvider, substitutorFactory, group, name);
+        super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
 
         this.actionController = actionController;
         this.identityController = identityController;
@@ -124,6 +127,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action with the specified properties and saves it to disk.
      *
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
+     * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param actionController            The controller that owns this action.
      * @param identityController          The controller to use to retrieve and update settings.
@@ -138,6 +142,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public Action(
             final Provider<GlobalCommandParser> globalCommandParserProvider,
+            final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController,
             final IdentityController identityController,
@@ -149,8 +154,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree,
             final String newFormat) {
-        super(globalCommandParserProvider, substitutorFactory, group, name, triggers, response,
-                conditions, conditionTree, newFormat);
+        super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name,
+                triggers, response, conditions, conditionTree, newFormat);
 
         this.actionController = actionController;
         this.identityController = identityController;

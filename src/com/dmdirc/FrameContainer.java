@@ -362,11 +362,12 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Closes this container (and it's associated frame).
+     * Closes this container (and its associated frame).
      */
     public void close() {
         for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
             listener.windowClosing(this);
+            listeners.remove(FrameCloseListener.class, listener);
         }
     }
 
@@ -530,9 +531,9 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Adds a close listener for this frame container.
+     * Adds a close listener for this frame container. Close listeners will only be called once,
+     * even if the container is closed, re-added, and closed again.
      *
-     * @since 0.6.5
      * @param listener The listener to be added
      */
     public void addCloseListener(final FrameCloseListener listener) {

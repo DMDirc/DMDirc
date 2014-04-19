@@ -88,7 +88,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseCommandWithArguments() {
-        commandParser.parseCommand(null, "/command this is a test");
+        commandParser.parseCommand(container, "/command this is a test");
 
         assertNull(commandParser.nonCommandLine);
         assertNull(commandParser.invalidCommand);
@@ -99,7 +99,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseCommandWithoutArguments() {
-        commandParser.parseCommand(null, "/command");
+        commandParser.parseCommand(container, "/command");
 
         assertNull(commandParser.nonCommandLine);
         assertNull(commandParser.invalidCommand);
@@ -110,7 +110,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilentCommandWithoutArguments() {
-        commandParser.parseCommand(null, "/.command");
+        commandParser.parseCommand(container, "/.command");
 
         assertNull(commandParser.nonCommandLine);
         assertNull(commandParser.invalidCommand);
@@ -121,7 +121,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilentCommandWithArguments() {
-        commandParser.parseCommand(null, "/.command this is a test");
+        commandParser.parseCommand(container, "/.command this is a test");
 
         assertNull(commandParser.nonCommandLine);
         assertNull(commandParser.invalidCommand);
@@ -132,7 +132,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseUnknownCommand() {
-        commandParser.parseCommand(null, "/foobar moo bar");
+        commandParser.parseCommand(container, "/foobar moo bar");
 
         assertNull(commandParser.nonCommandLine);
         assertEquals("foobar", commandParser.invalidCommand);
@@ -142,7 +142,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseEmptyCommand() {
-        commandParser.parseCommand(null, "/ moo bar");
+        commandParser.parseCommand(container, "/ moo bar");
 
         assertNull(commandParser.nonCommandLine);
         assertEquals("", commandParser.invalidCommand);
@@ -152,7 +152,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseEmptySilenceCommand() {
-        commandParser.parseCommand(null, "/. moo bar");
+        commandParser.parseCommand(container, "/. moo bar");
 
         assertNull(commandParser.nonCommandLine);
         assertEquals("", commandParser.invalidCommand);
@@ -162,7 +162,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseNonCommand() {
-        commandParser.parseCommand(null, "Foobar baz");
+        commandParser.parseCommand(container, "Foobar baz");
 
         assertEquals("Foobar baz", commandParser.nonCommandLine);
         assertNull(commandParser.invalidCommand);
@@ -172,12 +172,12 @@ public class CommandParserTest {
 
     @Test
     public void testGetCommandTime() {
-        commandParser.parseCommand(null, "/command this is a test");
+        commandParser.parseCommand(container, "/command this is a test");
 
         final long time1 = commandParser.getCommandTime("command this is a test");
         assertTrue(time1 > 0);
 
-        commandParser.parseCommand(null, "/command this is a test");
+        commandParser.parseCommand(container, "/command this is a test");
         final long time2 = commandParser.getCommandTime("command this is a test");
         assertTrue(time2 > 0);
         assertTrue(time2 >= time1);
@@ -236,7 +236,7 @@ public class CommandParserTest {
     @Test
     public void testParseUnregisterCommand() {
         commandParser.unregisterCommand(commandInfo);
-        commandParser.parseCommand(null, "/command test 123");
+        commandParser.parseCommand(container, "/command test 123");
 
         assertNull(commandParser.nonCommandLine);
         assertEquals("command", commandParser.invalidCommand);

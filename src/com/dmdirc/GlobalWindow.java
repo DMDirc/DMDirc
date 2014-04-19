@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
@@ -47,6 +46,7 @@ import javax.inject.Singleton;
 /**
  * A window which can be used to execute global commands.
  */
+@Singleton
 public class GlobalWindow extends FrameContainer {
 
     /**
@@ -59,9 +59,10 @@ public class GlobalWindow extends FrameContainer {
      * @param urlBuilder          The URL builder to use when finding icons.
      * @param eventBus            The bus to despatch events on.
      */
+    @Inject
     public GlobalWindow(
-            final AggregateConfigProvider config,
-            final CommandParser parser,
+            @GlobalConfig final AggregateConfigProvider config,
+            final GlobalCommandParser parser,
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
@@ -93,51 +94,28 @@ public class GlobalWindow extends FrameContainer {
     @Singleton
     public static class GlobalWindowManager implements ConfigChangeListener {
 
+        /** Provider to use to obtain global window instances. */
+        private final Provider<GlobalWindow> globalWindowProvider;
         /** The global configuration to read settings from. */
         private final AggregateConfigProvider globalConfig;
-        /** The factory to use to create tab completers. */
-        private final TabCompleterFactory tabCompleterFactory;
         /** The provider to use to retrieve a window manager. */
         private final Provider<WindowManager> windowManagerProvider;
-        /** The provider to use to retrieve message sink managers. */
-        private final Provider<MessageSinkManager> messageSinkManagerProvider;
-        /** The provider to use to retrieve a global command parser. */
-        private final Provider<GlobalCommandParser> globalCommandParserProvider;
-        /** The URL builder to use when finding icons. */
-        private final URLBuilder urlBuilder;
-        /** The bus to despatch events on. */
-        private final EventBus eventBus;
-        /** The global window that's in use, if any. */
-        private GlobalWindow globalWindow;
 
         /**
          * Creates a new instance of {@link GlobalWindowManager}.
          *
-         * @param globalConfig                Configuration provider to read settings from.
-         * @param tabCompleterFactory         Factory to use to create tab completers.
-         * @param windowManagerProvider       The provider to use to retrieve a window manager.
-         * @param messageSinkManagerProvider  The provider to use to retrieve a sink manager.
-         * @param globalCommandParserProvider The provider to use to retrieve a global command
-         *                                    parser.
-         * @param urlBuilder                  The URL builder to use when finding icons.
-         * @param eventBus                    The bus to despatch events on.
+         * @param globalWindowProvider  The provider to use to obtain global windows.
+         * @param globalConfig          Configuration provider to read settings from.
+         * @param windowManagerProvider The provider to use to retrieve a window manager.
          */
         @Inject
         public GlobalWindowManager(
+                final Provider<GlobalWindow> globalWindowProvider,
                 @GlobalConfig final AggregateConfigProvider globalConfig,
-                final TabCompleterFactory tabCompleterFactory,
-                final Provider<WindowManager> windowManagerProvider,
-                final Provider<MessageSinkManager> messageSinkManagerProvider,
-                final Provider<GlobalCommandParser> globalCommandParserProvider,
-                final URLBuilder urlBuilder,
-                final EventBus eventBus) {
+                final Provider<WindowManager> windowManagerProvider) {
+            this.globalWindowProvider = globalWindowProvider;
             this.globalConfig = globalConfig;
-            this.tabCompleterFactory = tabCompleterFactory;
             this.windowManagerProvider = windowManagerProvider;
-            this.messageSinkManagerProvider = messageSinkManagerProvider;
-            this.globalCommandParserProvider = globalCommandParserProvider;
-            this.urlBuilder = urlBuilder;
-            this.eventBus = eventBus;
         }
 
         @Override
@@ -158,22 +136,19 @@ public class GlobalWindow extends FrameContainer {
          * setting.
          */
         protected void updateWindowState() {
-            synchronized (GlobalWindow.class) {
-                if (globalConfig.getOptionBool("general", "showglobalwindow")) {
-                    if (globalWindow == null) {
-                        globalWindow = new GlobalWindow(globalConfig,
-                                globalCommandParserProvider.get(),
-                                tabCompleterFactory,
-                                messageSinkManagerProvider.get(),
-                                urlBuilder,
-                                eventBus);
-                        addCloseListener(globalWindow);
-                        windowManagerProvider.get().addWindow(globalWindow);
-                    }
-                } else {
-                    if (globalWindow != null) {
-                        globalWindow.close();
-                    }
+            final WindowManager windowManager = windowManagerProvider.get();
+            final GlobalWindow globalWindow = globalWindowProvider.get();
+            final boolean globalWindowExists = windowManager.getRootWindows()
+                    .contains(globalWindow);
+
+            if (globalConfig.getOptionBool("general", "showglobalwindow")) {
+                if (!globalWindowExists) {
+                    addCloseListener(globalWindow);
+                    windowManager.addWindow(globalWindow);
+                }
+            } else {
+                if (globalWindowExists) {
+                    globalWindow.close();
                 }
             }
         }
@@ -181,14 +156,14 @@ public class GlobalWindow extends FrameContainer {
         /**
          * Adds a {@link FrameCloseListener} to the specified window to update the global window
          * state if the user closes it from the UI.
+         *
+         * @param window The window to add a listener to.
          */
         private void addCloseListener(final GlobalWindow window) {
             window.addCloseListener(new FrameCloseListener() {
                 @Override
                 public void windowClosing(final FrameContainer container) {
-                    synchronized (GlobalWindow.class) {
-                        globalWindow = null;
-                    }
+                    container.removeCloseListener(this);
                 }
             });
         }
