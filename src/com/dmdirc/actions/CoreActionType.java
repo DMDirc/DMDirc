@@ -220,8 +220,10 @@ public enum CoreActionType implements ActionType {
     /** Query nick change. */
     QUERY_NICKCHANGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),
     /** Plugin loaded. */
+    @Deprecated
     PLUGIN_LOADED(PluginEvents.PLUGIN_EVENT, "Plugin loaded"),
     /** Plugin unloaded. */
+    @Deprecated
     PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded"),
     /** Plugins have been refreshed. */
     PLUGIN_REFRESH(PluginEvents.PLUGIN_EVENT, "Plugins refreshed"),

@@ -25,18 +25,11 @@ package com.dmdirc.events;
 import com.dmdirc.plugins.PluginInfo;
 
 /**
- * Base class for all plugin events.
+ * Fired when a plugin is loaded.
  */
-public abstract class PluginEvent extends DMDircEvent {
+public class PluginLoadedEvent extends PluginEvent {
 
-    private PluginInfo plugin;
-
-    public PluginEvent(final PluginInfo plugin) {
-        this.plugin = plugin;
+    public PluginLoadedEvent(final PluginInfo plugin) {
+        super(plugin);
     }
-
-    public PluginInfo getPlugin() {
-        return plugin;
-    }
-
 }

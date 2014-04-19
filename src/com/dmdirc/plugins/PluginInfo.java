@@ -22,10 +22,10 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.events.PluginLoadedEvent;
+import com.dmdirc.events.PluginUnloadedEvent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
@@ -33,6 +33,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,12 +93,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final Map<String, ExportInfo> exports = new HashMap<>();
     /** List of configuration providers. */
     private final List<ConfigProvider> configProviders = new ArrayList<>();
+    /** Event bus to post plugin loaded events to. */
+    private final EventBus eventBus;
 
     /**
      * Create a new PluginInfo.
      *
      * @param metadata            The plugin's metadata information
      * @param injectorInitialiser The initialiser to use for the plugin's injector.
+     * @param eventBus            Event bus to post event loaded events on.
      * @param identityController  The identity controller to add and remove settings from.
      * @param objectGraph         The object graph to give to plugins for DI purposes.
      *
@@ -105,10 +110,12 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public PluginInfo(
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
+            final EventBus eventBus,
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.injectorInitialiser = injectorInitialiser;
         this.objectGraph = objectGraph;
+        this.eventBus = eventBus;
         this.identityController = identityController;
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
@@ -627,8 +634,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             loadClass(metaData.getMainClass());
 
             if (isLoaded()) {
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.PLUGIN_LOADED, null, this);
+                //TODO plugin loading shouldnt be done from here, event bus shouldn't be here.
+                eventBus.post(new PluginLoadedEvent(this));
             }
 
             isLoading = false;
@@ -846,8 +853,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     Logger.appError(ErrorLevel.MEDIUM, lastError, e);
                 }
 
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.PLUGIN_UNLOADED, null, this);
+                //TODO plugin unloading shouldnt be done from here, event bus shouldn't be here.
+                eventBus.post(new PluginUnloadedEvent(this));
                 synchronized (provides) {
                     for (Service service : provides) {
                         service.delProvider(this);

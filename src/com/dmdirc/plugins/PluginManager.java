@@ -78,6 +78,8 @@ public class PluginManager implements ServiceManager {
     private final GlobalClassLoader globalClassLoader;
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
+    /** Event bus to pass to plugin info for plugin loaded events. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PluginManager.
@@ -105,6 +107,7 @@ public class PluginManager implements ServiceManager {
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
         this.objectGraph = objectGraph;
+        this.eventBus = eventBus;
 
         eventBus.register(this);
     }
@@ -264,7 +267,7 @@ public class PluginManager implements ServiceManager {
                             + "!/META-INF/plugin.config"),
                     new URL("file:" + getDirectory() + filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider,
+            final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider, eventBus,
                     identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
