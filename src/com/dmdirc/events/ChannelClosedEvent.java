@@ -27,7 +27,7 @@ import com.dmdirc.Channel;
 /**
  * Event raised when a channel is closed.
  */
-public class ChannelClosedEvent extends ChannelEvent {
+public class ChannelClosedEvent extends ChannelDisplayableEvent {
 
     public ChannelClosedEvent(final Channel channel) {
         super(channel);

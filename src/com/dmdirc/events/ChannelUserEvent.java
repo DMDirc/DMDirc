@@ -28,7 +28,7 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 /**
  * Base type for events that occur in channels against users.
  */
-public abstract class ChannelUserEvent extends ChannelEvent {
+public abstract class ChannelUserEvent extends ChannelDisplayableEvent {
 
     private final ChannelClientInfo user;
 

@@ -27,7 +27,7 @@ import com.dmdirc.Channel;
 /**
  * Event raised when a channel is opened.
  */
-public class ChannelOpenedEvent extends ChannelEvent {
+public class ChannelOpenedEvent extends ChannelDisplayableEvent {
 
     public ChannelOpenedEvent(final Channel channel) {
         super(channel);
