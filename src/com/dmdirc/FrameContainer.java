@@ -22,9 +22,8 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.events.ClientLineAddedEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
@@ -93,7 +92,7 @@ public abstract class FrameContainer {
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
     /** Event bus to despatch events to. */
-    private final EventBus eventbus;
+    private final EventBus eventBus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
@@ -143,7 +142,7 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
-        this.eventbus = eventBus;
+        this.eventBus = eventBus;
         this.writable = false;
         this.commandParser = Optional.absent();
         this.tabCompleter = Optional.absent();
@@ -184,7 +183,7 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
-        this.eventbus = eventbus;
+        this.eventBus = eventbus;
         this.writable = true;
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
@@ -524,8 +523,7 @@ public abstract class FrameContainer {
                 lines.add(new String[]{myLine});
             }
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.CLIENT_LINE_ADDED, null, this, myLine);
+            eventBus.post(new ClientLineAddedEvent(this, myLine));
         }
 
         getDocument().addText(lines);

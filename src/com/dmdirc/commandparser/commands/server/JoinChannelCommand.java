@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,15 +32,16 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
-import com.dmdirc.interfaces.ActionController;
-import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.events.ClientLineAddedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.collections.MapList;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +53,7 @@ import javax.inject.Inject;
  *
  * @since 0.6.3m1
  */
-public class JoinChannelCommand extends Command implements
-        ActionListener, IntelligentCommand {
+public class JoinChannelCommand extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("join",
@@ -67,13 +66,14 @@ public class JoinChannelCommand extends Command implements
      * Creates a new instance of the join channel command.
      *
      * @param controller       The controller to use to retrieve command information.
-     * @param actionController The action controller to register listeners with.
+     * @param eventBus   The bus to listen on for events.
      */
     @Inject
-    public JoinChannelCommand(final CommandController controller,
-            final ActionController actionController) {
+    public JoinChannelCommand(
+            final CommandController controller,
+            final EventBus eventBus) {
         super(controller);
-        actionController.registerListener(this, CoreActionType.CLIENT_LINE_ADDED);
+        eventBus.register(this);
     }
 
     @Override
@@ -101,18 +101,15 @@ public class JoinChannelCommand extends Command implements
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
-    @Override
-    public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
-        final FrameContainer source = (FrameContainer) arguments[0];
-        final String message = (String) arguments[1];
-
-        final String[] parts = source.getStyliser().doLinks(message)
+    @Subscribe
+    public void handleClientLineAdded(final ClientLineAddedEvent event) {
+        final String[] parts = event.getFrameContainer().getStyliser()
+                .doLinks(event.getLine())
                 .split(Character.toString(Styliser.CODE_CHANNEL));
 
         for (int i = 1; i < parts.length; i += 2) {
             // All of the odd parts of the array are channel names
-            mentions.add(source, parts[i]);
+            mentions.add(event.getFrameContainer(), parts[i]);
         }
     }
 
