@@ -224,13 +224,12 @@ public class ClientModule {
     public PluginManager getPluginManager(
             final EventBus eventBus,
             final IdentityController identityController,
-            final ActionController actionController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(eventBus, identityController,
-                actionController, updateManager, initialiserProvider, objectGraph, directory);
+                updateManager, initialiserProvider, objectGraph, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
         checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
 

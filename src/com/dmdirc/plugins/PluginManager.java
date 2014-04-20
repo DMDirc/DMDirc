@@ -25,7 +25,6 @@ package com.dmdirc.plugins;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.events.PluginRefreshEvent;
-import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -66,8 +65,6 @@ public class PluginManager implements ServiceManager {
     private final String directory;
     /** The identity controller to use to find configuration options. */
     private final IdentityController identityController;
-    /** The action controller to use for events. */
-    private final ActionController actionController;
     /** The update manager to inform about plugins. */
     private final UpdateManager updateManager;
     /** A provider of initialisers for plugin injectors. */
@@ -86,7 +83,6 @@ public class PluginManager implements ServiceManager {
      *
      * @param eventBus            The event bus to subscribe to events on
      * @param identityController  The identity controller to use for configuration options.
-     * @param actionController    The action controller to use for events.
      * @param updateManager       The update manager to inform about plugins.
      * @param initialiserProvider A provider of initialisers for plugin injectors.
      * @param objectGraph         The graph to pass to plugins for DI purposes.
@@ -95,13 +91,11 @@ public class PluginManager implements ServiceManager {
     public PluginManager(
             final EventBus eventBus,
             final IdentityController identityController,
-            final ActionController actionController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
             final String directory) {
         this.identityController = identityController;
-        this.actionController = actionController;
         this.updateManager = updateManager;
         this.initialiserProvider = initialiserProvider;
         this.directory = directory;
