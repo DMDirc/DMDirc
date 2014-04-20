@@ -174,8 +174,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private final QueryFactory queryFactory;
     /** Factory to use for creating raw windows. */
     private final RawFactory rawFactory;
-    /** The event bus to despatch events onto. */
-    private final EventBus eventBus;
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
     /** The manager to use to add status bar messages. */
@@ -254,7 +252,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         this.queryFactory = queryFactory;
         this.rawFactory = rawFactory;
         this.executorService = executorService;
-        this.eventBus = eventBus;
         this.userSettings = userSettings;
         this.statusBarManager = statusBarManager;
 
@@ -380,7 +377,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }
         }
 
-        eventBus.post(new ServerConnectingEvent(this));
+        getEventBus().post(new ServerConnectingEvent(this));
     }
 
     @Override
@@ -538,7 +535,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final Query newQuery = queryFactory.getQuery(this, host);
 
             windowManager.addWindow(this, newQuery, focus);
-            eventBus.post(new QueryOpenedEvent(newQuery));
+            getEventBus().post(new QueryOpenedEvent(newQuery));
 
             getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -622,7 +619,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
 
             windowManager.addWindow(this, newChan, focus);
-            eventBus.post(new ChannelOpenedEvent(newChan));
+            getEventBus().post(new ChannelOpenedEvent(newChan));
 
             getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(converter.toLowerCase(chan.getName()), newChan);
@@ -1201,7 +1198,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         final ServerNumericEvent event = new ServerNumericEvent(this, numeric, tokens);
         event.setDisplayFormat(target.toString());
-        eventBus.post(event);
+        getEventBus().post(event);
 
         handleNotification(event.getDisplayFormat(), (Object[]) tokens);
     }
@@ -1230,7 +1227,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         handleNotification("socketClosed", getAddress());
 
-        eventBus.post(new ServerDisconnectedEvent(this));
+        getEventBus().post(new ServerDisconnectedEvent(this));
 
         eventHandler.unregisterCallbacks();
 
@@ -1337,7 +1334,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 }
             }
 
-            eventBus.post(new ServerConnectErrorEvent(this, description));
+            getEventBus().post(new ServerConnectErrorEvent(this, description));
 
             handleNotification("connectError", getAddress(), description);
 
@@ -1418,7 +1415,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }, whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
-        eventBus.post(new ServerConnectedEvent(this));
+        getEventBus().post(new ServerConnectedEvent(this));
     }
 
     /**

@@ -44,15 +44,14 @@ public class CustomWindow extends FrameContainer {
      * @param title      The title of this custom window
      * @param parent     The parent of this custom window
      * @param urlBuilder The URL builder to use when finding icons.
-     * @param eventBus   The bus to despatch events on.
      */
     public CustomWindow(
             final String name,
             final String title,
             final FrameContainer parent,
-            final URLBuilder urlBuilder,
-            final EventBus eventBus) {
-        super(parent, "custom", name, title, parent.getConfigManager(), urlBuilder, eventBus,
+            final URLBuilder urlBuilder) {
+        super(parent, "custom", name, title, parent.getConfigManager(), urlBuilder,
+                parent.getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

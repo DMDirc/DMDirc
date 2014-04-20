@@ -56,8 +56,6 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
-import com.google.common.eventbus.EventBus;
-
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,8 +74,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     /** The Server this Query is on. */
     private final Server server;
-    /** Event bus to post events on. */
-    private final EventBus eventBus;
     /** The full host of the client associated with this query. */
     private String host;
     /** The nickname of the client associated with this query. */
@@ -100,8 +96,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final URLBuilder urlBuilder) {
         super(newServer, "query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(),
@@ -111,12 +106,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
-                eventBus,
+                newServer.getEventBus(),
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
-        this.eventBus = eventBus;
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
@@ -148,7 +142,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 final DisplayableEvent event = new QuerySelfMessageEvent(this, server.getParser().
                         getLocalClient(), part);
                 event.setDisplayFormat("querySelfMessage");
-                eventBus.post(event);
+                getEventBus().post(event);
             }
         }
     }
@@ -188,7 +182,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             doNotification("querySelfAction", client, action);
             final DisplayableEvent event = new QuerySelfActionEvent(this, client, action);
             event.setDisplayFormat("querySelfAction");
-            eventBus.post(event);
+            getEventBus().post(event);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -203,7 +197,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final DisplayableEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
-        eventBus.post(event);
+        getEventBus().post(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -217,7 +211,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final DisplayableEvent event = new QueryActionEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
-        eventBus.post(event);
+        getEventBus().post(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -271,7 +265,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final DisplayableEvent event = new QueryNickchangeEvent(this, oldNick);
             event.setDisplayFormat("queryNickChanged");
-            eventBus.post(event);
+            getEventBus().post(event);
 
             server.updateQuery(this, oldNick, client.getNickname());
 
@@ -294,7 +288,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final DisplayableEvent event = new QueryQuitEvent(this, reason);
             event.setDisplayFormat(format.toString());
-            eventBus.post(event);
+            getEventBus().post(event);
 
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
@@ -326,7 +320,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         // Trigger action for the window closing
-        eventBus.post(new QueryClosedEvent(this));
+        getEventBus().post(new QueryClosedEvent(this));
 
         // Inform any parents that the window is closing
         if (server != null) {

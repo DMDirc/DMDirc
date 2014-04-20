@@ -28,8 +28,6 @@ import com.dmdirc.Server;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -44,23 +42,18 @@ public class CustomWindowMessageSink implements MessageSink {
     private final WindowManager windowManager;
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
-    /** The bus to despatch events on. */
-    private final EventBus eventBus;
 
     /**
      * Creates a new custom window message sink.
      *
      * @param windowManager Window management
      * @param urlBuilder    The URL builder to use when finding icons.
-     * @param eventBus      The bus to despatch events on.
      */
     public CustomWindowMessageSink(
             final WindowManager windowManager,
-            final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final URLBuilder urlBuilder) {
         this.windowManager = windowManager;
         this.urlBuilder = urlBuilder;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -78,7 +71,7 @@ public class CustomWindowMessageSink implements MessageSink {
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0], patternMatches[0],
-                    (Server) source.getConnection(), urlBuilder, eventBus);
+                    (Server) source.getConnection(), urlBuilder);
             windowManager.addWindow((Server) source.getConnection(), targetWindow);
         }
 

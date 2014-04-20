@@ -44,7 +44,6 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
@@ -91,10 +90,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     private volatile boolean showModePrefix;
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
-    /** The manager to use to manage our event bus. */
-    private final ChildEventBusManager eventBusManager;
-    /** The bus to despatch events on. */
-    private final EventBus eventBus;
 
     /**
      * Creates a new instance of Channel.
@@ -126,7 +121,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
                         CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
-                eventBus, // TODO: This should be the channel's own event bus.
+                newServer.getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
                         WindowComponent.TOPICBAR.getIdentifier(),
@@ -135,9 +130,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
         this.configMigrator = configMigrator;
         this.channelInfo = newChannelInfo;
         this.server = newServer;
-        this.eventBusManager = new ChildEventBusManager(eventBus);
-        this.eventBusManager.connect();
-        this.eventBus = eventBusManager.getChildBus();
 
         getConfigManager().addChangeListener("channel", this);
         getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
@@ -155,11 +147,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
 
         updateTitle();
         selfJoin();
-    }
-
-    @Override
-    public EventBus getEventBus() {
-        return eventBus;
     }
 
     public ChannelInfo getChannelInfo() {
@@ -329,12 +316,10 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
         }
 
         // Trigger action for the window closing
-        eventBus.post(new ChannelClosedEvent(this));
+        getEventBus().post(new ChannelClosedEvent(this));
 
         // Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());
-
-        eventBusManager.disconnect();
     }
 
     /**

@@ -39,6 +39,7 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -93,6 +94,8 @@ public abstract class FrameContainer {
     private final Object styliserSync = new Object();
     /** Object used to synchronise styliser access. */
     private final Object documentSync = new Object();
+    /** The manager to use to manage our event bus. */
+    private final ChildEventBusManager eventBusManager;
     /** Event bus to despatch events to. */
     private final EventBus eventBus;
     /** The icon manager to use for this container. */
@@ -147,11 +150,14 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
-        this.eventBus = eventBus;
         this.writable = false;
         this.commandParser = Optional.absent();
         this.tabCompleter = Optional.absent();
         this.messageSinkManager = Optional.absent();
+
+        this.eventBusManager = new ChildEventBusManager(eventBus);
+        this.eventBusManager.connect();
+        this.eventBus = eventBusManager.getChildBus();
 
         setIcon(icon);
     }
@@ -168,7 +174,7 @@ public abstract class FrameContainer {
      * @param commandParser      The command parser to use for input.
      * @param tabCompleter       The tab completer to use.
      * @param messageSinkManager The manager to use to despatch notifications.
-     * @param eventbus           The bus to despatch events on.
+     * @param eventBus           The bus to despatch events on.
      * @param components         The UI components that this frame requires
      *
      * @since 0.6.4
@@ -183,7 +189,7 @@ public abstract class FrameContainer {
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
-            final EventBus eventbus,
+            final EventBus eventBus,
             final Collection<String> components) {
         this.parent = Optional.fromNullable(parent);
         this.configManager = config;
@@ -191,12 +197,15 @@ public abstract class FrameContainer {
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
-        this.eventBus = eventbus;
         this.writable = true;
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
         this.messageSinkManager = Optional.of(messageSinkManager);
         commandParser.setOwner(this);
+
+        this.eventBusManager = new ChildEventBusManager(eventBus);
+        this.eventBusManager.connect();
+        this.eventBus = eventBusManager.getChildBus();
 
         setIcon(icon);
     }
@@ -223,6 +232,10 @@ public abstract class FrameContainer {
 
     public AggregateConfigProvider getConfigManager() {
         return configManager;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public boolean isWritable() {
@@ -356,6 +369,8 @@ public abstract class FrameContainer {
      * Closes this container (and its associated frame).
      */
     public void close() {
+        eventBusManager.disconnect();
+
         for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
             listener.windowClosing(this);
             listeners.remove(FrameCloseListener.class, listener);

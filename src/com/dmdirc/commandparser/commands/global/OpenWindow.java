@@ -129,7 +129,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            urlBuilder, eventBus);
+                            urlBuilder);
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {

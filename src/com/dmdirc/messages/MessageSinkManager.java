@@ -29,8 +29,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,18 +127,16 @@ public class MessageSinkManager {
      * @param statusBarManager The status bar manager to give to status-bar related sinks.
      * @param windowManager    The window manager to give to sinks that iterate windows.
      * @param urlBuilder       The URL builder to use when finding icons.
-     * @param eventBus         The bus to despatch events on.
      */
     public void loadDefaultSinks(
             final StatusBarManager statusBarManager,
             final WindowManager windowManager,
-            final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final URLBuilder urlBuilder) {
         // TODO: Dependency inject all these.
         addSink(new AllMessageSink());
         addSink(new ChannelMessageSink());
         addSink(new CommonChanelsMessageSink());
-        addSink(new CustomWindowMessageSink(windowManager, urlBuilder, eventBus));
+        addSink(new CustomWindowMessageSink(windowManager, urlBuilder));
         addSink(new ForkMessageSink());
         addSink(new FormatMessageSink());
         addSink(new GroupMessageSink());
