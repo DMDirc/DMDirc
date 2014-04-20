@@ -23,18 +23,35 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Query;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
  * Fired when a message occurs in a query.
  */
 public class QueryMessageEvent extends QueryDisplayableEvent {
 
-    public QueryMessageEvent(final long timestamp, final Query query) {
+    private final ClientInfo client;
+    private final String message;
+
+    public QueryMessageEvent(final long timestamp, final Query query, final ClientInfo client,
+            final String message) {
         super(timestamp, query);
+        this.client = client;
+        this.message = message;
     }
 
-    public QueryMessageEvent(final Query query) {
+    public QueryMessageEvent(final Query query, final ClientInfo client, final String message) {
         super(query);
+        this.client = client;
+        this.message = message;
+    }
+
+    public ClientInfo getClient() {
+        return client;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

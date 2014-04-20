@@ -204,20 +204,28 @@ public enum CoreActionType implements ActionType {
     CHANNEL_TOPICCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG,
             "Someone changed channel topic"),
     /** Query opened. */
+    @Deprecated
     QUERY_OPENED(QueryEvents.QUERY_EVENT, "Query window opened"),
     /** Query closed. */
+    @Deprecated
     QUERY_CLOSED(QueryEvents.QUERY_EVENT, "Query window closed"),
     /** Query message received. */
+    @Deprecated
     QUERY_MESSAGE(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private message received"),
     /** Query action received. */
+    @Deprecated
     QUERY_ACTION(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private action received"),
     /** Query message sent. */
+    @Deprecated
     QUERY_SELF_MESSAGE(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private message sent"),
     /** Query action sent. */
+    @Deprecated
     QUERY_SELF_ACTION(QueryEvents.QUERY_SOURCED_EVENT_WITH_ARG, "Private action sent"),
     /** Query quit event. */
+    @Deprecated
     QUERY_QUIT(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user quit"),
     /** Query nick change. */
+    @Deprecated
     QUERY_NICKCHANGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),
     /** Plugin loaded. */
     @Deprecated

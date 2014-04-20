@@ -24,6 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.QuerySelfActionEvent;
+import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
@@ -68,6 +71,8 @@ import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
 import com.dmdirc.parser.interfaces.callbacks.WallopListener;
 import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -91,16 +96,18 @@ public class ServerEventHandler extends EventHandler implements
 
     /** The server instance that owns this event handler. */
     private final Server owner;
+    /** Event bus to post events to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of ServerEventHandler.
      *
-     * @param owner The Server instance that we're handling events for
+     * @param owner    The Server instance that we're handling events for
+     * @param eventBus The event bus to post events to
      */
-    public ServerEventHandler(final Server owner) {
-        super();
-
+    public ServerEventHandler(final Server owner, final EventBus eventBus) {
         this.owner = owner;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -338,8 +345,10 @@ public class ServerEventHandler extends EventHandler implements
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalMessage",
                     parser.getLocalClient(), message);
-            triggerAction("querySelfExternalMessage", CoreActionType.QUERY_SELF_MESSAGE, parser.
-                    getLocalClient(), message);
+            final DisplayableEvent event = new QuerySelfMessageEvent(owner.getQuery(target),
+                    parser.getLocalClient(), message);
+            event.setDisplayFormat("querySelfExternalMessage");
+            eventBus.post(event);
         } else {
             owner.doNotification("unknownMessage", host, target, message);
             triggerAction("unknownMessage", CoreActionType.SERVER_UNKNOWNNOTICE, host, target,
@@ -356,7 +365,10 @@ public class ServerEventHandler extends EventHandler implements
             // Local client
             owner.getQuery(target).doNotification("querySelfExternalAction",
                     parser.getLocalClient(), message);
-            triggerAction("querySelfExternalAction", CoreActionType.QUERY_SELF_ACTION, message);
+            final DisplayableEvent event = new QuerySelfActionEvent(owner.getQuery(target),
+                    parser.getLocalClient(), message);
+            event.setDisplayFormat("querySelfExternalAction");
+            eventBus.post(event);
         } else {
             owner.doNotification("unknownAction", host, target, message);
             triggerAction("unknownAction", CoreActionType.SERVER_UNKNOWNACTION, host, target,

@@ -29,12 +29,20 @@ import com.dmdirc.Query;
  */
 public class QueryQuitEvent extends QueryDisplayableEvent {
 
-    public QueryQuitEvent(final long timestamp, final Query query) {
+    private final String reason;
+
+    public QueryQuitEvent(final long timestamp, final Query query, final String reason) {
         super(timestamp, query);
+        this.reason = reason;
     }
 
-    public QueryQuitEvent(final Query query) {
+    public QueryQuitEvent(final Query query, final String reason) {
         super(query);
+        this.reason = reason;
+    }
+
+    public String getReason() {
+        return reason;
     }
 
 }

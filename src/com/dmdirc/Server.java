@@ -28,6 +28,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
+import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
@@ -146,7 +147,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     /** Our reason for being away, if any. */
     private String awayMessage;
     /** Our event handler. */
-    private final ServerEventHandler eventHandler = new ServerEventHandler(this);
+    private final ServerEventHandler eventHandler;
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<>();
     /** A set of channels we want to join without focusing. */
@@ -256,6 +257,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         this.eventBus = eventBus;
         this.userSettings = userSettings;
         this.statusBarManager = statusBarManager;
+
+        eventHandler = new ServerEventHandler(this, eventBus);
 
         setConnectionDetails(uri, profile);
 
@@ -535,8 +538,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final Query newQuery = queryFactory.getQuery(this, host);
 
             windowManager.addWindow(this, newQuery, focus);
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.QUERY_OPENED, null, newQuery);
+            eventBus.post(new QueryOpenedEvent(newQuery));
 
             getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);

@@ -23,9 +23,16 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
+import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.QueryActionEvent;
+import com.dmdirc.events.QueryClosedEvent;
+import com.dmdirc.events.QueryMessageEvent;
+import com.dmdirc.events.QueryNickchangeEvent;
+import com.dmdirc.events.QueryQuitEvent;
+import com.dmdirc.events.QuerySelfActionEvent;
+import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
@@ -69,6 +76,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     /** The Server this Query is on. */
     private final Server server;
+    /** Event bus to post events on. */
+    private final EventBus eventBus;
     /** The full host of the client associated with this query. */
     private String host;
     /** The nickname of the client associated with this query. */
@@ -107,6 +116,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
+        this.eventBus = eventBus;
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
@@ -135,8 +145,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 server.getParser().sendMessage(target, part);
 
                 doNotification("querySelfMessage", server.getParser().getLocalClient(), part);
-                triggerAction("querySelfMessage", CoreActionType.QUERY_SELF_MESSAGE,
-                        server.getParser().getLocalClient(), part);
+                final DisplayableEvent event = new QuerySelfMessageEvent(this, server.getParser().
+                        getLocalClient(), part);
+                event.setDisplayFormat("querySelfMessage");
+                eventBus.post(event);
             }
         }
     }
@@ -174,7 +186,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().sendAction(getNickname(), action);
 
             doNotification("querySelfAction", client, action);
-            triggerAction("querySelfAction", CoreActionType.QUERY_SELF_ACTION, client, action);
+            final DisplayableEvent event = new QuerySelfActionEvent(this, client, action);
+            event.setDisplayFormat("querySelfAction");
+            eventBus.post(event);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -187,9 +201,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.QUERY_MESSAGE, buff, this,
-                parser.getClient(host), message);
+        final DisplayableEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
+        event.setDisplayFormat(buff.toString());
+        eventBus.post(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -201,9 +215,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.QUERY_ACTION, buff, this, parser.getClient(host),
-                message);
+        final DisplayableEvent event = new QueryActionEvent(this, parser.getClient(host), message);
+        event.setDisplayFormat(buff.toString());
+        eventBus.post(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -255,8 +269,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final StringBuffer format = new StringBuffer("queryNickChanged");
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.QUERY_NICKCHANGE, format, this, oldNick);
+            final DisplayableEvent event = new QueryNickchangeEvent(this, oldNick);
+            event.setDisplayFormat("queryNickChanged");
+            eventBus.post(event);
 
             server.updateQuery(this, oldNick, client.getNickname());
 
@@ -277,8 +292,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final StringBuffer format = new StringBuffer(reason.isEmpty()
                     ? "queryQuit" : "queryQuitReason");
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.QUERY_QUIT, format, this, reason);
+            final DisplayableEvent event = new QueryQuitEvent(this, reason);
+            event.setDisplayFormat(format.toString());
+            eventBus.post(event);
 
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
@@ -310,8 +326,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         // Trigger action for the window closing
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.QUERY_CLOSED, null, this);
+        eventBus.post(new QueryClosedEvent(this));
 
         // Inform any parents that the window is closing
         if (server != null) {
