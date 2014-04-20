@@ -66,7 +66,7 @@ public abstract class FrameContainer {
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
     /** The colour of our frame's notifications. */
-    private Colour notification = Colour.BLACK;
+    private Optional<Colour> notification = Optional.absent();
     /** The document used to store this container's content. */
     private IRCDocument document;
     /** The children of this frame. */
@@ -193,7 +193,7 @@ public abstract class FrameContainer {
         setIcon(icon);
     }
 
-    public Colour getNotification() {
+    public Optional<Colour> getNotification() {
         return notification;
     }
 
@@ -417,9 +417,7 @@ public abstract class FrameContainer {
      * Clears any outstanding notifications this frame has set.
      */
     public void clearNotification() {
-        // TODO: This should default ot something colour independent
-        notification = Colour.BLACK;
-
+        notification = Optional.absent();
         listeners.getCallable(NotificationListener.class).notificationCleared(this);
     }
 
@@ -429,9 +427,8 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Colour colour) {
-        if (!colour.equals(notification)) {
-            notification = colour;
-
+        if (!notification.isPresent() || !colour.equals(notification.get())) {
+            notification = Optional.of(colour);
             listeners.getCallable(NotificationListener.class).notificationSet(this, colour);
         }
     }

@@ -256,26 +256,27 @@ public enum CoreActionComponent implements ActionComponent {
      * channel. */
     CHANNEL_COLOUR {
 
-                @Override
-                public Object get(final Object arg) {
-                    return ((Channel) arg).getNotification();
-                }
+        @Override
+        public Object get(final Object arg) {
+            // TODO: This should understand unset notifications
+            return ((Channel) arg).getNotification().or(Colour.BLACK);
+        }
 
-                @Override
-                public Class<?> appliesTo() {
-                    return Channel.class;
-                }
+        @Override
+        public Class<?> appliesTo() {
+            return Channel.class;
+        }
 
-                @Override
-                public Class<?> getType() {
-                    return Colour.class;
-                }
+        @Override
+        public Class<?> getType() {
+            return Colour.class;
+        }
 
-                @Override
-                public String getName() {
-                    return "notification colour";
-                }
-            },
+        @Override
+        public String getName() {
+            return "notification colour";
+        }
+    },
     /** Returns the name of a client. */
     CLIENT_NAME {
 
@@ -438,8 +439,8 @@ public enum CoreActionComponent implements ActionComponent {
                     return "content";
                 }
             },
-    /** Returns the content of a
-     * string, stripped of formatting. */
+    /** Returns the content of a string, stripped of
+     * formatting. */
     STRING_STRIPPED {
 
                 @Override
@@ -556,8 +557,8 @@ public enum CoreActionComponent implements ActionComponent {
                     return "key name";
                 }
             },
-    /** Returns the state of the
-     * control key for a key press event. */
+    /** Returns the state of the control key for a key
+     * press event. */
     KEYEVENT_CTRLSTATE {
 
                 @Override
@@ -581,8 +582,8 @@ public enum CoreActionComponent implements ActionComponent {
                     return "control key state";
                 }
             },
-    /** Returns the state of the
-     * shift key for a key press event. */
+    /** Returns the state of the shift key for a key press
+     * event. */
     KEYEVENT_SHIFTSTATE {
 
                 @Override
@@ -607,8 +608,8 @@ public enum CoreActionComponent implements ActionComponent {
                     return "shift key state";
                 }
             },
-    /** Returns the state of the
-     * shift key for a key press event. */
+    /** Returns the state of the shift key for a key press
+     * event. */
     KEYEVENT_ALTSTATE {
 
                 @Override
@@ -682,26 +683,27 @@ public enum CoreActionComponent implements ActionComponent {
      * query. */
     QUERY_COLOUR {
 
-                @Override
-                public Object get(final Object arg) {
-                    return ((Query) arg).getNotification();
-                }
+        @Override
+        public Object get(final Object arg) {
+            // TODO: This should understand unset notifications
+            return ((Query) arg).getNotification().orNull();
+        }
 
-                @Override
-                public Class<?> appliesTo() {
-                    return Query.class;
-                }
+        @Override
+        public Class<?> appliesTo() {
+            return Query.class;
+        }
 
-                @Override
-                public Class<?> getType() {
-                    return Colour.class;
-                }
+        @Override
+        public Class<?> getType() {
+            return Colour.class;
+        }
 
-                @Override
-                public String getName() {
-                    return "notification colour";
-                }
-            },
+        @Override
+        public String getName() {
+            return "notification colour";
+        }
+    },
     /** The name of a window. */
     WINDOW_NAME {
 
@@ -729,26 +731,27 @@ public enum CoreActionComponent implements ActionComponent {
      * window. */
     WINDOW_COLOUR {
 
-                @Override
-                public Object get(final Object arg) {
-                    return ((FrameContainer) arg).getNotification();
-                }
+        @Override
+        public Object get(final Object arg) {
+            // TODO: This should understand unset notifications
+            return ((FrameContainer) arg).getNotification().orNull();
+        }
 
-                @Override
-                public Class<?> appliesTo() {
-                    return FrameContainer.class;
-                }
+        @Override
+        public Class<?> appliesTo() {
+            return FrameContainer.class;
+        }
 
-                @Override
-                public Class<?> getType() {
-                    return Colour.class;
-                }
+        @Override
+        public Class<?> getType() {
+            return Colour.class;
+        }
 
-                @Override
-                public String getName() {
-                    return "notification colour";
-                }
-            },
+        @Override
+        public String getName() {
+            return "notification colour";
+        }
+    },
     /**
      * Returns the server of the window.
      *
