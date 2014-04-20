@@ -190,7 +190,6 @@ public class WindowManager {
         checkNotNull(parent);
         checkArgument(isInHierarchy(parent));
         checkNotNull(child);
-        checkArgument(!isInHierarchy(child));
 
         parent.addChild(child);
 
