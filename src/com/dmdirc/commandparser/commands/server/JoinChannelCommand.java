@@ -40,6 +40,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.collections.MapList;
 
+import com.google.common.base.Optional;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -173,8 +174,9 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         }
 
         // Check the parent window
-        if (checkParents && source.getParent() != null) {
-            results.addAll(checkSource(source.getParent(), true, false));
+        final Optional<FrameContainer> parent = source.getParent();
+        if (checkParents && parent.isPresent()) {
+            results.addAll(checkSource(parent.get(), true, false));
         }
 
         // Check the children window

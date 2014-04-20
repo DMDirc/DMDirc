@@ -39,6 +39,8 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,12 +101,12 @@ public class Echo extends Command implements IntelligentCommand {
 
         if (results.hasFlag(targetFlag)) {
             FrameContainer frame = null;
-            FrameContainer target = origin;
+            Optional<FrameContainer> target = Optional.of(origin);
 
-            while (frame == null && target != null) {
-                frame = windowManager.findCustomWindow(target,
+            while (frame == null && target.isPresent()) {
+                frame = windowManager.findCustomWindow(target.get(),
                         results.getArgumentsAsString(targetFlag));
-                target = target.getParent();
+                target = target.get().getParent();
             }
 
             if (frame == null) {

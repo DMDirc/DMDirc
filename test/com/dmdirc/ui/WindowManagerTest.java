@@ -25,6 +25,8 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
 
+import com.google.common.base.Optional;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -34,8 +36,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WindowManagerTest {
@@ -90,7 +101,7 @@ public class WindowManagerTest {
         manager.addWindow(container, child);
         manager.addListener(frameListener);
 
-        when(child.getParent()).thenReturn(container);
+        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.removeWindow(child);
 
@@ -148,7 +159,7 @@ public class WindowManagerTest {
     public void testRemoveWindowRootWindowWithChildren() {
         when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
-        when(child.getParent()).thenReturn(container);
+        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
         manager.addWindow(container);
@@ -162,7 +173,7 @@ public class WindowManagerTest {
     public void testRemoveChildWindowNoChildren() {
         when(container.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{child, }));
-        when(child.getParent()).thenReturn(container);
+        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
         manager.addWindow(container);
@@ -178,7 +189,7 @@ public class WindowManagerTest {
                 new FrameContainer[]{child, }));
         when(child.getChildren()).thenReturn(Arrays.asList(
                 new FrameContainer[]{grandchild, }));
-        when(child.getParent()).thenReturn(container);
+        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
         manager.addWindow(container);
@@ -195,7 +206,7 @@ public class WindowManagerTest {
         final FrameContainer root2 = mock(FrameContainer.class);
         final Collection<FrameContainer> rootWindows
                 = Arrays.asList(new FrameContainer[]{root1, root2, });
-        
+
         manager.addWindow(root1);
         manager.addWindow(root2);
 

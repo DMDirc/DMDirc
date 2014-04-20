@@ -74,7 +74,7 @@ public abstract class FrameContainer {
     /** The children of this frame. */
     private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
-    private final FrameContainer parent;
+    private final Optional<FrameContainer> parent;
     /** The name of the icon being used for this container's frame. */
     private String icon;
     /** The name of this container. */
@@ -141,7 +141,7 @@ public abstract class FrameContainer {
             final URLBuilder urlBuilder,
             final EventBus eventBus,
             final Collection<String> components) {
-        this.parent = parent;
+        this.parent = Optional.fromNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -185,7 +185,7 @@ public abstract class FrameContainer {
             final MessageSinkManager messageSinkManager,
             final EventBus eventbus,
             final Collection<String> components) {
-        this.parent = parent;
+        this.parent = Optional.fromNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -205,7 +205,7 @@ public abstract class FrameContainer {
         return notification;
     }
 
-    public FrameContainer getParent() {
+    public Optional<FrameContainer> getParent() {
         return parent;
     }
 

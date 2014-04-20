@@ -29,6 +29,8 @@ import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.base.Optional;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +41,7 @@ import javax.inject.Singleton;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * The WindowManager maintains a list of all open windows, and their parent/child relations.
@@ -208,8 +211,12 @@ public class WindowManager {
      * @return True if the target is in the hierarchy, false otherise
      */
     protected boolean isInHierarchy(final FrameContainer target) {
-        return target != null && (rootWindows.contains(target)
-                || isInHierarchy(target.getParent()));
+        if (rootWindows.contains(target)) {
+            return true;
+        }
+
+        final Optional<FrameContainer> parent = target.getParent();
+        return parent.isPresent() && isInHierarchy(parent.get());
     }
 
     /**
@@ -237,9 +244,10 @@ public class WindowManager {
             fireDeleteWindow(window);
             rootWindows.remove(window);
         } else {
-            final FrameContainer parent = window.getParent();
-            fireDeleteWindow(parent, window);
-            parent.removeChild(window);
+            final Optional<FrameContainer> parent = window.getParent();
+            checkState(parent.isPresent());
+            fireDeleteWindow(parent.get(), window);
+            parent.get().removeChild(window);
         }
     }
 
