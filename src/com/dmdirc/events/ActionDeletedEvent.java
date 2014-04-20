@@ -20,55 +20,28 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.metatypes;
+package com.dmdirc.events;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.interfaces.actions.ActionMetaType;
 
 /**
- * Defines action-related events.
+ * Fired when an action is deleted.
  */
-public enum ActionEvents implements ActionMetaType {
+public class ActionDeletedEvent extends ActionEvent {
 
-    /** Action event type. */
-    ACTION_EVENT(new String[]{"action"}, Action.class),
-    /** Action event type. */
-    ACTION_DELETED(new String[]{"Action group", "Action name"}, ActionGroup.class, String.class);
-    /** The names of the arguments for this meta type. */
-    private String[] argNames;
-    /** The classes of the arguments for this meta type. */
-    private Class[] argTypes;
+    private final ActionGroup group;
 
-    /**
-     * Creates a new instance of this meta-type.
-     *
-     * @param argNames The names of the meta-type's arguments
-     * @param argTypes The types of the meta-type's arguments
-     */
-    ActionEvents(final String[] argNames, final Class... argTypes) {
-        this.argNames = argNames;
-        this.argTypes = argTypes;
+    public ActionDeletedEvent(final ActionGroup group, final Action action) {
+        super(action);
+        this.group = group;
     }
 
-    @Override
-    public int getArity() {
-        return argNames.length;
+    public ActionGroup getGroup() {
+        return group;
     }
 
-    @Override
-    public Class[] getArgTypes() {
-        return argTypes;
+    public String getName() {
+        return getAction().getName();
     }
-
-    @Override
-    public String[] getArgNames() {
-        return argNames;
-    }
-
-    @Override
-    public String getGroup() {
-        return "Action Events";
-    }
-
 }

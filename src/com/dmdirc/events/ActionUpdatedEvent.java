@@ -25,18 +25,12 @@ package com.dmdirc.events;
 import com.dmdirc.actions.Action;
 
 /**
- * Base class for all action events.
+ * Fired when an action is updated.
  */
-public abstract class ActionEvent extends DMDircEvent {
+public class ActionUpdatedEvent extends ActionEvent {
 
-    private final Action action;
-
-    public ActionEvent(final Action action) {
-        this.action = action;
-    }
-
-    public Action getAction() {
-        return action;
+    public ActionUpdatedEvent(final Action action) {
+        super(action);
     }
 
 }

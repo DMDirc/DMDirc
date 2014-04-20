@@ -30,6 +30,8 @@ import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 
+import com.google.common.eventbus.EventBus;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,10 +56,13 @@ public class ActionFactory {
     private final ActionSubstitutorFactory substitutorFactory;
     /** The base directory to store actions in. */
     private final String actionsDirectory;
+    /** Event bus to post events on. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of {@link ActionFactory}.
      *
+     * @param eventBus                    The event bus to post events on.
      * @param actionController            The controller that will own actions.
      * @param identityController          The controller to use to retrieve and update settings.
      * @param globalCommandParserProvider The global command parser to use for actions without
@@ -68,12 +73,14 @@ public class ActionFactory {
      */
     @Inject
     public ActionFactory(
+            final EventBus eventBus,
             final Provider<ActionController> actionController,
             final Provider<IdentityController> identityController,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
+        this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
         this.globalCommandParserProvider = globalCommandParserProvider;
@@ -93,6 +100,7 @@ public class ActionFactory {
      */
     public Action getAction(final String group, final String name) {
         return new Action(
+                eventBus,
                 globalCommandParserProvider,
                 globalWindowProvider,
                 substitutorFactory,
@@ -121,6 +129,7 @@ public class ActionFactory {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
         return new Action(
+                eventBus,
                 globalCommandParserProvider,
                 globalWindowProvider,
                 substitutorFactory,

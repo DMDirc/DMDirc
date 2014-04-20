@@ -36,6 +36,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
+import com.google.common.eventbus.EventBus;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +70,7 @@ public class ActionTest {
 
     @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
+    @Mock private EventBus eventBus;
     @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;
@@ -105,7 +108,7 @@ public class ActionTest {
 
     @Test
     public void testSave() {
-        new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
+        new Action(eventBus, gcpProvider, gwProvider, substitutorFactory, actionController,
                 identityController, getTempDirectory(), "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
@@ -116,7 +119,8 @@ public class ActionTest {
 
     @Test
     public void testSetGroup() {
-        Action action = new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
+        Action action = new Action(eventBus, gcpProvider, gwProvider, substitutorFactory,
+                actionController,
                 identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
@@ -124,33 +128,29 @@ public class ActionTest {
         action.setGroup("unit-test-two");
 
         assertFalse("setGroup must remove old file",
-                new File(getTempDirectory(), "unit-test" + File.separator + "test1").
-                isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test1").isFile());
         assertTrue("setGroup must create new file",
-                new File(getTempDirectory(), "unit-test-two" + File.separator + "test1").
-                isFile());
+                new File(getTempDirectory(), "unit-test-two" + File.separator + "test1").isFile());
     }
 
     @Test
     public void testSetName() {
-        Action action = new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
-                identityController, getTempDirectory(),
-                "unit-test", "test1", new ActionType[0],
-                new String[0], new ArrayList<ActionCondition>(),
+        Action action = new Action(eventBus, gcpProvider, gwProvider, substitutorFactory,
+                actionController, identityController, getTempDirectory(), "unit-test",
+                "test1", new ActionType[0], new String[0], new ArrayList<ActionCondition>(),
                 ConditionTree.createConjunction(0), null);
         action.setName("test2");
 
         assertFalse("setName must remove old file",
-                new File(getTempDirectory(), "unit-test" + File.separator + "test1").
-                isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test1").isFile());
         assertTrue("setName must create new file",
-                new File(getTempDirectory(), "unit-test" + File.separator + "test2").
-                isFile());
+                new File(getTempDirectory(), "unit-test" + File.separator + "test2").isFile());
     }
 
     @Test
     public void testDelete() {
-        Action action = new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
+        Action action = new Action(eventBus, gcpProvider, gwProvider, substitutorFactory,
+                actionController,
                 identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
@@ -164,9 +164,9 @@ public class ActionTest {
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        Action action = new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
-                identityController, getTempDirectory(),
-                "unit-test", "doesn't_exist");
+        Action action = new Action(eventBus, gcpProvider, gwProvider, substitutorFactory,
+                actionController, identityController, getTempDirectory(), "unit-test",
+                "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
         action.loadActionFromConfig();
@@ -183,9 +183,9 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        Action action = new Action(gcpProvider, gwProvider, substitutorFactory, actionController,
-                identityController, getTempDirectory(),
-                "unit-test", "doesn't_exist");
+        Action action = new Action(eventBus, gcpProvider, gwProvider, substitutorFactory,
+                actionController, identityController, getTempDirectory(), "unit-test",
+                "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
         action.config.read();
         action.loadActionFromConfig();

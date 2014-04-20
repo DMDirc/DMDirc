@@ -229,10 +229,13 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     PLUGIN_REFRESH(PluginEvents.PLUGIN_EVENT, "Plugins refreshed"),
     /** Action created. */
+    @Deprecated
     ACTION_CREATED(ActionEvents.ACTION_EVENT, "Action created"),
     /** Action updated. */
+    @Deprecated
     ACTION_UPDATED(ActionEvents.ACTION_EVENT, "Action updated"),
     /** Action deleted. */
+    @Deprecated
     ACTION_DELETED(ActionEvents.ACTION_DELETED, "Action deleted"),
     /** Channel clicked. */
     @Deprecated

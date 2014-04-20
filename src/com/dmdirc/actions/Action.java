@@ -26,6 +26,9 @@ import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.events.ActionCreatedEvent;
+import com.dmdirc.events.ActionDeletedEvent;
+import com.dmdirc.events.ActionUpdatedEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
@@ -37,6 +40,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +78,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private final IdentityController identityController;
     /** The controller to use to retrieve components, comparisons, etc. */
     private final ActionController actionController;
+    /** Event bus to post events to. */
+    private final EventBus eventBus;
     /** The config file we're using. */
     protected ConfigFile config;
     /** The location of the file we're reading/saving. */
@@ -82,6 +89,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action. The group and name specified must be the group and name of
      * a valid action already saved to disk.
      *
+     * @param eventBus                    Event bus to post events to
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
@@ -92,6 +100,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param name                        The name of the action
      */
     public Action(
+            final EventBus eventBus,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
@@ -102,6 +111,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final String name) {
         super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
 
+        this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
@@ -126,6 +136,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /**
      * Creates a new instance of Action with the specified properties and saves it to disk.
      *
+     * @param eventBus                    Event bus to post events to
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
@@ -141,6 +152,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param newFormat                   The new formatter to use
      */
     public Action(
+            final EventBus eventBus,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
@@ -157,6 +169,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name,
                 triggers, response, conditions, conditionTree, newFormat);
 
+        this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
@@ -165,8 +178,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         new File(actionsDirectory + group).mkdirs();
 
-        actionController.triggerEvent(CoreActionType.ACTION_CREATED, null, this);
-
         save();
 
         identityController.getGlobalConfiguration().addChangeListener("disable_action",
@@ -174,6 +185,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
         checkDisabled();
 
         actionController.addAction(this);
+        //TODO This needs to be done somewhere else, remove eventbus when it is.
+        eventBus.post(new ActionCreatedEvent(this));
     }
 
     /**
@@ -406,7 +419,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
                     + group + "/" + name + ": " + ex.getMessage());
         }
 
-        actionController.triggerEvent(CoreActionType.ACTION_UPDATED, null, this);
+        eventBus.post(new ActionUpdatedEvent(this));
     }
 
     /**
@@ -565,7 +578,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Deletes this action.
      */
     public void delete() {
-        actionController.triggerEvent(CoreActionType.ACTION_DELETED, null, getGroup(), getName());
+        eventBus.post(new ActionDeletedEvent(actionController.getOrCreateGroup(getGroup()), this));
         new File(location).delete();
     }
 
@@ -573,8 +586,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public String toString() {
         final String parent = super.toString();
 
-        return parent.substring(0, parent.length() - 1)
-                + ",location=" + location + "]";
+        return parent.substring(0, parent.length() - 1) + ",location=" + location + "]";
     }
 
     @Override
