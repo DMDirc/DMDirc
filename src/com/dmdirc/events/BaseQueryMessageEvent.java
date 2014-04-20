@@ -26,16 +26,16 @@ import com.dmdirc.Query;
 import com.dmdirc.parser.interfaces.ClientInfo;
 
 /**
- * Fired when an action occurs in a query.
+ * Base class for query message events.
  */
-public class QueryActionEvent extends BaseQueryActionEvent {
+public abstract class BaseQueryMessageEvent extends BaseQueryTextEvent {
 
-    public QueryActionEvent(final long timestamp, final Query query, final ClientInfo client,
+    public BaseQueryMessageEvent(final long timestamp, final Query query, final ClientInfo client,
             final String message) {
         super(timestamp, query, client, message);
     }
 
-    public QueryActionEvent(final Query query, final ClientInfo client, final String message) {
+    public BaseQueryMessageEvent(final Query query, final ClientInfo client, final String message) {
         super(query, client, message);
     }
 

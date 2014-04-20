@@ -28,30 +28,14 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 /**
  * Fired when a self message happens in a query.
  */
-public class QuerySelfMessageEvent extends QueryDisplayableEvent {
-
-    private final ClientInfo client;
-    private final String message;
+public class QuerySelfMessageEvent extends BaseQueryMessageEvent {
 
     public QuerySelfMessageEvent(final long timestamp, final Query query, final ClientInfo client,
             final String message) {
-        super(timestamp, query);
-        this.client = client;
-        this.message = message;
+        super(timestamp, query, client, message);
     }
 
     public QuerySelfMessageEvent(final Query query, final ClientInfo client, final String message) {
-        super(query);
-        this.client = client;
-        this.message = message;
+        super(query, client, message);
     }
-
-    public ClientInfo getClient() {
-        return client;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
 }
