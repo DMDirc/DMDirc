@@ -117,7 +117,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final EventBus eventBus) {
-        super("channel-inactive", newChannelInfo.getName(),
+        super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 new ChannelCommandParser(newServer, commandController),

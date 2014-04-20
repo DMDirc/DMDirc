@@ -51,7 +51,7 @@ public class CustomWindow extends FrameContainer {
             final FrameContainer parent,
             final URLBuilder urlBuilder,
             final EventBus eventBus) {
-        super("custom", name, title, parent.getConfigManager(), urlBuilder, eventBus,
+        super(parent, "custom", name, title, parent.getConfigManager(), urlBuilder, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
@@ -70,7 +70,7 @@ public class CustomWindow extends FrameContainer {
             final AggregateConfigProvider configProvider,
             final URLBuilder urlBuilder,
             final EventBus eventBus) {
-        super("custom", name, title, configProvider, urlBuilder, eventBus,
+        super(null, "custom", name, title, configProvider, urlBuilder, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

@@ -67,7 +67,7 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
             final MessageSinkManager messageSinkManager,
             final EventBus eventBus,
             final URLBuilder urlBuilder) {
-        super("raw", "Raw", "(Raw log)", newServer.getConfigManager(), urlBuilder,
+        super(newServer, "raw", "Raw", "(Raw log)", newServer.getConfigManager(), urlBuilder,
                 new ServerCommandParser(newServer.getConfigManager(), commandController),
                 newServer.getTabCompleter(),
                 messageSinkManager,

@@ -46,7 +46,7 @@ public class TestWritableFrameContainer extends FrameContainer {
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder, final EventBus eventBus) {
-        super("raw", "Raw", "(Raw)", cm, urlBuilder,
+        super(null, "raw", "Raw", "(Raw)", cm, urlBuilder,
                 new GlobalCommandParser(cm, commandManager),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,

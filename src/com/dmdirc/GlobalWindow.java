@@ -67,7 +67,7 @@ public class GlobalWindow extends FrameContainer {
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final EventBus eventBus) {
-        super("icon", "Global", "(Global)", config, urlBuilder, parser,
+        super(null, "icon", "Global", "(Global)", config, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
                 Arrays.asList(

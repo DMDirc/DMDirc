@@ -230,7 +230,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             @Unbound final ScheduledExecutorService executorService,
             @Unbound final URI uri,
             @Unbound final ConfigProvider profile) {
-        super("server-disconnected",
+        super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
                 configMigrator.getConfigProvider(),

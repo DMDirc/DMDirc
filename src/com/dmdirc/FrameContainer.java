@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -72,7 +74,7 @@ public abstract class FrameContainer {
     /** The children of this frame. */
     private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
-    private FrameContainer parent;
+    private final FrameContainer parent;
     /** The name of the icon being used for this container's frame. */
     private String icon;
     /** The name of this container. */
@@ -119,6 +121,7 @@ public abstract class FrameContainer {
     /**
      * Instantiate new frame container.
      *
+     * @param parent     The parent of this frame container, if any.
      * @param icon       The icon to use for this container
      * @param name       The name of this container
      * @param title      The title of this container
@@ -130,6 +133,7 @@ public abstract class FrameContainer {
      * @since 0.6.4
      */
     protected FrameContainer(
+            @Nullable final FrameContainer parent,
             final String icon,
             final String name,
             final String title,
@@ -137,6 +141,7 @@ public abstract class FrameContainer {
             final URLBuilder urlBuilder,
             final EventBus eventBus,
             final Collection<String> components) {
+        this.parent = parent;
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -154,6 +159,7 @@ public abstract class FrameContainer {
     /**
      * Instantiate new frame container that accepts user input.
      *
+     * @param parent             The parent of this frame container, if any.
      * @param icon               The icon to use for this container
      * @param name               The name of this container
      * @param title              The title of this container
@@ -168,6 +174,7 @@ public abstract class FrameContainer {
      * @since 0.6.4
      */
     protected FrameContainer(
+            @Nullable final FrameContainer parent,
             final String icon,
             final String name,
             final String title,
@@ -178,6 +185,7 @@ public abstract class FrameContainer {
             final MessageSinkManager messageSinkManager,
             final EventBus eventbus,
             final Collection<String> components) {
+        this.parent = parent;
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -241,7 +249,6 @@ public abstract class FrameContainer {
      */
     public void addChild(final FrameContainer child) {
         children.add(child);
-        child.setParent(this);
     }
 
     /**
@@ -253,22 +260,6 @@ public abstract class FrameContainer {
      */
     public void removeChild(final FrameContainer child) {
         children.remove(child);
-    }
-
-    /**
-     * Sets the parent of this container to the one specified. If this container already had a
-     * parent, it will deregister itself with the old parent.
-     *
-     * @param parent The new parent for this container
-     *
-     * @since 0.6.4
-     */
-    public synchronized void setParent(final FrameContainer parent) {
-        if (this.parent != null && (parent == null || !parent.equals(this.parent))) {
-            this.parent.removeChild(this);
-        }
-
-        this.parent = parent;
     }
 
     /**

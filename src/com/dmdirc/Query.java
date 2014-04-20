@@ -102,7 +102,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final EventBus eventBus) {
-        super("query", newServer.parseHostmask(newHost)[0],
+        super(newServer, "query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(),
                 new QueryCommandParser(newServer, commandController),

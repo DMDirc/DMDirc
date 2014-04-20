@@ -32,6 +32,8 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.Collection;
 
+import javax.annotation.Nullable;
+
 /**
  * Defines common methods for objects that you can send messages to (such as channels and queries).
  */
@@ -40,6 +42,7 @@ public abstract class MessageTarget extends FrameContainer {
     /**
      * Creates a new MessageTarget.
      *
+     * @param parent             The parent of this frame container, if any.
      * @param icon               The icon to use for this target
      * @param name               The name of this target
      * @param title              The title of this target
@@ -54,6 +57,7 @@ public abstract class MessageTarget extends FrameContainer {
      * @since 0.6.4
      */
     public MessageTarget(
+            @Nullable final FrameContainer parent,
             final String icon,
             final String name,
             final String title,
@@ -64,8 +68,8 @@ public abstract class MessageTarget extends FrameContainer {
             final URLBuilder urlBuilder,
             final EventBus eventBus,
             final Collection<String> components) {
-        super(icon, name, title, config, urlBuilder, parser, tabCompleter, messageSinkManager,
-                eventBus, components);
+        super(parent, icon, name, title, config, urlBuilder, parser, tabCompleter,
+                messageSinkManager, eventBus, components);
     }
 
     /**
