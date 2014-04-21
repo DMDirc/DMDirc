@@ -24,6 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.ChannelNickchangeEvent;
+import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.events.DisplayableEvent;
@@ -153,8 +155,11 @@ public class ChannelEventHandler extends EventHandler implements
             final StringBuffer messageType = new StringBuffer(
                     Strings.isNullOrEmpty(channel.getTopic())
                     ? "channelTopicRemoved" : "channelTopicChanged");
-            triggerAction(messageType, CoreActionType.CHANNEL_TOPICCHANGE,
-                    channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
+            final DisplayableEvent event = new ChannelTopicChangeEvent(owner,
+                    channel.getChannelClient(channel.getTopicSetter(), true),
+                    channel.getTopic());
+            event.setDisplayFormat(messageType.toString());
+            eventBus.post(event);
             owner.doNotification(date, messageType.toString(),
                     channel.getChannelClient(channel.getTopicSetter(), true), channel.getTopic());
         }
@@ -246,7 +251,9 @@ public class ChannelEventHandler extends EventHandler implements
         final StringBuffer messageType = new StringBuffer(
                 isMyself(client) ? "channelSelfNickChange" : "channelNickChange");
 
-        triggerAction(messageType, CoreActionType.CHANNEL_NICKCHANGE, client, oldNick);
+        final DisplayableEvent event = new ChannelNickchangeEvent(owner, client, oldNick);
+        event.setDisplayFormat(messageType.toString());
+        eventBus.post(event);
         owner.doNotification(date, messageType.toString(), client, oldNick);
         owner.renameClient(oldNick, client.getClient().getNickname());
     }
