@@ -186,16 +186,18 @@ public enum CoreActionType implements ActionType {
     /** Someone marked as back. */
     @Deprecated
     CHANNEL_USERBACK(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
-    /** Channel list mode retrieved.
-     *
-     * @since 0.6.3 */
+    /** Channel list mode retrieved. */
+    @Deprecated
     CHANNEL_LISTMODERETRIEVED(ChannelEvents.CHANNEL_LISTMODEEVENT,
             "Channel list mode value retrieved"),
     /** Channel mode discovered. */
+    @Deprecated
     CHANNEL_MODESDISCOVERED(ChannelEvents.CHANNEL_MODEEVENT, "Channel modes discovered"),
     /** Channel mode changes. */
+    @Deprecated
     CHANNEL_MODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
     /** Someone changed someone else's user modes. */
+    @Deprecated
     CHANNEL_USERMODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM,
             "Someone changed someone else's modes"),
     /** Someone changed nickname. */

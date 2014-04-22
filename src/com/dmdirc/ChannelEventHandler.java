@@ -24,10 +24,14 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.ChannelListmodesretrievedEvent;
+import com.dmdirc.events.ChannelModechangeEvent;
+import com.dmdirc.events.ChannelModesdiscoveredEvent;
 import com.dmdirc.events.ChannelNickchangeEvent;
 import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
+import com.dmdirc.events.ChannelUsermodechangeEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -269,14 +273,18 @@ public class ChannelEventHandler extends EventHandler implements
             if (host.isEmpty()) {
                 final StringBuffer messageType = new StringBuffer(
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
-                triggerAction(messageType, CoreActionType.CHANNEL_MODESDISCOVERED,
+                final DisplayableEvent event = new ChannelModesdiscoveredEvent(owner,
                         modes.length() <= 1 ? "" : modes);
+                event.setDisplayFormat(host);
+                eventBus.post(event);
                 owner.doNotification(date, messageType.toString(),
                         modes.length() <= 1 ? "" : modes);
             } else {
                 final StringBuffer messageType = new StringBuffer(
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                triggerAction(messageType, CoreActionType.CHANNEL_MODECHANGE, client, modes);
+                final DisplayableEvent event = new ChannelModechangeEvent(owner, client, modes);
+                event.setDisplayFormat(messageType.toString());
+                eventBus.post(event);
                 owner.doNotification(date, messageType.toString(), client, modes);
             }
         }
@@ -298,8 +306,10 @@ public class ChannelEventHandler extends EventHandler implements
             }
 
             final StringBuffer messageType = new StringBuffer(format);
-            triggerAction(messageType, CoreActionType.CHANNEL_USERMODECHANGE, client,
+            final DisplayableEvent event = new ChannelUsermodechangeEvent(owner, client,
                     targetClient, mode);
+            event.setDisplayFormat(format);
+            eventBus.post(event);
             owner.doNotification(date, messageType.toString(), client, targetClient, mode);
         }
     }
@@ -362,14 +372,18 @@ public class ChannelEventHandler extends EventHandler implements
             if (host.isEmpty()) {
                 final StringBuffer messageType = new StringBuffer(
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
-                triggerAction(messageType, CoreActionType.CHANNEL_MODESDISCOVERED,
+                final DisplayableEvent event = new ChannelModesdiscoveredEvent(owner,
                         modes.length() <= 1 ? "" : modes);
+                event.setDisplayFormat(host);
+                eventBus.post(event);
                 owner.doNotification(date, messageType.toString(),
                         modes.length() <= 1 ? "" : modes);
             } else {
                 final StringBuffer messageType = new StringBuffer(
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                triggerAction(messageType, CoreActionType.CHANNEL_MODECHANGE, client, modes);
+                final DisplayableEvent event = new ChannelModechangeEvent(owner, client, modes);
+                event.setDisplayFormat(messageType.toString());
+                eventBus.post(event);
                 owner.doNotification(date, messageType.toString(), client, modes);
             }
         }
@@ -396,9 +410,10 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final char mode) {
         checkParser(parser);
 
-        final StringBuffer messageType = new StringBuffer("channelListModeRetrieved");
-        triggerAction(messageType, CoreActionType.CHANNEL_LISTMODERETRIEVED, mode);
-        owner.doNotification(date, messageType.toString(), mode);
+        final DisplayableEvent event = new ChannelListmodesretrievedEvent(owner, mode);
+        event.setDisplayFormat("channelListModeRetrieved");
+        eventBus.post(event);
+        owner.doNotification(date, "channelListModeRetrieved", mode);
     }
 
     private boolean triggerAction(final StringBuffer messageType, final ActionType actionType,
