@@ -28,6 +28,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
+import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
@@ -1188,19 +1189,17 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         }
 
         final String sansIrcd = "numeric_" + snumeric;
-        StringBuffer target = new StringBuffer("");
+        String target = "";
 
         if (getConfigManager().hasOptionString("formatter", sansIrcd)) {
-            target = new StringBuffer(sansIrcd);
+            target = sansIrcd;
         } else if (getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
-            target = new StringBuffer("numeric_unknown");
+            target = "numeric_unknown";
         }
 
         final ServerNumericEvent event = new ServerNumericEvent(this, numeric, tokens);
-        event.setDisplayFormat(target.toString());
-        getEventBus().post(event);
-
-        handleNotification(event.getDisplayFormat(), (Object[]) tokens);
+        final String format = EventUtils.postDisplayable(getEventBus(), event, target);
+        handleNotification(format, (Object[]) tokens);
     }
 
     /**

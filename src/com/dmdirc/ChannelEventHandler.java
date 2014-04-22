@@ -33,6 +33,7 @@ import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.events.ChannelUsermodechangeEvent;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.EventUtils;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.parser.common.AwayState;
@@ -342,10 +343,10 @@ public class ChannelEventHandler extends EventHandler implements
             final DisplayableEvent event = away
                     ? new ChannelUserAwayEvent(date.getTime(), owner, channelClient)
                     : new ChannelUserBackEvent(date.getTime(), owner, channelClient);
-            event.setDisplayFormat((away ? "channelUserAway" : "channelUserBack")
+            final String format = EventUtils.postDisplayable(eventBus, event,
+                    (away ? "channelUserAway" : "channelUserBack")
                     + (discovered ? "Discovered" : ""));
-            eventBus.post(event);
-            owner.doNotification(date, event.getDisplayFormat(), channelClient);
+            owner.doNotification(date, format, channelClient);
 
         }
     }

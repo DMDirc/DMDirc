@@ -455,20 +455,16 @@ public class ActionManager implements ActionController {
             return;
         }
 
-        final Class[] argTypes = type.getType().getArgTypes();
+        final Class<?>[] argTypes = type.getType().getArgTypes();
         final Object[] arguments = getLegacyArguments(event, argTypes);
 
-        final StringBuffer buffer;
         if (event instanceof DisplayableEvent) {
-            buffer = new StringBuffer(((DisplayableEvent) event).getDisplayFormat());
+            final DisplayableEvent displayable = (DisplayableEvent) event;
+            final StringBuffer buffer = new StringBuffer(displayable.getDisplayFormat());
+            triggerEvent(type, buffer, arguments);
+            displayable.setDisplayFormat(buffer.toString());
         } else {
-            buffer = null;
-        }
-
-        triggerEvent(type, buffer, arguments);
-
-        if (event instanceof DisplayableEvent) {
-            ((DisplayableEvent) event).setDisplayFormat(buffer.toString());
+            triggerEvent(type, null, arguments);
         }
     }
 
@@ -496,7 +492,7 @@ public class ActionManager implements ActionController {
      *
      * @return An array of objects containing the legacy arguments.
      */
-    private static Object[] getLegacyArguments(final DMDircEvent event, final Class[] argTypes) {
+    private static Object[] getLegacyArguments(final DMDircEvent event, final Class<?>[] argTypes) {
         final Object[] arguments = new Object[argTypes.length];
         final Method[] methods = event.getClass().getMethods();
 
