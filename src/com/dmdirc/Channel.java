@@ -22,11 +22,12 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.events.ChannelActionEvent;
 import com.dmdirc.events.ChannelClosedEvent;
+import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.EventUtils;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
@@ -141,7 +142,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
         showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
         showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
 
-        eventHandler = new ChannelEventHandler(this, eventBus);
+        eventHandler = new ChannelEventHandler(this, getEventBus());
 
         registerCallbacks();
 
@@ -180,14 +181,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
 
         for (String part : splitLine(line)) {
             if (!part.isEmpty()) {
-                final StringBuffer buff = new StringBuffer("channelSelfMessage");
-
-                ActionManager.getActionManager().triggerEvent(
-                        CoreActionType.CHANNEL_SELF_MESSAGE, buff, this,
+                final DisplayableEvent event = new ChannelActionEvent(this,
                         channelInfo.getChannelClient(me), part);
-
-                addLine(buff, details[0], details[1], details[2], details[3],
-                        part, channelInfo);
+                final String format = EventUtils.postDisplayable(getEventBus(), event,
+                        "channelSelfMessage");
+                addLine(format, details[0], details[1], details[2], details[3], part, channelInfo);
 
                 channelInfo.sendMessage(part);
             }
@@ -216,14 +214,11 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final StringBuffer buff = new StringBuffer("channelSelfAction");
-
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.CHANNEL_SELF_ACTION, buff, this,
+            final DisplayableEvent event = new ChannelActionEvent(this,
                     channelInfo.getChannelClient(me), action);
-
-            addLine(buff, details[0], details[1], details[2], details[3],
-                    action, channelInfo);
+            final String format = EventUtils.postDisplayable(getEventBus(), event,
+                    "channelSelfAction");
+            addLine(format, details[0], details[1], details[2], details[3], action, channelInfo);
 
             channelInfo.sendAction(action);
         }

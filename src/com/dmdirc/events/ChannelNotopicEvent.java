@@ -25,15 +25,15 @@ package com.dmdirc.events;
 import com.dmdirc.Channel;
 
 /**
- * Fired when a channel names event is received.
+ * Fired when a topic is unset on a channel.
  */
-public class ChannelGotnamesEvent extends ChannelEvent {
+public class ChannelNotopicEvent extends ChannelDisplayableEvent {
 
-    public ChannelGotnamesEvent(final long timestamp, final Channel channel) {
+    public ChannelNotopicEvent(final long timestamp, final Channel channel) {
         super(timestamp, channel);
     }
 
-    public ChannelGotnamesEvent(final Channel channel) {
+    public ChannelNotopicEvent(final Channel channel) {
         super(channel);
     }
 

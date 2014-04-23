@@ -150,35 +150,47 @@ public enum CoreActionType implements ActionType {
     /** Channel window closed. */
     CHANNEL_CLOSED(ChannelEvents.CHANNEL_EVENT, "Channel window closed"),
     /** Names reply received. */
+    @Deprecated
     CHANNEL_GOTNAMES(ChannelEvents.CHANNEL_EVENT, "Channel names reply received"),
     /** Channel topic is not set. */
+    @Deprecated
     CHANNEL_NOTOPIC(ChannelEvents.CHANNEL_EVENT, "Channel topic is not set"),
     /** Channel topic received. */
+    @Deprecated
     CHANNEL_GOTTOPIC(ChannelEvents.CHANNEL_TOPICEVENT, "Channel topic received"),
     /** Channel message sent. */
+    @Deprecated
     CHANNEL_SELF_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message sent"),
     /** Channel action sent. */
+    @Deprecated
     CHANNEL_SELF_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action sent"),
     /** Channel message received. */
+    @Deprecated
     CHANNEL_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message received"),
     /** Channel actions received. */
+    @Deprecated
     CHANNEL_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
     /** Channel notice received. */
+    @Deprecated
     CHANNEL_NOTICE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel notice received"),
-    /** Channel mode notice received.
-     *
-     * @since 0.6.3m2 */
+    /** Channel mode notice received. */
+    @Deprecated
     CHANNEL_MODE_NOTICE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_CHARARG,
             "Channel mode notice received"),
     /** Channel CTCP received. */
+    @Deprecated
     CHANNEL_CTCP(ChannelEvents.CHANNEL_CTCP, "Channel CTCP received"),
     /** Someone joined a channel. */
+    @Deprecated
     CHANNEL_JOIN(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone joined a channel"),
     /** Someone left a channel. */
+    @Deprecated
     CHANNEL_PART(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone left a channel"),
     /** Someone quit. */
+    @Deprecated
     CHANNEL_QUIT(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone quit IRC"),
     /** Someone was kicked. */
+    @Deprecated
     CHANNEL_KICK(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone kicked someone"),
     /** Someone marked as away. */
     @Deprecated
