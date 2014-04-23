@@ -26,16 +26,16 @@ import com.dmdirc.Channel;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 /**
- * Fired when a channel mode is received.
+ * Base channel message event.
  */
-public class ChannelNoticeEvent extends BaseChannelTextEvent {
+public class BaseChannelMessageEvent extends BaseChannelTextEvent {
 
-    public ChannelNoticeEvent(final long timestamp, final Channel channel,
+    public BaseChannelMessageEvent(final long timestamp, final Channel channel,
             final ChannelClientInfo client, final String message) {
         super(timestamp, channel, client, message);
     }
 
-    public ChannelNoticeEvent(final Channel channel, final ChannelClientInfo client,
+    public BaseChannelMessageEvent(final Channel channel, final ChannelClientInfo client,
             final String message) {
         super(channel, client, message);
     }

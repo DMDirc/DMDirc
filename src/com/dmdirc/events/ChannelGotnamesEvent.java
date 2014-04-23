@@ -23,21 +23,18 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 /**
- * Fired when a channel mode is received.
+ * Fired when a channel names event is received.
  */
-public class ChannelNoticeEvent extends BaseChannelTextEvent {
+public class ChannelGotnamesEvent extends ChannelDisplayableEvent {
 
-    public ChannelNoticeEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String message) {
-        super(timestamp, channel, client, message);
+    public ChannelGotnamesEvent(final long timestamp, final Channel channel) {
+        super(timestamp, channel);
     }
 
-    public ChannelNoticeEvent(final Channel channel, final ChannelClientInfo client,
-            final String message) {
-        super(channel, client, message);
+    public ChannelGotnamesEvent(final Channel channel) {
+        super(channel);
     }
 
 }
