@@ -24,8 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.events.ChannelActionEvent;
 import com.dmdirc.events.ChannelClosedEvent;
+import com.dmdirc.events.ChannelSelfActionEvent;
+import com.dmdirc.events.ChannelSelfMessageEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.EventUtils;
 import com.dmdirc.interfaces.CommandController;
@@ -181,7 +182,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
 
         for (String part : splitLine(line)) {
             if (!part.isEmpty()) {
-                final DisplayableEvent event = new ChannelActionEvent(this,
+                final DisplayableEvent event = new ChannelSelfMessageEvent(this,
                         channelInfo.getChannelClient(me), part);
                 final String format = EventUtils.postDisplayable(getEventBus(), event,
                         "channelSelfMessage");
@@ -214,7 +215,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final DisplayableEvent event = new ChannelActionEvent(this,
+            final DisplayableEvent event = new ChannelSelfActionEvent(this,
                     channelInfo.getChannelClient(me), action);
             final String format = EventUtils.postDisplayable(getEventBus(), event,
                     "channelSelfAction");
