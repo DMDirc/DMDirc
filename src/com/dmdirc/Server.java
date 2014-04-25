@@ -23,8 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.ClientModule.UserConfig;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
@@ -34,6 +32,7 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerNopingEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.Connection;
@@ -1353,9 +1352,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", getConfigManager()));
 
-        ActionManager.getActionManager().triggerEvent(
-                CoreActionType.SERVER_NOPING, null, this,
-                parser.getPingTime());
+        getEventBus().post(new ServerNopingEvent(this, parser.getPingTime()));
 
         if (parser.getPingTime()
                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {

@@ -101,50 +101,73 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     SERVER_DISCONNECTED(ServerEvents.SERVER_EVENT, "Server disconnected"),
     /** Marked as away. */
+    @Deprecated
     SERVER_BACK(ServerEvents.SERVER_EVENT, "Marked as 'back'"),
     /** Marked as back. */
+    @Deprecated
     SERVER_AWAY(ServerEvents.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
     /** Error. */
+    @Deprecated
     SERVER_ERROR(ServerEvents.SERVER_EVENT_WITH_ARG, "Server error"),
     /** Auth notice received. */
+    @Deprecated
     SERVER_AUTHNOTICE(ServerEvents.SERVER_EVENT_WITH_ARG, "Received auth notice"),
     /** Unknown action received. */
+    @Deprecated
     SERVER_UNKNOWNACTION(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown action"),
     /** Unknown notice received. */
+    @Deprecated
     SERVER_UNKNOWNNOTICE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown notice"),
     /** Unknown message received. */
+    @Deprecated
     SERVER_UNKNOWNMESSAGE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown message"),
     /** User modes changed. */
+    @Deprecated
     SERVER_USERMODES(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
     /** Private CTCP received. */
+    @Deprecated
     SERVER_CTCP(ServerEvents.SERVER_CTCP_EVENT, "CTCP received"),
     /** Private CTCPR received. */
+    @Deprecated
     SERVER_CTCPR(ServerEvents.SERVER_CTCP_EVENT, "CTCP reply received"),
     /** Private notice received. */
+    @Deprecated
     SERVER_NOTICE(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Notice received"),
     /** Private server notice received. */
+    @Deprecated
     SERVER_SERVERNOTICE(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Server notice received"),
     /** MOTD starting. */
+    @Deprecated
     SERVER_MOTDSTART(ServerEvents.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
     /** MOTD ended. */
+    @Deprecated
     SERVER_MOTDEND(ServerEvents.SERVER_EVENT_WITH_ARG, "End of MOTD received"),
     /** MOTD line. */
+    @Deprecated
     SERVER_MOTDLINE(ServerEvents.SERVER_EVENT_WITH_ARG, "MOTD line received"),
     /** Ping reply received. */
+    @Deprecated
     SERVER_GOTPING(ServerEvents.SERVER_PING, "Received server ping reply"),
     /** Missed server ping reply. */
+    @Deprecated
     SERVER_NOPING(ServerEvents.SERVER_PING, "Missed server ping reply"),
     /** Ping sent. */
+    @Deprecated
     SERVER_PINGSENT(ServerEvents.SERVER_EVENT, "Ping request sent"),
     /** Invite received. */
+    @Deprecated
     SERVER_INVITERECEIVED(ServerEvents.SERVER_INVITE, "Invite received"),
     /** Wallops. */
+    @Deprecated
     SERVER_WALLOPS(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Wallop received"),
     /** Wallusers. */
+    @Deprecated
     SERVER_WALLUSERS(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Walluser received"),
     /** Walldesync. */
+    @Deprecated
     SERVER_WALLDESYNC(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Walldesync received"),
     /** Nick change. */
+    @Deprecated
     SERVER_NICKCHANGE(ServerEvents.SERVER_NICKCHANGE, "My nickname changed"),
     /** Names reply received. */
     @Deprecated
