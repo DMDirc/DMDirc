@@ -34,6 +34,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.net.URI;
@@ -69,6 +70,8 @@ public class ServerManager implements ServerFactory {
     private final WindowManager windowManager;
     /** Concrete server factory to use. */
     private final ServerFactoryImpl serverFactoryImpl;
+    /** Event bus for servers. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of ServerManager.
@@ -78,6 +81,7 @@ public class ServerManager implements ServerFactory {
      * @param commandController  A provider of {@link CommandController}s to pass to servers.
      * @param windowManager      Window manager to add new servers to.
      * @param serverFactory      The factory to use to create servers.
+     * @param eventBus           The event bus to pass to servers.
      */
     @Inject
     public ServerManager(
@@ -85,12 +89,14 @@ public class ServerManager implements ServerFactory {
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
             final WindowManager windowManager,
-            final ServerFactoryImpl serverFactory) {
+            final ServerFactoryImpl serverFactory,
+            final EventBus eventBus) {
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
         this.windowManager = windowManager;
         this.serverFactoryImpl = serverFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -100,7 +106,8 @@ public class ServerManager implements ServerFactory {
 
         final Server server = serverFactoryImpl.getServer(
                 configProvider,
-                new ServerCommandParser(configProvider.getConfigProvider(), commandController.get()),
+                new ServerCommandParser(configProvider.getConfigProvider(), commandController.get(),
+                        eventBus),
                 Executors.newScheduledThreadPool(1,
                         new ThreadFactoryBuilder().setNameFormat("server-timer-%d").build()),
                 uri,

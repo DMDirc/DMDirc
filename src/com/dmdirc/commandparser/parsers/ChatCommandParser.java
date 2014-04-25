@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -52,9 +54,11 @@ public class ChatCommandParser extends ServerCommandParser {
      *
      * @param server            The server which owns this parser's container
      * @param commandController The controller to load commands from.
+     * @param eventBus          Event but to post events on
      */
-    public ChatCommandParser(final Server server, final CommandController commandController) {
-        super(server.getConfigManager(), commandController);
+    public ChatCommandParser(final Server server, final CommandController commandController,
+            final EventBus eventBus) {
+        super(server.getConfigManager(), commandController, eventBus);
         super.setOwner(server);
     }
 

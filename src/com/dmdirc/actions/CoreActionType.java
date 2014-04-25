@@ -83,6 +83,7 @@ public enum CoreActionType implements ActionType {
     @Deprecated
     CLIENT_PREFS_CLOSED(ClientEvents.CLIENT_EVENT, "Preferences dialog opened"),
     /** Unknown command. */
+    @Deprecated
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
     /** Server numeric received. */
     @Deprecated

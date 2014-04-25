@@ -31,6 +31,8 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import com.google.common.eventbus.EventBus;
+
 public class TestCommandParser extends CommandParser {
 
     private static final long serialVersionUID = 7073002401375438532L;
@@ -46,8 +48,8 @@ public class TestCommandParser extends CommandParser {
     public String invalidCommand;
 
     public TestCommandParser(final AggregateConfigProvider configManager,
-            final CommandController commandManager) {
-        super(configManager, commandManager);
+            final CommandController commandManager, final EventBus eventBus) {
+        super(configManager, commandManager, eventBus);
     }
 
     @Override

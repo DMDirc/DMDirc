@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -53,9 +55,11 @@ public class QueryCommandParser extends ChatCommandParser {
      *
      * @param server            The server this parser's query belongs to
      * @param commandController The controller to load commands from.
+     * @param eventBus          Event bus to post events on
      */
-    public QueryCommandParser(final Server server, final CommandController commandController) {
-        super(server, commandController);
+    public QueryCommandParser(final Server server, final CommandController commandController,
+            final EventBus eventBus) {
+        super(server, commandController, eventBus);
     }
 
     @Override

@@ -31,6 +31,8 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import com.google.common.eventbus.EventBus;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +58,7 @@ public class CommandParserTest {
     @Mock private FrameContainer container;
     @Mock private Channel channel;
     @Mock private Connection connection;
+    @Mock private EventBus eventBus;
     private TestCommandParser commandParser;
     private TestCommandParser channelCommandParser;
 
@@ -76,11 +79,11 @@ public class CommandParserTest {
         when(connection.hasChannel("#channel1")).thenReturn(true);
         when(connection.getChannel("#channel1")).thenReturn(channel);
 
-        commandParser = new TestCommandParser(configProvider, commandController);
+        commandParser = new TestCommandParser(configProvider, commandController, eventBus);
         commandParser.registerCommand(command, commandInfo);
         commandParser.registerCommand(channelCommand, channelCommandInfo);
 
-        channelCommandParser = new TestCommandParser(configProvider, commandController);
+        channelCommandParser = new TestCommandParser(configProvider, commandController, eventBus);
         channelCommandParser.registerCommand(channelCommand, channelCommandInfo);
 
         when(channel.getCommandParser()).thenReturn(channelCommandParser);

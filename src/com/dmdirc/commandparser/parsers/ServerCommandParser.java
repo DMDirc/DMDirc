@@ -34,6 +34,8 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -49,11 +51,13 @@ public class ServerCommandParser extends GlobalCommandParser {
      *
      * @param configManager     Config manager to read settings from
      * @param commandController The controller to load commands from.
+     * @param eventBus          Event bus to post events on
      */
     public ServerCommandParser(
             final AggregateConfigProvider configManager,
-            final CommandController commandController) {
-        super(configManager, commandController);
+            final CommandController commandController,
+            final EventBus eventBus) {
+        super(configManager, commandController, eventBus);
     }
     /**
      * The server instance that this parser is attached to.

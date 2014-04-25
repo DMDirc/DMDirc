@@ -34,6 +34,8 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,12 +54,14 @@ public class GlobalCommandParser extends CommandParser {
      *
      * @param configManager  Config manager to read settings from
      * @param commandManager Command manager to load commands from
+     * @param eventBus       eventBus
      */
     @Inject
     public GlobalCommandParser(
             @ClientModule.GlobalConfig final AggregateConfigProvider configManager,
-            final CommandController commandManager) {
-        super(configManager, commandManager);
+            final CommandController commandManager,
+            final EventBus eventBus) {
+        super(configManager, commandManager, eventBus);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class TestWritableFrameContainer extends FrameContainer {
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder, final EventBus eventBus) {
         super(null, "raw", "Raw", "(Raw)", cm, urlBuilder,
-                new GlobalCommandParser(cm, commandManager),
+                new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,
                 eventBus,

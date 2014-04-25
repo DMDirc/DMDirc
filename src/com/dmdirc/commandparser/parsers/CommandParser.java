@@ -24,8 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -35,10 +33,15 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.EventUtils;
+import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.RollingList;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -63,15 +66,20 @@ public abstract class CommandParser implements Serializable {
     private final RollingList<PreviousCommand> history;
     /** Command manager to use. */
     protected final CommandController commandManager;
+    /** Event bus to post events to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of CommandParser.
      *
      * @param configManager  Config manager to read settings
      * @param commandManager Command manager to load plugins from
+     * @param eventBus       The event bus to post events to.
      */
     protected CommandParser(final AggregateConfigProvider configManager,
-            final CommandController commandManager) {
+            final CommandController commandManager,
+            final EventBus eventBus) {
+        this.eventBus = eventBus;
         commands = new HashMap<>();
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));
         this.commandManager = commandManager;
@@ -327,17 +335,13 @@ public abstract class CommandParser implements Serializable {
     protected void handleInvalidCommand(final FrameContainer origin,
             final CommandArguments args) {
         if (origin == null) {
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.UNKNOWN_COMMAND, null, null,
-                    args.getCommandName(), args.getArguments());
+            eventBus.post(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
         } else {
-            final StringBuffer buff = new StringBuffer("unknownCommand");
+            final DisplayableEvent event = new UnknownCommandEvent(origin, args.getCommandName(),
+                    args.getArguments());
+            final String format = EventUtils.postDisplayable(eventBus, event, "unknownCommand");
 
-            ActionManager.getActionManager().triggerEvent(
-                    CoreActionType.UNKNOWN_COMMAND, buff, origin,
-                    args.getCommandName(), args.getArguments());
-
-            origin.addLine(buff, args.getCommandName());
+            origin.addLine(format, args.getCommandName());
         }
     }
 

@@ -32,6 +32,8 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
+import com.google.common.eventbus.EventBus;
+
 import java.net.URI;
 import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
@@ -68,6 +70,7 @@ public class ServerManagerTest {
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
+    @Mock private EventBus eventBus;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;
 
@@ -76,7 +79,7 @@ public class ServerManagerTest {
     @Before
     public void setUp() throws Exception {
         serverManager = new ServerManager(identityController, identityFactory,
-                commandControllerProvider, windowManager, serverFactoryImpl);
+                commandControllerProvider, windowManager, serverFactoryImpl, eventBus);
 
         when(commandControllerProvider.get()).thenReturn(commandController);
 
