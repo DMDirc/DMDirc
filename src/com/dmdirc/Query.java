@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.events.DisplayableEvent;
@@ -36,7 +35,6 @@ import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
-import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
@@ -57,7 +55,6 @@ import com.dmdirc.util.annotations.factory.Factory;
 import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.awt.Toolkit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -340,16 +337,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void setCompositionState(final CompositionState state) {
         getConnection().getParser().setCompositionState(host, state);
-    }
-
-    private boolean triggerAction(final String messageType, final ActionType actionType,
-            final Object... args) {
-        final StringBuffer buffer = new StringBuffer(messageType);
-        final List<Object> actionArgs = new ArrayList<>();
-        actionArgs.add(this);
-        actionArgs.addAll(Arrays.asList(args));
-        return ActionManager.getActionManager().triggerEvent(actionType, buffer, actionArgs.
-                toArray());
     }
 
 }
