@@ -43,8 +43,9 @@ import com.dmdirc.util.io.InvalidConfigFileException;
 
 import com.google.common.eventbus.EventBus;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,6 +81,8 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private final ActionController actionController;
     /** Event bus to post events to. */
     private final EventBus eventBus;
+    /** The file system to read/write actions to. */
+    private final FileSystem filesystem;
     /** The config file we're using. */
     protected ConfigFile config;
     /** The location of the file we're reading/saving. */
@@ -89,6 +92,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action. The group and name specified must be the group and name of
      * a valid action already saved to disk.
      *
+     * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
@@ -100,6 +104,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param name                        The name of the action
      */
     public Action(
+            final FileSystem filesystem,
             final EventBus eventBus,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
@@ -111,11 +116,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final String name) {
         super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
 
+        this.filesystem = filesystem;
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
-        this.location = actionsDirectory + group + File.separator + name;
+        this.location = actionsDirectory + group + filesystem.getSeparator() + name;
 
         try {
             config = new ConfigFile(location);
@@ -136,6 +142,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /**
      * Creates a new instance of Action with the specified properties and saves it to disk.
      *
+     * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
      * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
@@ -152,6 +159,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param newFormat                   The new formatter to use
      */
     public Action(
+            final FileSystem filesystem,
             final EventBus eventBus,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
@@ -169,14 +177,19 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name,
                 triggers, response, conditions, conditionTree, newFormat);
 
+        this.filesystem = filesystem;
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
-        this.location = actionsDirectory + group + File.separator
+        this.location = actionsDirectory + group + filesystem.getSeparator()
                 + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
 
-        new File(actionsDirectory + group).mkdirs();
+        try {
+            Files.createDirectories(filesystem.getPath(actionsDirectory, group));
+        } catch (IOException ex) {
+            //TODO we don't handle the error now, but we should
+        }
 
         save();
 
@@ -554,8 +567,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public void setName(final String newName) {
         super.setName(newName);
 
-        new File(location).delete();
-        location = actionsDirectory + group + File.separator + newName;
+        try {
+            Files.delete(filesystem.getPath(location));
+        } catch (IOException ex) {
+            //TODO we don't handle the error now, but we should
+        }
+        location = actionsDirectory + group + filesystem.getSeparator() + newName;
 
         save();
     }
@@ -564,12 +581,21 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public void setGroup(final String newGroup) {
         super.setGroup(newGroup);
 
-        new File(location).delete();
+        try {
+            Files.delete(filesystem.getPath(location));
+        } catch (IOException ex) {
+            //TODO we don't handle the error now, but we should
+        }
 
-        final String dir = actionsDirectory + group + File.separator;
+        final String dir = actionsDirectory + group + filesystem.getSeparator();
         location = dir + name;
 
-        new File(dir).mkdirs();
+        try {
+            Files.createDirectories(filesystem.getPath(location));
+        } catch (IOException ex) {
+            //TODO we don't handle the error now, but we should
+        }
+
 
         save();
     }
@@ -579,7 +605,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     public void delete() {
         eventBus.post(new ActionDeletedEvent(actionController.getOrCreateGroup(getGroup()), this));
-        new File(location).delete();
+        try {
+            Files.delete(filesystem.getPath(location));
+        } catch (IOException ex) {
+            //TODO we don't handle the error now, but we should
+        }
     }
 
     @Override

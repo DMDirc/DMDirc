@@ -32,6 +32,8 @@ import com.dmdirc.interfaces.config.IdentityController;
 
 import com.google.common.eventbus.EventBus;
 
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,6 +60,8 @@ public class ActionFactory {
     private final String actionsDirectory;
     /** Event bus to post events on. */
     private final EventBus eventBus;
+    /** The file system to read/write actions to. */
+    private final FileSystem filesystem;
 
     /**
      * Creates a new instance of {@link ActionFactory}.
@@ -80,6 +84,7 @@ public class ActionFactory {
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
+        this.filesystem = FileSystems.getDefault();
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
@@ -100,6 +105,7 @@ public class ActionFactory {
      */
     public Action getAction(final String group, final String name) {
         return new Action(
+                filesystem,
                 eventBus,
                 globalCommandParserProvider,
                 globalWindowProvider,
@@ -129,6 +135,7 @@ public class ActionFactory {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
         return new Action(
+                filesystem,
                 eventBus,
                 globalCommandParserProvider,
                 globalWindowProvider,
