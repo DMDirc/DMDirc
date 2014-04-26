@@ -56,7 +56,6 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
      * @param newServer          the server to monitor
      * @param commandController  The controller to load commands from.
      * @param messageSinkManager The sink manager to use to despatch messages.
-     * @param eventBus           The bus to despatch events on.
      * @param urlBuilder         The URL builder to use when finding icons.
      */
     public Raw(

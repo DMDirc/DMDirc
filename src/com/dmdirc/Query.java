@@ -88,7 +88,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param commandController   The controller to load commands from.
      * @param messageSinkManager  The sink manager to use to despatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
-     * @param eventBus            The bus to despatch events on.
      */
     public Query(
             @Unbound final Server newServer,
