@@ -43,8 +43,10 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
 
     /**
      * Deletes this identity from disk.
+     *
+     * @throws IOException if the file fails to delete
      */
-    void delete();
+    void delete() throws IOException;
 
     /**
      * Returns the set of domains available in this identity.

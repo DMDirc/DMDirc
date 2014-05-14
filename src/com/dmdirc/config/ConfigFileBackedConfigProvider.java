@@ -479,7 +479,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     }
 
     @Override
-    public synchronized void delete() {
+    public synchronized void delete() throws IOException {
         if (file != null) {
             file.delete();
         }

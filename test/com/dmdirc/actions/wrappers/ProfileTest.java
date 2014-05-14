@@ -21,10 +21,10 @@
  */
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -224,7 +224,7 @@ public class ProfileTest {
      * Test of delete method, of class Profile.
      */
     @Test
-    public void testDelete() {
+    public void testDelete() throws IOException {
         final List<String> nicknames = new ArrayList<>();
         nicknames.add("nickname1");
         nicknames.add("nickname2");
@@ -244,7 +244,7 @@ public class ProfileTest {
      * Test of delete method, of class Profile.
      */
     @Test
-    public void testDeleteNullIdentity() {
+    public void testDeleteNullIdentity() throws IOException {
         Profile instance = new Profile("New Profile", null);
         instance.delete();
     }
