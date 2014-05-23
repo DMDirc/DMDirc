@@ -29,7 +29,7 @@
 
         <dependency org="net.kencochrane.raven" name="raven" rev="4.+" conf="main->default" />
 
-        <dependency org="com.google.guava" name="guava" rev="16.+" conf="main->default" />
+        <dependency org="com.google.guava" name="guava" rev="17.+" conf="main->default" />
 
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
