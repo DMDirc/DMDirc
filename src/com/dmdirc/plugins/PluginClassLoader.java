@@ -154,12 +154,7 @@ public class PluginClassLoader extends ClassLoader {
         byte[] data = null;
 
         if (res.resourceExists(fileName)) {
-            try {
-                data = res.getResourceBytes(fileName);
-            } catch (IOException ex) {
-                throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.
-                        getMetaData().getName() + ") does not exist.", ex);
-            }
+            data = res.getResourceBytes(fileName);
         } else {
             throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.
                     getMetaData().getName() + ") does not exist.");

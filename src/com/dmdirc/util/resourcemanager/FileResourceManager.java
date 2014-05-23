@@ -22,16 +22,17 @@
 
 package com.dmdirc.util.resourcemanager;
 
+import com.dmdirc.util.io.StreamUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,8 @@ import java.util.Map;
  */
 public final class FileResourceManager extends ResourceManager {
 
-    /** Filesystem to use. */
-    private final FileSystem fs = FileSystems.getDefault();
     /** Base path for the project. */
-    private final Path basePath;
+    private final String basePath;
 
     /**
      * Creates a new instance of FileResourceManager.
@@ -54,79 +53,187 @@ public final class FileResourceManager extends ResourceManager {
     protected FileResourceManager(final String basePath) {
         super();
 
-        this.basePath = fs.getPath(basePath);
+        this.basePath = basePath;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean resourceExists(final String resource) {
-        final Path path = basePath.resolve(resource);
-        return Files.exists(path) && !Files.isDirectory(path);
+        final File file;
+
+        if (resource.startsWith(basePath)) {
+            file = new File(resource);
+        } else {
+            file = new File(basePath, resource);
+        }
+
+        return file.exists() && !file.isDirectory();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public byte[] getResourceBytes(final String resource) throws IOException {
-        return Files.readAllBytes(basePath.resolve(resource));
+    public byte[] getResourceBytes(final String resource) {
+        FileInputStream inputStream = null;
+        final File file;
+
+        if (resource.startsWith(basePath)) {
+            file = new File(resource);
+        } else {
+            file = new File(basePath, resource);
+        }
+
+        if (!file.exists()) {
+            return new byte[0];
+        }
+
+        if (file.isDirectory()) {
+            return new byte[0];
+        }
+
+        final byte[] bytes = new byte[(int) file.length()];
+
+        try {
+            inputStream = new FileInputStream(file);
+            inputStream.read(bytes);
+        } catch (IOException ex) {
+            return new byte[0];
+        } finally {
+            StreamUtils.close(inputStream);
+        }
+
+        return bytes;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public InputStream getResourceInputStream(final String resource) throws IOException {
-        return Files.newInputStream(basePath.resolve(resource));
+    public InputStream getResourceInputStream(final String resource) {
+        final File file;
+
+        if (resource.startsWith(basePath)) {
+            file = new File(resource);
+        } else {
+            file = new File(basePath, resource);
+        }
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        if (file.isDirectory()) {
+            return null;
+        }
+
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException ex) {
+            return null;
+        }
     }
 
+    /** {@inheritDoc} */
     @Override
     public URL getResourceURL(final String resource) throws MalformedURLException {
-        return basePath.resolve(resource).toUri().toURL();
+        if (resourceExists(resource)) {
+            return new File(basePath, resource).toURI().toURL();
+        } else {
+            return null;
+        }
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Map<String, byte[]> getResourcesEndingWithAsBytes(final String resourcesSuffix)
-            throws IOException {
-        final DirectoryStream<Path> paths = Files.newDirectoryStream(basePath);
+    public Map<String, byte[]> getResourcesEndingWithAsBytes(
+            final String resourcesSuffix) {
+        final List<File> files = getFileListing(new File(basePath));
         final Map<String, byte[]> resources = new HashMap<>();
-        for (Path path : paths) {
+
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
             if (path.endsWith(resourcesSuffix)) {
-                resources.put(path.toString(), Files.readAllBytes(path));
+                resources.put(path, getResourceBytes(path));
             }
         }
+
         return resources;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Map<String, byte[]> getResourcesStartingWithAsBytes(final String resourcesPrefix)
-            throws IOException {
-        final DirectoryStream<Path> paths = Files.newDirectoryStream(basePath);
+    public Map<String, byte[]> getResourcesStartingWithAsBytes(
+            final String resourcesPrefix) {
+        final List<File> files = getFileListing(new File(basePath));
         final Map<String, byte[]> resources = new HashMap<>();
-        for (Path path : paths) {
+
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
             if (path.startsWith(resourcesPrefix)) {
-                resources.put(path.toString(), Files.readAllBytes(path));
+                resources.put(path, getResourceBytes(path));
             }
         }
+
         return resources;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
-            final String resourcesPrefix) throws IOException {
-        final DirectoryStream<Path> files = Files.newDirectoryStream(basePath);
+            final String resourcesPrefix) {
+        final List<File> files = getFileListing(new File(basePath));
         final Map<String, InputStream> resources = new HashMap<>();
-        for (Path file : files) {
-            if (file.startsWith(resourcesPrefix)) {
-                resources.put(file.toString(), Files.newInputStream(file));
+
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
+            if (path.startsWith(resourcesPrefix)) {
+                resources.put(path, getResourceInputStream(path));
             }
         }
+
         return resources;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public List<String> getResourcesStartingWith(final String resourcesPrefix) throws IOException {
-        final DirectoryStream<Path> files = Files.newDirectoryStream(basePath);
+    public List<String> getResourcesStartingWith(final String resourcesPrefix) {
+        final List<File> files = getFileListing(new File(basePath));
         final List<String> resources = new ArrayList<>();
-        for (Path file : files) {
-            if (file.startsWith(resourcesPrefix)) {
-                resources.add(file.toString());
+
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
+            if (path.startsWith(resourcesPrefix)) {
+                resources.add(path);
             }
         }
+
         return resources;
+    }
+
+    /**
+     * Returns a resursive listing of a directory tree.
+     *
+     * @param startingDirectory Starting directory for the file listing
+     *
+     * @return Recursive directory listing
+     */
+    private static List<File> getFileListing(final File startingDirectory) {
+        final List<File> result = new ArrayList<>();
+
+        if (startingDirectory.listFiles() == null) {
+            return result;
+        }
+
+        final List<File> files = Arrays.asList(startingDirectory.listFiles());
+        for (File file : files) {
+            if (file.isFile()) {
+                result.add(file);
+            } else {
+                result.addAll(getFileListing(file));
+            }
+        }
+        return result;
     }
 
 }

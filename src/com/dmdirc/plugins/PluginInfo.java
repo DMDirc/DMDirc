@@ -129,11 +129,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
 
-        try {
-            updateClassList(res);
-        } catch (IOException ex) {
-            throw new PluginException("Plugin " + filename + " failed to load. ", ex);
-        }
+        updateClassList(res);
 
         if (!myClasses.contains(metadata.getMainClass())) {
             lastError = "main class file (" + metadata.getMainClass() + ") not found in jar.";
@@ -168,10 +164,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Updates the list of known classes within this plugin from the specified resource manager.
      *
      * @param res Resource manager to use to read the plugin contents.
-     *
-     * @throws IOException if resource listing fails
      */
-    private void updateClassList(final ResourceManager res) throws IOException {
+    private void updateClassList(final ResourceManager res) {
         myClasses.clear();
 
         for (final String classfilename : res.getResourcesStartingWith("")) {

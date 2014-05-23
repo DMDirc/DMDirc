@@ -60,14 +60,8 @@ public class CorePluginExtractor {
      *               extracted.
      */
     public void extractCorePlugins(final String prefix) {
-        final Map<String, byte[]> resources;
-        try {
-            resources = ResourceManager.getResourceManager()
-                    .getResourcesStartingWithAsBytes("plugins");
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
-            return;
-        }
+        final Map<String, byte[]> resources = ResourceManager.getResourceManager()
+                .getResourcesStartingWithAsBytes("plugins");
         for (Map.Entry<String, byte[]> resource : resources.entrySet()) {
             try {
                 final String resourceName = pluginDir + resource.getKey().substring(7);

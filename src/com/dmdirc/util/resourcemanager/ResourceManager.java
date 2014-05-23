@@ -59,13 +59,8 @@ public abstract class ResourceManager {
                     me = new ZipResourceManager(DMDircResourceManager
                             .getWorkingDirectoryString(mainClassURL));
                 } else {
-                    final String path = DMDircResourceManager
-                            .getWorkingDirectoryString(mainClassURL);
-                    if (path.charAt(0) == '/') {
-                        me = new FileResourceManager(path.substring(1));
-                    } else {
-                        me = new FileResourceManager(path);
-                    }
+                    me = new FileResourceManager(DMDircResourceManager
+                            .getWorkingDirectoryString(mainClassURL));
                 }
             } catch (IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM,
@@ -246,10 +241,8 @@ public abstract class ResourceManager {
      * @param resource Name of the resource to return
      *
      * @return byte[] for the resource, or an empty byte[] if not found
-     *
-     * @throws IOException if reading the file fails
      */
-    public abstract byte[] getResourceBytes(final String resource) throws IOException;
+    public abstract byte[] getResourceBytes(final String resource);
 
     /**
      * Gets an InputStream for the specified resource.
@@ -257,10 +250,8 @@ public abstract class ResourceManager {
      * @param resource Name of the resource to return
      *
      * @return InputStream for the resource, or null if not found
-     *
-     * @throws IOException if reading the file fails
      */
-    public abstract InputStream getResourceInputStream(final String resource) throws IOException;
+    public abstract InputStream getResourceInputStream(final String resource);
 
     /**
      * Gets an URL for the specified resource.
@@ -281,11 +272,9 @@ public abstract class ResourceManager {
      *
      * @since 0.6
      * @return Map of byte[]s of resources found
-     *
-     * @throws IOException if reading the file fails
      */
     public abstract Map<String, byte[]> getResourcesEndingWithAsBytes(
-            final String resourcesSuffix) throws IOException;
+            final String resourcesSuffix);
 
     /**
      * Gets a Map of byte[]s of the resources starting with the specified prefix.
@@ -293,11 +282,9 @@ public abstract class ResourceManager {
      * @param resourcesPrefix Prefix of the resources to return
      *
      * @return Map of byte[]s of resources found
-     *
-     * @throws IOException if reading the file fails
      */
     public abstract Map<String, byte[]> getResourcesStartingWithAsBytes(
-            final String resourcesPrefix) throws IOException;
+            final String resourcesPrefix);
 
     /**
      * Gets a Map of InputStreams of the resources starting with the specified prefix.
@@ -305,11 +292,9 @@ public abstract class ResourceManager {
      * @param resourcesPrefix Prefix of the resources to return
      *
      * @return Map of InputStreams of resources found
-     *
-     * @throws IOException if reading the file fails
      */
     public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
-            final String resourcesPrefix) throws IOException;
+            final String resourcesPrefix);
 
     /**
      * Gets a List of the resources starting with the specified prefix.
@@ -317,10 +302,7 @@ public abstract class ResourceManager {
      * @param resourcesPrefix Prefix of the resources to return
      *
      * @return List of resources found
-     *
-     * @throws IOException if reading the file fails
      */
-    public abstract List<String> getResourcesStartingWith(final String resourcesPrefix)
-            throws IOException;
+    public abstract List<String> getResourcesStartingWith(final String resourcesPrefix);
 
 }
