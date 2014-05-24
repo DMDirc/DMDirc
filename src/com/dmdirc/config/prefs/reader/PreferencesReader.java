@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
 
-import static com.dmdirc.config.prefs.reader.PreferencesReaderUtils.asList;
-import static com.dmdirc.config.prefs.reader.PreferencesReaderUtils.asMap;
+import static com.dmdirc.util.YamlReaderUtils.asList;
+import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -103,6 +103,8 @@ public class PreferencesReader {
             readMap(asMap(top));
         } catch (IOException ex) {
             throw new PreferencesReaderException("Unable to read input stream", ex);
+        } catch (IllegalArgumentException ex) {
+            throw new PreferencesReaderException(ex.getMessage(), ex);
         }
     }
 

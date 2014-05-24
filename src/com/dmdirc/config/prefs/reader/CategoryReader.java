@@ -29,8 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.dmdirc.config.prefs.reader.PreferencesReaderUtils.optionalString;
-import static com.dmdirc.config.prefs.reader.PreferencesReaderUtils.requiredString;
+import static com.dmdirc.util.YamlReaderUtils.optionalString;
+import static com.dmdirc.util.YamlReaderUtils.requiredString;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**

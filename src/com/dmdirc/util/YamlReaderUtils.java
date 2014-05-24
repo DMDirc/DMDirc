@@ -20,7 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config.prefs.reader;
+package com.dmdirc.util;
+
 
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,11 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Provides utility methods for preferences readers.
+ * Provides utility methods for classes that read from YAML files.
  */
-public class PreferencesReaderUtils {
+public class YamlReaderUtils {
 
-    private PreferencesReaderUtils() {
+    private YamlReaderUtils() {
         // Shouldn't be instansiated
     }
 
@@ -73,15 +74,15 @@ public class PreferencesReaderUtils {
      *
      * @return The given object cast as a map.
      *
-     * @throws PreferencesReaderException If the specified object is not a map.
+     * @throws IllegalArgumentException If the specified object is not a map.
      */
     public static Map<Object, Object> asMap(@Nullable final Object object)
-            throws PreferencesReaderException {
+            throws IllegalArgumentException {
         if (object instanceof Map) {
             return uncheckedCast((Map<?, ?>) object);
         }
 
-        throw new PreferencesReaderException("Unexpected element. Found "
+        throw new IllegalArgumentException("Unexpected element. Found "
                 + simpleName(object) + ", expected Map");
     }
 
@@ -92,15 +93,15 @@ public class PreferencesReaderUtils {
      *
      * @return The given object cast as a list.
      *
-     * @throws PreferencesReaderException If the specified object is not a list.
+     * @throws IllegalArgumentException If the specified object is not a list.
      */
     public static List<Object> asList(@Nullable final Object object)
-            throws PreferencesReaderException {
+            throws IllegalArgumentException {
         if (object instanceof List) {
             return uncheckedCast((List<?>) object);
         }
 
-        throw new PreferencesReaderException("Unexpected element. Found "
+        throw new IllegalArgumentException("Unexpected element. Found "
                 + simpleName(object) + ", expected List");
     }
 
@@ -112,20 +113,20 @@ public class PreferencesReaderUtils {
      *
      * @return The string representation of the value of the key.
      *
-     * @throws PreferencesReaderException If the specified key is not present, or is empty.
+     * @throws IllegalArgumentException If the specified key is not present, or is empty.
      */
     public static String requiredString(final Map<Object, Object> map, final String key)
-            throws PreferencesReaderException {
+            throws IllegalArgumentException {
         checkNotNull(map);
         checkNotNull(key);
 
         if (!map.containsKey(key)) {
-            throw new PreferencesReaderException("Required key not present: " + key);
+            throw new IllegalArgumentException("Required key not present: " + key);
         }
 
         final String value = map.get(key).toString();
         if (value.trim().isEmpty()) {
-            throw new PreferencesReaderException("Required key is empty: " + key);
+            throw new IllegalArgumentException("Required key is empty: " + key);
         }
 
         return value;
