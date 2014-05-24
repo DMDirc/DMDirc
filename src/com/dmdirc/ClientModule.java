@@ -32,6 +32,8 @@ import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.aliases.AliasStore;
+import com.dmdirc.commandparser.aliases.YamlAliasStore;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
@@ -302,6 +304,12 @@ public class ClientModule {
     @Singleton
     public EventBus getEventBus() {
         return new EventBus();
+    }
+
+    @Provides
+    @Singleton
+    public AliasStore getAliasStore(final YamlAliasStore store) {
+        return store;
     }
 
     /**

@@ -27,6 +27,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ColourActionComparison;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.aliases.AliasLifecycleManager;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.FeedbackNagEvent;
@@ -83,6 +84,7 @@ public class Main {
     private final GlobalWindowManager globalWindowManager;
     /** The colour-based action comparisons. */
     private final ColourActionComparison colourActionComparison;
+    private final AliasLifecycleManager aliasLifecycleManager;
     /** The event bus to dispatch events on. */
     private final EventBus eventBus;
     /** The commands to load into the command manager. */
@@ -100,6 +102,7 @@ public class Main {
      * @param corePluginExtractor    Extractor to use for core plugins.
      * @param globalWindowManager    Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
+     * @param aliasLifecycleManager  The alias lifecycle manager.
      * @param eventBus               The event bus to dispatch events on.
      * @param commands               The commands to be loaded into the command manager.
      */
@@ -114,6 +117,7 @@ public class Main {
             final CorePluginExtractor corePluginExtractor,
             final GlobalWindowManager globalWindowManager,
             final ColourActionComparison colourActionComparison,
+            final AliasLifecycleManager aliasLifecycleManager,
             final EventBus eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
@@ -125,6 +129,7 @@ public class Main {
         this.commandManager = commandManager;
         this.globalWindowManager = globalWindowManager;
         this.colourActionComparison = colourActionComparison;
+        this.aliasLifecycleManager = aliasLifecycleManager;
         this.eventBus = eventBus;
         this.commands = commands;
     }
@@ -171,11 +176,13 @@ public class Main {
         commandLineParser.processArguments(serverManager);
 
         globalWindowManager.init();
+        aliasLifecycleManager.startUp();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
             @Override
             public void run() {
+                aliasLifecycleManager.shutDown();
                 eventBus.post(new ClientClosedEvent());
                 serverManager.disconnectAll("Unexpected shutdown");
                 identityManager.saveAll();

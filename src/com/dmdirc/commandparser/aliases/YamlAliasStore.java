@@ -58,7 +58,7 @@ import static com.dmdirc.util.YamlReaderUtils.requiredString;
  * <p>
  * Aliases are written as a list of maps:
  * <pre><code>
- * ----
+ * ---
  * - name: quit
  *   min_arguments: 0
  *   substitution: exit $1-
