@@ -54,6 +54,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         for (Alias alias : aliasManager.getAliases()) {
             aliases.put(alias.getName(), alias);
         }
+        selectedAlias = Optional.absent();
     }
 
     @Override
@@ -78,6 +79,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public void editAlias(final String name, final Alias alias) {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(alias);
+        Preconditions.checkArgument(aliases.containsKey(name));
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
     }
