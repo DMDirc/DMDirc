@@ -25,6 +25,8 @@ package com.dmdirc.commandparser.aliases;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 
+import com.google.common.base.Objects;
+
 /**
  * Describes a user-defined command alias.
  */
@@ -71,6 +73,23 @@ public class Alias implements CommandInfo {
     @Override
     public CommandType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof Alias)) {
+            return false;
+        }
+        final Alias alias = (Alias) object;
+        return Objects.equal(getName(), alias.getName())
+                && Objects.equal(getMinArguments(), alias.getMinArguments())
+                && Objects.equal(getSubstitution(), alias.getSubstitution())
+                && Objects.equal(getType(), alias.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, minArguments, substitution, type);
     }
 
 }

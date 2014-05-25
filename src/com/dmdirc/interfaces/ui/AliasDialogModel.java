@@ -65,6 +65,15 @@ public interface AliasDialogModel {
     void editAlias(final String name, final Alias alias);
 
     /**
+     * Renames an existing alias in the model. This method should not be used for renaming an alias
+     * {@link #renameAlias(String, String)}
+     *
+     * @param oldName Old name for the alias
+     * @param newName New name for the alias
+     */
+    void renameAlias(final String oldName, final String newName);
+
+    /**
      * Removes the named alias from the model.
      *
      * @param name Name of the alias to remove

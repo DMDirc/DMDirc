@@ -53,6 +53,14 @@ public interface AliasDialogModelListener {
     void aliasEdited(String name);
 
     /**
+     * An alias has been renamed.
+     *
+     * @param oldName Old name of the alias
+     * @param newName New name of the alias
+     */
+    void aliasRenamed(String oldName, String newName);
+
+    /**
      * An alias selection has been changed.
      *
      * @param alias Optional alias that has been selected

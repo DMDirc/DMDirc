@@ -80,8 +80,22 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(alias);
         Preconditions.checkArgument(aliases.containsKey(name));
+        Preconditions.checkArgument(name.equals(alias.getName()));
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
+    }
+
+    @Override
+    public void renameAlias(final String oldName, final String newName) {
+        Preconditions.checkNotNull(oldName);
+        Preconditions.checkNotNull(newName);
+        Preconditions.checkArgument(aliases.containsKey(oldName));
+        Preconditions.checkArgument(!aliases.containsKey(newName));
+        final Alias alias = aliases.get(oldName);
+        aliases.remove(oldName);
+        aliases.put(newName, new Alias(alias.getType(), newName, alias.getMinArguments(),
+                alias.getSubstitution()));
+        listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldName, newName);
     }
 
     @Override
