@@ -32,8 +32,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.aliases.AliasStore;
-import com.dmdirc.commandparser.aliases.YamlAliasStore;
+import com.dmdirc.commandparser.aliases.AliasesModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
@@ -87,7 +86,12 @@ import dagger.Provides;
  */
 @Module(
         injects = {Main.class, CommandLineParser.class},
-        includes = {CommandLineOptionsModule.class, CommandModule.class, UpdaterModule.class},
+        includes = {
+            AliasesModule.class,
+            CommandLineOptionsModule.class,
+            CommandModule.class,
+            UpdaterModule.class
+        },
         library = true)
 public class ClientModule {
 
@@ -129,8 +133,7 @@ public class ClientModule {
         }
 
         if (commandLineParser.getDisableReporting()) {
-            identityManager.getUserSettings()
-                    .setOption("temp", "noerrorreporting", true);
+            identityManager.getUserSettings().setOption("temp", "noerrorreporting", true);
         }
 
         return identityManager;
@@ -304,12 +307,6 @@ public class ClientModule {
     @Singleton
     public EventBus getEventBus() {
         return new EventBus();
-    }
-
-    @Provides
-    @Singleton
-    public AliasStore getAliasStore(final YamlAliasStore store) {
-        return store;
     }
 
     /**
