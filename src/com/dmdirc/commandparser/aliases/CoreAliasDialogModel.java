@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
@@ -69,18 +70,27 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     }
 
     @Override
-    public void addAlias(final Alias alias) {
-        Preconditions.checkNotNull(alias);
-        aliases.put(alias.getName(), alias);
+    public void addAlias(final String name,
+            final int minArguments,
+            final String substitution) {
+        Preconditions.checkNotNull(name);
+        Preconditions.checkArgument(!aliases.containsKey(name));
+        Preconditions.checkNotNull(substitution);
+        Preconditions.checkArgument(minArguments >= 0);
+        final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
+        aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasAdded(alias);
     }
 
     @Override
-    public void editAlias(final String name, final Alias alias) {
+    public void editAlias(final String name,
+            final int minArguments,
+            final String substitution) {
         Preconditions.checkNotNull(name);
-        Preconditions.checkNotNull(alias);
+        Preconditions.checkNotNull(substitution);
+        Preconditions.checkArgument(minArguments >= 0);
         Preconditions.checkArgument(aliases.containsKey(name));
-        Preconditions.checkArgument(name.equals(alias.getName()));
+        final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
     }

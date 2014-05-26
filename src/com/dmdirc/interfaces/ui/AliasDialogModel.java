@@ -52,21 +52,23 @@ public interface AliasDialogModel {
     /**
      * Adds an alias to the model.
      *
-     * @param alias Alias to add.
+     * @param name         Name for the new alias
+     * @param minArguments Minimum number of arguments for the new alias
+     * @param substitution Substitution for the new alias
      */
-    void addAlias(final Alias alias);
+    void addAlias(String name, int minArguments, String substitution);
 
     /**
      * Edits the specified alias in the model.
      *
-     * @param name  Name of the alias to edit
-     * @param alias Alias to replace it with
+     * @param name         Name of the alias to edit
+     * @param minArguments Minimum number of arguments for the new alias
+     * @param substitution Substitution for the new alias
      */
-    void editAlias(final String name, final Alias alias);
+    void editAlias(final String name, int minArguments, String substitution);
 
     /**
-     * Renames an existing alias in the model. This method should not be used for renaming an alias
-     * {@link #renameAlias(String, String)}
+     * Renames an existing alias in the model.
      *
      * @param oldName Old name for the alias
      * @param newName New name for the alias

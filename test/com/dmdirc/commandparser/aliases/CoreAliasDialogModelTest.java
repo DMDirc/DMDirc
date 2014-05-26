@@ -87,7 +87,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         assertEquals(model.getAliases().size(), 0);
-        model.addAlias(alias1);
+        model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         assertEquals(model.getAliases().size(), 1);
     }
 
@@ -96,7 +96,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         model.addListener(listener);
-        model.addAlias(alias1);
+        model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         verify(listener).aliasAdded(alias1);
     }
 
@@ -107,18 +107,8 @@ public class CoreAliasDialogModelTest {
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias("alias1").get().getMinArguments(), 0);
-        model.editAlias("alias1", alias2Edited);
+        model.editAlias("alias1", alias2Edited.getMinArguments(), alias2Edited.getSubstitution());
         assertEquals(model.getAlias("alias1").get().getMinArguments(), 1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEditAliasFail() {
-        aliases.add(alias1);
-        when(aliasModel.getAliases()).thenReturn(aliases);
-        final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
-        assertEquals(model.getAliases().size(), 1);
-        assertEquals(model.getAlias("alias1").get().getMinArguments(), 0);
-        model.editAlias("alias1", alias2);
     }
 
     @Test
@@ -127,7 +117,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         model.addListener(listener);
-        model.editAlias("alias1", alias2Edited);
+        model.editAlias("alias1", alias2Edited.getMinArguments(), alias2Edited.getSubstitution());
         verify(listener).aliasEdited("alias1");
     }
 
@@ -218,9 +208,9 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         model.addListener(listener);
-        model.addAlias(alias1);
+        model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         model.removeListener(listener);
-        model.addAlias(alias2);
+        model.addAlias(alias2.getName(), alias2.getMinArguments(), alias2.getSubstitution());
         verify(listener).aliasAdded(alias1);
         verify(listener, never()).aliasAdded(alias2);
     }
