@@ -25,6 +25,8 @@ package com.dmdirc.commandparser.aliases;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 
+import com.google.common.base.Optional;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -185,7 +187,7 @@ public class CoreAliasDialogModelTest {
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         assertEquals(model.getAliases().size(), 2);
         assertFalse(model.getSelectedAlias().isPresent());
-        model.setSelectedAlias(alias2);
+        model.setSelectedAlias(Optional.fromNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
     }
 
@@ -197,9 +199,9 @@ public class CoreAliasDialogModelTest {
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel);
         assertEquals(model.getAliases().size(), 2);
         assertFalse(model.getSelectedAlias().isPresent());
-        model.setSelectedAlias(alias2);
+        model.setSelectedAlias(Optional.fromNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
-        model.setSelectedAlias(null);
+        model.setSelectedAlias(Optional.<Alias>absent());
         assertFalse(model.getSelectedAlias().isPresent());
     }
 

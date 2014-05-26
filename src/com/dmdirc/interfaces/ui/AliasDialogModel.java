@@ -90,9 +90,9 @@ public interface AliasDialogModel {
     /**
      * Sets the selected alias.
      *
-     * @param alias Alias to set
+     * @param alias Optional alias to set
      */
-    void setSelectedAlias(final Alias alias);
+    void setSelectedAlias(final Optional<Alias> alias);
 
     /**
      * Returns the currently selected alias.

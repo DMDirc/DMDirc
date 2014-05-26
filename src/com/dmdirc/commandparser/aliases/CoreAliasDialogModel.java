@@ -132,8 +132,8 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     }
 
     @Override
-    public void setSelectedAlias(final Alias alias) {
-        selectedAlias = Optional.fromNullable(alias);
+    public void setSelectedAlias(final Optional<Alias> alias) {
+        selectedAlias = alias;
         listeners.getCallable(AliasDialogModelListener.class).aliasSelectionChanged(selectedAlias);
     }
 
