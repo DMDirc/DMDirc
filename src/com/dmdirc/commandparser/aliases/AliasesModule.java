@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.interfaces.SystemLifecycleComponent;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -37,6 +39,11 @@ public class AliasesModule {
     @Singleton
     public AliasStore getAliasStore(final YamlAliasStore store) {
         return store;
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public SystemLifecycleComponent getLifeycleComponent(final AliasLifecycleManager manager) {
+        return manager;
     }
 
 }
