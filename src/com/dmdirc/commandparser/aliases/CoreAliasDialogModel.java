@@ -65,7 +65,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public Optional<Alias> getAlias(final String name) {
-        Preconditions.checkNotNull(name);
+        Preconditions.checkNotNull(name, "Name cannot be null");
         return Optional.fromNullable(aliases.get(name));
     }
 
@@ -73,10 +73,10 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public void addAlias(final String name,
             final int minArguments,
             final String substitution) {
-        Preconditions.checkNotNull(name);
-        Preconditions.checkArgument(!aliases.containsKey(name));
-        Preconditions.checkNotNull(substitution);
-        Preconditions.checkArgument(minArguments >= 0);
+        Preconditions.checkNotNull(name, "Name cannot be null");
+        Preconditions.checkArgument(!aliases.containsKey(name), "Name cannot already exist");
+        Preconditions.checkNotNull(substitution, "Substitution cannot be null");
+        Preconditions.checkArgument(minArguments >= 0, "Minimum arguments must be 0 or higher");
         final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasAdded(alias);
@@ -86,10 +86,10 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public void editAlias(final String name,
             final int minArguments,
             final String substitution) {
-        Preconditions.checkNotNull(name);
-        Preconditions.checkNotNull(substitution);
-        Preconditions.checkArgument(minArguments >= 0);
-        Preconditions.checkArgument(aliases.containsKey(name));
+        Preconditions.checkNotNull(name, "Name cannot be null");
+        Preconditions.checkNotNull(substitution, "Substitution cannot be null");
+        Preconditions.checkArgument(minArguments >= 0, "Minimum arguments must be 0 or higher");
+        Preconditions.checkArgument(aliases.containsKey(name), "Name must already exist");
         final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
@@ -97,10 +97,10 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void renameAlias(final String oldName, final String newName) {
-        Preconditions.checkNotNull(oldName);
-        Preconditions.checkNotNull(newName);
-        Preconditions.checkArgument(aliases.containsKey(oldName));
-        Preconditions.checkArgument(!aliases.containsKey(newName));
+        Preconditions.checkNotNull(oldName, "Oldname cannot be null");
+        Preconditions.checkNotNull(newName, "Newname cannot be null");
+        Preconditions.checkArgument(aliases.containsKey(oldName), "Old name must exist");
+        Preconditions.checkArgument(!aliases.containsKey(newName), "New name must not exist");
         final Alias alias = aliases.get(oldName);
         aliases.remove(oldName);
         aliases.put(newName, new Alias(alias.getType(), newName, alias.getMinArguments(),
@@ -110,7 +110,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void removeAlias(final String name) {
-        Preconditions.checkNotNull(name);
+        Preconditions.checkNotNull(name, "Name cannot be null");
         if (!aliases.containsKey(name)) {
             return;
         }
@@ -144,13 +144,13 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void addListener(final AliasDialogModelListener listener) {
-        Preconditions.checkNotNull(listener);
+        Preconditions.checkNotNull(listener, "Listener must not be null");
         listeners.add(AliasDialogModelListener.class, listener);
     }
 
     @Override
     public void removeListener(final AliasDialogModelListener listener) {
-        Preconditions.checkNotNull(listener);
+        Preconditions.checkNotNull(listener, "Listener must not be null");
         listeners.remove(AliasDialogModelListener.class, listener);
     }
 
