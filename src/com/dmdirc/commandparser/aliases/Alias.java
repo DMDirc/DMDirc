@@ -92,4 +92,14 @@ public class Alias implements CommandInfo {
         return Objects.hashCode(name, minArguments, substitution, type);
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("name", name)
+                .add("minargs", minArguments)
+                .add("substitution", substitution)
+                .add("type", type)
+                .toString();
+    }
+
 }
