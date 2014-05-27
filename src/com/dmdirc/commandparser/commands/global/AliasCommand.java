@@ -23,21 +23,21 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionFactory;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.wrappers.Alias;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.aliases.Alias;
+import com.dmdirc.commandparser.aliases.AliasFactory;
+import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
+
+import com.google.common.base.Optional;
 
 import javax.inject.Inject;
 
@@ -51,25 +51,25 @@ public class AliasCommand extends Command implements IntelligentCommand {
             "alias [--remove] <name> [command] - creates or removes the specified alias",
             CommandType.TYPE_GLOBAL);
     /** Factory to use when creating aliases. */
-    private final ActionFactory actionFactory;
-    /** Wrapper to use to modify aliases. */
-    private final AliasWrapper aliasWrapper;
+    private final AliasFactory aliasFactory;
+    /** Manager to use to modify aliases. */
+    private final AliasManager aliasManager;
 
     /**
      * Creates a new instance of {@link AliasCommand}.
      *
      * @param controller    The controller that owns this command.
-     * @param actionFactory The factory to use when creating new aliases.
-     * @param aliasWrapper  The wrapper to use to modify aliases.
+     * @param aliasFactory The factory to use when creating new aliases.
+     * @param aliasManager The manager to use to modify aliases.
      */
     @Inject
     public AliasCommand(
             final CommandController controller,
-            final ActionFactory actionFactory,
-            final AliasWrapper aliasWrapper) {
+            final AliasFactory aliasFactory,
+            final AliasManager aliasManager) {
         super(controller);
-        this.actionFactory = actionFactory;
-        this.aliasWrapper = aliasWrapper;
+        this.aliasFactory = aliasFactory;
+        this.aliasManager = aliasManager;
     }
 
     @Override
@@ -96,24 +96,19 @@ public class AliasCommand extends Command implements IntelligentCommand {
             return;
         }
 
-        final String name = args.getArguments()[0].charAt(0)
-                == getController().getCommandChar()
-                ? args.getArguments()[0].substring(1) : args.getArguments()[0];
+        final String name = removeCommandChar(args.getArguments()[0]);
 
-        for (Action alias : aliasWrapper) {
-            if (aliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
-                        + "' already exists.");
-                return;
-            }
+        if (aliasManager.getAlias(name).isPresent()) {
+            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
+                    + "' already exists.");
+            return;
         }
 
-        final Alias myAlias = new Alias(actionFactory, name);
-        myAlias.setResponse(new String[]{args.getArgumentsAsString(1)});
-        myAlias.createAction().save();
+        final Alias myAlias = aliasFactory.createAlias(name, 0,
+                removeCommandChar(args.getArgumentsAsString(1)));
+        aliasManager.addAlias(myAlias);
 
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name
-                + "' created.");
+        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name + "' created.");
     }
 
     /**
@@ -124,15 +119,11 @@ public class AliasCommand extends Command implements IntelligentCommand {
      * @return True if the alias was deleted, false otherwise
      */
     private boolean doRemove(final String name) {
-        for (Action alias : aliasWrapper) {
-            if (aliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
-                alias.delete();
-                ActionManager.getActionManager().removeAction(alias);
-
-                return true;
-            }
+        final Optional<Alias> alias = aliasManager.getAlias(name);
+        if (alias.isPresent()) {
+            aliasManager.removeAlias(alias.get());
+            return true;
         }
-
         return false;
     }
 
@@ -144,14 +135,17 @@ public class AliasCommand extends Command implements IntelligentCommand {
         if (arg == 0) {
             res.add("--remove");
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
-            for (Action alias : aliasWrapper) {
-                res.add(aliasWrapper.getCommandName(alias));
-            }
+            res.addAll(aliasManager.getAliasNames());
         } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
             return TabCompleter.getIntelligentResults(arg, context, 1);
         }
 
         return res;
+    }
+
+    private String removeCommandChar(final String input) {
+        return input.charAt(0) == getController().getCommandChar()
+                ? input.substring(1) : input;
     }
 
 }

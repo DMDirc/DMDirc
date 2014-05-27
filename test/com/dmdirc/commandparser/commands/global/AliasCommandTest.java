@@ -22,9 +22,9 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.ActionFactory;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.aliases.AliasFactory;
+import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
@@ -34,18 +34,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyChar;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AliasCommandTest {
 
-    @Mock private AliasWrapper aliasWrapper;
+    @Mock private AliasFactory aliasFactory;
+    @Mock private AliasManager aliasManager;
     @Mock private CommandController controller;
     private AliasCommand command;
 
     @Before
     public void setup() {
-        command = new AliasCommand(controller, mock(ActionFactory.class), aliasWrapper);
+        command = new AliasCommand(controller, aliasFactory, aliasManager);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
     }
