@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.commandparser.CommandType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,10 +72,15 @@ public class YamlAliasStore implements AliasStore {
 
     /** The directory to find the aliases file in. */
     private final String directory;
+    /** The factory to use to create aliases. */
+    private final AliasFactory factory;
 
     @Inject
-    public YamlAliasStore(@Directory(DirectoryType.BASE) final String directory) {
+    public YamlAliasStore(
+            @Directory(DirectoryType.BASE) final String directory,
+            final AliasFactory factory) {
         this.directory = directory;
+        this.factory = factory;
     }
 
     @Override
@@ -126,14 +130,10 @@ public class YamlAliasStore implements AliasStore {
         for (Object alias : objects) {
             try {
                 final Map<Object, Object> map = asMap(alias);
-
-                // TODO: Infer command type from the substituted command
-                final CommandType commandType = CommandType.TYPE_GLOBAL;
                 final String name = requiredString(map, "name");
                 final int minArguments = Integer.parseInt(requiredString(map, "min_arguments"));
                 final String substitution = requiredString(map, "substitution");
-
-                res.add(new Alias(commandType, name, minArguments, substitution));
+                res.add(factory.createAlias(name, minArguments, substitution));
             } catch (IllegalArgumentException ex) {
                 LOG.info("Unable to read alias", ex);
             }

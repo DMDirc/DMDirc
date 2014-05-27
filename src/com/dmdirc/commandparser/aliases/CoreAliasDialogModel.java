@@ -22,13 +22,11 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -37,19 +35,24 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.inject.Inject;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Model representing a list of aliases in a dialog.
  */
 public class CoreAliasDialogModel implements AliasDialogModel {
 
     private final AliasManager aliasManager;
+    private final AliasFactory factory;
     private final ListenerList listeners;
     private final Map<String, Alias> aliases;
     private Optional<Alias> selectedAlias;
 
     @Inject
-    public CoreAliasDialogModel(final AliasManager aliasManager) {
+    public CoreAliasDialogModel(final AliasManager aliasManager, final AliasFactory factory) {
         this.aliasManager = aliasManager;
+        this.factory = factory;
         listeners = new ListenerList();
         aliases = new ConcurrentSkipListMap<>();
         for (Alias alias : aliasManager.getAliases()) {
@@ -65,42 +68,34 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public Optional<Alias> getAlias(final String name) {
-        Preconditions.checkNotNull(name, "Name cannot be null");
+        checkNotNull(name, "Name cannot be null");
         return Optional.fromNullable(aliases.get(name));
     }
 
     @Override
-    public void addAlias(final String name,
-            final int minArguments,
-            final String substitution) {
-        Preconditions.checkNotNull(name, "Name cannot be null");
-        Preconditions.checkArgument(!aliases.containsKey(name), "Name cannot already exist");
-        Preconditions.checkNotNull(substitution, "Substitution cannot be null");
-        Preconditions.checkArgument(minArguments >= 0, "Minimum arguments must be 0 or higher");
-        final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
+    public void addAlias(final String name, final int minArguments, final String substitution) {
+        checkNotNull(name, "Name cannot be null");
+        checkArgument(!aliases.containsKey(name), "Name cannot already exist");
+        final Alias alias = factory.createAlias(name, minArguments, substitution);
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasAdded(alias);
     }
 
     @Override
-    public void editAlias(final String name,
-            final int minArguments,
-            final String substitution) {
-        Preconditions.checkNotNull(name, "Name cannot be null");
-        Preconditions.checkNotNull(substitution, "Substitution cannot be null");
-        Preconditions.checkArgument(minArguments >= 0, "Minimum arguments must be 0 or higher");
-        Preconditions.checkArgument(aliases.containsKey(name), "Name must already exist");
-        final Alias alias = new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
+    public void editAlias(final String name, final int minArguments, final String substitution) {
+        checkNotNull(name, "Name cannot be null");
+        checkArgument(aliases.containsKey(name), "Name must already exist");
+        final Alias alias = factory.createAlias(name, minArguments, substitution);
         aliases.put(name, alias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
     }
 
     @Override
     public void renameAlias(final String oldName, final String newName) {
-        Preconditions.checkNotNull(oldName, "Oldname cannot be null");
-        Preconditions.checkNotNull(newName, "Newname cannot be null");
-        Preconditions.checkArgument(aliases.containsKey(oldName), "Old name must exist");
-        Preconditions.checkArgument(!aliases.containsKey(newName), "New name must not exist");
+        checkNotNull(oldName, "Oldname cannot be null");
+        checkNotNull(newName, "Newname cannot be null");
+        checkArgument(aliases.containsKey(oldName), "Old name must exist");
+        checkArgument(!aliases.containsKey(newName), "New name must not exist");
         final Alias alias = aliases.get(oldName);
         aliases.remove(oldName);
         aliases.put(newName, new Alias(alias.getType(), newName, alias.getMinArguments(),
@@ -110,7 +105,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void removeAlias(final String name) {
-        Preconditions.checkNotNull(name, "Name cannot be null");
+        checkNotNull(name, "Name cannot be null");
         if (!aliases.containsKey(name)) {
             return;
         }
@@ -144,13 +139,13 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void addListener(final AliasDialogModelListener listener) {
-        Preconditions.checkNotNull(listener, "Listener must not be null");
+        checkNotNull(listener, "Listener must not be null");
         listeners.add(AliasDialogModelListener.class, listener);
     }
 
     @Override
     public void removeListener(final AliasDialogModelListener listener) {
-        Preconditions.checkNotNull(listener, "Listener must not be null");
+        checkNotNull(listener, "Listener must not be null");
         listeners.remove(AliasDialogModelListener.class, listener);
     }
 
