@@ -20,36 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.aliases;
-
-import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+package com.dmdirc.interfaces;
 
 /**
- * Dagger module for aliases.
+ * A class that can perform one-off migration after a client upgrade.
  */
-@Module(library = true, complete = false)
-public class AliasesModule {
+public interface Migrator {
 
-    @Provides
-    @Singleton
-    public AliasStore getAliasStore(final YamlAliasStore store) {
-        return store;
-    }
+    /**
+     * Determines whether migration is needed or not.
+     *
+     * @return True if migration is required, false otherwise.
+     */
+    boolean needsMigration();
 
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifeycleComponent(final AliasLifecycleManager manager) {
-        return manager;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public Migrator getMigrator(final ActionAliasMigrator migrator) {
-        return migrator;
-    }
+    /**
+     * Performs the actual migration.
+     */
+    void migrate();
 
 }

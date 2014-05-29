@@ -32,6 +32,7 @@ import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.FeedbackNagEvent;
 import com.dmdirc.events.FirstRunEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
+import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
@@ -86,6 +87,8 @@ public class Main {
     private final ColourActionComparison colourActionComparison;
     /** The set of known lifecycle components. */
     private final Set<SystemLifecycleComponent> lifecycleComponents;
+    /** The set of migrators to execute on startup. */
+    private final Set<Migrator> migrators;
     /** The event bus to dispatch events on. */
     private final EventBus eventBus;
     /** The commands to load into the command manager. */
@@ -104,6 +107,7 @@ public class Main {
      * @param globalWindowManager    Global window manager to use.
      * @param colourActionComparison The colour-based action comparisons.
      * @param lifecycleComponents    The set of known lifecycle components.
+     * @param migrators              The set of migrators to execute on startup.
      * @param eventBus               The event bus to dispatch events on.
      * @param commands               The commands to be loaded into the command manager.
      */
@@ -119,6 +123,7 @@ public class Main {
             final GlobalWindowManager globalWindowManager,
             final ColourActionComparison colourActionComparison,
             final Set<SystemLifecycleComponent> lifecycleComponents,
+            final Set<Migrator> migrators,
             final EventBus eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
@@ -131,6 +136,7 @@ public class Main {
         this.globalWindowManager = globalWindowManager;
         this.colourActionComparison = colourActionComparison;
         this.lifecycleComponents = lifecycleComponents;
+        this.migrators = migrators;
         this.eventBus = eventBus;
         this.commands = commands;
     }
@@ -161,6 +167,12 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
+        for (Migrator migrator : migrators) {
+            if (migrator.needsMigration()) {
+                migrator.migrate();
+            }
+        }
+
         for (CommandDetails command : commands) {
             commandManager.registerCommand(command.getCommand(), command.getInfo());
         }
