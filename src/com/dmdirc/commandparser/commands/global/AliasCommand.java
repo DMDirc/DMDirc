@@ -81,10 +81,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         }
 
         if (args.getArguments()[0].equalsIgnoreCase("--remove")) {
-            final String name = args.getArguments()[1].charAt(0)
-                    == getController().getCommandChar()
-                    ? args.getArguments()[1].substring(1) : args.getArguments()[1];
-
+            final String name = removeCommandChar(args.getArguments()[1]);
             if (doRemove(name)) {
                 sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '"
                         + name + "' removed.");

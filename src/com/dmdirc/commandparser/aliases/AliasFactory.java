@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.interfaces.CommandController;
 
 import com.google.common.base.Strings;
 
@@ -38,8 +39,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public class AliasFactory {
 
+    /** The controller to use to trim command chars. */
+    private final CommandController commandController;
+
     @Inject
-    public AliasFactory() {
+    public AliasFactory(final CommandController commandController) {
+        this.commandController = commandController;
     }
 
     /**
@@ -58,7 +63,13 @@ public class AliasFactory {
         checkNotNull(substitution);
 
         // TODO: Infer command type from the substituted command
-        return new Alias(CommandType.TYPE_GLOBAL, name, minArguments, substitution);
+        return new Alias(CommandType.TYPE_GLOBAL, removeCommandChar(name), minArguments,
+                removeCommandChar(substitution));
+    }
+
+    private String removeCommandChar(final String input) {
+        return input.charAt(0) == commandController.getCommandChar()
+                ? input.substring(1) : input;
     }
 
 }
