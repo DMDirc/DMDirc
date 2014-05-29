@@ -28,7 +28,6 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutorFactory;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -56,7 +55,6 @@ public class PluginInjectorInitialiser {
 
     private final ActionManager actionManager;
     private final ActionFactory actionFactory;
-    private final AliasWrapper aliasWrapper;
     private final PluginManager pluginManager;
     private final IdentityController identityController;
     private final ServerManager serverManager;
@@ -78,7 +76,6 @@ public class PluginInjectorInitialiser {
     @Inject
     public PluginInjectorInitialiser(final ActionManager actionManager,
             final ActionFactory actionFactory,
-            final AliasWrapper aliasWrapper,
             final PluginManager pluginManager,
             final IdentityController identityController,
             final ServerManager serverManager,
@@ -98,7 +95,6 @@ public class PluginInjectorInitialiser {
             @GlobalConfig final IconManager iconManager) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;
-        this.aliasWrapper = aliasWrapper;
         this.pluginManager = pluginManager;
         this.identityController = identityController;
         this.serverManager = serverManager;
@@ -134,7 +130,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(statusBarManager);
         injector.addParameter(PreferencesManager.class, preferencesManager);
         injector.addParameter(PerformWrapper.class, performWrapper);
-        injector.addParameter(AliasWrapper.class, aliasWrapper);
         injector.addParameter(LifecycleController.class, lifecycleController);
         injector.addParameter(corePluginExtractor);
         injector.addParameter(actionFactory);

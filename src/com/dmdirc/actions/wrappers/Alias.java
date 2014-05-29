@@ -38,7 +38,10 @@ import java.util.List;
 
 /**
  * Actions alias wrapper.
+ *
+ * @deprecated Replaced by {@link com.dmdirc.commandparser.aliases.Alias}.
  */
+@Deprecated
 public class Alias implements Serializable {
 
     /** A version number for this class. */

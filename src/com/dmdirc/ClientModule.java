@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
@@ -269,11 +268,6 @@ public class ClientModule {
         final ThemeManager manager = new ThemeManager(controller, directory);
         manager.refreshAndLoadThemes();
         return manager;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public ActionGroup getAliasWrapper(final AliasWrapper aliasWrapper) {
-        return aliasWrapper;
     }
 
     @Provides(type = Provides.Type.SET)

@@ -27,6 +27,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -41,8 +42,11 @@ import javax.inject.Singleton;
 
 /**
  * Encapsulates alias actions.
+ *
+ * @deprecated Replaced by {@link AliasManager}.
  */
 @Singleton
+@Deprecated
 public class AliasWrapper extends ActionGroup {
 
     /** The name of the actions group we wrap. */

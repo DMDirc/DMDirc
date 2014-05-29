@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -40,24 +39,16 @@ public class TabCompleterFactory {
 
     /** The command controller to use to find commands. */
     private final Provider<CommandController> commandController;
-    /** The alias wrapper to use for alias tab completion. */
-    // TODO: There should be an easy way to inject completion providers here, instead of
-    //       calling out the AliasWrapper in particular. Specifically, plugins should be able to
-    //       add things trivially.
-    private final Provider<AliasWrapper> aliasWrapper;
 
     /**
      * Creates a new instance of {@link TabCompleterFactory}.
      *
      * @param commandController The command controller to use to find commands.
-     * @param aliasWrapper      The alias wrapper to use for alias tab completion.
      */
     @Inject
     public TabCompleterFactory(
-            final Provider<CommandController> commandController,
-            final Provider<AliasWrapper> aliasWrapper) {
+            final Provider<CommandController> commandController) {
         this.commandController = commandController;
-        this.aliasWrapper = aliasWrapper;
     }
 
     /**
@@ -77,7 +68,6 @@ public class TabCompleterFactory {
             final CommandType... commandTypes) {
         final TabCompleter tabCompleter = new TabCompleter(commandController.get(), configProvider);
         addCommands(tabCompleter, commandTypes);
-        tabCompleter.addEntries(TabCompletionType.COMMAND, aliasWrapper.get().getAliases());
         return tabCompleter;
     }
 
