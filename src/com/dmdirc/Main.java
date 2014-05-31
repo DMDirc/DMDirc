@@ -181,6 +181,10 @@ public class Main {
 
         doFirstRun();
 
+        for (SystemLifecycleComponent component : lifecycleComponents) {
+            component.startUp();
+        }
+
         actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
@@ -189,10 +193,6 @@ public class Main {
         commandLineParser.processArguments(serverManager);
 
         globalWindowManager.init();
-
-        for (SystemLifecycleComponent component : lifecycleComponents) {
-            component.startUp();
-        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
