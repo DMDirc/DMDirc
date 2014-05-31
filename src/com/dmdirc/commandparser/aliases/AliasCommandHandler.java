@@ -44,7 +44,9 @@ public class AliasCommandHandler extends Command {
     public void execute(final FrameContainer origin, final CommandArguments args,
             final CommandContext context) {
         if (args.getArguments().length >= alias.getMinArguments()) {
-            origin.getCommandParser().parseCommand(origin, getSubstituteCommand(args));
+            for (String line : getSubstituteCommand(args).split("\n")) {
+                origin.getCommandParser().parseCommand(origin, line.trim());
+            }
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, alias.getName() + " requires at least "
                     + alias.getMinArguments() + " argument"
