@@ -68,7 +68,7 @@ public class AliasFactory {
     }
 
     private String removeCommandChar(final String input) {
-        return input.charAt(0) == commandController.getCommandChar()
+        return !input.isEmpty() && input.charAt(0) == commandController.getCommandChar()
                 ? input.substring(1) : input;
     }
 
