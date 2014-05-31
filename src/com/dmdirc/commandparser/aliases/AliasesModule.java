@@ -22,8 +22,12 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
+
+import java.nio.file.Paths;
 
 import javax.inject.Singleton;
 
@@ -38,8 +42,10 @@ public class AliasesModule {
 
     @Provides
     @Singleton
-    public AliasStore getAliasStore(final YamlAliasStore store) {
-        return store;
+    public AliasStore getAliasStore(
+            @Directory(DirectoryType.BASE) final String directory,
+            final AliasFactory factory) {
+        return new YamlAliasStore(Paths.get(directory, "aliases.yml"), factory);
     }
 
     @Provides(type = Provides.Type.SET)

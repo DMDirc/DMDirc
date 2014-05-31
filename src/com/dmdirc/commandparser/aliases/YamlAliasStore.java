@@ -22,25 +22,19 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,26 +64,28 @@ public class YamlAliasStore implements AliasStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(YamlAliasStore.class);
 
-    /** The directory to find the aliases file in. */
-    private final String directory;
+    /** The path to the file to read and write aliases in. */
+    private final Path path;
     /** The factory to use to create aliases. */
     private final AliasFactory factory;
 
-    @Inject
-    public YamlAliasStore(
-            @Directory(DirectoryType.BASE) final String directory,
-            final AliasFactory factory) {
-        this.directory = directory;
+    /**
+     * Creates a new YAML alias store.
+     *
+     * @param path    The path to the YAML file to read and write aliases in.
+     * @param factory The factory to use to create aliases.
+     */
+    public YamlAliasStore(final Path path, final AliasFactory factory) {
+        this.path = path;
         this.factory = factory;
     }
 
     @Override
     public Set<Alias> readAliases() {
-        final File file = new File(directory, "aliases.yml");
         final Set<Alias> aliases = new HashSet<>();
 
-        if (file.exists()) {
-            try (final InputStream stream = new FileInputStream(file);
+        if (Files.exists(path)) {
+            try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
                 final YamlReader yamlReader = new YamlReader(reader);
                 final Object root = yamlReader.read();
@@ -105,10 +101,9 @@ public class YamlAliasStore implements AliasStore {
 
     @Override
     public void writeAliases(final Set<Alias> aliases) {
-        final File file = new File(directory, "aliases.yml");
         final List<Object> list = getAliases(aliases);
 
-        try (final OutputStream stream = new FileOutputStream(file);
+        try (final OutputStream stream = Files.newOutputStream(path);
                 final OutputStreamWriter writer = new OutputStreamWriter(stream, CHARSET)) {
             final YamlWriter yamlWriter = new YamlWriter(writer);
             yamlWriter.write(list);
