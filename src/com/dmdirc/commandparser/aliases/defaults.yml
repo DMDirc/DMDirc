@@ -1,0 +1,23 @@
+- name: deop
+  min_arguments: 1
+  substitution: mode -ooooooooooooooo $1-
+- name: devoice
+  min_arguments: 1
+  substitution: mode -vvvvvvvvvvvvvvv $1-
+- name: kickban
+  min_arguments: 1
+  substitution: |-
+    ban $1
+    kick $1-
+- name: op
+  min_arguments: 1
+  substitution: mode +ooooooooooooooo $1-
+- name: voice
+  min_arguments: 1
+  substitution: mode +vvvvvvvvvvvvvvv $1-
+- name: quote
+  min_arguments: 1
+  substitution: raw $1-
+- name: unset
+  min_arguments: 2
+  substitution: set --unset $1-

@@ -22,45 +22,37 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
-import java.nio.file.Paths;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * Dagger module for aliases.
+ * Migrator that installs the default aliases file if the user does not currently have one.
  */
-@Module(library = true, complete = false)
-public class AliasesModule {
+public class DefaultAliasInstaller implements Migrator {
 
-    @Provides
-    @Singleton
-    public AliasStore getAliasStore(
-            @Directory(DirectoryType.BASE) final String directory,
-            final AliasFactory factory) {
-        return new YamlAliasStore(Paths.get(directory, "aliases.yml"), factory);
+    private final Path target;
+
+    public DefaultAliasInstaller(final Path target) {
+        this.target = target;
     }
 
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifeycleComponent(final AliasLifecycleManager manager) {
-        return manager;
+    @Override
+    public boolean needsMigration() {
+        return !Files.exists(target);
     }
 
-    @Provides(type = Provides.Type.SET)
-    public Migrator getActionMigrator(final ActionAliasMigrator migrator) {
-        return migrator;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public Migrator getDefaultsMigrator(@Directory(DirectoryType.BASE) final String directory) {
-        return new DefaultAliasInstaller(Paths.get(directory, "aliases.yml"));
+    @Override
+    public void migrate() {
+        try {
+            Files.copy(getClass().getResourceAsStream("defaults.yml"), target);
+        } catch (IOException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to extract default aliases", ex);
+        }
     }
 
 }
