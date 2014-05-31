@@ -44,8 +44,8 @@ public class AliasCommandHandler extends Command {
     public void execute(final FrameContainer origin, final CommandArguments args,
             final CommandContext context) {
         if (args.getArguments().length >= alias.getMinArguments()) {
-            for (String line : getSubstituteCommand(args).split("\n")) {
-                origin.getCommandParser().parseCommand(origin, line.trim());
+            for (String line : alias.getSubstitution().split("\n")) {
+                origin.getCommandParser().parseCommand(origin, getSubstituteCommand(line, args));
             }
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, alias.getName() + " requires at least "
@@ -56,17 +56,17 @@ public class AliasCommandHandler extends Command {
 
     /**
      * Gets the command that should be executed, with the appropriate substitutions made.
-     *
      * <p>
      * The returned command will have arguments substituted (replacing "$1-", "$2", etc), and will
      * be silenced if the given args are silent.
      *
+     * @param line The line to substitute.
      * @param args The arguments entered by the user.
      *
      * @return The substituted command to execute.
      */
-    private String getSubstituteCommand(final CommandArguments args) {
-        final StringBuilder builder = new StringBuilder(alias.getSubstitution());
+    private String getSubstituteCommand(final String line, final CommandArguments args) {
+        final StringBuilder builder = new StringBuilder(line.trim());
 
         final String[] arguments = args.getArguments();
         for (int i = 0; i < arguments.length; i++) {
