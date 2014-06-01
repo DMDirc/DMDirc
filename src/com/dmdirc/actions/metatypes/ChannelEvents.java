@@ -62,7 +62,7 @@ public enum ChannelEvents implements ActionMetaType {
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class[] argTypes;
+    private Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.
@@ -70,7 +70,7 @@ public enum ChannelEvents implements ActionMetaType {
      * @param argNames The names of the meta-type's arguments
      * @param argTypes The types of the meta-type's arguments
      */
-    ChannelEvents(final String[] argNames, final Class... argTypes) {
+    ChannelEvents(final String[] argNames, final Class<?>... argTypes) {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
@@ -81,7 +81,7 @@ public enum ChannelEvents implements ActionMetaType {
     }
 
     @Override
-    public Class[] getArgTypes() {
+    public Class<?>[] getArgTypes() {
         return argTypes;
     }
 

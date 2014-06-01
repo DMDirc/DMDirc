@@ -39,7 +39,7 @@ public interface ActionMetaType {
      *
      * @return The type of arguments expected
      */
-    Class[] getArgTypes();
+    Class<?>[] getArgTypes();
 
     /**
      * Retrieves the names of the arguments that actions of this type should expect.
