@@ -47,6 +47,7 @@ import com.dmdirc.ui.WarningDialog;
 import com.google.common.eventbus.EventBus;
 
 import java.awt.GraphicsEnvironment;
+import java.security.Policy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -149,6 +150,13 @@ public class Main {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
+
+        try {
+            Policy.setPolicy(new DMDircSecurityPolicy());
+            System.setSecurityManager(new SecurityManager());
+        } catch (SecurityException ex) {
+            Logger.appError(ErrorLevel.HIGH, "Unable to set security policy", ex);
+        }
 
         try {
             ClientModule clientModule = new ClientModule();
