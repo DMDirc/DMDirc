@@ -20,51 +20,32 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.ui;
+package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.commandparser.aliases.Alias;
-
-import com.google.common.base.Optional;
+import com.dmdirc.interfaces.ui.AliasDialogModel;
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
 
 /**
- * Listener for various events in an alias dialog model.
+ * Validates an alias name ensuring its uniqueness.
  */
-public interface AliasDialogModelListener {
+public class NewAliasValidator implements Validator<String> {
 
-    /**
-     * An alias has been added.
-     *
-     * @param alias Alias that has been added
-     */
-    void aliasAdded(Alias alias);
+    /** Model to containing aliases to validate. */
+    private final AliasDialogModel aliases;
 
-    /**
-     * An alias has been removed.
-     *
-     * @param alias Alias that was removed.
-     */
-    void aliasRemoved(Alias alias);
+    public NewAliasValidator(final AliasDialogModel aliases) {
+        this.aliases = aliases;
+    }
 
-    /**
-     * An alias has been edited.
-     *
-     * @param oldAlias Old alias
-     * @param newAlias New alias
-     */
-    void aliasEdited(Alias oldAlias, Alias newAlias);
+    @Override
+    public ValidationResponse validate(final String object) {
+        for (Alias targetAlias : aliases.getAliases()) {
+            if (targetAlias.getName().equalsIgnoreCase(object)) {
+                return new ValidationResponse("Alias names must be unique");
+            }
+        }
+        return new ValidationResponse();
+    }
 
-    /**
-     * An alias has been renamed.
-     *
-     * @param oldAlias Old alias
-     * @param newAlias New alias
-     */
-    void aliasRenamed(Alias oldAlias, Alias newAlias);
-
-    /**
-     * An alias selection has been changed.
-     *
-     * @param alias Optional alias that has been selected
-     */
-    void aliasSelectionChanged(Optional<Alias> alias);
 }

@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.commandparser.aliases.Alias;
+import com.dmdirc.util.validators.Validator;
 
 import com.google.common.base.Optional;
 
@@ -100,6 +101,97 @@ public interface AliasDialogModel {
      * @return Optional for the selected alias
      */
     Optional<Alias> getSelectedAlias();
+
+    /**
+     * Gets the name of the selected alias.
+     *
+     * @return Selected alias name
+     */
+    String getSelectedAliasName();
+
+    /**
+     * Gets the minimum arguments of the selected alias.
+     *
+     * @return Selected alias minimum arguments
+     */
+    int getSelectedAliasMininumArguments();
+
+    /**
+     * Gets the substitution of the selected alias.
+     *
+     * @return Selected alias substitution
+     */
+    String getSelectedAliasSubstitution();
+
+    /**
+     * Sets the name of the selected alias.
+     *
+     * @param aliasName New name
+     */
+    void setSelectedAliasName(final String aliasName);
+
+    /**
+     * Sets the minimum arguments of the selected alias.
+     *
+     * @param minArgs New minimum arguments
+     */
+    void setSelectedAliasMinimumArguments(final int minArgs);
+
+    /**
+     * Sets the substitution of the selected alias.
+     *
+     * @param substitution New substitution
+     */
+    void setSelectedAliasSubstitution(final String substitution);
+
+    /**
+     * Tests whether the current command is valid.
+     *
+     * @return true if valid
+     */
+    boolean isCommandValid();
+
+    /**
+     * Tests whether the current minimum arguments is valid.
+     *
+     * @return true if valid
+     */
+    boolean isMinimumArgumentsValid();
+
+    /**
+     * Tests whether the current substitution is valid.
+     *
+     * @return true if valid
+     */
+    boolean isSubstitutionValid();
+
+    /**
+     * Gets a validator for changing the command of an existing alias.
+     *
+     * @return Command name validator
+     */
+    Validator<String> getCommandValidator();
+
+    /**
+     * Gets a validator for the command of a new alias.
+     *
+     * @return Command name validator
+     */
+    Validator<String> getNewCommandValidator();
+
+    /**
+     * Gets a validator for the minimum arguments of an alias.
+     *
+     * @return Arguments validator
+     */
+    Validator<Integer> getMinimumArgumentsValidator();
+
+    /**
+     * Gets a validator for the substitution of an alias.
+     *
+     * @return Substitution validator
+     */
+    Validator<String> getSubstitutionValidator();
 
     /**
      * Adds an alias listener, will be notified of changes to the model.

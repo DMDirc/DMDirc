@@ -22,9 +22,16 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.commandparser.validators.CommandNameValidator;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
+import com.dmdirc.util.validators.FileNameValidator;
+import com.dmdirc.util.validators.IntegerValidator;
+import com.dmdirc.util.validators.NotEmptyValidator;
+import com.dmdirc.util.validators.Validator;
+import com.dmdirc.util.validators.ValidatorChain;
 
 import com.google.common.base.Optional;
 
@@ -43,14 +50,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class CoreAliasDialogModel implements AliasDialogModel {
 
+    private final CommandController commandController;
     private final AliasManager aliasManager;
     private final AliasFactory factory;
     private final ListenerList listeners;
     private final Map<String, Alias> aliases;
     private Optional<Alias> selectedAlias;
+    private String name;
+    private int minArgs;
+    private String substitution;
 
     @Inject
-    public CoreAliasDialogModel(final AliasManager aliasManager, final AliasFactory factory) {
+    public CoreAliasDialogModel(final AliasManager aliasManager, final AliasFactory factory,
+            final CommandController commandController) {
+        this.commandController = commandController;
         this.aliasManager = aliasManager;
         this.factory = factory;
         listeners = new ListenerList();
@@ -85,22 +98,30 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public void editAlias(final String name, final int minArguments, final String substitution) {
         checkNotNull(name, "Name cannot be null");
         checkArgument(aliases.containsKey(name), "Name must already exist");
-        final Alias alias = factory.createAlias(name, minArguments, substitution);
-        aliases.put(name, alias);
-        listeners.getCallable(AliasDialogModelListener.class).aliasEdited(name);
+        final Alias newAlias = factory.createAlias(name, minArguments, substitution);
+        final Alias oldAlias = aliases.put(name, newAlias);
+        listeners.getCallable(AliasDialogModelListener.class).aliasEdited(oldAlias, newAlias);
     }
 
     @Override
     public void renameAlias(final String oldName, final String newName) {
+        renameAlias(oldName, newName, false);
+    }
+
+    public void renameAlias(final String oldName, final String newName, final boolean selection) {
         checkNotNull(oldName, "Oldname cannot be null");
         checkNotNull(newName, "Newname cannot be null");
         checkArgument(aliases.containsKey(oldName), "Old name must exist");
         checkArgument(!aliases.containsKey(newName), "New name must not exist");
         final Alias alias = aliases.get(oldName);
-        aliases.remove(oldName);
-        aliases.put(newName, new Alias(alias.getType(), newName, alias.getMinArguments(),
-                alias.getSubstitution()));
-        listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldName, newName);
+        final Alias newAlias = factory.createAlias(newName, alias.getMinArguments(),
+                alias.getSubstitution());
+        final Alias oldAlias = aliases.remove(oldName);
+        aliases.put(newName, newAlias);
+        if (!selection) {
+            setSelectedAlias(Optional.fromNullable(aliases.get(newName)));
+        }
+        listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldAlias, newAlias);
     }
 
     @Override
@@ -111,13 +132,17 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         }
         final Alias alias = aliases.get(name);
         aliases.remove(name);
+        if (getSelectedAlias().isPresent() && getSelectedAlias().get().equals(alias)) {
+            setSelectedAlias(Optional.<Alias>absent());
+        }
         listeners.getCallable(AliasDialogModelListener.class).aliasRemoved(alias);
     }
 
     @Override
     public void save() {
+        setSelectedAlias(Optional.<Alias>absent());
         for (Alias alias : aliasManager.getAliases()) {
-                aliasManager.removeAlias(alias);
+            aliasManager.removeAlias(alias);
         }
         for (Alias alias : aliases.values()) {
             aliasManager.addAlias(alias);
@@ -126,13 +151,106 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void setSelectedAlias(final Optional<Alias> alias) {
+        if (selectedAlias.isPresent()) {
+            if (selectedAlias.get().getMinArguments() != minArgs
+                    || !selectedAlias.get().getSubstitution().equals(substitution)) {
+                editAlias(selectedAlias.get().getName(), minArgs, substitution);
+            }
+            if (!selectedAlias.get().getName().equals(name)) {
+                renameAlias(selectedAlias.get().getName(), name, true);
+            }
+        }
         selectedAlias = alias;
+        if (alias.isPresent()) {
+            name = alias.get().getName();
+            minArgs = alias.get().getMinArguments();
+            substitution = alias.get().getSubstitution();
+        } else {
+            name = null;
+            minArgs = -1;
+            substitution = null;
+        }
         listeners.getCallable(AliasDialogModelListener.class).aliasSelectionChanged(selectedAlias);
     }
 
     @Override
     public Optional<Alias> getSelectedAlias() {
         return selectedAlias;
+    }
+
+    @Override
+    public String getSelectedAliasName() {
+        return name;
+    }
+
+    @Override
+    public int getSelectedAliasMininumArguments() {
+        return minArgs;
+    }
+
+    @Override
+    public String getSelectedAliasSubstitution() {
+        return substitution;
+    }
+
+    @Override
+    public void setSelectedAliasName(final String aliasName) {
+        this.name = aliasName;
+    }
+
+    @Override
+    public void setSelectedAliasMinimumArguments(final int minArgs) {
+        this.minArgs = minArgs;
+    }
+
+    @Override
+    public void setSelectedAliasSubstitution(final String substitution) {
+        this.substitution = substitution;
+    }
+
+    @Override
+    public boolean isCommandValid() {
+        return selectedAlias.isPresent() && !getCommandValidator().validate(name).isFailure();
+    }
+
+    @Override
+    public boolean isMinimumArgumentsValid() {
+        return selectedAlias.isPresent() && !getMinimumArgumentsValidator().validate(minArgs).
+                isFailure();
+    }
+
+    @Override
+    public boolean isSubstitutionValid() {
+        return selectedAlias.isPresent() && !getSubstitutionValidator().validate(substitution).
+                isFailure();
+    }
+
+    @Override
+    public Validator<String> getCommandValidator() {
+        return ValidatorChain.<String>builder()
+                .addValidator(new CommandNameValidator(commandController.getCommandChar()))
+                .addValidator(new FileNameValidator())
+                .addValidator(new RenameAliasValidator(this))
+                .build();
+    }
+
+    @Override
+    public Validator<String> getNewCommandValidator() {
+        return ValidatorChain.<String>builder()
+                .addValidator(new CommandNameValidator(commandController.getCommandChar()))
+                .addValidator(new FileNameValidator())
+                .addValidator(new NewAliasValidator(this))
+                .build();
+    }
+
+    @Override
+    public Validator<Integer> getMinimumArgumentsValidator() {
+        return new IntegerValidator(0, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public Validator<String> getSubstitutionValidator() {
+        return new NotEmptyValidator();
     }
 
     @Override
