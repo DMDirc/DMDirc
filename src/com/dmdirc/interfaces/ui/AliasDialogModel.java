@@ -166,6 +166,13 @@ public interface AliasDialogModel {
     boolean isSubstitutionValid();
 
     /**
+     * Tests whether the dialog can be saved.
+     *
+     * @return true if valid
+     */
+    boolean isSelectedAliasValid();
+
+    /**
      * Gets a validator for changing the command of an existing alias.
      *
      * @return Command name validator

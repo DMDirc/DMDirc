@@ -196,16 +196,22 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     @Override
     public void setSelectedAliasName(final String aliasName) {
         this.name = aliasName;
+        listeners.getCallable(AliasDialogModelListener.class).selectedAliasEdited(name, minArgs,
+                substitution);
     }
 
     @Override
     public void setSelectedAliasMinimumArguments(final int minArgs) {
         this.minArgs = minArgs;
+        listeners.getCallable(AliasDialogModelListener.class).selectedAliasEdited(name, minArgs,
+                substitution);
     }
 
     @Override
     public void setSelectedAliasSubstitution(final String substitution) {
         this.substitution = substitution;
+        listeners.getCallable(AliasDialogModelListener.class).selectedAliasEdited(name, minArgs,
+                substitution);
     }
 
     @Override
@@ -223,6 +229,12 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public boolean isSubstitutionValid() {
         return selectedAlias.isPresent() && !getSubstitutionValidator().validate(substitution).
                 isFailure();
+    }
+
+    @Override
+    public boolean isSelectedAliasValid() {
+        return selectedAlias.isPresent() && isCommandValid() && isMinimumArgumentsValid()
+                && isSubstitutionValid();
     }
 
     @Override

@@ -67,4 +67,14 @@ public interface AliasDialogModelListener {
      * @param alias Optional alias that has been selected
      */
     void aliasSelectionChanged(Optional<Alias> alias);
+
+    /**
+     * The selected alias has been edited.
+     *
+     * @param name         New name
+     * @param minArguments New minimum arguments
+     * @param substitution New substitution
+     */
+    void selectedAliasEdited(final String name, final int minArguments, final String substitution);
+
 }
