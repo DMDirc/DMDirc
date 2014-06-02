@@ -20,9 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.aliases;
+package com.dmdirc.ui.core.aliases;
 
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.aliases.Alias;
+import com.dmdirc.commandparser.aliases.AliasFactory;
+import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 

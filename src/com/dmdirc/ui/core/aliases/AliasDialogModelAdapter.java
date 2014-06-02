@@ -20,38 +20,41 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.aliases;
+package com.dmdirc.ui.core.aliases;
 
-import com.dmdirc.interfaces.ui.AliasDialogModel;
-import com.dmdirc.util.validators.ValidationResponse;
-import com.dmdirc.util.validators.Validator;
+import com.dmdirc.commandparser.aliases.Alias;
+import com.dmdirc.interfaces.ui.AliasDialogModelListener;
+
+import com.google.common.base.Optional;
 
 /**
- * Validates the uniqueness of an alias name, taking into account the selected alias.
+ * An abstract adapter class for receiving alias dialog model events. The methods in this class are
+ * empty. This class exists as convenience for creating listener objects.
  */
-public class RenameAliasValidator implements Validator<String> {
+public class AliasDialogModelAdapter implements AliasDialogModelListener {
 
-    private final AliasDialogModel model;
-
-    public RenameAliasValidator(final AliasDialogModel model) {
-        this.model = model;
+    @Override
+    public void aliasAdded(final Alias alias) {
     }
 
     @Override
-    public ValidationResponse validate(final String object) {
-        for (Alias targetAlias : model.getAliases()) {
-            if (model.getSelectedAlias().isPresent()) {
-                if (targetAlias != model.getSelectedAlias().get()
-                        && targetAlias.getName().equalsIgnoreCase(object)) {
-                    return new ValidationResponse("Alias names must be unique");
-                }
-            } else {
-                if (targetAlias.getName().equalsIgnoreCase(object)) {
-                    return new ValidationResponse("Alias names must be unique");
-                }
-            }
-        }
-        return new ValidationResponse();
+    public void aliasRemoved(final Alias alias) {
+    }
+
+    @Override
+    public void aliasEdited(final Alias oldAlias, final Alias newAlias) {
+    }
+
+    @Override
+    public void aliasRenamed(final Alias oldAlias, final Alias newAlias) {
+    }
+
+    @Override
+    public void aliasSelectionChanged(final Optional<Alias> alias) {
+    }
+
+    @Override
+    public void selectedAliasEdited(final String name, final int minArgs, final String sub) {
     }
 
 }

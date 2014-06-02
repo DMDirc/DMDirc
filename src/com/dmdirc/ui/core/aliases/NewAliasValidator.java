@@ -20,46 +20,33 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.aliases;
+package com.dmdirc.ui.core.aliases;
 
+import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
+import com.dmdirc.util.validators.ValidationResponse;
+import com.dmdirc.util.validators.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+/**
+ * Validates an alias name ensuring its uniqueness.
+ */
+public class NewAliasValidator implements Validator<String> {
 
-import clover.com.google.common.collect.Lists;
+    /** Model to containing aliases to validate. */
+    private final AliasDialogModel aliases;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-@RunWith(MockitoJUnitRunner.class)
-public class NewAliasValidatorTest {
-
-    @Mock private AliasDialogModel model;
-    @Mock private Alias alias1;
-    @Mock private Alias alias2;
-
-    @Before
-    public void setupModel() {
-        when(model.getAliases()).thenReturn(Lists.newArrayList(alias1, alias2));
-        when(alias1.getName()).thenReturn("alias1");
-        when(alias2.getName()).thenReturn("alias2");
+    public NewAliasValidator(final AliasDialogModel aliases) {
+        this.aliases = aliases;
     }
 
-    @Test
-    public void testDuplicateName() {
-        final NewAliasValidator instance = new NewAliasValidator(model);
-        assertTrue(instance.validate("alias1").isFailure());
-    }
-
-    @Test
-    public void testUniqueName() {
-        final NewAliasValidator instance = new NewAliasValidator(model);
-        assertFalse(instance.validate("alias3").isFailure());
+    @Override
+    public ValidationResponse validate(final String object) {
+        for (Alias targetAlias : aliases.getAliases()) {
+            if (targetAlias.getName().equalsIgnoreCase(object)) {
+                return new ValidationResponse("Alias names must be unique");
+            }
+        }
+        return new ValidationResponse();
     }
 
 }

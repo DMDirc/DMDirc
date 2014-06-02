@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.aliases;
+package com.dmdirc.ui.core.aliases;
 
+import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 
 import com.google.common.base.Optional;
