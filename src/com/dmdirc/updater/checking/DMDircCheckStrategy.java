@@ -52,15 +52,20 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
     private static final String UPDATE_URL = "http://updates.dmdirc.com/";
     /** The update channel to check for updates on. */
     private UpdateChannel channel;
+    /** Downloader to download files. */
+    private final Downloader downloader;
 
     /**
      * Creates a new instance of {@link DMDircCheckStrategy}.
      *
      * @param configProvider The provider to use to retrieve update channel information.
+     * @param downloader     Used to download files
      */
     @Inject
-    public DMDircCheckStrategy(@GlobalConfig final AggregateConfigProvider configProvider) {
+    public DMDircCheckStrategy(@GlobalConfig final AggregateConfigProvider configProvider,
+            final Downloader downloader) {
         configProvider.getBinder().bind(this, DMDircCheckStrategy.class);
+        this.downloader = downloader;
     }
 
     /**
@@ -87,7 +92,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
         final Map<String, UpdateComponent> names = getComponentsByName(components);
 
         try {
-            final List<String> response = Downloader.getPage(UPDATE_URL, getPayload(components));
+            final List<String> response = downloader.getPage(UPDATE_URL, getPayload(components));
             log.trace("Response from update server: {}", response);
 
             for (String line : response) {

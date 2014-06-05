@@ -63,6 +63,7 @@ import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.Version;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
+import com.dmdirc.util.io.Downloader;
 
 import com.google.common.eventbus.EventBus;
 
@@ -301,6 +302,11 @@ public class ClientModule {
     @Singleton
     public EventBus getEventBus() {
         return new EventBus();
+    }
+
+    @Provides
+    public Downloader getDownloader() {
+        return new Downloader();
     }
 
     /**

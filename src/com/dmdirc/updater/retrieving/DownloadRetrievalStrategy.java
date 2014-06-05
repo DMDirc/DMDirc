@@ -49,18 +49,23 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
     private final ListenerList listenerList = new ListenerList();
     /** The directory to put temporary update files in. */
     private final String directory;
+    /** Downloader to download files. */
+    private final Downloader downloader;
 
     /**
      * Creates a new {@link DownloadRetrievalStrategy} which will place its temporary files in the
      * given directory.
      *
-     * @param directory The directory to use to download files to
+     * @param directory  The directory to use to download files to#
+     * @param downloader Used to download files
      */
     @Inject
-    public DownloadRetrievalStrategy(@Directory(DirectoryType.BASE) final String directory) {
+    public DownloadRetrievalStrategy(@Directory(DirectoryType.BASE) final String directory,
+            final Downloader downloader) {
         super(DownloadableUpdate.class);
 
         this.directory = directory;
+        this.downloader = downloader;
     }
 
     /** {@inheritDoc} */
@@ -73,7 +78,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
                     .retrievalProgressChanged(checkResult.getComponent(), 0);
 
             LOG.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
-            Downloader.downloadPage(checkResult.getUrl().toString(), file,
+            downloader.downloadPage(checkResult.getUrl().toString(), file,
                     new DownloadProgressListener(checkResult.getComponent()));
 
             listenerList.getCallable(UpdateRetrievalListener.class)
