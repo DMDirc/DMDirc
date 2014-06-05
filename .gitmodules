@@ -1,15 +1,20 @@
 [submodule "modules/parser"]
 	path = modules/parser
 	url = git://dmdirc.com/parser
+	branch = master
 [submodule "modules/plugins"]
 	path = modules/plugins
 	url = git://dmdirc.com/plugins
+	branch = master
 [submodule "modules/defaults"]
 	path = modules/defaults
 	url = git://dmdirc.com/defaults
+	branch = master
 [submodule "modules/util"]
 	path = modules/util
 	url = git://dmdirc.com/util
+	branch = master
 [submodule "modules/installer"]
 	path = modules/installer
 	url = git://dmdirc.com/installer
+	branch = master
