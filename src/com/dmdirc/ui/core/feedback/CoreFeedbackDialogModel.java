@@ -32,8 +32,8 @@ import com.dmdirc.interfaces.ui.FeedbackDialogModel;
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.validators.EmailAddressValidator;
 import com.dmdirc.util.validators.NotEmptyValidator;
+import com.dmdirc.util.validators.OptionalEmailAddressValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
@@ -112,10 +112,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Override
     public Validator<String> getEmailValidator() {
-        if (email.isPresent()) {
-            return new EmailAddressValidator();
-        }
-        return new PermissiveValidator<>();
+        return new OptionalEmailAddressValidator();
     }
 
     @Override
