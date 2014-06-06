@@ -53,7 +53,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     private final ListenerList listeners;
     private final IdentityFactory identityFactory;
     private final IdentityController identityController;
-    private HashMap<String, Profile> profiles;
+    private final HashMap<String, Profile> profiles;
     private Optional<Profile> selectedProfile = Optional.absent();
     private Optional<String> name = Optional.absent();
     private Optional<List<String>> nicknames = Optional.absent();
@@ -68,6 +68,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         this.identityController = identityController;
         listeners = new ListenerList();
         final List<ConfigProvider> identities = identityController.getProvidersByType("profile");
+        profiles = new HashMap<>(identities.size());
         for (ConfigProvider identity : identities) {
             profiles.put(identity.getName(), getProfile(identity));
         }
@@ -75,6 +76,10 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     private Profile getProfile(final ConfigProvider configProvider) {
         final Profile newProfile = new Profile(configProvider.getName(), identityFactory);
+        newProfile.setName(configProvider.getOption("identity", "name"));
+        newProfile.setRealname(configProvider.getOption("profile", "realname"));
+        newProfile.setIdent(configProvider.getOption("profile", "ident"));
+        newProfile.setNicknames(configProvider.getOptionList("profile", "nicknames"));
         this.name = Optional.fromNullable(configProvider.getOption("identity", "name"));
         this.nicknames = Optional.fromNullable(configProvider.getOptionList("profile", "nicknames"));
         this.realname = Optional.fromNullable(configProvider.getOption("profile", "realname"));
@@ -366,7 +371,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
         checkState(nicknames.isPresent(), "There must be nicknames present");
         checkArgument(nicknames.get().contains(nickname), "Nickname must exist");
-        nicknames.get().add(nickname);
+        nicknames.get().remove(nickname);
         listeners.getCallable(ProfilesDialogModelListener.class).selectedProfileNicknameRemoved(
                 nickname);
     }

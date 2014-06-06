@@ -42,6 +42,10 @@ public class EditSelectedNicknameValidator implements Validator<String> {
         if (model.getSelectedProfile().isPresent()
                 && model.getSelectedProfileNicknames().isPresent()) {
             for (String nickname : model.getSelectedProfileNicknames().get()) {
+                if (model.getSelectedProfileSelectedNickname().isPresent()
+                        && model.getSelectedProfileSelectedNickname().get().equals(object)) {
+                    continue;
+                }
                 if (nickname.equals(object)) {
                     return new ValidationResponse("This valid already exists.");
                 }

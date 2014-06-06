@@ -41,6 +41,10 @@ public class EditSelectedProfileNameValidator implements Validator<String> {
     @Override
     public ValidationResponse validate(final String object) {
         for (Profile nickname : model.getProfileList()) {
+            if (model.getSelectedProfile().isPresent()
+                    && model.getSelectedProfile().get().getName().equals(object)) {
+                continue;
+            }
             if (nickname.getName().equals(object)) {
                 return new ValidationResponse("This valid already exists.");
             }
