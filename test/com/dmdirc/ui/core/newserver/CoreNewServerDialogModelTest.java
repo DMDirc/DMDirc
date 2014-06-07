@@ -423,4 +423,47 @@ public class CoreNewServerDialogModelTest {
                 Optional.fromNullable(1111), Optional.fromNullable("password"), true, true);
     }
 
+    @Test
+    public void testRemoveListener() {
+        CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
+                controller, serverManager);
+        instance.loadModel();
+        instance.addListener(listener);
+        instance.setSaveAsDefault(true);
+        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
+                Optional.fromNullable(1111), Optional.fromNullable("password"), true, true);
+        instance.removeListener(listener);
+        instance.setHostname(Optional.fromNullable("test"));
+        verify(listener, never()).serverDetailsChanged(Optional.fromNullable("test"),
+                Optional.fromNullable(1111), Optional.fromNullable("password"), true, false);
+    }
+
+    @Test
+    public void testSaveDefaults() throws URISyntaxException {
+        CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
+                controller, serverManager);
+        instance.loadModel();
+        instance.setSelectedProfile(Optional.fromNullable(profile1));
+        instance.setSaveAsDefault(true);
+        instance.save();
+        verify(userConfig).setOption("newserver", "hostname", "hostname");
+        verify(userConfig).setOption("newserver", "port", 1111);
+        verify(userConfig).setOption("newserver", "password", "password");
+        verify(userConfig).setOption("newserver", "ssl", true);
+    }
+
+    @Test
+    public void testNoSaveDefaults() throws URISyntaxException {
+        CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
+                controller, serverManager);
+        instance.loadModel();
+        instance.setSelectedProfile(Optional.fromNullable(profile1));
+        instance.setSaveAsDefault(false);
+        instance.save();
+        verify(userConfig, never()).setOption("newserver", "hostname", "hostname");
+        verify(userConfig, never()).setOption("newserver", "port", 1111);
+        verify(userConfig, never()).setOption("newserver", "password", "password");
+        verify(userConfig, never()).setOption("newserver", "ssl", true);
+    }
+
 }
