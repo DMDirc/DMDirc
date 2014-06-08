@@ -44,6 +44,7 @@ import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -92,6 +93,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 2);
     }
 
@@ -102,6 +104,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
     }
 
@@ -112,6 +115,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertFalse(model.getAlias("test").isPresent());
     }
 
@@ -120,6 +124,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 0);
         model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         assertEquals(model.getAliases().size(), 1);
@@ -130,6 +135,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         model.addListener(listener);
         model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         verify(listener).aliasAdded(alias1);
@@ -141,6 +147,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias(alias2Edited.getName()).get().getMinArguments(), 0);
         model.editAlias(alias1.getName(), alias2Edited.getMinArguments(), alias2Edited.
@@ -154,6 +161,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         model.addListener(listener);
         model.editAlias(alias1.getName(), alias2Edited.getMinArguments(), alias2Edited.
                 getSubstitution());
@@ -166,6 +174,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
         model.renameAlias(alias1.getName(), alias1Edited.getName());
@@ -178,6 +187,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         model.addListener(listener);
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
@@ -192,6 +202,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 2);
         model.removeAlias(alias1.getName());
         assertEquals(model.getAliases().size(), 1);
@@ -205,20 +216,22 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         model.addListener(listener);
         model.removeAlias(alias1.getName());
         verify(listener).aliasRemoved(alias1);
     }
 
     @Test
-    public void testSelectedAliasInitiallyNull() {
+    public void testSelectedAliasInitiallyNotNull() {
         aliases.add(alias1);
         aliases.add(alias2);
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 2);
-        assertFalse(model.getSelectedAlias().isPresent());
+        assertTrue(model.getSelectedAlias().isPresent());
     }
 
     @Test
@@ -228,8 +241,9 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 2);
-        assertFalse(model.getSelectedAlias().isPresent());
+        assertTrue(model.getSelectedAlias().isPresent());
         model.setSelectedAlias(Optional.fromNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
     }
@@ -241,8 +255,9 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 2);
-        assertFalse(model.getSelectedAlias().isPresent());
+        assertTrue(model.getSelectedAlias().isPresent());
         model.setSelectedAlias(Optional.fromNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
         model.setSelectedAlias(Optional.<Alias>absent());
@@ -254,6 +269,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         model.addListener(listener);
         model.addAlias(alias1.getName(), alias1.getMinArguments(), alias1.getSubstitution());
         model.removeListener(listener);
@@ -268,6 +284,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
         model.setSelectedAlias(Optional.fromNullable(alias1));
@@ -284,6 +301,7 @@ public class CoreAliasDialogModelTest {
         when(aliasModel.getAliases()).thenReturn(aliases);
         final CoreAliasDialogModel model = new CoreAliasDialogModel(aliasModel, aliasFactory,
                 commandController);
+        model.loadModel();
         assertEquals(model.getAliases().size(), 1);
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
         model.setSelectedAlias(Optional.fromNullable(alias1));

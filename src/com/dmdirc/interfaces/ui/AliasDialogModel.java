@@ -35,6 +35,11 @@ import java.util.Collection;
 public interface AliasDialogModel {
 
     /**
+     * Loads the model.
+     */
+    void loadModel();
+
+    /**
      * Gets the aliases in this model.
      *
      * @return Aliases in this model
@@ -171,6 +176,13 @@ public interface AliasDialogModel {
      * @return true if valid
      */
     boolean isSelectedAliasValid();
+
+    /**
+     * Tests whether the dialog is allowed to change the selection.
+     *
+     * @return true if allowed
+     */
+    boolean isChangeAliasAllowed();
 
     /**
      * Gets a validator for changing the command of an existing alias.

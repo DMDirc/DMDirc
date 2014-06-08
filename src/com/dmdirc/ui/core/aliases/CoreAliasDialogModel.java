@@ -37,6 +37,7 @@ import com.dmdirc.util.validators.Validator;
 import com.dmdirc.util.validators.ValidatorChain;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -48,9 +49,6 @@ import javax.inject.Inject;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Model representing a list of aliases in a dialog.
- */
 public class CoreAliasDialogModel implements AliasDialogModel {
 
     private final CommandController commandController;
@@ -71,10 +69,16 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         this.factory = factory;
         listeners = new ListenerList();
         aliases = new ConcurrentSkipListMap<>();
+        selectedAlias = Optional.absent();
+    }
+
+    @Override
+    public void loadModel() {
         for (Alias alias : aliasManager.getAliases()) {
             aliases.put(alias.getName(), alias);
+            listeners.getCallable(AliasDialogModelListener.class).aliasAdded(alias);
         }
-        selectedAlias = Optional.absent();
+        setSelectedAlias(Optional.fromNullable(Iterables.getFirst(aliasManager.getAliases(), null)));
     }
 
     @Override
@@ -238,6 +242,15 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     public boolean isSelectedAliasValid() {
         return selectedAlias.isPresent() && isCommandValid() && isMinimumArgumentsValid()
                 && isSubstitutionValid();
+    }
+
+    @Override
+    public boolean isChangeAliasAllowed() {
+        if (selectedAlias.isPresent()) {
+            return isCommandValid() && isMinimumArgumentsValid() && isSubstitutionValid();
+        } else {
+            return true;
+        }
     }
 
     @Override
