@@ -240,8 +240,11 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public boolean isSelectedAliasValid() {
-        return selectedAlias.isPresent() && isCommandValid() && isMinimumArgumentsValid()
-                && isSubstitutionValid();
+        if (selectedAlias.isPresent()) {
+            return isCommandValid() && isMinimumArgumentsValid() && isSubstitutionValid();
+        } else {
+            return true;
+        }
     }
 
     @Override
