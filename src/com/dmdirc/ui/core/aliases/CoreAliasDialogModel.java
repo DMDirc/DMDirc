@@ -103,11 +103,19 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void editAlias(final String name, final int minArguments, final String substitution) {
+        editAlias(name, minArguments, substitution, false);
+    }
+
+    private void editAlias(final String name, final int minArguments, final String substitution,
+            final boolean selection) {
         checkNotNull(name, "Name cannot be null");
         checkArgument(aliases.containsKey(name), "Name must already exist");
         final Alias newAlias = factory.createAlias(name, minArguments, substitution);
         final Alias oldAlias = aliases.put(name, newAlias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(oldAlias, newAlias);
+        if (!selection) {
+            setSelectedAlias(Optional.fromNullable(newAlias));
+        }
     }
 
     @Override
@@ -115,7 +123,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         renameAlias(oldName, newName, false);
     }
 
-    public void renameAlias(final String oldName, final String newName, final boolean selection) {
+    private void renameAlias(final String oldName, final String newName, final boolean selection) {
         checkNotNull(oldName, "Oldname cannot be null");
         checkNotNull(newName, "Newname cannot be null");
         checkArgument(aliases.containsKey(oldName), "Old name must exist");
@@ -125,10 +133,10 @@ public class CoreAliasDialogModel implements AliasDialogModel {
                 alias.getSubstitution());
         final Alias oldAlias = aliases.remove(oldName);
         aliases.put(newName, newAlias);
+        listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldAlias, newAlias);
         if (!selection) {
             setSelectedAlias(Optional.fromNullable(aliases.get(newName)));
         }
-        listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldAlias, newAlias);
     }
 
     @Override
@@ -158,10 +166,13 @@ public class CoreAliasDialogModel implements AliasDialogModel {
 
     @Override
     public void setSelectedAlias(final Optional<Alias> alias) {
+        if (alias.equals(selectedAlias)) {
+            return;
+        }
         if (selectedAlias.isPresent()) {
             if (selectedAlias.get().getMinArguments() != minArgs
                     || !selectedAlias.get().getSubstitution().equals(substitution)) {
-                editAlias(selectedAlias.get().getName(), minArgs, substitution);
+                editAlias(selectedAlias.get().getName(), minArgs, substitution, true);
             }
             if (!selectedAlias.get().getName().equals(name)) {
                 renameAlias(selectedAlias.get().getName(), name, true);
