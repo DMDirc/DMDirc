@@ -302,4 +302,23 @@ public interface ProfilesDialogModel {
      */
     Validator<String> getSelectedProfileEditNicknameValidator();
 
+    /**
+     * Are we allowed to change profile?
+     *
+     * @return true or false
+     */
+    boolean canSwitchProfiles();
+
+    /**
+     * Loads the model.
+     */
+    void loadModel();
+
+    /**
+     * Are we allowed to save the dialog?
+     *
+     * @return true or false
+     */
+    boolean isSaveAllowed();
+
 }

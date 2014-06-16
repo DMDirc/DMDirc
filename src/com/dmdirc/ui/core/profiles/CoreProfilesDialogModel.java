@@ -36,6 +36,7 @@ import com.dmdirc.util.validators.Validator;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -67,11 +68,20 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         this.identityFactory = identityFactory;
         this.identityController = identityController;
         listeners = new ListenerList();
+        profiles = new HashMap<>(0);
+        selectedProfile = Optional.absent();
+    }
+
+    @Override
+    public void loadModel() {
+        profiles.clear();
         final List<ConfigProvider> identities = identityController.getProvidersByType("profile");
-        profiles = new HashMap<>(identities.size());
         for (ConfigProvider identity : identities) {
-            profiles.put(identity.getName(), getProfile(identity));
+            final Profile profile = getProfile(identity);
+            profiles.put(identity.getName(), profile);
+            listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
         }
+        setSelectedProfile(Optional.fromNullable(Iterables.getFirst(profiles.values(), null)));
     }
 
     private Profile getProfile(final ConfigProvider configProvider) {
@@ -168,7 +178,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public void save() {
         setSelectedProfile(Optional.<Profile>absent());
-        final List<ConfigProvider> identities = identityController.getProvidersByType("profile");
+        final List<ConfigProvider> identities = Lists.newArrayList(
+                identityController.getProvidersByType("profile"));
         for (ConfigProvider identity : identities) {
             try {
                 identity.delete();
@@ -234,7 +245,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
         this.name = name;
         listeners.getCallable(ProfilesDialogModelListener.class)
-                .selectedProfileEdited(name.get(), realname.get(), ident.get(), nicknames.get());
+                .selectedProfileEdited(name, realname, ident, nicknames);
     }
 
     @Override
@@ -270,7 +281,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
         this.realname = realname;
         listeners.getCallable(ProfilesDialogModelListener.class)
-                .selectedProfileEdited(name.get(), realname.get(), ident.get(), nicknames.get());
+                .selectedProfileEdited(name, realname, ident, nicknames);
     }
 
     @Override
@@ -301,7 +312,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
         this.ident = ident;
         listeners.getCallable(ProfilesDialogModelListener.class)
-                .selectedProfileEdited(name.get(), realname.get(), ident.get(), nicknames.get());
+                .selectedProfileEdited(name, realname, ident, nicknames);
     }
 
     @Override
@@ -337,7 +348,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
                     newArrayList(nicknames.get()));
         }
         listeners.getCallable(ProfilesDialogModelListener.class)
-                .selectedProfileEdited(name.get(), realname.get(), ident.get(), nicknames.get());
+                .selectedProfileEdited(name, realname, ident, nicknames);
     }
 
     @Override
@@ -432,6 +443,27 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public void removeListener(final ProfilesDialogModelListener listener) {
         checkNotNull(listener, "Listener must not be null");
         listeners.remove(ProfilesDialogModelListener.class, listener);
+    }
+
+    @Override
+    public boolean canSwitchProfiles() {
+        if (selectedProfile.isPresent()) {
+            return isSelectedProfileIdentValid()
+                    && isSelectedProfileNameValid()
+                    && isSelectedProfileNicknamesValid()
+                    && isSelectedProfileRealnameValid();
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isSaveAllowed() {
+        return isProfileListValid()
+                && isSelectedProfileIdentValid()
+                && isSelectedProfileNameValid()
+                && isSelectedProfileNicknamesValid()
+                && isSelectedProfileRealnameValid();
     }
 
 }

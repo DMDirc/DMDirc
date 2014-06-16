@@ -59,6 +59,7 @@ public class CoreProfilesDialogModelTest {
     @Mock private ConfigProvider profileProvider2;
     @Mock private ConfigProvider profileProvider3;
     private List<ConfigProvider> profiles;
+    private CoreProfilesDialogModel instance;
 
     @Before
     public void setupMocks() {
@@ -66,8 +67,9 @@ public class CoreProfilesDialogModelTest {
         mockProfile("profile2", profileProvider2);
         mockProfile("profile3", profileProvider3);
         profiles = Lists.newArrayList(profileProvider1, profileProvider2, profileProvider3);
-        when(identityController.getProvidersByType(anyString()))
-                .thenReturn(profiles);
+        when(identityController.getProvidersByType(anyString())).thenReturn(profiles);
+        instance = new CoreProfilesDialogModel(identityController, identityFactory);
+        instance.loadModel();
     }
 
     private void mockProfile(final String name, final ConfigProvider mock) {
@@ -82,22 +84,16 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testGetProfileList() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertEquals("testGetProfileList", profiles.size(), instance.getProfileList().size());
     }
 
     @Test
     public void testGetProfileNotExist() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertFalse("testGetProfileNotExist", instance.getProfile("").isPresent());
     }
 
     @Test
     public void testGetProfileExist() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertTrue("testGetProfileExist", instance.getProfile("profile1").isPresent());
     }
 
@@ -105,15 +101,12 @@ public class CoreProfilesDialogModelTest {
     public void testIsProfileListValidEmptyList() {
         when(identityController.getProvidersByType(anyString()))
                 .thenReturn(Lists.<ConfigProvider>newArrayList());
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
+        instance.loadModel();
         assertFalse("testIsProfileListValidEmptyList", instance.isProfileListValid());
     }
 
     @Test
     public void testIsProfileListValid() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertTrue("testIsProfileListValid", instance.isProfileListValid());
     }
 
@@ -121,8 +114,7 @@ public class CoreProfilesDialogModelTest {
     public void testAddProfile() {
         when(identityController.getProvidersByType(anyString()))
                 .thenReturn(Lists.<ConfigProvider>newArrayList());
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
+        instance.loadModel();
         assertFalse("testAddProfile", instance.getProfile("profile4").isPresent());
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         assertTrue("testAddProfile", instance.getProfile("profile4").isPresent());
@@ -130,8 +122,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testEditProfile() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         final Profile preEdit = instance.getProfile("profile1").get();
         assertEquals("testEditProfile", "profile1", preEdit.getName());
         assertEquals("testEditProfile", "realname", preEdit.getRealname());
@@ -149,8 +139,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testRenameProfile() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertTrue("testRenameProfile", instance.getProfile("profile1").isPresent());
         assertFalse("testRenameProfile", instance.getProfile("profile4").isPresent());
         instance.renameProfile("profile1", "profile4");
@@ -160,8 +148,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testRemoveProfile() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         assertEquals("testRemoveProfile", 3, instance.getProfileList().size());
         assertTrue("testRemoveProfile", instance.getProfile("profile3").isPresent());
         instance.removeProfile("profile3");
@@ -180,9 +166,7 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testGetSelectedProfile() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
-        assertFalse("testGetSelectedProfile", instance.getSelectedProfile().isPresent());
+        assertTrue("testGetSelectedProfile", instance.getSelectedProfile().isPresent());
         instance.setSelectedProfile(instance.getProfile("profile2"));
         assertEquals("testGetSelectedProfile", "profile2",
                 instance.getSelectedProfile().get().getName());
@@ -190,8 +174,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testGetSelectedProfileDetails() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testGetSelectedProfileDetails", "profile1",
                 instance.getSelectedProfileName().get());
@@ -206,8 +188,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testSetSelectedProfileSelectedNickname() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testSetSelectedProfileSelectedNickname",
                 Optional.absent(), instance.getSelectedProfileSelectedNickname());
@@ -219,8 +199,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testSetSelectedProfileDetails() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         instance.setSelectedProfileName(Optional.fromNullable("testName"));
         instance.setSelectedProfileIdent(Optional.fromNullable("testIdent"));
@@ -240,8 +218,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testAddSelectedProfileNickname() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testAddSelectedProfileNickname",
                 Lists.newArrayList("nickname1", "nickname2", "nickname3"),
@@ -254,8 +230,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testRemoveSelectedProfileNickname() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testRemoveSelectedProfileNickname",
                 Lists.newArrayList("nickname1", "nickname2", "nickname3"),
@@ -268,8 +242,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testEditSelectedProfileSelectedNickname() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.setSelectedProfile(instance.getProfile("profile1"));
         instance.setSelectedProfileSelectedNickname(Optional.fromNullable("nickname2"));
         assertEquals("testSetSelectedProfileSelectedNickname",
@@ -283,8 +255,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testAddListener() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         verify(listener).profileAdded(any(Profile.class));
@@ -292,8 +262,6 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testRemoveListener() {
-        final CoreProfilesDialogModel instance = new CoreProfilesDialogModel(identityController,
-                identityFactory);
         instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         assertTrue(instance.getProfile("profile4").isPresent());

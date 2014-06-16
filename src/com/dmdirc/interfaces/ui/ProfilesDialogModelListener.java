@@ -85,7 +85,8 @@ public interface ProfilesDialogModelListener {
      * @param ident     New ident
      * @param nicknames New nicknames
      */
-    void selectedProfileEdited(String name, String realname, String ident, List<String> nicknames);
+    void selectedProfileEdited(Optional<String> name, Optional<String> realname,
+            Optional<String> ident, Optional<List<String>> nicknames);
 
     /**
      * Called when a nickname in the selected profile is changed.

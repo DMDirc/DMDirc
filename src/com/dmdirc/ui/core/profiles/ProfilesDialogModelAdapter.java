@@ -53,8 +53,8 @@ public class ProfilesDialogModelAdapter implements ProfilesDialogModelListener {
     }
 
     @Override
-    public void selectedProfileEdited(final String name, final String realname, final String ident,
-            final List<String> nicknames) {
+    public void selectedProfileEdited(final Optional<String> name, final Optional<String> realname,
+            final Optional<String> ident, final Optional<List<String>> nicknames) {
     }
 
     @Override
