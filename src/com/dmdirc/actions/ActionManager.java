@@ -505,6 +505,7 @@ public class ActionManager implements ActionController {
                 final Method method = methods[j];
                 if (method.getParameterTypes().length == 0
                         && method.getName().startsWith("get")
+                        && !method.getName().equals("getDisplayFormat")
                         && method.getReturnType().equals(target)
                         && Math.abs(j - i) < bestDistance) {
                     bestDistance = Math.abs(j - i);
