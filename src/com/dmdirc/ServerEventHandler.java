@@ -203,7 +203,7 @@ public class ServerEventHandler extends EventHandler implements
                 type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCP");
         owner.doNotification(format, owner.getParser().getClient(host), type, message);
-        if (event.isHandled()) {
+        if (!event.isHandled()) {
             owner.sendCTCPReply(owner.parseHostmask(host)[0], type, message);
         }
     }
