@@ -65,7 +65,7 @@ public final class ProgramError implements Serializable {
     /** Date/time error last occurred. */
     private Date lastDate;
     /** Number of occurrences. */
-    private AtomicInteger count;
+    private final AtomicInteger count;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
 
@@ -136,8 +136,8 @@ public final class ProgramError implements Serializable {
      * @return Error trace
      */
     public String[] getTrace() {
-        return exception != null ? getTrace(exception) : message != null ? new String[]{message}
-                : new String[0];
+        return exception == null ? (message == null ? new String[0] : new String[]{message})
+                : getTrace(exception);
     }
 
     /**

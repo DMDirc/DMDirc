@@ -43,7 +43,7 @@ import javax.swing.text.StyledDocument;
 /**
  * Core UI Utilities.
  */
-public class Utils {
+public final class Utils {
 
     /** Prevent instantiation. */
     private Utils() {

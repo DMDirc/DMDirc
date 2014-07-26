@@ -32,7 +32,7 @@ import java.awt.Window;
 /**
  * Core UI Utilities.
  */
-public class CoreUIUtils {
+public final class CoreUIUtils {
 
     /** Precent creation. */
     private CoreUIUtils() {

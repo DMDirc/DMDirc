@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Provides utility methods for classes that read from YAML files.
  */
-public class YamlReaderUtils {
+public final class YamlReaderUtils {
 
     private YamlReaderUtils() {
         // Shouldn't be instansiated

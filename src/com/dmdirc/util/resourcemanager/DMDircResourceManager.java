@@ -38,7 +38,7 @@ import java.security.CodeSource;
 /**
  * Provides utility methods for working with resources from the DMDirc distribution.
  */
-public class DMDircResourceManager {
+public final class DMDircResourceManager {
 
     private DMDircResourceManager() {
         //Prevent instantiation
