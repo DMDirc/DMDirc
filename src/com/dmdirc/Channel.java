@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
@@ -34,7 +35,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -70,7 +70,7 @@ import javax.annotation.Nonnull;
  * channel.
  */
 @Factory(inject = true, providers = true, singleton = true)
-public class Channel extends MessageTarget implements ConfigChangeListener, GroupChat {
+public class Channel extends MessageTarget implements GroupChat {
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -87,10 +87,13 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
     /** Whether we should send WHO requests for this channel. */
+    @ConfigBinding(domain = "channel", key = "sendwho")
     private volatile boolean sendWho;
     /** Whether we should show mode prefixes in text. */
+    @ConfigBinding(domain = "channel", key = "showmodeprefix")
     private volatile boolean showModePrefix;
     /** Whether we should show colours in nicks. */
+    @ConfigBinding(domain = "ui", key = "shownickcoloursintext")
     private volatile boolean showColours;
 
     /**
@@ -133,20 +136,14 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
         this.channelInfo = newChannelInfo;
         this.server = newServer;
 
-        getConfigManager().addChangeListener("channel", this);
-        getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
+        getConfigManager().getBinder().bind(this, Channel.class);
 
         topics = new RollingList<>(getConfigManager().getOptionInt("channel",
                 "topichistorysize"));
 
-        sendWho = getConfigManager().getOptionBool("channel", "sendwho");
-        showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
-        showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
-
         eventHandler = new ChannelEventHandler(this, getEventBus());
 
         registerCallbacks();
-
         updateTitle();
         selfJoin();
     }
@@ -301,6 +298,7 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
 
         // Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
+        getConfigManager().getBinder().unbind(this);
 
         if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(eventHandler);
@@ -408,21 +406,6 @@ public class Channel extends MessageTarget implements ConfigChangeListener, Grou
             return "";
         } else {
             return channelClient.getImportantModePrefix();
-        }
-    }
-
-    @Override
-    public void configChanged(final String domain, final String key) {
-        switch (key) {
-            case "sendwho":
-                sendWho = getConfigManager().getOptionBool("channel", "sendwho");
-                break;
-            case "showmodeprefix":
-                showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
-                break;
-            case "shownickcoloursintext":
-                showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
-                break;
         }
     }
 
