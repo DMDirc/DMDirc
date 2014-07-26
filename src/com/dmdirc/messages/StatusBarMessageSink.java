@@ -30,6 +30,8 @@ import com.dmdirc.ui.messages.Formatter;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to the status bar.
  */
@@ -45,6 +47,7 @@ public class StatusBarMessageSink implements MessageSink {
      *
      * @param statusBarManager The status bar manager to add messages to.
      */
+    @Inject
     public StatusBarMessageSink(final StatusBarManager statusBarManager) {
         this.statusBarManager = statusBarManager;
     }

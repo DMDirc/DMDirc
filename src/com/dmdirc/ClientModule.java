@@ -46,7 +46,7 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.messages.MessagesModule;
 import com.dmdirc.plugins.LegacyServiceLocator;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
@@ -55,8 +55,6 @@ import com.dmdirc.plugins.ServiceLocator;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WarningDialog;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
@@ -90,6 +88,7 @@ import dagger.Provides;
             AliasesModule.class,
             CommandLineOptionsModule.class,
             CommandModule.class,
+            MessagesModule.class,
             UpdaterModule.class
         },
         library = true)
@@ -195,17 +194,6 @@ public class ClientModule {
     @Provides
     public LifecycleController getLifecycleController(final SystemLifecycleController controller) {
         return controller;
-    }
-
-    @Provides
-    @Singleton
-    public MessageSinkManager getMessageSinkManager(
-            final StatusBarManager statusBarManager,
-            final WindowManager windowManager,
-            final URLBuilder urlBuilder) {
-        final MessageSinkManager messageSinkManager = new MessageSinkManager();
-        messageSinkManager.loadDefaultSinks(statusBarManager, windowManager, urlBuilder);
-        return messageSinkManager;
     }
 
     @Provides

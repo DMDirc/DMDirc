@@ -31,6 +31,8 @@ import com.dmdirc.util.URLBuilder;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to a custom window, creating it if necessary.
  */
@@ -49,6 +51,7 @@ public class CustomWindowMessageSink implements MessageSink {
      * @param windowManager Window management
      * @param urlBuilder    The URL builder to use when finding icons.
      */
+    @Inject
     public CustomWindowMessageSink(
             final WindowManager windowManager,
             final URLBuilder urlBuilder) {

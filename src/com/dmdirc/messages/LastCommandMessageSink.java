@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to the window where a command matching the provided regex
  * was most recently executed. If no such window is found, falls back to the source.
@@ -38,6 +40,10 @@ public class LastCommandMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("lastcommand:(.*)");
+
+    @Inject
+    public LastCommandMessageSink() {
+    }
 
     /** {@inheritDoc} */
     @Override

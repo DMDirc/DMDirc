@@ -27,6 +27,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which changes the format of the message and then redespatches it.
  */
@@ -34,6 +36,10 @@ public class FormatMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("format:(.*?):(.*)");
+
+    @Inject
+    public FormatMessageSink() {
+    }
 
     @Override
     public Pattern getPattern() {

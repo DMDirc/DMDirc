@@ -27,6 +27,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which allows the message to be forked into multiple other sinks.
  */
@@ -34,6 +36,10 @@ public class ForkMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("fork:(.*)");
+
+    @Inject
+    public ForkMessageSink() {
+    }
 
     @Override
     public Pattern getPattern() {

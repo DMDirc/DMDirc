@@ -28,6 +28,8 @@ import com.dmdirc.Server;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to the container's server.
  */
@@ -35,6 +37,10 @@ public class ServerMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("server");
+
+    @Inject
+    public ServerMessageSink() {
+    }
 
     /** {@inheritDoc} */
     @Override

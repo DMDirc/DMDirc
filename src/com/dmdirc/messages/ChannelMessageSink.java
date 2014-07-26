@@ -28,6 +28,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to a named channel. An optional fallback may be specified
  * for use if the channel does not exist. If no fallback is specified and the channel does not
@@ -37,6 +39,10 @@ public class ChannelMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("channel:(.*?)(?:\\s(.*))?");
+
+    @Inject
+    public ChannelMessageSink() {
+    }
 
     @Override
     public Pattern getPattern() {

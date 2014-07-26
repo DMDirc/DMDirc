@@ -27,6 +27,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to the container that despatched it.
  */
@@ -34,6 +36,10 @@ public class SelfMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("self");
+
+    @Inject
+    public SelfMessageSink() {
+    }
 
     /** {@inheritDoc} */
     @Override

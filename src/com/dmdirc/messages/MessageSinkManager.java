@@ -25,9 +25,6 @@ package com.dmdirc.messages;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
-import com.dmdirc.util.URLBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,32 +116,6 @@ public class MessageSinkManager {
         if (!DEFAULT_SINK.equals(targetSink)) {
             despatchMessage(source, date, messageType, DEFAULT_SINK, args);
         }
-    }
-
-    /**
-     * Loads the default message sinks into this manager.
-     *
-     * @param statusBarManager The status bar manager to give to status-bar related sinks.
-     * @param windowManager    The window manager to give to sinks that iterate windows.
-     * @param urlBuilder       The URL builder to use when finding icons.
-     */
-    public void loadDefaultSinks(
-            final StatusBarManager statusBarManager,
-            final WindowManager windowManager,
-            final URLBuilder urlBuilder) {
-        // TODO: Dependency inject all these.
-        addSink(new AllMessageSink());
-        addSink(new ChannelMessageSink());
-        addSink(new CommonChanelsMessageSink());
-        addSink(new CustomWindowMessageSink(windowManager, urlBuilder));
-        addSink(new ForkMessageSink());
-        addSink(new FormatMessageSink());
-        addSink(new GroupMessageSink());
-        addSink(new LastCommandMessageSink());
-        addSink(new NullMessageSink());
-        addSink(new SelfMessageSink());
-        addSink(new ServerMessageSink());
-        addSink(new StatusBarMessageSink(statusBarManager));
     }
 
 }

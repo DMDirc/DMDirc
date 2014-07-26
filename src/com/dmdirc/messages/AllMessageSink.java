@@ -27,6 +27,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to all of the container's server's children.
  */
@@ -34,6 +36,10 @@ public class AllMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("all");
+
+    @Inject
+    public AllMessageSink() {
+    }
 
     @Override
     public Pattern getPattern() {

@@ -28,6 +28,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which adds the message to all channels the local user has in common with a
  * specified remote user. An optional fallback may be specified for use if there are no common
@@ -38,6 +40,10 @@ public class CommonChanelsMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("comchans:(.*?)(?:\\s(.*))?");
+
+    @Inject
+    public CommonChanelsMessageSink() {
+    }
 
     @Override
     public Pattern getPattern() {

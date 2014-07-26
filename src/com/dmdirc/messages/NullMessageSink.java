@@ -27,6 +27,8 @@ import com.dmdirc.FrameContainer;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * A message sink which does nothing with the message.
  */
@@ -34,6 +36,10 @@ public class NullMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("none");
+
+    @Inject
+    public NullMessageSink() {
+    }
 
     /** {@inheritDoc} */
     @Override
