@@ -334,8 +334,8 @@ public class ServerEventHandler extends EventHandler implements
 
     @Override
     public void onNickInUse(final Parser parser, final Date date, final String nickname) {
-        owner.onNickInUse(nickname);
         checkParser(parser);
+        owner.onNickInUse(nickname);
     }
 
     @Override
