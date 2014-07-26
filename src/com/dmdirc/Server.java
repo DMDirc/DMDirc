@@ -116,7 +116,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
     /** Open channels that currently exist on the server. */
-    private final Map<String, Channel> channels = new ConcurrentSkipListMap<>();
+    private final ChannelMap channels = new ChannelMap();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
     /** The Parser instance handling this server. */
@@ -424,7 +424,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                     break;
             }
 
-            clearChannels();
+            channels.resetAll();
             backgroundChannels.clear();
 
             try {
@@ -443,13 +443,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 parserLock.readLock().unlock();
             }
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closechannelsonquit")) {
-                closeChannels();
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closechannelsonquit")) {
+                channels.closeAll();
             }
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closequeriesonquit")) {
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesonquit")) {
                 closeQueries();
             }
         }
@@ -496,17 +494,17 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public boolean hasChannel(final String channel) {
-        return channels.containsKey(converter.toLowerCase(channel));
+        return channels.contains(channel);
     }
 
     @Override
     public Channel getChannel(final String channel) {
-        return channels.get(converter.toLowerCase(channel));
+        return channels.get(channel).orNull();
     }
 
     @Override
     public List<String> getChannels() {
-        return new ArrayList<>(channels.keySet());
+        return channels.getNames();
     }
 
     @Override
@@ -589,7 +587,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public void delChannel(final String chan) {
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL, chan);
-        channels.remove(converter.toLowerCase(chan));
+        channels.remove(chan);
     }
 
     @Override
@@ -622,28 +620,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             getEventBus().post(new ChannelOpenedEvent(newChan));
 
             getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
-            channels.put(converter.toLowerCase(chan.getName()), newChan);
+            channels.add(newChan);
         }
 
         return getChannel(chan.getName());
-    }
-
-    /**
-     * Closes all open channel windows associated with this server.
-     */
-    private void closeChannels() {
-        for (Channel channel : new ArrayList<>(channels.values())) {
-            channel.close();
-        }
-    }
-
-    /**
-     * Clears the nicklist of all open channels.
-     */
-    private void clearChannels() {
-        for (Channel channel : channels.values()) {
-            channel.resetWindow();
-        }
     }
 
     /**
@@ -1035,7 +1015,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             myState.transition(ServerState.CLOSING);
         }
 
-        closeChannels();
+        channels.closeAll();
         closeQueries();
         removeInvites();
 
@@ -1055,9 +1035,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
-        for (Channel channel : channels.values()) {
-            channel.addLine(messageType, date, args);
-        }
+        channels.addLineToAll(messageType, date, args);
 
         for (Query query : queries.values()) {
             query.addLine(messageType, date, args);
@@ -1242,7 +1220,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             }
 
-            clearChannels();
+            channels.resetAll();
 
             try {
                 parserLock.writeLock().lock();
@@ -1254,13 +1232,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             updateIcon();
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closechannelsondisconnect")) {
-                closeChannels();
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect")) {
+                channels.closeAll();
             }
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closequeriesondisconnect")) {
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect")) {
                 closeQueries();
             }
 
@@ -1389,26 +1365,19 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             updateIgnoreList();
 
             converter = parser.getStringConverter();
+            channels.setStringConverter(converter);
 
             final List<ChannelJoinRequest> requests = new ArrayList<>();
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
-                for (Channel chan : channels.values()) {
-                    requests.add(new ChannelJoinRequest(chan.getName()));
-                }
+                requests.addAll(channels.asJoinRequests());
             }
             join(requests.toArray(new ChannelJoinRequest[requests.size()]));
 
             checkModeAliases();
 
             final int whoTime = getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime");
-            whoTimerFuture = executorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    for (Channel channel : channels.values()) {
-                        channel.checkWho();
-                    }
-                }
-            }, whoTime, whoTime, TimeUnit.MILLISECONDS);
+            whoTimerFuture = executorService.scheduleAtFixedRate(
+                    channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
         getEventBus().post(new ServerConnectedEvent(this));
