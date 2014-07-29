@@ -27,6 +27,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -48,8 +49,8 @@ public class DefaultAliasInstaller implements Migrator {
 
     @Override
     public void migrate() {
-        try {
-            Files.copy(getClass().getResourceAsStream("defaults.yml"), target);
+        try (final InputStream stream = getClass().getResourceAsStream("defaults.yml")) {
+            Files.copy(stream, target);
         } catch (IOException ex) {
             Logger.appError(ErrorLevel.MEDIUM, "Unable to extract default aliases", ex);
         }
