@@ -25,7 +25,13 @@ package com.dmdirc.commandparser.aliases;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.CommandController;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -68,8 +74,18 @@ public class AliasFactory {
     }
 
     private String removeCommandChar(final String input) {
-        return !input.isEmpty() && input.charAt(0) == commandController.getCommandChar()
-                ? input.substring(1) : input;
+        // TODO: This could be moved into the command controller, or a utility class.
+        // CommandArguments does something similar.
+        final List<String> lines = Splitter.on(CharMatcher.anyOf("\r\n"))
+                .omitEmptyStrings()
+                .splitToList(input);
+        final List<String> trimmedLines = new ArrayList<>(lines.size());
+        for (String line : lines) {
+            trimmedLines.add(line.charAt(0) == commandController.getCommandChar()
+                    ? line.length() > 1 && line.charAt(1) == commandController.getSilenceChar()
+                    ? line.substring(2) : line.substring(1) : line);
+        }
+        return Joiner.on("\r\n").join(trimmedLines);
     }
 
 }
