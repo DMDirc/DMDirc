@@ -243,13 +243,6 @@ public class ClientModule {
     }
 
     @Provides
-    public CorePluginExtractor getCorePluginExtractor(
-            final PluginManager pluginManager,
-            @Directory(DirectoryType.PLUGINS) final String directory) {
-        return new CorePluginExtractor(pluginManager, directory);
-    }
-
-    @Provides
     @Singleton
     public ThemeManager getThemeManager(
             final IdentityController controller,

@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginInfo;
@@ -32,9 +34,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Utility class that can extract bundled plugins.
  */
+@Singleton
 public class CorePluginExtractor {
 
     /** The plugin manager to inform when plugins are updated. */
@@ -48,7 +54,10 @@ public class CorePluginExtractor {
      * @param pluginManager The plugin manager to inform when plugins are updated.
      * @param pluginDir     The directory to extract plugins to.
      */
-    public CorePluginExtractor(final PluginManager pluginManager, final String pluginDir) {
+    @Inject
+    public CorePluginExtractor(
+            final PluginManager pluginManager,
+            @Directory(DirectoryType.PLUGINS) final String pluginDir) {
         this.pluginManager = pluginManager;
         this.pluginDir = pluginDir;
     }
@@ -86,7 +95,7 @@ public class CorePluginExtractor {
                             resourceToFile(resource.getValue(), newFile);
 
                     final PluginInfo plugin = pluginManager.getPluginInfo(newFile
-                            .getAbsolutePath().substring(pluginManager.getDirectory().length()));
+                            .getAbsolutePath().substring(pluginDir.length()));
 
                     if (plugin != null) {
                         plugin.pluginUpdated();

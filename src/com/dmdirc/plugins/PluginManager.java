@@ -249,7 +249,7 @@ public class PluginManager implements ServiceManager {
             return true;
         }
 
-        if (!new File(getDirectory() + filename).exists()) {
+        if (!new File(directory, filename).exists()) {
             Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin "
                     + filename + ": File does not exist");
             return false;
@@ -257,9 +257,9 @@ public class PluginManager implements ServiceManager {
 
         try {
             final PluginMetaData metadata = new PluginMetaData(this,
-                    new URL("jar:file:" + getDirectory() + filename
+                    new URL("jar:file:" + directory + filename
                             + "!/META-INF/plugin.config"),
-                    new URL("file:" + getDirectory() + filename));
+                    new URL("file:" + directory + filename));
             metadata.load();
             final PluginInfo pluginInfo = new PluginInfo(metadata, initialiserProvider, eventBus,
                     identityController, objectGraph);
@@ -390,7 +390,10 @@ public class PluginManager implements ServiceManager {
      * Get directory where plugins are stored.
      *
      * @return Directory where plugins are stored.
+     *
+     * @deprecated Should be injected.
      */
+    @Deprecated
     public String getDirectory() {
         return directory;
     }
@@ -495,9 +498,9 @@ public class PluginManager implements ServiceManager {
         for (String target : pluginPaths) {
             try {
                 final PluginMetaData targetMetaData = new PluginMetaData(this,
-                        new URL("jar:file:" + getDirectory() + target
+                        new URL("jar:file:" + directory + target
                                 + "!/META-INF/plugin.config"),
-                        new URL("file:" + getDirectory() + target));
+                        new URL("file:" + directory + target));
                 targetMetaData.load();
 
                 if (targetMetaData.hasErrors()) {
