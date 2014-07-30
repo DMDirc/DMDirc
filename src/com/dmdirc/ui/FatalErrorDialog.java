@@ -141,6 +141,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         ((StyledDocument) messageLabel.getDocument()).setParagraphAttributes(0,
                 messageLabel.getText().length(), sas, false);
 
+        icon = new ImageIcon(FatalErrorDialog.class.getResource("/com/dmdirc/res/error.png"));
+
         stacktraceField.setEditable(false);
 
         final String[] trace = error.getTrace();
