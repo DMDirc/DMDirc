@@ -22,10 +22,15 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.collections.ListenerList;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Date;
@@ -81,8 +86,11 @@ public class ErrorManager implements ConfigChangeListener {
      *
      * @param globalConfig The configuration to read settings from.
      * @param directory    The directory to store errors in, if enabled.
+     * @param eventBus     The event bus to listen for error events on.
      */
-    public void initialise(final AggregateConfigProvider globalConfig, final String directory) {
+    public void initialise(final AggregateConfigProvider globalConfig, final String directory,
+            final EventBus eventBus) {
+        eventBus.register(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
         config = globalConfig;
@@ -124,6 +132,18 @@ public class ErrorManager implements ConfigChangeListener {
      */
     public static void setErrorManager(final ErrorManager errorManager) {
         me = errorManager;
+    }
+
+    @Subscribe
+    public void handleAppErrorEvent(final AppErrorEvent appError) {
+        addError(appError.getLevel(), appError.getMessage(), appError.getThrowable(),
+                appError.getDetails(), true, isValidError(appError.getThrowable()));
+    }
+
+    @Subscribe
+    public void handleUserErrorEvent(final UserErrorEvent userError) {
+        addError(userError.getLevel(), userError.getMessage(), userError.getThrowable(),
+                userError.getDetails(), false, isValidError(userError.getThrowable()));
     }
 
     /**
@@ -380,16 +400,14 @@ public class ErrorManager implements ConfigChangeListener {
      * @param error Error that occurred
      */
     protected void fireErrorAdded(final ProgramError error) {
-        int firedListeners = 0;
-
         for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
             if (listener.isReady()) {
+                error.setHandled();
                 listener.errorAdded(error);
-                firedListeners++;
             }
         }
 
-        if (firedListeners == 0) {
+        if (!error.isHandled()) {
             System.err.println("An error has occurred: " + error.getLevel()
                     + ": " + error.getMessage());
 

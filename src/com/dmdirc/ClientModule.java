@@ -118,11 +118,12 @@ public class ClientModule {
             @Directory(DirectoryType.BASE) final String baseDirectory,
             @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final String errorsDirectory,
-            final CommandLineParser commandLineParser) {
+            final CommandLineParser commandLineParser,
+            final EventBus eventBus) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory);
         ErrorManager.getErrorManager()
-                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory);
+                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
         identityManager.loadVersionIdentity();
 
         try {

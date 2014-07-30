@@ -68,6 +68,8 @@ public final class ProgramError implements Serializable {
     private final AtomicInteger count;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
+    /** Has the error been output. */
+    private boolean handled;
 
     /**
      * Creates a new instance of ProgramError.
@@ -338,6 +340,22 @@ public final class ProgramError implements Serializable {
             return count.get() + " occurrences between " + format.format(
                     getDate()) + " and " + format.format(getLastDate()) + ".";
         }
+    }
+
+    /**
+     * Set this error as handled.
+     */
+    public void setHandled() {
+        handled = true;
+    }
+
+    /**
+     * Has this error been handled?
+     *
+     * @return Handled state
+     */
+    public boolean isHandled() {
+        return handled;
     }
 
     @Override
