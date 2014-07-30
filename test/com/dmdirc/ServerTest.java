@@ -72,6 +72,7 @@ public class ServerTest {
     @Mock private URLBuilder urlBuilder;
     @Mock private EventBus eventBus;
     @Mock private ScheduledExecutorService executorService;
+    @Mock private MessageEncoderFactory messageEncoderFactory;
 
     private Server server;
 
@@ -98,6 +99,7 @@ public class ServerTest {
                 rawFactory,
                 urlBuilder,
                 eventBus,
+                messageEncoderFactory,
                 userConfig,
                 executorService,
                 new URI("irc-test://255.255.255.255"),

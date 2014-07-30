@@ -180,6 +180,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private final StatusBarManager statusBarManager;
     /** Executor service to use to schedule repeated events. */
     private final ScheduledExecutorService executorService;
+    /** The message encoder factory to create a message encoder with. */
+    private final MessageEncoderFactory messageEncoderFactory;
     /** The future used when a who timer is scheduled. */
     private ScheduledFuture<?> whoTimerFuture;
     /** The future used when a reconnect timer is scheduled. */
@@ -189,25 +191,26 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * Creates a new server which will connect to the specified URL with the specified profile.
      *
      * @since 0.6.3
-     * @param manager             The server manager that owns this server.
-     * @param configMigrator      The migrateable configuration manager to read config settings
-     *                            from.
-     * @param commandParser       The parser to use for commands in this server's window.
-     * @param parserFactory       The factory to use to generate parsers.
-     * @param tabCompleterFactory The factory to use for tab completers.
-     * @param identityFactory     The factory to use to create identities.
-     * @param messageSinkManager  The sink manager to use to despatch messages.
-     * @param statusBarManager    The manager to use to add status bar messages.
-     * @param windowManager       Window Manager
-     * @param channelFactory      The factory to use to create channels.
-     * @param queryFactory        The factory to use to create queries.
-     * @param rawFactory          The factory to use to create raw windows.
-     * @param urlBuilder          The URL builder to use when finding icons.
-     * @param eventBus            The event bus to despatch events onto.
-     * @param userSettings        The config provider to write user settings to.
-     * @param executorService     The service to use to schedule events.
-     * @param uri                 The address of the server to connect to
-     * @param profile             The profile to use
+     * @param manager               The server manager that owns this server.
+     * @param configMigrator        The migrateable configuration manager to read config settings
+     *                              from.
+     * @param commandParser         The parser to use for commands in this server's window.
+     * @param parserFactory         The factory to use to generate parsers.
+     * @param tabCompleterFactory   The factory to use for tab completers.
+     * @param identityFactory       The factory to use to create identities.
+     * @param messageSinkManager    The sink manager to use to despatch messages.
+     * @param statusBarManager      The manager to use to add status bar messages.
+     * @param windowManager         Window Manager
+     * @param channelFactory        The factory to use to create channels.
+     * @param queryFactory          The factory to use to create queries.
+     * @param rawFactory            The factory to use to create raw windows.
+     * @param urlBuilder            The URL builder to use when finding icons.
+     * @param eventBus              The event bus to despatch events onto.
+     * @param messageEncoderFactory The message encoder factory to create a message encoder with.
+     * @param userSettings          The config provider to write user settings to.
+     * @param executorService       The service to use to schedule events.
+     * @param uri                   The address of the server to connect to
+     * @param profile               The profile to use
      */
     public Server(
             final ServerManager manager,
@@ -224,6 +227,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final RawFactory rawFactory,
             final URLBuilder urlBuilder,
             final EventBus eventBus,
+            final MessageEncoderFactory messageEncoderFactory,
             @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
             @Unbound final ScheduledExecutorService executorService,
             @Unbound final URI uri,
@@ -254,6 +258,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         this.executorService = executorService;
         this.userSettings = userSettings;
         this.statusBarManager = statusBarManager;
+        this.messageEncoderFactory = messageEncoderFactory;
 
         eventHandler = new ServerEventHandler(this, eventBus);
 
@@ -675,7 +680,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         if (myParser instanceof EncodingParser) {
             final EncodingParser encodingParser = (EncodingParser) myParser;
-            encodingParser.setEncoder(new MessageEncoder(this, myParser));
+            encodingParser.setEncoder(messageEncoderFactory.getMessageEncoder(this, myParser));
         }
 
         if (myParser != null) {

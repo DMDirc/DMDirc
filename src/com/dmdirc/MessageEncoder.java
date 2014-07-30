@@ -22,10 +22,14 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.util.annotations.factory.Factory;
+import com.dmdirc.util.annotations.factory.Unbound;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.UnsupportedEncodingException;
 
@@ -33,22 +37,28 @@ import java.io.UnsupportedEncodingException;
  * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
  * config file.
  */
+@Factory(inject = true)
 public class MessageEncoder implements Encoder {
 
     /** The server that owns this encoder. */
     private final Server server;
     /** The parser that this encoder will work for. */
     private final Parser parser;
+    /** The event bus to post errors to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of {@link MessageEncoder}.
      *
-     * @param server The server that owns this encoder
-     * @param parser The parser that this encoder will work for
+     * @param server   The server that owns this encoder
+     * @param parser   The parser that this encoder will work for
+     * @param eventBus The event bus to post errors to.
      */
-    public MessageEncoder(final Server server, final Parser parser) {
+    public MessageEncoder(@Unbound final Server server, @Unbound final Parser parser,
+            final EventBus eventBus) {
         this.server = server;
         this.parser = parser;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -64,7 +74,8 @@ public class MessageEncoder implements Encoder {
         try {
             return new String(message, offset, length, encoding);
         } catch (UnsupportedEncodingException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unsupported character encoding: " + encoding);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unsupported character encoding: " + encoding, ""));
             return new String(message, offset, length);
         }
     }
