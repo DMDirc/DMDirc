@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QuerySelfActionEvent;
@@ -48,9 +49,9 @@ import com.dmdirc.events.ServerUsermodesEvent;
 import com.dmdirc.events.ServerWalldesyncEvent;
 import com.dmdirc.events.ServerWallopsEvent;
 import com.dmdirc.events.ServerWallusersEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.ParserError;
@@ -188,9 +189,9 @@ public class ServerEventHandler extends EventHandler implements
                 : new Exception(errorString.toString()); // NOPMD
 
         if (errorInfo.isUserError()) {
-            Logger.userError(errorLevel, errorInfo.getData(), ex);
+            eventBus.post(new UserErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
         } else {
-            Logger.appError(errorLevel, errorInfo.getData(), ex);
+            eventBus.post(new AppErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
         }
     }
 
