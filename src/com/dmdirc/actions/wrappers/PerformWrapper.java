@@ -32,11 +32,13 @@ import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+
+import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,36 +56,41 @@ public class PerformWrapper extends ActionGroup {
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
+    /** The event bus to post events to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PerformWrapper.
      *
      * @param actionFactory Factory to use to create actions.
+     * @param eventBus      The event bus to post events to.
      */
     @Inject
-    public PerformWrapper(final ActionFactory actionFactory) {
+    public PerformWrapper(final ActionFactory actionFactory,
+            final EventBus eventBus) {
         super("performs");
 
         this.actionFactory = actionFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void add(final Action action) {
         if (action.getTriggers().length != 1) {
-            Logger.userError(ErrorLevel.MEDIUM,
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
-                    "Perform actions may only have one trigger");
+                    "Perform actions may only have one trigger"));
         } else if (action.getTriggers()[0] != CoreActionType.SERVER_CONNECTED) {
-            Logger.userError(ErrorLevel.MEDIUM,
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
-                    "Perform actions must be triggered when a server connects");
+                    "Perform actions must be triggered when a server connects"));
         } else if (!checkConditions(action.getConditions())) {
-            Logger.userError(ErrorLevel.MEDIUM,
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
                     "Perform actions must have exactly one or two conditions, "
                     + "one may target the server's name or network, and one may "
                     + "target the server's profile name. No other targets are "
-                    + "allowed.");
+                    + "allowed."));
         } else {
             synchronized (this) {
                 super.add(action);
