@@ -223,7 +223,7 @@ public class ClientModule {
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(eventBus, identityController,
                 updateManager, initialiserProvider, objectGraph, directory);
-        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
+        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
         checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {

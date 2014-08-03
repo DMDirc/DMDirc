@@ -24,11 +24,13 @@ package com.dmdirc;
 
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.resourcemanager.ResourceManager;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,19 +49,24 @@ public class CorePluginExtractor {
     private final PluginManager pluginManager;
     /** The directory to extract plugins to. */
     private final String pluginDir;
+    /** The event bus to post events to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of {@link CorePluginExtractor}.
      *
      * @param pluginManager The plugin manager to inform when plugins are updated.
      * @param pluginDir     The directory to extract plugins to.
+     * @param eventBus      The event bus to post events to.
      */
     @Inject
     public CorePluginExtractor(
             final PluginManager pluginManager,
-            @Directory(DirectoryType.PLUGINS) final String pluginDir) {
+            @Directory(DirectoryType.PLUGINS) final String pluginDir,
+            final EventBus eventBus) {
         this.pluginManager = pluginManager;
         this.pluginDir = pluginDir;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -102,7 +109,8 @@ public class CorePluginExtractor {
                     }
                 }
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                        "Failed to extract plugins", ""));
             }
         }
     }
