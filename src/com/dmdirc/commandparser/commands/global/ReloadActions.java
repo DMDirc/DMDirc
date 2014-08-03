@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -31,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -45,21 +45,27 @@ public final class ReloadActions extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("reloadactions",
             "reloadactions - reloads actions from disk",
             CommandType.TYPE_GLOBAL);
+    /** The action controller to use to reload actions. */
+    private final ActionController actionController;
 
     /**
      * Creates a new instance of this command.
      *
      * @param controller The controller to use for command information.
+     * @param actionController The action controller to use to reload actions.
      */
     @Inject
-    public ReloadActions(final CommandController controller) {
+    public ReloadActions(
+            final CommandController controller,
+            final ActionController actionController) {
         super(controller);
+        this.actionController = actionController;
     }
 
     @Override
     public void execute(final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        ActionManager.getActionManager().loadUserActions();
+        actionController.loadUserActions();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Actions reloaded.");
     }
 
