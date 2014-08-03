@@ -22,8 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
@@ -31,6 +31,8 @@ import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
+
+import com.google.common.eventbus.EventBus;
 
 import java.net.URI;
 
@@ -45,15 +47,20 @@ public class ParserFactory {
 
     /** PluginManager used by this ParserFactory */
     private final PluginManager pluginManager;
+    /** The event bus to post events to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of {@link ParserFactory}.
      *
      * @param pluginManager The plugin manager used by this factory.
+     * @param eventBus      The event bus to post events to.
      */
     @Inject
-    public ParserFactory(final PluginManager pluginManager) {
+    public ParserFactory(final PluginManager pluginManager,
+            final EventBus eventBus) {
         this.pluginManager = pluginManager;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -125,8 +132,8 @@ public class ParserFactory {
                 }
             }
         } catch (NoSuchProviderException nspe) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "No parser found for: " + address.getScheme(), nspe);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, nspe,
+                    "No parser found for: " + address.getScheme(), ""));
         }
 
         return null;
