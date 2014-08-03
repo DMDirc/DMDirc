@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Precondition;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
@@ -30,13 +31,14 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,9 +55,6 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * The identity manager manages all known identities, providing easy methods to access them.
- */
 public class IdentityManager implements IdentityFactory, IdentityController {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(IdentityManager.class);
@@ -76,6 +75,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * custom type as the key.
      */
     private final MapList<String, ConfigProvider> identities = new MapList<>();
+    /** The event bus to post events to. */
+    private final EventBus eventBus;
     /**
      * The {@link IdentityListener}s that have registered with this manager.
      *
@@ -97,10 +98,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @param baseDirectory       The BASE config directory.
      * @param identitiesDirectory The directory to store identities in.
+     * @param eventBus            The event bus to post events to
      */
-    public IdentityManager(final String baseDirectory, final String identitiesDirectory) {
+    public IdentityManager(final String baseDirectory, final String identitiesDirectory,
+            final EventBus eventBus) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -134,8 +138,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         addConfigProvider(addonConfig);
 
         if (!getGlobalConfiguration().hasOptionString("identity", "defaultsversion")) {
-            Logger.userError(ErrorLevel.FATAL, "Default settings "
-                    + "could not be loaded");
+            eventBus.post(new UserErrorEvent(ErrorLevel.FATAL, null,
+                    "Default settings could not be loaded", ""));
         }
     }
 
@@ -154,18 +158,20 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 }
 
                 if (!success) {
-                    Logger.userError(ErrorLevel.HIGH, "Unable to create directory for "
-                            + "default settings folder (" + target + ")", "A file "
-                            + "with that name already exists, and couldn't be renamed."
-                            + " Rename or delete " + file.getAbsolutePath());
+                    eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, null,
+                            "Unable to create directory for default settings folder ("
+                            + target + ")",
+                            "A file with that name already exists, and couldn't be renamed."
+                            + " Rename or delete " + file.getAbsolutePath()));
                     continue;
                 }
             }
 
             if (!file.exists() && !file.mkdirs()) {
-                Logger.userError(ErrorLevel.FATAL, "Unable to create required directory '"
-                        + file.getAbsolutePath() + "'. Please check file permissions or specify "
-                        + "a different configuration directory.");
+                eventBus.post(new UserErrorEvent(ErrorLevel.FATAL, null,
+                        "Unable to create required directory '" + file.getAbsolutePath()
+                        + "'. Please check file permissions or specify "
+                        + "a different configuration directory.", ""));
                 return;
             }
 
@@ -203,8 +209,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     "com/dmdirc/config/defaults/default/formatter",
                     identitiesDirectory + "default/", false);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
-                    + "formatters: " + ex.getMessage());
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to extract default formatters: " + ex.getMessage(), ""));
         }
     }
 
@@ -219,8 +225,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     "com/dmdirc/config/defaults/" + target,
                     identitiesDirectory + target, false);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
-                    + "identities: " + ex.getMessage());
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to extract default identities: " + ex.getMessage(), ""));
         }
     }
 
@@ -233,7 +239,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to create identity dir", ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to create identity dir", ""));
             }
         }
 
@@ -254,9 +261,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         checkArgument(dir.isDirectory());
 
         if (dir.listFiles() == null) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to load user identity files from "
-                    + dir.getAbsolutePath());
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to load user identity files from " + dir.getAbsolutePath(), ""));
         } else {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
@@ -284,9 +290,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     try {
                         identity.reload();
                     } catch (IOException ex) {
-                        Logger.userError(ErrorLevel.MEDIUM,
+                        eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                                 "I/O error when reloading identity file: "
-                                + file.getAbsolutePath() + " (" + ex.getMessage() + ")");
+                                + file.getAbsolutePath() + " (" + ex.getMessage() + ")", ""));
                     } catch (InvalidConfigFileException ex) {
                         // Do nothing
                     }
@@ -299,13 +305,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             addConfigProvider(new ConfigFileBackedConfigProvider(this, file, false));
         } catch (InvalidIdentityFileException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Invalid identity file: " + file.getAbsolutePath()
-                    + " (" + ex.getMessage() + ")");
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Invalid identity file: " + file.getAbsolutePath() + " ("
+                    + ex.getMessage() + ")", ""));
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "I/O error when reading identity file: "
-                    + file.getAbsolutePath());
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "I/O error when reading identity file: " + file.getAbsolutePath(), ""));
         }
     }
 
@@ -348,7 +353,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to load version information", ""));
         }
     }
 
@@ -369,8 +375,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             config.setOption("identity", "name", "Global config");
             addConfigProvider(config);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.FATAL, "I/O error when loading global config: "
-                    + ex.getMessage(), ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "I/O error when loading global config: " + ex.getMessage(), ""));
         }
     }
 
@@ -591,7 +597,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to create identity", ""));
             return null;
         }
     }
@@ -611,7 +618,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to create identity", ""));
             return null;
         }
     }
@@ -626,7 +634,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to create identity", ""));
             return null;
         }
     }

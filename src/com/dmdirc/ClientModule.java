@@ -121,7 +121,7 @@ public class ClientModule {
             final CommandLineParser commandLineParser,
             final EventBus eventBus) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
-                identitiesDirectory);
+                identitiesDirectory, eventBus);
         ErrorManager.getErrorManager()
                 .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
         identityManager.loadVersionIdentity();
