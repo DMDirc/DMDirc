@@ -24,12 +24,13 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -303,15 +304,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         identityController.addConfigProvider(configProvider);
                         configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {
-                        Logger.userError(ErrorLevel.MEDIUM,
-                                "Error with identity file '" + name
-                                + "' in plugin '" + metaData.getName() + "'", ex);
+                        eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                                "Error with identity file '" + name + "' in plugin '"
+                                + metaData.getName() + "'", ""));
                     }
                 }
             }
         } catch (final IOException ioe) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error finding identities in plugin '"
-                    + metaData.getName() + "'", ioe);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
+                    "Error finding identities in plugin '" + metaData.getName() + "'", ""));
         }
     }
 
@@ -374,8 +375,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             updateProvides();
             getDefaults();
         } catch (IOException ioe) {
-            Logger.userError(ErrorLevel.MEDIUM, "There was an error updating "
-                    + metaData.getName(), ioe);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
+                    "There was an error updating " + metaData.getName(), ""));
         }
     }
 
@@ -617,7 +618,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             } catch (LinkageError | Exception e) {
                 lastError = "Error in onLoad for " + metaData.getName() + ":"
                         + e.getMessage();
-                Logger.appError(ErrorLevel.MEDIUM, lastError, e);
+                eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
                 unloadPlugin();
             }
         } else {
@@ -745,7 +746,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                             lastError = "Prerequisites for plugin not met. ('"
                                     + filename + ":" + metaData.getMainClass()
                                     + "' -> '" + prerequisites.getFailureReason() + "') ";
-                            Logger.userError(ErrorLevel.LOW, lastError);
+                            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
                         }
                     } else {
                         plugin = (Plugin) temp;
@@ -761,7 +762,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                             } catch (LinkageError | Exception e) {
                                 lastError = "Error in onLoad for "
                                         + metaData.getName() + ":" + e.getMessage();
-                                Logger.appError(ErrorLevel.MEDIUM, lastError, e);
+                                eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM,
+                                        e, lastError, ""));
                                 unloadPlugin();
                             }
                         }
@@ -772,23 +774,23 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             lastError = "Class not found ('" + filename + ":" + classname + ":"
                     + classname.equals(metaData.getMainClass()) + "') - "
                     + cnfe.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, cnfe);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, cnfe, lastError, ""));
         } catch (NoClassDefFoundError ncdf) {
             lastError = "Unable to instantiate plugin ('" + filename + ":"
                     + classname + ":"
                     + classname.equals(metaData.getMainClass())
                     + "') - Unable to find class: " + ncdf.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, ncdf);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ncdf, lastError, ""));
         } catch (VerifyError ve) {
             lastError = "Unable to instantiate plugin ('" + filename + ":"
                     + classname + ":"
                     + classname.equals(metaData.getMainClass())
                     + "') - Incompatible: " + ve.getMessage();
-            Logger.userError(ErrorLevel.LOW, lastError, ve);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ve, lastError, ""));
         } catch (IllegalArgumentException ex) {
             lastError = "Unable to instantiate class for plugin " + metaData.getName()
                     + ": " + classname;
-            Logger.appError(ErrorLevel.LOW, lastError, ex);
+            eventBus.post(new AppErrorEvent(ErrorLevel.LOW, ex, lastError, ""));
         }
     }
 
@@ -850,7 +852,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 } catch (Exception | LinkageError e) {
                     lastError = "Error in onUnload for " + metaData.getName()
                             + ":" + e + " - " + e.getMessage();
-                    Logger.appError(ErrorLevel.MEDIUM, lastError, e);
+                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
                 }
 
                 //TODO plugin unloading shouldnt be done from here, event bus shouldn't be here.
