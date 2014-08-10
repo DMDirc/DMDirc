@@ -22,10 +22,12 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
+
+import com.google.common.eventbus.EventBus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,19 +46,24 @@ public class URLBuilder {
     private final Provider<PluginManager> pluginManagerProvider;
     /** Provider to retrieve a theme manager instance when needed. */
     private final Provider<ThemeManager> themeManagerProvider;
+    /** The event bus to post errors on. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of URLBuilder.
      *
      * @param pluginManagerProvider Provider to retrieve a plugin manager instance when needed.
      * @param themeManagerProvider  Provider to retrieve a theme manager instance when needed.
+     * @param eventBus              The event bus to post errors on.
      */
     @Inject
     public URLBuilder(
             final Provider<PluginManager> pluginManagerProvider,
-            final Provider<ThemeManager> themeManagerProvider) {
+            final Provider<ThemeManager> themeManagerProvider,
+            final EventBus eventBus) {
         this.pluginManagerProvider = pluginManagerProvider;
         this.themeManagerProvider = themeManagerProvider;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -72,7 +79,7 @@ public class URLBuilder {
         try {
             return new URL(prefix + path);
         } catch (MalformedURLException ex) {
-            Logger.appError(ErrorLevel.HIGH, "Unable to build file URL", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, ex, "Unable to build file URL", ""));
             return null;
         }
     }
@@ -93,7 +100,7 @@ public class URLBuilder {
             }
             return new URL(url);
         } catch (MalformedURLException ex) {
-            Logger.appError(ErrorLevel.HIGH, "Unable to build jar URL", ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, ex, "Unable to build jar URL", ""));
             return null;
         }
     }
@@ -158,7 +165,8 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 6);
 
             if (offset < 0) {
-                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+                        "Invalid URL, must contain ':': " + spec, ""));
                 return null;
             } else {
                 return getUrlForJarFile(spec.substring(6, offset), spec.substring(offset + 1));
@@ -167,7 +175,8 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 8);
 
             if (offset < 0) {
-                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+                        "Invalid URL, must contain ':': " + spec, ""));
                 return null;
             } else {
                 return getUrlForPluginResource(spec.substring(9, offset), spec.substring(offset + 1));
@@ -176,7 +185,8 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 8);
 
             if (offset < 0) {
-                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+                        "Invalid URL, must contain ':': " + spec, ""));
                 return null;
             } else {
                 return getUrlForThemeResource(spec.substring(8, offset), spec.substring(offset + 1));
@@ -185,7 +195,8 @@ public class URLBuilder {
             try {
                 return new URL(spec);
             } catch (MalformedURLException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to load resource", ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                        "Unable to load resource", ""));
                 return null;
             }
         } else {
