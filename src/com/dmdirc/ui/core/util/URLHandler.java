@@ -24,9 +24,9 @@ package com.dmdirc.ui.core.util;
 
 import com.dmdirc.ServerManager;
 import com.dmdirc.events.UnknownURLEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.CommandUtils;
@@ -94,7 +94,8 @@ public class URLHandler {
                 uri = new URI("http://" + sanitisedString);
             }
         } catch (URISyntaxException ex) {
-            Logger.userError(ErrorLevel.LOW, "Invalid URI: " + ex.getMessage(), ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                    "Invalid URL: " + ex.getMessage(), ""));
             return;
         }
 
@@ -139,7 +140,8 @@ public class URLHandler {
                 uri = new URI("http://" + url.toString());
             }
         } catch (URISyntaxException ex) {
-            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage(), ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                    "Invalid URL: " + ex.getMessage(), ""));
             return;
         }
 
@@ -270,8 +272,8 @@ public class URLHandler {
         try {
             Runtime.getRuntime().exec(CommandUtils.parseArguments(command));
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to run application: "
-                    + ex.getMessage(), ex);
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                    "Unable to run application: " + ex.getMessage(), ""));
         }
     }
 
@@ -285,15 +287,15 @@ public class URLHandler {
             try {
                 desktop.browse(url);
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW,
-                        "Unable to open URL: " + ex.getMessage(), ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                        "Unable to open URL: " + ex.getMessage(), ""));
             }
         } else {
-            Logger.userError(ErrorLevel.LOW,
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
                     "Unable to open your browser: Your desktop enviroment is "
                     + "not supported, please go to the URL Handlers section of "
                     + "the preferences dialog and set the path to your browser "
-                    + "manually");
+                    + "manually", ""));
         }
     }
 
@@ -307,15 +309,15 @@ public class URLHandler {
             try {
                 desktop.mail(url);
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW,
-                        "Unable to open URL: " + ex.getMessage(), ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                        "Unable to open URL: " + ex.getMessage(), ""));
             }
         } else {
-            Logger.userError(ErrorLevel.LOW,
+            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
                     "Unable to open your mail client: Your desktop enviroment is "
                     + "not supported, please go to the URL Handlers section of "
                     + "the preferences dialog and set the path to your browser "
-                    + "manually");
+                    + "manually", ""));
         }
     }
 
