@@ -26,9 +26,11 @@ import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionComparison;
@@ -36,7 +38,6 @@ import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ActionGroupComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
@@ -276,13 +277,14 @@ public class ActionManager implements ActionController {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.HIGH, "I/O error when creating actions directory: "
-                        + ex.getMessage());
+                eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, null,
+                        "I/O error when creating actions directory: " + ex.getMessage(), ""));
             }
         }
 
         if (dir.listFiles() == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load user action files");
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to load user action files", ""));
         } else {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
@@ -384,8 +386,8 @@ public class ActionManager implements ActionController {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
-                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
-                            + e.getMessage(), e);
+                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e,
+                            "Error processing action: " + e.getMessage(), ""));
                 }
             }
         }
@@ -433,8 +435,8 @@ public class ActionManager implements ActionController {
                         }
                     }
                 } catch (LinkageError | Exception e) {
-                    Logger.appError(ErrorLevel.MEDIUM, "Error processing action: "
-                            + e.getMessage(), e);
+                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e,
+                            "Error processing action: " + e.getMessage(), ""));
                 }
             }
         }
@@ -562,16 +564,16 @@ public class ActionManager implements ActionController {
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()) {
                 if (!file.delete()) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
-                            + file.getAbsolutePath());
+                    eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                            "Unable to remove file: " + file.getAbsolutePath(), ""));
                     return;
                 }
             }
         }
 
         if (!dir.delete()) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to remove directory: "
-                    + dir.getAbsolutePath());
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to remove directory: " + dir.getAbsolutePath(), ""));
             return;
         }
 
