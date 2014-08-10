@@ -22,12 +22,13 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.events.PluginRefreshEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
@@ -250,8 +251,8 @@ public class PluginManager implements ServiceManager {
         }
 
         if (!new File(directory, filename).exists()) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin "
-                    + filename + ": File does not exist");
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Error loading plugin " + filename + ": File does not exist", ""));
             return false;
         }
 
@@ -265,9 +266,9 @@ public class PluginManager implements ServiceManager {
                     identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
-                Logger.userError(ErrorLevel.MEDIUM,
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                         "Duplicate Plugin detected, Ignoring. (" + filename
-                        + " is the same as " + existing.getFilename() + ")");
+                        + " is the same as " + existing.getFilename() + ")", ""));
                 return false;
             }
 
@@ -283,11 +284,11 @@ public class PluginManager implements ServiceManager {
             eventBus.post(new PluginRefreshEvent());
             return true;
         } catch (MalformedURLException mue) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin "
-                    + filename + ": " + mue.getMessage(), mue);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
+                    "Error creating URL for plugin " + filename + ": " + mue.getMessage(), ""));
         } catch (PluginException e) {
-            Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin "
-                    + filename + ": " + e.getMessage(), e);
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, e,
+                    "Error loading plugin " + filename + ": " + e.getMessage(), ""));
         }
 
         return false;
@@ -504,9 +505,9 @@ public class PluginManager implements ServiceManager {
                 targetMetaData.load();
 
                 if (targetMetaData.hasErrors()) {
-                    Logger.userError(ErrorLevel.MEDIUM,
+                    eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                             "Error reading plugin metadata for plugin " + target
-                            + ": " + targetMetaData.getErrors());
+                            + ": " + targetMetaData.getErrors(), ""));
                 } else {
                     newPluginsByName.put(targetMetaData.getName(), targetMetaData);
                     newPluginsByPath.put(target, targetMetaData);
@@ -523,9 +524,8 @@ public class PluginManager implements ServiceManager {
                     }
                 }
             } catch (MalformedURLException mue) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "Error creating URL for plugin " + target + ": "
-                        + mue.getMessage(), mue);
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
+                        "Error creating URL for plugin " + target + ": " + mue.getMessage(), ""));
             }
         }
 
@@ -537,8 +537,8 @@ public class PluginManager implements ServiceManager {
             if (results.isEmpty()) {
                 res.add(target.getValue());
             } else {
-                Logger.userError(ErrorLevel.MEDIUM, "Plugin validation failed for "
-                        + target.getKey() + ": " + results);
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                        "Plugin validation failed for " + target.getKey() + ": " + results, ""));
             }
         }
 
@@ -583,9 +583,9 @@ public class PluginManager implements ServiceManager {
                 try {
                     pi.getPlugin().showConfig(event.getModel());
                 } catch (LinkageError | Exception le) {
-                    Logger.appError(ErrorLevel.MEDIUM,
+                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, le,
                             "Unable to show plugin configuration for "
-                            + pi.getMetaData().getFriendlyName(), le);
+                            + pi.getMetaData().getFriendlyName(), ""));
                 }
             }
         }
