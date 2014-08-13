@@ -42,3 +42,4 @@ __history
 /test_profile
 /*.key
 /teamcity-info.xml
+/.idea/workspace.xml
