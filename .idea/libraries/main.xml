@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="main">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/main/annotations.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/base64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/dagger-compiler.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/dagger.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/guava.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/jackson-core.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/javawriter.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/javax.inject.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/jgit-describe.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/jsch.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/jsr305.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/org.eclipse.jgit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/raven.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/slf4j-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/yamlbeans.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/main/jsr305.jar!/" />
+    </SOURCES>
+  </library>
+</component>

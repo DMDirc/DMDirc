@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="build">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/build/ant-contrib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/ant-fikin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/ant-nsis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/commons-codec.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/commons-httpclient.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/commons-logging.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/jgit-describe.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/jsch.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/org.eclipse.jgit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/xercesImpl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/build/xml-apis.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

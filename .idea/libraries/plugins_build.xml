@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="plugins build">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/ant-contrib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/ant.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/guava.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/javawriter.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/javax.inject.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/jgit-describe.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/jsch.jar!/" />
+      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/build/org.eclipse.jgit.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
