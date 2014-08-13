@@ -8,7 +8,7 @@
         <ibiblio name="dmdirc-releases" root="http://nexus.dmdirc.com/nexus/content/repositories/releases/" m2compatible="true"/>
 
         <url name="ant-nsis">
-            <artifact pattern="http://cloud.github.com/downloads/dreese/nsis-ant/nsisant-[revision].jar"/>
+            <artifact pattern="https://cloud.github.com/downloads/dreese/nsis-ant/nsisant-[revision].jar"/>
         </url>
 
         <url name="jgit-describe">
