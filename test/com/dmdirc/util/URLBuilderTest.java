@@ -104,7 +104,7 @@ public class URLBuilderTest {
     public void testGetUrlForDMDircResourceNonExistant() {
         URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider, eventBus);
-        Assert.assertNull(urlBuilder.getUrlForDMDircResource("test"));
+        Assert.assertNull(urlBuilder.getUrlForDMDircResource("test12345678"));
     }
 
     @Test
