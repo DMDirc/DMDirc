@@ -681,8 +681,8 @@ is divided into following sections:
                 CLEANUP SECTION
                 ===============
             -->
-    <target depends="init" name="deps-clean" unless="no.deps"/>
-    <target depends="init" name="-do-clean">
+    <target name="deps-clean" unless="no.deps"/>
+    <target name="-do-clean">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
     </target>
@@ -690,5 +690,5 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-clean,-do-clean,-post-clean" description="Clean build products." name="clean"/>
+    <target depends="deps-clean,-do-clean,-post-clean" description="Clean build products." name="clean"/>
 </project>
