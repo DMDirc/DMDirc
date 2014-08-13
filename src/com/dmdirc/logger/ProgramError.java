@@ -387,11 +387,7 @@ public final class ProgramError implements Serializable {
             return false;
         }
 
-        if (!Objects.equals(this.details, other.details)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(this.details, other.details);
     }
 
     @Override

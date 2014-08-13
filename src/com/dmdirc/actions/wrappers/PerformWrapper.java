@@ -388,12 +388,8 @@ public class PerformWrapper extends ActionGroup {
                 return false;
             }
 
-            if ((this.profile == null) ? (other.profile != null)
-                    : !this.profile.equals(other.profile)) {
-                return false;
-            }
-
-            return true;
+            return !((this.profile == null) ? (other.profile != null)
+                    : !this.profile.equals(other.profile));
         }
 
         @Override

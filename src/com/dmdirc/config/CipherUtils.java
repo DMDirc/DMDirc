@@ -210,10 +210,7 @@ public abstract class CipherUtils {
                 }
             }
         }
-        if (tries == AUTH_TRIES) {
-            return false;
-        }
-        return true;
+        return tries != AUTH_TRIES;
     }
 
     /**
