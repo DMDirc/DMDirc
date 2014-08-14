@@ -26,8 +26,6 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 
 import com.google.common.eventbus.EventBus;
 
@@ -37,7 +35,6 @@ import java.io.UnsupportedEncodingException;
  * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
  * config file.
  */
-@Factory(inject = true)
 public class MessageEncoder implements Encoder {
 
     /** The server that owns this encoder. */
@@ -54,7 +51,7 @@ public class MessageEncoder implements Encoder {
      * @param parser   The parser that this encoder will work for
      * @param eventBus The event bus to post errors to.
      */
-    public MessageEncoder(@Unbound final Server server, @Unbound final Parser parser,
+    public MessageEncoder(final Server server, final Parser parser,
             final EventBus eventBus) {
         this.server = server;
         this.parser = parser;

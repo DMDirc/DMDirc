@@ -749,11 +749,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             return parser.compareURI(uri);
         }
 
-        if (oldParser != null) {
-            return oldParser.compareURI(uri);
-        }
-
-        return false;
+        return oldParser != null && oldParser.compareURI(uri);
     }
 
     @Override
@@ -924,11 +920,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         synchronized (myStateLock) {
             try {
                 parserLock.readLock().lock();
-                if (parser == null) {
-                    return false;
-                } else {
-                    return getNetwork().equalsIgnoreCase(target);
-                }
+                return parser != null && getNetwork().equalsIgnoreCase(target);
             } finally {
                 parserLock.readLock().unlock();
             }
@@ -1355,11 +1347,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                         + "connecting\n\n" + myState.getTransitionHistory());
             }
 
-            if (myState.getState() != ServerState.CONNECTING) {
-                // We've transitioned while waiting for the lock. Just abort.
-                return;
-            }
-
             myState.transition(ServerState.CONNECTED);
 
             configMigrator.migrate(address.getScheme(),
@@ -1397,8 +1384,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 + parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
         final String umodes = parser.getUserModes();
 
-        final StringBuffer missingModes = new StringBuffer();
-        final StringBuffer missingUmodes = new StringBuffer();
+        final StringBuilder missingModes = new StringBuilder();
+        final StringBuilder missingUmodes = new StringBuilder();
 
         for (char mode : modes.toCharArray()) {
             if (!getConfigManager().hasOptionString(DOMAIN_SERVER, "mode" + mode)) {
