@@ -219,16 +219,10 @@ public class Profile {
             return false;
         }
         final Profile other = (Profile) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.realname, other.realname)) {
-            return false;
-        }
-        if (!Objects.equals(this.ident, other.ident)) {
-            return false;
-        }
-        return Objects.equals(this.nicknames, other.nicknames);
+        return Objects.equals(this.name, other.name) &&
+                Objects.equals(this.realname, other.realname) &&
+                Objects.equals(this.ident, other.ident) &&
+                Objects.equals(this.nicknames, other.nicknames);
     }
 
     @Override

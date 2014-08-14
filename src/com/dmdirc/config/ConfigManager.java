@@ -277,7 +277,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
                 && identityTargetMatches(identity.getTarget().getData(), comp);
 
         log.trace("Checking if identity {} applies. Comparison: {}, target: {}, result: {}",
-                new Object[]{identity, comp, identity.getTarget().getData(), result});
+                identity, comp, identity.getTarget().getData(), result);
 
         return result;
     }
@@ -359,10 +359,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      */
     void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}",
-                new Object[]{
-                    this.protocol, this.ircd, this.network, this.server, this.channel,
-                    protocol, ircd, network, server, channel,});
+        log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}", this.protocol, this.ircd,
+                this.network, this.server, this.channel, protocol, ircd, network, server, channel);
 
         this.protocol = protocol;
         this.ircd = ircd;

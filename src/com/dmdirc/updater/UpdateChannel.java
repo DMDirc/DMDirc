@@ -34,6 +34,6 @@ public enum UpdateChannel {
     /** Nightly update chanel. */
     NIGHTLY,
     /** Not an official release (e.g. GIT). */
-    NONE;
+    NONE
 
 }

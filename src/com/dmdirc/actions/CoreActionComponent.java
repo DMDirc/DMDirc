@@ -592,8 +592,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_ALTSTATE {
         @Override
         public Object get(final Object arg) {
-            return Boolean
-                    .valueOf((((KeyStroke) arg).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
+            return (((KeyStroke) arg).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0;
         }
 
         @Override

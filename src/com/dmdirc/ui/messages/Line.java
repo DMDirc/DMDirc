@@ -146,10 +146,7 @@ public class Line {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Line) {
-            return Arrays.equals(((Line) obj).getLineParts(), getLineParts());
-        }
-        return false;
+        return obj instanceof Line && Arrays.equals(((Line) obj).getLineParts(), getLineParts());
     }
 
     /** {@inheritDoc} */

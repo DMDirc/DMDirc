@@ -375,19 +375,10 @@ public final class ProgramError implements Serializable {
         }
 
         final ProgramError other = (ProgramError) obj;
-        if (this.level != other.level) {
-            return false;
-        }
+        return this.level == other.level && this.message.equals(other.message) &&
+                Objects.equals(this.exception, other.exception) &&
+                Objects.equals(this.details, other.details);
 
-        if (!this.message.equals(other.message)) {
-            return false;
-        }
-
-        if (!Objects.equals(this.exception, other.exception)) {
-            return false;
-        }
-
-        return Objects.equals(this.details, other.details);
     }
 
     @Override

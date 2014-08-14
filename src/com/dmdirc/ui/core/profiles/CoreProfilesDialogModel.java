@@ -115,7 +115,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public Validator<List<Profile>> getProfileListValidator() {
-        return new ListNotEmptyValidator<Profile>();
+        return new ListNotEmptyValidator<>();
     }
 
     @Override
@@ -353,7 +353,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public Validator<List<String>> getSelectedProfileNicknamesValidator() {
-        return new ListNotEmptyValidator<String>();
+        return new ListNotEmptyValidator<>();
     }
 
     @Override

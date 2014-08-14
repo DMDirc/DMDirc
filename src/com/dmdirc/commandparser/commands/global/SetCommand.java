@@ -177,7 +177,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      */
     private void doDomainList(final FrameContainer origin, final boolean isSilent,
             final AggregateConfigProvider manager) {
-        final StringBuffer output = new StringBuffer(67);
+        final StringBuilder output = new StringBuilder(67);
 
         output.append("Valid domains (use ");
         output.append(getController().getCommandChar());
@@ -201,7 +201,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      */
     private void doOptionsList(final FrameContainer origin,
             final boolean isSilent, final AggregateConfigProvider manager, final String domain) {
-        final StringBuffer output = new StringBuffer(24);
+        final StringBuilder output = new StringBuilder(24);
 
         output.append("Options in domain '");
         output.append(domain);

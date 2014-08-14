@@ -300,7 +300,7 @@ public class WindowManager {
             final String name) {
         for (FrameContainer window : windows) {
             if (window instanceof CustomWindow
-                    && ((CustomWindow) window).getName().equals(name)) {
+                    && window.getName().equals(name)) {
                 return window;
             }
         }

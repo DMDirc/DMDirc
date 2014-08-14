@@ -73,11 +73,7 @@ public enum ErrorLevel {
      * @return true iff the error is more important
      */
     public boolean moreImportant(final ErrorLevel level) {
-        if (level == null) {
-            return false;
-        }
-
-        return ordinal() > level.ordinal();
+        return level != null && ordinal() > level.ordinal();
     }
 
 }

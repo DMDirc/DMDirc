@@ -61,10 +61,7 @@ public final class PreviousCommand {
             return false;
         }
         final PreviousCommand other = (PreviousCommand) obj;
-        if (!Objects.equals(this.line, other.line)) {
-            return false;
-        }
-        return this.time == other.time;
+        return Objects.equals(this.line, other.line) && this.time == other.time;
     }
 
 }

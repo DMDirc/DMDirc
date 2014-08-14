@@ -38,6 +38,6 @@ public enum TabCompletionType {
     /** Additional results. */
     ADDITIONAL,
     /** Anything else. */
-    OTHER;
+    OTHER
 
 }

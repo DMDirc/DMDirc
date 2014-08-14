@@ -129,7 +129,7 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
 
     @Override
     public Validator<List<ConfigProvider>> getProfileListValidator() {
-        return new ListNotEmptyValidator<ConfigProvider>();
+        return new ListNotEmptyValidator<>();
     }
 
     @Override

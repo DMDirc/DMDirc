@@ -40,6 +40,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -245,8 +246,9 @@ public class ServerManager implements ServerFactory {
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile);
         } else {
-            server.join(server.getParser().extractChannels(uri)
-                    .toArray(new ChannelJoinRequest[0]));
+            Collection<? extends ChannelJoinRequest> joinRequests =
+                    server.getParser().extractChannels(uri);
+            server.join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
         }
 
         return server;

@@ -235,7 +235,7 @@ public class CertificateManager implements X509TrustManager {
         try {
             if (certificate.getSubjectAlternativeNames() != null) {
                 for (List<?> entry : certificate.getSubjectAlternativeNames()) {
-                    final int type = ((Integer) entry.get(0)).intValue();
+                    final int type = (Integer) entry.get(0);
 
                     // DNS or IP
                     if ((type == 2 || type == 7) && isMatchingServerName((String) entry.get(1))) {

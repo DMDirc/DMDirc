@@ -34,6 +34,6 @@ public enum CertificateAction {
     /** Ignores the problem but does not store the exception. */
     IGNORE_TEMPORARILY,
     /** Adds a permanent exception for the certificate. */
-    IGNORE_PERMANENTLY;
+    IGNORE_PERMANENTLY
 
 }

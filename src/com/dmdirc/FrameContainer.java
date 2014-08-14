@@ -733,7 +733,6 @@ public abstract class FrameContainer {
     public boolean doNotification(final Date date, final String messageType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<>();
         final List<Object> actionArgs = new ArrayList<>();
-        final StringBuffer buffer = new StringBuffer(messageType);
 
         actionArgs.add(this);
 
@@ -747,7 +746,7 @@ public abstract class FrameContainer {
 
         modifyNotificationArgs(actionArgs, messageArgs);
 
-        handleNotification(date, buffer.toString(), messageArgs.toArray());
+        handleNotification(date, messageType, messageArgs.toArray());
 
         return true;
     }

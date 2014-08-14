@@ -179,8 +179,8 @@ public class Styliser implements ConfigChangeListener {
     public void addStyledString(final StyledDocument styledDoc,
             final String[] strings, final SimpleAttributeSet attribs) {
         resetAttributes(attribs);
-        for (int i = 0; i < strings.length; i++) {
-            final char[] chars = strings[i].toCharArray();
+        for (String string : strings) {
+            final char[] chars = string.toCharArray();
 
             for (int j = 0; j < chars.length; j++) {
                 if (chars[j] == 65533) {
@@ -189,12 +189,11 @@ public class Styliser implements ConfigChangeListener {
             }
 
             try {
-                final int ooffset = styledDoc.getLength();
-                int offset = ooffset;
+                int offset = styledDoc.getLength();
                 int position = 0;
 
-                final String target = doSmilies(doLinks(new String(chars)
-                        .replaceAll(INTERNAL_CHARS, "")));
+                final String target =
+                        doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
 
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
 
@@ -207,8 +206,8 @@ public class Styliser implements ConfigChangeListener {
                     offset += next.length();
 
                     if (position < target.length()) {
-                        position += readControlChars(target.substring(position),
-                                attribs, position == 0);
+                        position += readControlChars(target.substring(position), attribs,
+                                position == 0);
                     }
                 }
             } catch (BadLocationException ex) {

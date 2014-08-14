@@ -151,7 +151,7 @@ public final class Formatter {
                     // Date
                     if (args[i] instanceof String) {
                         // Assume it's a timestamp(?)
-                        res[i] = Long.valueOf(1000 * Long.valueOf((String) args[i]));
+                        res[i] = 1000 * Long.valueOf((String) args[i]);
                     } else {
                         res[i] = args[i];
                     }

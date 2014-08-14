@@ -83,7 +83,6 @@ public class RemoteServer implements RemoteInterface {
                 registry.rebind("DMDirc", stub);
                 return;
             } catch (RemoteException ex) {
-                continue;
             }
         }
     }
@@ -100,13 +99,10 @@ public class RemoteServer implements RemoteInterface {
                 final Registry registry = LocateRegistry.getRegistry("localhost", port);
                 final RemoteInterface iface = (RemoteInterface) registry.lookup("DMDirc");
 
-                if (iface == null) {
-                    continue;
-                } else {
+                if (iface != null) {
                     return iface;
                 }
             } catch (RemoteException | NotBoundException ex) {
-                continue;
             }
         }
 

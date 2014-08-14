@@ -135,7 +135,7 @@ public class TabCompleterResult {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
 
         for (String entry : results) {
             if (buff.length() > 0) {

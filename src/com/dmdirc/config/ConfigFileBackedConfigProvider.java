@@ -318,8 +318,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
         synchronized (this) {
             oldValue = getOption(domain, option);
-            log.trace("{}: setting {}.{} to {} (was: {})",
-                    new Object[]{getName(), domain, option, value, oldValue});
+            log.trace("{}: setting {}.{} to {} (was: {})", getName(), domain, option, value,
+                    oldValue);
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, don't set useless settings that are
@@ -455,8 +455,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
                         if (globalConfig.hasOptionString(domain, key)
                                 && globalConfig.getOption(domain, key).equals(value)) {
-                            log.debug("{}: found superfluous setting: {}.{} (= {})",
-                                    new Object[]{getName(), domain, key, value});
+                            log.debug("{}: found superfluous setting: {}.{} (= {})", getName(),
+                                    domain, key, value);
                             file.getKeyDomain(domain).remove(key);
                         }
                     }
