@@ -23,7 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.ServerManager;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.AppErrorEvent;
@@ -73,8 +72,6 @@ public class ActionManager implements ActionController {
     private static ActionManager me;
     /** The identity manager to load configuration from. */
     private final IdentityController identityManager;
-    /** The ServerManager currently in use. */
-    private final ServerManager serverManager;
     /** The factory to use to create actions. */
     private final ActionFactory factory;
     /** Provider for action wrappers. */
@@ -108,7 +105,6 @@ public class ActionManager implements ActionController {
     /**
      * Creates a new instance of ActionManager.
      *
-     * @param serverManager          The ServerManager in use.
      * @param identityManager        The IdentityManager to load configuration from.
      * @param factory                The factory to use to create new actions.
      * @param actionWrappersProvider Provider of action wrappers.
@@ -117,29 +113,18 @@ public class ActionManager implements ActionController {
      * @param directory              The directory to load and save actions in.
      */
     public ActionManager(
-            final ServerManager serverManager,
             final IdentityController identityManager,
             final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
             final EventBus eventBus,
             final String directory) {
-        this.serverManager = serverManager;
         this.identityManager = identityManager;
         this.factory = factory;
         this.actionWrappersProvider = actionWrappersProvider;
         this.updateManagerProvider = updateManagerProvider;
         this.eventBus = eventBus;
         this.directory = directory;
-    }
-
-    /**
-     * Get the server manager.
-     *
-     * @return ServerManager
-     */
-    public ServerManager getServerManager() {
-        return serverManager;
     }
 
     /**
@@ -422,7 +407,7 @@ public class ActionManager implements ActionController {
             for (Action action : new ArrayList<>(actions.get(type))) {
                 try {
                     if (action.getConcurrencyGroup() == null) {
-                        res |= action.trigger(getServerManager(), format, arguments);
+                        res |= action.trigger(format, arguments);
                     } else {
                         synchronized (locks) {
                             if (!locks.containsKey(action.getConcurrencyGroup())) {
@@ -431,7 +416,7 @@ public class ActionManager implements ActionController {
                         }
 
                         synchronized (locks.get(action.getConcurrencyGroup())) {
-                            res |= action.trigger(getServerManager(), format, arguments);
+                            res |= action.trigger(format, arguments);
                         }
                     }
                 } catch (LinkageError | Exception e) {

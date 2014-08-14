@@ -25,7 +25,6 @@ package com.dmdirc.actions;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.Precondition;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -133,7 +132,6 @@ public class ActionModel {
     /**
      * Triggers this action.
      *
-     * @param serverManager The server manager used to iterate servers
      * @param format        The format of the message that's going to be displayed.
      * @param arguments     The arguments from the action that caused this trigger.
      *
@@ -144,8 +142,7 @@ public class ActionModel {
         "This action has at least one trigger",
         "This action's primary trigger is non-null"
     })
-    public boolean trigger(final ServerManager serverManager, final StringBuffer format,
-            final Object... arguments) {
+    public boolean trigger(final StringBuffer format, final Object... arguments) {
         assert triggers.length > 0;
         assert triggers[0] != null;
 
