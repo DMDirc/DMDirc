@@ -5,6 +5,9 @@
     <content url="file://$MODULE_DIR$/modules/util">
       <sourceFolder url="file://$MODULE_DIR$/modules/util/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/util/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/etc" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/nbproject" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
