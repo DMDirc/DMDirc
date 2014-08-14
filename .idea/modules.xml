@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DMDirc.iml" filepath="$PROJECT_DIR$/DMDirc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea//parser.iml" filepath="$PROJECT_DIR$/.idea//parser.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/plugins.iml" filepath="$PROJECT_DIR$/.idea/plugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea//util.iml" filepath="$PROJECT_DIR$/.idea//util.iml" />
     </modules>
   </component>
 </project>
