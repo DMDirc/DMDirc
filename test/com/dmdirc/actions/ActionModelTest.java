@@ -57,7 +57,7 @@ public class ActionModelTest {
 
     @Test
     public void testConditions() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertTrue("ActionModel must start with no conditions",
@@ -73,7 +73,7 @@ public class ActionModelTest {
 
     @Test
     public void testTriggers() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertNull("ActionModel must start with null triggers",
@@ -89,7 +89,7 @@ public class ActionModelTest {
 
     @Test
     public void testNewFormat() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertNull("ActionModel must start with null format",
@@ -108,7 +108,7 @@ public class ActionModelTest {
 
     @Test
     public void testResponse() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertNull("ActionModel must start with null response",
@@ -124,7 +124,7 @@ public class ActionModelTest {
 
     @Test
     public void testGroup() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertEquals("ActionModel constructor must set group",
@@ -138,7 +138,7 @@ public class ActionModelTest {
 
     @Test
     public void testName() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name");
 
         assertEquals("ActionModel constructor must set name",
@@ -152,7 +152,7 @@ public class ActionModelTest {
 
     @Test
     public void testTest() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
                 new String[0], Arrays.asList(new ActionCondition[]{
@@ -174,7 +174,7 @@ public class ActionModelTest {
 
     @Test
     public void testTestNoCondTree() {
-        final ActionModel model = new ActionModel(gcpProvider, gwProvider, substitutorFactory,
+        final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
                 new String[0], Arrays.asList(new ActionCondition[]{

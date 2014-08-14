@@ -23,7 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.GlobalWindow;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.events.ActionCreatedEvent;
@@ -94,7 +93,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
      *
      * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
-     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param actionController            The controller that owns this action.
@@ -103,18 +101,12 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
-    public Action(
-            final FileSystem filesystem,
-            final EventBus eventBus,
-            final Provider<GlobalCommandParser> globalCommandParserProvider,
+    public Action(final FileSystem filesystem, final EventBus eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
-            final ActionController actionController,
-            final IdentityController identityController,
-            final String actionsDirectory,
-            final String group,
-            final String name) {
-        super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
+            final ActionController actionController, final IdentityController identityController,
+            final String actionsDirectory, final String group, final String name) {
+        super(globalWindowProvider, substitutorFactory, group, name);
 
         this.filesystem = filesystem;
         this.eventBus = eventBus;
@@ -144,7 +136,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
      *
      * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
-     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param actionController            The controller that owns this action.
@@ -158,23 +149,15 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param conditionTree               The condition tree to use
      * @param newFormat                   The new formatter to use
      */
-    public Action(
-            final FileSystem filesystem,
-            final EventBus eventBus,
-            final Provider<GlobalCommandParser> globalCommandParserProvider,
+    public Action(final FileSystem filesystem, final EventBus eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
-            final ActionController actionController,
-            final IdentityController identityController,
-            final String actionsDirectory,
-            final String group,
-            final String name,
-            final ActionType[] triggers,
-            final String[] response,
-            final List<ActionCondition> conditions,
-            final ConditionTree conditionTree,
+            final ActionController actionController, final IdentityController identityController,
+            final String actionsDirectory, final String group, final String name,
+            final ActionType[] triggers, final String[] response,
+            final List<ActionCondition> conditions, final ConditionTree conditionTree,
             final String newFormat) {
-        super(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name,
+        super(globalWindowProvider, substitutorFactory, group, name,
                 triggers, response, conditions, conditionTree, newFormat);
 
         this.filesystem = filesystem;

@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerState;
@@ -34,8 +33,6 @@ import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,7 +44,6 @@ import java.util.regex.Pattern;
 /**
  * Handles the substitution of variables into action targets and responses.
  */
-@Factory(inject = true, providers = true, singleton = true)
 public class ActionSubstitutor {
 
     /** Substitution to use when a component requires a connected server. */
@@ -93,9 +89,8 @@ public class ActionSubstitutor {
     public ActionSubstitutor(
             final ActionController actionController,
             final CommandController commandController,
-            @SuppressWarnings("qualifiers") @GlobalConfig
             final AggregateConfigProvider globalConfig,
-            @Unbound final ActionType type) {
+            final ActionType type) {
         this.actionController = actionController;
         this.globalConfig = globalConfig;
         this.commandController = commandController;

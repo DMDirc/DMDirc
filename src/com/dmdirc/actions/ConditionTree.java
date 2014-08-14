@@ -138,7 +138,7 @@ public final class ConditionTree {
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof ConditionTree
-                && toString().equals(((ConditionTree) obj).toString());
+                && toString().equals(obj.toString());
     }
 
     @Override

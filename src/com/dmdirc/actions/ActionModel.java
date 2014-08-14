@@ -26,7 +26,6 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.Precondition;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.actions.ActionType;
 
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ public class ActionModel {
 
     // TODO: Sort out the mess of protected fields here.
 
-    /** Provider of global command parsers, for use when triggering window-less actions. */
-    private final Provider<GlobalCommandParser> globalCommandParserProvider;
     /** Provider of global windows for global actions. */
     private final Provider<GlobalWindow> globalWindowProvider;
     /** Factory to use to creator substitutors. */
@@ -79,19 +76,16 @@ public class ActionModel {
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
-     * @param globalCommandParserProvider Provider of global command parsers for global actions.
      * @param globalWindowProvider        Provider of global windows for global actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
     public ActionModel(
-            final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final String group,
             final String name) {
-        this.globalCommandParserProvider = globalCommandParserProvider;
         this.globalWindowProvider = globalWindowProvider;
         this.substitutorFactory = substitutorFactory;
         this.group = group;
@@ -100,9 +94,7 @@ public class ActionModel {
 
     /**
      * Creates a new instance of ActionModel with the specified properties.
-     *
-     * @param globalCommandParserProvider Provider of global command parsers for triggering actions.
-     * @param globalWindowProvider        Provider of global windows for global actions.
+     *  @param globalWindowProvider        Provider of global windows for global actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
@@ -113,14 +105,13 @@ public class ActionModel {
      * @param newFormat                   The new formatter to use
      */
     public ActionModel(
-            final Provider<GlobalCommandParser> globalCommandParserProvider,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
-        this(globalCommandParserProvider, globalWindowProvider, substitutorFactory, group, name);
+        this(globalWindowProvider, substitutorFactory, group, name);
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;

@@ -67,8 +67,7 @@ public class ColourActionComparison {
 
         @Override
         public boolean test(final Object arg1, final Object arg2) {
-            return ((Colour) arg1).equals(colourManager.get().getColourFromString((String) arg2,
-                    null));
+            return arg1.equals(colourManager.get().getColourFromString((String) arg2, null));
         }
 
         @Override

@@ -319,8 +319,8 @@ public class ActionManager implements ActionController {
     public void addAction(final Action action) {
         checkNotNull(action);
 
-        LOG.debug("Registering action: {}/{} (status: {})",
-                new Object[]{action.getGroup(), action.getName(), action.getStatus()});
+        LOG.debug("Registering action: {}/{} (status: {})", action.getGroup(), action.getName(),
+                action.getStatus());
 
         if (action.getStatus() != ActionStatus.FAILED) {
             for (ActionType trigger : action.getTriggers()) {

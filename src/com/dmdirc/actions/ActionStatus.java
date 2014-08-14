@@ -34,6 +34,6 @@ public enum ActionStatus {
     /** The action is disabled by the user. */
     DISABLED,
     /** The action has failed to load. */
-    FAILED;
+    FAILED
 
 }

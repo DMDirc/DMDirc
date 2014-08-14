@@ -27,8 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The AdditionalTabTargets class is a basic wrapper around an arraylist that adds an additional
- * property to determine what types of results to include.
+ * The AdditionalTabTargets class is a basic wrapper around an {@link ArrayList} that adds an
+ * additional property to determine what types of results to include.
  */
 public final class AdditionalTabTargets extends ArrayList<String> {
 

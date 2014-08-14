@@ -38,6 +38,6 @@ public enum ActionErrorType {
     /** A problem with the action's condition tree. */
     CONDITION_TREE,
     /** A problem with the action's conditions. */
-    CONDITIONS;
+    CONDITIONS
 
 }
