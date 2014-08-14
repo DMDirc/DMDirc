@@ -38,6 +38,8 @@ import com.dmdirc.util.URLBuilder;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 /**
  * Handles the raw window (which shows the user raw data being sent and received to/from the
  * server).
@@ -111,6 +113,7 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
         addLine("rawOut", data);
     }
 
+    @Nonnull
     @Override
     public Connection getConnection() {
         return server;

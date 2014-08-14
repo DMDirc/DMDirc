@@ -65,7 +65,7 @@ import dagger.ObjectGraph;
 public class Main {
 
     /** Feedback nag delay. */
-    private final int FEEDBACK_DELAY = 30 * 60 * 1000;
+    private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
     /** The identity manager the client will use. */

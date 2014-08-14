@@ -96,6 +96,8 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * Handles parser events for a Server object.
@@ -136,6 +138,7 @@ public class ServerEventHandler extends EventHandler implements
         cbm.addCallback(type, (T) this);
     }
 
+    @Nonnull
     @Override
     protected Connection getConnection() {
         return owner;

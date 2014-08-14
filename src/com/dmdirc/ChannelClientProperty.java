@@ -34,6 +34,6 @@ public enum ChannelClientProperty {
     /** Textpane client foreground colour. */
     TEXT_FOREGROUND,
     /** Textpane client background colour. */
-    TEXT_BACKGROUND;
+    TEXT_BACKGROUND
 
 }

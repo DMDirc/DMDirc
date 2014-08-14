@@ -76,6 +76,8 @@ import com.google.common.eventbus.EventBus;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 /**
  * Handles events for channel objects.
  */
@@ -109,6 +111,7 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
+    @Nonnull
     @Override
     protected Connection getConnection() {
         return owner.getConnection();

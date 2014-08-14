@@ -57,6 +57,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
  * The Query class represents the client's view of a query with another user. It handles callbacks
  * for query events from the parser, maintains the corresponding QueryWindow, and handles user input
@@ -298,6 +300,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
     }
 
+    @Nonnull
     @Override
     public Connection getConnection() {
         return server;
@@ -308,7 +311,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         super.close();
 
         // Remove any callbacks or listeners
-        if (server != null && server.getParser() != null) {
+        if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(this);
         }
 
@@ -316,9 +319,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         getEventBus().post(new QueryClosedEvent(this));
 
         // Inform any parents that the window is closing
-        if (server != null) {
-            server.delQuery(this);
-        }
+        server.delQuery(this);
     }
 
     @Override

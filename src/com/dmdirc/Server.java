@@ -93,6 +93,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.TrustManager;
 
 import org.slf4j.LoggerFactory;
@@ -1065,6 +1066,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         }
     }
 
+    @Nonnull
     @Override
     public Connection getConnection() {
         return this;
@@ -1400,7 +1402,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         }
 
         if (missingModes.length() + missingUmodes.length() > 0) {
-            final StringBuffer missing = new StringBuffer("Missing mode aliases: ");
+            final StringBuilder missing = new StringBuilder("Missing mode aliases: ");
 
             if (missingModes.length() > 0) {
                 missing.append("channel: +");

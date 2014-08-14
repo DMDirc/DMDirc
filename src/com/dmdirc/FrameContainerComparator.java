@@ -64,8 +64,7 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
             final int position = item1.getName()
                     .compareToIgnoreCase(item2.getName());
             if (position == 0) {
-                return Integer.valueOf(item1.hashCode())
-                        .compareTo(Integer.valueOf(item2.hashCode()));
+                return Integer.valueOf(item1.hashCode()).compareTo(item2.hashCode());
             } else {
                 return position;
             }
