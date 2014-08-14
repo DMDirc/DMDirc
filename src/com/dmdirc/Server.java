@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ClientModule.UserConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
@@ -67,8 +66,6 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.URLBuilder;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 
 import com.google.common.eventbus.EventBus;
 
@@ -105,7 +102,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-@Factory(inject = true, singleton = true, providers = true, name = "ServerFactoryImpl")
 public class Server extends FrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
@@ -215,8 +211,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      */
     public Server(
             final ServerManager manager,
-            @Unbound final ConfigProviderMigrator configMigrator,
-            @Unbound final CommandParser commandParser,
+            final ConfigProviderMigrator configMigrator,
+            final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
@@ -229,10 +225,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final URLBuilder urlBuilder,
             final EventBus eventBus,
             final MessageEncoderFactory messageEncoderFactory,
-            @SuppressWarnings("qualifiers") @UserConfig final ConfigProvider userSettings,
-            @Unbound final ScheduledExecutorService executorService,
-            @Unbound final URI uri,
-            @Unbound final ConfigProvider profile) {
+            final ConfigProvider userSettings,
+            final ScheduledExecutorService executorService,
+            final URI uri,
+            final ConfigProvider profile) {
         super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
