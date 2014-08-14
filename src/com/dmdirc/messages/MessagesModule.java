@@ -56,7 +56,7 @@ public class MessagesModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final CommonChanelsMessageSink sink) {
+    public MessageSink getMessageSink(final CommonChannelsMessageSink sink) {
         return sink;
     }
 

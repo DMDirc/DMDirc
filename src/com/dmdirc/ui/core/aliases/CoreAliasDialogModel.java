@@ -202,7 +202,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     }
 
     @Override
-    public int getSelectedAliasMininumArguments() {
+    public int getSelectedAliasMinimumArguments() {
         return minArgs;
     }
 

@@ -50,7 +50,7 @@ public class ChannelMessageSink implements MessageSink {
     }
 
     @Override
-    public void handleMessage(final MessageSinkManager despatcher,
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
@@ -71,8 +71,7 @@ public class ChannelMessageSink implements MessageSink {
                 source.addLine(messageType, date, args);
             } else {
                 // They specified a fallback
-                despatcher.despatchMessage(source, date, messageType,
-                        patternMatches[1], args);
+                dispatcher.dispatchMessage(source, date, messageType, patternMatches[1], args);
             }
         }
     }

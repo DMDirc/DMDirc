@@ -49,9 +49,9 @@ public abstract class MessageTarget extends FrameContainer {
      * @param config             The config manager to use for this target
      * @param parser             The command parser for this container
      * @param tabCompleter       The tab completer to use
-     * @param messageSinkManager The sink manager to use to despatch messages.
+     * @param messageSinkManager The sink manager to use to dispatch messages.
      * @param urlBuilder         The URL builder to use when finding icons.
-     * @param eventBus           The bus to despatch events on.
+     * @param eventBus           The bus to dispatch events on.
      * @param components         The UI components that this frame requires
      *
      * @since 0.6.4

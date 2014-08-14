@@ -37,14 +37,14 @@ public class PopupManager {
 
     /** The command controller to use for items. */
     private final CommandController commandController;
-    /** The bus to despatch events on. */
+    /** The bus to dispatch events on. */
     private final EventBus eventBus;
 
     /**
      * Creates a new instance of PopupManager.
      *
      * @param commandController The controller to use for commands.
-     * @param eventBus          The bus to despatch events on.
+     * @param eventBus          The bus to dispatch events on.
      */
     @Inject
     public PopupManager(final CommandController commandController, final EventBus eventBus) {
@@ -98,7 +98,7 @@ public class PopupManager {
      *
      * @param item          The item to be turned into a PopupMenuItem
      * @param type          The type of popup item to create
-     * @param configManager The config manager to beused for the menu
+     * @param configManager The config manager to be used for the menu
      *
      * @return The corresponding PopupMenuItem
      */

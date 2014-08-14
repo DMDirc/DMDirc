@@ -48,7 +48,7 @@ public interface ActionComparison {
     /**
      * Returns a friendly name for this comparison.
      *
-     * @return This comparion's friendly name
+     * @return This comparison's friendly name
      */
     String getName();
 

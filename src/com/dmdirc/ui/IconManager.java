@@ -153,7 +153,7 @@ public class IconManager implements ConfigChangeListener {
                 ? configManager.getOption("icon", iconType)
                 : "dmdirc://com/dmdirc/res/" + iconType + ".png";
 
-        //Get the url for the speficied path
+        //Get the url for the specified path
         URL imageURL = urlBuilder.getUrl(path);
 
         if (imageURL == null && defaultURL != null) {

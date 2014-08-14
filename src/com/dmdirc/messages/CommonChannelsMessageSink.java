@@ -36,13 +36,13 @@ import javax.inject.Inject;
  * channels with the user. If no fallback is specified and there are no common channels, the message
  * is despatched to the source.
  */
-public class CommonChanelsMessageSink implements MessageSink {
+public class CommonChannelsMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("comchans:(.*?)(?:\\s(.*))?");
 
     @Inject
-    public CommonChanelsMessageSink() {
+    public CommonChannelsMessageSink() {
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CommonChanelsMessageSink implements MessageSink {
     }
 
     @Override
-    public void handleMessage(final MessageSinkManager despatcher,
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
@@ -72,8 +72,7 @@ public class CommonChanelsMessageSink implements MessageSink {
                 source.addLine(messageType, date, args);
             } else {
                 // They specified a fallback
-                despatcher.despatchMessage(source, date, messageType,
-                        patternMatches[1], args);
+                dispatcher.dispatchMessage(source, date, messageType, patternMatches[1], args);
             }
         }
     }

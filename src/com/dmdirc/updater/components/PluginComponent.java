@@ -106,8 +106,7 @@ public class PluginComponent implements UpdateComponent {
         }
 
         // Try and move the downloaded plugin to the new location.
-        // If it doesn't work then keep the plugin in a .update file untill
-        // the next restart.
+        // If it doesn't work then keep the plugin in a .update file until the next restart.
         // If it does, update the metadata.
         final File newPlugin = new File(path);
         if (!isValid(newPlugin)) {

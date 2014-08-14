@@ -47,11 +47,11 @@ public class FormatMessageSink implements MessageSink {
     }
 
     @Override
-    public void handleMessage(final MessageSinkManager despatcher,
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        despatcher.despatchMessage(source, date, patternMatches[0], patternMatches[1], args);
+        dispatcher.dispatchMessage(source, date, patternMatches[0], patternMatches[1], args);
     }
 
 }

@@ -97,7 +97,7 @@ public abstract class FrameContainer {
     private final Object documentSync = new Object();
     /** The manager to use to manage our event bus. */
     private final ChildEventBusManager eventBusManager;
-    /** Event bus to despatch events to. */
+    /** Event bus to dispatch events to. */
     private final EventBus eventBus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
@@ -110,7 +110,7 @@ public abstract class FrameContainer {
      */
     private final Optional<CommandParser> commandParser;
     /**
-     * The manager to use to despatch messages to sinks.
+     * The manager to use to dispatch messages to sinks.
      * <p>
      * Only defined if this container is {@link #writable}.
      */
@@ -131,7 +131,7 @@ public abstract class FrameContainer {
      * @param title      The title of this container
      * @param config     The config manager for this container
      * @param urlBuilder The URL builder to use when finding icons.
-     * @param eventBus   The bus to despatch events on.
+     * @param eventBus   The bus to dispatch events on.
      * @param components The UI components that this frame requires
      *
      * @since 0.6.4
@@ -174,8 +174,8 @@ public abstract class FrameContainer {
      * @param urlBuilder         The URL builder to use when finding icons.
      * @param commandParser      The command parser to use for input.
      * @param tabCompleter       The tab completer to use.
-     * @param messageSinkManager The manager to use to despatch notifications.
-     * @param eventBus           The bus to despatch events on.
+     * @param messageSinkManager The manager to use to dispatch notifications.
+     * @param eventBus           The bus to dispatch events on.
      * @param components         The UI components that this frame requires
      *
      * @since 0.6.4
@@ -631,7 +631,7 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Retrieves the tab completer which should be used for this cotnainer.
+     * Retrieves the tab completer which should be used for this container.
      *
      * @return This container's tab completer
      */
@@ -724,7 +724,7 @@ public abstract class FrameContainer {
     /**
      * Processes and displays a notification.
      *
-     * @param date        The date/time at which the event occured
+     * @param date        The date/time at which the event occurred
      * @param messageType The name of the formatter to be used for the message
      * @param args        The arguments for the message
      *
@@ -790,13 +790,13 @@ public abstract class FrameContainer {
      * Handles general server notifications (i.e., ones not tied to a specific window). The user can
      * select where the notifications should go in their config.
      *
-     * @param date        The date/time at which the event occured
+     * @param date        The date/time at which the event occurred
      * @param messageType The type of message that is being sent
      * @param args        The arguments for the message
      */
     public void handleNotification(final Date date, final String messageType, final Object... args) {
         checkState(writable);
-        messageSinkManager.get().despatchMessage(this, date, messageType, args);
+        messageSinkManager.get().dispatchMessage(this, date, messageType, args);
     }
 
     /**

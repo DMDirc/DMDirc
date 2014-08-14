@@ -78,14 +78,14 @@ public interface ActionComponent {
     Class<?> getType();
 
     /**
-     * Retrives a friendly name for this component.
+     * Retrieves a friendly name for this component.
      *
      * @return This component's friendly name
      */
     String getName();
 
     /**
-     * Retrieve's the internal name of this action component.
+     * Retrieves the internal name of this action component.
      *
      * @since 0.6.4
      * @return The internal name of this component

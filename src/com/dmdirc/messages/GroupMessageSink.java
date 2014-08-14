@@ -50,7 +50,7 @@ public class GroupMessageSink implements MessageSink {
 
     /** {@inheritDoc} */
     @Override
-    public void handleMessage(final MessageSinkManager despatcher,
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
@@ -63,7 +63,7 @@ public class GroupMessageSink implements MessageSink {
             target = MessageSinkManager.DEFAULT_SINK;
         }
 
-        despatcher.despatchMessage(source, date, messageType, target, args);
+        dispatcher.dispatchMessage(source, date, messageType, target, args);
     }
 
 }

@@ -350,7 +350,7 @@ public class CertificateManager implements X509TrustManager {
             switch (action) {
                 case DISCONNECT:
                     throw new CertificateException("Not trusted");
-                case IGNORE_PERMANENTY:
+                case IGNORE_PERMANENTLY:
                     final List<String> list = new ArrayList<>(config
                             .getOptionList("ssl", "trusted"));
                     list.add(Base64.encodeToString(chain[0].getSignature(), false));

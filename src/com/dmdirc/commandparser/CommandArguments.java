@@ -122,7 +122,7 @@ public class CommandArguments {
     }
 
     /**
-     * Retrieves the arguments to the command split into disticnt, whitespace-separated words.
+     * Retrieves the arguments to the command split into distinct, whitespace-separated words.
      *
      * @return An array of 'words' that make up the command's arguments
      */

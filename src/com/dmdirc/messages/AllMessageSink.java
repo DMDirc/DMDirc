@@ -47,7 +47,7 @@ public class AllMessageSink implements MessageSink {
     }
 
     @Override
-    public void handleMessage(final MessageSinkManager despatcher,
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {

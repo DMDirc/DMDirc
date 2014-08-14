@@ -102,7 +102,7 @@ public class PluginFilesHelper {
      *
      * @throws IOException if the resources failed to extract
      */
-    public void extractResoucesStartingWith(final String prefix) throws IOException {
+    public void extractResourcesStartingWith(final String prefix) throws IOException {
         pluginInfo.getResourceManager().extractResources(prefix, filesDir.toString(), true);
     }
 
@@ -113,7 +113,7 @@ public class PluginFilesHelper {
      *
      * @throws IOException if the resources failed to extract
      */
-    public void extractResoucesEndingWith(final String suffix) throws IOException {
+    public void extractResourcesEndingWith(final String suffix) throws IOException {
         pluginInfo.getResourceManager().extractResoucesEndingWith(filesDir, suffix);
     }
 

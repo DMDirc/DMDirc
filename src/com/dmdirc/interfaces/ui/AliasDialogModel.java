@@ -119,7 +119,7 @@ public interface AliasDialogModel {
      *
      * @return Selected alias minimum arguments
      */
-    int getSelectedAliasMininumArguments();
+    int getSelectedAliasMinimumArguments();
 
     /**
      * Gets the substitution of the selected alias.

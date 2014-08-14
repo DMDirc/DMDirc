@@ -44,14 +44,14 @@ public interface MessageSink {
     /**
      * Handles a message which has been directed to this sink.
      *
-     * @param despatcher     The manager that is despatching the message
+     * @param dispatcher     The manager that is dispatching the message
      * @param source         The original source of the message
      * @param patternMatches An array of groups matched from this sink's pattern
      * @param date           The date at which the message occurred
      * @param messageType    The type of the message (used for formatting)
      * @param args           The message arguments
      */
-    void handleMessage(final MessageSinkManager despatcher,
+    void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args);

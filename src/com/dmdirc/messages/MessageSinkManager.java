@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 /**
- * Manages message sinks and facilitates despatching of messages to sinks.
+ * Manages message sinks and facilitates dispatching of messages to sinks.
  */
 public class MessageSinkManager {
 
@@ -62,7 +62,7 @@ public class MessageSinkManager {
     }
 
     /**
-     * Despatches a message to the appropriate sink. This method will attempt to select an
+     * Dispatches a message to the appropriate sink. This method will attempt to select an
      * appropriate target sink from the user's configuration.
      *
      * @param source      The source of the message
@@ -70,7 +70,7 @@ public class MessageSinkManager {
      * @param messageType The type (or 'format') of the message
      * @param args        The message arguments
      */
-    public void despatchMessage(final FrameContainer source, final Date date,
+    public void dispatchMessage(final FrameContainer source, final Date date,
             final String messageType, final Object... args) {
         final String target;
         if (source.getConfigManager().hasOptionString(CONFIG_DOMAIN, messageType)) {
@@ -79,11 +79,11 @@ public class MessageSinkManager {
             target = DEFAULT_SINK;
         }
 
-        despatchMessage(source, date, messageType, target, args);
+        dispatchMessage(source, date, messageType, target, args);
     }
 
     /**
-     * Despatches a message to the appropriate sink.
+     * Dispatches a message to the appropriate sink.
      *
      * @param source      The source of the message
      * @param date        The date at which the message occurred
@@ -91,9 +91,8 @@ public class MessageSinkManager {
      * @param targetSink  The textual representation of the destination sink
      * @param args        The message arguments
      */
-    public void despatchMessage(final FrameContainer source,
-            final Date date, final String messageType, final String targetSink,
-            final Object... args) {
+    public void dispatchMessage(final FrameContainer source, final Date date,
+            final String messageType, final String targetSink, final Object... args) {
         for (MessageSink sink : sinks) {
             final Matcher matcher = sink.getPattern().matcher(targetSink);
 
@@ -114,7 +113,7 @@ public class MessageSinkManager {
                 + messageType + ": " + targetSink);
 
         if (!DEFAULT_SINK.equals(targetSink)) {
-            despatchMessage(source, date, messageType, DEFAULT_SINK, args);
+            dispatchMessage(source, date, messageType, DEFAULT_SINK, args);
         }
     }
 

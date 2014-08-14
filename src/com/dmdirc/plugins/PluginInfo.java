@@ -368,7 +368,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public void pluginUpdated() {
         try {
-            // Force a new resourcemanager just incase.
+            // Force a new resourcemanager just in case.
             updateClassList(getResourceManager(true));
 
             updateMetaData();
@@ -635,7 +635,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             loadClass(metaData.getMainClass());
 
             if (isLoaded()) {
-                //TODO plugin loading shouldnt be done from here, event bus shouldn't be here.
+                //TODO plugin loading shouldn't be done from here, event bus shouldn't be here.
                 eventBus.post(new PluginLoadedEvent(this));
             }
 
@@ -855,7 +855,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
                 }
 
-                //TODO plugin unloading shouldnt be done from here, event bus shouldn't be here.
+                //TODO plugin unloading shouldn't be done from here, event bus shouldn't be here.
                 eventBus.post(new PluginUnloadedEvent(this));
                 synchronized (provides) {
                     for (Service service : provides) {
