@@ -43,3 +43,4 @@ __history
 /*.key
 /teamcity-info.xml
 /.idea/workspace.xml
+/.idea/uiDesigner.xml

@@ -252,7 +252,7 @@ public class ActionModel {
      * @return The triggers used by this action
      */
     public ActionType[] getTriggers() {
-        return triggers == null ? triggers : triggers.clone();
+        return triggers == null ? null : triggers.clone();
     }
 
     /**
@@ -290,7 +290,7 @@ public class ActionModel {
      * @return The commands that will be executed if this action is triggered
      */
     public String[] getResponse() {
-        return response == null ? response : response.clone();
+        return response == null ? null : response.clone();
     }
 
     /**

@@ -151,8 +151,7 @@ public class PluginClassLoader extends ClassLoader {
         }
 
         // We are meant to be loading this one!
-        byte[] data = null;
-
+        byte[] data;
         if (res.resourceExists(fileName)) {
             data = res.getResourceBytes(fileName);
         } else {

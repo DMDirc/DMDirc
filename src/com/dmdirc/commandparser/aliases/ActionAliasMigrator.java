@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -71,9 +72,12 @@ public class ActionAliasMigrator implements Migrator {
 
     @Override
     public void migrate() {
-        for (File child : directory.listFiles()) {
-            if (migrate(child)) {
-                child.delete();
+        @Nullable final File[] files = directory.listFiles();
+        if (files != null) {
+            for (File child : files) {
+                if (migrate(child)) {
+                    child.delete();
+                }
             }
         }
         directory.delete();

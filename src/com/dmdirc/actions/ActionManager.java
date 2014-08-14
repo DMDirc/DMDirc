@@ -378,7 +378,7 @@ public class ActionManager implements ActionController {
         }
 
         if (!killSwitch) {
-            res |= triggerActions(type, format, arguments);
+            res = triggerActions(type, format, arguments);
         }
 
         return !res;

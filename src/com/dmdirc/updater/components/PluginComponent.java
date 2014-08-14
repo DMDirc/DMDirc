@@ -29,7 +29,6 @@ import com.dmdirc.updater.Version;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
@@ -140,22 +139,10 @@ public class PluginComponent implements UpdateComponent {
      * @return true if the file is valid
      */
     private boolean isValid(final File file) {
-        ZipFile zipfile = null;
-        try {
-            zipfile = new ZipFile(file);
+        try (ZipFile ignored = new ZipFile(file)) {
             return true;
-        } catch (ZipException e) {
-            return false;
         } catch (IOException e) {
             return false;
-        } finally {
-            try {
-                if (zipfile != null) {
-                    zipfile.close();
-                    zipfile = null;
-                }
-            } catch (IOException e) {
-            }
         }
     }
 
