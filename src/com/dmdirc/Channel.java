@@ -47,8 +47,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.URLBuilder;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
@@ -69,7 +67,6 @@ import javax.annotation.Nonnull;
  * events from the parser, maintains the corresponding ChannelWindow, and handles user input for the
  * channel.
  */
-@Factory(inject = true, providers = true, singleton = true)
 public class Channel extends MessageTarget implements GroupChat {
 
     /** List of registered listeners. */
@@ -109,9 +106,9 @@ public class Channel extends MessageTarget implements GroupChat {
      * @param eventBus            The bus to despatch events onto.
      */
     public Channel(
-            @Unbound final Server newServer,
-            @Unbound final ChannelInfo newChannelInfo,
-            @Unbound final ConfigProviderMigrator configMigrator,
+            final Server newServer,
+            final ChannelInfo newChannelInfo,
+            final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,

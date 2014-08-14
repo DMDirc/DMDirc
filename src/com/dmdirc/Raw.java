@@ -34,8 +34,6 @@ import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.util.URLBuilder;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -44,7 +42,6 @@ import java.util.Date;
  * Handles the raw window (which shows the user raw data being sent and received to/from the
  * server).
  */
-@Factory(inject = true, providers = true, singleton = true)
 public class Raw extends FrameContainer implements DataInListener, DataOutListener {
 
     /** The server object that's being monitored. */
@@ -59,7 +56,7 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
      * @param urlBuilder         The URL builder to use when finding icons.
      */
     public Raw(
-            @Unbound final Server newServer,
+            final Server newServer,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder) {
