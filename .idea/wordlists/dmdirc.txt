@@ -1,0 +1,6 @@
+dmdirc
+addons
+ctcp
+completers
+plugin's
+ident
