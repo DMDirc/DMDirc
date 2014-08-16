@@ -42,6 +42,8 @@ import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
 
+import com.google.common.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -95,6 +97,7 @@ public class UpdaterModule {
      * @param commandLineParser  CLI parser to use to find launcher version.
      * @param updateManager      The underlying update manager.
      * @param identityController The controller to use to read and update settings.
+     * @param eventBus           The event bus to post errors to.
      *
      * @return The update manager to use.
      */
@@ -103,8 +106,9 @@ public class UpdaterModule {
     public UpdateManager getUpdateManager(
             final CommandLineParser commandLineParser,
             final DMDircUpdateManager updateManager,
-            final IdentityController identityController) {
-        UpdateChecker.init(updateManager, identityController);
+            final IdentityController identityController,
+            final EventBus eventBus) {
+        UpdateChecker.init(updateManager, identityController, eventBus);
 
         if (commandLineParser.getLauncherVersion() != null) {
             LauncherComponent.setLauncherInfo(updateManager,
