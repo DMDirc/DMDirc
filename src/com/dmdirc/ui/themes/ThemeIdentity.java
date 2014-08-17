@@ -56,7 +56,6 @@ public class ThemeIdentity extends ConfigFileBackedConfigProvider {
         this.theme = theme;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getOption(final String domain,
             final String option, final Validator<String> validator) {
@@ -69,7 +68,6 @@ public class ThemeIdentity extends ConfigFileBackedConfigProvider {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "Theme UI config: " + super.getName();

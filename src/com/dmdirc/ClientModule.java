@@ -245,9 +245,10 @@ public class ClientModule {
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
+            final EventBus eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
-        final ThemeManager manager = new ThemeManager(controller, directory);
+        final ThemeManager manager = new ThemeManager(eventBus, controller, directory);
         manager.refreshAndLoadThemes();
         return manager;
     }

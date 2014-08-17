@@ -23,12 +23,14 @@
 package com.dmdirc.ui.themes;
 
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,8 @@ public class Theme implements Comparable<Theme> {
     private final IdentityController identityController;
     /** The file to load the theme from. */
     private final File file;
+    /** The event bus to post errors to. */
+    private final EventBus eventBus;
     /** The config file containing theme meta-data. */
     private ConfigFile metadata;
     /** The resource manager we're using for this theme. */
@@ -52,9 +56,11 @@ public class Theme implements Comparable<Theme> {
     /** The Identity we've registered. */
     private ThemeIdentity identity;
 
-    public Theme(final IdentityController identityController, final File file) {
+    public Theme(final EventBus eventBus, final IdentityController identityController,
+            final File file) {
         this.identityController = identityController;
         this.file = file;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -68,8 +74,9 @@ public class Theme implements Comparable<Theme> {
             try {
                 rm = ZipResourceManager.getInstance(file.getCanonicalPath());
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading theme: "
-                        + file.getAbsolutePath() + ": " + ex.getMessage());
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "I/O error when loading theme: " + file.getAbsolutePath() + ": "
+                                + ex.getMessage(), ""));
 
                 return false;
             }
@@ -105,8 +112,8 @@ public class Theme implements Comparable<Theme> {
                 identity = new ThemeIdentity(stream, this);
                 identityController.addConfigProvider(identity);
             } catch (InvalidIdentityFileException | IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
-                        + ex.getMessage());
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM,
+                        ex, "Error loading theme identity file: " + ex.getMessage(), ""));
             }
         }
     }
@@ -194,7 +201,6 @@ public class Theme implements Comparable<Theme> {
         return getMetaData("description", "?");
     }
 
-    /** {@inheritDoc} */
     @Override
     public int compareTo(final Theme o) {
         return getName().compareTo(o.getName());

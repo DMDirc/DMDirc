@@ -22,10 +22,12 @@
 
 package com.dmdirc.ui.themes;
 
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+
+import com.google.common.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,27 +45,30 @@ public class ThemeManager {
     private final String themeDirectory;
     /** Available themes. */
     private final Map<String, Theme> themes = new HashMap<>();
+    /** The event bus to post errors to. */
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of the {@link ThemeManager}.
      *
+     * @param eventBus           The event bus to post errors to
      * @param identityController The identity controller to read settings from.
      * @param themesDirectory    The directory to load themes from.
      */
     public ThemeManager(
+            final EventBus eventBus,
             final IdentityController identityController,
             final String themesDirectory) {
         this.identityController = identityController;
         this.themeDirectory = themesDirectory;
-        identityController.getGlobalConfiguration()
-                .addChangeListener("themes", "enabled",
-                        new ConfigChangeListener() {
-                            /** {@inheritDoc} */
-                            @Override
-                            public void configChanged(final String domain, final String key) {
-                                refreshAndLoadThemes();
-                            }
-                        });
+        this.eventBus = eventBus;
+        identityController.getGlobalConfiguration().addChangeListener("themes", "enabled",
+                new ConfigChangeListener() {
+                    @Override
+                    public void configChanged(final String domain, final String key) {
+                        refreshAndLoadThemes();
+                    }
+                });
     }
 
     /**
@@ -73,11 +78,12 @@ public class ThemeManager {
         final File dir = new File(themeDirectory);
 
         if (!dir.exists() && !dir.mkdirs()) {
-            Logger.userError(ErrorLevel.HIGH, "Could not create themes directory");
+            eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, null,
+                    "Could not create themes directory", ""));
         }
 
         if (dir.listFiles() == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
+            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null, "Unable to load themes", ""));
             return;
         }
 
@@ -104,12 +110,12 @@ public class ThemeManager {
      * @param enabled Whether this theme is enabled or not
      */
     private void loadTheme(final File file, final boolean enabled) {
-        Theme theme;
+        final Theme theme;
 
         if (themes.containsKey(file.getName())) {
             theme = themes.get(file.getName());
         } else {
-            theme = new Theme(identityController, file);
+            theme = new Theme(eventBus, identityController, file);
 
             if (theme.isValidTheme()) {
                 themes.put(file.getName(), theme);
