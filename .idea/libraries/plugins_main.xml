@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="plugins main">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/modules/plugins/lib/main/annotations.jar!/" />
       <root url="jar://$PROJECT_DIR$/modules/plugins/lib/main/commons-lang.jar!/" />
       <root url="jar://$PROJECT_DIR$/modules/plugins/lib/main/javax.inject.jar!/" />
       <root url="jar://$PROJECT_DIR$/modules/plugins/lib/main/jetty-util.jar!/" />

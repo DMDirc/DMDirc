@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="main">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/main/annotations.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/base64.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/dagger-compiler.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/dagger.jar!/" />
