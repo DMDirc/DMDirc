@@ -26,8 +26,6 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.util.annotations.factory.Factory;
-import com.dmdirc.util.annotations.factory.Unbound;
 import com.dmdirc.util.io.Downloader;
 
 import java.io.IOException;
@@ -38,7 +36,6 @@ import java.util.Map;
 /**
  * Sends feedback back to the developers.
  */
-@Factory(inject = true)
 public class FeedbackSender implements Runnable {
 
     private final Map<String, String> postData;
@@ -50,12 +47,12 @@ public class FeedbackSender implements Runnable {
             @SuppressWarnings("qualifiers") @GlobalConfig final AggregateConfigProvider config,
             final Downloader downloader,
             final StatusBar statusBar,
-            @Unbound final String name,
-            @Unbound final String email,
-            @Unbound final String feedback,
-            @Unbound final String version,
-            @Unbound final String serverInfo,
-            @Unbound final String dmdircInfo) {
+            final String name,
+            final String email,
+            final String feedback,
+            final String version,
+            final String serverInfo,
+            final String dmdircInfo) {
         this.downloader = downloader;
         this.config = config;
         this.statusBar = statusBar;
