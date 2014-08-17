@@ -60,7 +60,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import net.miginfocom.Base64;
+import com.migcomponents.migbase64.Base64;
 
 /**
  * Manages storage and validation of certificates used when connecting to SSL servers.

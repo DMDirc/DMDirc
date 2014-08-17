@@ -47,7 +47,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import net.miginfocom.Base64;
+import com.migcomponents.migbase64.Base64;
 
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
