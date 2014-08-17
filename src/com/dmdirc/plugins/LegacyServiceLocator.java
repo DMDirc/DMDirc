@@ -22,8 +22,10 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+
+import com.google.common.eventbus.EventBus;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -43,10 +45,13 @@ public class LegacyServiceLocator implements ServiceLocator {
 
     /** The plugin manager to use to find services. */
     private final PluginManager pluginManager;
+    /** The event bus to post errors . */
+    private final EventBus eventBus;
 
     @Inject
-    public LegacyServiceLocator(final PluginManager pluginManager) {
+    public LegacyServiceLocator(final PluginManager pluginManager, final EventBus eventBus) {
         this.pluginManager = checkNotNull(pluginManager);
+        this.eventBus = checkNotNull(eventBus);
     }
 
     @Override
@@ -61,8 +66,7 @@ public class LegacyServiceLocator implements ServiceLocator {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Collection<T> getServices(
-            final Class<T> serviceType,
+    private <T> Collection<T> getServices(final Class<T> serviceType,
             @Nullable final String implementation) {
         checkNotNull(serviceType);
         final Collection<T> services = new HashSet<>();
@@ -70,20 +74,21 @@ public class LegacyServiceLocator implements ServiceLocator {
             if (pluginInfo.isLoaded()) {
                 final Plugin plugin = pluginInfo.getPlugin();
                 for (Method method : plugin.getClass().getMethods()) {
-                    if (method.isAnnotationPresent(Exported.class)
-                            && method.getParameterTypes().length == 0
-                            && serviceType.isAssignableFrom(method.getReturnType())) {
+                    if (method.isAnnotationPresent(Exported.class) &&
+                            method.getParameterTypes().length == 0 &&
+                            serviceType.isAssignableFrom(method.getReturnType())) {
                         try {
                             method.setAccessible(true);
                             final Object object = method.invoke(plugin);
-                            if (object != null && (implementation == null
-                                    || implementation.equals(object.getClass().getName()))) {
+                            if (object != null && (implementation == null ||
+                                    implementation.equals(object.getClass().getName()))) {
                                 services.add((T) object);
                             }
                         } catch (ReflectiveOperationException ex) {
-                            Logger.appError(ErrorLevel.LOW,
-                                    "Unable to execute exported method " + method.getName()
-                                    + " in plugin " + pluginInfo.getMetaData().getName(), ex);
+                            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                                    "Unable to execute exported method " + method.getName() +
+                                            " in plugin " + pluginInfo.getMetaData().getName(),
+                                    ""));
                         }
                     }
                 }

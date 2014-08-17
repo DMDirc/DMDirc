@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -30,7 +31,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
@@ -277,7 +277,8 @@ public class ServerManager implements ServerFactory {
             try {
                 connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"));
             } catch (URISyntaxException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to construct new server", ex);
+                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to construct new server", ""));
             }
         } else {
             connectedServer.join(new ChannelJoinRequest("#DMDirc"));
