@@ -22,12 +22,13 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.ClientModule;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.util.io.Downloader;
 
 import javax.inject.Inject;
+
+import static com.dmdirc.ClientModule.GlobalConfig;
 
 /**
  * Factory for {@link com.dmdirc.ui.core.feedback.FeedbackSender}s
@@ -40,7 +41,7 @@ public class FeedbackSenderFactory {
 
     @Inject
     public FeedbackSenderFactory(
-            @SuppressWarnings("qualifiers") @ClientModule.GlobalConfig final AggregateConfigProvider config,
+            @GlobalConfig final AggregateConfigProvider config,
             final Downloader downloader, final StatusBar statusBar) {
         this.config = config;
         this.downloader = downloader;

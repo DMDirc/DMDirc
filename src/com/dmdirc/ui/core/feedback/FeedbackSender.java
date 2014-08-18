@@ -44,7 +44,7 @@ public class FeedbackSender implements Runnable {
     private final Downloader downloader;
 
     public FeedbackSender(
-            @SuppressWarnings("qualifiers") @GlobalConfig final AggregateConfigProvider config,
+            @GlobalConfig final AggregateConfigProvider config,
             final Downloader downloader,
             final StatusBar statusBar,
             final String name,
