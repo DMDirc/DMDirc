@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="main">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/main/base64.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/dagger-compiler.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/dagger.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/guava.jar!/" />
@@ -15,6 +14,7 @@
       <root url="jar://$PROJECT_DIR$/lib/main/raven.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/slf4j-api.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/main/yamlbeans.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/main/migbase64.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
