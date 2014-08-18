@@ -6,6 +6,7 @@
         <conf name="main" description="Everything needed to compile DMDirc separately"/>
         <conf name="test" description="Everything needed to test DMDirc"/>
         <conf name="analyse" description="Everything needed to run analysis on DMDirc"/>
+        <conf name="bundled" description="Things bundled and distributed in full with DMDirc"/>
     </configurations>
 
     <dependencies>
@@ -19,16 +20,16 @@
 
         <dependency org="com.google.code.findbugs" name="jsr305" rev="2.+" conf="main->default" />
 
-        <dependency org="com.squareup.dagger" name="dagger" rev="1.2.1" conf="main->default" />
+        <dependency org="com.squareup.dagger" name="dagger" rev="1.2.1" conf="bundled,main->default" />
         <dependency org="com.squareup.dagger" name="dagger-compiler" rev="1.2.1" conf="main->default" />
 
-        <dependency org="com.esotericsoftware.yamlbeans" name="yamlbeans" rev="1.+" conf="main->default" />
+        <dependency org="com.esotericsoftware.yamlbeans" name="yamlbeans" rev="1.+" conf="bundled,main->default" />
 
-        <dependency org="com.brsanthu" name="migbase64" rev="2.2" conf="main->default" />
+        <dependency org="com.brsanthu" name="migbase64" rev="2.2" conf="bundled,main->default" />
 
-        <dependency org="net.kencochrane.raven" name="raven" rev="4.+" conf="main->default" />
+        <dependency org="net.kencochrane.raven" name="raven" rev="4.+" conf="bundled,main->default" />
 
-        <dependency org="com.google.guava" name="guava" rev="17.+" conf="main->default" />
+        <dependency org="com.google.guava" name="guava" rev="17.+" conf="bundled,main->default" />
 
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
