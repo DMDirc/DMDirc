@@ -137,7 +137,7 @@ public interface ProfilesDialogModel {
     /**
      * Gets the selected profile's list of nicknames validator.
      *
-     * @return
+     * @return The selected profile's nicknames validator
      */
     Validator<List<String>> getSelectedProfileNicknamesValidator();
 

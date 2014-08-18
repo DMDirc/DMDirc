@@ -88,6 +88,8 @@ public abstract class CommandParser implements Serializable {
 
     /**
      * @deprecated Callers should obtain their own instance of command controller.
+     *
+     * @return The command manager for this parser.
      */
     @Deprecated
     public CommandController getCommandManager() {
