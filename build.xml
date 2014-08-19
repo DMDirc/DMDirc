@@ -56,7 +56,7 @@
 
     <target name="-bundle-base64">
         <jar destfile="${dist.jar}" update="true">
-            <zipfileset src="lib/main/base64.jar" includes="net/miginfocom/**"/>
+            <zipfileset src="lib/main/migbase64.jar" includes="com/migcomponents/**"/>
         </jar>
     </target>
 
