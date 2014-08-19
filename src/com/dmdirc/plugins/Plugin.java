@@ -36,7 +36,7 @@ public interface Plugin {
      * Check any further Prerequisites for this plugin to load that can not be checked using
      * metainfo.
      *
-     * @return ValidationResponse detailign if the plugin passes any extra checks that plugin.info
+     * @return ValidationResponse detailing if the plugin passes any extra checks that plugin.info
      *         can't handle
      */
     ValidationResponse checkPrerequisites();

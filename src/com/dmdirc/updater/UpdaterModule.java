@@ -40,7 +40,7 @@ import com.dmdirc.updater.manager.DMDircUpdateManager;
 import com.dmdirc.updater.manager.UpdateComponentPolicy;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
 import com.google.common.eventbus.EventBus;
 
@@ -156,14 +156,14 @@ public class UpdaterModule {
     }
 
     /**
-     * Provides an {@link UpdateRetrievalStategy} that the client should use.
+     * Provides an {@link UpdateRetrievalStrategy} that the client should use.
      *
      * @param strategy The strategy to provide.
      *
      * @return The strategy to use in the client.
      */
     @Provides(type = Provides.Type.SET)
-    public UpdateRetrievalStategy getRetrievalStrategy(final DownloadRetrievalStrategy strategy) {
+    public UpdateRetrievalStrategy getRetrievalStrategy(final DownloadRetrievalStrategy strategy) {
         return strategy;
     }
 

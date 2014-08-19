@@ -100,7 +100,7 @@ public class GroupListManager implements GroupListStartListener,
     }
 
     /**
-     * Adds an observer to this mananger.
+     * Adds an observer to this manager.
      *
      * @param observer The observer to be notified of group start/stop events.
      */

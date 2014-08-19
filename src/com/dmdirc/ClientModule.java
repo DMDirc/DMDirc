@@ -230,7 +230,7 @@ public class ClientModule {
         }
 
         // The user may have an existing parser plugin (e.g. twitter) which
-        // will satisfy the service existance check above, but will render the
+        // will satisfy the service existence check above, but will render the
         // client pretty useless, so we'll force IRC extraction for now.
         extractor.extractCorePlugins("parser_irc");
         manager.refreshPlugins();

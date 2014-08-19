@@ -71,7 +71,7 @@ public class ExportedService {
             }
         }
 
-        throw new IllegalArgumentException("Illegal method/class combinatiion",
+        throw new IllegalArgumentException("Illegal method/class combination",
                 new NoSuchMethodException("Method does not exist in the specified class"));
     }
 

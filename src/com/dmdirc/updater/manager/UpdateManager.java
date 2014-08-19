@@ -26,7 +26,7 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 import com.dmdirc.updater.checking.UpdateCheckStrategy;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
 import java.util.Collection;
 
@@ -54,13 +54,13 @@ public interface UpdateManager {
     void addInstallationStrategy(final UpdateInstallationStrategy strategy);
 
     /**
-     * Adds a new retrieval strategy to this manager. {@link UpdateRetrievalStategy}s are
+     * Adds a new retrieval strategy to this manager. {@link UpdateRetrievalStrategy}s are
      * responsible for retrieving the updated version of a component after an update has been
      * identified by a {@link UpdateCheckStrategy}.
      *
      * @param strategy The strategy to be added.
      */
-    void addRetrievalStrategy(final UpdateRetrievalStategy strategy);
+    void addRetrievalStrategy(final UpdateRetrievalStrategy strategy);
 
     /**
      * Adds a new component to this manager. Components will be checked for updates the next time

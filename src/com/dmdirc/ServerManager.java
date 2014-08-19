@@ -255,7 +255,7 @@ public class ServerManager implements ServerFactory {
     }
 
     /**
-     * Connects the user to Quakenet if neccessary and joins #DMDirc.
+     * Connects the user to Quakenet if necessary and joins #DMDirc.
      */
     public void joinDevChat() {
         final List<Server> qnetServers = getServersByNetwork("Quakenet");

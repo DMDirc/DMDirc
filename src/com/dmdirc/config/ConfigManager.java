@@ -285,7 +285,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     /**
      * Determines whether the specified identity target matches the desired target. If the desired
      * target is prefixed with "re:", it is treated as a regular expression; otherwise the strings
-     * are compared lexigraphically to determine a match.
+     * are compared lexicographically to determine a match.
      *
      * @param desired The target string required by this config manager
      * @param actual  The target string supplied by the identity

@@ -25,7 +25,7 @@ package com.dmdirc.updater.retrieving;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
 /**
- * Describes the result of a retrieval operation by an {@link UpdateRetrievalStategy}.
+ * Describes the result of a retrieval operation by an {@link UpdateRetrievalStrategy}.
  */
 public interface UpdateRetrievalResult {
 

@@ -26,7 +26,7 @@ import com.dmdirc.updater.UpdateComponent;
 
 /**
  * Interface for objects interested in the progress of a retrieval attempt performed by an
- * {@link UpdateRetrievalStategy}.
+ * {@link UpdateRetrievalStrategy}.
  */
 public interface UpdateRetrievalListener {
 

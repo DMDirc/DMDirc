@@ -241,7 +241,7 @@ public class Styliser implements ConfigChangeListener {
      * <p>
      * The index translation is left-biased; that is, the indices are translated to be as far left
      * as they possibly can be. This means that the start of the string will include any control
-     * codes immediately preceeding the desired text, and the end will not include any trailing
+     * codes immediately preceding the desired text, and the end will not include any trailing
      * codes.
      * <p>
      * This method will NOT include "internal" control codes in the output.

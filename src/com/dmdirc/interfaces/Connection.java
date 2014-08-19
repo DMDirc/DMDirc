@@ -229,7 +229,7 @@ public interface Connection {
     IgnoreList getIgnoreList();
 
     /**
-     * Retusnt the list of invites for this server.
+     * Returns the list of invites for this server.
      *
      * @return Invite list
      */

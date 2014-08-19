@@ -62,7 +62,7 @@ public class CustomWindow extends FrameContainer {
      * @param title          The parent of this custom window
      * @param configProvider The config provider to read settings from.
      * @param urlBuilder     The URL builder to use when finding icons.
-     * @param eventBus       The bus to despatch events on.
+     * @param eventBus       The bus to dispatch events on.
      */
     public CustomWindow(
             final String name,

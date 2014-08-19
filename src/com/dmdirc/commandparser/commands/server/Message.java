@@ -75,7 +75,7 @@ public class Message extends Command implements IntelligentCommand,
             sendLine(origin, args.isSilent(), "selfMessage", target, message);
 
             // If this is a known server or channel, and this is not a silent
-            // invokation, use sendLine, else send it raw to the parser.
+            // invocation, use sendLine, else send it raw to the parser.
             if (!args.isSilent() && server.hasChannel(target)) {
                 server.getChannel(target).sendLine(message);
             } else if (!args.isSilent() && server.hasQuery(target)) {

@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to the container that despatched it.
+ * A message sink which adds the message to the container that dispatched it.
  */
 public class SelfMessageSink implements MessageSink {
 

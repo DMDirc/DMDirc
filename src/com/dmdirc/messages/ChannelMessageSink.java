@@ -33,7 +33,7 @@ import javax.inject.Inject;
 /**
  * A message sink which adds the message to a named channel. An optional fallback may be specified
  * for use if the channel does not exist. If no fallback is specified and the channel does not
- * exist, the message is despatched to the source.
+ * exist, the message is dispatched to the source.
  */
 public class ChannelMessageSink implements MessageSink {
 

@@ -49,7 +49,7 @@ public class AliasesModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifeycleComponent(final AliasLifecycleManager manager) {
+    public SystemLifecycleComponent getLifecycleComponent(final AliasLifecycleManager manager) {
         return manager;
     }
 

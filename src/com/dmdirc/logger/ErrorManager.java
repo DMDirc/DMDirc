@@ -82,7 +82,7 @@ public class ErrorManager implements ConfigChangeListener {
     }
 
     /**
-     * Initialiases the error manager.
+     * Initialises the error manager.
      *
      * @param globalConfig The configuration to read settings from.
      * @param directory    The directory to store errors in, if enabled.

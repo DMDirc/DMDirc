@@ -55,9 +55,9 @@ public class GlobalWindow extends FrameContainer {
      * @param config              The ConfigManager to retrieve settings from.
      * @param parser              The command parser to use to parse input.
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param messageSinkManager  The sink manager to use to dispatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
-     * @param eventBus            The bus to despatch events on.
+     * @param eventBus            The bus to dispatch events on.
      */
     @Inject
     public GlobalWindow(

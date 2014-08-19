@@ -233,7 +233,7 @@ public class Main {
             identityManager.getUserSettings().unsetOption("debug", "uiFixAttempted");
             System.exit(1);
         } else {
-            // Try to extract the UIs again incase they changed between versions
+            // Try to extract the UIs again in case they changed between versions
             // and the user didn't update the UI plugin.
             corePluginExtractor.extractCorePlugins("ui_");
 

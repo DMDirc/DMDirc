@@ -60,7 +60,7 @@ public abstract class CipherUtils {
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,};
     /** Iteration count. */
     private static final int ITERATIONS = 19;
-    /** Number of auth attemps before failing the attempt. */
+    /** Number of auth attempts before failing the attempt. */
     private static final int AUTH_TRIES = 4;
     /** The identity controller to use for reading/writing settings. */
     private final IdentityController identityController;

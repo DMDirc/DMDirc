@@ -96,7 +96,7 @@ public abstract class ConditionTreeFactory {
     }
 
     /**
-     * Creates condition trees where the arguments are disjoined together.
+     * Creates condition trees where the arguments are disjointed together.
      */
     public static class DisjunctionFactory extends ConditionTreeFactory {
 

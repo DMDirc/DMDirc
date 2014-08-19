@@ -56,7 +56,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
     private final PluginManager pluginManager;
     /** Provider of global command parsers. */
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
-    /** Proivder of global windows. */
+    /** Provider of global windows. */
     private final Provider<GlobalWindow> globalWindowProvider;
 
     /**

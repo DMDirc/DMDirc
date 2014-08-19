@@ -93,7 +93,7 @@ public class ServerStatus {
     /**
      * Adds a history entry to this status object. The history entry contains the name of the states
      * being transitioned between, the details of the method (and class and line) which initiated
-     * the transition, and the name of the thread in which the transition is occuring.
+     * the transition, and the name of the thread in which the transition is occurring.
      *
      * @param fromState The state which is being transitioned from
      * @param toState   The state which is being transitioned to

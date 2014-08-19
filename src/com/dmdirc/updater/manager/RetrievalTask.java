@@ -24,10 +24,10 @@ package com.dmdirc.updater.manager;
 
 import com.dmdirc.updater.checking.UpdateCheckResult;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
 /**
- * Task which retrieves an available update using the given {@link UpdateRetrievalStategy} and
+ * Task which retrieves an available update using the given {@link UpdateRetrievalStrategy} and
  * passes the result back to the {@link UpdateManagerImpl}.
  */
 public class RetrievalTask implements Runnable {
@@ -35,13 +35,13 @@ public class RetrievalTask implements Runnable {
     /** The update manager launching this task. */
     private final UpdateManagerImpl manager;
     /** The strategy to use to retrieve the update. */
-    private final UpdateRetrievalStategy strategy;
+    private final UpdateRetrievalStrategy strategy;
     /** The update which will be downloaded. */
     private final UpdateCheckResult result;
     /** Whether to install afterwards or not. */
     private final boolean install;
 
-    public RetrievalTask(final UpdateManagerImpl manager, final UpdateRetrievalStategy strategy,
+    public RetrievalTask(final UpdateManagerImpl manager, final UpdateRetrievalStrategy strategy,
             final UpdateCheckResult result, final boolean install) {
         this.manager = manager;
         this.strategy = strategy;

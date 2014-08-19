@@ -205,8 +205,8 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the resources failed to extract
      */
-    public final void extractResoucesEndingWith(final File newDir,
-            final String suffix) throws IOException {
+    public final void extractResourcesEndingWith(final File newDir, final String suffix)
+            throws IOException {
         final Map<String, byte[]> resources = getResourcesEndingWithAsBytes(
                 suffix);
         for (Entry<String, byte[]> resource : resources.entrySet()) {

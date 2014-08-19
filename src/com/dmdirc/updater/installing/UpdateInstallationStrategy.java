@@ -26,7 +26,7 @@ import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
 
 /**
  * Describes a strategy for installing updates which have been retrieved by a
- * {@link com.dmdirc.updater.retrieving.UpdateRetrievalStategy}.
+ * {@link com.dmdirc.updater.retrieving.UpdateRetrievalStrategy}.
  */
 public interface UpdateInstallationStrategy {
 

@@ -32,7 +32,7 @@ public class StatusMessage {
 
     /** Icon type for the message. */
     private final String iconType;
-    /** Mesage to display. */
+    /** Message to display. */
     private final String message;
     /** Message notifier. */
     private final StatusMessageNotifier messageNotifier;

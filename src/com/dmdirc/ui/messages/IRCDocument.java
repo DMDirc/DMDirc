@@ -229,13 +229,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /**
      * Fires the trimmed method on all listeners.
      *
-     * @param newSize     New document size
-     * @param trimedLines Number of trimmed lines
+     * @param newSize      New document size
+     * @param trimmedLines Number of trimmed lines
      */
-    protected void fireTrimmed(final int newSize, final int trimedLines) {
+    protected void fireTrimmed(final int newSize, final int trimmedLines) {
         for (IRCDocumentListener listener
                 : listeners.get(IRCDocumentListener.class)) {
-            listener.trimmed(newSize, trimedLines);
+            listener.trimmed(newSize, trimmedLines);
         }
     }
 

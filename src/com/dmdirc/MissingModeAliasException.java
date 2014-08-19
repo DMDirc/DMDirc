@@ -38,7 +38,7 @@ public class MissingModeAliasException extends Exception {
      * Creates a new exception detailing the missing modes aliases and supporting information.
      *
      * @param network            Network
-     * @param parser             Assocaited parser
+     * @param parser             Associated parser
      * @param modeAliasesVersion Current mode aliases version
      * @param missingModes       Missing modes
      */

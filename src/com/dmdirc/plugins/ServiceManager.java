@@ -54,7 +54,7 @@ public interface ServiceManager {
      * @param type Type of this service
      * @param name Name of this service
      *
-     * @return The service requested, or null if service wasn't found and create wasn't specifed
+     * @return The service requested, or null if service wasn't found and create wasn't specified
      */
     Service getService(final String type, final String name);
 
@@ -65,7 +65,7 @@ public interface ServiceManager {
      * @param name   Name of this service
      * @param create If the requested service doesn't exist, should it be created?
      *
-     * @return The service requested, or null if service wasn't found and create wasn't specifed
+     * @return The service requested, or null if service wasn't found and create wasn't specified
      */
     Service getService(final String type, final String name, final boolean create);
 
@@ -99,7 +99,7 @@ public interface ServiceManager {
             final boolean fallback) throws NoSuchProviderException;
 
     /**
-     * Get a List of all services of a specifed type.
+     * Get a List of all services of a specified type.
      *
      * @param type Type of service
      *

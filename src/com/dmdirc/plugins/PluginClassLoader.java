@@ -83,7 +83,7 @@ public class PluginClassLoader extends ClassLoader {
      * Have we already loaded the given class name?
      *
      * @param name        Name to check.
-     * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     * @param checkGlobal Should we check if the GCL has loaded it as well?
      *
      * @return True if the specified class is loaded, false otherwise
      */
@@ -96,7 +96,7 @@ public class PluginClassLoader extends ClassLoader {
      * Load the plugin with the given className.
      *
      * @param name      Class Name of plugin
-     * @param askGlobal Ask the gobal class loaded for this class if we can't find it?
+     * @param askGlobal Ask the global class loaded for this class if we can't find it?
      *
      * @return plugin class
      *

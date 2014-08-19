@@ -154,7 +154,7 @@ public class ActionSubstitutor {
     }
 
     /**
-     * Returns true if this action type's first argument is a frame container, or descendent of one.
+     * Returns true if this action type's first argument is a frame container, or descendant of one.
      *
      * @return True if this action type's first arg extends or is a FrameContainer
      */

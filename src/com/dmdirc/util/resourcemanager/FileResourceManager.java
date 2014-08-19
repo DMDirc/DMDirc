@@ -212,7 +212,7 @@ public final class FileResourceManager extends ResourceManager {
     }
 
     /**
-     * Returns a resursive listing of a directory tree.
+     * Returns a recursive listing of a directory tree.
      *
      * @param startingDirectory Starting directory for the file listing
      *

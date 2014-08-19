@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link UpdateRetrievalStategy} that downloads a file specified in a
+ * An {@link UpdateRetrievalStrategy} that downloads a file specified in a
  * {@link DownloadableUpdate}.
  */
 public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<DownloadableUpdate> {

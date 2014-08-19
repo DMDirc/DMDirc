@@ -30,7 +30,7 @@ import com.dmdirc.updater.installing.UpdateInstallationListener;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalListener;
 import com.dmdirc.updater.retrieving.UpdateRetrievalResult;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class UpdateManagerImpl implements UpdateManager {
     /** Collection of known update checking strategies. */
     private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
     /** Collection of known update retrieval strategies. */
-    private final List<UpdateRetrievalStategy> retrievers = new CopyOnWriteArrayList<>();
+    private final List<UpdateRetrievalStrategy> retrievers = new CopyOnWriteArrayList<>();
     /** Collection of known update installation strategies. */
     private final List<UpdateInstallationStrategy> installers = new CopyOnWriteArrayList<>();
     /** Map of known component names to their components. Guarded by {@link #componentsLock}. */
@@ -101,7 +101,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
     /** {@inheritDoc} */
     @Override
-    public void addRetrievalStrategy(final UpdateRetrievalStategy strategy) {
+    public void addRetrievalStrategy(final UpdateRetrievalStrategy strategy) {
         log.trace("Adding new retrieval strategy: {}", strategy);
         strategy.addUpdateRetrievalListener(retrievalListener);
         this.retrievers.add(strategy);
@@ -247,7 +247,7 @@ public class UpdateManagerImpl implements UpdateManager {
         }
 
         final UpdateCheckResult update = checkResults.get(component);
-        final UpdateRetrievalStategy strategy = getStrategy(update);
+        final UpdateRetrievalStrategy strategy = getStrategy(update);
 
         if (strategy == null) {
             listenerList.getCallable(UpdateStatusListener.class)
@@ -263,7 +263,7 @@ public class UpdateManagerImpl implements UpdateManager {
     /**
      * Sets the retrieval result for an {@link UpdateComponent}.
      *
-     * @param result The result retrieved from the {@link UpdateRetrievalStategy}.
+     * @param result The result retrieved from the {@link UpdateRetrievalStrategy}.
      */
     protected void setRetrievalResult(final UpdateRetrievalResult result) {
         log.debug("Received retrieval result {}", result);
@@ -278,10 +278,10 @@ public class UpdateManagerImpl implements UpdateManager {
      *
      * @return A relevant strategy, or <code>null</code> if none are available
      */
-    protected UpdateRetrievalStategy getStrategy(final UpdateCheckResult result) {
+    protected UpdateRetrievalStrategy getStrategy(final UpdateCheckResult result) {
         log.debug("Trying to find retrieval strategy for {}", result);
 
-        for (UpdateRetrievalStategy strategy : retrievers) {
+        for (UpdateRetrievalStrategy strategy : retrievers) {
             log.trace("Testing strategy {}", strategy);
 
             if (strategy.canHandle(result)) {

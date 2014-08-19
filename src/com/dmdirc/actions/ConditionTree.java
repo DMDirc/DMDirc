@@ -344,9 +344,9 @@ public final class ConditionTree {
     }
 
     /**
-     * Creates a condition tree by disjoining the specified number of arguments together.
+     * Creates a condition tree by disjointing the specified number of arguments together.
      *
-     * @param numArgs The number of arguments to be disjoined
+     * @param numArgs The number of arguments to be disjointed
      *
      * @return The corresponding condition tree
      */

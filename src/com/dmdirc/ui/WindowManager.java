@@ -208,7 +208,7 @@ public class WindowManager {
      * @since 0.6.4
      * @param target The container to be tested
      *
-     * @return True if the target is in the hierarchy, false otherise
+     * @return True if the target is in the hierarchy, false otherwise
      */
     protected boolean isInHierarchy(final FrameContainer target) {
         if (rootWindows.contains(target)) {

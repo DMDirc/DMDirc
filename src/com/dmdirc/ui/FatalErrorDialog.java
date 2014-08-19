@@ -53,7 +53,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- * The fatal error dialog is used to inform the user that a fatal error has occured and to give them
+ * The fatal error dialog is used to inform the user that a fatal error has occurred and to give them
  * a chance to quit or restart the client.
  */
 public final class FatalErrorDialog extends JDialog implements ActionListener,
@@ -69,7 +69,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private JButton restartButton;
     /** Quit client button. */
     private JButton quitButton;
-    /** Send errorbButton. */
+    /** Send error button. */
     private JButton sendButton;
     /** Info panel, informs the user what is happening. */
     private JTextPane infoLabel;

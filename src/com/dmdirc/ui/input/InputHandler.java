@@ -110,7 +110,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     private final ServiceManager serviceManager;
     /** The controller to use to retrieve command information. */
     private final CommandController commandController;
-    /** The event bus to use to despatch input events. */
+    /** The event bus to use to dispatch input events. */
     private final EventBus eventBus;
 
     /**
@@ -121,7 +121,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * @param commandController The controller to use to retrieve command information.
      * @param commandParser     The command parser to use for this text field.
      * @param parentWindow      The window that owns this input handler
-     * @param eventBus          The event bus to use to despatch input events.
+     * @param eventBus          The event bus to use to dispatch input events.
      */
     public InputHandler(
             final ServiceManager serviceManager,

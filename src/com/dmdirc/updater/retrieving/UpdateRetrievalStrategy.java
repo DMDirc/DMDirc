@@ -30,7 +30,7 @@ import com.dmdirc.updater.checking.UpdateCheckResult;
  * in a temporary location on disk for use by an
  * {@link com.dmdirc.updater.installing.UpdateInstallationStrategy}.
  */
-public interface UpdateRetrievalStategy {
+public interface UpdateRetrievalStrategy {
 
     /**
      * Determines whether this strategy can handle retrieving the given update.

@@ -195,14 +195,14 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * @param parserFactory         The factory to use to generate parsers.
      * @param tabCompleterFactory   The factory to use for tab completers.
      * @param identityFactory       The factory to use to create identities.
-     * @param messageSinkManager    The sink manager to use to despatch messages.
+     * @param messageSinkManager    The sink manager to use to dispatch messages.
      * @param statusBarManager      The manager to use to add status bar messages.
      * @param windowManager         Window Manager
      * @param channelFactory        The factory to use to create channels.
      * @param queryFactory          The factory to use to create queries.
      * @param rawFactory            The factory to use to create raw windows.
      * @param urlBuilder            The URL builder to use when finding icons.
-     * @param eventBus              The event bus to despatch events onto.
+     * @param eventBus              The event bus to dispatch events onto.
      * @param messageEncoderFactory The message encoder factory to create a message encoder with.
      * @param userSettings          The config provider to write user settings to.
      * @param executorService       The service to use to schedule events.
@@ -456,7 +456,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     }
 
     /**
-     * Schedules a reconnect attempt to be performed after a user-defiend delay.
+     * Schedules a reconnect attempt to be performed after a user-defined delay.
      */
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
@@ -1003,7 +1003,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             getConfigManager().removeListener(this);
             executorService.shutdown();
 
-            // Trigger any actions neccessary
+            // Trigger any actions necessary
             disconnect();
 
             myState.transition(ServerState.CLOSING);

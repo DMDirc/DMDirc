@@ -25,13 +25,13 @@ package com.dmdirc.updater.retrieving;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
 /**
- * Base class for {@link UpdateRetrievalStategy} implementations that can handle a single subclass
+ * Base class for {@link UpdateRetrievalStrategy} implementations that can handle a single subclass
  * of {@link UpdateCheckResult}.
  *
  * @param <T> The type of result that this strategy can handle
  */
 public abstract class TypeSensitiveRetrievalStrategy<T extends UpdateCheckResult>
-        implements UpdateRetrievalStategy {
+        implements UpdateRetrievalStrategy {
 
     /** The type of result that this strategy can handle. */
     private final Class<T> clazz;

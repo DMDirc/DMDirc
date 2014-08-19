@@ -34,7 +34,7 @@ import java.awt.Window;
  */
 public final class CoreUIUtils {
 
-    /** Precent creation. */
+    /** Prevent creation. */
     private CoreUIUtils() {
     }
 

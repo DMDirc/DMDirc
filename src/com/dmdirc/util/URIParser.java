@@ -44,7 +44,7 @@ public class URIParser {
     /**
      * Pattern used to breakdown a URI. From RFC3986 appendix-B.
      */
-    private final Pattern uriBreadown = Pattern.compile(
+    private final Pattern uriBreakdown = Pattern.compile(
             "((?<scheme>[^:/?#]+):)?(//(?<authority>[^/?#]*))?(?<path>[^?#]*)(\\?(?<query>[^#]*))?(#(?<fragment>.*))?");
 
     /**
@@ -74,7 +74,7 @@ public class URIParser {
         final String path;
         final String query;
         final String fragment;
-        final Matcher uriMatcher = uriBreadown.matcher(input);
+        final Matcher uriMatcher = uriBreakdown.matcher(input);
         if (!uriMatcher.matches() || uriMatcher.group("scheme") == null || uriMatcher.group(
                 "authority") == null) {
             throw new InvalidURIException("Invalid address specified");

@@ -24,7 +24,7 @@
  * Deals with client configuration and preferences.
  *
  * DMDirc's configuration system is based upon a set of 'identities'. Each identity has a specific
- * target which controls which elements of the client it is applied to. Identities can be targetted
+ * target which controls which elements of the client it is applied to. Identities can be targeted
  * to the client as a whole, and individual networks, servers or channels. Identities may also
  * specify an order, which controls in which order they are checked when looking up a configuration
  * setting.

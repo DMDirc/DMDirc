@@ -36,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class YamlReaderUtils {
 
     private YamlReaderUtils() {
-        // Shouldn't be instansiated
+        // Shouldn't be instantiated
     }
 
     /**

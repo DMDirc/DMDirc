@@ -57,7 +57,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
     private final WindowManager windowManager;
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
-    /** The bus to despatch events on. */
+    /** The bus to dispatch events on. */
     private final EventBus eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
@@ -68,7 +68,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
      * @param controller     The controller to use for command information.
      * @param windowManager  Window management
      * @param urlBuilder     The URL builder to use when finding icons.
-     * @param eventBus       The bus to despatch events on.
+     * @param eventBus       The bus to dispatch events on.
      * @param configProvider The config provider to retrieve settings from.
      */
     @Inject

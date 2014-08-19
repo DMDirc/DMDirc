@@ -327,7 +327,7 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Retruns a human readable string describing the number of times this error occurred and when
+     * Returns a human readable string describing the number of times this error occurred and when
      * these occurrences were.
      *
      * @return Occurrences description

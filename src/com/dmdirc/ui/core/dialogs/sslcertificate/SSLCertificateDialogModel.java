@@ -195,7 +195,7 @@ public class SSLCertificateDialogModel {
     /**
      * Adds a field to the specified group.
      *
-     * @param fields  The fields extracted from the certiciate
+     * @param fields  The fields extracted from the certificate
      * @param group   The group to add an entry to
      * @param title   The user-friendly title of the field
      * @param field   The name of the field to look for

@@ -26,7 +26,7 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 import com.dmdirc.updater.checking.UpdateCheckStrategy;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
-import com.dmdirc.updater.retrieving.UpdateRetrievalStategy;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -53,7 +53,7 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
      * @param checkStrategies        The strategies to use to actually perform checks.
      * @param consolidator           The consolidator to use to pick from multiple available
      *                               updates.
-     * @param retrievalStategies     The strategies to use to retrieve updates.
+     * @param retrievalStrategies     The strategies to use to retrieve updates.
      * @param installationStrategies The strategies to use to install updates.
      * @param components             The default components to add to the manager.
      */
@@ -62,7 +62,7 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
             final UpdateComponentPolicy updatePolicy,
             final Set<UpdateCheckStrategy> checkStrategies,
             final CheckResultConsolidator consolidator,
-            final Set<UpdateRetrievalStategy> retrievalStategies,
+            final Set<UpdateRetrievalStrategy> retrievalStrategies,
             final Set<UpdateInstallationStrategy> installationStrategies,
             final Set<UpdateComponent> components) {
         super(new ThreadPoolExecutor(THREAD_COUNT, THREAD_COUNT, 1, TimeUnit.MINUTES,
@@ -73,8 +73,8 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
             addCheckStrategy(checkStrategy);
         }
 
-        for (UpdateRetrievalStategy retrievalStategy : retrievalStategies) {
-            addRetrievalStrategy(retrievalStategy);
+        for (UpdateRetrievalStrategy retrievalStrategy : retrievalStrategies) {
+            addRetrievalStrategy(retrievalStrategy);
         }
 
         for (UpdateInstallationStrategy installationStrategy : installationStrategies) {

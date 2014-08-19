@@ -196,7 +196,7 @@ public class PreferencesCategory {
     /**
      * Adds the specified subcategory to this category.
      *
-     * @param subcategory The category to be asdded
+     * @param subcategory The category to be added
      */
     public void addSubCategory(final PreferencesCategory subcategory) {
         if (isInline() && !subcategory.isInline()) {

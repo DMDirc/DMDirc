@@ -114,7 +114,7 @@ public class PluginFilesHelper {
      * @throws IOException if the resources failed to extract
      */
     public void extractResourcesEndingWith(final String suffix) throws IOException {
-        pluginInfo.getResourceManager().extractResoucesEndingWith(filesDir, suffix);
+        pluginInfo.getResourceManager().extractResourcesEndingWith(filesDir, suffix);
     }
 
 }

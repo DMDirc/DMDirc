@@ -82,7 +82,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * @param newServer           The server object that this Query belongs to
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param commandController   The controller to load commands from.
-     * @param messageSinkManager  The sink manager to use to despatch messages.
+     * @param messageSinkManager  The sink manager to use to dispatch messages.
      * @param urlBuilder          The URL builder to use when finding icons.
      */
     public Query(
@@ -291,7 +291,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     }
 
     @Override
-    public void onCompositionStateCanged(final Parser parser, final Date date,
+    public void onCompositionStateChanged(final Parser parser, final Date date,
             final CompositionState state, final String host) {
         if (state == CompositionState.TYPING) {
             addComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
