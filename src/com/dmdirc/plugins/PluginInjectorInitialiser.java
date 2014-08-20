@@ -23,7 +23,6 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.ClientModule.GlobalConfig;
-import com.dmdirc.CorePluginExtractor;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;

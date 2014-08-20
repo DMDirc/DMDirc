@@ -20,14 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.plugins;
 
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import com.google.common.eventbus.EventBus;

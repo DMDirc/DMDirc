@@ -47,10 +47,11 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessagesModule;
+import com.dmdirc.plugins.CorePluginExtractor;
+import com.dmdirc.plugins.CorePluginHelper;
 import com.dmdirc.plugins.LegacyServiceLocator;
 import com.dmdirc.plugins.PluginInjectorInitialiser;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.plugins.ServiceLocator;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
@@ -58,7 +59,6 @@ import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
-import com.dmdirc.updater.Version;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
@@ -219,14 +219,16 @@ public class ClientModule {
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
+            final CorePluginHelper pluginHelper,
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(eventBus, identityController,
                 updateManager, initialiserProvider, objectGraph, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
-        checkBundledPlugins(extractor, manager, identityController.getGlobalConfiguration());
+        pluginHelper.checkBundledPlugins(extractor, manager,
+                identityController.getGlobalConfiguration());
 
         for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
-            ensureExists(extractor, manager, service);
+            pluginHelper.ensureExists(extractor, manager, service);
         }
 
         // The user may have an existing parser plugin (e.g. twitter) which
@@ -348,51 +350,6 @@ public class ClientModule {
             }
             System.out.println(newMessage.replace("<br>", "\n"));
             System.exit(1);
-        }
-    }
-
-    /**
-     * Ensures that there is at least one provider of the specified service type by extracting
-     * matching core plugins. Plugins must be named so that their file name starts with the service
-     * type, and then an underscore.
-     *
-     * @param corePluginExtractor Extractor to use if the service doesn't exist
-     * @param pm                  The plugin manager to use to access services
-     * @param serviceType         The type of service that should exist
-     */
-    public void ensureExists(
-            final CorePluginExtractor corePluginExtractor,
-            final PluginManager pm,
-            final String serviceType) {
-        if (pm.getServicesByType(serviceType).isEmpty()) {
-            corePluginExtractor.extractCorePlugins(serviceType + "_");
-            pm.refreshPlugins();
-        }
-    }
-
-    /**
-     * Checks whether the plugins bundled with this release of DMDirc are newer than the plugins
-     * known by the specified {@link PluginManager}. If the bundled plugins are newer, they are
-     * automatically extracted.
-     *
-     * @param corePluginExtractor Extractor to use if plugins need updating.
-     * @param pm                  The plugin manager to use to check plugins
-     * @param config              The configuration source for bundled versions
-     */
-    private void checkBundledPlugins(
-            final CorePluginExtractor corePluginExtractor,
-            final PluginManager pm,
-            final AggregateConfigProvider config) {
-        for (PluginMetaData plugin : pm.getAllPlugins()) {
-            if (config.hasOptionString("bundledplugins_versions", plugin.getName())) {
-                final Version bundled = new Version(config.getOption("bundledplugins_versions",
-                        plugin.getName()));
-                final Version installed = plugin.getVersion();
-
-                if (installed.compareTo(bundled) < 0) {
-                    corePluginExtractor.extractCorePlugins(plugin.getName());
-                }
-            }
         }
     }
 
