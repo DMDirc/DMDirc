@@ -22,9 +22,89 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.GlobalWindow;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.events.ClientOpenedEvent;
+import com.dmdirc.events.ServerConnectedEvent;
+import com.dmdirc.interfaces.CommandController;
+
+import com.google.common.eventbus.Subscribe;
+
 /**
  * Handles execution of {@link AutoCommand}s.
  */
 public class AutoCommandHandler {
+
+    private final CommandController commandController;
+    private final GlobalCommandParser globalCommandParser;
+    private final GlobalWindow globalWindow;
+    private final AutoCommand autoCommand;
+
+    public AutoCommandHandler(
+            final CommandController commandController,
+            final GlobalCommandParser globalCommandParser,
+            final GlobalWindow globalWindow,
+            final AutoCommand autoCommand) {
+        this.commandController = commandController;
+        this.globalCommandParser = globalCommandParser;
+        this.globalWindow = globalWindow;
+        this.autoCommand = autoCommand;
+    }
+
+    /**
+     * Handles auto-commands that respond to the client opening.
+     *
+     * @param event The event triggering the command.
+     */
+    @Subscribe
+    public void checkAutoCommand(final ClientOpenedEvent event) {
+        if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
+            execute(globalWindow, globalCommandParser);
+        }
+    }
+
+    /**
+     * Handles auto-commands that respond to a server connecting.
+     *
+     * @param event The event triggering the command.
+     */
+    @Subscribe
+    public void checkAutoCommand(final ServerConnectedEvent event) {
+        if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
+            // This is a global auto command, shouldn't be executed for servers.
+            return;
+        }
+
+        if (autoCommand.getProfile().isPresent() && !event.getConnection().getProfile().getName()
+                .equals(autoCommand.getProfile().get())) {
+            // There's a profile specified in the command that isn't matched
+            return;
+        }
+
+        if (autoCommand.getServer().isPresent() && !event.getConnection().getAddress()
+                .equals(autoCommand.getServer().get())) {
+            // There's a server specified in the command that isn't matched
+            return;
+        }
+
+
+        if (autoCommand.getNetwork().isPresent() && !event.getConnection().getNetwork()
+                .equals(autoCommand.getNetwork().get())) {
+            // There's a network specified in the command that isn't matched
+            return;
+        }
+
+        final FrameContainer container = event.getConnection().getWindowModel();
+        final CommandParser parser = container.getCommandParser();
+        execute(container, parser);
+    }
+
+    private void execute(final FrameContainer origin, final CommandParser parser) {
+        for (String line : autoCommand.getResponse().split("\n")) {
+            parser.parseCommand(origin, commandController.getCommandChar() + line);
+        }
+    }
 
 }

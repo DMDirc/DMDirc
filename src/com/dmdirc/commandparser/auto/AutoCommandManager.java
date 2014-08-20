@@ -42,6 +42,8 @@ public class AutoCommandManager {
 
     /** The bus to listen for events on. */
     private final EventBus eventBus;
+    /** The factory to use to create handlers. */
+    private final AutoCommandHandlerFactory factory;
     /** Known auto commands, mapped on to their handlers. */
     private final Map<AutoCommand, AutoCommandHandler> autoCommands = new ConcurrentSkipListMap<>();
     /** Whether the manager has been started or not. */
@@ -51,10 +53,12 @@ public class AutoCommandManager {
      * Creates a new instance of {@link AutoCommandManager}.
      *
      * @param eventBus The bus to listen to events on.
+     * @param factory  The factory to use to create handlers.
      */
     @Inject
-    public AutoCommandManager(final EventBus eventBus) {
+    public AutoCommandManager(final EventBus eventBus, final AutoCommandHandlerFactory factory) {
         this.eventBus = eventBus;
+        this.factory = factory;
     }
 
     /**
@@ -84,7 +88,7 @@ public class AutoCommandManager {
      */
     public void addAutoCommand(final AutoCommand autoCommand) {
         checkNotNull(autoCommand);
-        final AutoCommandHandler handler = new AutoCommandHandler();
+        final AutoCommandHandler handler = factory.getAutoCommandHandler(autoCommand);
 
         if (started) {
             eventBus.register(handler);
