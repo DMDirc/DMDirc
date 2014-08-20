@@ -24,6 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientLineAddedEvent;
+import com.dmdirc.events.FrameIconChangedEvent;
+import com.dmdirc.events.FrameNameChangedEvent;
+import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
@@ -310,6 +313,7 @@ public abstract class FrameContainer {
     protected void setName(final String name) {
         this.name = name;
 
+        eventBus.post(new FrameNameChangedEvent(this, name));
         listeners.getCallable(FrameInfoListener.class).nameChanged(this, name);
     }
 
@@ -322,6 +326,7 @@ public abstract class FrameContainer {
     public void setTitle(final String title) {
         this.title = title;
 
+        eventBus.post(new FrameTitleChangedEvent(this, title));
         listeners.getCallable(FrameInfoListener.class).titleChanged(this, title);
     }
 
@@ -404,6 +409,7 @@ public abstract class FrameContainer {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
+        eventBus.post(new FrameIconChangedEvent(this, icon));
         listeners.getCallable(FrameInfoListener.class).iconChanged(this, icon);
     }
 
@@ -597,7 +603,10 @@ public abstract class FrameContainer {
      * Adds a frame info listener to this container.
      *
      * @param listener The listener to be informed of frame information changes.
+     *
+     * @deprecated Use @{link FrameChangedEvent} instead
      */
+    @Deprecated
     public void addFrameInfoListener(final FrameInfoListener listener) {
         listeners.add(FrameInfoListener.class, listener);
     }
@@ -606,7 +615,10 @@ public abstract class FrameContainer {
      * Removes a frame info listener from this container.
      *
      * @param listener The listener to be removed.
+     *
+     * @deprecated Use @{link FrameChangedEvent} instead
      */
+    @Deprecated
     public void removeFrameInfoListener(final FrameInfoListener listener) {
         listeners.remove(FrameInfoListener.class, listener);
     }

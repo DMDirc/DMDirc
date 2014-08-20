@@ -20,44 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
 
-import java.util.EventListener;
-
 /**
- * Defines the methods that should be implemented by classes which wish to receive information about
- * frame icon or title changes.
- *
- * @since 0.6.3m2
- * @deprecated Use @{link com.dmdirc.events.FrameChangedEvent} or its children.
+ * Fired when a frame's name changes.
  */
-@Deprecated
-public interface FrameInfoListener extends EventListener {
+public class FrameNameChangedEvent extends FrameChangedEvent {
 
-    /**
-     * Called when a window's icon is changed.
-     *
-     * @param window The window whose icon changed
-     * @param icon   The new icon for the window
-     */
-    void iconChanged(final FrameContainer window, final String icon);
+    private final String name;
 
-    /**
-     * Called when a window's name is changed.
-     *
-     * @param window The window whose name changed
-     * @param name   The new name for the window
-     */
-    void nameChanged(final FrameContainer window, final String name);
+    public FrameNameChangedEvent(final FrameContainer container, final String name) {
+        super(container);
+        this.name = name;
+    }
 
-    /**
-     * Called when a window's title is changed.
-     *
-     * @param window The window whose title changed
-     * @param title  The new title for the window
-     */
-    void titleChanged(final FrameContainer window, final String title);
-
+    public String getName() {
+        return name;
+    }
 }
