@@ -39,8 +39,8 @@ public interface AutoCommandStore {
     /**
      * Writes all the given auto commands to the store, replacing any existing commands.
      *
-     * @param aliases The set of auto command to be written to the store.
+     * @param commands The set of auto command to be written to the store.
      */
-    void writeAutoCommands(Set<AutoCommand> aliases);
+    void writeAutoCommands(Set<AutoCommand> commands);
 
 }
