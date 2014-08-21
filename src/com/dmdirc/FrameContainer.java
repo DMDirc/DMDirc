@@ -35,7 +35,6 @@ import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
-import com.dmdirc.interfaces.FrameInfoListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -309,8 +308,7 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Changes the name of this container, and notifies any {@link FrameInfoListener}s of the
-     * change.
+     * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
      *
      * @param name The new name for this frame.
      */
@@ -318,12 +316,10 @@ public abstract class FrameContainer {
         this.name = name;
 
         eventBus.publishAsync(new FrameNameChangedEvent(this, name));
-        listeners.getCallable(FrameInfoListener.class).nameChanged(this, name);
     }
 
     /**
-     * Changes the title of this container, and notifies any {@link FrameInfoListener}s of the
-     * change.
+     * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
      *
      * @param title The new title for this frame.
      */
@@ -331,7 +327,6 @@ public abstract class FrameContainer {
         this.title = title;
 
         eventBus.publishAsync(new FrameTitleChangedEvent(this, title));
-        listeners.getCallable(FrameInfoListener.class).titleChanged(this, title);
     }
 
     /**
@@ -399,7 +394,7 @@ public abstract class FrameContainer {
     public abstract Connection getConnection();
 
     /**
-     * Sets the icon to be used by this frame container.
+     * Sets the icon to be used by this frame container and fires a {@link FrameIconChangedEvent}.
      *
      * @param icon The new icon to be used
      */
@@ -417,7 +412,6 @@ public abstract class FrameContainer {
      */
     private void iconUpdated() {
         eventBus.publish(new FrameIconChangedEvent(this, icon));
-        listeners.getCallable(FrameInfoListener.class).iconChanged(this, icon);
     }
 
     /**
@@ -612,30 +606,6 @@ public abstract class FrameContainer {
     @Deprecated
     public void removeNotificationListener(final NotificationListener listener) {
         listeners.remove(NotificationListener.class, listener);
-    }
-
-    /**
-     * Adds a frame info listener to this container.
-     *
-     * @param listener The listener to be informed of frame information changes.
-     *
-     * @deprecated Use @{link FrameChangedEvent} instead
-     */
-    @Deprecated
-    public void addFrameInfoListener(final FrameInfoListener listener) {
-        listeners.add(FrameInfoListener.class, listener);
-    }
-
-    /**
-     * Removes a frame info listener from this container.
-     *
-     * @param listener The listener to be removed.
-     *
-     * @deprecated Use @{link FrameChangedEvent} instead
-     */
-    @Deprecated
-    public void removeFrameInfoListener(final FrameInfoListener listener) {
-        listeners.remove(FrameInfoListener.class, listener);
     }
 
     /**
