@@ -24,9 +24,14 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientLineAddedEvent;
+import com.dmdirc.events.FrameClosingEvent;
+import com.dmdirc.events.FrameComponentAddedEvent;
+import com.dmdirc.events.FrameComponentRemovedEvent;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
+import com.dmdirc.events.NotificationClearedEvent;
+import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
@@ -351,6 +356,7 @@ public abstract class FrameContainer {
     public void addComponent(final String component) {
         components.add(component);
 
+        eventBus.publishAsync(new FrameComponentAddedEvent(this, component));
         for (FrameComponentChangeListener listener
                 : listeners.get(FrameComponentChangeListener.class)) {
             listener.componentAdded(this, component);
@@ -366,6 +372,7 @@ public abstract class FrameContainer {
     public void removeComponent(final String component) {
         components.remove(component);
 
+        eventBus.publishAsync(new FrameComponentRemovedEvent(this, component));
         for (FrameComponentChangeListener listener
                 : listeners.get(FrameComponentChangeListener.class)) {
             listener.componentRemoved(this, component);
@@ -378,6 +385,7 @@ public abstract class FrameContainer {
     public void close() {
         eventBusManager.disconnect();
 
+        eventBus.publishAsync(new FrameClosingEvent(this));
         for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
             listener.windowClosing(this);
             listeners.remove(FrameCloseListener.class, listener);
@@ -433,6 +441,7 @@ public abstract class FrameContainer {
      */
     public void clearNotification() {
         notification = Optional.absent();
+        eventBus.publishAsync(new NotificationClearedEvent(this));
         listeners.getCallable(NotificationListener.class).notificationCleared(this);
     }
 
@@ -444,6 +453,7 @@ public abstract class FrameContainer {
     public void sendNotification(final Colour colour) {
         if (!notification.isPresent() || !colour.equals(notification.get())) {
             notification = Optional.of(colour);
+            eventBus.publishAsync(new NotificationSetEvent(this, colour));
             listeners.getCallable(NotificationListener.class).notificationSet(this, colour);
         }
     }
@@ -548,6 +558,7 @@ public abstract class FrameContainer {
      *
      * @param listener The listener to be added
      */
+    @Deprecated
     public void addCloseListener(final FrameCloseListener listener) {
         listeners.add(FrameCloseListener.class, listener);
     }
@@ -558,6 +569,7 @@ public abstract class FrameContainer {
      * @since 0.6.5
      * @param listener The listener to be removed
      */
+    @Deprecated
     public void removeCloseListener(final FrameCloseListener listener) {
         listeners.remove(FrameCloseListener.class, listener);
     }
@@ -568,6 +580,7 @@ public abstract class FrameContainer {
      * @since 0.6.6
      * @param listener The listener to be added
      */
+    @Deprecated
     public void addComponentListener(final FrameComponentChangeListener listener) {
         listeners.add(FrameComponentChangeListener.class, listener);
     }
@@ -578,6 +591,7 @@ public abstract class FrameContainer {
      * @since 0.6.6
      * @param listener The listener to be removed
      */
+    @Deprecated
     public void removeComponentListener(final FrameComponentChangeListener listener) {
         listeners.remove(FrameComponentChangeListener.class, listener);
     }
@@ -587,6 +601,7 @@ public abstract class FrameContainer {
      *
      * @param listener The listener to inform of notification events.
      */
+    @Deprecated
     public void addNotificationListener(final NotificationListener listener) {
         listeners.add(NotificationListener.class, listener);
     }
@@ -596,6 +611,7 @@ public abstract class FrameContainer {
      *
      * @param listener The listener to be removed.
      */
+    @Deprecated
     public void removeNotificationListener(final NotificationListener listener) {
         listeners.remove(NotificationListener.class, listener);
     }

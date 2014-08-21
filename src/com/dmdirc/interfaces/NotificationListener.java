@@ -31,6 +31,7 @@ import java.util.EventListener;
  * Defines the methods that should be implemented by classes which wish to receive information about
  * notification changes.
  */
+@Deprecated
 public interface NotificationListener extends EventListener {
 
     /**

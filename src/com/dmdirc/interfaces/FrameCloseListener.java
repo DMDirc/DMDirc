@@ -29,7 +29,10 @@ import com.dmdirc.FrameContainer;
  * of a {@link FrameContainer}.
  *
  * @since 0.6.5
+ *
+ * @deprecated @see com.dmdirc.events.WindowClosingEvent
  */
+@Deprecated
 public interface FrameCloseListener {
 
     /**

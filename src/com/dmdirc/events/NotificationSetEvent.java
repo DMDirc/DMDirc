@@ -20,32 +20,24 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.ui.Colour;
 
 /**
- * An interface for classes interested in changes made to a {@link FrameContainer}'s components.
- *
- * @since 0.6.6
+ * Fired when the notification colour has been changed.
  */
-@Deprecated
-public interface FrameComponentChangeListener {
+public class NotificationSetEvent extends NotificationEvent {
 
-    /**
-     * Called whenever a new component is added to the container.
-     *
-     * @param container The container the component was added to
-     * @param component The name of the component that was added
-     */
-    void componentAdded(FrameContainer container, String component);
+    private final Colour colour;
 
-    /**
-     * Called whenever a new component is removed from the container.
-     *
-     * @param container The container the component was removed from
-     * @param component The name of the component that was removed
-     */
-    void componentRemoved(FrameContainer container, String component);
+    public NotificationSetEvent(final FrameContainer container, final Colour colour) {
+        super(container);
+        this.colour = colour;
+    }
 
+    public Colour getColour() {
+        return colour;
+    }
 }
