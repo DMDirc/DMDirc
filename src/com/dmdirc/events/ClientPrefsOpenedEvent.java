@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.config.prefs.PreferencesDialogModel;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Raised when the preferences dialog is opened.
  */
+@AsyncEvent
 public class ClientPrefsOpenedEvent extends PreferencesEvent {
 
     private final PreferencesDialogModel model;

@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Raised when a URL link has been clicked.
  */
+@AsyncEvent
 public class LinkUrlClickedEvent extends LinkEvent {
 
     public LinkUrlClickedEvent(final Window window, final String target) {

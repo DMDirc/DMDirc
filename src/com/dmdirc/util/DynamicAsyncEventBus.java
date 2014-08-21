@@ -20,16 +20,36 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.events;
+package com.dmdirc.util;
 
-import com.dmdirc.util.AsyncEvent;
+import com.google.common.eventbus.EventBus;
+
+import java.util.concurrent.Executor;
 
 /**
- * Fired when the the client is minimised.
- *
- * TODO: This should be moved into the Swing UI once the corresponding action types are removed.
+ * An {@link EventBus} that will dispatch events asynchronously if they annotated with
+ * {@link AsyncEvent}.
  */
-@AsyncEvent
-public class ClientMinimisedEvent extends DMDircEvent {
+public class DynamicAsyncEventBus extends EventBus {
+
+    private final Executor executor;
+
+    public DynamicAsyncEventBus(final Executor executor) {
+        this.executor = executor;
+    }
+
+    @Override
+    public void post(final Object event) {
+        if (event.getClass().isAnnotationPresent(AsyncEvent.class)) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    DynamicAsyncEventBus.super.post(event);
+                }
+            });
+        } else {
+            super.post(event);
+        }
+    }
 
 }

@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Event class for app errors.
  */
+@AsyncEvent
 public class AppErrorEvent extends ErrorEvent {
 
     public AppErrorEvent(final ErrorLevel level, final Throwable throwable, final String message,

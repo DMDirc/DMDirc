@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Event fired when some input has been entered into the client.
  */
+@AsyncEvent
 public class ClientUserInputEvent extends DMDircEvent {
 
     private final FrameContainer container;

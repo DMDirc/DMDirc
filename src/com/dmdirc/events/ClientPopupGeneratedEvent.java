@@ -25,10 +25,12 @@ package com.dmdirc.events;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Raised when a popup is being generated.
  */
+@AsyncEvent
 public class ClientPopupGeneratedEvent extends DMDircEvent {
 
     private final PopupType type;

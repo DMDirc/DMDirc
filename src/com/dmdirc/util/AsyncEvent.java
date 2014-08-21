@@ -20,21 +20,18 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.events;
+package com.dmdirc.util;
 
-import com.dmdirc.Channel;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Fired when a channel topic is cleared.
+ * Marker interface used to identify an event that should be dispatched asynchronously by a
+ * {@link DynamicAsyncEventBus}.
  */
-public class ChanelNotopicEvent extends ChannelDisplayableEvent {
-
-    public ChanelNotopicEvent(final long timestamp, final Channel channel) {
-        super(timestamp, channel);
-    }
-
-    public ChanelNotopicEvent(final Channel channel) {
-        super(channel);
-    }
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AsyncEvent {
 }

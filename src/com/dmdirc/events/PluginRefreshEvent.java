@@ -22,9 +22,12 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.util.AsyncEvent;
+
 /**
  * Fired when the list of available plugins may have updated.
  */
+@AsyncEvent
 public class PluginRefreshEvent extends DMDircEvent {
 
 }

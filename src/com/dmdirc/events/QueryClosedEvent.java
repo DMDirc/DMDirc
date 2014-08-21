@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Query;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a query window is closed.
  */
+@AsyncEvent
 public class QueryClosedEvent extends QueryEvent {
 
     public QueryClosedEvent(final long timestamp, final Query query) {

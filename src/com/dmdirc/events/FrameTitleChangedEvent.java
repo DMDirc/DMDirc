@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a frame title changes.
  */
+@AsyncEvent
 public class FrameTitleChangedEvent extends FrameChangedEvent {
 
     private final String title;

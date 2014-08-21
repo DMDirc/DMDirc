@@ -24,10 +24,12 @@ package com.dmdirc.events;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when an action is deleted.
  */
+@AsyncEvent
 public class ActionDeletedEvent extends ActionEvent {
 
     private final ActionGroup group;

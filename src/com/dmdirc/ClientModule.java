@@ -61,6 +61,7 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
+import com.dmdirc.util.DynamicAsyncEventBus;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
 
@@ -71,6 +72,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import javax.inject.Provider;
 import javax.inject.Qualifier;
@@ -287,7 +289,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public EventBus getEventBus() {
-        return new EventBus();
+        return new DynamicAsyncEventBus(Executors.newSingleThreadExecutor());
     }
 
     @Provides

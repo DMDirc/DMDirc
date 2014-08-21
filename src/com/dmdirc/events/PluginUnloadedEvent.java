@@ -23,10 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a plugin is loaded.
  */
+@AsyncEvent
 public class PluginUnloadedEvent extends PluginEvent {
 
     public PluginUnloadedEvent(final PluginInfo plugin) {

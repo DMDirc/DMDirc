@@ -22,9 +22,12 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.util.AsyncEvent;
+
 /**
  * Fired when its time to nag for feedback.
  */
+@AsyncEvent
 public class FeedbackNagEvent extends DMDircEvent {
 
 }
