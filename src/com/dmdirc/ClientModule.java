@@ -32,6 +32,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.aliases.AliasesModule;
+import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
@@ -86,6 +87,7 @@ import dagger.Provides;
         injects = {Main.class, CommandLineParser.class},
         includes = {
             AliasesModule.class,
+            AutoCommandModule.class,
             CommandLineOptionsModule.class,
             CommandModule.class,
             MessagesModule.class,
