@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired on the creation of an action.
  */
-@AsyncEvent
 public class ActionCreatedEvent extends ActionEvent {
 
     public ActionCreatedEvent(final Action action) {

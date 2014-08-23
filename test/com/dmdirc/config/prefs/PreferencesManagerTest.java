@@ -26,12 +26,12 @@ import com.dmdirc.events.ConnectionPrefsRequestedEvent;
 import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.eventbus.EventBus;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
@@ -39,21 +39,21 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class PreferencesManagerTest {
 
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
     @Mock private AggregateConfigProvider configManager;
 
     @Test
     public void testGettingChannelPrefsRaisesAction() {
         new PreferencesManager(eventBus).getChannelSettings(this.configManager, null);
-        verify(eventBus).post(isA(GroupChatPrefsRequestedEvent.class));
+        verify(eventBus).publish(isA(GroupChatPrefsRequestedEvent.class));
     }
 
     @Test
     public void testGettingServerPrefsRaisesAction() {
         new PreferencesManager(eventBus).getServerSettings(this.configManager, null);
 
-        verify(eventBus).post(isA(GroupChatPrefsRequestedEvent.class));
-        verify(eventBus).post(isA(ConnectionPrefsRequestedEvent.class));
+        verify(eventBus).publish(isA(GroupChatPrefsRequestedEvent.class));
+        verify(eventBus).publish(isA(ConnectionPrefsRequestedEvent.class));
     }
 
 }

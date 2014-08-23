@@ -75,9 +75,15 @@
     </target>
 
     <target name="-bundle-guava">
-      <jar destfile="${dist.jar}" update="true">
-          <zipfileset src="lib/main/guava.jar" includes="com/google/**"/>
-      </jar>
+        <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="lib/main/guava.jar" includes="com/google/**"/>
+        </jar>
+    </target>
+
+    <target name="-bundle-mbassador">
+        <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="lib/main/mbassador.jar" includes="net/engio/**"/>
+        </jar>
     </target>
 
     <target name="-bundle-yamlreader">
@@ -93,6 +99,6 @@
     <target name="-pre-init" depends="-init-dependencies,-init-submodule-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava,-bundle-raven,-bundle-yamlreader"/>
+    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava,-bundle-mbassador,-bundle-raven,-bundle-yamlreader"/>
 
 </project>

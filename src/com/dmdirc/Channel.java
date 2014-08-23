@@ -51,7 +51,6 @@ import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
 import com.google.common.base.Optional;
-import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +60,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * The Channel class represents the client's view of the channel. It handles callbacks for channel
@@ -113,7 +114,7 @@ public class Channel extends MessageTarget implements GroupChat {
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
@@ -307,7 +308,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
         // Trigger action for the window closing
-        getEventBus().post(new ChannelClosedEvent(this));
+        getEventBus().publish(new ChannelClosedEvent(this));
 
         // Inform any parents that the window is closing
         server.delChannel(channelInfo.getName());

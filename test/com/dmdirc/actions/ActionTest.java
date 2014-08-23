@@ -36,7 +36,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -72,7 +72,7 @@ public class ActionTest {
 
     @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
     @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;

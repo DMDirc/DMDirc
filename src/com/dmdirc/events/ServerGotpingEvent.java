@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when we receive a server ping reply.
  */
-@AsyncEvent
 public class ServerGotpingEvent extends ServerEvent {
 
     private final long ping;

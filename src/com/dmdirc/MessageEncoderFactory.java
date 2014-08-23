@@ -2,7 +2,7 @@ package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,10 +13,10 @@ import javax.inject.Singleton;
 @Singleton
 public class MessageEncoderFactory {
 
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     @Inject
-    public MessageEncoderFactory(final EventBus eventBus) {
+    public MessageEncoderFactory(final MBassador eventBus) {
         this.eventBus = eventBus;
     }
 

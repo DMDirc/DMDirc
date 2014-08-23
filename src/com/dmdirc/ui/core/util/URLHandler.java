@@ -31,8 +31,6 @@ import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.CommandUtils;
 
-import com.google.common.eventbus.EventBus;
-
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -42,13 +40,15 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import net.engio.mbassy.bus.MBassador;
+
 /** Handles URLs. */
 public class URLHandler {
 
     /** The time a browser was last launched. */
     private static Date lastLaunch;
     /** Event bus to fire unknown protocol errors on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** Config manager. */
     private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
@@ -68,7 +68,7 @@ public class URLHandler {
      */
     @Inject
     public URLHandler(
-            final EventBus eventBus,
+            final MBassador eventBus,
             final AggregateConfigProvider globalConfig,
             final ServerManager serverManager,
             final StatusBarManager statusBarManager) {
@@ -94,7 +94,7 @@ public class URLHandler {
                 uri = new URI("http://" + sanitisedString);
             }
         } catch (URISyntaxException ex) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                     "Invalid URL: " + ex.getMessage(), ""));
             return;
         }
@@ -140,7 +140,7 @@ public class URLHandler {
                 uri = new URI("http://" + url.toString());
             }
         } catch (URISyntaxException ex) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                     "Invalid URL: " + ex.getMessage(), ""));
             return;
         }
@@ -166,7 +166,7 @@ public class URLHandler {
         }
 
         if (!config.hasOptionString("protocol", uri.getScheme().toLowerCase())) {
-            eventBus.post(new UnknownURLEvent(uri));
+            eventBus.publish(new UnknownURLEvent(uri));
             return;
         }
 
@@ -272,7 +272,7 @@ public class URLHandler {
         try {
             Runtime.getRuntime().exec(CommandUtils.parseArguments(command));
         } catch (IOException ex) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                     "Unable to run application: " + ex.getMessage(), ""));
         }
     }
@@ -287,11 +287,11 @@ public class URLHandler {
             try {
                 desktop.browse(url);
             } catch (IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                         "Unable to open URL: " + ex.getMessage(), ""));
             }
         } else {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
                     "Unable to open your browser: Your desktop enviroment is "
                     + "not supported, please go to the URL Handlers section of "
                     + "the preferences dialog and set the path to your browser "
@@ -309,11 +309,11 @@ public class URLHandler {
             try {
                 desktop.mail(url);
             } catch (IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                         "Unable to open URL: " + ex.getMessage(), ""));
             }
         } else {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
                     "Unable to open your mail client: Your desktop enviroment is "
                     + "not supported, please go to the URL Handlers section of "
                     + "the preferences dialog and set the path to your browser "

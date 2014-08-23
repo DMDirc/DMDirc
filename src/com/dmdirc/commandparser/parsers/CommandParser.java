@@ -41,13 +41,13 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.RollingList;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -67,7 +67,7 @@ public abstract class CommandParser implements Serializable {
     /** Command manager to use. */
     protected final CommandController commandManager;
     /** Event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of CommandParser.
@@ -78,7 +78,7 @@ public abstract class CommandParser implements Serializable {
      */
     protected CommandParser(final AggregateConfigProvider configManager,
             final CommandController commandManager,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.eventBus = eventBus;
         commands = new HashMap<>();
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));
@@ -337,7 +337,7 @@ public abstract class CommandParser implements Serializable {
     protected void handleInvalidCommand(final FrameContainer origin,
             final CommandArguments args) {
         if (origin == null) {
-            eventBus.post(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
+            eventBus.publish(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
         } else {
             final DisplayableEvent event = new UnknownCommandEvent(origin, args.getCommandName(),
                     args.getArguments());

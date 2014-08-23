@@ -34,7 +34,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.net.URI;
@@ -49,6 +48,8 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -72,7 +73,7 @@ public class ServerManager implements ServerFactory {
     /** Concrete server factory to use. */
     private final ServerFactoryImpl serverFactoryImpl;
     /** Event bus for servers. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of ServerManager.
@@ -91,7 +92,7 @@ public class ServerManager implements ServerFactory {
             final Provider<CommandController> commandController,
             final WindowManager windowManager,
             final ServerFactoryImpl serverFactory,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
@@ -277,7 +278,7 @@ public class ServerManager implements ServerFactory {
             try {
                 connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"));
             } catch (URISyntaxException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                         "Unable to construct new server", ""));
             }
         } else {

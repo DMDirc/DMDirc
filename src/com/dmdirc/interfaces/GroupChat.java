@@ -25,7 +25,7 @@ package com.dmdirc.interfaces;
 import com.dmdirc.Topic;
 
 import com.google.common.base.Optional;
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public interface GroupChat extends Chat {
      *
      * @return An event bus scoped to this channel.
      */
-    EventBus getEventBus();
+    MBassador getEventBus();
 
     /**
      * Retrieves the maximum length that a topic on this channel can be.

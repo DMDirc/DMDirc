@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Event fired when a line has been added to a window.
  */
-@AsyncEvent
 public class ClientLineAddedEvent extends DMDircEvent {
 
     private final FrameContainer container;

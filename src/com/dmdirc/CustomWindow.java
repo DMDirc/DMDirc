@@ -28,7 +28,7 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.util.URLBuilder;
 
 import com.google.common.base.Optional;
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.util.Arrays;
 
@@ -69,7 +69,7 @@ public class CustomWindow extends FrameContainer {
             final String title,
             final AggregateConfigProvider configProvider,
             final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(null, "custom", name, title, configProvider, urlBuilder, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }

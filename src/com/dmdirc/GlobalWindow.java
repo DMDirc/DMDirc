@@ -35,7 +35,7 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.util.Arrays;
 
@@ -66,7 +66,7 @@ public class GlobalWindow extends FrameContainer {
             final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(null, "icon", "Global", "(Global)", config, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,

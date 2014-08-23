@@ -40,8 +40,6 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -52,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Provider;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Describes a single action.
@@ -79,7 +79,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The controller to use to retrieve components, comparisons, etc. */
     private final ActionController actionController;
     /** Event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The file system to read/write actions to. */
     private final FileSystem filesystem;
     /** The config file we're using. */
@@ -101,7 +101,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
-    public Action(final FileSystem filesystem, final EventBus eventBus,
+    public Action(final FileSystem filesystem, final MBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
@@ -149,7 +149,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param conditionTree               The condition tree to use
      * @param newFormat                   The new formatter to use
      */
-    public Action(final FileSystem filesystem, final EventBus eventBus,
+    public Action(final FileSystem filesystem, final MBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
@@ -182,7 +182,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         actionController.addAction(this);
         //TODO This needs to be done somewhere else, remove eventbus when it is.
-        eventBus.post(new ActionCreatedEvent(this));
+        eventBus.publishAsync(new ActionCreatedEvent(this));
     }
 
     /**
@@ -415,7 +415,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
                     + group + "/" + name + ": " + ex.getMessage());
         }
 
-        eventBus.post(new ActionUpdatedEvent(this));
+        eventBus.publishAsync(new ActionUpdatedEvent(this));
     }
 
     /**
@@ -587,7 +587,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Deletes this action.
      */
     public void delete() {
-        eventBus.post(new ActionDeletedEvent(actionController.getOrCreateGroup(getGroup()), this));
+        eventBus.publishAsync(new ActionDeletedEvent(actionController.getOrCreateGroup(getGroup()), this));
         try {
             Files.delete(filesystem.getPath(location));
         } catch (IOException ex) {

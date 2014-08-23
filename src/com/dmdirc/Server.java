@@ -67,8 +67,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
@@ -94,6 +92,8 @@ import javax.annotation.Nonnull;
 import javax.net.ssl.TrustManager;
 
 import org.slf4j.LoggerFactory;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -223,7 +223,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
             final URLBuilder urlBuilder,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,
@@ -379,7 +379,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }
         }
 
-        getEventBus().post(new ServerConnectingEvent(this));
+        getEventBus().publish(new ServerConnectingEvent(this));
     }
 
     @Override
@@ -535,7 +535,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final Query newQuery = queryFactory.getQuery(this, host);
 
             windowManager.addWindow(this, newQuery, focus);
-            getEventBus().post(new QueryOpenedEvent(newQuery));
+            getEventBus().publish(new QueryOpenedEvent(newQuery));
 
             getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
@@ -619,7 +619,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
 
             windowManager.addWindow(this, newChan, focus);
-            getEventBus().post(new ChannelOpenedEvent(newChan));
+            getEventBus().publish(new ChannelOpenedEvent(newChan));
 
             getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.add(newChan);
@@ -1198,7 +1198,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         handleNotification("socketClosed", getAddress());
 
-        getEventBus().post(new ServerDisconnectedEvent(this));
+        getEventBus().publish(new ServerDisconnectedEvent(this));
 
         eventHandler.unregisterCallbacks();
 
@@ -1303,7 +1303,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 }
             }
 
-            getEventBus().post(new ServerConnectErrorEvent(this, description));
+            getEventBus().publish(new ServerConnectErrorEvent(this, description));
 
             handleNotification("connectError", getAddress(), description);
 
@@ -1323,7 +1323,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
                 + " seconds.", getConfigManager()));
 
-        getEventBus().post(new ServerNopingEvent(this, parser.getPingTime()));
+        getEventBus().publishAsync(new ServerNopingEvent(this, parser.getPingTime()));
 
         if (parser.getPingTime()
                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
@@ -1370,7 +1370,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                     channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
-        getEventBus().post(new ServerConnectedEvent(this));
+        getEventBus().publish(new ServerConnectedEvent(this));
     }
 
     /**

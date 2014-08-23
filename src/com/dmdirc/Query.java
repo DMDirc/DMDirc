@@ -137,7 +137,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 final DisplayableEvent event = new QuerySelfMessageEvent(this, server.getParser().
                         getLocalClient(), part);
                 event.setDisplayFormat("querySelfMessage");
-                getEventBus().post(event);
+                getEventBus().publish(event);
             }
         }
     }
@@ -177,7 +177,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             doNotification("querySelfAction", client, action);
             final DisplayableEvent event = new QuerySelfActionEvent(this, client, action);
             event.setDisplayFormat("querySelfAction");
-            getEventBus().post(event);
+            getEventBus().publish(event);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -192,7 +192,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final DisplayableEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
-        getEventBus().post(event);
+        getEventBus().publish(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -206,7 +206,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final DisplayableEvent event = new QueryActionEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
-        getEventBus().post(event);
+        getEventBus().publish(event);
 
         addLine(buff, parts[0], parts[1], parts[2], message);
     }
@@ -260,7 +260,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final DisplayableEvent event = new QueryNickchangeEvent(this, oldNick);
             event.setDisplayFormat("queryNickChanged");
-            getEventBus().post(event);
+            getEventBus().publish(event);
 
             server.updateQuery(this, oldNick, client.getNickname());
 
@@ -283,7 +283,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final DisplayableEvent event = new QueryQuitEvent(this, reason);
             event.setDisplayFormat(format.toString());
-            getEventBus().post(event);
+            getEventBus().publish(event);
 
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
@@ -316,7 +316,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         // Trigger action for the window closing
-        getEventBus().post(new QueryClosedEvent(this));
+        getEventBus().publishAsync(new QueryClosedEvent(this));
 
         // Inform any parents that the window is closing
         server.delQuery(this);

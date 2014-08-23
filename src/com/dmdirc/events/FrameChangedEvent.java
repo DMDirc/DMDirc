@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Base class for all frame info events.
  */
-@AsyncEvent
 public class FrameChangedEvent extends DMDircEvent {
 
     private final FrameContainer container;

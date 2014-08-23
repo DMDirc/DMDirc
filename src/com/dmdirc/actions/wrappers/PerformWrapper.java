@@ -38,13 +38,13 @@ import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * An action wrapper for performs.
@@ -57,7 +57,7 @@ public class PerformWrapper extends ActionGroup {
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
     /** The event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of PerformWrapper.
@@ -67,7 +67,7 @@ public class PerformWrapper extends ActionGroup {
      */
     @Inject
     public PerformWrapper(final ActionFactory actionFactory,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super("performs");
 
         this.actionFactory = actionFactory;
@@ -77,15 +77,15 @@ public class PerformWrapper extends ActionGroup {
     @Override
     public void add(final Action action) {
         if (action.getTriggers().length != 1) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
                     "Perform actions may only have one trigger"));
         } else if (action.getTriggers()[0] != CoreActionType.SERVER_CONNECTED) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
                     "Perform actions must be triggered when a server connects"));
         } else if (!checkConditions(action.getConditions())) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid perform action: " + action.getName(),
                     "Perform actions must have exactly one or two conditions, "
                     + "one may target the server's name or network, and one may "

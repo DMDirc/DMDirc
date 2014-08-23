@@ -25,8 +25,6 @@ package com.dmdirc.plugins;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 
-import com.google.common.eventbus.EventBus;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,6 +32,8 @@ import java.util.HashSet;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,10 +46,10 @@ public class LegacyServiceLocator implements ServiceLocator {
     /** The plugin manager to use to find services. */
     private final PluginManager pluginManager;
     /** The event bus to post errors . */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     @Inject
-    public LegacyServiceLocator(final PluginManager pluginManager, final EventBus eventBus) {
+    public LegacyServiceLocator(final PluginManager pluginManager, final MBassador eventBus) {
         this.pluginManager = checkNotNull(pluginManager);
         this.eventBus = checkNotNull(eventBus);
     }
@@ -85,7 +85,7 @@ public class LegacyServiceLocator implements ServiceLocator {
                                 services.add((T) object);
                             }
                         } catch (ReflectiveOperationException ex) {
-                            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                                     "Unable to execute exported method " + method.getName() +
                                             " in plugin " + pluginInfo.getMetaData().getName(),
                                     ""));

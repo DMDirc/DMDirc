@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a channel names event is received.
  */
-@AsyncEvent
 public class ChannelGotnamesEvent extends ChannelEvent {
 
     public ChannelGotnamesEvent(final long timestamp, final Channel channel) {

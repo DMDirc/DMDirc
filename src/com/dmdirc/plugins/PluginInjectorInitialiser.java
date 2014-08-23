@@ -41,7 +41,7 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.inject.Inject;
 
@@ -69,7 +69,7 @@ public class PluginInjectorInitialiser {
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
     private final ActionSubstitutorFactory actionSubstitutorFactory;
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     private final IconManager iconManager;
 
     @Inject
@@ -90,7 +90,7 @@ public class PluginInjectorInitialiser {
             final URLBuilder urlBuilder,
             final ColourManager colourManager,
             final ActionSubstitutorFactory actionSubstitutorFactory,
-            final EventBus eventBus,
+            final MBassador eventBus,
             @GlobalConfig final IconManager iconManager) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;

@@ -27,11 +27,11 @@ import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Listens for whois-like numeric events and automatically formats them.
@@ -45,7 +45,7 @@ public class WhoisNumericFormatter {
     /** The identity to add formatters to. */
     private final ConfigProvider identity;
     /** Event bus to subscribe to events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new whois numeric formatter that will add automatic formats to the specified
@@ -55,7 +55,7 @@ public class WhoisNumericFormatter {
      * @param eventBus The event bus to subscribe to events on
      */
     public WhoisNumericFormatter(final ConfigProvider identity,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.identity = identity;
         this.eventBus = eventBus;
     }
@@ -64,7 +64,7 @@ public class WhoisNumericFormatter {
      * Registers this this whois numeric formatter with the global actions manager.
      */
     public void register() {
-        eventBus.register(this);
+        eventBus.subscribe(this);
     }
 
     /**
@@ -73,7 +73,7 @@ public class WhoisNumericFormatter {
      *
      * @param event The server disconnected event to process
      */
-    @Subscribe
+    @Handler
     public void handleServerDisconnected(final ServerDisconnectedEvent event) {
         targets.remove(event.getConnection());
     }
@@ -86,7 +86,7 @@ public class WhoisNumericFormatter {
      *
      * @param event The server numeric event to process
      */
-    @Subscribe
+    @Handler
     public void handleNumeric(final ServerNumericEvent event) {
         final Connection server = event.getConnection();
         final int numeric = event.getNumeric();

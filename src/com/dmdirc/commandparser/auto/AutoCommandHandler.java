@@ -30,7 +30,7 @@ import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.CommandController;
 
-import com.google.common.eventbus.Subscribe;
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Handles execution of {@link AutoCommand}s.
@@ -58,7 +58,7 @@ public class AutoCommandHandler {
      *
      * @param event The event triggering the command.
      */
-    @Subscribe
+    @Handler
     public void checkAutoCommand(final ClientOpenedEvent event) {
         if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
             execute(globalWindow, globalCommandParser);
@@ -70,7 +70,7 @@ public class AutoCommandHandler {
      *
      * @param event The event triggering the command.
      */
-    @Subscribe
+    @Handler
     public void checkAutoCommand(final ServerConnectedEvent event) {
         if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
             // This is a global auto command, shouldn't be executed for servers.

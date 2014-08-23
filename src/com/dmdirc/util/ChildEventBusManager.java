@@ -22,25 +22,26 @@
 
 package com.dmdirc.util;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utility for creating and managing instances of {@link EventBus} that are slaved to a parent bus.
+ * Utility for creating and managing instances of {@link net.engio.mbassy.bus.MBassador} that are slaved to a parent bus.
  * <p>
  * Any events sent on the child bus will be propagated up to the parent bus.
  */
 public class ChildEventBusManager {
 
-    private final EventBus parent;
-    private final EventBus child;
+    private final MBassador parent;
+    private final MBassador child;
     private final EventPropagator propagator;
 
-    public ChildEventBusManager(final EventBus parent) {
+    public ChildEventBusManager(final MBassador parent) {
         this.parent = checkNotNull(parent);
-        this.child = new EventBus();
+        this.child = new MBassador(BusConfiguration.Default());
         this.propagator = new EventPropagator();
     }
 
@@ -50,7 +51,7 @@ public class ChildEventBusManager {
      * After this method is called, all events sent to the child bus will be passed to the parent.
      */
     public void connect() {
-        child.register(propagator);
+        child.subscribe(propagator);
     }
 
     /**
@@ -59,7 +60,7 @@ public class ChildEventBusManager {
      * After this method is called, no further events will be passed to the parent.
      */
     public void disconnect() {
-        child.unregister(propagator);
+        child.unsubscribe(propagator);
     }
 
     /**
@@ -67,13 +68,13 @@ public class ChildEventBusManager {
      *
      * @return The child bus belonging to this manager.
      */
-    public EventBus getChildBus() {
+    public MBassador getChildBus() {
         return child;
     }
 
     private class EventPropagator {
 
-        @Subscribe
+        @Handler
         public void handleEvent(final Object object) {
             parent.post(object);
         }

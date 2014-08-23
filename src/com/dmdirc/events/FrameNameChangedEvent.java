@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a frame's name changes.
  */
-@AsyncEvent
 public class FrameNameChangedEvent extends FrameChangedEvent {
 
     private final String name;

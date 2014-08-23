@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when an action is updated.
  */
-@AsyncEvent
 public class ActionUpdatedEvent extends ActionEvent {
 
     public ActionUpdatedEvent(final Action action) {

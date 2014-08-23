@@ -32,11 +32,11 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 
-import com.google.common.eventbus.EventBus;
-
 import java.net.URI;
 
 import javax.inject.Inject;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Provides a method to retrieve a parser.
@@ -48,7 +48,7 @@ public class ParserFactory {
     /** PluginManager used by this ParserFactory */
     private final PluginManager pluginManager;
     /** The event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of {@link ParserFactory}.
@@ -58,7 +58,7 @@ public class ParserFactory {
      */
     @Inject
     public ParserFactory(final PluginManager pluginManager,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.pluginManager = pluginManager;
         this.eventBus = eventBus;
     }
@@ -132,7 +132,7 @@ public class ParserFactory {
                 }
             }
         } catch (NoSuchProviderException nspe) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, nspe,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, nspe,
                     "No parser found for: " + address.getScheme(), ""));
         }
 

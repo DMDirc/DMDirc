@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Fired when a frame icon changes.
  */
-@AsyncEvent
 public class FrameIconChangedEvent extends FrameChangedEvent {
 
     private final String icon;

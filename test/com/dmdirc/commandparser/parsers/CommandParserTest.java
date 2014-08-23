@@ -31,7 +31,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class CommandParserTest {
     @Mock private FrameContainer container;
     @Mock private Channel channel;
     @Mock private Connection connection;
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
     private TestCommandParser commandParser;
     private TestCommandParser channelCommandParser;
 

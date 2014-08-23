@@ -39,7 +39,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
     /** The bus to dispatch events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
 
@@ -76,7 +76,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
             final CommandController controller,
             final WindowManager windowManager,
             final URLBuilder urlBuilder,
-            final EventBus eventBus,
+            final MBassador eventBus,
             @GlobalConfig final AggregateConfigProvider configProvider) {
         super(controller);
 

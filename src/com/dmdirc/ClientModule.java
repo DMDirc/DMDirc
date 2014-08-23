@@ -61,18 +61,14 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
-import com.dmdirc.util.DynamicAsyncEventBus;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
-
-import com.google.common.eventbus.EventBus;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import javax.inject.Provider;
 import javax.inject.Qualifier;
@@ -81,6 +77,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
 
 /**
  * Provides dependencies for the client.
@@ -118,12 +116,18 @@ public class ClientModule {
 
     @Provides
     @Singleton
+    public MBassador getMBassador() {
+        return new MBassador(BusConfiguration.Default());
+    }
+
+    @Provides
+    @Singleton
     public IdentityManager getIdentityManager(
             @Directory(DirectoryType.BASE) final String baseDirectory,
             @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final String errorsDirectory,
             final CommandLineParser commandLineParser,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory, eventBus);
         ErrorManager.getErrorManager()
@@ -182,7 +186,7 @@ public class ClientModule {
             final ActionFactory actionFactory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
-            final EventBus eventBus,
+            final MBassador eventBus,
             @Directory(DirectoryType.ACTIONS) final String directory) {
         final ActionManager actionManager = new ActionManager(identityController,
                 actionFactory, actionWrappersProvider, updateManagerProvider, eventBus, directory);
@@ -218,7 +222,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public PluginManager getPluginManager(
-            final EventBus eventBus,
+            final MBassador eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
@@ -251,7 +255,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
-            final EventBus eventBus,
+            final MBassador eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
         final ThemeManager manager = new ThemeManager(eventBus, controller, directory);
@@ -284,12 +288,6 @@ public class ClientModule {
     @Provides
     public ServiceLocator getServiceLocator(final LegacyServiceLocator locator) {
         return locator;
-    }
-
-    @Provides
-    @Singleton
-    public EventBus getEventBus() {
-        return new DynamicAsyncEventBus(Executors.newSingleThreadExecutor());
     }
 
     @Provides

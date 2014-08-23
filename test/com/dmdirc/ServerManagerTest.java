@@ -32,7 +32,7 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -70,7 +70,7 @@ public class ServerManagerTest {
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;
 

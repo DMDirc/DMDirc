@@ -22,11 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.AsyncEvent;
-
 /**
  * Fired when the client is first opened.
  */
-@AsyncEvent
 public class ClientOpenedEvent extends DMDircEvent {
 }

@@ -22,12 +22,9 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.AsyncEvent;
-
 /**
  * Raised when the preferences dialog is closed.
  */
-@AsyncEvent
 public class ClientPrefsClosedEvent extends PreferencesEvent {
 
 }

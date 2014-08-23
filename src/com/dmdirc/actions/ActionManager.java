@@ -42,9 +42,6 @@ import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -58,6 +55,9 @@ import java.util.Set;
 import javax.inject.Provider;
 
 import org.slf4j.LoggerFactory;
+
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -95,7 +95,7 @@ public class ActionManager implements ActionController {
     /** The listeners that we have registered. */
     private final MapList<ActionType, ActionListener> listeners = new MapList<>();
     /** The global event bus to monitor. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The directory to load and save actions in. */
     private final String directory;
     /** Indicates whether or not user actions should be killed (not processed). */
@@ -117,7 +117,7 @@ public class ActionManager implements ActionController {
             final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final String directory) {
         this.identityManager = identityManager;
         this.factory = factory;
@@ -170,7 +170,7 @@ public class ActionManager implements ActionController {
 
         new WhoisNumericFormatter(identityManager.getAddonSettings(), eventBus).register();
 
-        eventBus.register(this);
+        eventBus.subscribe(this);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ActionManager implements ActionController {
      *
      * @param event The event that was raised.
      */
-    @Subscribe
+    @Handler
     public void handleClientClosed(final ClientClosedEvent event) {
         LOG.debug("Client closed - saving all actions");
         saveAllActions();
@@ -262,13 +262,13 @@ public class ActionManager implements ActionController {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, null,
+                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.HIGH, null,
                         "I/O error when creating actions directory: " + ex.getMessage(), ""));
             }
         }
 
         if (dir.listFiles() == null) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Unable to load user action files", ""));
         } else {
             for (File file : dir.listFiles()) {
@@ -371,7 +371,7 @@ public class ActionManager implements ActionController {
                 try {
                     listener.processEvent(type, format, arguments);
                 } catch (Exception e) {
-                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e,
+                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e,
                             "Error processing action: " + e.getMessage(), ""));
                 }
             }
@@ -420,7 +420,7 @@ public class ActionManager implements ActionController {
                         }
                     }
                 } catch (LinkageError | Exception e) {
-                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, e,
+                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e,
                             "Error processing action: " + e.getMessage(), ""));
                 }
             }
@@ -434,7 +434,7 @@ public class ActionManager implements ActionController {
      *
      * @param event The event that was raised.
      */
-    @Subscribe
+    @Handler
     public void processEvent(final DMDircEvent event) {
         final ActionType type = getType(getLegacyActionTypeName(event));
         if (type == null) {
@@ -549,7 +549,7 @@ public class ActionManager implements ActionController {
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()) {
                 if (!file.delete()) {
-                    eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                             "Unable to remove file: " + file.getAbsolutePath(), ""));
                     return;
                 }
@@ -557,7 +557,7 @@ public class ActionManager implements ActionController {
         }
 
         if (!dir.delete()) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Unable to remove directory: " + dir.getAbsolutePath(), ""));
             return;
         }

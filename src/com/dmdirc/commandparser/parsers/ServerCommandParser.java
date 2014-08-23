@@ -34,7 +34,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.annotation.Nonnull;
 
@@ -56,7 +56,7 @@ public class ServerCommandParser extends GlobalCommandParser {
     public ServerCommandParser(
             final AggregateConfigProvider configManager,
             final CommandController commandController,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(configManager, commandController, eventBus);
     }
     /**

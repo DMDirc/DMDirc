@@ -32,8 +32,6 @@ import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -66,7 +66,7 @@ public class PreferencesDialogModel {
     /** Plugin manager. */
     private final PluginManager pluginManager;
     /** Event bus to post events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -88,7 +88,7 @@ public class PreferencesDialogModel {
             final AggregateConfigProvider configManager,
             final ConfigProvider identity,
             final PluginManager pluginManager,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;
@@ -100,7 +100,7 @@ public class PreferencesDialogModel {
 
         addDefaultCategories();
 
-        eventBus.post(new ClientPrefsOpenedEvent(this));
+        eventBus.publishAsync(new ClientPrefsOpenedEvent(this));
     }
 
     public AggregateConfigProvider getConfigManager() {
@@ -631,7 +631,7 @@ public class PreferencesDialogModel {
      * @since 0.6
      */
     public void close() {
-        eventBus.post(new ClientPrefsClosedEvent());
+        eventBus.publishAsync(new ClientPrefsClosedEvent());
     }
 
 }

@@ -31,7 +31,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 public class TestCommandParser extends CommandParser {
 
@@ -48,7 +48,7 @@ public class TestCommandParser extends CommandParser {
     public String invalidCommand;
 
     public TestCommandParser(final AggregateConfigProvider configManager,
-            final CommandController commandManager, final EventBus eventBus) {
+            final CommandController commandManager, final MBassador eventBus) {
         super(configManager, commandManager, eventBus);
     }
 

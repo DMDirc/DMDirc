@@ -29,8 +29,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +37,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PreferencesDialogModelTest {
 
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
     @Mock private PluginManager pluginManager;
 
     @Before
@@ -171,7 +171,7 @@ public class PreferencesDialogModelTest {
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
                 null, null, cm, null, pluginManager, eventBus);
 
-        verify(eventBus).post(isA(ClientPrefsOpenedEvent.class));
+        verify(eventBus).publishAsync(isA(ClientPrefsOpenedEvent.class));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class PreferencesDialogModelTest {
                 null, null, cm, null, pluginManager, eventBus);
         pm.close();
 
-        verify(eventBus).post(isA(ClientPrefsClosedEvent.class));
+        verify(eventBus).publishAsync(isA(ClientPrefsClosedEvent.class));
     }
 
     @Test

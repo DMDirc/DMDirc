@@ -45,8 +45,6 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 
-import com.google.common.eventbus.EventBus;
-
 import java.awt.GraphicsEnvironment;
 import java.security.Policy;
 import java.util.Collection;
@@ -59,6 +57,7 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Main class, handles initialisation.
@@ -92,7 +91,7 @@ public class Main {
     /** The set of migrators to execute on startup. */
     private final Set<Migrator> migrators;
     /** The event bus to dispatch events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
@@ -126,7 +125,7 @@ public class Main {
             final ColourActionComparison colourActionComparison,
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final Set<Migrator> migrators,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;
@@ -197,7 +196,7 @@ public class Main {
         actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
-        eventBus.post(new ClientOpenedEvent());
+        eventBus.publishAsync(new ClientOpenedEvent());
 
         commandLineParser.processArguments(serverManager);
 
@@ -211,7 +210,7 @@ public class Main {
                     component.shutDown();
                 }
 
-                eventBus.post(new ClientClosedEvent());
+                eventBus.publishAsync(new ClientClosedEvent());
                 serverManager.disconnectAll("Unexpected shutdown");
                 identityManager.saveAll();
             }
@@ -289,13 +288,13 @@ public class Main {
     private void doFirstRun() {
         if (identityManager.getGlobalConfiguration().getOptionBool("general", "firstRun")) {
             identityManager.getUserSettings().setOption("general", "firstRun", "false");
-            eventBus.post(new FirstRunEvent());
+            eventBus.publish(new FirstRunEvent());
 
             new Timer().schedule(new TimerTask() {
 
                 @Override
                 public void run() {
-                    eventBus.post(new FeedbackNagEvent());
+                    eventBus.publishAsync(new FeedbackNagEvent());
                 }
             }, FEEDBACK_DELAY);
         }

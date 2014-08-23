@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Event class for user errors.
  */
-@AsyncEvent
 public class UserErrorEvent extends ErrorEvent {
 
     public UserErrorEvent(final ErrorLevel level, final Throwable throwable, final String message,

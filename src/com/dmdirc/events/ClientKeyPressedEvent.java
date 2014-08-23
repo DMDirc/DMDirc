@@ -22,8 +22,6 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.AsyncEvent;
-
 import javax.swing.KeyStroke;
 
 /**
@@ -31,7 +29,6 @@ import javax.swing.KeyStroke;
  *
  * TODO: This should be moved into the Swing UI once the corresponding action types are removed.
  */
-@AsyncEvent
 public class ClientKeyPressedEvent extends DMDircEvent {
 
     private final KeyStroke keyStroke;

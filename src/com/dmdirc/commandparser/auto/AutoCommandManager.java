@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +29,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class AutoCommandManager {
 
     /** The bus to listen for events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The factory to use to create handlers. */
     private final AutoCommandHandlerFactory factory;
     /** Known auto commands, mapped on to their handlers. */
@@ -56,7 +56,7 @@ public class AutoCommandManager {
      * @param factory  The factory to use to create handlers.
      */
     @Inject
-    public AutoCommandManager(final EventBus eventBus, final AutoCommandHandlerFactory factory) {
+    public AutoCommandManager(final MBassador eventBus, final AutoCommandHandlerFactory factory) {
         this.eventBus = eventBus;
         this.factory = factory;
     }
@@ -67,7 +67,7 @@ public class AutoCommandManager {
     public void start() {
         started = true;
         for (AutoCommandHandler handler : autoCommands.values()) {
-            eventBus.register(handler);
+            eventBus.subscribe(handler);
         }
     }
 
@@ -77,7 +77,7 @@ public class AutoCommandManager {
     public void stop() {
         started = false;
         for (AutoCommandHandler handler : autoCommands.values()) {
-            eventBus.unregister(handler);
+            eventBus.subscribe(handler);
         }
     }
 
@@ -91,7 +91,7 @@ public class AutoCommandManager {
         final AutoCommandHandler handler = factory.getAutoCommandHandler(autoCommand);
 
         if (started) {
-            eventBus.register(handler);
+            eventBus.subscribe(handler);
         }
 
         autoCommands.put(autoCommand, handler);
@@ -107,7 +107,7 @@ public class AutoCommandManager {
         final AutoCommandHandler handler = autoCommands.remove(autoCommand);
 
         if (started) {
-            eventBus.unregister(handler);
+            eventBus.subscribe(handler);
         }
     }
 

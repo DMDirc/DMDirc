@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.ui.Window;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Raised when a nickname link has been clicked.
  */
-@AsyncEvent
 public class LinkNicknameClickedEvent extends LinkEvent {
 
     public LinkNicknameClickedEvent(final Window window, final String target) {

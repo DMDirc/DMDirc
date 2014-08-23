@@ -26,9 +26,9 @@ import com.dmdirc.events.ClientPopupGeneratedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.eventbus.EventBus;
-
 import javax.inject.Inject;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
@@ -38,7 +38,7 @@ public class PopupManager {
     /** The command controller to use for items. */
     private final CommandController commandController;
     /** The bus to dispatch events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of PopupManager.
@@ -47,7 +47,7 @@ public class PopupManager {
      * @param eventBus          The bus to dispatch events on.
      */
     @Inject
-    public PopupManager(final CommandController commandController, final EventBus eventBus) {
+    public PopupManager(final CommandController commandController, final MBassador eventBus) {
         this.commandController = commandController;
         this.eventBus = eventBus;
     }
@@ -64,7 +64,7 @@ public class PopupManager {
     public PopupMenu getMenu(final PopupType menuType, final AggregateConfigProvider configManager) {
         final PopupMenu menu = getMenu(menuType.toString(), menuType, configManager);
 
-        eventBus.post(new ClientPopupGeneratedEvent(menuType, menu, configManager));
+        eventBus.publishAsync(new ClientPopupGeneratedEvent(menuType, menu, configManager));
 
         return menu;
     }

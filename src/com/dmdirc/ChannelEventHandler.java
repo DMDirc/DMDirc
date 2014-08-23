@@ -72,11 +72,12 @@ import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.eventbus.EventBus;
 
 import java.util.Date;
 
 import javax.annotation.Nonnull;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Handles events for channel objects.
@@ -93,9 +94,9 @@ public class ChannelEventHandler extends EventHandler implements
     /** The channel that owns this event handler. */
     private final Channel owner;
     /** Event bus to send events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
-    public ChannelEventHandler(final Channel owner, final EventBus eventBus) {
+    public ChannelEventHandler(final Channel owner, final MBassador eventBus) {
         this.owner = owner;
         this.eventBus = eventBus;
     }
@@ -145,7 +146,7 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.setClients(channel.getChannelClients());
-        eventBus.post(new ChannelGotnamesEvent(owner));
+        eventBus.publishAsync(new ChannelGotnamesEvent(owner));
     }
 
     @Override
@@ -173,7 +174,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String format = EventUtils.postDisplayable(eventBus, event,
                     Strings.isNullOrEmpty(channel.getTopic())
                     ? "channelTopicRemoved" : "channelTopicChanged");
-            eventBus.post(event);
+            eventBus.publish(event);
             owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
                     true), channel.getTopic());
         }

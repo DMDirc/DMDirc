@@ -33,7 +33,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +58,7 @@ public class QueryCommandParser extends ChatCommandParser {
      * @param eventBus          Event bus to post events on
      */
     public QueryCommandParser(final Server server, final CommandController commandController,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(server, commandController, eventBus);
     }
 

@@ -22,12 +22,9 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.AsyncEvent;
-
 /**
  * Fired when the client is being closed.
  */
-@AsyncEvent
 public class ClientClosedEvent extends DMDircEvent {
 
 }

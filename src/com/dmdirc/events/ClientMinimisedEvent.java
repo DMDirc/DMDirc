@@ -22,14 +22,11 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.AsyncEvent;
-
 /**
  * Fired when the the client is minimised.
  *
  * TODO: This should be moved into the Swing UI once the corresponding action types are removed.
  */
-@AsyncEvent
 public class ClientMinimisedEvent extends DMDircEvent {
 
 }

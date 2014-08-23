@@ -27,12 +27,12 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Manages available themes.
@@ -46,7 +46,7 @@ public class ThemeManager {
     /** Available themes. */
     private final Map<String, Theme> themes = new HashMap<>();
     /** The event bus to post errors to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of the {@link ThemeManager}.
@@ -56,7 +56,7 @@ public class ThemeManager {
      * @param themesDirectory    The directory to load themes from.
      */
     public ThemeManager(
-            final EventBus eventBus,
+            final MBassador eventBus,
             final IdentityController identityController,
             final String themesDirectory) {
         this.identityController = identityController;
@@ -78,12 +78,13 @@ public class ThemeManager {
         final File dir = new File(themeDirectory);
 
         if (!dir.exists() && !dir.mkdirs()) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.HIGH, null,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, null,
                     "Could not create themes directory", ""));
         }
 
         if (dir.listFiles() == null) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null, "Unable to load themes", ""));
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Unable to load themes", ""));
             return;
         }
 

@@ -47,7 +47,6 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.base.Optional;
-import com.google.common.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +60,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -101,7 +102,7 @@ public abstract class FrameContainer {
     /** The manager to use to manage our event bus. */
     private final ChildEventBusManager eventBusManager;
     /** Event bus to dispatch events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
@@ -146,7 +147,7 @@ public abstract class FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final URLBuilder urlBuilder,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.fromNullable(parent);
         this.configManager = config;
@@ -193,7 +194,7 @@ public abstract class FrameContainer {
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.fromNullable(parent);
         this.configManager = config;
@@ -238,7 +239,7 @@ public abstract class FrameContainer {
         return configManager;
     }
 
-    public EventBus getEventBus() {
+    public MBassador getEventBus() {
         return eventBus;
     }
 
@@ -313,7 +314,7 @@ public abstract class FrameContainer {
     protected void setName(final String name) {
         this.name = name;
 
-        eventBus.post(new FrameNameChangedEvent(this, name));
+        eventBus.publishAsync(new FrameNameChangedEvent(this, name));
         listeners.getCallable(FrameInfoListener.class).nameChanged(this, name);
     }
 
@@ -326,7 +327,7 @@ public abstract class FrameContainer {
     public void setTitle(final String title) {
         this.title = title;
 
-        eventBus.post(new FrameTitleChangedEvent(this, title));
+        eventBus.publishAsync(new FrameTitleChangedEvent(this, title));
         listeners.getCallable(FrameInfoListener.class).titleChanged(this, title);
     }
 
@@ -409,7 +410,7 @@ public abstract class FrameContainer {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        eventBus.post(new FrameIconChangedEvent(this, icon));
+        eventBus.publish(new FrameIconChangedEvent(this, icon));
         listeners.getCallable(FrameInfoListener.class).iconChanged(this, icon);
     }
 
@@ -535,7 +536,7 @@ public abstract class FrameContainer {
                 lines.add(new String[]{myLine});
             }
 
-            eventBus.post(new ClientLineAddedEvent(this, myLine));
+            eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
         }
 
         getDocument().addText(lines);

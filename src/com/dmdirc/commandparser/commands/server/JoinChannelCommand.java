@@ -41,13 +41,14 @@ import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.collections.MapList;
 
 import com.google.common.base.Optional;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Allows the user to join channels.
@@ -72,9 +73,9 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     @Inject
     public JoinChannelCommand(
             final CommandController controller,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         super(controller);
-        eventBus.register(this);
+        eventBus.subscribe(this);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
-    @Subscribe
+    @Handler
     public void handleClientLineAdded(final ClientLineAddedEvent event) {
         final String[] parts = event.getFrameContainer().getStyliser()
                 .doLinks(event.getLine())

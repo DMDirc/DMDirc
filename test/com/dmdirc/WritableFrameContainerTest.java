@@ -29,7 +29,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.util.Arrays;
 
@@ -48,7 +48,7 @@ public class WritableFrameContainerTest {
     @Mock private ServerManager serverManager;
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private URLBuilder urlBuilder;
-    @Mock private EventBus eventBus;
+    @Mock private MBassador eventBus;
     private CommandManager commands;
 
     @Before

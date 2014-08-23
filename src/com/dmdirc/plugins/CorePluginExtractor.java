@@ -28,14 +28,14 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Utility class that can extract bundled plugins.
@@ -48,7 +48,7 @@ public class CorePluginExtractor {
     /** The directory to extract plugins to. */
     private final String pluginDir;
     /** The event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of {@link CorePluginExtractor}.
@@ -61,7 +61,7 @@ public class CorePluginExtractor {
     public CorePluginExtractor(
             final PluginManager pluginManager,
             @Directory(DirectoryType.PLUGINS) final String pluginDir,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.pluginManager = pluginManager;
         this.pluginDir = pluginDir;
         this.eventBus = eventBus;
@@ -107,7 +107,7 @@ public class CorePluginExtractor {
                     }
                 }
             } catch (IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.LOW, ex,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                         "Failed to extract plugins", ""));
             }
         }

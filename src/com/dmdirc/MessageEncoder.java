@@ -27,9 +27,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.UnsupportedEncodingException;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
@@ -42,7 +42,7 @@ public class MessageEncoder implements Encoder {
     /** The parser that this encoder will work for. */
     private final Parser parser;
     /** The event bus to post errors to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of {@link MessageEncoder}.
@@ -52,7 +52,7 @@ public class MessageEncoder implements Encoder {
      * @param eventBus The event bus to post errors to.
      */
     public MessageEncoder(final Server server, final Parser parser,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.server = server;
         this.parser = parser;
         this.eventBus = eventBus;
@@ -71,7 +71,7 @@ public class MessageEncoder implements Encoder {
         try {
             return new String(message, offset, length, encoding);
         } catch (UnsupportedEncodingException ex) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                     "Unsupported character encoding: " + encoding, ""));
             return new String(message, offset, length);
         }

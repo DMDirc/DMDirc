@@ -92,11 +92,11 @@ import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
 import com.dmdirc.parser.interfaces.callbacks.WallopListener;
 import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.Date;
 
 import javax.annotation.Nonnull;
+
+import net.engio.mbassy.bus.MBassador;
 
 
 /**
@@ -118,7 +118,7 @@ public class ServerEventHandler extends EventHandler implements
     /** The server instance that owns this event handler. */
     private final Server owner;
     /** Event bus to post events to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of ServerEventHandler.
@@ -126,7 +126,7 @@ public class ServerEventHandler extends EventHandler implements
      * @param owner    The Server instance that we're handling events for
      * @param eventBus The event bus to post events to
      */
-    public ServerEventHandler(final Server owner, final EventBus eventBus) {
+    public ServerEventHandler(final Server owner, final MBassador eventBus) {
         this.owner = owner;
         this.eventBus = eventBus;
     }
@@ -192,9 +192,9 @@ public class ServerEventHandler extends EventHandler implements
                 : new Exception(errorString.toString()); // NOPMD
 
         if (errorInfo.isUserError()) {
-            eventBus.post(new UserErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
+            eventBus.publishAsync(new UserErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
         } else {
-            eventBus.post(new AppErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
+            eventBus.publishAsync(new AppErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
         }
     }
 
@@ -297,14 +297,14 @@ public class ServerEventHandler extends EventHandler implements
     public void onPingSent(final Parser parser, final Date date) {
         checkParser(parser);
 
-        eventBus.post(new ServerPingsentEvent(owner));
+        eventBus.publishAsync(new ServerPingsentEvent(owner));
     }
 
     @Override
     public void onPingSuccess(final Parser parser, final Date date) {
         checkParser(parser);
 
-        eventBus.post(new ServerGotpingEvent(owner, owner.getParser().getServerLatency()));
+        eventBus.publishAsync(new ServerGotpingEvent(owner, owner.getParser().getServerLatency()));
     }
 
     @Override

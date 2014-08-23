@@ -29,12 +29,12 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.manager.CachingUpdateManager;
 import com.dmdirc.updater.manager.UpdateStatus;
 
-import com.google.common.eventbus.EventBus;
-
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * The update checker contacts the DMDirc website to check to see if there are any updates
@@ -53,7 +53,7 @@ public final class UpdateChecker implements Runnable {
     /** The controller to use to read and write settings. */
     private final IdentityController identityController;
     /** The event bus to post errors to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of {@link UpdateChecker}.
@@ -65,7 +65,7 @@ public final class UpdateChecker implements Runnable {
     public UpdateChecker(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         this.updateManager = updateManager;
         this.identityController = identityController;
         this.eventBus = eventBus;
@@ -124,7 +124,7 @@ public final class UpdateChecker implements Runnable {
     public static void init(
             final CachingUpdateManager manager,
             final IdentityController controller,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         final int last = controller.getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "lastcheck");
         final int freq = controller.getGlobalConfiguration()
@@ -137,7 +137,7 @@ public final class UpdateChecker implements Runnable {
         }
 
         if (time > freq || time < 0) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.LOW, null,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
                     "Attempted to schedule update check " + (time < 0
                             ? "in the past" : "too far in the future") + ", rescheduling.", ""));
             time = 1;
@@ -164,7 +164,7 @@ public final class UpdateChecker implements Runnable {
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final EventBus eventBus) {
+            final MBassador eventBus) {
         checkNow(updateManager, identityController, eventBus, "Update Checker thread");
     }
 
@@ -179,7 +179,7 @@ public final class UpdateChecker implements Runnable {
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final EventBus eventBus,
+            final MBassador eventBus,
             final String threadName) {
         new Thread(new UpdateChecker(updateManager, identityController, eventBus), threadName)
                 .start();

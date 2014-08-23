@@ -29,7 +29,7 @@ import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 
-import com.google.common.eventbus.EventBus;
+import net.engio.mbassy.bus.MBassador;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -56,7 +56,7 @@ public class ActionFactory {
     /** The base directory to store actions in. */
     private final String actionsDirectory;
     /** Event bus to post events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The file system to read/write actions to. */
     private final FileSystem filesystem;
 
@@ -71,7 +71,7 @@ public class ActionFactory {
      * @param actionsDirectory            The base directory to store actions in.
      */
     @Inject
-    public ActionFactory(final EventBus eventBus, final Provider<ActionController> actionController,
+    public ActionFactory(final MBassador eventBus, final Provider<ActionController> actionController,
             final Provider<IdentityController> identityController,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,

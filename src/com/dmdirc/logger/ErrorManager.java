@@ -29,9 +29,6 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.collections.ListenerList;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-
 import java.awt.GraphicsEnvironment;
 import java.util.Date;
 import java.util.LinkedList;
@@ -40,6 +37,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 import net.kencochrane.raven.DefaultRavenFactory;
 import net.kencochrane.raven.RavenFactory;
 
@@ -89,8 +88,8 @@ public class ErrorManager implements ConfigChangeListener {
      * @param eventBus     The event bus to listen for error events on.
      */
     public void initialise(final AggregateConfigProvider globalConfig, final String directory,
-            final EventBus eventBus) {
-        eventBus.register(this);
+            final MBassador eventBus) {
+        eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
         config = globalConfig;
@@ -134,13 +133,13 @@ public class ErrorManager implements ConfigChangeListener {
         me = errorManager;
     }
 
-    @Subscribe
+    @Handler
     public void handleAppErrorEvent(final AppErrorEvent appError) {
         addError(appError.getLevel(), appError.getMessage(), appError.getThrowable(),
                 appError.getDetails(), true, isValidError(appError.getThrowable()));
     }
 
-    @Subscribe
+    @Handler
     public void handleUserErrorEvent(final UserErrorEvent userError) {
         addError(userError.getLevel(), userError.getMessage(), userError.getThrowable(),
                 userError.getDetails(), false, isValidError(userError.getThrowable()));

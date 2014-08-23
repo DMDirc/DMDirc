@@ -29,9 +29,9 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
 
-import com.google.common.eventbus.EventBus;
-
 import javax.inject.Inject;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Manages preferences for the client.
@@ -41,10 +41,10 @@ import javax.inject.Inject;
 public class PreferencesManager {
 
     /** Event bus to public events on. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     @Inject
-    public PreferencesManager(final EventBus eventBus) {
+    public PreferencesManager(final MBassador eventBus) {
         this.eventBus = eventBus;
     }
 
@@ -127,7 +127,7 @@ public class PreferencesManager {
                 "Reconnect message", "Default quit message to use when reconnecting",
                 manager, identity));
 
-        eventBus.post(new ConnectionPrefsRequestedEvent(category));
+        eventBus.publish(new ConnectionPrefsRequestedEvent(category));
 
         return category;
     }
@@ -240,7 +240,7 @@ public class PreferencesManager {
                 "Number of items of input history to keep",
                 manager, identity));
 
-        eventBus.post(new GroupChatPrefsRequestedEvent(category));
+        eventBus.publish(new GroupChatPrefsRequestedEvent(category));
 
         return category;
     }

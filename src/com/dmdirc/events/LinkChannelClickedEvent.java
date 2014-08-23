@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.ui.Window;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Raised when a channel link has been clicked.
  */
-@AsyncEvent
 public class LinkChannelClickedEvent extends LinkEvent {
 
     public LinkChannelClickedEvent(final Window window, final String target) {

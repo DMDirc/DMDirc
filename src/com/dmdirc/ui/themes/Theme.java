@@ -30,11 +30,11 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * Represents one theme file.
@@ -46,7 +46,7 @@ public class Theme implements Comparable<Theme> {
     /** The file to load the theme from. */
     private final File file;
     /** The event bus to post errors to. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
     /** The config file containing theme meta-data. */
     private ConfigFile metadata;
     /** The resource manager we're using for this theme. */
@@ -56,7 +56,7 @@ public class Theme implements Comparable<Theme> {
     /** The Identity we've registered. */
     private ThemeIdentity identity;
 
-    public Theme(final EventBus eventBus, final IdentityController identityController,
+    public Theme(final MBassador eventBus, final IdentityController identityController,
             final File file) {
         this.identityController = identityController;
         this.file = file;
@@ -74,7 +74,7 @@ public class Theme implements Comparable<Theme> {
             try {
                 rm = ZipResourceManager.getInstance(file.getCanonicalPath());
             } catch (IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                         "I/O error when loading theme: " + file.getAbsolutePath() + ": "
                                 + ex.getMessage(), ""));
 
@@ -112,7 +112,7 @@ public class Theme implements Comparable<Theme> {
                 identity = new ThemeIdentity(stream, this);
                 identityController.addConfigProvider(identity);
             } catch (InvalidIdentityFileException | IOException ex) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
                         ex, "Error loading theme identity file: " + ex.getMessage(), ""));
             }
         }

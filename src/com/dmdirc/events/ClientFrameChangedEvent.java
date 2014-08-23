@@ -23,12 +23,10 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.util.AsyncEvent;
 
 /**
  * Event fired when a new frame has been focused.
  */
-@AsyncEvent
 public class ClientFrameChangedEvent extends DMDircEvent {
 
     private final FrameContainer container;

@@ -33,9 +33,6 @@ import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,6 +49,8 @@ import java.util.Map;
 import javax.inject.Provider;
 
 import dagger.ObjectGraph;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Searches for and manages plugins and services.
@@ -77,7 +76,7 @@ public class PluginManager implements ServiceManager {
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
     /** Event bus to pass to plugin info for plugin loaded events. */
-    private final EventBus eventBus;
+    private final MBassador eventBus;
 
     /**
      * Creates a new instance of PluginManager.
@@ -90,7 +89,7 @@ public class PluginManager implements ServiceManager {
      * @param directory           The directory to load plugins from.
      */
     public PluginManager(
-            final EventBus eventBus,
+            final MBassador eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
@@ -104,7 +103,7 @@ public class PluginManager implements ServiceManager {
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
 
-        eventBus.register(this);
+        eventBus.subscribe(this);
     }
 
     /**
@@ -251,7 +250,7 @@ public class PluginManager implements ServiceManager {
         }
 
         if (!new File(directory, filename).exists()) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Error loading plugin " + filename + ": File does not exist", ""));
             return false;
         }
@@ -266,7 +265,7 @@ public class PluginManager implements ServiceManager {
                     identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                         "Duplicate Plugin detected, Ignoring. (" + filename
                         + " is the same as " + existing.getFilename() + ")", ""));
                 return false;
@@ -281,13 +280,13 @@ public class PluginManager implements ServiceManager {
 
             knownPlugins.put(filename.toLowerCase(), pluginInfo);
 
-            eventBus.post(new PluginRefreshEvent());
+            eventBus.publishAsync(new PluginRefreshEvent());
             return true;
         } catch (MalformedURLException mue) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
                     "Error creating URL for plugin " + filename + ": " + mue.getMessage(), ""));
         } catch (PluginException e) {
-            eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, e,
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, e,
                     "Error loading plugin " + filename + ": " + e.getMessage(), ""));
         }
 
@@ -443,7 +442,7 @@ public class PluginManager implements ServiceManager {
             plugins.addAll(newPlugins);
         }
 
-        eventBus.post(new PluginRefreshEvent());
+        eventBus.publishAsync(new PluginRefreshEvent());
     }
 
     /**
@@ -505,7 +504,7 @@ public class PluginManager implements ServiceManager {
                 targetMetaData.load();
 
                 if (targetMetaData.hasErrors()) {
-                    eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                             "Error reading plugin metadata for plugin " + target
                             + ": " + targetMetaData.getErrors(), ""));
                 } else {
@@ -524,7 +523,7 @@ public class PluginManager implements ServiceManager {
                     }
                 }
             } catch (MalformedURLException mue) {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
                         "Error creating URL for plugin " + target + ": " + mue.getMessage(), ""));
             }
         }
@@ -537,7 +536,7 @@ public class PluginManager implements ServiceManager {
             if (results.isEmpty()) {
                 res.add(target.getValue());
             } else {
-                eventBus.post(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                         "Plugin validation failed for " + target.getKey() + ": " + results, ""));
             }
         }
@@ -573,7 +572,7 @@ public class PluginManager implements ServiceManager {
         return new ArrayList<>(knownPlugins.values());
     }
 
-    @Subscribe
+    @Handler
     public void handlePrefsOpened(final ClientPrefsOpenedEvent event) {
         for (PluginInfo pi : getPluginInfos()) {
             if (!pi.isLoaded() && !pi.isTempLoaded()) {
@@ -583,7 +582,7 @@ public class PluginManager implements ServiceManager {
                 try {
                     pi.getPlugin().showConfig(event.getModel());
                 } catch (LinkageError | Exception le) {
-                    eventBus.post(new AppErrorEvent(ErrorLevel.MEDIUM, le,
+                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, le,
                             "Unable to show plugin configuration for "
                             + pi.getMetaData().getFriendlyName(), ""));
                 }
@@ -591,7 +590,7 @@ public class PluginManager implements ServiceManager {
         }
     }
 
-    @Subscribe
+    @Handler
     public void handlePrefsClosed(final ClientPrefsClosedEvent event) {
         for (PluginInfo pi : getPluginInfos()) {
             if (pi.isTempLoaded()) {
