@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.core.components;
 
+import com.dmdirc.events.StatusBarComponentAddedEvent;
+import com.dmdirc.events.StatusBarComponentRemovedEvent;
+import com.dmdirc.events.StatusBarMessageClearEvent;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.interfaces.ui.StatusBarComponent;
 import com.dmdirc.ui.StatusMessage;
@@ -31,6 +35,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.bus.MBassador;
 
 /**
  * A manager for status bars or status bar like components.
@@ -42,12 +48,12 @@ public class StatusBarManager implements StatusBar {
 
     /** A collection of known status bars. */
     private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<>();
+    /** Event bus to fire status bar events on. */
+    private final MBassador eventBus;
 
-    /**
-     * Creates a new instance of {@link StatusBarManager}.
-     */
     @Inject
-    public StatusBarManager() {
+    public StatusBarManager(final MBassador eventBus) {
+        this.eventBus = eventBus;
     }
 
     /**
@@ -69,33 +75,33 @@ public class StatusBarManager implements StatusBar {
         statusBars.remove(statusBar);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMessage(final StatusMessage message) {
+        eventBus.publishAsync(new StatusBarMessageEvent(message));
         for (StatusBar statusBar : statusBars) {
             statusBar.setMessage(message);
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void clearMessage() {
+        eventBus.publishAsync(new StatusBarMessageClearEvent());
         for (StatusBar statusBar : statusBars) {
             statusBar.clearMessage();
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addComponent(final StatusBarComponent component) {
+        eventBus.publishAsync(new StatusBarComponentAddedEvent(component));
         for (StatusBar statusBar : statusBars) {
             statusBar.addComponent(component);
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeComponent(final StatusBarComponent component) {
+        eventBus.publishAsync(new StatusBarComponentRemovedEvent(component));
         for (StatusBar statusBar : statusBars) {
             statusBar.removeComponent(component);
         }
