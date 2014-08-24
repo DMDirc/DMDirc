@@ -78,7 +78,7 @@ public class ChildEventBusManager {
 
         @Handler
         public void handleEvent(final DMDircEvent event) {
-            parent.post(event);
+            parent.publish(event);
         }
 
     }
