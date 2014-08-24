@@ -233,7 +233,7 @@ public class WindowManager {
         "The specified window is in the window hierarchy"
     })
     public void removeWindow(final FrameContainer window) {
-        checkNotNull(window != null);
+        checkNotNull(window);
         checkArgument(isInHierarchy(window));
 
         for (FrameContainer child : window.getChildren()) {
