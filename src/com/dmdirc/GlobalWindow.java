@@ -26,7 +26,6 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
@@ -58,18 +57,14 @@ public class GlobalWindow extends FrameContainer {
      * @param eventBus            The bus to dispatch events on.
      */
     @Inject
-    public GlobalWindow(
-            @GlobalConfig final AggregateConfigProvider config,
-            final GlobalCommandParser parser,
-            final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
+    public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
+            final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
+            final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder,
             final DMDircMBassador eventBus) {
         super(null, "icon", "Global", "(Global)", config, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
-                Arrays.asList(
-                        WindowComponent.TEXTAREA.getIdentifier(),
+                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
     }
 
@@ -107,8 +102,7 @@ public class GlobalWindow extends FrameContainer {
          * @param windowManagerProvider The provider to use to retrieve a window manager.
          */
         @Inject
-        public GlobalWindowManager(
-                final Provider<GlobalWindow> globalWindowProvider,
+        public GlobalWindowManager(final Provider<GlobalWindow> globalWindowProvider,
                 @GlobalConfig final AggregateConfigProvider globalConfig,
                 final Provider<WindowManager> windowManagerProvider) {
             this.globalWindowProvider = globalWindowProvider;
@@ -136,12 +130,11 @@ public class GlobalWindow extends FrameContainer {
         protected void updateWindowState() {
             final WindowManager windowManager = windowManagerProvider.get();
             final GlobalWindow globalWindow = globalWindowProvider.get();
-            final boolean globalWindowExists = windowManager.getRootWindows()
-                    .contains(globalWindow);
+            final boolean globalWindowExists =
+                    windowManager.getRootWindows().contains(globalWindow);
 
             if (globalConfig.getOptionBool("general", "showglobalwindow")) {
                 if (!globalWindowExists) {
-                    addCloseListener(globalWindow);
                     windowManager.addWindow(globalWindow);
                 }
             } else {
@@ -150,22 +143,5 @@ public class GlobalWindow extends FrameContainer {
                 }
             }
         }
-
-        /**
-         * Adds a {@link FrameCloseListener} to the specified window to update the global window
-         * state if the user closes it from the UI.
-         *
-         * @param window The window to add a listener to.
-         */
-        private void addCloseListener(final GlobalWindow window) {
-            window.addCloseListener(new FrameCloseListener() {
-                @Override
-                public void windowClosing(final FrameContainer container) {
-                    container.removeCloseListener(this);
-                }
-            });
-        }
-
     }
-
 }
