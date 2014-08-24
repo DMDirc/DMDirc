@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
@@ -33,8 +34,6 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
-import net.engio.mbassy.bus.MBassador;
 
 import javax.annotation.Nonnull;
 
@@ -56,7 +55,7 @@ public class ServerCommandParser extends GlobalCommandParser {
     public ServerCommandParser(
             final AggregateConfigProvider configManager,
             final CommandController commandController,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super(configManager, commandController, eventBus);
     }
     /**

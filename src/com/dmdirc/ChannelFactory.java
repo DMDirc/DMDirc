@@ -29,8 +29,6 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
-import net.engio.mbassy.bus.MBassador;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -44,12 +42,12 @@ public class ChannelFactory {
     private final CommandController commandController;
     private final MessageSinkManager messageSinkManager;
     private final URLBuilder urlBuilder;
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     @Inject
     public ChannelFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final MBassador eventBus) {
+            final URLBuilder urlBuilder, final DMDircMBassador eventBus) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;

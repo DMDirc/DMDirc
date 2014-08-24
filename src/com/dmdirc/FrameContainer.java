@@ -66,8 +66,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.engio.mbassy.bus.MBassador;
-
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -107,7 +105,7 @@ public abstract class FrameContainer {
     /** The manager to use to manage our event bus. */
     private final ChildEventBusManager eventBusManager;
     /** Event bus to dispatch events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
@@ -152,7 +150,7 @@ public abstract class FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final URLBuilder urlBuilder,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.fromNullable(parent);
         this.configManager = config;
@@ -199,7 +197,7 @@ public abstract class FrameContainer {
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.fromNullable(parent);
         this.configManager = config;
@@ -244,7 +242,7 @@ public abstract class FrameContainer {
         return configManager;
     }
 
-    public MBassador getEventBus() {
+    public DMDircMBassador getEventBus() {
         return eventBus;
     }
 

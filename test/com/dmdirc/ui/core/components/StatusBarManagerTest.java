@@ -21,6 +21,7 @@
  */
 package com.dmdirc.ui.core.components;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.interfaces.ui.StatusBarComponent;
 import com.dmdirc.ui.StatusMessage;
@@ -30,8 +31,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import net.engio.mbassy.bus.MBassador;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class StatusBarManagerTest {
 
     @Mock
-    private MBassador eventBus;
+    private DMDircMBassador eventBus;
 
     @Test
     public void testRegisterStatusBar() {

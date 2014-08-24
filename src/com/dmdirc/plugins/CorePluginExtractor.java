@@ -35,7 +35,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 /**
  * Utility class that can extract bundled plugins.
@@ -48,7 +48,7 @@ public class CorePluginExtractor {
     /** The directory to extract plugins to. */
     private final String pluginDir;
     /** The event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link CorePluginExtractor}.
@@ -61,7 +61,7 @@ public class CorePluginExtractor {
     public CorePluginExtractor(
             final PluginManager pluginManager,
             @Directory(DirectoryType.PLUGINS) final String pluginDir,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.pluginManager = pluginManager;
         this.pluginDir = pluginDir;
         this.eventBus = eventBus;

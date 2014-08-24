@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
@@ -49,7 +50,6 @@ import java.util.Map;
 import javax.inject.Provider;
 
 import dagger.ObjectGraph;
-import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -76,7 +76,7 @@ public class PluginManager implements ServiceManager {
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
     /** Event bus to pass to plugin info for plugin loaded events. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PluginManager.
@@ -89,7 +89,7 @@ public class PluginManager implements ServiceManager {
      * @param directory           The directory to load plugins from.
      */
     public PluginManager(
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,

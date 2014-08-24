@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.events.AppErrorEvent;
@@ -53,7 +54,6 @@ import javax.inject.Provider;
 import org.slf4j.LoggerFactory;
 
 import dagger.ObjectGraph;
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * Stores plugin metadata and handles loading of plugin resources.
@@ -94,7 +94,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** List of configuration providers. */
     private final List<ConfigProvider> configProviders = new ArrayList<>();
     /** Event bus to post plugin loaded events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Create a new PluginInfo.
@@ -110,7 +110,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     public PluginInfo(
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.injectorInitialiser = injectorInitialiser;

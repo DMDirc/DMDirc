@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class AutoCommandManager {
 
     /** The bus to listen for events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The factory to use to create handlers. */
     private final AutoCommandHandlerFactory factory;
     /** Known auto commands, mapped on to their handlers. */
@@ -56,7 +56,7 @@ public class AutoCommandManager {
      * @param factory  The factory to use to create handlers.
      */
     @Inject
-    public AutoCommandManager(final MBassador eventBus, final AutoCommandHandlerFactory factory) {
+    public AutoCommandManager(final DMDircMBassador eventBus, final AutoCommandHandlerFactory factory) {
         this.eventBus = eventBus;
         this.factory = factory;
     }

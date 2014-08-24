@@ -37,7 +37,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 import net.engio.mbassy.listener.Handler;
 import net.kencochrane.raven.DefaultRavenFactory;
 import net.kencochrane.raven.RavenFactory;
@@ -88,7 +88,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @param eventBus     The event bus to listen for error events on.
      */
     public void initialise(final AggregateConfigProvider globalConfig, final String directory,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
 

@@ -32,8 +32,6 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
-import net.engio.mbassy.bus.MBassador;
-
 import java.net.URI;
 import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,7 +68,7 @@ public class ServerManagerTest {
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;
 

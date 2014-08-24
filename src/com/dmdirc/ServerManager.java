@@ -49,8 +49,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -73,7 +71,7 @@ public class ServerManager implements ServerFactory {
     /** Concrete server factory to use. */
     private final ServerFactoryImpl serverFactoryImpl;
     /** Event bus for servers. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of ServerManager.
@@ -92,7 +90,7 @@ public class ServerManager implements ServerFactory {
             final Provider<CommandController> commandController,
             final WindowManager windowManager,
             final ServerFactoryImpl serverFactory,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.identityController = identityController;
         this.identityFactory = identityFactory;
         this.commandController = commandController;

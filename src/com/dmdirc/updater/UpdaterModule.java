@@ -42,7 +42,7 @@ import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import javax.inject.Singleton;
 
@@ -107,7 +107,7 @@ public class UpdaterModule {
             final CommandLineParser commandLineParser,
             final DMDircUpdateManager updateManager,
             final IdentityController identityController,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         UpdateChecker.init(updateManager, identityController, eventBus);
 
         if (commandLineParser.getLauncherVersion() != null) {

@@ -22,6 +22,7 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -33,8 +34,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
-
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * The update checker contacts the DMDirc website to check to see if there are any updates
@@ -53,7 +52,7 @@ public final class UpdateChecker implements Runnable {
     /** The controller to use to read and write settings. */
     private final IdentityController identityController;
     /** The event bus to post errors to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link UpdateChecker}.
@@ -65,7 +64,7 @@ public final class UpdateChecker implements Runnable {
     public UpdateChecker(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.updateManager = updateManager;
         this.identityController = identityController;
         this.eventBus = eventBus;
@@ -124,7 +123,7 @@ public final class UpdateChecker implements Runnable {
     public static void init(
             final CachingUpdateManager manager,
             final IdentityController controller,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         final int last = controller.getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "lastcheck");
         final int freq = controller.getGlobalConfiguration()
@@ -164,7 +163,7 @@ public final class UpdateChecker implements Runnable {
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         checkNow(updateManager, identityController, eventBus, "Update Checker thread");
     }
 
@@ -179,7 +178,7 @@ public final class UpdateChecker implements Runnable {
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final String threadName) {
         new Thread(new UpdateChecker(updateManager, identityController, eventBus), threadName)
                 .start();

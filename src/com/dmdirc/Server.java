@@ -93,8 +93,6 @@ import javax.net.ssl.TrustManager;
 
 import org.slf4j.LoggerFactory;
 
-import net.engio.mbassy.bus.MBassador;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -223,7 +221,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final QueryFactory queryFactory,
             final RawFactory rawFactory,
             final URLBuilder urlBuilder,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,

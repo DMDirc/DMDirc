@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ConnectionPrefsRequestedEvent;
 import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -31,8 +32,6 @@ import com.dmdirc.util.validators.OptionalValidator;
 
 import javax.inject.Inject;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * Manages preferences for the client.
  *
@@ -41,10 +40,10 @@ import net.engio.mbassy.bus.MBassador;
 public class PreferencesManager {
 
     /** Event bus to public events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     @Inject
-    public PreferencesManager(final MBassador eventBus) {
+    public PreferencesManager(final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
     }
 

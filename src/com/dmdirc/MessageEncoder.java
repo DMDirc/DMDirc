@@ -29,8 +29,6 @@ import com.dmdirc.parser.interfaces.Parser;
 
 import java.io.UnsupportedEncodingException;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
  * config file.
@@ -42,7 +40,7 @@ public class MessageEncoder implements Encoder {
     /** The parser that this encoder will work for. */
     private final Parser parser;
     /** The event bus to post errors to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link MessageEncoder}.
@@ -52,7 +50,7 @@ public class MessageEncoder implements Encoder {
      * @param eventBus The event bus to post errors to.
      */
     public MessageEncoder(final Server server, final Parser parser,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.server = server;
         this.parser = parser;
         this.eventBus = eventBus;

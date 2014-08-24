@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 /**
  * Manages available themes.
@@ -46,7 +46,7 @@ public class ThemeManager {
     /** Available themes. */
     private final Map<String, Theme> themes = new HashMap<>();
     /** The event bus to post errors to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of the {@link ThemeManager}.
@@ -56,7 +56,7 @@ public class ThemeManager {
      * @param themesDirectory    The directory to load themes from.
      */
     public ThemeManager(
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final IdentityController identityController,
             final String themesDirectory) {
         this.identityController = identityController;

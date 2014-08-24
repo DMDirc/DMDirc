@@ -22,6 +22,7 @@
 
 package com.dmdirc.harness;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -30,8 +31,6 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
-import net.engio.mbassy.bus.MBassador;
 
 public class TestCommandParser extends CommandParser {
 
@@ -48,7 +47,7 @@ public class TestCommandParser extends CommandParser {
     public String invalidCommand;
 
     public TestCommandParser(final AggregateConfigProvider configManager,
-            final CommandController commandManager, final MBassador eventBus) {
+            final CommandController commandManager, final DMDircMBassador eventBus) {
         super(configManager, commandManager, eventBus);
     }
 

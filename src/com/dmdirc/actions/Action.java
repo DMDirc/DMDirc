@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
@@ -51,8 +52,6 @@ import java.util.Map;
 
 import javax.inject.Provider;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * Describes a single action.
  */
@@ -79,7 +78,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The controller to use to retrieve components, comparisons, etc. */
     private final ActionController actionController;
     /** Event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The file system to read/write actions to. */
     private final FileSystem filesystem;
     /** The config file we're using. */
@@ -101,7 +100,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
-    public Action(final FileSystem filesystem, final MBassador eventBus,
+    public Action(final FileSystem filesystem, final DMDircMBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
@@ -149,7 +148,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param conditionTree               The condition tree to use
      * @param newFormat                   The new formatter to use
      */
-    public Action(final FileSystem filesystem, final MBassador eventBus,
+    public Action(final FileSystem filesystem, final DMDircMBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,

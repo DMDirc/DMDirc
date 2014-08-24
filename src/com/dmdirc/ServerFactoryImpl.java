@@ -32,8 +32,6 @@ import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
-import net.engio.mbassy.bus.MBassador;
-
 import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -58,7 +56,7 @@ public class ServerFactoryImpl {
     private final Provider<QueryFactory> queryFactory;
     private final Provider<RawFactory> rawFactory;
     private final URLBuilder urlBuilder;
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
 
@@ -75,7 +73,7 @@ public class ServerFactoryImpl {
             final Provider<QueryFactory> queryFactory,
             final Provider<RawFactory> rawFactory,
             final URLBuilder urlBuilder,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings) {
         this.manager = manager;

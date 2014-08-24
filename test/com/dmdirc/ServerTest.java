@@ -35,8 +35,6 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.util.URLBuilder;
 
-import net.engio.mbassy.bus.MBassador;
-
 import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -70,7 +68,7 @@ public class ServerTest {
     @Mock private RawFactory rawFactory;
     @Mock private StatusBarManager statusBarManager;
     @Mock private URLBuilder urlBuilder;
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
     @Mock private ScheduledExecutorService executorService;
     @Mock private MessageEncoderFactory messageEncoderFactory;
 

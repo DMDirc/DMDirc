@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PreferencesDialogModelTest {
 
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
     @Mock private PluginManager pluginManager;
 
     @Before

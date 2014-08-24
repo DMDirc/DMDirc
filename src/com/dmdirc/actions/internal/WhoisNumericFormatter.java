@@ -30,7 +30,7 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -45,7 +45,7 @@ public class WhoisNumericFormatter {
     /** The identity to add formatters to. */
     private final ConfigProvider identity;
     /** Event bus to subscribe to events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new whois numeric formatter that will add automatic formats to the specified
@@ -55,7 +55,7 @@ public class WhoisNumericFormatter {
      * @param eventBus The event bus to subscribe to events on
      */
     public WhoisNumericFormatter(final ConfigProvider identity,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.identity = identity;
         this.eventBus = eventBus;
     }

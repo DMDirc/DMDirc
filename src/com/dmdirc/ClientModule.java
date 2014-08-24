@@ -77,7 +77,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
-import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 
 /**
@@ -116,8 +115,8 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public MBassador getMBassador() {
-        return new MBassador(BusConfiguration.Default());
+    public DMDircMBassador getMBassador() {
+        return new DMDircMBassador(BusConfiguration.Default());
     }
 
     @Provides
@@ -127,7 +126,7 @@ public class ClientModule {
             @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final String errorsDirectory,
             final CommandLineParser commandLineParser,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory, eventBus);
         ErrorManager.getErrorManager()
@@ -186,7 +185,7 @@ public class ClientModule {
             final ActionFactory actionFactory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             @Directory(DirectoryType.ACTIONS) final String directory) {
         final ActionManager actionManager = new ActionManager(identityController,
                 actionFactory, actionWrappersProvider, updateManagerProvider, eventBus, directory);
@@ -222,7 +221,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public PluginManager getPluginManager(
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
@@ -255,7 +254,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
         final ThemeManager manager = new ThemeManager(eventBus, controller, directory);

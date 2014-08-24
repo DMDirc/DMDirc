@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
@@ -47,7 +48,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -73,7 +73,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     @Inject
     public JoinChannelCommand(
             final CommandController controller,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super(controller);
         eventBus.subscribe(this);
     }

@@ -23,6 +23,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
@@ -40,8 +41,6 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.URLBuilder;
-
-import net.engio.mbassy.bus.MBassador;
 
 import javax.inject.Inject;
 
@@ -69,7 +68,7 @@ public class PluginInjectorInitialiser {
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
     private final ActionSubstitutorFactory actionSubstitutorFactory;
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     private final IconManager iconManager;
 
     @Inject
@@ -90,7 +89,7 @@ public class PluginInjectorInitialiser {
             final URLBuilder urlBuilder,
             final ColourManager colourManager,
             final ActionSubstitutorFactory actionSubstitutorFactory,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             @GlobalConfig final IconManager iconManager) {
         this.actionManager = actionManager;
         this.actionFactory = actionFactory;

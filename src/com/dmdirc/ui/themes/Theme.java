@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.themes;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -34,8 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * Represents one theme file.
  */
@@ -46,7 +45,7 @@ public class Theme implements Comparable<Theme> {
     /** The file to load the theme from. */
     private final File file;
     /** The event bus to post errors to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The config file containing theme meta-data. */
     private ConfigFile metadata;
     /** The resource manager we're using for this theme. */
@@ -56,7 +55,7 @@ public class Theme implements Comparable<Theme> {
     /** The Identity we've registered. */
     private ThemeIdentity identity;
 
-    public Theme(final MBassador eventBus, final IdentityController identityController,
+    public Theme(final DMDircMBassador eventBus, final IdentityController identityController,
             final File file) {
         this.identityController = identityController;
         this.file = file;

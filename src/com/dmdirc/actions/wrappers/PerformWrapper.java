@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.ActionCondition;
@@ -44,8 +45,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * An action wrapper for performs.
  */
@@ -57,7 +56,7 @@ public class PerformWrapper extends ActionGroup {
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
     /** The event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PerformWrapper.
@@ -67,7 +66,7 @@ public class PerformWrapper extends ActionGroup {
      */
     @Inject
     public PerformWrapper(final ActionFactory actionFactory,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super("performs");
 
         this.actionFactory = actionFactory;

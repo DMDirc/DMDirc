@@ -22,6 +22,7 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.plugins.PluginManager;
@@ -34,8 +35,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
@@ -47,7 +46,7 @@ public class URLBuilder {
     /** Provider to retrieve a theme manager instance when needed. */
     private final Provider<ThemeManager> themeManagerProvider;
     /** The event bus to post errors on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of URLBuilder.
@@ -60,7 +59,7 @@ public class URLBuilder {
     public URLBuilder(
             final Provider<PluginManager> pluginManagerProvider,
             final Provider<ThemeManager> themeManagerProvider,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.pluginManagerProvider = pluginManagerProvider;
         this.themeManagerProvider = themeManagerProvider;
         this.eventBus = eventBus;

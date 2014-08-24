@@ -28,7 +28,6 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
-import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.EventUtils;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
@@ -60,8 +59,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * The Channel class represents the client's view of the channel. It handles callbacks for channel
@@ -114,7 +111,7 @@ public class Channel extends MessageTarget implements GroupChat {
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
@@ -177,7 +174,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
         for (String part : splitLine(line)) {
             if (!part.isEmpty()) {
-                final DisplayableEvent event = new ChannelSelfMessageEvent(this,
+                final ChannelSelfMessageEvent event = new ChannelSelfMessageEvent(this,
                         channelInfo.getChannelClient(me), part);
                 final String format = EventUtils.postDisplayable(getEventBus(), event,
                         "channelSelfMessage");
@@ -210,7 +207,7 @@ public class Channel extends MessageTarget implements GroupChat {
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final DisplayableEvent event = new ChannelSelfActionEvent(this,
+            final ChannelSelfActionEvent event = new ChannelSelfActionEvent(this,
                     channelInfo.getChannelClient(me), action);
             final String format = EventUtils.postDisplayable(getEventBus(), event,
                     "channelSelfAction");

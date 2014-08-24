@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
@@ -35,8 +36,6 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
-
-import net.engio.mbassy.bus.MBassador;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -72,7 +71,7 @@ public class ActionTest {
 
     @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
     @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;

@@ -57,7 +57,6 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * Main class, handles initialisation.
@@ -91,7 +90,7 @@ public class Main {
     /** The set of migrators to execute on startup. */
     private final Set<Migrator> migrators;
     /** The event bus to dispatch events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
 
@@ -125,7 +124,7 @@ public class Main {
             final ColourActionComparison colourActionComparison,
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final Set<Migrator> migrators,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
         this.serverManager = serverManager;

@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.core.util;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.ServerManager;
 import com.dmdirc.events.UnknownURLEvent;
 import com.dmdirc.events.UserErrorEvent;
@@ -40,15 +41,13 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import net.engio.mbassy.bus.MBassador;
-
 /** Handles URLs. */
 public class URLHandler {
 
     /** The time a browser was last launched. */
     private static Date lastLaunch;
     /** Event bus to fire unknown protocol errors on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** Config manager. */
     private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
@@ -68,7 +67,7 @@ public class URLHandler {
      */
     @Inject
     public URLHandler(
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final AggregateConfigProvider globalConfig,
             final ServerManager serverManager,
             final StatusBarManager statusBarManager) {

@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
 import com.dmdirc.config.ConfigBinding;
@@ -56,7 +57,6 @@ import javax.inject.Provider;
 
 import org.slf4j.LoggerFactory;
 
-import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -95,7 +95,7 @@ public class ActionManager implements ActionController {
     /** The listeners that we have registered. */
     private final MapList<ActionType, ActionListener> listeners = new MapList<>();
     /** The global event bus to monitor. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /** The directory to load and save actions in. */
     private final String directory;
     /** Indicates whether or not user actions should be killed (not processed). */
@@ -117,7 +117,7 @@ public class ActionManager implements ActionController {
             final ActionFactory factory,
             final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final String directory) {
         this.identityManager = identityManager;
         this.factory = factory;

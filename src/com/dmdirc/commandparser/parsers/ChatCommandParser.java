@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
@@ -32,8 +33,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-
-import net.engio.mbassy.bus.MBassador;
 
 import javax.annotation.Nonnull;
 
@@ -57,7 +56,7 @@ public class ChatCommandParser extends ServerCommandParser {
      * @param eventBus          Event but to post events on
      */
     public ChatCommandParser(final Server server, final CommandController commandController,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super(server.getConfigManager(), commandController, eventBus);
         super.setOwner(server);
     }

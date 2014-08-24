@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -39,8 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * Manages categories that should appear in the preferences dialog.
@@ -66,7 +65,7 @@ public class PreferencesDialogModel {
     /** Plugin manager. */
     private final PluginManager pluginManager;
     /** Event bus to post events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -88,7 +87,7 @@ public class PreferencesDialogModel {
             final AggregateConfigProvider configManager,
             final ConfigProvider identity,
             final PluginManager pluginManager,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;

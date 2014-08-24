@@ -22,26 +22,28 @@
 
 package com.dmdirc.util;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.DMDircEvent;
+
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utility for creating and managing instances of {@link net.engio.mbassy.bus.MBassador} that are slaved to a parent bus.
+ * Utility for creating and managing instances of {@link com.dmdirc.DMDircMBassador} that are slaved to a parent bus.
  * <p>
  * Any events sent on the child bus will be propagated up to the parent bus.
  */
 public class ChildEventBusManager {
 
-    private final MBassador parent;
-    private final MBassador child;
+    private final DMDircMBassador parent;
+    private final DMDircMBassador child;
     private final EventPropagator propagator;
 
-    public ChildEventBusManager(final MBassador parent) {
+    public ChildEventBusManager(final DMDircMBassador parent) {
         this.parent = checkNotNull(parent);
-        this.child = new MBassador(BusConfiguration.Default());
+        this.child = new DMDircMBassador(BusConfiguration.Default());
         this.propagator = new EventPropagator();
     }
 
@@ -68,15 +70,15 @@ public class ChildEventBusManager {
      *
      * @return The child bus belonging to this manager.
      */
-    public MBassador getChildBus() {
+    public DMDircMBassador getChildBus() {
         return child;
     }
 
     private class EventPropagator {
 
         @Handler
-        public void handleEvent(final Object object) {
-            parent.post(object);
+        public void handleEvent(final DMDircEvent event) {
+            parent.post(event);
         }
 
     }

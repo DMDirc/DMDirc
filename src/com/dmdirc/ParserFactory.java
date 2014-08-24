@@ -36,8 +36,6 @@ import java.net.URI;
 
 import javax.inject.Inject;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * Provides a method to retrieve a parser.
  *
@@ -48,7 +46,7 @@ public class ParserFactory {
     /** PluginManager used by this ParserFactory */
     private final PluginManager pluginManager;
     /** The event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link ParserFactory}.
@@ -58,7 +56,7 @@ public class ParserFactory {
      */
     @Inject
     public ParserFactory(final PluginManager pluginManager,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.pluginManager = pluginManager;
         this.eventBus = eventBus;
     }

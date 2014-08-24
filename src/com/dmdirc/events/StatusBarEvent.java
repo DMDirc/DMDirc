@@ -25,5 +25,5 @@ package com.dmdirc.events;
 /**
  * Base class for all status bar events.
  */
-public abstract class StatusBarEvent {
+public abstract class StatusBarEvent extends DMDircEvent{
 }

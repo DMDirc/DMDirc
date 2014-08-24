@@ -34,7 +34,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class GlobalCommandParser extends CommandParser {
     public GlobalCommandParser(
             @ClientModule.GlobalConfig final AggregateConfigProvider configManager,
             final CommandController commandManager,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         super(configManager, commandManager, eventBus);
     }
 

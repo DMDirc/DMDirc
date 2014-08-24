@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,10 +46,10 @@ public class LegacyServiceLocator implements ServiceLocator {
     /** The plugin manager to use to find services. */
     private final PluginManager pluginManager;
     /** The event bus to post errors . */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     @Inject
-    public LegacyServiceLocator(final PluginManager pluginManager, final MBassador eventBus) {
+    public LegacyServiceLocator(final PluginManager pluginManager, final DMDircMBassador eventBus) {
         this.pluginManager = checkNotNull(pluginManager);
         this.eventBus = checkNotNull(eventBus);
     }

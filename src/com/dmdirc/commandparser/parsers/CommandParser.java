@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
@@ -33,7 +34,6 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
@@ -46,8 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-
-import net.engio.mbassy.bus.MBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -67,7 +65,7 @@ public abstract class CommandParser implements Serializable {
     /** Command manager to use. */
     protected final CommandController commandManager;
     /** Event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of CommandParser.
@@ -78,7 +76,7 @@ public abstract class CommandParser implements Serializable {
      */
     protected CommandParser(final AggregateConfigProvider configManager,
             final CommandController commandManager,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
         commands = new HashMap<>();
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));
@@ -339,7 +337,7 @@ public abstract class CommandParser implements Serializable {
         if (origin == null) {
             eventBus.publish(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
         } else {
-            final DisplayableEvent event = new UnknownCommandEvent(origin, args.getCommandName(),
+            final UnknownCommandEvent event = new UnknownCommandEvent(origin, args.getCommandName(),
                     args.getArguments());
             final String format = EventUtils.postDisplayable(eventBus, event, "unknownCommand");
 

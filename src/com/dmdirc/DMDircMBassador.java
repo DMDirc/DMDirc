@@ -20,28 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.events;
+package com.dmdirc;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.events.DMDircEvent;
+
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
 
 /**
- * Base class for frame component events.
+ * Generified MBassador.
  */
-public abstract class FrameComponentEvent extends DMDircEvent {
+public class DMDircMBassador extends MBassador<DMDircEvent> {
 
-    private final FrameContainer container;
-    private final String component;
-
-    public FrameComponentEvent(final FrameContainer container, final String component) {
-        this.container = container;
-        this.component = component;
+    public DMDircMBassador() {
+        super(BusConfiguration.Default());
     }
 
-    public FrameContainer getContainer() {
-        return container;
-    }
-
-    public String getComponent() {
-        return component;
+    public DMDircMBassador(final BusConfiguration configuration) {
+        super(configuration);
     }
 }

@@ -38,7 +38,7 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private final MapList<String, ConfigProvider> identities = new MapList<>();
     /** The event bus to post events to. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
     /**
      * The {@link IdentityListener}s that have registered with this manager.
      *
@@ -101,7 +101,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param eventBus            The event bus to post events to
      */
     public IdentityManager(final String baseDirectory, final String identitiesDirectory,
-            final MBassador eventBus) {
+            final DMDircMBassador eventBus) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
         this.eventBus = eventBus;

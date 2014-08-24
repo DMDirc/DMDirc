@@ -22,13 +22,12 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ClientPopupGeneratedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.inject.Inject;
-
-import net.engio.mbassy.bus.MBassador;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
@@ -38,7 +37,7 @@ public class PopupManager {
     /** The command controller to use for items. */
     private final CommandController commandController;
     /** The bus to dispatch events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PopupManager.
@@ -47,7 +46,7 @@ public class PopupManager {
      * @param eventBus          The bus to dispatch events on.
      */
     @Inject
-    public PopupManager(final CommandController commandController, final MBassador eventBus) {
+    public PopupManager(final CommandController commandController, final DMDircMBassador eventBus) {
         this.commandController = commandController;
         this.eventBus = eventBus;
     }

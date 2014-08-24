@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ConnectionPrefsRequestedEvent;
 import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -31,15 +32,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import net.engio.mbassy.bus.MBassador;
-
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PreferencesManagerTest {
 
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
     @Mock private AggregateConfigProvider configManager;
 
     @Test

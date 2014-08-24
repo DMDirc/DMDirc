@@ -32,7 +32,7 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 import java.util.Collections;
 
@@ -45,7 +45,7 @@ public class TestWritableFrameContainer extends FrameContainer {
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final MBassador eventBus) {
+            final URLBuilder urlBuilder, final DMDircMBassador eventBus) {
         super(null, "raw", "Raw", "(Raw)", cm, urlBuilder,
                 new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import net.engio.mbassy.bus.MBassador;
+import com.dmdirc.DMDircMBassador;
 
 /**
  * Utilities for interacting with events.
@@ -41,9 +41,9 @@ public final class EventUtils {
      *
      * @return The event's display format after it has been posted on the event bus.
      */
-    public static String postDisplayable(
-            final MBassador eventBus,
-            final DisplayableEvent event,
+    public static <T extends DMDircEvent & DisplayableEvent> String postDisplayable(
+            final DMDircMBassador eventBus,
+            final T event,
             final String displayFormat) {
         event.setDisplayFormat(displayFormat);
         eventBus.publish(event);

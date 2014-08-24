@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
-import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
 import com.dmdirc.events.QueryMessageEvent;
@@ -134,7 +133,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 server.getParser().sendMessage(target, part);
 
                 doNotification("querySelfMessage", server.getParser().getLocalClient(), part);
-                final DisplayableEvent event = new QuerySelfMessageEvent(this, server.getParser().
+                final QuerySelfMessageEvent event = new QuerySelfMessageEvent(this, server.getParser().
                         getLocalClient(), part);
                 event.setDisplayFormat("querySelfMessage");
                 getEventBus().publish(event);
@@ -175,7 +174,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().sendAction(getNickname(), action);
 
             doNotification("querySelfAction", client, action);
-            final DisplayableEvent event = new QuerySelfActionEvent(this, client, action);
+            final QuerySelfActionEvent event = new QuerySelfActionEvent(this, client, action);
             event.setDisplayFormat("querySelfAction");
             getEventBus().publish(event);
         } else {
@@ -190,7 +189,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryMessage");
 
-        final DisplayableEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
+        final QueryMessageEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
         getEventBus().publish(event);
 
@@ -204,7 +203,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         final StringBuffer buff = new StringBuffer("queryAction");
 
-        final DisplayableEvent event = new QueryActionEvent(this, parser.getClient(host), message);
+        final QueryActionEvent event = new QueryActionEvent(this, parser.getClient(host), message);
         event.setDisplayFormat(buff.toString());
         getEventBus().publish(event);
 
@@ -258,7 +257,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             final StringBuffer format = new StringBuffer("queryNickChanged");
 
-            final DisplayableEvent event = new QueryNickchangeEvent(this, oldNick);
+            final QueryNickchangeEvent event = new QueryNickchangeEvent(this, oldNick);
             event.setDisplayFormat("queryNickChanged");
             getEventBus().publish(event);
 
@@ -281,7 +280,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final StringBuffer format = new StringBuffer(reason.isEmpty()
                     ? "queryQuit" : "queryQuitReason");
 
-            final DisplayableEvent event = new QueryQuitEvent(this, reason);
+            final QueryQuitEvent event = new QueryQuitEvent(this, reason);
             event.setDisplayFormat(format.toString());
             getEventBus().publish(event);
 

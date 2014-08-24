@@ -22,12 +22,11 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.themes.ThemeManager;
-
-import net.engio.mbassy.bus.MBassador;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,7 +52,7 @@ public class URLBuilderTest {
     @Mock private ThemeManager themeManager;
     @Mock private PluginInfo pluginInfo;
     @Mock private PluginMetaData pluginMetaData;
-    @Mock private MBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
 
     @Before
     public void setup() throws MalformedURLException {

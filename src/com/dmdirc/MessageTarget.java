@@ -28,8 +28,6 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.URLBuilder;
 
-import net.engio.mbassy.bus.MBassador;
-
 import java.util.Collection;
 
 import javax.annotation.Nullable;
@@ -66,7 +64,7 @@ public abstract class MessageTarget extends FrameContainer {
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final MBassador eventBus,
+            final DMDircMBassador eventBus,
             final Collection<String> components) {
         super(parent, icon, name, title, config, urlBuilder, parser, tabCompleter,
                 messageSinkManager, eventBus, components);

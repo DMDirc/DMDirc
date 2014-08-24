@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.core.components;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarComponentAddedEvent;
 import com.dmdirc.events.StatusBarComponentRemovedEvent;
 import com.dmdirc.events.StatusBarMessageClearEvent;
@@ -36,8 +37,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import net.engio.mbassy.bus.MBassador;
-
 /**
  * A manager for status bars or status bar like components.
  *
@@ -49,10 +48,10 @@ public class StatusBarManager implements StatusBar {
     /** A collection of known status bars. */
     private final Collection<StatusBar> statusBars = new CopyOnWriteArraySet<>();
     /** Event bus to fire status bar events on. */
-    private final MBassador eventBus;
+    private final DMDircMBassador eventBus;
 
     @Inject
-    public StatusBarManager(final MBassador eventBus) {
+    public StatusBarManager(final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
     }
 
