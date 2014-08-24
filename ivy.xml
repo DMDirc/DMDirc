@@ -34,7 +34,7 @@
 
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />
-        <dependency org="com.cenqua.clover" name="clover" rev="3.+" conf="test->default" />
+        <dependency org="com.atlassian.clover" name="clover" rev="4.+" conf="test->default" />
 
         <dependency org="pmd" name="pmd" rev="4.+" conf="analyse->default" />
         <dependency org="com.puppycrawl.tools" name="checkstyle" rev="5.+" conf="analyse->default" />
