@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions.internal;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.Connection;
@@ -30,7 +31,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dmdirc.DMDircMBassador;
 import net.engio.mbassy.listener.Handler;
 
 /**

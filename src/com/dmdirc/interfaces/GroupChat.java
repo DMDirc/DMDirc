@@ -22,10 +22,10 @@
 
 package com.dmdirc.interfaces;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Topic;
 
 import com.google.common.base.Optional;
-import com.dmdirc.DMDircMBassador;
 
 import java.util.List;
 

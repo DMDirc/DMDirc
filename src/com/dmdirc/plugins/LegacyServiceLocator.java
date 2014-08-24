@@ -22,6 +22,7 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -32,8 +33,6 @@ import java.util.HashSet;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.dmdirc.DMDircMBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

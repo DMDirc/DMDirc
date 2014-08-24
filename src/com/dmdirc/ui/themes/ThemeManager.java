@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.themes;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -31,8 +32,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.dmdirc.DMDircMBassador;
 
 /**
  * Manages available themes.

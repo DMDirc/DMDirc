@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -37,8 +38,6 @@ import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
-
-import com.dmdirc.DMDircMBassador;
 
 import java.io.File;
 import java.io.IOException;

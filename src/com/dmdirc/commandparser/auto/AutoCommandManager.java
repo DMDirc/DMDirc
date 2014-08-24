@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.dmdirc.DMDircMBassador;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +31,6 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.dmdirc.DMDircMBassador;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

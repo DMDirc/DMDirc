@@ -22,6 +22,7 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
@@ -41,8 +42,6 @@ import com.dmdirc.updater.manager.UpdateComponentPolicy;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.updater.retrieving.DownloadRetrievalStrategy;
 import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
-
-import com.dmdirc.DMDircMBassador;
 
 import javax.inject.Singleton;
 
