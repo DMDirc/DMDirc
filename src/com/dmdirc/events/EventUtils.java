@@ -35,6 +35,8 @@ public final class EventUtils {
     /**
      * Posts a displayable event to the bus, and returns the updated display format.
      *
+     * @param <T>             The type of event to be displayed
+     *
      * @param eventBus      The bus to post events to.
      * @param event         The event to be posted.
      * @param displayFormat The initial, default, display format.
