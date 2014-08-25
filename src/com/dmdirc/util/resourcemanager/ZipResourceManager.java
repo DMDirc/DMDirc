@@ -22,8 +22,6 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.io.StreamUtils;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -110,8 +108,6 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public byte[] getResourceBytes(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
-        BufferedInputStream inputStream = null;
-
         if (zipEntry == null) {
             return new byte[0];
         }
@@ -122,17 +118,14 @@ public final class ZipResourceManager extends ResourceManager {
 
         final byte[] bytes = new byte[(int) zipEntry.getSize()];
 
-        try {
-            inputStream = new BufferedInputStream(zipFile.getInputStream(zipEntry));
-
+        try (BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream
+                (zipEntry))) {
             if (inputStream.read(bytes) != bytes.length) {
                 inputStream.close();
                 return new byte[0];
             }
         } catch (IOException ex) {
             return new byte[0];
-        } finally {
-            StreamUtils.close(inputStream);
         }
 
         return bytes;

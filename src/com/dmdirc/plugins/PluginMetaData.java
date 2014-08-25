@@ -25,7 +25,6 @@ package com.dmdirc.plugins;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
-import com.dmdirc.util.io.StreamUtils;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
@@ -134,7 +133,7 @@ public class PluginMetaData {
         errors.clear();
         InputStream stream = null;
 
-        try {
+        try (InputStream steam = getStream()) {
             stream = getStream();
             final ConfigFile configFile = new ConfigFile(stream);
             configFile.read();
@@ -151,7 +150,6 @@ public class PluginMetaData {
             readExports(configFile.getFlatDomain("exports"));
         } catch (IOException | InvalidConfigFileException ex) {
             errors.add("Unable to read config file: " + ex.getMessage());
-            StreamUtils.close(stream);
         }
     }
 

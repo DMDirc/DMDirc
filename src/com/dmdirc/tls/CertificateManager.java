@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.io.StreamUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,12 +118,9 @@ public class CertificateManager implements X509TrustManager {
      * Loads the trusted CA certificates from the Java cacerts store.
      */
     protected void loadTrustedCAs() {
-        FileInputStream is = null;
-
-        try {
-            final String filename = System.getProperty("java.home")
-                    + "/lib/security/cacerts".replace('/', File.separatorChar);
-            is = new FileInputStream(filename);
+        final String filename = System.getProperty("java.home")
+                + "/lib/security/cacerts".replace('/', File.separatorChar);
+        try (FileInputStream is = new FileInputStream(filename)) {
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, null);
 
@@ -135,8 +131,6 @@ public class CertificateManager implements X509TrustManager {
         } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
                 KeyStoreException | NoSuchAlgorithmException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
-        } finally {
-            StreamUtils.close(is);
         }
     }
 
@@ -148,8 +142,8 @@ public class CertificateManager implements X509TrustManager {
      */
     public KeyManager[] getKeyManager() {
         if (config.hasOptionString("ssl", "clientcert.file")) {
-            FileInputStream fis = null;
-            try {
+            try (FileInputStream fis = new FileInputStream(config.getOption("ssl",
+                    "clientcert.file"))) {
                 final char[] pass;
 
                 if (config.hasOptionString("ssl", "clientcert.pass")) {
@@ -158,7 +152,6 @@ public class CertificateManager implements X509TrustManager {
                     pass = null;
                 }
 
-                fis = new FileInputStream(config.getOption("ssl", "clientcert.file"));
                 final KeyStore ks = KeyStore.getInstance("pkcs12");
                 ks.load(fis, pass);
 
@@ -171,8 +164,6 @@ public class CertificateManager implements X509TrustManager {
                 Logger.userError(ErrorLevel.MEDIUM, "Certificate file not found", ex);
             } catch (GeneralSecurityException | IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
-            } finally {
-                StreamUtils.close(fis);
             }
         }
 

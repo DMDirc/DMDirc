@@ -21,13 +21,11 @@
  */
 package com.dmdirc.logger;
 
-import com.dmdirc.util.io.StreamUtils;
-
 import java.io.IOException;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class NullOutputStreamTest {
 
@@ -35,14 +33,10 @@ public class NullOutputStreamTest {
     public void testWrite() {
         boolean exception = false;
 
-        final NullOutputStream os = new NullOutputStream();
-
-        try {
+        try (NullOutputStream os = new NullOutputStream()) {
             os.write(46);
         } catch (IOException ex) {
             exception = true;
-        } finally {
-            StreamUtils.close(os);
         }
 
         assertFalse(exception);

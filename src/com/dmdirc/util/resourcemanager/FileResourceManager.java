@@ -22,8 +22,6 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.io.StreamUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -73,7 +71,6 @@ public final class FileResourceManager extends ResourceManager {
     /** {@inheritDoc} */
     @Override
     public byte[] getResourceBytes(final String resource) {
-        FileInputStream inputStream = null;
         final File file;
 
         if (resource.startsWith(basePath)) {
@@ -92,13 +89,10 @@ public final class FileResourceManager extends ResourceManager {
 
         final byte[] bytes = new byte[(int) file.length()];
 
-        try {
-            inputStream = new FileInputStream(file);
+        try (FileInputStream inputStream = new FileInputStream(file)) {
             inputStream.read(bytes);
         } catch (IOException ex) {
             return new byte[0];
-        } finally {
-            StreamUtils.close(inputStream);
         }
 
         return bytes;
