@@ -46,7 +46,6 @@ public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponen
         this.updateRetrievalClass = updateRetrievalClass;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean canHandle(final UpdateRetrievalResult retrievalResult) {
         return updateComponentClass.isAssignableFrom(
@@ -54,7 +53,6 @@ public abstract class TypeSensitiveInstallationStrategy<S extends UpdateComponen
                 && updateRetrievalClass.isAssignableFrom(retrievalResult.getClass());
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public void install(final UpdateRetrievalResult retrievalResult) {

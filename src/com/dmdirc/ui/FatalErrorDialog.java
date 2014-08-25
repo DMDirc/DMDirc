@@ -217,7 +217,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             restartButton.setEnabled(false);
             sendButton.setEnabled(false);
             new SwingWorker<Void, Void>() {
-                /** {@inheritDoc} */
                 @Override
                 protected Void doInBackground() {
                     ErrorManager.getErrorManager().sendError(error);
@@ -282,25 +281,21 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void errorAdded(final ProgramError error) {
         //Ignore
     }
 
-    /** {@inheritDoc} */
     @Override
     public void errorDeleted(final ProgramError error) {
         //Ignore
     }
 
-    /** {@inheritDoc} */
     @Override
     public void errorStatusChanged(final ProgramError error) {
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
             SwingUtilities.invokeLater(new Runnable() {
-                /** {@inheritDoc} */
                 @Override
                 public void run() {
                     restartButton.setEnabled(status.isTerminal());
@@ -310,7 +305,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isReady() {
         //We're never ready

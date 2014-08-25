@@ -59,25 +59,21 @@ public class DefaultsComponent implements UpdateComponent {
         this.directory = directory;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "defaultsettings";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Default settings";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
         return String.valueOf(getVersion());
     }
 
-    /** {@inheritDoc} */
     @Override
     public Version getVersion() {
         final AggregateConfigProvider globalConfig = identityController.getGlobalConfiguration();
@@ -90,29 +86,21 @@ public class DefaultsComponent implements UpdateComponent {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresManualInstall() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws java.io.IOException On i/o exception when reading zip file
-     */
     @Override
     public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);

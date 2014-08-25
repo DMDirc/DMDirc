@@ -46,7 +46,6 @@ public class PluginComponent implements UpdateComponent {
         this.plugin = plugin;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         if (plugin.getMetaData().getUpdaterId() > 0) {
@@ -57,43 +56,36 @@ public class PluginComponent implements UpdateComponent {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return plugin.getMetaData().getFriendlyName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
         return plugin.getMetaData().getFriendlyVersion();
     }
 
-    /** {@inheritDoc} */
     @Override
     public Version getVersion() {
         return plugin.getMetaData().getVersion();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
         return plugin.isLoaded();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresManualInstall() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
         return "";
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) {
         final File target = new File(plugin.getMetaData().getPluginUrl().getPath());

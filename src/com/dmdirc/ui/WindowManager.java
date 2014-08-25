@@ -374,7 +374,6 @@ public class WindowManager {
      */
     private class CloseListener implements FrameCloseListener {
 
-        /** {@inheritDoc} */
         @Override
         public void windowClosing(final FrameContainer window) {
             removeWindow(window);

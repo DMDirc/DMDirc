@@ -63,13 +63,11 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
         return managerStatus;
     }
 
-    /** {@inheritDoc} */
     @Override
     public UpdateStatus getStatus(final UpdateComponent component) {
         return cachedStatuses.get(component);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addComponent(final UpdateComponent component) {
         super.addComponent(component);
@@ -77,7 +75,6 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
                 ? UpdateStatus.IDLE : UpdateStatus.CHECKING_NOT_PERMITTED);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeComponent(final UpdateComponent component) {
         super.removeComponent(component);
@@ -126,13 +123,11 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addUpdateManagerListener(final UpdateManagerListener listener) {
         listenerList.add(UpdateManagerListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeUpdateManagerListener(final UpdateManagerListener listener) {
         listenerList.remove(UpdateManagerListener.class, listener);
@@ -143,7 +138,6 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
      */
     private class Listener implements UpdateStatusListener {
 
-        /** {@inheritDoc} */
         @Override
         public void updateStatusChanged(final UpdateComponent component,
                 final UpdateStatus status, final double progress) {
@@ -158,7 +152,6 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
      */
     private static class UpdateComponentComparator implements Comparator<UpdateComponent> {
 
-        /** {@inheritDoc} */
         @Override
         public int compare(final UpdateComponent o1, final UpdateComponent o2) {
             return o1.getName().compareTo(o2.getName());

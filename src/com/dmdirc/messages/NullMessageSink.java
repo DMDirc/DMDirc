@@ -41,13 +41,11 @@ public class NullMessageSink implements MessageSink {
     public NullMessageSink() {
     }
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,

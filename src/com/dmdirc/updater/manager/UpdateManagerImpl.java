@@ -92,14 +92,12 @@ public class UpdateManagerImpl implements UpdateManager {
         return policy;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addCheckStrategy(final UpdateCheckStrategy strategy) {
         log.trace("Adding new check strategy: {}", strategy);
         this.checkers.add(strategy);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addRetrievalStrategy(final UpdateRetrievalStrategy strategy) {
         log.trace("Adding new retrieval strategy: {}", strategy);
@@ -107,7 +105,6 @@ public class UpdateManagerImpl implements UpdateManager {
         this.retrievers.add(strategy);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addInstallationStrategy(final UpdateInstallationStrategy strategy) {
         log.trace("Adding new installation strategy: {}", strategy);
@@ -115,7 +112,6 @@ public class UpdateManagerImpl implements UpdateManager {
         this.installers.add(strategy);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addComponent(final UpdateComponent component) {
         log.trace("Adding new component: {}", component);
@@ -124,7 +120,6 @@ public class UpdateManagerImpl implements UpdateManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeComponent(final UpdateComponent component) {
         log.trace("Removing component: {}", component);
@@ -136,7 +131,6 @@ public class UpdateManagerImpl implements UpdateManager {
         this.retrievalResults.remove(component);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Collection<UpdateComponent> getComponents() {
         synchronized (componentsLock) {
@@ -144,13 +138,11 @@ public class UpdateManagerImpl implements UpdateManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public UpdateCheckResult getCheckResult(final UpdateComponent component) {
         return checkResults.get(component);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void checkForUpdates() {
         final Collection<Map<UpdateComponent, UpdateCheckResult>> results = new ArrayList<>();
@@ -204,7 +196,6 @@ public class UpdateManagerImpl implements UpdateManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void install(final UpdateComponent component) {
         if (!retrievalResults.containsKey(component) || !retrievalResults.get(component).
@@ -228,7 +219,6 @@ public class UpdateManagerImpl implements UpdateManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void retrieve(final UpdateComponent component) {
         retrieve(component, false);
@@ -318,13 +308,11 @@ public class UpdateManagerImpl implements UpdateManager {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addUpdateStatusListener(final UpdateStatusListener listener) {
         listenerList.add(UpdateStatusListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeUpdateStatusListener(final UpdateStatusListener listener) {
         listenerList.remove(UpdateStatusListener.class, listener);
@@ -336,7 +324,6 @@ public class UpdateManagerImpl implements UpdateManager {
      */
     private class InstallListener implements UpdateInstallationListener {
 
-        /** {@inheritDoc} */
         @Override
         public void installCompleted(final UpdateComponent component) {
             listenerList.getCallable(UpdateStatusListener.class)
@@ -344,14 +331,12 @@ public class UpdateManagerImpl implements UpdateManager {
                             ? UpdateStatus.RESTART_PENDING : UpdateStatus.UPDATED, 0);
         }
 
-        /** {@inheritDoc} */
         @Override
         public void installFailed(final UpdateComponent component) {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         }
 
-        /** {@inheritDoc} */
         @Override
         public void installProgressChanged(final UpdateComponent component, final double progress) {
             listenerList.getCallable(UpdateStatusListener.class)
@@ -366,21 +351,18 @@ public class UpdateManagerImpl implements UpdateManager {
      */
     private class RetrievalListener implements UpdateRetrievalListener {
 
-        /** {@inheritDoc} */
         @Override
         public void retrievalCompleted(final UpdateComponent component) {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
         }
 
-        /** {@inheritDoc} */
         @Override
         public void retrievalFailed(final UpdateComponent component) {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, UpdateStatus.IDLE, 0);
         }
 
-        /** {@inheritDoc} */
         @Override
         public void retrievalProgressChanged(final UpdateComponent component, final double progress) {
             listenerList.getCallable(UpdateStatusListener.class)

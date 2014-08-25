@@ -40,13 +40,11 @@ public abstract class TypeSensitiveRetrievalStrategy<T extends UpdateCheckResult
         this.clazz = clazz;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean canHandle(final UpdateCheckResult checkResult) {
         return clazz.isAssignableFrom(checkResult.getClass());
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public UpdateRetrievalResult retrieve(final UpdateCheckResult checkResult) {

@@ -100,7 +100,6 @@ public class Colour {
         return red;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
@@ -113,7 +112,6 @@ public class Colour {
                 && this.blue == other.getBlue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int hash = 7;

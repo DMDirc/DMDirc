@@ -73,49 +73,41 @@ public class LauncherComponent implements UpdateComponent {
         return version.isValid();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "launcher-" + platform;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Launcher";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
         return String.valueOf(getVersion());
     }
 
-    /** {@inheritDoc} */
     @Override
     public Version getVersion() {
         return version;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
         return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresManualInstall() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
         return "";
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) throws IOException {
         final File tmpFile = new File(path);

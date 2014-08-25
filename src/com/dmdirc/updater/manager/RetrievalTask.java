@@ -49,7 +49,6 @@ public class RetrievalTask implements Runnable {
         this.install = install;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         final UpdateRetrievalResult retrievalResult = strategy.retrieve(result);

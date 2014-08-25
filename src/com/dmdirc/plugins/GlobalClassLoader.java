@@ -79,7 +79,6 @@ public final class GlobalClassLoader extends ClassLoader {
         return loadClass(name);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Class<?> loadClass(final String name) throws ClassNotFoundException {
         try {

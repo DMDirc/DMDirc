@@ -878,7 +878,6 @@ public class Styliser implements ConfigChangeListener {
                 convertColour(colourManager.getColourFromString(background, Colour.WHITE)));
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         switch (key) {

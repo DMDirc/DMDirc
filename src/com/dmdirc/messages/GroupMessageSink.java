@@ -42,13 +42,11 @@ public class GroupMessageSink implements MessageSink {
     public GroupMessageSink() {
     }
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,

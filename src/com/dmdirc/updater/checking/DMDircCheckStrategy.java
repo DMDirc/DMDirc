@@ -84,7 +84,6 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<UpdateComponent, UpdateCheckResult> checkForUpdates(
             final Collection<UpdateComponent> components) {

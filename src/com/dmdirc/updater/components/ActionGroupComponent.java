@@ -40,49 +40,41 @@ public class ActionGroupComponent implements UpdateComponent {
     /** The group that this component represents. */
     private final ActionGroup group;
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "addon-" + group.getComponent();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "Action pack: " + group.getName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public Version getVersion() {
         return group.getVersion();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
         return String.valueOf(getVersion());
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresManualInstall() {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
         return "";
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) throws IOException {
         ActionManager.installActionPack(path);

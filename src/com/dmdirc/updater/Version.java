@@ -72,7 +72,6 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int compareTo(@Nonnull final Version o) {
         if (o.intVersion > Integer.MIN_VALUE && this.intVersion > Integer.MIN_VALUE) {
@@ -141,13 +140,11 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof Version && compareTo((Version) obj) == 0;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -165,7 +162,6 @@ public class Version implements Comparable<Version> {
         return intVersion > Integer.MIN_VALUE || strVersion != null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return strVersion == null ? String.valueOf(intVersion) : strVersion;

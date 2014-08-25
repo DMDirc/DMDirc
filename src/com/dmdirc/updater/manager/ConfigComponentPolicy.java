@@ -47,7 +47,6 @@ public class ConfigComponentPolicy implements UpdateComponentPolicy {
         this.manager = manager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean canCheck(final UpdateComponent component) {
         return !manager.hasOptionBool("updater", "enable-" + component.getName())

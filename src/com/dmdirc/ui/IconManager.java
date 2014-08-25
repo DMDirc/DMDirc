@@ -191,7 +191,6 @@ public class IconManager implements ConfigChangeListener {
         return type;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         if ("icon".equals(domain)) {

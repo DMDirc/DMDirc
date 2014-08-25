@@ -64,25 +64,18 @@ public abstract class BaseCommandPlugin extends BasePlugin {
     public BaseCommandPlugin() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onLoad() {
         super.onLoad();
         loadCommands();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onUnload() {
         super.onUnload();
         unloadCommands();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void load(final PluginInfo pluginInfo, final ObjectGraph graph) {
         super.load(pluginInfo, graph);

@@ -307,7 +307,6 @@ public abstract class InputHandler implements ConfigChangeListener {
 
         compositionTimer = new Timer("Composition state timer");
         compositionTimer.schedule(new TimerTask() {
-            /** {@inheritDoc} */
             @Override
             public void run() {
                 timeoutTypingNotification();
@@ -643,7 +642,6 @@ public abstract class InputHandler implements ConfigChangeListener {
         buffer.seekToEnd();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         setStyle();

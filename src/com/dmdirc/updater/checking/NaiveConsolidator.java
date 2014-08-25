@@ -43,7 +43,6 @@ public class NaiveConsolidator implements CheckResultConsolidator {
     public NaiveConsolidator() {
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<UpdateComponent, UpdateCheckResult> consolidate(
             final Collection<Map<UpdateComponent, UpdateCheckResult>> results) {

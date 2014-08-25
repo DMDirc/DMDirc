@@ -115,13 +115,11 @@ public class PluginManager implements ServiceManager {
         return globalClassLoader;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Service getService(final String type, final String name) {
         return getService(type, name, false);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Service getService(final String type, final String name, final boolean create) {
         // Find the type first
@@ -146,7 +144,6 @@ public class PluginManager implements ServiceManager {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ServiceProvider getServiceProvider(final String type, final String name) throws
             NoSuchProviderException {
@@ -168,7 +165,6 @@ public class PluginManager implements ServiceManager {
         throw new NoSuchProviderException("No provider found for: " + type + "->" + name);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ServiceProvider getServiceProvider(final String type, final List<String> names,
             final boolean fallback) throws NoSuchProviderException {
@@ -190,13 +186,11 @@ public class PluginManager implements ServiceManager {
         throw new NoSuchProviderException("No provider found for " + type + "from the given list");
     }
 
-    /** {@inheritDoc} */
     @Override
     public ExportedService getExportedService(final String name) {
         return getServiceProvider("export", name).getExportedService(name);
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Service> getServicesByType(final String type) {
         // Find the type first
@@ -208,7 +202,6 @@ public class PluginManager implements ServiceManager {
         return new ArrayList<>();
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Service> getAllServices() {
         // Find the type first

@@ -92,7 +92,6 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
      */
     private static class NamedThreadFactory implements ThreadFactory {
 
-        /** {@inheritDoc} */
         @Override
         public Thread newThread(@Nonnull final Runnable r) {
             return new Thread(r, "Updater thread");

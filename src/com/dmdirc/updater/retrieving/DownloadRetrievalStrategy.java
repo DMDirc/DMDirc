@@ -68,7 +68,6 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
         this.downloader = downloader;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected UpdateRetrievalResult retrieveImpl(final DownloadableUpdate checkResult) {
         try {
@@ -104,13 +103,11 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
                 + Math.round(10000 * Math.random()) + ".tmp";
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addUpdateRetrievalListener(final UpdateRetrievalListener listener) {
         listenerList.add(UpdateRetrievalListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeUpdateRetrievalListener(final UpdateRetrievalListener listener) {
         listenerList.remove(UpdateRetrievalListener.class, listener);
@@ -129,14 +126,12 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
             this.component = component;
         }
 
-        /** {@inheritDoc} */
         @Override
         public void downloadProgress(final float percent) {
             listenerList.getCallable(UpdateRetrievalListener.class)
                     .retrievalProgressChanged(component, percent);
         }
 
-        /** {@inheritDoc} */
         @Override
         public void setIndeterminate(final boolean indeterminate) {
             // Do nothing

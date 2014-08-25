@@ -57,37 +57,31 @@ public class ClientComponent implements UpdateComponent {
         this.statusBarManager = statusBarManager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "client";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
         return "DMDirc client";
     }
 
-    /** {@inheritDoc} */
     @Override
     public Version getVersion() {
         return new Version(getFriendlyVersion());
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresRestart() {
         return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean requiresManualInstall() {
         return !LauncherComponent.isUsingLauncher();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getManualInstructions(final String path) {
         final File targetFile = new File(new File(path).getParent()
@@ -117,13 +111,11 @@ public class ClientComponent implements UpdateComponent {
         return "";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
         return identityController.getGlobalConfiguration().getOption("version", "version");
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean doInstall(final String path) {
         final File tmpFile = new File(path);

@@ -41,7 +41,6 @@ public abstract class BasePlugin implements Plugin {
     /** The object graph to return for subplugins, if any. */
     private ObjectGraph objectGraph;
 
-    /** {@inheritDoc} */
     @Override
     @Deprecated
     public void setDomain(final String newDomain) {
@@ -51,13 +50,11 @@ public abstract class BasePlugin implements Plugin {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void load(final PluginInfo pluginInfo, final ObjectGraph graph) {
         // Do nothing, for now.
     }
 
-    /** {@inheritDoc} */
     @Override
     public ObjectGraph getObjectGraph() {
         return objectGraph;
@@ -72,32 +69,27 @@ public abstract class BasePlugin implements Plugin {
         this.objectGraph = objectGraph;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onLoad() {
         //Define this here so only implementations that care have to override
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onUnload() {
         //Define this here so only implementations that care have to override
     }
 
-    /** {@inheritDoc} */
     @Override
     @Deprecated
     public String getDomain() {
         return myDomain;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ValidationResponse checkPrerequisites() {
         return new ValidationResponse();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesDialogModel manager) {
         //Define this here so only implementations that care have to override

@@ -338,7 +338,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         trim(frameBufferSize);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         setCachedSettings();

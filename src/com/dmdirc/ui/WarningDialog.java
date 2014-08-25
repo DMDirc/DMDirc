@@ -98,7 +98,6 @@ public class WarningDialog extends JDialog {
 
         final JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
-            /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent e) {
                 dispose();
@@ -137,7 +136,6 @@ public class WarningDialog extends JDialog {
      */
     public void display() {
         SwingUtilities.invokeLater(new Runnable() {
-            /** {@inheritDoc} */
             @Override
             public void run() {
                 setSize(400, 400);
@@ -153,7 +151,6 @@ public class WarningDialog extends JDialog {
     public void displayBlocking() {
         final Semaphore semaphore = new Semaphore(0);
         SwingUtilities.invokeLater(new Runnable() {
-            /** {@inheritDoc} */
             @Override
             public void run() {
                 addWindowListener(new WindowAdapter() {

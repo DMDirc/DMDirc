@@ -143,13 +143,11 @@ public class Line {
         return string.getAttributedString();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof Line && Arrays.equals(((Line) obj).getLineParts(), getLineParts());
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Arrays.hashCode(getLineParts());

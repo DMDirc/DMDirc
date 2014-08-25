@@ -132,7 +132,6 @@ public class TabCompleterResult {
         return results;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         final StringBuilder buff = new StringBuilder();

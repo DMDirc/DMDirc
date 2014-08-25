@@ -41,7 +41,6 @@ public class InstallationTask implements Runnable {
         this.result = result;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
         strategy.install(result);

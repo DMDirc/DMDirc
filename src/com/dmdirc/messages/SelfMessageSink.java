@@ -41,13 +41,11 @@ public class SelfMessageSink implements MessageSink {
     public SelfMessageSink() {
     }
 
-    /** {@inheritDoc} */
     @Override
     public Pattern getPattern() {
         return PATTERN;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,

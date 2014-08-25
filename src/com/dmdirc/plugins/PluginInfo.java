@@ -421,7 +421,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             // Clear the resourcemanager in 10 seconds to stop us holding the file open
             new Timer(filename + "-resourcemanagerTimer").schedule(new TimerTask() {
-                /** {@inheritDoc} */
                 @Override
                 public void run() {
                     resourceManager = null;
@@ -432,26 +431,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         return resourceManager;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isActive() {
         return isLoaded();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void activateServices() {
         loadPlugin();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getProviderName() {
         return "Plugin: " + metaData.getFriendlyName() + " ("
                 + metaData.getName() + " / " + getFilename() + ")";
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Service> getServices() {
         synchronized (provides) {
@@ -932,7 +927,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         return metaData.getFriendlyName() + " - " + filename;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int compareTo(@Nonnull final PluginInfo o) {
         return toString().compareTo(o.toString());
@@ -966,7 +960,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ExportedService getExportedService(final String name) {
         if (exports.containsKey(name)) {

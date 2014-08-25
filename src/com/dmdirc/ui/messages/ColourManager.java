@@ -60,7 +60,6 @@ public class ColourManager {
         this.configManager = configManager;
 
         configManager.addChangeListener("colour", new ConfigChangeListener() {
-            /** {@inheritDoc} */
             @Override
             public void configChanged(final String domain, final String key) {
                 initColours();

@@ -178,11 +178,6 @@ public class PluginClassLoader extends ClassLoader {
         return loadedClass;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 0.6.3
-     */
     @Override
     protected URL findResource(final String name) {
         try {
@@ -208,11 +203,6 @@ public class PluginClassLoader extends ClassLoader {
         return super.findResource(name);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 0.6.3
-     */
     @Override
     protected Enumeration<URL> findResources(final String name)
             throws IOException {

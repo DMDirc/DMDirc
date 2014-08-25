@@ -176,7 +176,6 @@ public class PluginMetaData {
         return url.openStream();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
@@ -188,7 +187,6 @@ public class PluginMetaData {
                 && pluginUrl.equals(other.getPluginUrl()));
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return pluginUrl == null ? 0 : pluginUrl.hashCode();

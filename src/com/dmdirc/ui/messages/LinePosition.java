@@ -136,7 +136,6 @@ public class LinePosition {
         this.startPos = startPos;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Position[" + startLine + ", " + startPos + ", " + endLine

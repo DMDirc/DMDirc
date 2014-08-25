@@ -170,7 +170,6 @@ public class CertificateManager implements X509TrustManager {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void checkClientTrusted(final X509Certificate[] chain, final String authType)
             throws CertificateException {
@@ -270,7 +269,6 @@ public class CertificateManager implements X509TrustManager {
         return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
             throws CertificateException {
@@ -418,7 +416,6 @@ public class CertificateManager implements X509TrustManager {
         return res;
     }
 
-    /** {@inheritDoc} */
     @Override
     public X509Certificate[] getAcceptedIssuers() {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);

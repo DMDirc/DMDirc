@@ -49,7 +49,6 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
         super(UpdateComponent.class, SingleFileRetrievalResult.class);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void installImpl(final UpdateComponent component,
             final SingleFileRetrievalResult retrievalResult) {
@@ -65,13 +64,11 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addUpdateInstallationListener(final UpdateInstallationListener listener) {
         listenerList.add(UpdateInstallationListener.class, listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeUpdateInstallationListener(final UpdateInstallationListener listener) {
         listenerList.remove(UpdateInstallationListener.class, listener);

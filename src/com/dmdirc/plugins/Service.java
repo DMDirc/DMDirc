@@ -148,7 +148,6 @@ public class Service {
         return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Service: " + type + "->" + name + " (Providers: " + serviceproviders.size() + ")";

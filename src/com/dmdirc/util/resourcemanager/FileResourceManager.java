@@ -54,7 +54,6 @@ public final class FileResourceManager extends ResourceManager {
         this.basePath = basePath;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean resourceExists(final String resource) {
         final File file;
@@ -68,7 +67,6 @@ public final class FileResourceManager extends ResourceManager {
         return file.exists() && !file.isDirectory();
     }
 
-    /** {@inheritDoc} */
     @Override
     public byte[] getResourceBytes(final String resource) {
         final File file;
@@ -98,7 +96,6 @@ public final class FileResourceManager extends ResourceManager {
         return bytes;
     }
 
-    /** {@inheritDoc} */
     @Override
     public InputStream getResourceInputStream(final String resource) {
         final File file;
@@ -124,7 +121,6 @@ public final class FileResourceManager extends ResourceManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public URL getResourceURL(final String resource) throws MalformedURLException {
         if (resourceExists(resource)) {
@@ -134,7 +130,6 @@ public final class FileResourceManager extends ResourceManager {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesEndingWithAsBytes(
             final String resourcesSuffix) {
@@ -152,7 +147,6 @@ public final class FileResourceManager extends ResourceManager {
         return resources;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
@@ -170,7 +164,6 @@ public final class FileResourceManager extends ResourceManager {
         return resources;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
@@ -188,7 +181,6 @@ public final class FileResourceManager extends ResourceManager {
         return resources;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
