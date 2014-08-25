@@ -683,8 +683,8 @@ is divided into following sections:
             -->
     <target name="deps-clean" unless="no.deps"/>
     <target name="-do-clean">
-        <delete dir="${build.dir}"/>
-        <delete dir="${dist.dir}"/>
+        <delete dir="build"/>
+        <delete dir="dist"/>
     </target>
     <target name="-post-clean">
         <!-- Empty placeholder for easier customization. -->
