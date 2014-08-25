@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.util.validators.ValidationResponse;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -59,7 +60,7 @@ public class Me extends Command implements ValidatingCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final MessageTarget target = ((ChatCommandContext) context).getChat();
         if (args.getArguments().length == 0) {

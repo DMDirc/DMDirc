@@ -35,6 +35,7 @@ import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.ColourManager;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -62,7 +63,7 @@ public class Notify extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "notify", "<colour>");

@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents one theme file.
  */
@@ -201,7 +203,7 @@ public class Theme implements Comparable<Theme> {
     }
 
     @Override
-    public int compareTo(final Theme o) {
+    public int compareTo(@Nonnull final Theme o) {
         return getName().compareTo(o.getName());
     }
 

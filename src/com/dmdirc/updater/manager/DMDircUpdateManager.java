@@ -34,6 +34,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -93,7 +94,7 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
 
         /** {@inheritDoc} */
         @Override
-        public Thread newThread(final Runnable r) {
+        public Thread newThread(@Nonnull final Runnable r) {
             return new Thread(r, "Updater thread");
         }
 

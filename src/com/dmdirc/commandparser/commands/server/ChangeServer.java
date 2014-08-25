@@ -37,6 +37,7 @@ import com.dmdirc.util.URIParser;
 
 import java.net.URI;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -65,7 +66,7 @@ public class ChangeServer extends Command {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "server", "<host[:[+]port]> [password]");

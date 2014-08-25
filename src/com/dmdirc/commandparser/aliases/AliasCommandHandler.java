@@ -28,6 +28,8 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link Command} implementation that handles an alias.
  */
@@ -41,7 +43,7 @@ public class AliasCommandHandler extends Command {
     }
 
     @Override
-    public void execute(final FrameContainer origin, final CommandArguments args,
+    public void execute(@Nonnull final FrameContainer origin, final CommandArguments args,
             final CommandContext context) {
         if (args.getArguments().length >= alias.getMinArguments()) {
             for (String line : alias.getSubstitution().split("\n")) {

@@ -40,6 +40,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.URLBuilder;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -86,7 +87,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         int start = 0;
         FrameContainer parent = null;

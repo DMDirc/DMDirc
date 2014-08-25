@@ -32,6 +32,8 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import javax.annotation.Nonnull;
+
 public class TestCommandParser extends CommandParser {
 
     private static final long serialVersionUID = 7073002401375438532L;
@@ -57,7 +59,7 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(FrameContainer origin, CommandInfo commandInfo, Command command,
+    protected void executeCommand(@Nonnull FrameContainer origin, CommandInfo commandInfo, Command command,
             CommandArguments args, CommandContext context) {
         executedCommand = command;
         wasSilent = args.isSilent();

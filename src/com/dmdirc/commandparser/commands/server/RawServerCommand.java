@@ -33,6 +33,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
+
 /**
  * Implements a raw server command (i.e., a command that is sent to the server as-is.
  */
@@ -54,7 +56,7 @@ public class RawServerCommand extends Command implements CommandInfo {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         server.getParser().sendRawMessage(myName.toUpperCase() + " " + args.getArgumentsAsString());

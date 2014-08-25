@@ -22,6 +22,8 @@
 
 package com.dmdirc.updater;
 
+import javax.annotation.Nonnull;
+
 /**
  * Describes a version of a component, either as an integer or as a String which corresponds to the
  * output of `git-describe --tags`.
@@ -72,7 +74,7 @@ public class Version implements Comparable<Version> {
 
     /** {@inheritDoc} */
     @Override
-    public int compareTo(final Version o) {
+    public int compareTo(@Nonnull final Version o) {
         if (o.intVersion > Integer.MIN_VALUE && this.intVersion > Integer.MIN_VALUE) {
             return this.intVersion - o.intVersion;
         } else if (o.strVersion == null && this.strVersion == null) {

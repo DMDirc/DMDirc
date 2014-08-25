@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -58,7 +59,7 @@ public class Raw extends Command {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         final String line = args.getArgumentsAsString();

@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -65,7 +66,7 @@ public class Help extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showAllCommands(origin, args.isSilent());

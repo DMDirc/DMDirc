@@ -81,7 +81,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final IdentityManager identityManager, final File file,
+    public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager, final File file,
             final boolean forceDefault) throws IOException, InvalidIdentityFileException {
         this.identityManager = identityManager;
         this.file = new ConfigFile(file);
@@ -123,7 +123,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @param configFile      The config file to use
      * @param target          The target of this identity
      */
-    public ConfigFileBackedConfigProvider(final IdentityManager identityManager,
+    public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
             final ConfigFile configFile, final ConfigTarget target) {
         this.identityManager = identityManager;
         this.file = configFile;

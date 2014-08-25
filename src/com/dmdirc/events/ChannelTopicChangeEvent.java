@@ -53,6 +53,7 @@ public class ChannelTopicChangeEvent extends ChannelDisplayableEvent {
         return client;
     }
 
+    @Nullable
     public String getTopic() {
         return topic;
     }

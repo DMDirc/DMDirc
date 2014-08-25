@@ -38,6 +38,7 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -80,7 +81,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length <= 1) {
             showUsage(origin, args.isSilent(), "ifplugin", "<[!]plugin> <command>");

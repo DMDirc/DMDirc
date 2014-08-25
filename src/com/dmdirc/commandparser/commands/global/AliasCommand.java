@@ -39,6 +39,7 @@ import com.dmdirc.ui.input.TabCompleter;
 
 import com.google.common.base.Optional;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -73,7 +74,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 2) {
             showUsage(origin, args.isSilent(), "alias", "[--remove] <name> [command]");

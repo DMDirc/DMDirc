@@ -81,7 +81,7 @@ public class TabCompleter {
     public TabCompleter(
             final CommandController commandController,
             final AggregateConfigProvider configManager,
-            final TabCompleter parent) {
+            @Nullable final TabCompleter parent) {
         this.parent = parent;
         this.commandController = commandController;
         this.configManager = configManager;

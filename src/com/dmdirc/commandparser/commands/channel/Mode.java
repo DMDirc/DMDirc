@@ -40,6 +40,7 @@ import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -65,7 +66,7 @@ public class Mode extends Command implements IntelligentCommand,
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
         final ChannelInfo cChannel = channel.getChannelInfo();

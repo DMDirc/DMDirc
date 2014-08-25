@@ -24,6 +24,8 @@ package com.dmdirc.config;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents the target of a particular config source.
  * <p>
@@ -224,7 +226,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      *         integer if this is more specific
      */
     @Override
-    public int compareTo(final ConfigTarget target) {
+    public int compareTo(@Nonnull final ConfigTarget target) {
         if (type.equals(target.getType())) {
             return target.getOrder() - order;
         } else {

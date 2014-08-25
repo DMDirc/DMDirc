@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.LifecycleController;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -60,7 +61,7 @@ public class Exit extends Command {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         controller.quit(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "closemessage"));

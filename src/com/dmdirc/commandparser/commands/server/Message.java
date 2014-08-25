@@ -39,6 +39,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -64,7 +65,7 @@ public class Message extends Command implements IntelligentCommand,
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Server server = ((ServerCommandContext) context).getServer();
         if (args.getArguments().length < 2) {

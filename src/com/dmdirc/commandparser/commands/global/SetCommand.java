@@ -45,6 +45,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -100,7 +101,7 @@ public class SetCommand extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final CommandFlagResult res = handler.process(origin, args);
 

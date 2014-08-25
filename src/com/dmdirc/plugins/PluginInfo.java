@@ -49,6 +49,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
 import org.slf4j.LoggerFactory;
@@ -933,7 +934,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /** {@inheritDoc} */
     @Override
-    public int compareTo(final PluginInfo o) {
+    public int compareTo(@Nonnull final PluginInfo o) {
         return toString().compareTo(o.toString());
     }
 

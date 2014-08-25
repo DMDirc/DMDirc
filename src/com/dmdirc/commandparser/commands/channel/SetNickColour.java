@@ -40,6 +40,7 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManager;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -68,7 +69,7 @@ public class SetNickColour extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin,
+    public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
 
