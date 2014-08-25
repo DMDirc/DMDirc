@@ -129,6 +129,7 @@ public class Ignore extends Command implements IntelligentCommand {
         final String target = args.getArgumentsAsString(1);
 
         try {
+            //noinspection ResultOfMethodCallIgnored
             Pattern.compile(target);
         } catch (PatternSyntaxException ex) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unable to compile regex: "

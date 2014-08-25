@@ -131,10 +131,7 @@ public class PluginMetaData {
      */
     public void load() {
         errors.clear();
-        InputStream stream = null;
-
-        try (InputStream steam = getStream()) {
-            stream = getStream();
+        try (final InputStream stream = getStream()) {
             final ConfigFile configFile = new ConfigFile(stream);
             configFile.read();
             readMetaData(configFile.getKeyDomain("metadata"));
