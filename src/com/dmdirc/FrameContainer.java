@@ -62,7 +62,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -390,7 +389,7 @@ public abstract class FrameContainer {
      *
      * @return the associated connection, or {@code null}.
      */
-    @Nonnull
+    @Nullable
     public abstract Connection getConnection();
 
     /**
