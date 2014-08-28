@@ -33,7 +33,6 @@ import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.events.NotificationClearedEvent;
 import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -346,12 +345,7 @@ public abstract class FrameContainer {
      */
     public void addComponent(final String component) {
         components.add(component);
-
         eventBus.publishAsync(new FrameComponentAddedEvent(this, component));
-        for (FrameComponentChangeListener listener
-                : listeners.get(FrameComponentChangeListener.class)) {
-            listener.componentAdded(this, component);
-        }
     }
 
     /**
@@ -364,10 +358,6 @@ public abstract class FrameContainer {
         components.remove(component);
 
         eventBus.publishAsync(new FrameComponentRemovedEvent(this, component));
-        for (FrameComponentChangeListener listener
-                : listeners.get(FrameComponentChangeListener.class)) {
-            listener.componentRemoved(this, component);
-        }
     }
 
     /**
@@ -535,28 +525,6 @@ public abstract class FrameContainer {
         }
 
         getDocument().addText(lines);
-    }
-
-    /**
-     * Adds a component listener to this container.
-     *
-     * @since 0.6.6
-     * @param listener The listener to be added
-     */
-    @Deprecated
-    public void addComponentListener(final FrameComponentChangeListener listener) {
-        listeners.add(FrameComponentChangeListener.class, listener);
-    }
-
-    /**
-     * Removes a component listener from this container.
-     *
-     * @since 0.6.6
-     * @param listener The listener to be removed
-     */
-    @Deprecated
-    public void removeComponentListener(final FrameComponentChangeListener listener) {
-        listeners.remove(FrameComponentChangeListener.class, listener);
     }
 
     /**
