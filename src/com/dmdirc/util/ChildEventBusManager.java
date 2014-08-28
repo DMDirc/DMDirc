@@ -31,7 +31,8 @@ import net.engio.mbassy.listener.Handler;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utility for creating and managing instances of {@link com.dmdirc.DMDircMBassador} that are slaved to a parent bus.
+ * Utility for creating and managing instances of {@link DMDircMBassador} that are slaved to a
+ * parent bus.
  * <p>
  * Any events sent on the child bus will be propagated up to the parent bus.
  */
@@ -59,10 +60,11 @@ public class ChildEventBusManager {
     /**
      * Disconnects the child event bus from the parent.
      * <p>
-     * After this method is called, no further events will be passed to the parent.
+     * The child will be disconnected asynchronously, to allow any pending async events to be
+     * dispatched. After the bus is disconnected, no future events will be passed to the parent.
      */
     public void disconnect() {
-        child.unsubscribe(propagator);
+        child.publishAsync(new ChildEventBusDisconnectingEvent());
     }
 
     /**
@@ -78,8 +80,21 @@ public class ChildEventBusManager {
 
         @Handler
         public void handleEvent(final DMDircEvent event) {
-            parent.publish(event);
+            if (!(event instanceof ChildEventBusDisconnectingEvent)) {
+                // Don't propagate our private event
+                parent.publish(event);
+            }
         }
+
+        // Allow all other handlers on the child bus to process this first
+        @Handler(priority = Integer.MIN_VALUE)
+        public void handleDisconnect(final ChildEventBusDisconnectingEvent event) {
+            child.unsubscribe(propagator);
+        }
+
+    }
+
+    private static class ChildEventBusDisconnectingEvent extends DMDircEvent {
 
     }
 

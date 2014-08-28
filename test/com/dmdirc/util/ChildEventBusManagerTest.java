@@ -35,13 +35,12 @@ import static org.junit.Assert.assertSame;
 
 public class ChildEventBusManagerTest {
 
-    private DMDircMBassador parent;
     private ChildEventBusManager manager;
     private StubHandler handler;
 
     @Before
     public void setup() {
-        parent = new DMDircMBassador();
+        final DMDircMBassador parent = new DMDircMBassador();
         manager = new ChildEventBusManager(parent);
         handler = new StubHandler();
         parent.subscribe(handler);
@@ -54,9 +53,15 @@ public class ChildEventBusManagerTest {
     }
 
     @Test
-    public void testDoesNotPropagateAfterDisconnect() {
+    public void testDoesNotPropagateAfterDisconnect() throws InterruptedException {
         manager.connect();
         manager.disconnect();
+
+        // Wait for the asynchronous disconnect to go through. This is a bit lame.
+        do {
+            Thread.sleep(100);
+        } while (manager.getChildBus().hasPendingMessages());
+
         manager.getChildBus().publish(new StubEvent());
         assertNull(handler.received);
     }
