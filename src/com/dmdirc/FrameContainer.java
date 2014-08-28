@@ -33,7 +33,6 @@ import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.events.NotificationClearedEvent;
 import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.FrameCloseListener;
 import com.dmdirc.interfaces.FrameComponentChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -376,11 +375,6 @@ public abstract class FrameContainer {
      */
     public void close() {
         eventBus.publish(new FrameClosingEvent(this));
-        for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
-            listener.windowClosing(this);
-            listeners.remove(FrameCloseListener.class, listener);
-        }
-
         eventBusManager.disconnect();
     }
 
@@ -541,28 +535,6 @@ public abstract class FrameContainer {
         }
 
         getDocument().addText(lines);
-    }
-
-    /**
-     * Adds a close listener for this frame container. Close listeners will only be called once,
-     * even if the container is closed, re-added, and closed again.
-     *
-     * @param listener The listener to be added
-     */
-    @Deprecated
-    public void addCloseListener(final FrameCloseListener listener) {
-        listeners.add(FrameCloseListener.class, listener);
-    }
-
-    /**
-     * Removes a close listener from this frame container.
-     *
-     * @since 0.6.5
-     * @param listener The listener to be removed
-     */
-    @Deprecated
-    public void removeCloseListener(final FrameCloseListener listener) {
-        listeners.remove(FrameCloseListener.class, listener);
     }
 
     /**
