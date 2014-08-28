@@ -375,13 +375,13 @@ public abstract class FrameContainer {
      * Closes this container (and its associated frame).
      */
     public void close() {
-        eventBusManager.disconnect();
-
         eventBus.publishAsync(new FrameClosingEvent(this));
         for (FrameCloseListener listener : listeners.get(FrameCloseListener.class)) {
             listener.windowClosing(this);
             listeners.remove(FrameCloseListener.class, listener);
         }
+
+        eventBusManager.disconnect();
     }
 
     /**
