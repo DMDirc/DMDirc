@@ -22,6 +22,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.ui.FrameListener;
 
@@ -55,11 +56,12 @@ public class WindowManagerTest {
     @Mock private FrameContainer container;
     @Mock private FrameContainer child;
     @Mock private FrameContainer grandchild;
+    @Mock private DMDircMBassador eventBus;
     private WindowManager manager;
 
     @Before
     public void setup() {
-        manager = new WindowManager();
+        manager = new WindowManager(eventBus);
     }
 
     @Test

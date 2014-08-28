@@ -23,9 +23,10 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Precondition;
-import com.dmdirc.interfaces.FrameCloseListener;
+import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -38,6 +39,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,14 +56,13 @@ public class WindowManager {
     private final List<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
-    /** Listener for frame close events. */
-    private final FrameCloseListener closeListener = new CloseListener();
 
     /**
      * Creates a new instance of {@link WindowManager}.
      */
     @Inject
-    public WindowManager() {
+    public WindowManager(final DMDircMBassador eventBus) {
+        eventBus.subscribe(this);
     }
 
     /**
@@ -156,8 +158,6 @@ public class WindowManager {
         rootWindows.add(window);
 
         fireAddWindow(window, focus);
-
-        window.addCloseListener(closeListener);
     }
 
     /**
@@ -197,8 +197,6 @@ public class WindowManager {
         parent.addChild(child);
 
         fireAddWindow(parent, child, focus);
-
-        child.addCloseListener(closeListener);
     }
 
     /**
@@ -369,16 +367,9 @@ public class WindowManager {
         }
     }
 
-    /**
-     * Frame close listener that removes the window from this manager.
-     */
-    private class CloseListener implements FrameCloseListener {
-
-        @Override
-        public void windowClosing(final FrameContainer window) {
-            removeWindow(window);
-        }
-
+    @Handler
+    public void frameClosing(final FrameClosingEvent event) {
+        removeWindow(event.getContainer());
     }
 
 }
