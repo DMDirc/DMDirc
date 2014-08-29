@@ -33,7 +33,6 @@ import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.events.NotificationClearedEvent;
 import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
@@ -417,7 +416,6 @@ public abstract class FrameContainer {
     public void clearNotification() {
         notification = Optional.absent();
         eventBus.publishAsync(new NotificationClearedEvent(this));
-        listeners.getCallable(NotificationListener.class).notificationCleared(this);
     }
 
     /**
@@ -429,7 +427,6 @@ public abstract class FrameContainer {
         if (!notification.isPresent() || !colour.equals(notification.get())) {
             notification = Optional.of(colour);
             eventBus.publishAsync(new NotificationSetEvent(this, colour));
-            listeners.getCallable(NotificationListener.class).notificationSet(this, colour);
         }
     }
 
@@ -525,26 +522,6 @@ public abstract class FrameContainer {
         }
 
         getDocument().addText(lines);
-    }
-
-    /**
-     * Adds a notification listener to this container.
-     *
-     * @param listener The listener to inform of notification events.
-     */
-    @Deprecated
-    public void addNotificationListener(final NotificationListener listener) {
-        listeners.add(NotificationListener.class, listener);
-    }
-
-    /**
-     * Removes a notification listener from this container.
-     *
-     * @param listener The listener to be removed.
-     */
-    @Deprecated
-    public void removeNotificationListener(final NotificationListener listener) {
-        listeners.remove(NotificationListener.class, listener);
     }
 
     /**
