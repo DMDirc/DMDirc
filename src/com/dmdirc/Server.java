@@ -92,6 +92,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManager;
 
@@ -535,6 +536,9 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         if (!queries.containsKey(lnick)) {
             final Query newQuery = queryFactory.getQuery(this, host);
+            if (!getState().isDisconnected()) {
+                newQuery.reregister();
+            }
 
             windowManager.addWindow(this, newQuery, focus);
             getEventBus().publish(new QueryOpenedEvent(newQuery));
@@ -664,6 +668,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      *
      * @return A configured parser.
      */
+    @Nullable
     private Parser buildParser() {
         final MyInfo myInfo = buildMyInfo();
         final Parser myParser = parserFactory.getParser(myInfo, address);

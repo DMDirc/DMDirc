@@ -144,7 +144,7 @@ public class ChannelMap {
      * @return A collection of join requests corresponding to channels in this map.
      */
     public Collection<ChannelJoinRequest> asJoinRequests() {
-        final List<ChannelJoinRequest> requests = new ArrayList<>(channels.size());
+        final Collection<ChannelJoinRequest> requests = new ArrayList<>(channels.size());
         for (Channel channel : channels.values()) {
             requests.add(new ChannelJoinRequest(channel.getName()));
         }

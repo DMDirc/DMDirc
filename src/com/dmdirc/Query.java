@@ -24,6 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
+import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
 import com.dmdirc.events.QueryMessageEvent;
@@ -35,7 +37,6 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
@@ -108,11 +109,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
-
-        if (!server.getState().isDisconnected()) {
-            reregister();
-        }
-
         updateTitle();
     }
 
@@ -132,11 +128,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
             if (!part.isEmpty()) {
                 server.getParser().sendMessage(target, part);
 
-                doNotification("querySelfMessage", server.getParser().getLocalClient(), part);
-                final QuerySelfMessageEvent event = new QuerySelfMessageEvent(this, server.getParser().
-                        getLocalClient(), part);
-                event.setDisplayFormat("querySelfMessage");
-                getEventBus().publish(event);
+                final String format = EventUtils.postDisplayable(getEventBus(),
+                        new QuerySelfMessageEvent(this, server.getParser().getLocalClient(), part),
+                        "querySelfMessage");
+                doNotification(format, server.getParser().getLocalClient(), part);
             }
         }
     }
@@ -173,10 +168,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
         if (maxLineLength >= action.length() + 2) {
             server.getParser().sendAction(getNickname(), action);
 
-            doNotification("querySelfAction", client, action);
-            final QuerySelfActionEvent event = new QuerySelfActionEvent(this, client, action);
-            event.setDisplayFormat("querySelfAction");
-            getEventBus().publish(event);
+            final String format = EventUtils.postDisplayable(getEventBus(),
+                    new QuerySelfActionEvent(this, client, action),
+                    "querySelfAction");
+            doNotification(format, client, action);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -187,13 +182,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
-        final StringBuffer buff = new StringBuffer("queryMessage");
-
-        final QueryMessageEvent event = new QueryMessageEvent(this, parser.getClient(host), message);
-        event.setDisplayFormat(buff.toString());
-        getEventBus().publish(event);
-
-        addLine(buff, parts[0], parts[1], parts[2], message);
+        final String format = EventUtils.postDisplayable(getEventBus(),
+                new QueryMessageEvent(this, parser.getClient(host), message),
+                "queryMessage");
+        addLine(format, parts[0], parts[1], parts[2], message);
     }
 
     @Override
@@ -201,13 +193,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
-        final StringBuffer buff = new StringBuffer("queryAction");
-
-        final QueryActionEvent event = new QueryActionEvent(this, parser.getClient(host), message);
-        event.setDisplayFormat(buff.toString());
-        getEventBus().publish(event);
-
-        addLine(buff, parts[0], parts[1], parts[2], message);
+        final String format = EventUtils.postDisplayable(getEventBus(),
+                new QueryActionEvent(this, parser.getClient(host), message),
+                "queryAction");
+        addLine(format, parts[0], parts[1], parts[2], message);
     }
 
     /**
@@ -231,7 +220,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             callbackManager.addCallback(QuitListener.class, this);
             callbackManager.addCallback(NickChangeListener.class, this);
         } catch (CallbackNotFoundException ex) {
-            Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
+            getEventBus().publishAsync(new AppErrorEvent(ErrorLevel.HIGH, ex,
+                    "Unable to get query events", ex.getMessage()));
         }
     }
 
@@ -252,14 +242,14 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 callbackManager.addCallback(CompositionStateChangeListener.class, this, client.
                         getNickname());
             } catch (CallbackNotFoundException ex) {
-                Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
+                getEventBus().publishAsync(
+                        new AppErrorEvent(ErrorLevel.HIGH, ex, "Unable to get query events",
+                                ex.getMessage()));
             }
 
-            final StringBuffer format = new StringBuffer("queryNickChanged");
-
-            final QueryNickchangeEvent event = new QueryNickchangeEvent(this, oldNick);
-            event.setDisplayFormat("queryNickChanged");
-            getEventBus().publish(event);
+            final String format = EventUtils.postDisplayable(getEventBus(),
+                    new QueryNickchangeEvent(this, oldNick),
+                    "queryNickChanged");
 
             server.updateQuery(this, oldNick, client.getNickname());
 
@@ -277,13 +267,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public void onQuit(final Parser parser, final Date date,
             final ClientInfo client, final String reason) {
         if (client.getNickname().equals(getNickname())) {
-            final StringBuffer format = new StringBuffer(reason.isEmpty()
-                    ? "queryQuit" : "queryQuitReason");
-
-            final QueryQuitEvent event = new QueryQuitEvent(this, reason);
-            event.setDisplayFormat(format.toString());
-            getEventBus().publish(event);
-
+            final String format = EventUtils.postDisplayable(getEventBus(),
+                    new QueryQuitEvent(this, reason),
+                    reason.isEmpty() ? "queryQuit" : "queryQuitReason");
             addLine(format, client.getNickname(),
                     client.getUsername(), client.getHostname(), reason);
         }

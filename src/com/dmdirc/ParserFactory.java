@@ -34,6 +34,7 @@ import com.dmdirc.plugins.ServiceProvider;
 
 import java.net.URI;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -71,6 +72,7 @@ public class ParserFactory {
      *
      * @since 0.6.3
      */
+    @Nullable
     public Parser getParser(final MyInfo myInfo, final URI address) {
         final Object obj = getExportResult(address, "getParser", myInfo, address);
 
