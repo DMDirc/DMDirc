@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
 import com.dmdirc.events.QueryMessageEvent;
@@ -50,6 +49,7 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 
 import java.awt.Toolkit;

@@ -87,7 +87,7 @@ public class ChildEventBusManager {
         }
 
         // Allow all other handlers on the child bus to process this first
-        @Handler(priority = Integer.MIN_VALUE)
+        @Handler(priority = EventUtils.PRIORITY_LOWEST)
         public void handleDisconnect(final ChildEventBusDisconnectingEvent event) {
             child.unsubscribe(propagator);
         }

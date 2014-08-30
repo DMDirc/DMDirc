@@ -34,11 +34,11 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.RollingList;
 
 import java.io.Serializable;

@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.events.ServerAuthnoticeEvent;
@@ -90,6 +89,7 @@ import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
 import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
 import com.dmdirc.parser.interfaces.callbacks.WallopListener;
 import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
+import com.dmdirc.util.EventUtils;
 
 import java.util.Date;
 

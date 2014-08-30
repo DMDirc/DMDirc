@@ -20,14 +20,28 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.events;
+package com.dmdirc.util;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.DMDircEvent;
+import com.dmdirc.events.DisplayableEvent;
 
 /**
  * Utilities for interacting with events.
  */
 public final class EventUtils {
+
+    /** Default priority for normal listeners. */
+    public static final int PRIORITY_NORMAL = 0;
+
+    /** The lowest possible priority. */
+    public static final int PRIORITY_LOWEST = Integer.MIN_VALUE;
+
+    /**
+     * Priority for {@link DisplayableEvent} handlers. This is lower than standard listeners,
+     * to give them chance to modify the displayable event.
+     */
+    public static final int PRIORITY_DISPLAYABLE_EVENT_HANDLER = -1000;
 
     private EventUtils() {
     }

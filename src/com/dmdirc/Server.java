@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
-import com.dmdirc.events.EventUtils;
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
@@ -65,6 +64,7 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 
 import java.net.NoRouteToHostException;

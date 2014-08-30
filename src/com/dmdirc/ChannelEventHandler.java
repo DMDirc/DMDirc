@@ -43,7 +43,6 @@ import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.events.ChannelUserEvent;
 import com.dmdirc.events.ChannelUsermodechangeEvent;
-import com.dmdirc.events.EventUtils;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
@@ -69,6 +68,7 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
+import com.dmdirc.util.EventUtils;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
