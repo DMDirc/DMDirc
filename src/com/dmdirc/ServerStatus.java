@@ -104,7 +104,7 @@ public class ServerStatus {
         builder.append('→');
         builder.append(toState.name());
         builder.append(' ');
-        builder.append(Thread.currentThread().getStackTrace()[3].toString());
+        builder.append(Thread.currentThread().getStackTrace()[3]);
         builder.append(" [");
         builder.append(Thread.currentThread().getName());
         builder.append("] (parser #");
@@ -117,7 +117,7 @@ public class ServerStatus {
     /**
      * Retrieves the transition history of this status object as a string.
      *
-     * @see #addHistoryEntry(com.dmdirc.ServerState, com.dmdirc.ServerState)
+     * @see #addHistoryEntry(ServerState, ServerState)
      * @return A line feed ('\n') delimited string containing one entry for each of the entries in
      *         this status's transition history.
      */

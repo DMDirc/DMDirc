@@ -67,8 +67,12 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.URLBuilder;
 
+import java.net.NoRouteToHostException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -80,7 +84,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -89,6 +92,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.Nonnull;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManager;
 
 import org.slf4j.LoggerFactory;
@@ -146,7 +150,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<>();
     /** A set of channels we want to join without focusing. */
-    private final Set<String> backgroundChannels = new HashSet<>();
+    private final Collection<String> backgroundChannels = new HashSet<>();
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
     /** Our string convertor. */
@@ -936,14 +940,14 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         boolean isTLD = false;
 
         for (String tld : tlds) {
-            if (serverName.endsWith("." + tld)) {
+            if (serverName.endsWith('.' + tld)) {
                 isTLD = true;
                 break;
             }
         }
 
         if (isTLD && parts.length > 2) {
-            return parts[parts.length - 2] + "." + parts[parts.length - 1];
+            return parts[parts.length - 2] + '.' + parts[parts.length - 1];
         } else if (parts.length > 2) {
             final StringBuilder network = new StringBuilder();
 
@@ -1038,13 +1042,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public void sendCTCPReply(final String source, final String type, final String args) {
-        if (type.equalsIgnoreCase("VERSION")) {
+        if ("VERSION".equalsIgnoreCase(type)) {
             parser.sendCTCPReply(source, "VERSION", "DMDirc "
                     + getConfigManager().getOption("version", "version")
                     + " - http://www.dmdirc.com/");
-        } else if (type.equalsIgnoreCase("PING")) {
+        } else if ("PING".equalsIgnoreCase(type)) {
             parser.sendCTCPReply(source, "PING", args);
-        } else if (type.equalsIgnoreCase("CLIENTINFO")) {
+        } else if ("CLIENTINFO".equalsIgnoreCase(type)) {
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
@@ -1054,7 +1058,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         try {
             parserLock.readLock().lock();
             return hasChannel(channelName)
-                    || (parser != null && parser.isValidChannelName(channelName));
+                    || parser != null && parser.isValidChannelName(channelName);
         } finally {
             parserLock.readLock().unlock();
         }
@@ -1088,7 +1092,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             try {
                 parserLock.readLock().lock();
-                final Object[] arguments = new Object[]{
+                final Object[] arguments = {
                     address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
                     address.getPort(), parser == null ? "Unknown" : getNetwork(),
                     parser == null ? "Unknown" : parser.getLocalClient().getNickname(),};
@@ -1155,7 +1159,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         if (numeric < 10) {
             snumeric = "00" + snumeric;
         } else if (numeric < 100) {
-            snumeric = "0" + snumeric;
+            snumeric = '0' + snumeric;
         }
 
         final String sansIrcd = "numeric_" + snumeric;
@@ -1277,21 +1281,21 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             updateIcon();
 
-            String description;
+            final String description;
 
             if (errorInfo.getException() == null) {
                 description = errorInfo.getData();
             } else {
                 final Exception exception = errorInfo.getException();
 
-                if (exception instanceof java.net.UnknownHostException) {
+                if (exception instanceof UnknownHostException) {
                     description = "Unknown host (unable to resolve)";
-                } else if (exception instanceof java.net.NoRouteToHostException) {
+                } else if (exception instanceof NoRouteToHostException) {
                     description = "No route to host";
-                } else if (exception instanceof java.net.SocketTimeoutException) {
+                } else if (exception instanceof SocketTimeoutException) {
                     description = "Connection attempt timed out";
-                } else if (exception instanceof java.net.SocketException
-                        || exception instanceof javax.net.ssl.SSLException) {
+                } else if (exception instanceof SocketException
+                        || exception instanceof SSLException) {
                     description = exception.getMessage();
                 } else {
                     Logger.appError(ErrorLevel.LOW, "Unknown socket error: "
@@ -1318,7 +1322,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public void onPingFailed() {
         statusBarManager.setMessage(new StatusMessage(
                 "No ping reply from " + getName() + " for over "
-                + ((int) (Math.floor(parser.getPingTime() / 1000.0)))
+                + (int) Math.floor(parser.getPingTime() / 1000.0)
                 + " seconds.", getConfigManager()));
 
         getEventBus().publishAsync(new ServerNopingEvent(this, parser.getPingTime()));
@@ -1412,8 +1416,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 missing.append(missingUmodes);
             }
 
-            Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
-                    + parser.getServerSoftwareType() + "]",
+            Logger.appError(ErrorLevel.LOW, missing + " ["
+                    + parser.getServerSoftwareType() + ']',
                     new MissingModeAliasException(getNetwork(), parser,
                             getConfigManager().getOption("identity",
                                     "modealiasversion"), missing.toString()));
@@ -1547,8 +1551,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public void updateAwayState(final String message) {
-        if ((awayMessage != null && awayMessage.equals(message))
-                || (awayMessage == null && message == null)) {
+        if (awayMessage != null && awayMessage.equals(message)
+                || awayMessage == null && message == null) {
             return;
         }
 

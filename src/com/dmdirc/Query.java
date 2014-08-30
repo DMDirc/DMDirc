@@ -265,7 +265,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             addLine(format, oldNick, client.getUsername(),
                     client.getHostname(), client.getNickname());
-            host = client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname();
+            host = client.getNickname() + '!' + client.getUsername() + '@' + client.getHostname();
             nickname = client.getNickname();
             updateTitle();
 

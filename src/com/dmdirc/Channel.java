@@ -418,7 +418,7 @@ public class Channel extends MessageTarget implements GroupChat {
                     + " null ChannelClientInfo");
         }
 
-        final String[] res = new String[]{
+        final String[] res = {
             getModes(client),
             Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME,
             client.getClient().getUsername(),
@@ -428,10 +428,10 @@ public class Channel extends MessageTarget implements GroupChat {
             final Map<?, ?> map = client.getMap();
 
             if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
-                String prefix;
+                final String prefix;
 
                 if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    prefix = "," + ColourManager.getHex((Colour) map.get(
+                    prefix = ',' + ColourManager.getHex((Colour) map.get(
                             ChannelClientProperty.TEXT_BACKGROUND));
                 } else {
                     prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Colour) map.get(
