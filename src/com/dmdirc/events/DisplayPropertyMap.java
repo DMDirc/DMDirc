@@ -22,48 +22,39 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
-
 import com.google.common.base.Optional;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * Base type for displayable events that occur in channels.
+ * Provides a map of {@link DisplayProperty}s to values, maintaining type safety.
  */
-public abstract class ChannelDisplayableEvent extends ChannelEvent implements DisplayableEvent {
+public class DisplayPropertyMap {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
-    /** The properties associated with this event. */
-    private final DisplayPropertyMap properties = new DisplayPropertyMap();
+    private final Map<DisplayProperty<?>, Object> properties = new ConcurrentSkipListMap<>();
 
-    public ChannelDisplayableEvent(final long timestamp, final Channel channel) {
-        super(timestamp, channel);
+    /**
+     * Gets the value of the specified property, if present.
+     *
+     * @param property The property to be retrieved.
+     * @param <T> The type of value the property takes.
+     * @return An optional containing the value of the property if it was present.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> get(final DisplayProperty<T> property) {
+        return Optional.fromNullable((T) properties.get(property));
     }
 
-    public ChannelDisplayableEvent(final Channel channel) {
-        super(channel);
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
-    }
-
-    @Override
-    public <T> void setDisplayProperty(final DisplayProperty<T> property, final T value) {
+    /**
+     * Adds a new value for the specified property. Any previous value will be replaced.
+     *
+     * @param property The property to set.
+     * @param value The new value of the property.
+     * @param <T> The type of value the property takes.
+     */
+    public <T> void put(final DisplayProperty<T> property, final T value) {
         properties.put(property, value);
-    }
-
-    @Override
-    public <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property) {
-        return properties.get(property);
     }
 
 }

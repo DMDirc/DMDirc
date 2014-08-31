@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import com.google.common.base.Optional;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -34,6 +36,8 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
 
     /** The display format to use for this event. */
     private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
+    /** The properties associated with this event. */
+    private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
     public ServerDisplayableEvent(final long timestamp, final Connection connection) {
         super(timestamp, connection);
@@ -49,7 +53,18 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
     }
 
     @Override
-    public void setDisplayFormat(String format) {
-        this.displayFormatRef.set(format);
+    public void setDisplayFormat(final String format) {
+        displayFormatRef.set(format);
     }
+
+    @Override
+    public <T> void setDisplayProperty(final DisplayProperty<T> property, final T value) {
+        properties.put(property, value);
+    }
+
+    @Override
+    public <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property) {
+        return properties.get(property);
+    }
+
 }

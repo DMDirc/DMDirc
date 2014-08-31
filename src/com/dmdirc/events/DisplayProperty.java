@@ -22,43 +22,16 @@
 
 package com.dmdirc.events;
 
-import com.google.common.base.Optional;
+import com.dmdirc.ui.Colour;
 
 /**
- * Describes an event which is rendered in the client to the user.
+ * Describes a property that may be set on a {@link DisplayableEvent} to affect its display.
  */
-public interface DisplayableEvent {
+public final class DisplayProperty<T> {
 
-    /**
-     * Gets the format name that will be used to display the event.
-     *
-     * @return The format name to use for the event.
-     */
-    String getDisplayFormat();
-
-    /**
-     * Sets the format name that should be used to display the event.
-     *
-     * @param format The format name to use for the event.
-     */
-    void setDisplayFormat(String format);
-
-    /**
-     * Sets a property relating to how this event should be displayed.
-     *
-     * @param property The property to be set
-     * @param value The value of the property
-     * @param <T> The type of value that the property takes.
-     */
-    <T> void setDisplayProperty(DisplayProperty<T> property, T value);
-
-    /**
-     * Retrieves a property relating to how this event should be displayed.
-     *
-     * @param property The property to be retrieved.
-     * @param <T> The type of value that the property takes.
-     * @return An optional value for the property.
-     */
-    <T> Optional<T> getDisplayProperty(DisplayProperty<T> property);
+    /** The foreground colour of text relating to the event. */
+    public static DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayProperty<>();
+    /** The background colour of text relating to the event. */
+    public static DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayProperty<>();
 
 }

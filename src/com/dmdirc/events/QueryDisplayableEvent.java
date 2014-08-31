@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.Query;
 
+import com.google.common.base.Optional;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -34,6 +36,8 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
 
     /** The display format to use for this event. */
     private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
+    /** The properties associated with this event. */
+    private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
     public QueryDisplayableEvent(final long timestamp, final Query query) {
         super(timestamp, query);
@@ -49,8 +53,18 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
     }
 
     @Override
-    public void setDisplayFormat(String format) {
-        this.displayFormatRef.set(format);
+    public void setDisplayFormat(final String format) {
+        displayFormatRef.set(format);
+    }
+
+    @Override
+    public <T> void setDisplayProperty(final DisplayProperty<T> property, final T value) {
+        properties.put(property, value);
+    }
+
+    @Override
+    public <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property) {
+        return properties.get(property);
     }
 
 }

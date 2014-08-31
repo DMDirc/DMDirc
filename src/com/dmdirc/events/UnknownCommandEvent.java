@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
 
+import com.google.common.base.Optional;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
@@ -35,6 +37,8 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
 
     /** The display format to use for this event. */
     private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
+    /** The properties associated with this event. */
+    private final DisplayPropertyMap properties = new DisplayPropertyMap();
     @Nullable private final FrameContainer source;
     private final String command;
     private final String[] arguments;
@@ -73,8 +77,18 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
     }
 
     @Override
-    public void setDisplayFormat(String format) {
-        this.displayFormatRef.set(format);
+    public void setDisplayFormat(final String format) {
+        displayFormatRef.set(format);
+    }
+
+    @Override
+    public <T> void setDisplayProperty(final DisplayProperty<T> property, final T value) {
+        properties.put(property, value);
+    }
+
+    @Override
+    public <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property) {
+        return properties.get(property);
     }
 
 }
